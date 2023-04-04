@@ -1,0 +1,46 @@
+{
+  "name": "Make your website editable",
+  "short_name": "Editable Website",
+  "icons": [
+    {
+      "src": "/favicon-48x48.png?v=9d77a4ce079ca15fd3da4b420a2e7cf6",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-72x72.png?v=9d77a4ce079ca15fd3da4b420a2e7cf6",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-96x96.png?v=9d77a4ce079ca15fd3da4b420a2e7cf6",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-144x144.png?v=9d77a4ce079ca15fd3da4b420a2e7cf6",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-192x192.png?v=9d77a4ce079ca15fd3da4b420a2e7cf6",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-256x256.png?v=9d77a4ce079ca15fd3da4b420a2e7cf6",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-384x384.png?v=9d77a4ce079ca15fd3da4b420a2e7cf6",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512x512.png?v=9d77a4ce079ca15fd3da4b420a2e7cf6",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
