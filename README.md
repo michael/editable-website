@@ -1,12 +1,12 @@
 # editable-website
 
-A SvelteKit template that allows you to code a **completely custom website**, while allowing non-technical people to **make edits** to the content by simply logging in with a secure admin password.
+A SvelteKit template for coding **completely custom website**, while allowing non-technical people to **make edits** to the content by simply logging in with a secure admin password.
 
 Check out the demo at [editable.website](https://editable.website).
 
 ## But why?
 
-It's a dynamic website, but light as a feather compared to building on top of a CMS. It makes editing content self-explanatory.
+It's a dynamic website but light as a feather compared to building on top of a CMS. It makes editing content self-explanatory.
 
 ## Step 0 - Requirements
 
@@ -14,16 +14,18 @@ It's a dynamic website, but light as a feather compared to building on top of a 
 - Postgres 14+
 - MinIO or other S3-compatible storage solution
 
+These are needed to run the example as is, but you can choose any other database and file storage solution.
+
 ## Step 1 - Development setup
 
-This is a full-fledged webapp you want adjust to your own needs. So please **create a copy** or fork of the source code and rename the project accordingly. Then check out your own copy.
+This is a full-fledged web app you want adjust to your own needs. So please **create a copy** or fork of the source code and rename the project accordingly. Then check out your own copy:
 
 ```bash
 git clone https://github.com/your-user/your-website.git
 cd your-website
 ```
 
-Create a `.env` file and set the folllowing environment variables pointing to your development database and MinIO instance.
+Create a `.env` file and set the following environment variables to point to your development database and MinIO instance:
 
 ```bash
 VITE_DB_URL=postgresql://$USER@localhost:5432/editable-website
@@ -107,7 +109,7 @@ I will describe the steps to deploy to [Northflank](https://northflank.com/) (wh
 
 1. Create instances for Postgres 14 and MinIO through the Northflank user interface.
 
-2. Create a combined service, select the Heroku buildpack and assign the environment variables as they are exposed by the Postgres and MinIO addons. Use the same environment variables during the build step and runtime (yes you have to type them twice).
+2. Create a combined service, select the Heroku buildpack and assign the environment variables as they are exposed by the Postgres and MinIO addons. Use the same environment variables during the build step and runtime (yes, you have to type them twice).
 
 You can deploy your editable website anywhere else as well. For instance if you'd like to go the "Serverless" path, you can deploy on Vercel, and use NeonDB (or DigitalOcean with Connection Pooling activated). You may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
 
