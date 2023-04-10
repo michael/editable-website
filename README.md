@@ -14,6 +14,18 @@ It's a dynamic website but light as a feather compared to building on top of a C
 - Postgres 14+
 - MinIO or other S3-compatible storage solution
 
+You can boot a container with MinIO locally using this docker image:
+```bash
+docker run \
+   -p 9000:9000 \
+   -p 9090:9090 \
+   --name minio \
+   -v ~/minio/data:/data \
+   -e "MINIO_ROOT_USER=ROOTNAME" \
+   -e "MINIO_ROOT_PASSWORD=CHANGEME123" \
+   quay.io/minio/minio server /data --console-address ":9090"
+```
+
 These are needed to run the example as is, but you can choose any other database and file storage solution.
 
 ## Step 1 - Development setup

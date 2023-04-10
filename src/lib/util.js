@@ -165,3 +165,26 @@ export async function fetchJSON(method, url, data = undefined) {
   const result = await response.json();
   return result;
 }
+
+export async function askGPT(prompt, existingText) {
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    body: JSON.stringify({
+      model: 'gpt-3.5-turbo',
+      messages: [
+        {
+          role: 'system',
+          content: `You are a helpful assistant helping out writing copy for a website. User has selected the following text ${existingText} in a CMS editor. Please write a short paragraph that will replace the text based on the following prompt`
+        },
+        { role: 'user', content: prompt }
+      ]
+    }),
+    headers: {
+      'content-type': 'application/json',
+      Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`
+    }
+  });
+  if (!response.ok) throw new Error(response.statusText);
+  const result = await response.json();
+  return result.choices[0].message.content;
+}

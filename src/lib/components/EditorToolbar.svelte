@@ -11,11 +11,15 @@
   import ToggleHeading from './tools/ToggleHeading.svelte';
   import InsertImage from './tools/InsertImage.svelte';
   import CreateLink from './tools/CreateLink.svelte';
+  import ToggleAICompletion from '$lib/components/tools/ToggleAICompletion.svelte';
+  import Modal from '$lib/components/Modal.svelte';
+  import { fetchJSON } from '$lib/util.js';
 
   export let currentUser = undefined;
 
   let editorView = null;
   let editorState = null;
+  let isPromptOpen = false;
 
   const unsubscribe = activeEditorView.subscribe(value => {
     editorView = value;
@@ -42,7 +46,71 @@
       e.stopPropagation();
     }
   }
+
+  let prompt = '';
+  let generating;
+  async function onGeneratePrompt() {
+    const existingText = editorState.doc.textBetween(
+      editorState.selection.from,
+      editorState.selection.to
+    );
+    const result = await fetchJSON('POST', `/api/generate`, {
+      prompt,
+      existingText
+    });
+    const { tr } = editorView.state;
+    tr.replaceSelectionWith(editorView.state.schema.text(result), true);
+    editorView.dispatch(tr);
+  }
 </script>
+
+{#if isPromptOpen}
+  <Modal
+    on:close={() => {
+      editorView.focus();
+      isPromptOpen = false;
+    }}
+  >
+    <div class="flex flex-col p-4">
+      <h2 class="text-lg font-medium text-gray-900">Generate AI text</h2>
+      <p class="my-4 text-sm text-gray-500">
+        The current selected text will be replaced:
+        {#if editorState}
+          <strong>
+            {editorState.doc.textBetween(editorState.selection.from, editorState.selection.to)}
+          </strong>
+        {/if}
+      </p>
+      <label for="prompt" class="font-medium text-gray-700">What would you like to generate?</label>
+      <div class="mt-1">
+        <input
+          type="text"
+          name="prompt"
+          id="prompt"
+          class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md h-10"
+          bind:value={prompt}
+        />
+      </div>
+      <div class="mt-4 flex items-center">
+        <PrimaryButton
+          on:click={async () => {
+            editorView.focus();
+            generating = onGeneratePrompt();
+            await generating;
+            isPromptOpen = false;
+            prompt = '';
+          }}>Generate</PrimaryButton
+        >
+        {#await generating}
+          <!-- a tailwind spinner -->
+          <div
+            class="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-gray-900 ml-4"
+          />
+        {/await}
+      </div>
+    </div>
+  </Modal>
+{/if}
 
 <div class="sticky top-0 z-10 sm:py-4 sm:px-4">
   <div
@@ -151,6 +219,23 @@
                 /></svg
               >
             </InsertImage>
+            <div class="hidden sm:block w-px bg-gray-300 mx-3" />
+            <ToggleAICompletion {editorState} {editorView} bind:isPromptOpen>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="h-3 w-3 sm:h-4 sm:w-4"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"
+                />
+              </svg>
+            </ToggleAICompletion>
           </div>
         {/if}
 

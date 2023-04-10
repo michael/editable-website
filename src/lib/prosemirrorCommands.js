@@ -18,3 +18,7 @@ export function insertImage(state /*, dispatch, editorView, src*/) {
   if (!canInsert(state, nodeType)) return false;
   return true;
 }
+
+export function anythingSelected(state) {
+  return !state.selection.empty;
+}
