@@ -82,12 +82,12 @@
   };
 
   onMount(() => {
-    // add event listeners for when focusing out from editor
+    // add event listeners for when focusing from editor
     window.addEventListener('focusout', handleScroll);
-    window.addEventListener('blur', handleScroll);
+    window.addEventListener('focusin', handleScroll);
     return () => {
       window.removeEventListener('focusout', handleScroll);
-      window.removeEventListener('blur', handleScroll);
+      window.removeEventListener('focusin', handleScroll);
     };
   });
 </script>
