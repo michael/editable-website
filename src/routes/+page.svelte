@@ -13,7 +13,7 @@
   import Footer from '$lib/components/Footer.svelte';
   import Image from '$lib/components/Image.svelte';
   import NotEditable from '$lib/components/NotEditable.svelte';
-  import EditorToolbarLazy from '$lib/components/EditorToolbarLazy.svelte';
+  import EditorToolbar from '$lib/components/EditorToolbar.svelte';
 
   export let data;
   $: currentUser = data.currentUser;
@@ -185,7 +185,7 @@
 </svelte:head>
 
 {#if editable}
-  <EditorToolbarLazy {currentUser} on:cancel={initOrReset} on:save={savePage} />
+  <EditorToolbar {currentUser} on:cancel={initOrReset} on:save={savePage} />
 {/if}
 
 <WebsiteNav bind:showUserMenu {currentUser} bind:editable />
