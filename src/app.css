@@ -78,3 +78,9 @@ li.ProseMirror-selectednode:after {
   border: 2px solid #8cf;
   pointer-events: none;
 }
+
+#toolbar.down {
+	transition-property: all;
+	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	transition-duration: 300ms;
+}
