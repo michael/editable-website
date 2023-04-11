@@ -1,6 +1,4 @@
 <script>
-  import ImageEditor from './ImageEditor.svelte';
-
   export let editable;
   export let currentUser;
   export let src;
@@ -13,7 +11,17 @@
 </script>
 
 {#if editable}
-  <ImageEditor {currentUser} class={className} bind:src {alt} {maxWidth} {maxHeight} {quality} />
+  {#await import('./ImageEditor.svelte') then ImageEditor}
+    <ImageEditor.default
+      {currentUser}
+      class={className}
+      bind:src
+      {alt}
+      {maxWidth}
+      {maxHeight}
+      {quality}
+    />
+  {/await}
 {:else}
   <img class={className} {src} {alt} />
 {/if}
