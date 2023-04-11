@@ -1,13 +1,13 @@
 <script>
-  import RichTextEditor from './RichTextEditor.svelte';
-
   export let editable;
   export let content;
   export let multiLine = false;
 </script>
 
 {#if editable}
-  <RichTextEditor {multiLine} bind:content />
+  {#await import('./RichTextEditor.svelte') then RichTextEditor}
+    <RichTextEditor.default {multiLine} bind:content />
+  {/await}
 {:else}
   <div>
     {@html content}

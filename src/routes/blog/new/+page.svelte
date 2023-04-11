@@ -1,5 +1,4 @@
 <script>
-  import EditorToolbar from '$lib/components/EditorToolbar.svelte';
   import { extractTeaser, fetchJSON } from '$lib/util';
   import WebsiteNav from '$lib/components/WebsiteNav.svelte';
   import { goto } from '$app/navigation';
@@ -7,6 +6,7 @@
   import EditableWebsiteTeaser from '$lib/components/EditableWebsiteTeaser.svelte';
   import Article from '$lib/components/Article.svelte';
   import NotEditable from '$lib/components/NotEditable.svelte';
+  import EditorToolbarLazy from '$lib/components/EditorToolbarLazy.svelte';
 
   export let data;
 
@@ -45,7 +45,7 @@
 </svelte:head>
 
 {#if editable}
-  <EditorToolbar {currentUser} on:cancel={discardDraft} on:save={createArticle} />
+  <EditorToolbarLazy {currentUser} on:cancel={discardDraft} on:save={createArticle} />
 {/if}
 
 <WebsiteNav bind:editable bind:showUserMenu {currentUser} />
