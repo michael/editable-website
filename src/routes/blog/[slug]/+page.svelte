@@ -10,7 +10,7 @@
   import EditableWebsiteTeaser from '$lib/components/EditableWebsiteTeaser.svelte';
   import Article from '$lib/components/Article.svelte';
   import NotEditable from '$lib/components/NotEditable.svelte';
-  import EditorToolbarLazy from '$lib/components/EditorToolbarLazy.svelte';
+  import EditorToolbar from '$lib/components/EditorToolbar.svelte';
 
   export let data;
 
@@ -80,7 +80,7 @@
 </svelte:head>
 
 {#if editable}
-  <EditorToolbarLazy {currentUser} on:cancel={initOrReset} on:save={saveArticle} />
+  <EditorToolbar {currentUser} on:cancel={initOrReset} on:save={saveArticle} />
 {/if}
 
 <WebsiteNav bind:editable bind:showUserMenu {currentUser} />

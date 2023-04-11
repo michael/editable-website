@@ -7,7 +7,7 @@
   import LoginMenu from '$lib/components/LoginMenu.svelte';
   import PrimaryButton from '$lib/components/PrimaryButton.svelte';
   import { fetchJSON } from '$lib/util';
-  import EditorToolbarLazy from '$lib/components/EditorToolbarLazy.svelte';
+  import EditorToolbar from '$lib/components/EditorToolbar.svelte';
 
   export let data;
   $: currentUser = data.currentUser;
@@ -78,7 +78,7 @@
 {/if}
 
 {#if editable}
-  <EditorToolbarLazy on:cancel={initOrReset} on:save={savePage} />
+  <EditorToolbar on:cancel={initOrReset} on:save={savePage} />
 {/if}
 
 <WebsiteNav bind:showUserMenu {currentUser} bind:editable />
