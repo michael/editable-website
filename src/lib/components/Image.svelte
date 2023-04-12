@@ -27,6 +27,3 @@
 {:else}
   <img class={className} {src} {alt} />
 {/if}
-
-
-

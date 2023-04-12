@@ -43,7 +43,11 @@
     <NotEditable {editable}>
       <div class="flex items-center relative">
         <div class="flex-1" />
-        <button class={classNames('mr-6 hover:text-black')} on:click={() => (showSearch = true)}>
+        <button
+          title="Search"
+          class={classNames('mr-6 hover:text-black')}
+          on:click={() => (showSearch = true)}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
