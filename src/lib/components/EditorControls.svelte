@@ -59,7 +59,7 @@
     if (newPosition < -1) {
       // add a margin to show the toolbar
       toolbar.classList.add('down'); // add class so toolbar can be animated
-      fixPosition = 0; //Math.abs(newPosition); // this is new position we need to fix the toolbar in the display
+      fixPosition = Math.abs(newPosition); // this is new position we need to fix the toolbar in the display
       // if at the bottom of the page take a couple of pixels off due to gap
       if (window.innerHeight + scrollY >= document.body.offsetHeight) {
         fixPosition -= 2;
@@ -85,11 +85,9 @@
     // add event listeners for when focusing from editor
     window.addEventListener('focusout', handleScroll);
     window.addEventListener('focusin', handleScroll);
-    editorView?.dom.addEventListener('keydown', handleScroll);
     return () => {
       window.removeEventListener('focusout', handleScroll);
       window.removeEventListener('focusin', handleScroll);
-      editorView?.dom.removeEventListener('keydown', handleScroll);
     };
   });
 </script>
