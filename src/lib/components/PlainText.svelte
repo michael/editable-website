@@ -5,7 +5,9 @@
 </script>
 
 {#if editable}
-  {#await import('./PlainTextEditor.svelte') then PlainTextEditor}
+  {#await import('./PlainTextEditor.svelte')}
+    {@html content}
+  {:then PlainTextEditor}
     <PlainTextEditor.default {multiLine} bind:content />
   {/await}
 {:else}

@@ -11,7 +11,9 @@
 </script>
 
 {#if editable}
-  {#await import('./ImageEditor.svelte') then ImageEditor}
+  {#await import('./ImageEditor.svelte')}
+    <img class={className} {src} {alt} />
+  {:then ImageEditor}
     <ImageEditor.default
       {currentUser}
       class={className}
@@ -25,3 +27,6 @@
 {:else}
   <img class={className} {src} {alt} />
 {/if}
+
+
+

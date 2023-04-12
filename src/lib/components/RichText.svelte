@@ -5,7 +5,9 @@
 </script>
 
 {#if editable}
-  {#await import('./RichTextEditor.svelte') then RichTextEditor}
+  {#await import('./RichTextEditor.svelte')}
+    {@html content}
+  {:then RichTextEditor}
     <RichTextEditor.default {multiLine} bind:content />
   {/await}
 {:else}
