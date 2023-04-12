@@ -115,7 +115,7 @@ You can deploy your editable website anywhere else as well. For instance if you'
 
 ## Step 5 - Get in touch
 
-If you have questions or need help (with development or deployment), send me an email (michael@letsken.com) and suggest a few slots where you have time for a 30 minute chat (I'm based in Austria GMT+1).
+If you have questions or need help (with development or deployment), send me an email (michael@letsken.com) and suggest a few slots where you have time for a 30 minute chat (I'm based in Austria GMT+2).
 
 ## Examples
 Community provided examples of additional features you can add to your editable website:
