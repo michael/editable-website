@@ -182,6 +182,8 @@
 <svelte:head>
   <title>Make your website editable</title>
   <meta name="description" content="Make changes to your website while browsing it." />
+  <link rel="alternate" hreflang="en" href="https://editable.website" />
+  <link rel="canonical" href="https://editable.website" />
 </svelte:head>
 
 {#if editable}
