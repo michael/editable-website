@@ -10,7 +10,7 @@ Read the discussion on [Hackernews](https://news.ycombinator.com/item?id=3545608
 
 ## But why?
 
-It's a dynamic website but light as a feather compared to building on top of a CMS. It makes editing content self-explanatory.
+It's a dynamic website but light as a feather compared to building on top of a CMS. It makes editing content self-explanatory for end-users.
 
 ## Step 0 - Requirements
 
