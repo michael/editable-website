@@ -6,6 +6,8 @@ Check out the demo at [editable.website](https://editable.website).
 
 See it out in the wild at [sonjastojanovic.com](https://sonjastojanovic.com).
 
+Read the discussion on [Hackernews](https://news.ycombinator.com/item?id=35456083).
+
 ## But why?
 
 It's a dynamic website but light as a feather compared to building on top of a CMS. It makes editing content self-explanatory.
