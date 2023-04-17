@@ -54,14 +54,17 @@ export function formatDate(dateString, withTime) {
       // on same day, only show the time
       return date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
     } else {
-      return date.toLocaleDateString('en-US', {
+      const opts = {
         month: 'short',
         day: 'numeric',
-        year: 'numberic',
         hour: 'numeric',
         minute: 'numeric',
         hour12: true
-      });
+      }
+      if (date.getFullYear() !== new Date().getFullYear()) {
+        opts.year = 'numeric';
+      }
+      return date.toLocaleDateString('en-US', opts);
     }
   } else {
     return date.toLocaleDateString('en-US', {
