@@ -1,8 +1,10 @@
 # editable-website
 
-A SvelteKit template for coding **completely custom website**, while allowing non-technical people to **make edits** to the content by simply logging in with a secure admin password.
+A SvelteKit template for coding **completely custom websites**, while allowing non-technical people to **make edits** to the content by simply logging in with a secure admin password.
 
 Check out the demo at [editable.website](https://editable.website).
+
+See it out in the wild at [sonjastojanovic.com](https://sonjastojanovic.com).
 
 ## But why?
 
