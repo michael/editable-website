@@ -109,7 +109,7 @@ export async function getNextArticle(slug) {
       )
       UNION
       (
-        SELECT title, teaser, slug, published_at FROM articles ORDER BY published_at DESC LIMIT 1
+        SELECT title, teaser, slug, published_at FROM articles WHERE slug <> $1 ORDER BY published_at DESC LIMIT 1
       )
       ORDER BY published_at ASC
       LIMIT 1;
