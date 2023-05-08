@@ -1,8 +1,7 @@
 import slugify from 'slugify';
 import _db from './_db';
 import { SHORTCUTS } from './constants';
-
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
+import { ADMIN_PASSWORD } from '$env/static/private';
 
 /** Use a singleton DB instance */
 const db = _db.instance;

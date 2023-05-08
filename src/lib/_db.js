@@ -1,5 +1,9 @@
 import pgPromise from 'pg-promise';
 import camelcaseKeys from 'camelcase-keys';
+import {
+  DB_SSL,
+  DB_URL,
+} from '$env/static/private';
 
 const pgOptions = {
   receive: ({ data }) => {
@@ -20,9 +24,6 @@ const camelizeColumns = data => {
     }
   }
 };
-
-const DB_SSL = import.meta.env.VITE_DB_SSL;
-const DB_URL = import.meta.env.VITE_DB_URL;
 
 const pgp = pgPromise(pgOptions);
 

@@ -32,13 +32,13 @@ cd your-website
 Create a `.env` file and set the following environment variables to point to your development database and MinIO instance:
 
 ```bash
-VITE_DB_URL=postgresql://$USER@localhost:5432/editable-website
-VITE_S3_ACCESS_KEY=000000000000000000
-VITE_S3_SECRET_ACCESS_KEY=00000000000000000000000000000000000000
-VITE_S3_ENDPOINT=https://minio.ew-dev-assets--000000000000.addon.code.run
-VITE_S3_BUCKET=editable-website
-VITE_ASSET_PATH=https://minio.ew-dev-assets--000000000000.addon.code.run/editable-website
-VITE_ADMIN_PASSWORD=00000000000000000000000000000000000000
+DB_URL=postgresql://$USER@localhost:5432/editable-website
+S3_ACCESS_KEY=000000000000000000
+S3_SECRET_ACCESS_KEY=00000000000000000000000000000000000000
+S3_ENDPOINT=https://minio.ew-dev-assets--000000000000.addon.code.run
+S3_BUCKET=editable-website
+ADMIN_PASSWORD=00000000000000000000000000000000000000
+PUBLIC_ASSET_PATH=https://minio.ew-dev-assets--000000000000.addon.code.run/editable-website
 ```
 
 Seed the database:

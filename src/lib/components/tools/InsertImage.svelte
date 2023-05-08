@@ -3,8 +3,7 @@
   import uuid from '$lib/uuid';
   import uploadAsset from '$lib/uploadAsset';
   import { insertImage } from '$lib/prosemirrorCommands';
-
-  const ASSET_PATH = import.meta.env.VITE_ASSET_PATH;
+  import { PUBLIC_ASSET_PATH } from '$env/static/public';
 
   export let editorView;
   export let editorState;
@@ -33,7 +32,7 @@
     });
 
     const { width, height } = await getDimensions(resizedFile);
-    const src = currentUser ? `${ASSET_PATH}/${path}` : URL.createObjectURL(resizedFile);
+    const src = currentUser ? `${PUBLIC_ASSET_PATH}/${path}` : URL.createObjectURL(resizedFile);
 
     progress = 0;
     try {

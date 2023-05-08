@@ -1,7 +1,9 @@
-const S3_ENDPOINT = import.meta.env.VITE_S3_ENDPOINT;
-const S3_ACCESS_KEY = import.meta.env.VITE_S3_ACCESS_KEY;
-const S3_SECRET_ACCESS_KEY = import.meta.env.VITE_S3_SECRET_ACCESS_KEY;
-const S3_BUCKET = import.meta.env.VITE_S3_BUCKET;
+import {
+  S3_ENDPOINT,
+  S3_ACCESS_KEY,
+  S3_SECRET_ACCESS_KEY,
+  S3_BUCKET
+} from '$env/static/private';
 
 import aws from 'aws-sdk';
 import { json } from '@sveltejs/kit';
@@ -32,11 +34,5 @@ export function GET({ url, locals }) {
   };
 
   let signedUrl = spaces.getSignedUrl('putObject', params);
-  // console.log('signedUrl', signedUrl);
-  // console.log('S3_ACCESS_KEY', S3_ACCESS_KEY);
-  // console.log('S3_SECRET_ACCESS_KEY', S3_SECRET_ACCESS_KEY);
-  // console.log('S3_ENDPOINT', S3_ENDPOINT);
-  // console.log('S3_BUCKET', S3_BUCKET);
-  // Returns https://nachmachen.minio.nachmachen-assets--8j8fmgtqfmwp.addon.code.run/nachmachen/...
   return json({ signedUrl });
 }

@@ -2,6 +2,7 @@
   import uuid from '$lib/uuid';
   import { resizeImage } from '$lib/util';
   import uploadAsset from '$lib/uploadAsset';
+  import { PUBLIC_ASSET_PATH } from '$env/static/public';
 
   export let currentUser;
   export let src;
@@ -11,8 +12,7 @@
   export let quality;
   let className = '';
   export { className as class };
-
-  const ASSET_PATH = import.meta.env.VITE_ASSET_PATH;
+  
 
   let fileInput; // for uploading an image
   let progress = undefined; // file upload progress
@@ -35,7 +35,7 @@
         await uploadAsset(resizedFile, path, p => {
           progress = p;
         });
-        src = `${ASSET_PATH}/${path}`;
+        src = `${PUBLIC_ASSET_PATH}/${path}`;
       } else {
         src = URL.createObjectURL(file);
       }
