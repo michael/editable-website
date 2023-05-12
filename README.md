@@ -29,20 +29,35 @@ git clone https://github.com/your-user/your-website.git
 cd your-website
 ```
 
-Create a `.env` file and set the following environment variables to point to your development database and MinIO instance:
-
+### Docker setup, Postgres and Minio with docker compose
+For a docker setup that boots up postgres and minio in containers, simply run:
 ```bash
-DB_URL=postgresql://$USER@localhost:5432/editable-website
-S3_ACCESS_KEY=000000000000000000
-S3_SECRET_ACCESS_KEY=00000000000000000000000000000000000000
-S3_ENDPOINT=https://minio.ew-dev-assets--000000000000.addon.code.run
-S3_BUCKET=editable-website
-ADMIN_PASSWORD=00000000000000000000000000000000000000
-PUBLIC_ASSET_PATH=https://minio.ew-dev-assets--000000000000.addon.code.run/editable-website
+docker compose up
+```
+
+For Minio you would also need to login locally to http://127.0.0.1:9001/ with the credentials in the docker compose file: `EDITABLEUSER/EDITABLEPASSWORD`.
+- Create access keys and put these credentials in your .env. as `S3_ACCESS_KEY` and `S3_SECRET_ACCESS_KEY`.
+- Create a bucket called `editable-website`. Set it to be accessible to the public.
+- Create `.env` file and make sure the following environment variables are defined:
+```bash
+DB_URL=postgresql://postgres:postgres@localhost:5434/editable-website
+ADMIN_PASSWORD=<your-admin-password-to-website>
+S3_ACCESS_KEY=<your-minio-access-key>
+S3_SECRET_ACCESS_KEY=<your-minio-secret-access-key>
+S3_ENDPOINT=http://127.0.0.1:9000
+S3_BUCKET=<bucket-name(editable-website)>
+PUBLIC_ASSET_PATH=http://127.0.0.1:9000/editable-website
 ```
 
 Seed the database:
 
+```bash
+psql postgresql://postgres:postgres@localhost:5434/editable-website -a -f sql/schema.sql
+```
+
+### Local setup, Postgres and Minio
+If you want to connect to a local database you can set the `DB_URL` to `postgresql://$USER@localhost:5432/editable-website`
+With that database url you can seed the database with:
 ```bash
 psql -h localhost -U $USER -d editable-website -a -f sql/schema.sql
 ```

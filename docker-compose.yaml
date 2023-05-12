@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=editable-website
+    ports:
+      - '5434:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+  minio:
+    image: quay.io/minio/minio
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=EDITABLEUSER
+      - MINIO_ROOT_PASSWORD=EDITABLEPASSWORD
+    volumes:
+      - minio_volume:/data
+    ports:
+      - 9000:9000
+      - 9001:9001
+
+volumes:
+  db:
+    driver: local
+  minio_volume:
+    driver: local
