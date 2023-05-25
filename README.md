@@ -8,6 +8,8 @@ See it out in the wild at [sonjastojanovic.com](https://sonjastojanovic.com), [n
 
 Read the discussion on [Hackernews](https://news.ycombinator.com/item?id=35456083).
 
+Editable Website won the 2nd price in the [SvelteHack 2023](https://hack.sveltesociety.dev/winners). 🥳 We still can't believe it. Big thanks to the [Svelte Society](https://sveltesociety.dev/) and congrats to the other winners, and everyone who participated. 🙏 So many inspiring projects!
+
 ## But why?
 
 It's a dynamic website but light as a feather compared to building on top of a CMS. It makes editing content self-explanatory for end-users.
