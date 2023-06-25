@@ -3,12 +3,11 @@
   import { classNames } from '$lib/util';
   import Image from './Image.svelte';
   import { createEventDispatcher } from 'svelte';
+  import { isEditing } from '$lib/stores.js';
 
   const dispatch = createEventDispatcher();
 
   export let testimonial;
-  export let currentUser;
-  export let editable;
   export let firstEntry = false;
   export let lastEntry = false;
 </script>
@@ -20,20 +19,18 @@
       maxWidth={160}
       maxHeight={160}
       quality={0.8}
-      {editable}
-      {currentUser}
       bind:src={testimonial.image}
       alt={testimonial.name}
     />
     <div class="flex-1">
       <div class="text-lg sm:text-2xl italic">
-        <PlainText {editable} bind:content={testimonial.text} />
+        <PlainText bind:content={testimonial.text} />
       </div>
       <div class="mt-4 md:text-xl font-medium">
-        <PlainText {editable} bind:content={testimonial.name} />
+        <PlainText bind:content={testimonial.name} />
       </div>
     </div>
-    {#if editable}
+    {#if $isEditing}
       <div class="space-y-2 flex flex-col">
         <button
           class="w-6 h-6 p-1 rounded-full bg-gray-900 hover:bg-gray-800 text-white"

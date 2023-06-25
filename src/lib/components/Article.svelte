@@ -5,7 +5,6 @@
   export let title;
   export let content;
   export let publishedAt = undefined;
-  export let editable;
 </script>
 
 <div>
@@ -18,13 +17,13 @@
       {/if}
     </div>
     <h1 class="text-3xl md:text-5xl font-bold pt-1">
-      <PlainText {editable} bind:content={title} />
+      <PlainText bind:content={title} />
     </h1>
   </div>
 </div>
 
 <div class="max-w-screen-md mx-auto px-6 pb-12 sm:pb-24">
   <div id="article_content" class="prose sm:prose-xl">
-    <RichText multiLine {editable} bind:content />
+    <RichText multiLine bind:content />
   </div>
 </div>

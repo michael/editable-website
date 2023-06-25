@@ -3,8 +3,7 @@
   import Modal from './Modal.svelte';
   import NotEditable from './NotEditable.svelte';
   import Search from './Search.svelte';
-  export let editable = false;
-  export let currentUser;
+  import { isEditing, currentUser } from '$lib/stores.js';
 
   // TODO: Replace with a globally managed context menu implementation (only one active)
   export let showUserMenu = undefined;
@@ -22,7 +21,8 @@
     }
     // Turn on editing
     if (e.key === 'e' && e.metaKey) {
-      editable = true;
+      $isEditing = true;
+      console.log('Editing enabled');
     }
   }
 </script>
@@ -36,11 +36,11 @@
 <div
   class={classNames(
     'backdrop-blur-sm bg-white bg-opacity-95 transition-colors duration-500 z-10 text-sm',
-    !editable ? 'sticky top-0' : ''
+    !$isEditing ? 'sticky top-0' : ''
   )}
 >
   <div class="max-w-xs mx-auto py-4">
-    <NotEditable {editable}>
+    <NotEditable>
       <div class="flex items-center relative">
         <div class="flex-1" />
         <button
@@ -69,11 +69,11 @@
           Contact
         </a>
         <div class="flex-1" />
-        {#if currentUser}
+        {#if $currentUser}
           <button
             on:click={() => (showUserMenu = !showUserMenu)}
             class="ml-0 hover:text-black"
-            title={currentUser.name}
+            title={$currentUser.name}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

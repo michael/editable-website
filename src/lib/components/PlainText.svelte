@@ -1,10 +1,11 @@
 <script>
-  export let editable;
+  import { isEditing } from '$lib/stores.js';
+
   export let content;
   export let multiLine = false;
 </script>
 
-{#if editable}
+{#if $isEditing}
   {#await import('./PlainTextEditor.svelte')}
     {@html content}
   {:then PlainTextEditor}
