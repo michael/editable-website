@@ -2,8 +2,8 @@
   import { uuid } from '$lib/utils';
   import { resizeImage } from '$lib/util';
   import uploadAsset from '$lib/uploadAsset';
+  import { currentUser } from '$lib/stores';
 
-  export let currentUser;
   export let src;
   export let alt;
   export let uploadPrompt = undefined;
@@ -30,7 +30,7 @@
 
     progress = 0;
     try {
-      if (currentUser) {
+      if ($currentUser) {
         await uploadAsset(resizedFile, path, p => {
           progress = p;
         });

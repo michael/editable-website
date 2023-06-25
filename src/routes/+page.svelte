@@ -4,8 +4,6 @@
   import { fetchJSON } from '$lib/util';
   import PrimaryButton from '$lib/components/PrimaryButton.svelte';
   import SecondaryButton from '$lib/components/SecondaryButton.svelte';
-  import WebsiteNav from '$lib/components/WebsiteNav.svelte';
-  import Modal from '$lib/components/Modal.svelte';
   import LoginMenu from '$lib/components/LoginMenu.svelte';
   import ArticleTeaser from '$lib/components/ArticleTeaser.svelte';
   import Testimonial from '$lib/components/Testimonial.svelte';
@@ -13,15 +11,14 @@
   import Footer from '$lib/components/Footer.svelte';
   import Image from '$lib/components/Image.svelte';
   import NotEditable from '$lib/components/NotEditable.svelte';
-  import EditorToolbar from '$lib/components/EditorToolbar.svelte';
+  import { currentUser, isEditing } from '$lib/stores.js';
+  import WebsiteHeader from '$lib/components/WebsiteHeader.svelte';
 
   export let data;
-  $: currentUser = data.currentUser;
 
   // --------------------------------------------------------------------------
   // DEFAULT PAGE CONTENT - AJDUST TO YOUR NEEDS
   // --------------------------------------------------------------------------
-
   const EMAIL = 'michael@letsken.com';
 
   // Can contain spaces but must not contain the + sign
@@ -48,8 +45,7 @@
     }
   ];
 
-  let editable,
-    title,
+  let title,
     testimonials,
     faqs,
     introStep1,
@@ -62,6 +58,7 @@
     showUserMenu;
 
   function initOrReset() {
+    $currentUser = data.currentUser;
     title = data.page?.title || 'Untitled Website';
     faqs = data.page?.faqs || FAQS_PLACEHOLDER;
 
@@ -107,7 +104,7 @@
     bioPicture = data.page?.bioPicture || '/images/person-placeholder.jpg';
     bioTitle = data.page?.bioTitle || "Hi, I'm Michael — I want your website to be editable.";
     bio = data.page?.bio || BIO_PLACEHOLDER;
-    editable = false;
+    $isEditing = false;
   }
 
   // --------------------------------------------------------------------------
@@ -115,7 +112,7 @@
   // --------------------------------------------------------------------------
 
   function toggleEdit() {
-    editable = true;
+    $isEditing = true;
     showUserMenu = false;
   }
 
@@ -169,7 +166,7 @@
           }
         });
       }
-      editable = false;
+      $isEditing = false;
     } catch (err) {
       console.error(err);
       alert('There was an error. Please try again.');
@@ -186,26 +183,14 @@
   <link rel="canonical" href="https://editable.website" />
 </svelte:head>
 
-{#if editable}
-  <EditorToolbar {currentUser} on:cancel={initOrReset} on:save={savePage} />
-{/if}
-
-<WebsiteNav bind:showUserMenu {currentUser} bind:editable />
-
-{#if showUserMenu}
-  <Modal on:close={() => (showUserMenu = false)}>
-    <form class="w-full block" method="POST">
-      <div class="w-full flex flex-col space-y-4 p-4 sm:p-6">
-        <PrimaryButton on:click={toggleEdit}>Edit page</PrimaryButton>
-        <LoginMenu {currentUser} />
-      </div>
-    </form>
-  </Modal>
-{/if}
+<WebsiteHeader bind:showUserMenu on:cancel={initOrReset} on:save={savePage}>
+  <PrimaryButton on:click={toggleEdit}>Edit page</PrimaryButton>
+  <LoginMenu />
+</WebsiteHeader>
 
 <div>
   <div class="max-w-screen-md mx-auto px-6 pt-12 sm:pt-24">
-    <NotEditable {editable}>
+    <NotEditable>
       <svg
         class="pb-8 w-14 sm:w-24 mx-auto"
         viewBox="0 0 200 200"
@@ -218,9 +203,9 @@
       </svg>
     </NotEditable>
     <h1 class="text-4xl md:text-7xl font-bold text-center">
-      <PlainText {editable} bind:content={title} />
+      <PlainText bind:content={title} />
     </h1>
-    <NotEditable {editable}>
+    <NotEditable>
       <div class="text-center pt-8 pb-4 bounce text-xl">↓</div>
       <div class="text-center">
         <PrimaryButton size="lg" type="button" on:click={toggleEdit}>Edit</PrimaryButton>
@@ -236,10 +221,10 @@
         <div class="w-4 h-4 rounded-full bg-gray-900 absolute -top-1 -left-[6px]" />
       </div>
       <div class="z-10">
-        <IntroStep {editable} bind:intro={introStep1} />
-        <IntroStep {editable} bind:intro={introStep2} />
-        <IntroStep {editable} bind:intro={introStep3} />
-        <IntroStep {editable} bind:intro={introStep4} />
+        <IntroStep bind:intro={introStep1} />
+        <IntroStep bind:intro={introStep2} />
+        <IntroStep bind:intro={introStep3} />
+        <IntroStep bind:intro={introStep4} />
       </div>
     </div>
     <div class="relative h-14">
@@ -267,8 +252,6 @@
   </div>
   {#each testimonials as testimonial, i}
     <Testimonial
-      {editable}
-      {currentUser}
       bind:testimonial
       firstEntry={i === 0}
       lastEntry={i === testimonials.length - 1}
@@ -278,7 +261,7 @@
     />
   {/each}
 
-  {#if editable}
+  {#if $isEditing}
     <div class="text-center pb-12 border-b border-gray-100">
       <SecondaryButton on:click={addTestimonial}>Add testimonial</SecondaryButton>
     </div>
@@ -286,7 +269,7 @@
 </div>
 
 {#if data.articles.length > 0}
-  <NotEditable {editable}>
+  <NotEditable>
     <div class="bg-white border-t-2 border-gray-100 pb-10 sm:pb-16">
       <div class="max-w-screen-md mx-auto px-6 pt-12 sm:pt-24">
         <div class="font-bold text-sm sm:text-base">FROM THE BLOG</div>
@@ -307,22 +290,20 @@
         maxWidth="384"
         maxHeight="384"
         quality="0.8"
-        {editable}
-        {currentUser}
         bind:src={bioPicture}
         alt="Michael Aufreiter"
       />
     </div>
     <div class="">
       <h1 class="text-3xl md:text-5xl font-bold">
-        <PlainText {editable} bind:content={bioTitle} />
+        <PlainText bind:content={bioTitle} />
       </h1>
     </div>
     <div class="prose md:prose-xl pb-6">
-      <RichText multiLine {editable} bind:content={bio} />
+      <RichText multiLine bind:content={bio} />
     </div>
 
-    <NotEditable {editable}>
+    <NotEditable>
       <div class="flex flex-col sm:flex-row sm:space-x-6 md:space-x-8 space-y-4 sm:space-y-0">
         <PrimaryButton size="lg" href={`mailto:${EMAIL}`}>Email</PrimaryButton>
         <SecondaryButton size="lg" href={`https://wa.me/${PHONE_NUMBER.replace(/\s+/g, '')}`}>
@@ -338,9 +319,9 @@
   <div class="max-w-screen-md mx-auto px-6">
     <div class="font-bold text-sm sm:text-base pt-12 sm:pt-24 -mb-6 md:-mb-12">FAQs</div>
     <div class="prose md:prose-xl pb-12 sm:pb-24">
-      <RichText multiLine {editable} bind:content={faqs} />
+      <RichText multiLine bind:content={faqs} />
     </div>
   </div>
 </div>
 
-<Footer counter="/" {editable} />
+<Footer counter="/" />

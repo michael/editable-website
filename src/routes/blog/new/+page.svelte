@@ -1,24 +1,26 @@
 <script>
   import { extractTeaser, fetchJSON } from '$lib/util';
-  import WebsiteNav from '$lib/components/WebsiteNav.svelte';
   import { goto } from '$app/navigation';
   import Footer from '$lib/components/Footer.svelte';
   import EditableWebsiteTeaser from '$lib/components/EditableWebsiteTeaser.svelte';
   import Article from '$lib/components/Article.svelte';
   import NotEditable from '$lib/components/NotEditable.svelte';
-  import EditorToolbar from '$lib/components/EditorToolbar.svelte';
+  import { currentUser, isEditing } from '$lib/stores';
+  import WebsiteHeader from '$lib/components/WebsiteHeader.svelte';
 
   export let data;
 
   let showUserMenu = false,
-    editable = true,
     title = 'Untitled',
     content = 'Copy and paste your text here.';
 
-  $: currentUser = data.currentUser;
+  $: {
+    $currentUser = data.currentUser;
+    $isEditing = true;
+  }
 
   async function createArticle() {
-    if (!currentUser) {
+    if (!$currentUser) {
       return alert('Sorry, you are not authorized to create new articles.');
     }
     const teaser = extractTeaser(document.getElementById('article_content'));
@@ -44,15 +46,12 @@
   <title>New blog post</title>
 </svelte:head>
 
-{#if editable}
-  <EditorToolbar {currentUser} on:cancel={discardDraft} on:save={createArticle} />
-{/if}
+<WebsiteHeader bind:showUserMenu on:cancel={discardDraft} on:save={createArticle} />
 
-<WebsiteNav bind:editable bind:showUserMenu {currentUser} />
-<Article bind:title bind:content {editable} />
+<Article bind:title bind:content />
 
-<NotEditable {editable}>
+<NotEditable>
   <EditableWebsiteTeaser />
 </NotEditable>
 
-<Footer {editable} />
+<Footer counter="/blog/new" />

@@ -1,12 +1,11 @@
 <script>
-  import { classNames, resizeImage, getDimensions } from '$lib/util';
-  import uuid from '$lib/uuid';
+  import { classNames, resizeImage, getDimensions, uuid } from '$lib/util';
   import uploadAsset from '$lib/uploadAsset';
-  import { insertImage } from '$lib/prosemirrorCommands';
+  import { insertImage } from '$lib/editor/prosemirrorCommands';
+  import { currentUser } from '$lib/stores';
 
   export let editorView;
   export let editorState;
-  export let currentUser;
 
   let fileInput; // for uploading an image
   let progress = undefined; // file upload progress
@@ -31,11 +30,11 @@
     });
 
     const { width, height } = await getDimensions(resizedFile);
-    const src = currentUser ? `/assets/${path}` : URL.createObjectURL(resizedFile);
+    const src = $currentUser ? `/assets/${path}` : URL.createObjectURL(resizedFile);
 
     progress = 0;
     try {
-      if (currentUser) {
+      if ($currentUser) {
         await uploadAsset(resizedFile, path, p => {
           progress = p;
         });
