@@ -17,36 +17,30 @@ It's a dynamic website but light as a feather compared to building on top of a C
 ## Step 0 - Requirements
 
 - Node.js 16+ or compatible JavaScript runtime
-- Postgres 14+
-- MinIO or other S3-compatible storage solution
+- Sqlite3
 
 These are needed to run the example as is, but you can choose any other database and file storage solution.
 
 ## Step 1 - Development setup
 
-This is a full-fledged web app you want adjust to your own needs. So please **create a copy** or fork of the source code and rename the project accordingly. Then check out your own copy:
+This is a full-fledged web app you want to adjust to your own needs. So please **create a copy** or fork of the source code and rename the project accordingly. Then check out your own copy:
 
 ```bash
 git clone https://github.com/your-user/your-website.git
 cd your-website
 ```
 
-Create a `.env` file and set the following environment variables to point to your development database and MinIO instance:
+Create a `.env` file and set the following environment variables to point to your development database:
 
 ```bash
-DB_URL=postgresql://$USER@localhost:5432/editable-website
-S3_ACCESS_KEY=000000000000000000
-S3_SECRET_ACCESS_KEY=00000000000000000000000000000000000000
-S3_ENDPOINT=https://minio.ew-dev-assets--000000000000.addon.code.run
-S3_BUCKET=editable-website
+DB_PATH=./data/db.sqlite
 ADMIN_PASSWORD=00000000000000000000000000000000000000
-PUBLIC_ASSET_PATH=https://minio.ew-dev-assets--000000000000.addon.code.run/editable-website
 ```
 
 Seed the database:
 
 ```bash
-psql -h localhost -U $USER -d editable-website -a -f sql/schema.sql
+cat sql/schema.sql | sqlite3 ./data/db.sqlite
 ```
 
 Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
@@ -107,7 +101,7 @@ Please use this as a starting point for new pages you want to add to your websit
 
 ## Step 3 - Making changes to the content
 
-Just navigate to `http://127.0.0.1:5173/login` and enter your secure admin password (`VITE_ADMIN_PASSWORD`). Now you see an additional ellipsis menu, which will provide you an "Edit page" or "Edit post" option for all pages that you have set up as "editable".
+Just navigate to `http://127.0.0.1:5173/login` and enter your secure admin password (`ADMIN_PASSWORD`). Now you see an additional ellipsis menu, which will provide you an "Edit page" or "Edit post" option for all pages that you have set up as "editable".
 
 ## Step 4 - Deployment
 

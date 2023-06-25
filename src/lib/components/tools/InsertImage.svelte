@@ -3,7 +3,6 @@
   import uuid from '$lib/uuid';
   import uploadAsset from '$lib/uploadAsset';
   import { insertImage } from '$lib/prosemirrorCommands';
-  import { PUBLIC_ASSET_PATH } from '$env/static/public';
 
   export let editorView;
   export let editorState;
@@ -20,7 +19,7 @@
 
     // We convert all uploads to the WEBP image format
     const extension = 'webp';
-    const path = [['editable-website', 'images', uuid()].join('/'), extension].join('.');
+    const path = [['images', uuid()].join('/'), extension].join('.');
 
     const maxWidth = 1440;
     const maxHeight = 1440;
@@ -32,7 +31,7 @@
     });
 
     const { width, height } = await getDimensions(resizedFile);
-    const src = currentUser ? `${PUBLIC_ASSET_PATH}/${path}` : URL.createObjectURL(resizedFile);
+    const src = currentUser ? `/assets/${path}` : URL.createObjectURL(resizedFile);
 
     progress = 0;
     try {
@@ -62,19 +61,19 @@
 </script>
 
 <input
-  class="w-px h-px opacity-0 fixed -top-40"
-  type="file"
-  accept="image/*"
-  name="imagefile"
-  multiple
-  bind:this={fileInput}
-  on:change={uploadImage}
+        class="w-px h-px opacity-0 fixed -top-40"
+        type="file"
+        accept="image/*"
+        name="imagefile"
+        multiple
+        bind:this={fileInput}
+        on:change={uploadImage}
 />
 <button
-  on:click={() => fileInput.click()}
-  {disabled}
-  class={classNames('hover:bg-gray-100 sm:mx-1 rounded-full p-2 disabled:opacity-30')}
+        on:click={() => fileInput.click()}
+        {disabled}
+        class={classNames('hover:bg-gray-100 sm:mx-1 rounded-full p-2 disabled:opacity-30')}
 >
-  <slot />
-  {progress || ''}
+    <slot />
+    {progress || ''}
 </button>
