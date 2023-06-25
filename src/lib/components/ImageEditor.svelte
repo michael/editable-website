@@ -1,5 +1,5 @@
 <script>
-  import uuid from '$lib/uuid';
+  import { uuid } from '$lib/utils';
   import { resizeImage } from '$lib/util';
   import uploadAsset from '$lib/uploadAsset';
 

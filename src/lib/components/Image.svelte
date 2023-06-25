@@ -1,6 +1,6 @@
 <script>
-  export let editable;
-  export let currentUser;
+  import { isEditing } from '$lib/stores.js';
+
   export let src;
   export let alt;
   export let maxWidth;
@@ -10,19 +10,11 @@
   export { className as class };
 </script>
 
-{#if editable}
+{#if $isEditing}
   {#await import('./ImageEditor.svelte')}
     <img class={className} {src} {alt} />
   {:then ImageEditor}
-    <ImageEditor.default
-      {currentUser}
-      class={className}
-      bind:src
-      {alt}
-      {maxWidth}
-      {maxHeight}
-      {quality}
-    />
+    <ImageEditor.default class={className} bind:src {alt} {maxWidth} {maxHeight} {quality} />
   {/await}
 {:else}
   <img class={className} {src} {alt} />
