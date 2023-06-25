@@ -6,7 +6,7 @@
 </script>
 
 <svelte:head>
-  <title>Anmelden</title>
+  <title>Login</title>
 </svelte:head>
 
 <Limiter>

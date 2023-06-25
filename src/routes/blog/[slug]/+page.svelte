@@ -10,18 +10,16 @@
   import EditableWebsiteTeaser from '$lib/components/EditableWebsiteTeaser.svelte';
   import Article from '$lib/components/Article.svelte';
   import NotEditable from '$lib/components/NotEditable.svelte';
-  import EditorToolbar from '$lib/components/EditorToolbar.svelte';
+  import EditorToolbar from '$lib/components/tools/EditorToolbar.svelte';
+  import { currentUser, isEditing } from '$lib/stores';
 
   export let data;
 
   let showUserMenu = false;
-  let editable, title, teaser, content, publishedAt, updatedAt;
-
-  $: currentUser = data.currentUser;
+  let title, teaser, content, publishedAt, updatedAt;
 
   $: {
-    // HACK: To make sure this is only run when the parent passes in new data
-    data = data;
+    $currentUser = data.currentUser;
     initOrReset();
   }
 
@@ -31,16 +29,16 @@
     content = data.content;
     publishedAt = data.publishedAt;
     updatedAt = data.updatedAt;
-    editable = false;
+    $isEditing = false;
   }
 
   function toggleEdit() {
-    editable = true;
+    $isEditing = true;
     showUserMenu = false;
   }
 
   async function deleteArticle() {
-    if (!currentUser) return alert('Sorry, you are not authorized.');
+    if (!$currentUser) return alert('Sorry, you are not authorized.');
     try {
       fetchJSON('POST', '/api/delete-article', {
         slug: data.slug
@@ -54,7 +52,7 @@
   }
 
   async function saveArticle() {
-    if (!currentUser) return alert('Sorry, you are not authorized.');
+    if (!$currentUser) return alert('Sorry, you are not authorized.');
     const teaser = extractTeaser(document.getElementById('article_content'));
     try {
       const result = await fetchJSON('POST', '/api/update-article', {
@@ -64,7 +62,7 @@
         teaser
       });
       updatedAt = result.updatedAt;
-      editable = false;
+      $isEditing = false;
     } catch (err) {
       console.error(err);
       alert(
@@ -79,28 +77,24 @@
   <meta name="description" content={teaser} />
 </svelte:head>
 
-{#if editable}
-  <EditorToolbar {currentUser} on:cancel={initOrReset} on:save={saveArticle} />
-{/if}
-
-<WebsiteNav bind:editable bind:showUserMenu {currentUser} />
-
+<EditorToolbar on:cancel={initOrReset} on:save={saveArticle} />
+<WebsiteNav bind:showUserMenu />
 {#if showUserMenu}
   <Modal on:close={() => (showUserMenu = false)}>
     <form class="w-full block" method="POST">
       <div class="w-full flex flex-col space-y-4 p-4 sm:p-6">
         <PrimaryButton on:click={toggleEdit}>Edit post</PrimaryButton>
         <PrimaryButton type="button" on:click={deleteArticle}>Delete post</PrimaryButton>
-        <LoginMenu {currentUser} />
+        <LoginMenu />
       </div>
     </form>
   </Modal>
 {/if}
 
-<Article bind:title bind:content bind:publishedAt {editable} />
+<Article bind:title bind:content bind:publishedAt />
 
 {#if data.articles.length > 0}
-  <NotEditable {editable}>
+  <NotEditable>
     <div class="border-t-2 border-gray-100">
       <div class="max-w-screen-md mx-auto px-6 pt-8 sm:pt-12">
         <div class="font-bold text-sm">READ NEXT</div>
@@ -112,7 +106,7 @@
   </NotEditable>
 {/if}
 
-<NotEditable {editable}>
+<NotEditable>
   <EditableWebsiteTeaser />
 </NotEditable>
 
