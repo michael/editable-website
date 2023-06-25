@@ -2,17 +2,16 @@
   import uuid from '$lib/uuid';
   import { resizeImage } from '$lib/util';
   import uploadAsset from '$lib/uploadAsset';
-  import { PUBLIC_ASSET_PATH } from '$env/static/public';
 
   export let currentUser;
   export let src;
   export let alt;
+  export let uploadPrompt = undefined;
   export let maxWidth;
   export let maxHeight;
   export let quality;
   let className = '';
   export { className as class };
-  
 
   let fileInput; // for uploading an image
   let progress = undefined; // file upload progress
@@ -22,7 +21,7 @@
 
     // We convert all uploads to the WEBP image format
     const extension = 'webp';
-    const path = [['editable-website', 'images', uuid()].join('/'), extension].join('.');
+    const path = [['images', uuid()].join('/'), extension].join('.');
 
     const resizedBlob = await resizeImage(file, maxWidth, maxHeight, quality);
     const resizedFile = new File([resizedBlob], `${file.name.split('.')[0]}.webp`, {
@@ -35,7 +34,7 @@
         await uploadAsset(resizedFile, path, p => {
           progress = p;
         });
-        src = `${PUBLIC_ASSET_PATH}/${path}`;
+        src = `/assets/${path}`;
       } else {
         src = URL.createObjectURL(file);
       }
@@ -49,13 +48,19 @@
   }
 </script>
 
-<img on:mousedown={() => fileInput.click()} class={className + ' cursor-pointer'} {src} {alt} />
+<img
+        on:mousedown={() => fileInput.click()}
+        class={className + ' cursor-pointer hover:outline-dashed outline-[#EF174C]'}
+        {src}
+        {alt}
+        title={uploadPrompt}
+/>
 
 <input
-  class="w-px h-px opacity-0 fixed -top-40"
-  type="file"
-  accept="image/*"
-  name="imagefile"
-  bind:this={fileInput}
-  on:change={uploadImage}
+        class="w-px h-px opacity-0 fixed -top-40"
+        type="file"
+        accept="image/*"
+        name="imagefile"
+        bind:this={fileInput}
+        on:change={uploadImage}
 />
