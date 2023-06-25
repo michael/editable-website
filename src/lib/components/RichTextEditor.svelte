@@ -1,6 +1,6 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
-  import { toHTML, fromHTML } from '$lib/editor/prosemirrorUtil.js';
+  import { toHTML, fromHTML } from '$lib/editor/prosemirrorUtil';
   import {
     singleLineRichTextSchema,
     multiLineRichTextSchema
@@ -11,8 +11,8 @@
   import { history } from 'prosemirror-history';
   import { keymap } from 'prosemirror-keymap';
   import { baseKeymap } from 'prosemirror-commands';
-  import { buildKeymap } from '$lib/editor/prosemirrorKeymap.js';
-  import { buildInputRules } from '$lib/editor/prosemirrorInputrules.js';
+  import { buildKeymap } from '$lib/editor/prosemirrorKeymap';
+  import { buildInputRules } from '$lib/editor/prosemirrorInputrules';
 
   export let content = '<p>Enter text.</p>';
   export let multiLine = false;
