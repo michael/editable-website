@@ -1,6 +1,5 @@
 <script>
-  import { uuid } from '$lib/utils';
-  import { resizeImage } from '$lib/util';
+  import { resizeImage, uuid } from '$lib/util';
   import uploadAsset from '$lib/uploadAsset';
   import { currentUser } from '$lib/stores';
 
