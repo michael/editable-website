@@ -1,0 +1,31 @@
+# fly.toml app configuration file generated for postowldev on 2023-06-12T17:45:42+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+# 'app' can be overridden at deploy time with `fly deploy -a yourappname`
+app = "myapp"
+primary_region = "cdg"
+
+# Specify the multistage Docker build target
+[build]
+  build-target = "runner"
+
+# Override the CMD set in Dockerfile so we can migrate the SQLite database
+[experimental]
+  cmd = ["fly-start.sh"]
+  entrypoint = ["sh"]
+
+[env]
+  PORT = "3000"
+
+[[mounts]]
+  source = "myapp_data"
+  destination = "/app/data"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 0
