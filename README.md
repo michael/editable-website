@@ -16,31 +16,27 @@ It's a dynamic website but light as a feather compared to building on top of a C
 
 ## Step 0 - Requirements
 
-- Node.js 16+ or compatible JavaScript runtime
-- Sqlite3
+- Node.js 18+
+- SQLite3
 
 These are needed to run the example as is, but you can choose any other database and file storage solution.
 
 ## Step 1 - Development setup
 
-This is a full-fledged web app you want to adjust to your own needs. So please **create a copy** or fork of the source code and rename the project accordingly. Then check out your own copy:
+This is a full-fledged web app you want to adjust to your own needs. So please **create a copy** or fork of the source code and rename the project accordingly.
+
+Copy the contents of `.env.example` into `.env` and adjust to your needs.
 
 ```bash
-git clone https://github.com/your-user/your-website.git
-cd your-website
-```
-
-Create a `.env` file and set the following environment variables to point to your development database:
-
-```bash
-DB_PATH=./data/db.sqlite
-ADMIN_PASSWORD=00000000000000000000000000000000000000
+DB_PATH=./data/db.sqlite3
+ADMIN_PASSWORD=xxxxxxxxxxxx
+ORIGIN=http://localhost:5173
 ```
 
 Seed the database:
 
 ```bash
-cat sql/schema.sql | sqlite3 ./data/db.sqlite
+sqlite3 data/db.sqlite3 < sql/schema.sql
 ```
 
 Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
@@ -57,7 +53,7 @@ npm run build
 
 You can preview the production build with `npm run preview`.
 
-## Step 2 - Making changes to your website
+## Making changes to your website
 
 You can literally do everything that SvelteKit allows you to do. Below is the source code for the /imprint page, which has a `<PlainText>` title and `<RichText>` content.
 
@@ -99,24 +95,70 @@ To see the full picture, open [src/routes/imprint/+page.svelte](src/routes/impri
 
 Please use this as a starting point for new pages you want to add to your website. `editable-website` is not a widget-library on purpose. Instead you are encouraged to inspect and adjust all source code, including the [schema](./src/lib/prosemirrorSchemas.js) for the editors. I want you to be in control of everything. No behind-the-scene magic.
 
-## Step 3 - Making changes to the content
+## Making changes to the content
 
 Just navigate to `http://127.0.0.1:5173/login` and enter your secure admin password (`ADMIN_PASSWORD`). Now you see an additional ellipsis menu, which will provide you an "Edit page" or "Edit post" option for all pages that you have set up as "editable".
 
-## Step 4 - Deployment
+## Deployment to Fly.io
 
-I will describe the steps to deploy to [Northflank](https://northflank.com/) (which I am using). I recommend to assign 0.2 vCPU and 512MB RAM to each resource (~ $17/month) but you can go lower to save some costs or higher if you expect your site to have significant traffic.
+This repo contains the files you need to deploy your PostOwl site to [fly.io](https://fly.io/).
 
-1. Create instances for Postgres 14 and MinIO through the Northflank user interface.
+1. Create an account with [fly.io](https://fly.io/). (Fly [require an active, valid credit / bank card](https://fly.io/docs/about/credit-cards/) to prevent abuse, but PostOwl runs well on their free tier. Unless you have a very busy site, hosting will be free.)
+1. [Install `fly`](https://fly.io/docs/hands-on/install-flyctl/) and sign in with `fly auth login`
+1. Clone this repo to a directory on your computer
+1. Enter the directory you cloned the repo to: `cd myapp`
+1. Run `fly apps create`
+   1. Enter a name for your application at the prompt (e.g. `myapp`)
+   1. Choose a Fly organization to deploy to
+1. Copy the contents from `fly.toml.example` to `fly.toml` and adjust to your needs. You have to change `app = "myapp"` and `source = "myapp_data"` to the app name you provided earlier.
+1. Run `fly deploy` as shown below. **Substitute your own values for the secrets** and make sure to replace all instances of `myapp` with the name you chose when creating the application above:
 
-2. Create a combined service, select the Heroku buildpack and assign the environment variables as they are exposed by the Postgres and MinIO addons. Use the same environment variables during the build step and runtime (yes, you have to type them twice).
+```
+fly deploy \
+    --build-secret DB_PATH="./data/db.sqlite3" \
+    --build-secret ADMIN_PASSWORD="your-super-secret-admin-password" \
+    --build-secret ORIGIN="https://myapp.fly.dev"
+```
 
-You can deploy your editable website anywhere else as well. For instance if you'd like to go the "Serverless" path, you can deploy on Vercel, and use NeonDB (or DigitalOcean with Connection Pooling activated). You may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+The `-a` option in `fly deploy` lets you override the app name specified in `fly.toml`.
 
-## Step 5 - Get in touch
+Fly will let you know when the app is deployed. Visit the URL shown in your terminal and sign in at `/login` with the `ADMIN_PASSWORD` you set above.
+
+## Connect a domain to your Fly.io app
+
+- Run `fly ips list -a myapp` to get the IPv4 and IPv6 addresses.
+- Head over to your DNS provider and add A and AAAA records for myapp.com with the IPv4 and IPv6 values.
+- Run `fly certs create -a myapp myapp.com`
+- Run `fly certs show -a myapp myapp.com` to watch your certificates being issued.
+
+## Fly.io Backups
+
+You can pull a backup locally and run it to check if it is valid. That's also quite useful for developing/testing against the latest production data. Try to keep your database small, for the best experience. ;)
+
+```
+rm -rf data/db.* && fly sftp get data/db.sqlite3 data/db.sqlite3
+```
+
+To restore a backup in production, you need to be a bit careful and follow these steps.
+
+1. Make sure nobody reads from the app
+1. Make a backup remotely
+   - `fly ssh console`
+   - `cd data`
+   - `mv db.sqlite3 db.backup.sqlite3`
+1. Copy your local file to production using SFTP
+   - `fly sftp shell`
+   - `cd app/data`
+   - `put data/db.sqlite3`
+1. Restart the app (so that the new DB gets picked up)
+   - `fly apps restart`
+
+## Get in touch
 
 If you have questions or need help (with development or deployment), please email me at michael@letsken.com.
 
 ## Examples
+
 Community provided examples of additional features you can add to your editable website:
+
 - [ChatGPT completion tool](https://github.com/nilskj/editable-website)
