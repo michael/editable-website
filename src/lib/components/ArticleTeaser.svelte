@@ -12,7 +12,7 @@
       firstEntry ? 'pt-2 pb-8 sm:pb-12' : 'py-6 sm:py-10'
     )}
   >
-    <div class={classNames(article.publishedAt ? '' : 'opacity-50')}>
+    <div class={classNames(article.published_at ? '' : 'opacity-50')}>
       <div>
         <a
           class={classNames('mb-12 text-2xl md:text-3xl font-bold')}
