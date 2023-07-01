@@ -1,5 +1,5 @@
 <script>
-  import { classNames, resizeImage, getDimensions, uuid } from '$lib/util';
+  import { classNames, resizeImage, getDimensions, nanoid } from '$lib/util';
   import uploadAsset from '$lib/uploadAsset';
   import { insertImage } from '$lib/editor/prosemirrorCommands';
   import { currentUser } from '$lib/stores';
@@ -18,7 +18,7 @@
 
     // We convert all uploads to the WEBP image format
     const extension = 'webp';
-    const path = [['images', uuid()].join('/'), extension].join('.');
+    const path = [['images', nanoid()].join('/'), extension].join('.');
 
     const maxWidth = 1440;
     const maxHeight = 1440;
