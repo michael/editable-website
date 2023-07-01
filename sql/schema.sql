@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS assets (
 );
 
 CREATE TABLE IF NOT EXISTS articles (
-  article_id TEXT PRIMARY KEY,
+  article_id INTEGER PRIMARY KEY,
   slug TEXT UNIQUE NOT NULL,
   title TEXT NOT NULL,
   teaser TEXT NOT NULL,
