@@ -1,12 +1,11 @@
 import slugify from 'slugify';
 import { SHORTCUTS } from './constants';
 import Database from 'better-sqlite3';
-import { customAlphabet } from 'nanoid';
+import { nanoid } from '$lib/util';
 import { DB_PATH, ADMIN_PASSWORD } from '$env/static/private';
 import { Blob } from 'node:buffer';
 
-// We don't use "_" and "-" for better readability
-const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 21);
+
 
 const db = new Database(DB_PATH, {
   verbose: console.log

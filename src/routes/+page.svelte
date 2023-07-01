@@ -285,14 +285,17 @@
 <div id="contact" class="bg-white border-t-2 border-b-2 border-gray-100 pb-12 sm:pb-24">
   <div class="max-w-screen-md mx-auto px-6">
     <div class="pt-12 sm:pt-24 pb-12 text-center">
-      <Image
-        class="inline-block w-48 h-48 md:w-72 md:h-72 rounded-full"
-        maxWidth="384"
-        maxHeight="384"
-        quality="0.8"
-        bind:src={bioPicture}
-        alt="Michael Aufreiter"
-      />
+      <div class="w-48 h-48 md:w-72 md:h-72 mx-auto overflow-hidden relative rounded-full">
+        <Image
+          class="block w-48 h-48 md:w-72 md:h-72 rounded-full"
+          maxWidth="384"
+          maxHeight="384"
+          quality="0.8"
+          bind:src={bioPicture}
+          alt="Michael Aufreiter"
+        />
+      </div>
+
     </div>
     <div class="">
       <h1 class="text-3xl md:text-5xl font-bold">
