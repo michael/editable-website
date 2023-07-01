@@ -4,16 +4,16 @@
   import { formatDate } from '$lib/util';
   export let title;
   export let content;
-  export let publishedAt = undefined;
+  export let published_at = undefined;
 </script>
 
 <div>
   <div class="max-w-screen-md mx-auto px-6">
     <div class="pt-12 sm:pt-24">
-      {#if !publishedAt}
+      {#if !published_at}
         <div class="font-bold text-sm">DRAFT</div>
       {:else}
-        <div class="font-bold text-sm">{formatDate(publishedAt)}</div>
+        <div class="font-bold text-sm">{formatDate(published_at)}</div>
       {/if}
     </div>
     <h1 class="text-3xl md:text-5xl font-bold pt-1">

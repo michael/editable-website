@@ -16,7 +16,7 @@
   export let data;
 
   let showUserMenu = false;
-  let title, teaser, content, publishedAt, updatedAt;
+  let title, teaser, content, published_at, updatedAt;
 
   $: {
     $currentUser = data.currentUser;
@@ -27,7 +27,7 @@
     title = data.title;
     teaser = data.teaser;
     content = data.content;
-    publishedAt = data.publishedAt;
+    published_at = data.published_at;
     updatedAt = data.updatedAt;
     $isEditing = false;
   }
@@ -91,7 +91,7 @@
   </Modal>
 {/if}
 
-<Article bind:title bind:content bind:publishedAt />
+<Article bind:title bind:content bind:published_at />
 
 {#if data.articles.length > 0}
   <NotEditable>
