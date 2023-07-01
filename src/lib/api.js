@@ -5,8 +5,6 @@ import { nanoid } from '$lib/util';
 import { DB_PATH, ADMIN_PASSWORD } from '$env/static/private';
 import { Blob } from 'node:buffer';
 
-
-
 const db = new Database(DB_PATH, {
   verbose: console.log
 });
@@ -15,26 +13,35 @@ db.pragma('case_sensitive_like = true');
 
 
 /**
- * Creates a new draft
+ * Creates a new article
  */
 export async function createArticle(title, content, teaser, currentUser) {
   if (!currentUser) throw new Error('Not authorized');
 
-  const slug = slugify(title, {
-    lower: true,
-    strict: true
-  });
+    let slug = slugify(title, {
+      lower: true,
+      strict: true
+    });
 
-  const query = `
-    INSERT INTO articles (slug, title, content, teaser, published_at)
-    VALUES (?, ?, ?, ?, datetime('now'))
-  `;
-  const insertStmt = db.prepare(query);
-  insertStmt.run(slug, title, content, teaser);
+    // If slug is already used, we add a unique postfix
+    const articleExists = db.prepare('SELECT * FROM articles WHERE slug = ?').get(slug);
+    if (articleExists) {
+      slug = slug + '-' + nanoid();
+    }
+
+    db.prepare(`
+        INSERT INTO articles (slug, title, content, teaser, published_at)
+        VALUES(?, ?, ?, ?, DATETIME('now'))
+      `)
+      .run(
+        slug,
+        title,
+        content,
+        teaser
+      );
 
   const newArticleQuery = "SELECT slug, created_at FROM articles WHERE slug = ?";
   const newArticle = db.prepare(newArticleQuery).get(slug);
-
   return newArticle;
 }
 
