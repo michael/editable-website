@@ -1,5 +1,5 @@
 <script>
-  import { classNames, resizeImage, getDimensions, nanoid } from '$lib/util';
+  import { classNames, resizeImage, getDimensions, nanoid, is_safari } from '$lib/util';
   import uploadAsset from '$lib/uploadAsset';
   import { insertImage } from '$lib/editor/prosemirrorCommands';
   import { currentUser } from '$lib/stores';
@@ -17,16 +17,19 @@
     const file = fileInput.files[0];
 
     // We convert all uploads to the WEBP image format
-    const extension = 'webp';
-    const path = [['images', nanoid()].join('/'), extension].join('.');
+    const content_type = is_safari() ? 'image/jpeg' : 'image/webp';
 
+    // We convert all uploads to the WEBP image format if possible
+    const extension = is_safari() ? 'jpg' : 'webp';
+
+    const path = [['images', nanoid()].join('/'), extension].join('.');
     const maxWidth = 1440;
     const maxHeight = 1440;
     const quality = 0.8;
 
-    const resizedBlob = await resizeImage(file, maxWidth, maxHeight, quality);
-    const resizedFile = new File([resizedBlob], `${file.name.split('.')[0]}.webp`, {
-      type: 'image/webp'
+    const resizedBlob = await resizeImage(file, maxWidth, maxHeight, quality, content_type);
+    const resizedFile = new File([resizedBlob], `${file.name.split('.')[0]}.${extension}`, {
+      type: content_type
     });
 
     const { width, height } = await getDimensions(resizedFile);
@@ -60,19 +63,19 @@
 </script>
 
 <input
-        class="w-px h-px opacity-0 fixed -top-40"
-        type="file"
-        accept="image/*"
-        name="imagefile"
-        multiple
-        bind:this={fileInput}
-        on:change={uploadImage}
+  class="w-px h-px opacity-0 fixed -top-40"
+  type="file"
+  accept="image/*"
+  name="imagefile"
+  multiple
+  bind:this={fileInput}
+  on:change={uploadImage}
 />
 <button
-        on:click={() => fileInput.click()}
-        {disabled}
-        class={classNames('hover:bg-gray-100 sm:mx-1 rounded-full p-2 disabled:opacity-30')}
+  on:click={() => fileInput.click()}
+  {disabled}
+  class={classNames('hover:bg-gray-100 sm:mx-1 rounded-full p-2 disabled:opacity-30')}
 >
-    <slot />
-    {progress || ''}
+  <slot />
+  {progress || ''}
 </button>

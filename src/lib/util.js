@@ -72,7 +72,7 @@ export function extractTeaser(body) {
   }
 }
 
-export function resizeImage(file, maxWidth, maxHeight, quality) {
+export function resizeImage(file, maxWidth, maxHeight, quality, content_type) {
   const reader = new FileReader();
   reader.readAsDataURL(file);
   return new Promise((resolve, reject) => {
@@ -101,7 +101,7 @@ export function resizeImage(file, maxWidth, maxHeight, quality) {
           blob => {
             resolve(blob);
           },
-          file.type,
+          content_type,
           quality
         );
       };
@@ -114,6 +114,7 @@ export function resizeImage(file, maxWidth, maxHeight, quality) {
     };
   });
 }
+
 /**
  * Get image dimensions from a file
  */
