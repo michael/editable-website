@@ -149,7 +149,7 @@
   async function savePage() {
     try {
       // Only persist the start page when logged in as an admin
-      if (currentUser) {
+      if ($currentUser) {
         await fetchJSON('POST', '/api/save-page', {
           pageId: 'home',
           page: {
