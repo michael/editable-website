@@ -1,6 +1,6 @@
 <script>
   import { activeEditorView } from '$lib/stores';
-  import { onDestroy } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import ToggleMark from './tools/ToggleMark.svelte';
   import ToggleBulletList from './tools/ToggleBulletList.svelte';
   import ToggleBlockquote from './tools/ToggleBlockquote.svelte';
@@ -11,6 +11,7 @@
   import ToggleHeading from './tools/ToggleHeading.svelte';
   import InsertImage from './tools/InsertImage.svelte';
   import CreateLink from './tools/CreateLink.svelte';
+  import { debounce } from '$lib/helpers.js';
 
   export let currentUser = undefined;
 
@@ -42,13 +43,64 @@
       e.stopPropagation();
     }
   }
+
+  // Solution: https://www.codemzy.com/blog/sticky-fixed-header-ios-keyboard-fix
+  let fixPosition = 0; // the fix
+  let scrollY; // the last scroll position
+  let toolbarWrap; // the toolbar wrap
+  let toolbar; // the toolbar
+
+  // function to set the margin to show the toolbar if hidden
+  const setMargin = function () {
+    if (!toolbarWrap) return;
+    const newPosition = toolbarWrap.getBoundingClientRect().top;
+
+    // if toolbar wrap is hidden
+    if (newPosition < -1) {
+      // add a margin to show the toolbar
+      toolbar.classList.add('down'); // add class so toolbar can be animated
+      fixPosition = Math.abs(newPosition); // this is new position we need to fix the toolbar in the display
+      // if at the bottom of the page take a couple of pixels off due to gap
+      if (window.innerHeight + scrollY >= document.body.offsetHeight) {
+        fixPosition -= 2;
+      }
+      // set the margin to the new fixed position
+      toolbar.style['margin-top'] = fixPosition + 'px';
+    }
+  };
+
+  const debounceMargin = debounce(setMargin, 300);
+
+  const handleScroll = function () {
+    // remove animation and put toolbar back in default position
+    if (fixPosition > 0) {
+      toolbar.classList.remove('down');
+      fixPosition = 0;
+      toolbar.style['margin-top'] = 0 + 'px';
+    }
+    debounceMargin();
+  };
+
+  onMount(() => {
+    // add event listeners for when focusing from editor
+    window.addEventListener('focusout', handleScroll);
+    window.addEventListener('focusin', handleScroll);
+    return () => {
+      window.removeEventListener('focusout', handleScroll);
+      window.removeEventListener('focusin', handleScroll);
+    };
+  });
 </script>
 
-<div class="sticky top-0 z-10 sm:py-4 sm:px-4">
+<div class="sticky top-0 z-10 w-full" bind:this={toolbarWrap}>
   <div
-    class="max-w-screen-lg mx-auto px-2 backdrop-blur-sm bg-white bg-opacity-95 border-b border-t sm:border sm:rounded-full border-gray-100 shadow"
+    class="absolute left-1/2 transform -translate-x-1/2 top-0 sm:py-4 sm:px-4"
+    bind:this={toolbar}
+    id="toolbar"
   >
-    <div>
+    <div
+      class="max-w-screen-lg mx-auto px-2 backdrop-blur-sm bg-white bg-opacity-95 border-b border-t sm:border sm:rounded-full border-gray-100 shadow"
+    >
       <div class="flex items-center overflow-x-auto py-3 px-1">
         {#if editorState}
           <div class="flex">
@@ -163,4 +215,4 @@
   </div>
 </div>
 
-<svelte:window on:keydown={onKeyDown} />
+<svelte:window on:keydown={onKeyDown} bind:scrollY on:wheel={handleScroll} />
