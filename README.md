@@ -101,9 +101,9 @@ Just navigate to `http://127.0.0.1:5173/login` and enter your secure admin passw
 
 ## Deployment to Fly.io
 
-This repo contains the files you need to deploy your PostOwl site to [fly.io](https://fly.io/).
+This repo contains the files you need to deploy your site to [fly.io](https://fly.io/).
 
-1. Create an account with [fly.io](https://fly.io/). (Fly [require an active, valid credit / bank card](https://fly.io/docs/about/credit-cards/) to prevent abuse, but PostOwl runs well on their free tier. Unless you have a very busy site, hosting will be free.)
+1. Create an account with [fly.io](https://fly.io/). (Fly [require an active, valid credit / bank card](https://fly.io/docs/about/credit-cards/) to prevent abuse, but the site runs well on their free tier. Unless you have a very busy site, hosting will be free.)
 1. [Install `fly`](https://fly.io/docs/hands-on/install-flyctl/) and sign in with `fly auth login`
 1. Clone this repo to a directory on your computer
 1. Enter the directory you cloned the repo to: `cd myapp`
