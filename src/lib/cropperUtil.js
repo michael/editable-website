@@ -1,3 +1,8 @@
+/** 
+ * Adapted from svelte-easy-crop
+ * https://github.com/ValentinH/svelte-easy-crop 
+ */
+
 /**
  * Compute the dimension of the crop area based on image size and aspect ratio
  * @param imgWidth width of the src image in pixels
