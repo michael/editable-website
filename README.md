@@ -151,11 +151,13 @@ To restore a backup in production, you need to be a bit careful and follow these
    - `fly ssh console`
    - `sqlite3 data/db.sqlite3 ".backup data/backup-db.sqlite3"` (in case something goes wrong)
    - `sqlite3 data/backup-db.sqlite3 "PRAGMA integrity_check;"` (optional integrity check)
+   - `rm -rf data/db.*` (this removes the current database files, not the backup)
    - Exit the remote console (CTRL+D)
 1. Copy your local file to production using SFTP
    - `fly sftp shell`
    - `cd app/data`
    - `put data/db.sqlite3`
+   - Exit SFTP client (CTRL+D)
 1. Restart the app (so that the new DB gets picked up)
    - `fly apps restart`
 
