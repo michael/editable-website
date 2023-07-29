@@ -147,17 +147,16 @@ You can pull a backup locally and run it to check if it is valid. That's also qu
 To restore a backup in production, you need to be a bit careful and follow these steps (your site could be down for a few minutes during the restore).
 
 1. Make sure nobody writes to the app
-1. Make a backup remotely
+1. Make a backup remotely (in case something goes wrong)
    - `fly ssh console`
-   - `sqlite3 data/db.sqlite3 ".backup data/backup-db.sqlite3"` (in case something goes wrong)
+   - `sqlite3 data/db.sqlite3 ".backup data/backup-db.sqlite3"`
    - `sqlite3 data/backup-db.sqlite3 "PRAGMA integrity_check;"` (optional integrity check)
    - `rm -rf data/db.*` (this removes the current database files, not the backup)
    - Exit the remote console (CTRL+D)
-1. Copy your local file to production using SFTP
+1. Copy your local db.sqlite3 file to production using SFTP
    - `sqlite3 data/db.sqlite3 ".backup data/backup-db.sqlite3"`
    - `rm -rf data/db*`
-   - `mv data/backup-db.sqlite3 data/db.sqlite3`
-   - `mv -rf data/backup-db*` (the first 4 commands ensure all changes are consolidated into one db.sqlite3 file)
+   - `mv data/backup-db.sqlite3 data/db.sqlite3` (the first 3 commands make sure db.sqlite3 has the very latest state)
    - `fly sftp shell`
    - `cd app/data`
    - `put data/db.sqlite3`
