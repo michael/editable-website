@@ -156,7 +156,8 @@ To restore a backup in production, you need to be a bit careful and follow these
 1. Copy your local file to production using SFTP
    - `sqlite3 data/db.sqlite3 ".backup data/backup-db.sqlite3"`
    - `rm -rf data/db*`
-   - `mv data/backup-db.sqlite3 data/db.sqlite3` (the first 3 commands ensure all changes are consolidated into one db.sqlite3 file)
+   - `mv data/backup-db.sqlite3 data/db.sqlite3`
+   - `mv -rf data/backup-db*` (the first 4 commands ensure all changes are consolidated into one db.sqlite3 file)
    - `fly sftp shell`
    - `cd app/data`
    - `put data/db.sqlite3`
