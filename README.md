@@ -139,6 +139,7 @@ You can pull a backup locally and run it to check if it is valid. That's also qu
    - `fly ssh console`
    - `sqlite3 data/db.sqlite3 ".backup data/backup-db.sqlite3"`
    - `sqlite3 data/backup-db.sqlite3 "PRAGMA integrity_check;"` (optional integrity check)
+   - Exit the remote console (CTRL+D)
 1. Download the database and test it with your local instance
    - `rm -rf data/db.*` (careful, this wipe the database files locally)
    - `fly sftp get data/db.sqlite3 data/db.sqlite3` (and puts the downloaded backup in place)
@@ -148,8 +149,8 @@ To restore a backup in production, you need to be a bit careful and follow these
 1. Make sure nobody reads from the app
 1. Make a backup remotely
    - `fly ssh console`
-   - `cd data`
-   - `mv db.sqlite3 db.backup.sqlite3`
+   - `sqlite3 data/db.sqlite3 ".backup data/backup-db.sqlite3"` (in case something goes wrong)
+   - `sqlite3 data/backup-db.sqlite3 "PRAGMA integrity_check;"` (optional integrity check)
 1. Copy your local file to production using SFTP
    - `fly sftp shell`
    - `cd app/data`
