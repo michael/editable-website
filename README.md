@@ -4,7 +4,8 @@ A SvelteKit template for coding **completely custom websites**, while allowing n
 
 Check out the demo at [editable.website](https://editable.website).
 
-See it out in the wild at [sonjastojanovic.com](https://sonjastojanovic.com), [nisse.tech](https://nisse.tech), and [michaelaufreiter.com](https://michaelaufreiter.com).
+See it out in the wild at [sonjastojanovic.com](https://sonjastojanovic.com), [nisse.tech](https://nisse.tech), [michaelaufreiter.com](https://michaelaufreiter.com), [postowl.com](https://postowl.com)
+and [officegallery.cz](https://officegallery.cz).
 
 Read the discussion on [Hackernews](https://news.ycombinator.com/item?id=35456083).
 
