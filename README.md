@@ -26,6 +26,19 @@ These are needed to run the example as is, but you can choose any other database
 
 This is a full-fledged web app you want to adjust to your own needs. So please **create a copy** or fork of the source code and rename the project accordingly.
 
+First clone the repository.
+
+```bash
+$ git clone https://github.com/michael/editable-website.git
+cd editable-website
+```
+
+Install the dependencies.
+
+```bash
+npm install
+```
+
 Copy the contents of `.env.example` into `.env` and adjust to your needs.
 
 ```bash
