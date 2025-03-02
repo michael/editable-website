@@ -1,15 +1,11 @@
 import slugify from 'slugify';
 import { SHORTCUTS } from './constants';
-import Database from 'better-sqlite3';
+import { DatabaseSync } from 'node:sqlite';
 import { nanoid } from '$lib/util';
 import { DB_PATH, ADMIN_PASSWORD } from '$env/static/private';
 import { Blob } from 'node:buffer';
 
-const db = new Database(DB_PATH, {
-  // verbose: console.log
-});
-db.pragma('journal_mode = WAL');
-db.pragma('case_sensitive_like = true');
+const db = new DatabaseSync(DB_PATH);
 
 
 /**
@@ -18,27 +14,27 @@ db.pragma('case_sensitive_like = true');
 export async function createArticle(title, content, teaser, currentUser) {
   if (!currentUser) throw new Error('Not authorized');
 
-    let slug = slugify(title, {
-      lower: true,
-      strict: true
-    });
+  let slug = slugify(title, {
+    lower: true,
+    strict: true
+  });
 
-    // If slug is already used, we add a unique postfix
-    const articleExists = db.prepare('SELECT * FROM articles WHERE slug = ?').get(slug);
-    if (articleExists) {
-      slug = slug + '-' + nanoid();
-    }
+  // If slug is already used, we add a unique postfix
+  const articleExists = db.prepare('SELECT * FROM articles WHERE slug = ?').get(slug);
+  if (articleExists) {
+    slug = slug + '-' + nanoid();
+  }
 
-    db.prepare(`
+  db.prepare(`
         INSERT INTO articles (slug, title, content, teaser, published_at)
         VALUES(?, ?, ?, ?, DATETIME('now'))
       `)
-      .run(
-        slug,
-        title,
-        content,
-        teaser
-      );
+    .run(
+      slug,
+      title,
+      content,
+      teaser
+    );
 
   const newArticleQuery = "SELECT slug, created_at FROM articles WHERE slug = ?";
   const newArticle = db.prepare(newArticleQuery).get(slug);
@@ -223,6 +219,7 @@ export async function deleteArticle(slug, currentUser) {
  * If you want to support multiple users/authors you want to return the current user record here.
  */
 export async function getCurrentUser(session_id) {
+  if (!session_id) return null;
   const stmt = db.prepare(
     'SELECT session_id, expires FROM sessions WHERE session_id = ? AND expires > ?'
   );
@@ -269,21 +266,19 @@ export async function getPage(page_id) {
  * We can count all kinds of things with this.
  */
 export async function createOrUpdateCounter(counter_id) {
-  return db.transaction(() => {
-    // Remove recipients associated with the friend if there are any entries
-    const counter_exists = db
-      .prepare('SELECT counter_id FROM counters WHERE counter_id = ?')
+  // Remove recipients associated with the friend if there are any entries
+  const counter_exists = db
+    .prepare('SELECT counter_id FROM counters WHERE counter_id = ?')
+    .get(counter_id);
+  if (counter_exists) {
+    return db
+      .prepare('UPDATE counters SET count = count + 1 WHERE counter_id = ? RETURNING count')
       .get(counter_id);
-    if (counter_exists) {
-      return db
-        .prepare('UPDATE counters SET count = count + 1 WHERE counter_id = ? RETURNING count')
-        .get(counter_id);
-    } else {
-      return db
-        .prepare('INSERT INTO counters (counter_id, count) values(?, 1) RETURNING count')
-        .get(counter_id);
-    }
-  })();
+  } else {
+    return db
+      .prepare('INSERT INTO counters (counter_id, count) values(?, 1) RETURNING count')
+      .get(counter_id);
+  }
 }
 
 // asset_id is a string and has the form path
