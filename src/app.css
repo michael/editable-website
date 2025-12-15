@@ -1,0 +1,34 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+
+:root {
+	--primary-fill-color: oklch(32.11% 0 0);
+	--canvas-fill-color: oklch(100% 0 0);
+	--secondary-fill-color: oklch(97% 0 0);
+	--primary-text-color: oklch(32.11% 0 0);
+	--stroke-color: oklch(0 0 0 / 0.1);
+	--editing-fill-color: oklch(59.71% 0.22 283 / 0.1);
+	--editing-stroke-color: oklch(59.71% 0.22 283);
+}
+
+@theme {
+	--inline-page-margin: --spacing(5);
+	--two-column-inline-margin: --spacing(15);
+}
+
+@layer utilities {
+	.ew-bg-checkerboard {
+		background:
+			linear-gradient(45deg, rgba(0, 0, 0, 0.1) 25%, transparent 25%),
+			linear-gradient(-45deg, rgba(0, 0, 0, 0.1) 25%, transparent 25%),
+			linear-gradient(45deg, transparent 75%, rgba(0, 0, 0, 0.1) 75%),
+			linear-gradient(-45deg, transparent 75%, rgba(0, 0, 0, 0.1) 75%);
+		background-size: 20px 20px;
+		background-position:
+			0 0,
+			0 10px,
+			10px -10px,
+			-10px 0px;
+		background-color: rgba(255, 255, 255, 0.5);
+	}
+}
