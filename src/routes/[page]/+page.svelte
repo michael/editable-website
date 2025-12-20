@@ -1,5 +1,6 @@
 <script>
 	import { setContext } from 'svelte';
+	import { page } from '$app/state';
 	import { Svedit, KeyMapper, Command, define_keymap } from 'svedit';
 	import { create_session } from '../create_session.js';
 	let { data } = $props();
@@ -78,19 +79,21 @@
 	<title>Editable Website v2</title>
 </svelte:head>
 
-<div class="demo-wrapper" bind:this={app_el}>
-	<!-- <Toolbar {session} {focus_canvas} bind:editable /> -->
-	<Svedit {session} bind:editable bind:this={svedit_ref} path={[session.doc.document_id]} />
+{#key page.url.pathname}
+	<div class="demo-wrapper" bind:this={app_el}>
+		<!-- <Toolbar {session} {focus_canvas} bind:editable /> -->
+		<Svedit {session} bind:editable bind:this={svedit_ref} path={[session.doc.document_id]} />
 
-	{#if editable}
-		<div class="flex-column mx-auto my-10 w-full max-w-5xl gap-y-2">
-			<p>Selection:</p>
-			<pre class="debug-info p-4">{JSON.stringify(session.selection || {}, null, '  ')}</pre>
-			<p>Nodes:</p>
-			<pre class="debug-info p-4">{JSON.stringify(session.to_json(), null, '  ')}</pre>
-		</div>
-	{/if}
-</div>
+		{#if editable}
+			<div class="flex-column mx-auto my-10 w-full max-w-5xl gap-y-2">
+				<p>Selection:</p>
+				<pre class="debug-info p-4">{JSON.stringify(session.selection || {}, null, '  ')}</pre>
+				<p>Nodes:</p>
+				<pre class="debug-info p-4">{JSON.stringify(session.to_json(), null, '  ')}</pre>
+			</div>
+		{/if}
+	</div>
+{/key}
 
 <style>
 	.debug-info {

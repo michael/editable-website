@@ -34,7 +34,7 @@
 {/snippet}
 
 {#snippet big_title()}
-  <AnnotatedTextProperty tag="h1" class="text-4xl font-bold" path={[...path, 'title']} placeholder={TITLE_PLACEHOLDER} />
+  <AnnotatedTextProperty tag="h1" class="text-4xl" path={[...path, 'title']} placeholder={TITLE_PLACEHOLDER} />
 {/snippet}
 
 {#snippet small_title()}

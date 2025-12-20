@@ -132,6 +132,7 @@ const document_schema = define_document_schema({
 	paragraph: {
 		kind: 'text',
 		properties: {
+			layout: { type: 'integer', default: 1 },
 			content: {
 				type: 'annotated_text',
 				node_types: ALL_ANNOTATIONS,
@@ -329,7 +330,7 @@ const session_config = {
 		}
 	},
 	node_layouts: {
-		paragraph: 1,
+		paragraph: 3,
 		heading: 3,
 		figure: 1,
 		feature: 6,
@@ -387,10 +388,11 @@ const session_config = {
 	// Custom functions to insert new "blank" nodes and setting the selection depening on the
 	// intended behavior.
 	inserters: {
-		paragraph: function (tr, content = { text: '', annotations: [] }) {
+		paragraph: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_paragraph = {
 				id: nanoid(),
 				type: 'paragraph',
+				layout,
 				content
 			};
 			tr.create(new_paragraph);
@@ -569,5 +571,6 @@ const session_config = {
 
 export function create_session(doc) {
 	const session = new Session(document_schema, doc, session_config);
+	session.id = crypto.randomUUID();
 	return session;
 }
