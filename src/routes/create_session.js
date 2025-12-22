@@ -30,6 +30,7 @@ import Footer from './components/Footer.svelte';
 import FooterLinkColumn from './components/FooterLinkColumn.svelte';
 import FooterLink from './components/FooterLink.svelte';
 
+import Prose from './components/Prose.svelte';
 import Heading from './components/Heading.svelte';
 import Paragraph from './components/Paragraph.svelte';
 import Gallery from './components/Gallery.svelte';
@@ -52,8 +53,8 @@ const document_schema = define_document_schema({
 		properties: {
 			body: {
 				type: 'node_array',
-				node_types: ['paragraph', 'heading', 'figure', 'gallery', 'feature'],
-				default_node_type: 'paragraph'
+				node_types: ['prose', 'figure', 'gallery', 'feature'],
+				default_node_type: 'prose'
 			},
 			nav: {
 				type: 'node',
@@ -129,10 +130,20 @@ const document_schema = define_document_schema({
 			}
 		}
 	},
+	prose: {
+		kind: 'block',
+		properties: {
+			layout: { type: 'integer', default: 1 },
+			content: {
+				type: 'node_array',
+				node_types: ['heading', 'paragraph'],
+				default_node_type: 'paragraph'
+			}
+		}
+	},
 	paragraph: {
 		kind: 'text',
 		properties: {
-			layout: { type: 'integer', default: 1 },
 			content: {
 				type: 'annotated_text',
 				node_types: ALL_ANNOTATIONS,
@@ -254,6 +265,7 @@ const session_config = {
 		Footer,
 		FooterLinkColumn,
 		FooterLink,
+		Prose,
 		Heading,
 		Paragraph,
 		Image,
@@ -316,6 +328,18 @@ const session_config = {
 
 	// HTML exporters for different node types
 	html_exporters: {
+		prose: (node, session, html_exporters) => {
+			let html = '<div class="prose">\n';
+			for (const child_id of node.content) {
+				const child = session.get(child_id);
+				const exporter = html_exporters[child.type];
+				if (exporter) {
+					html += exporter(child, session, html_exporters);
+				}
+			}
+			html += '</div>\n';
+			return html;
+		},
 		paragraph: (node) => {
 			return `<p>${node.content.text}</p>\n`;
 		},
@@ -330,7 +354,8 @@ const session_config = {
 		}
 	},
 	node_layouts: {
-		paragraph: 3,
+		prose: 3,
+		paragraph: 1,
 		heading: 3,
 		figure: 1,
 		feature: 6,
@@ -388,11 +413,33 @@ const session_config = {
 	// Custom functions to insert new "blank" nodes and setting the selection depening on the
 	// intended behavior.
 	inserters: {
-		paragraph: function (tr, content = { text: '', annotations: [] }, layout = 1) {
+		prose: function (tr) {
 			const new_paragraph = {
 				id: nanoid(),
 				type: 'paragraph',
-				layout,
+				content: { text: '', annotations: [] }
+			};
+			tr.create(new_paragraph);
+			const new_prose = {
+				id: nanoid(),
+				type: 'prose',
+				layout: 1,
+				content: [new_paragraph.id]
+			};
+			tr.create(new_prose);
+			tr.insert_nodes([new_prose.id]);
+			// NOTE: Relies on insert_nodes selecting the newly inserted node(s)
+			tr.set_selection({
+				type: 'text',
+				path: [...tr.selection.path, tr.selection.focus_offset - 1, 'content', 0, 'content'],
+				anchor_offset: 0,
+				focus_offset: 0
+			});
+		},
+		paragraph: function (tr, content = { text: '', annotations: [] }) {
+			const new_paragraph = {
+				id: nanoid(),
+				type: 'paragraph',
 				content
 			};
 			tr.create(new_paragraph);

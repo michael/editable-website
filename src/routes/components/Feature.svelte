@@ -34,11 +34,11 @@
 {/snippet}
 
 {#snippet big_title()}
-  <AnnotatedTextProperty tag="h1" class="text-4xl" path={[...path, 'title']} placeholder={TITLE_PLACEHOLDER} />
+  <AnnotatedTextProperty tag="h1" class="text-4xl text-balance" path={[...path, 'title']} placeholder={TITLE_PLACEHOLDER} />
 {/snippet}
 
 {#snippet small_title()}
-  <AnnotatedTextProperty tag="h1" class="text-xl uppercase" path={[...path, 'title']} placeholder={TITLE_PLACEHOLDER} />
+  <AnnotatedTextProperty tag="h1" class="text-xl uppercase text-balance" path={[...path, 'title']} placeholder={TITLE_PLACEHOLDER} />
 {/snippet}
 
 {#snippet description()}

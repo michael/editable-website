@@ -26,13 +26,13 @@
 	function get_text_style(layout) {
 		switch (layout) {
 			case 1:
-				return 'text-4xl mt-6';
+				return 'text-4xl font-bold mt-6 mb-2 text-balance';
 			case 2:
-				return 'text-3xl';
+				return 'text-3xl font-bold mt-4 mb-2 text-balance';
 			case 3:
-				return 'text-2xl';
+				return 'text-2xl font-semibold mt-3 mb-1 text-balance';
 			default:
-				return 'text-3xl';
+				return 'text-3xl font-bold text-balance';
 		}
 	}
 
@@ -51,12 +51,10 @@
 </script>
 
 <Node {path}>
-	<div class="heading layout-{layout} mx-auto w-full max-w-5xl px-3 py-3 sm:px-4">
-		<AnnotatedTextProperty
-			{tag}
-			class={text_style}
-			path={[...path, 'content']}
-			placeholder={placeholder}
-		/>
-	</div>
+	<AnnotatedTextProperty
+		{tag}
+		class={text_style}
+		path={[...path, 'content']}
+		{placeholder}
+	/>
 </Node>
