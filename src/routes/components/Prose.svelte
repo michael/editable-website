@@ -4,40 +4,15 @@
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
-	let node = $derived(svedit.session.get(path));
-	let layout = $derived(node.layout || 1);
+
 </script>
 
 <!-- Layout 1: Left-aligned -->
-{#snippet layout_1()}
-	<div class="mx-auto max-w-7xl">
-		<div class="max-w-4xl px-6 py-4 sm:px-15">
-			<NodeArrayProperty path={[...path, 'content']} />
-		</div>
-	</div>
-{/snippet}
 
-<!-- Layout 2: Centered -->
-{#snippet layout_2()}
-	<div class="mx-auto max-w-7xl">
-		<div class="mx-auto max-w-4xl px-6 py-4 text-center sm:px-15">
-			<NodeArrayProperty path={[...path, 'content']} />
-		</div>
-	</div>
-{/snippet}
-
-<!-- Layout 3: Right-aligned -->
-{#snippet layout_3()}
-	<div class="mx-auto max-w-7xl grid grid-cols-3">
-		<div class="col-span-3 py-4 pr-6 pl-20 sm:pr-15 md:col-span-2 md:col-start-2 md:pl-0">
-			<NodeArrayProperty path={[...path, 'content']} />
-		</div>
-	</div>
-{/snippet}
-
-<Node class="ew-prose layout-{layout}" {path}>
-	{@const layouts = [layout_1, layout_2, layout_3]}
-	{@render layouts[layout - 1]()}
+<Node class="ew-prose" {path}>
+	<NodeArrayProperty path={[...path, 'content']} />
+	<!-- {@const layouts = [layout_1, layout_2, layout_3]}
+	{@render layouts[layout - 1]()} -->
 </Node>
 
 <style>
