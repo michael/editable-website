@@ -47,13 +47,13 @@
 
 <!-- Layouts -->
 {#snippet layout_1()}
-  <div class="mx-auto max-w-7xl grid grid-cols-2">
+  <div class="mx-auto max-w-7xl grid grid-cols-2 border-t border-l border-r">
     <div class="flex flex-col p-15">
       {@render big_title()}
       <div class="flex-1"></div>
       {@render description()}
     </div>
-    <div class="p-15">
+    <div class="p-15 border-l">
       {@render image(3/4)}
     </div>
   </div>

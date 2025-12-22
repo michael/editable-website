@@ -10,7 +10,7 @@
 <Node {path}>
 	<AnnotatedTextProperty
 		tag="p"
-		class="mb-4 last:mb-0"
+		class="py-4"
 		path={[...path, 'content']}
 		placeholder="Paragraph"
 	/>
