@@ -414,6 +414,13 @@ const session_config = {
 	// intended behavior.
 	inserters: {
 		prose: function (tr) {
+			const new_heading = {
+				id: nanoid(),
+				type: 'heading',
+				layout: 1,
+				content: { text: '', annotations: [] }
+			};
+			tr.create(new_heading);
 			const new_paragraph = {
 				id: nanoid(),
 				type: 'paragraph',
@@ -424,7 +431,7 @@ const session_config = {
 				id: nanoid(),
 				type: 'prose',
 				layout: 1,
-				content: [new_paragraph.id]
+				content: [new_heading.id, new_paragraph.id]
 			};
 			tr.create(new_prose);
 			tr.insert_nodes([new_prose.id]);
