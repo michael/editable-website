@@ -436,12 +436,12 @@ const session_config = {
 			tr.create(new_prose);
 			tr.insert_nodes([new_prose.id]);
 			// NOTE: Relies on insert_nodes selecting the newly inserted node(s)
-			tr.set_selection({
-				type: 'text',
-				path: [...tr.selection.path, tr.selection.focus_offset - 1, 'content', 0, 'content'],
-				anchor_offset: 0,
-				focus_offset: 0
-			});
+			// tr.set_selection({
+			// 	type: 'text',
+			// 	path: [...tr.selection.path, tr.selection.focus_offset - 1, 'content', 0, 'content'],
+			// 	anchor_offset: 0,
+			// 	focus_offset: 0
+			// });
 		},
 		paragraph: function (tr, content = { text: '', annotations: [] }) {
 			const new_paragraph = {
@@ -475,6 +475,39 @@ const session_config = {
 				anchor_offset: 0,
 				focus_offset: 0
 			});
+		},
+		feature: function (tr) {
+			const new_feature_id = tr.build('new_feature', {
+				feature_image: {
+					id: 'feature_image',
+					type: 'image',
+					src: '',
+					width: 800,
+					height: 600,
+					alt: 'Feature image',
+					scale: 1.0,
+					focal_point_x: 0.5,
+					focal_point_y: 0.5,
+					object_fit: 'cover'
+				},
+				new_feature: {
+					id: 'new_feature',
+					type: 'feature',
+					layout: 1,
+					image: 'feature_image',
+					title: { text: '', annotations: [] },
+					description: { text: '', annotations: [] }
+				}
+			});
+
+			tr.insert_nodes([new_feature_id]);
+			// Set selection to the title field
+			// tr.set_selection({
+			// 	type: 'text',
+			// 	path: [...tr.selection.path, tr.selection.focus_offset - 1, 'title'],
+			// 	anchor_offset: 0,
+			// 	focus_offset: 0
+			// });
 		},
 		figure: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_figure_id = tr.build('new_figure', {
