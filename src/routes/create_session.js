@@ -571,6 +571,5 @@ const session_config = {
 
 export function create_session(doc) {
 	const session = new Session(document_schema, doc, session_config);
-	session.id = crypto.randomUUID();
 	return session;
 }
