@@ -1,12 +1,13 @@
 <script>
 	import { setContext } from 'svelte';
+	import { page } from '$app/stores';
 	import { Svedit, KeyMapper, Command, define_keymap } from 'svedit';
 	import { create_session } from '../create_session.js';
 	let { data } = $props();
 	let session = $derived(create_session(data.doc));
 
-	let app_el;
-	let svedit_ref;
+	let app_el = $state();
+	let svedit_ref = $state();
 	let editable = $state(true);
 
 	function focus_canvas() {
@@ -78,19 +79,28 @@
 	<title>Editable Website v2</title>
 </svelte:head>
 
-<div class="demo-wrapper" bind:this={app_el}>
-	<!-- <Toolbar {session} {focus_canvas} bind:editable /> -->
-	<Svedit {session} bind:editable bind:this={svedit_ref} path={[session.doc.document_id]} />
+<!--
+	BUG: When navigating from / with preloading on the Svedit component ends up
+	with a stale session, breaking editing.
+	See https://github.com/michael/editable-website/issues/40
+-->
 
-	{#if editable}
-		<div class="flex-column mx-auto my-10 w-full max-w-5xl gap-y-2">
-			<p>Selection:</p>
-			<pre class="debug-info p-4">{JSON.stringify(session.selection || {}, null, '  ')}</pre>
-			<p>Nodes:</p>
-			<pre class="debug-info p-4">{JSON.stringify(session.to_json(), null, '  ')}</pre>
-		</div>
-	{/if}
-</div>
+<!-- Workaround for #40: Note that page.url.pathname from $app/state does not work -->
+{#key $page.url.pathname}
+	<div class="demo-wrapper" bind:this={app_el}>
+		<!-- <Toolbar {session} {focus_canvas} bind:editable /> -->
+		<Svedit {session} bind:editable bind:this={svedit_ref} path={[session.doc.document_id]} />
+
+		{#if editable}
+			<div class="flex-column mx-auto my-10 w-full max-w-5xl gap-y-2">
+				<p>Selection:</p>
+				<pre class="debug-info p-4">{JSON.stringify(session.selection || {}, null, '  ')}</pre>
+				<p>Nodes:</p>
+				<pre class="debug-info p-4">{JSON.stringify(session.to_json(), null, '  ')}</pre>
+			</div>
+		{/if}
+	</div>
+{/key}
 
 <style>
 	.debug-info {
