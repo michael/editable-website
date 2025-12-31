@@ -47,7 +47,7 @@
 
 <!-- Layouts -->
 {#snippet layout_1()}
-  <div class="mx-auto max-w-7xl grid grid-cols-2 border-t border-l border-r">
+  <div class="mx-auto max-w-7xl grid grid-cols-2 border-l border-r">
     <div class="flex flex-col p-15">
       {@render big_title()}
       <div class="flex-1"></div>
@@ -129,7 +129,7 @@
   </div>
 {/snippet}
 
-<Node class="ew-feature" {path}>
+<Node class="ew-feature border-t" {path}>
   {@const layouts = [
     layout_1,
     layout_2,
