@@ -9,10 +9,14 @@
 </script>
 
 <!-- Layout 1: Left-aligned -->
+
+
 {#snippet layout_1()}
-	<div class="mx-auto max-w-7xl py-8 border-l border-r">
-		<div class="max-w-4xl px-6 sm:px-15">
-			<NodeArrayProperty path={[...path, 'content']} />
+	<div class="mx-auto max-w-7xl xl:px-8">
+		<div class="xl:border-r xl:border-l py-8">
+			<div class="max-w-4xl px-6 sm:px-15">
+				<NodeArrayProperty path={[...path, 'content']} />
+			</div>
 		</div>
 	</div>
 {/snippet}
