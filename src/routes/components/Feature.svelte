@@ -19,6 +19,7 @@
 	}
 </script>
 
+
 <!-- Primitives -->
 {#snippet image(aspect_ratio)}
   <CustomProperty class="ew-image-property" path={[...path, 'image']}>
@@ -45,31 +46,39 @@
   <AnnotatedTextProperty tag="p" class="text-gray-600" path={[...path, 'description']} placeholder={DESCRIPTION_PLACEHOLDER} />
 {/snippet}
 
+
+
 <!-- Layouts -->
 {#snippet layout_1()}
-  <div class="mx-auto max-w-7xl grid grid-cols-2 border-l border-r">
-    <div class="flex flex-col p-15">
-      {@render big_title()}
-      <div class="flex-1"></div>
-      {@render description()}
-    </div>
-    <div class="p-15 border-l">
-      {@render image(3/4)}
-    </div>
+	<!-- Limiter -->
+  <div class="mx-auto max-w-7xl xl:px-8">
+  	<div class="grid grid-cols-2 xl:border-l xl:border-r">
+	    <div class="flex flex-col p-15">
+	      {@render big_title()}
+	      <div class="flex-1"></div>
+	      {@render description()}
+	    </div>
+	    <div class="p-15 border-l">
+	      {@render image(3/4)}
+	    </div>
+   </div>
   </div>
 {/snippet}
 
 <!-- Like layout 1 but flipped horizontally -->
 {#snippet layout_2()}
-  <div class="mx-auto max-w-7xl grid grid-cols-2">
-    <div class="p-15">
-      {@render image(3/4)}
-    </div>
-    <div class="flex flex-col p-15">
-      {@render big_title()}
-      <div class="flex-1"></div>
-      {@render description()}
-    </div>
+	<!-- Limiter -->
+ 	<div class="mx-auto max-w-7xl xl:px-8">
+	 	<div class="grid grid-cols-2 xl:border-l xl:border-r">
+	    <div class="p-15 border-r">
+	      {@render image(3/4)}
+	    </div>
+	    <div class="flex flex-col p-15">
+	      {@render big_title()}
+	      <div class="flex-1" contenteditable="false"></div>
+	      {@render description()}
+	    </div>
+	  </div>
   </div>
 {/snippet}
 
@@ -81,7 +90,7 @@
     </div>
     <div class="flex flex-col p-15">
       {@render big_title()}
-      <div class="flex-1"></div>
+      <div class="flex-1" contenteditable="false"></div>
       {@render description()}
     </div>
   </div>
@@ -92,7 +101,7 @@
   <div class="mx-auto max-w-7xl grid grid-cols-2">
     <div class="flex flex-col p-15">
       {@render big_title()}
-      <div class="flex-1"></div>
+      <div class="flex-1" contenteditable="false"></div>
       {@render description()}
     </div>
     <div>
@@ -105,7 +114,7 @@
 {#snippet layout_5()}
   <div class="mx-auto max-w-7xl grid grid-cols-2">
     <div class="flex flex-col p-15">
-      <div class="flex-1"></div>
+      <div class="flex-1" contenteditable="false"></div>
       {@render small_title()}
       <div class="pt-4">{@render description()}</div>
     </div>
@@ -124,7 +133,7 @@
     <div class="flex flex-col p-15">
       {@render small_title()}
       <div class="pt-4">{@render description()}</div>
-      <div class="flex-1"></div>
+      <div class="flex-1" contenteditable="false"></div>
     </div>
   </div>
 {/snippet}
