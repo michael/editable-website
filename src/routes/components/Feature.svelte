@@ -55,7 +55,7 @@
   	<div class="grid grid-cols-2 xl:border-l xl:border-r">
 	    <div class="flex flex-col p-15">
 	      {@render big_title()}
-	      <div class="flex-1"></div>
+	      <div class="flex-1" contenteditable="false"></div>
 	      {@render description()}
 	    </div>
 	    <div class="p-15 border-l">
