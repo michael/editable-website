@@ -64,7 +64,7 @@
 <!-- Default layout for Feature -->
 {#snippet layout_1()}
 	<div class="{TW_LIMITER}">
-		<div class="grid grid-cols-1 md:grid-cols-2 xl:border-r xl:border-l">
+		<div class="grid grid-cols-1 md:grid-cols-2 xl:border-r xl:border-l border-gray-400">
 			<div class="flex flex-col {TW_PAGE_PADDING}">
 				<div class="max-md:pt-6">{@render big_title()}</div>
 				<div class="flex-1" contenteditable="false"></div>
@@ -72,7 +72,7 @@
 					{@render description()}
 				</div>
 			</div>
-			<div class="{TW_PAGE_PADDING} md:border-l">
+			<div class="{TW_PAGE_PADDING} md:border-l border-gray-400">
 				{@render image(3 / 4)}
 			</div>
 		</div>
@@ -83,8 +83,8 @@
 {#snippet layout_2()}
 	<!-- Limiter -->
 	<div class="{TW_LIMITER}">
-		<div class="grid grid-cols-2 xl:border-r xl:border-l">
-			<div class="border-r p-15">
+		<div class="grid grid-cols-2 xl:border-r xl:border-l border-gray-400">
+			<div class="border-r p-15 border-gray-400">
 				{@render image(3 / 4)}
 			</div>
 			<div class="flex flex-col p-15">
@@ -152,7 +152,7 @@
 	</div>
 {/snippet}
 
-<Node class="ew-feature lg:text-lg border-t" {path}>
+<Node class="ew-feature lg:text-lg border-t border-gray-400" {path}>
 	{@const layouts = [layout_1, layout_2, layout_3, layout_4, layout_5, layout_6]}
 	{@render layouts[node.layout - 1]()}
 </Node>

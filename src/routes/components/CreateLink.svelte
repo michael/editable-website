@@ -54,7 +54,7 @@
 		type="url"
 		bind:value={link_input_value}
 		placeholder="https://example.com"
-		class="w-48 rounded border border-gray-300 px-2 py-1 text-sm outline-none focus:border-blue-500"
+		class="w-48 rounded border border-gray-400 px-2 py-1 text-sm outline-none focus:border-blue-500"
 		onkeydown={handle_keydown}
 	/>
 	<button
