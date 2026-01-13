@@ -32,7 +32,7 @@
    		`,
 			4: `
 	     	[--layout-orientation:horizontal]
-				grid grid-cols-2
+				grid grid-cols-1 md:grid-cols-2
 				*:p-5 *:sm:p-7 *:md:p-10 *:lg:p-14
 				**:[.image-wrapper]:aspect-[2/1]
    		`
