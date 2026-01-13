@@ -14,6 +14,7 @@
 @theme {
 	--inline-page-margin: --spacing(5);
 	--two-column-inline-margin: --spacing(15);
+	--max-width-8xl: 90rem;
 }
 
 @layer utilities {

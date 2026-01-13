@@ -41,89 +41,107 @@ export default [
 		const home_page_doc = {
 			document_id: 'page_1',
 			nodes: {
-				text_1: {
-					id: 'text_1',
-					type: 'text',
-					layout: 2,
+				heading_1: {
+					id: 'heading_1',
+					type: 'heading',
+					layout: 1,
 					content: {
 						text: 'A SvelteKit template for building CMS-free editable websites',
 						annotations: []
 					}
 				},
-				text_2: {
-					id: 'text_2',
-					type: 'text',
-					layout: 1,
+				paragraph_1: {
+					id: 'paragraph_1',
+					type: 'paragraph',
 					content: {
 						text: 'This is an early demo of Editable Website v2. It builds on top of Svedit (which replaces ProseMirror) and provides you with a simple framework to build entirely custom websites and apps in Svelte, while site owners can edit content directly in the layout - no CMS needed.',
 						annotations: []
 					}
 				},
-				text_3: {
-					id: 'text_3',
-					type: 'text',
-					layout: 3,
+				prose_1: {
+					id: 'prose_1',
+					type: 'prose',
+					layout: 1,
+					content: ['heading_1', 'paragraph_1']
+				},
+				heading_2: {
+					id: 'heading_2',
+					type: 'heading',
+					layout: 2,
 					content: {
 						text: 'Predefined content types, which you can tailor to your needs',
 						annotations: []
 					}
 				},
-				text_4: {
-					id: 'text_4',
-					type: 'text',
-					layout: 1,
+				paragraph_2: {
+					id: 'paragraph_2',
+					type: 'paragraph',
 					content: {
 						text: "Editable Website ships with predefined content types like Text, Heroes, CTAs, Galleries, Accordions, etc. It provides a starting point, covering 80% of what most websites need, and makes it easy for you to add what's missing.",
 						annotations: []
 					}
 				},
-				text_5: {
-					id: 'text_5',
-					type: 'text',
-					layout: 1,
+				paragraph_3: {
+					id: 'paragraph_3',
+					type: 'paragraph',
 					content: {
 						text: "For instance, you might want to add a custom FrontpageHero.svelte that includes some title and description (which are editable) but also some custom animations, which you'll code into that component.",
 						annotations: []
 					}
 				},
-				text_6: {
-					id: 'text_6',
-					type: 'text',
-					layout: 3,
+				prose_2: {
+					id: 'prose_2',
+					type: 'prose',
+					layout: 2,
+					content: ['heading_2', 'paragraph_2', 'paragraph_3']
+				},
+				heading_3: {
+					id: 'heading_3',
+					type: 'heading',
+					layout: 2,
 					content: { text: 'Design-System based on Tailwind v4', annotations: [] }
 				},
-				text_7: {
-					id: 'text_7',
-					type: 'text',
-					layout: 1,
+				paragraph_4: {
+					id: 'paragraph_4',
+					type: 'paragraph',
 					content: {
 						text: "If you're familiar with using Tailwind, you know how to style editable websites. In app.css you'll be able to change the defaults for spacing, colors, and typography, and for many sites this might be all you have to do.",
 						annotations: []
 					}
 				},
-				text_8: {
-					id: 'text_8',
-					type: 'text',
-					layout: 1,
+				paragraph_5: {
+					id: 'paragraph_5',
+					type: 'paragraph',
 					content: {
 						text: 'However, sometimes you want to implement very custom specific layouts and control every pixel. This is when you start adapting the existing components or create new ones. If you know Svelte, you know Editable Website.',
 						annotations: []
 					}
 				},
-				text_9: {
-					id: 'text_9',
-					type: 'text',
+				prose_3: {
+					id: 'prose_3',
+					type: 'prose',
 					layout: 3,
+					content: ['heading_3', 'paragraph_4', 'paragraph_5']
+				},
+				heading_4: {
+					id: 'heading_4',
+					type: 'heading',
+					layout: 2,
 					content: { text: 'Built-in image processing', annotations: [] }
 				},
-				text_10: {
-					id: 'text_10',
-					type: 'text',
-					layout: 1,
+				paragraph_6: {
+					id: 'paragraph_6',
+					type: 'paragraph',
 					content: {
 						text: 'When you paste an image onto the page, it gets uploaded in the background, and Editable Website generates a set of sizes in an optimized web format that is provided to srcset.',
 						annotations: []
 					}
+				},
+				prose_4: {
+					id: 'prose_4',
+					type: 'prose',
+					layout: 1,
+					content: ['heading_4', 'paragraph_6']
 				},
 				feature_1_image: {
 					id: 'feature_1_image',
@@ -392,16 +410,10 @@ export default [
 					type: 'page',
 					body: [
 						'feature_1',
-						'text_1',
-						'text_2',
-						'text_3',
-						'text_4',
-						'text_5',
-						'text_6',
-						'text_7',
-						'text_8',
-						'text_9',
-						'text_10',
+						'prose_1',
+						'prose_2',
+						'prose_3',
+						'prose_4',
 						'gallery_1',
 						'figure_1'
 					],
