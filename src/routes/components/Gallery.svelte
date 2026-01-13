@@ -1,6 +1,7 @@
 <script>
 	import { getContext } from 'svelte';
 	import { Node, NodeArrayProperty } from 'svedit';
+	import { TW_LIMITER } from '../tailwind_theme.js';
 	let { path } = $props();
 
 	const svedit = getContext('svedit');
@@ -42,7 +43,9 @@
 </script>
 
 <Node {path}>
-	<div class="mx-auto w-full max-w-5xl px-1.5 py-16 sm:px-2">
+	<div class="{TW_LIMITER} w-full">
+		<div class="border-l border-r py-16">
 		<NodeArrayProperty class={grid_layout} path={[...path, 'gallery_items']} />
+		</div>
 	</div>
 </Node>

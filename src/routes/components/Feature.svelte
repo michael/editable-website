@@ -2,7 +2,7 @@
 	import { getContext } from 'svelte';
 	import { Node, CustomProperty, AnnotatedTextProperty } from 'svedit';
 	import Image from './Image.svelte';
-	import { TW_PAGE_PADDING, TW_MOBILE_LEFT_INSET } from '../tailwind_theme.js';
+	import { TW_PAGE_PADDING, TW_MOBILE_LEFT_INSET, TW_LIMITER } from '../tailwind_theme.js';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
@@ -63,7 +63,7 @@
 
 <!-- Default layout for Feature -->
 {#snippet layout_1()}
-	<div class="mx-auto max-w-7xl xl:px-8">
+	<div class="{TW_LIMITER}">
 		<div class="grid grid-cols-1 md:grid-cols-2 xl:border-r xl:border-l">
 			<div class="flex flex-col {TW_PAGE_PADDING}">
 				<div class="max-md:pt-6">{@render big_title()}</div>
@@ -82,7 +82,7 @@
 <!-- Like layout 1 but flipped horizontally -->
 {#snippet layout_2()}
 	<!-- Limiter -->
-	<div class="mx-auto max-w-7xl xl:px-8">
+	<div class="{TW_LIMITER}">
 		<div class="grid grid-cols-2 xl:border-r xl:border-l">
 			<div class="border-r p-15">
 				{@render image(3 / 4)}
