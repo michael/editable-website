@@ -45,7 +45,7 @@
 	</div>
 {/snippet}
 
-<Node class="ew-prose layout-{layout} border-t" {path}>
+<Node class="ew-prose lg:text-lg layout-{layout} border-t" {path}>
 	{@const layouts = [layout_1, layout_2, layout_3]}
 	{@render layouts[layout - 1]()}
 </Node>

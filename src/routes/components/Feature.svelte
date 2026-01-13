@@ -152,7 +152,7 @@
 	</div>
 {/snippet}
 
-<Node class="ew-feature border-t" {path}>
+<Node class="ew-feature lg:text-lg border-t" {path}>
 	{@const layouts = [layout_1, layout_2, layout_3, layout_4, layout_5, layout_6]}
 	{@render layouts[node.layout - 1]()}
 </Node>

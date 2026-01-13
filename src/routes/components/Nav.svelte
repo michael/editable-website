@@ -7,7 +7,7 @@
 
 <Node {path}>
 	<div class="">
-		<div class="nav mx-auto w-full max-w-7xl py-6 pb-12">
+		<div class="nav mx-auto w-full max-w-7xl py-6 pb-12 text-lg">
 			<NodeArrayProperty class="nav-items flex flex-wrap" path={[...path, 'nav_items']} />
 		</div>
 	</div>
