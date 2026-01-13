@@ -1,6 +1,7 @@
 <script>
 	import { getContext } from 'svelte';
 	import { Node, NodeArrayProperty } from 'svedit';
+	import { PAGE_PADDING_X } from '../tailwind_theme.js';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
@@ -9,12 +10,10 @@
 </script>
 
 <!-- Layout 1: Left-aligned -->
-
-
 {#snippet layout_1()}
 	<div class="mx-auto max-w-7xl xl:px-8">
 		<div class="xl:border-r xl:border-l py-8">
-			<div class="max-w-4xl px-6 sm:px-15">
+			<div class="max-w-4xl {PAGE_PADDING_X}">
 				<NodeArrayProperty path={[...path, 'content']} />
 			</div>
 		</div>
@@ -24,7 +23,7 @@
 <!-- Layout 2: Centered -->
 {#snippet layout_2()}
 	<div class="mx-auto max-w-7xl">
-		<div class="mx-auto max-w-4xl px-6 text-center sm:px-15">
+		<div class="mx-auto max-w-4xl {PAGE_PADDING_X} text-center">
 			<NodeArrayProperty path={[...path, 'content']} />
 		</div>
 	</div>

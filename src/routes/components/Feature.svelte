@@ -2,6 +2,7 @@
 	import { getContext } from 'svelte';
 	import { Node, CustomProperty, AnnotatedTextProperty } from 'svedit';
 	import Image from './Image.svelte';
+	import { PAGE_PADDING } from '../tailwind_theme.js';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
@@ -11,7 +12,7 @@
 
 	const TITLE_PLACEHOLDER = 'MODULUS MATRIX - 85 Social housing in Cornellà Cornellà 2021';
 	const DESCRIPTION_PLACEHOLDER =
-		'Para los 10.000 m2 de superficie edificada del nuevo edificio ubicado en Cornellà de Llobregat (Barcelona), que consta de 85 viviendas sociales distribuidas en 5 alturas, se han utilizado un total de 8.300 m2 de madera KM0 procedente del País Vasco. El diseño de una matriz de habitaciones comunicantes, que elimina pasillos para garantizar el máximo aprovechamiento en planta, y el uso de la madera en favor de las posibilidades de industrialización del edificio, la mejora de la calidad de la construcción y la notable reducción de los plazos de ejecución y las emisiones de C02, son los ejes de este nuevo edificio de viviendas.';
+		'Para los 10.000 m2 de superficie edificada del nuevo edificio ubicado en Cornellà de Llobregat (Barcelona), que consta de 85 viviendas sociales distribuidas en 5 alturas, se han utilizado un total de 8.300 m2 de madera KM0 procedente del País Vasco. El diseño de una matriz de habitaciones comunicantes, que elimina pasillos para garantizar el máximo aprovechamiento en planta, y el uso de la madera en favor de las posibilidades de industrialización del edificio, la mejora de la calidad de la construcción y la notable reducción de los plazos de ejecución y las emisiones de C02, son los ejes de este nuevo edificio de viviendas.';
 
 	function is_image_selected() {
 		const path_of_selection = svedit?.session?.selection?.path?.join('.');
@@ -61,21 +62,18 @@
 	/>
 {/snippet}
 
-<!-- Layouts -->
+<!-- Default layout for Feature -->
 {#snippet layout_1()}
-	<!-- Limiter -->
 	<div class="mx-auto max-w-7xl xl:px-8">
 		<div class="grid grid-cols-1 md:grid-cols-2 xl:border-r xl:border-l">
-			<div class="flex flex-col p-5 sm:p-8 md:p-11 lg:p-14">
+			<div class="flex flex-col {PAGE_PADDING}">
 				<div class="max-md:pt-6">{@render big_title()}</div>
 				<div class="flex-1" contenteditable="false"></div>
 				<div class="max-md:pt-16 max-md:pb-6 max-md:pl-16">
 					{@render description()}
 				</div>
 			</div>
-			<!-- Separator line, only visible on mobile -->
-			<!-- <div class="ml-5 sm:ml-8 border-t md:hidden" contenteditable="false"></div> -->
-			<div class="p-5 sm:p-8 md:border-l md:p-11 lg:p-14">
+			<div class="{PAGE_PADDING} md:border-l">
 				{@render image(3 / 4)}
 			</div>
 		</div>
