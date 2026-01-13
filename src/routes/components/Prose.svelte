@@ -1,7 +1,7 @@
 <script>
 	import { getContext } from 'svelte';
 	import { Node, NodeArrayProperty } from 'svedit';
-	import { PAGE_PADDING_X } from '../tailwind_theme.js';
+	import { TW_PAGE_PADDING_X, TW_MOBILE_LEFT_INSET } from '../tailwind_theme.js';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
@@ -13,7 +13,7 @@
 {#snippet layout_1()}
 	<div class="mx-auto max-w-7xl xl:px-8">
 		<div class="xl:border-r xl:border-l py-8">
-			<div class="max-w-4xl {PAGE_PADDING_X}">
+			<div class="{TW_PAGE_PADDING_X} max-w-4xl">
 				<NodeArrayProperty path={[...path, 'content']} />
 			</div>
 		</div>
@@ -22,18 +22,25 @@
 
 <!-- Layout 2: Centered -->
 {#snippet layout_2()}
-	<div class="mx-auto max-w-7xl">
-		<div class="mx-auto max-w-4xl {PAGE_PADDING_X} text-center">
-			<NodeArrayProperty path={[...path, 'content']} />
+	<div class="mx-auto max-w-7xl xl:px-8">
+		<div class="xl:border-r xl:border-l">
+			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-4xl text-center">
+				<NodeArrayProperty path={[...path, 'content']} />
+			</div>
 		</div>
 	</div>
 {/snippet}
 
 <!-- Layout 3: Right-aligned -->
 {#snippet layout_3()}
-	<div class="mx-auto max-w-7xl grid grid-cols-3">
-		<div class="col-span-3 pr-6 pl-20 sm:pr-15 md:col-span-2 md:col-start-2 md:pl-0">
-			<NodeArrayProperty path={[...path, 'content']} />
+	<div class="mx-auto max-w-7xl xl:px-8">
+		<div class="xl:border-r xl:border-l grid grid-cols-3">
+			<!-- IMPORTANT: Keep in sync with TW_PAGE_PADDING_X -->
+			<div class="max-sm:pl-5 max-md:pl-7 pr-5 sm:pr-7 md:pr-10 lg:pr-14 col-span-3 md:col-span-2 md:col-start-2">
+				<div class="{TW_MOBILE_LEFT_INSET}">
+					<NodeArrayProperty path={[...path, 'content']} />
+				</div>
+			</div>
 		</div>
 	</div>
 {/snippet}

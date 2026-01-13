@@ -2,7 +2,7 @@
 	import { getContext } from 'svelte';
 	import { Node, CustomProperty, AnnotatedTextProperty } from 'svedit';
 	import Image from './Image.svelte';
-	import { PAGE_PADDING } from '../tailwind_theme.js';
+	import { TW_PAGE_PADDING, TW_MOBILE_LEFT_INSET } from '../tailwind_theme.js';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
@@ -56,7 +56,6 @@
 {#snippet description()}
 	<AnnotatedTextProperty
 		tag="p"
-		class="text-gray-600"
 		path={[...path, 'description']}
 		placeholder={DESCRIPTION_PLACEHOLDER}
 	/>
@@ -66,14 +65,14 @@
 {#snippet layout_1()}
 	<div class="mx-auto max-w-7xl xl:px-8">
 		<div class="grid grid-cols-1 md:grid-cols-2 xl:border-r xl:border-l">
-			<div class="flex flex-col {PAGE_PADDING}">
+			<div class="flex flex-col {TW_PAGE_PADDING}">
 				<div class="max-md:pt-6">{@render big_title()}</div>
 				<div class="flex-1" contenteditable="false"></div>
-				<div class="max-md:pt-16 max-md:pb-6 max-md:pl-16">
+				<div class="{TW_MOBILE_LEFT_INSET} max-md:pt-16 max-md:pb-6">
 					{@render description()}
 				</div>
 			</div>
-			<div class="{PAGE_PADDING} md:border-l">
+			<div class="{TW_PAGE_PADDING} md:border-l">
 				{@render image(3 / 4)}
 			</div>
 		</div>

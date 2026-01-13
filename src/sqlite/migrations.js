@@ -92,7 +92,7 @@ export default [
 				prose_2: {
 					id: 'prose_2',
 					type: 'prose',
-					layout: 1,
+					layout: 2,
 					content: ['heading_2', 'paragraph_2', 'paragraph_3']
 				},
 				heading_3: {
@@ -120,7 +120,7 @@ export default [
 				prose_3: {
 					id: 'prose_3',
 					type: 'prose',
-					layout: 1,
+					layout: 3,
 					content: ['heading_3', 'paragraph_4', 'paragraph_5']
 				},
 				heading_4: {
