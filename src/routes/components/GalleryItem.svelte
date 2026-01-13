@@ -27,7 +27,7 @@
 		<div
 			contenteditable="false"
 			class="image-wrapper h-full w-full overflow-hidden select-none"
-			class:ew-bg-checkerboard={is_selected || !image_node.src}
+			class:ew-bg-checkerboard={(is_selected || !image_node.src) && svedit.editable}
 		>
 			<Image path={[...path, 'image']} />
 		</div>

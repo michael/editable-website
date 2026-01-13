@@ -13,7 +13,7 @@
 			1: `
 	    	[--layout-orientation:horizontal]
 				grid grid-cols-6
-				*:p-2.5 *:sm:p-3.5 *:md:p-5 *:lg:p-7
+				*:p-5 *:sm:p-7 *:md:p-10 *:lg:p-14
 				*:col-span-6 *:**:[.image-wrapper]:aspect-[2/1]
 				*:nth-[6n+2]:col-span-3 *:nth-[6n+2]:**:[.image-wrapper]:aspect-square *:nth-[6n+3]:col-span-3
 				*:nth-[6n+3]:**:[.image-wrapper]:aspect-square *:nth-[6n+4]:col-span-2 *:nth-[6n+4]:**:[.image-wrapper]:aspect-[4/6] *:nth-[6n+5]:col-span-2 *:nth-[6n+5]:**:[.image-wrapper]:aspect-[4/6] *:nth-[6n+6]:col-span-2 *:nth-[6n+6]:**:[.image-wrapper]:aspect-[4/6]
@@ -21,19 +21,19 @@
 			2: `
 	     	[--layout-orientation:horizontal]
 				grid grid-cols-3
-				*:p-2.5 *:sm:p-3.5 *:md:p-5 *:lg:p-7
+				*:p-5 *:sm:p-7 *:md:p-10 *:lg:p-14
 				**:[.image-wrapper]:aspect-[3/4]
    		`,
 			3: `
 	     	[--layout-orientation:horizontal]
 				grid grid-cols-6
-				*:p-2.5 *:sm:p-3.5 *:md:p-5 *:lg:p-7
+				*:p-5 *:sm:p-7 *:md:p-10 *:lg:p-14
 				**:[.image-wrapper]:aspect-square
    		`,
 			4: `
 	     	[--layout-orientation:horizontal]
 				grid grid-cols-2
-				*:p-2.5 *:sm:p-3.5 *:md:p-5 *:lg:p-7
+				*:p-5 *:sm:p-7 *:md:p-10 *:lg:p-14
 				**:[.image-wrapper]:aspect-[2/1]
    		`
 		};
@@ -43,9 +43,11 @@
 </script>
 
 <Node {path}>
-	<div class="{TW_LIMITER} w-full">
-		<div class="border-l border-r p-2.5 sm:p-3.5 md:p-5 lg:p-7">
-		<NodeArrayProperty class={grid_layout} path={[...path, 'gallery_items']} />
+	<div class="border-t">
+		<div class="{TW_LIMITER} w-full">
+			<div class="-mb-px max-xl:-mr-px xl:border-l">
+				<NodeArrayProperty class="{grid_layout} *:border-r *:border-b" path={[...path, 'gallery_items']} />
+			</div>
 		</div>
 	</div>
 </Node>

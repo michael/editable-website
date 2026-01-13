@@ -18,16 +18,18 @@
 </script>
 
 <Node {path}>
-	<div class="figure mx-auto w-full max-w-5xl py-16">
-		<CustomProperty path={[...path, 'image']}>
-			<div
-				contenteditable="false"
-				class="overflow-hidden"
-				class:ew-bg-checkerboard={is_selected || !image_node.src}
-				class:aspect-video={!image_node.src}
-			>
-				<Image path={[...path, 'image']} />
-			</div>
-		</CustomProperty>
+	<div class="border-t">
+		<div class="figure mx-auto w-full max-w-5xl py-16">
+			<CustomProperty path={[...path, 'image']}>
+				<div
+					contenteditable="false"
+					class="overflow-hidden"
+					class:ew-bg-checkerboard={is_selected || !image_node.src}
+					class:aspect-video={!image_node.src}
+				>
+					<Image path={[...path, 'image']} />
+				</div>
+			</CustomProperty>
+		</div>
 	</div>
 </Node>
