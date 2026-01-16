@@ -35,6 +35,8 @@ import Heading from './components/Heading.svelte';
 import Paragraph from './components/Paragraph.svelte';
 import Gallery from './components/Gallery.svelte';
 import GalleryItem from './components/GalleryItem.svelte';
+import LinkCollection from './components/LinkCollection.svelte';
+import LinkCollectionItem from './components/LinkCollectionItem.svelte';
 import Figure from './components/Figure.svelte';
 import Feature from './components/Feature.svelte';
 import Image from './components/Image.svelte';
@@ -205,6 +207,37 @@ const document_schema = define_document_schema({
 			}
 		}
 	},
+	link_collection: {
+		kind: 'block',
+		properties: {
+			layout: { type: 'integer', default: 1 },
+			link_collection_items: {
+				type: 'node_array',
+				node_types: ['link_collection_item']
+			}
+		}
+	},
+	link_collection_item: {
+		kind: 'block',
+		properties: {
+			href: { type: 'string' },
+			preline: {
+				type: 'annotated_text',
+				node_types: [],
+				allow_newlines: false
+			},
+			title: {
+				type: 'annotated_text',
+				node_types: TITLE_ANNOTATIONS,
+				allow_newlines: false
+			},
+			description: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: true
+			}
+		}
+	},
 	feature: {
 		kind: 'block',
 		properties: {
@@ -273,6 +306,8 @@ const session_config = {
 		Feature,
 		Gallery,
 		GalleryItem,
+		LinkCollection,
+		LinkCollectionItem,
 		Strong,
 		Emphasis,
 		Highlight,
@@ -646,6 +681,49 @@ const session_config = {
 			};
 			tr.create(new_gallery_item);
 			tr.insert_nodes([new_gallery_item.id]);
+			tr.set_selection({
+				type: 'node',
+				path: [...tr.selection.path],
+				anchor_offset: tr.selection.focus_offset,
+				focus_offset: tr.selection.focus_offset
+			});
+		},
+
+		link_collection: function (tr) {
+			const new_link_collection_items = [];
+			for (let i = 0; i < 3; i++) {
+				const link_collection_item = {
+					id: nanoid(),
+					type: 'link_collection_item',
+					href: '',
+					preline: { text: 'Preline', annotations: [] },
+					title: { text: 'Title', annotations: [] },
+					description: { text: 'Description text goes here.', annotations: [] }
+				};
+				tr.create(link_collection_item);
+				new_link_collection_items.push(link_collection_item.id);
+			}
+			const new_link_collection = {
+				id: nanoid(),
+				type: 'link_collection',
+				layout: 1,
+				link_collection_items: new_link_collection_items
+			};
+			tr.create(new_link_collection);
+			tr.insert_nodes([new_link_collection.id]);
+		},
+
+		link_collection_item: function (tr) {
+			const new_link_collection_item = {
+				id: nanoid(),
+				type: 'link_collection_item',
+				href: '',
+				preline: { text: 'Preline', annotations: [] },
+				title: { text: 'Title', annotations: [] },
+				description: { text: 'Description text goes here.', annotations: [] }
+			};
+			tr.create(new_link_collection_item);
+			tr.insert_nodes([new_link_collection_item.id]);
 			tr.set_selection({
 				type: 'node',
 				path: [...tr.selection.path],

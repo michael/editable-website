@@ -398,6 +398,40 @@ export const demo_doc = {
 				'footer_column_4'
 			]
 		},
+		link_collection_item_1: {
+			id: 'link_collection_item_1',
+			type: 'link_collection_item',
+			href: '/docs/getting-started',
+			preline: { text: 'Documentation', annotations: [] },
+			title: { text: 'Getting started', annotations: [] },
+			description: { text: 'Learn how to set up your first editable website in minutes.', annotations: [] }
+		},
+		link_collection_item_2: {
+			id: 'link_collection_item_2',
+			type: 'link_collection_item',
+			href: '/docs/customization',
+			preline: { text: 'Guide', annotations: [] },
+			title: { text: 'Customization', annotations: [] },
+			description: { text: 'Adapt colors, fonts, and layouts to match your brand.', annotations: [] }
+		},
+		link_collection_item_3: {
+			id: 'link_collection_item_3',
+			type: 'link_collection_item',
+			href: 'https://github.com/michael/svedit',
+			preline: { text: 'API Reference', annotations: [] },
+			title: { text: 'Svedit documentation', annotations: [] },
+			description: { text: 'Explore the full API for building custom content types.', annotations: [] }
+		},
+		link_collection_1: {
+			id: 'link_collection_1',
+			type: 'link_collection',
+			layout: 1,
+			link_collection_items: [
+				'link_collection_item_1',
+				'link_collection_item_2',
+				'link_collection_item_3'
+			]
+		},
 		page_1: {
 			id: 'page_1',
 			type: 'page',
@@ -407,6 +441,7 @@ export const demo_doc = {
 				'prose_2',
 				'prose_3',
 				'prose_4',
+				'link_collection_1',
 				'gallery_1',
 				'figure_1'
 			],
