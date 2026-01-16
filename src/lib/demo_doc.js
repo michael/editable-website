@@ -1,8 +1,7 @@
-// Hardcoded demo documents for static deployment
+// Hardcoded demo_doc for static deployment
 // This replaces the database seed for demo purposes
-
-export const nav_doc = {
-	document_id: 'nav_1',
+export const demo_doc = {
+	document_id: 'page_1',
 	nodes: {
 		nav_item_1: {
 			id: 'nav_item_1',
@@ -32,13 +31,9 @@ export const nav_doc = {
 			id: 'nav_1',
 			type: 'nav',
 			nav_items: ['nav_item_1', 'nav_item_2', 'nav_item_3', 'nav_item_4']
-		}
-	}
-};
+		},
 
-export const home_page_doc = {
-	document_id: 'page_1',
-	nodes: {
+
 		heading_1: {
 			id: 'heading_1',
 			type: 'heading',
@@ -420,22 +415,3 @@ export const home_page_doc = {
 		}
 	}
 };
-
-// Demo documents registry
-const demo_docs = {
-	nav_1: nav_doc,
-	page_1: home_page_doc
-};
-
-export function get_demo_document() {
-	const page_doc = demo_docs.page_1;
-
-	const nav_doc_id = page_doc.nodes[page_doc.document_id]?.nav;
-	const nav_doc = nav_doc_id ? demo_docs[nav_doc_id] : null;
-
-	// Merge nav nodes into page document (same as api.remote.js does)
-	return {
-		document_id: page_doc.document_id,
-		nodes: { ...(nav_doc?.nodes || {}), ...page_doc.nodes }
-	};
-}

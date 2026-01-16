@@ -3,10 +3,10 @@
 	import { page } from '$app/stores';
 	import { Svedit, KeyMapper, Command, define_keymap } from 'svedit';
 	import { create_session } from './create_session.js';
-	import { get_demo_document } from '$lib/demo_doc.js';
+	import { demo_doc } from '$lib/demo_doc.js';
 
 	let { data } = $props();
-	let session = $derived(create_session(get_demo_document()));
+	let session = $derived(create_session(demo_doc));
 
 	let app_el = $state();
 	let svedit_ref = $state();
