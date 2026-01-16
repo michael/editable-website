@@ -2,6 +2,8 @@
 
 The next generation of [editable.website](https://editable.website) — a complete rewrite designed to make Svelte users very happy.
 
+> **NOTE:** v2 is currently under heavy development. You can try it out, but it's not ready to use yet.
+
 ## Who is editable.website for?
 
 For anyone who enjoys creating websites using Svelte and wants to allow their clients to make edits directly in the layout as they browse their site.
@@ -31,7 +33,7 @@ And run the development server:
 npm run dev
 ```
 
-**Note:** After `git pull`, delete `data/db.sqlite3` to pick up schema changes.
+<!--**Note:** After `git pull`, delete `data/db.sqlite3` to pick up schema changes.-->
 
 ## Status
 
