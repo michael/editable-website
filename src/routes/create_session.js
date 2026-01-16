@@ -693,13 +693,13 @@ const session_config = {
 			const new_link_collection_items = [];
 			for (let i = 0; i < 3; i++) {
 				const link_collection_item = {
-					id: nanoid(),
-					type: 'link_collection_item',
-					href: '',
-					preline: { text: 'Preline', annotations: [] },
-					title: { text: 'Title', annotations: [] },
-					description: { text: 'Description text goes here.', annotations: [] }
-				};
+						id: nanoid(),
+						type: 'link_collection_item',
+						href: '',
+						preline: { text: '', annotations: [] },
+						title: { text: '', annotations: [] },
+						description: { text: '', annotations: [] }
+					};
 				tr.create(link_collection_item);
 				new_link_collection_items.push(link_collection_item.id);
 			}
@@ -718,9 +718,9 @@ const session_config = {
 				id: nanoid(),
 				type: 'link_collection_item',
 				href: '',
-				preline: { text: 'Preline', annotations: [] },
-				title: { text: 'Title', annotations: [] },
-				description: { text: 'Description text goes here.', annotations: [] }
+				preline: { text: '', annotations: [] },
+				title: { text: '', annotations: [] },
+				description: { text: '', annotations: [] }
 			};
 			tr.create(new_link_collection_item);
 			tr.insert_nodes([new_link_collection_item.id]);

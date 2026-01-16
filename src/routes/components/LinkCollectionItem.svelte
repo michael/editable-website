@@ -13,8 +13,8 @@
 		href={svedit.editable ? undefined : node.href}
 		class="block p-6"
 	>
-		<AnnotatedTextProperty class="text-sm text-gray-500" path={[...path, 'preline']} />
-		<AnnotatedTextProperty class="text-lg font-semibold" path={[...path, 'title']} />
-		<AnnotatedTextProperty class="text-gray-600" path={[...path, 'description']} />
+		<AnnotatedTextProperty class="text-sm text-gray-500" path={[...path, 'preline']} placeholder="Preline" />
+		<AnnotatedTextProperty class="text-lg font-semibold" path={[...path, 'title']} placeholder="Title" />
+		<AnnotatedTextProperty class="text-gray-600" path={[...path, 'description']} placeholder="Description" />
 	</svelte:element>
 </Node>
