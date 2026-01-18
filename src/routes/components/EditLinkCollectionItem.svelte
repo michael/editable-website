@@ -10,16 +10,21 @@
 
 	function get_is_visible() {
 		const selection = svedit.session.selection;
-		if (!selection || selection.type !== 'node') return false;
+		if (!selection) return false;
 
-		// Check if exactly one node is selected
-		const start = Math.min(selection.anchor_offset, selection.focus_offset);
-		const end = Math.max(selection.anchor_offset, selection.focus_offset);
-		if (end - start !== 1) return false;
-
-		// Check if that node is a link_collection_item
+		// Check if selected_node is a link_collection_item
 		const node = svedit.session.selected_node;
-		return node?.type === 'link_collection_item';
+		if (node?.type !== 'link_collection_item') return false;
+
+		// For node selections, check if exactly one node is selected
+		if (selection.type === 'node') {
+			const start = Math.min(selection.anchor_offset, selection.focus_offset);
+			const end = Math.max(selection.anchor_offset, selection.focus_offset);
+			return end - start === 1;
+		}
+
+		// For text/property selections inside a link_collection_item, show the popover
+		return selection.type === 'text' || selection.type === 'property';
 	}
 
 	function get_target_node() {
@@ -29,9 +34,17 @@
 
 	function get_target_path() {
 		const selection = svedit.session.selection;
-		if (!selection || selection.type !== 'node') return null;
-		const index = Math.min(selection.anchor_offset, selection.focus_offset);
-		return [...selection.path, index];
+		if (!selection) return null;
+
+		if (selection.type === 'node') {
+			// Node selection - path points to node_array, offset gives position
+			const index = Math.min(selection.anchor_offset, selection.focus_offset);
+			return [...selection.path, index];
+		} else {
+			// Text or property selection - path is like [node_id, prop, index, 'title']
+			// We need the path to the node: [node_id, prop, index]
+			return selection.path.slice(0, -1);
+		}
 	}
 
 	function save() {
@@ -113,6 +126,6 @@
 		margin-top: 4px;
 		pointer-events: auto;
 		z-index: 30;
-		position-try-fallbacks: flip-block;
+		/*position-try-fallbacks: flip-block;*/
 	}
 </style>
