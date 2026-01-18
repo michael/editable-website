@@ -2,6 +2,7 @@
 	import { getContext } from 'svelte';
 	import ImageControls from './ImageControls.svelte';
 	import CreateLink from './CreateLink.svelte';
+	import EditLinkCollectionItem from './EditLinkCollectionItem.svelte';
 
 	const svedit = getContext('svedit');
 
@@ -86,7 +87,7 @@
 		<button
 			aria-label="Remove Link"
 			type="button"
-			class="flex-shrink-0 cursor-pointer rounded p-0.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+			class="shrink-0 cursor-pointer rounded p-0.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
 			onclick={() => svedit.session.apply(svedit.session.tr.annotate_text('link'))}
 		>
 			<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -100,6 +101,8 @@
 {#if svedit.session.commands?.toggle_link?.show_prompt}
 	<CreateLink />
 {/if}
+
+<EditLinkCollectionItem />
 
 <style>
 	/* This should be an exact overlay */
