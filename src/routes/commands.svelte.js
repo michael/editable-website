@@ -175,6 +175,7 @@ export class ToggleLinkCommand extends Command {
  */
 export class EditLinkCommand extends Command {
 	show_prompt = $state(false);
+	#skip_reset = false;
 
 	constructor(context) {
 		super(context);
@@ -183,8 +184,11 @@ export class EditLinkCommand extends Command {
 		$effect(() => {
 			// Access selection to track it
 			this.context.session.selection;
-			// Reset prompt state on any selection change
-			this.show_prompt = false;
+			// Reset prompt state on any selection change (unless we're executing)
+			if (!this.#skip_reset) {
+				this.show_prompt = false;
+			}
+			this.#skip_reset = false;
 		});
 	}
 
@@ -205,6 +209,12 @@ export class EditLinkCommand extends Command {
 
 	execute() {
 		if (this.is_enabled()) {
+			const { session } = this.context;
+			// Select the parent node if a property is selected
+			if (session.selection?.type === 'text' || session.selection?.type === 'property') {
+				this.#skip_reset = true;
+				session.select_parent();
+			}
 			this.show_prompt = true;
 		}
 	}
