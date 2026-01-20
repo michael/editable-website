@@ -225,6 +225,11 @@ const document_schema = define_document_schema({
 		properties: {
 			href: { type: 'string' },
 			target: { type: 'string', default: '_self' },
+			image: {
+				type: 'node',
+				node_types: ['image'],
+				default_node_type: 'image'
+			},
 			preline: {
 				type: 'annotated_text',
 				node_types: MINIMAL_ANNOTATIONS,
@@ -698,11 +703,26 @@ const session_config = {
 		link_collection: function (tr) {
 			const new_link_collection_items = [];
 			for (let i = 0; i < 3; i++) {
+				const image_id = nanoid();
+				const image = {
+					id: image_id,
+					type: 'image',
+					src: '',
+					width: 800,
+					height: 600,
+					alt: '',
+					scale: 1.0,
+					focal_point_x: 0.5,
+					focal_point_y: 0.5,
+					object_fit: 'cover'
+				};
+				tr.create(image);
 				const link_collection_item = {
 						id: nanoid(),
 						type: 'link_collection_item',
 						href: '',
 						target: '_self',
+						image: image_id,
 						preline: { text: '', annotations: [] },
 						title: { text: '', annotations: [] },
 						description: { text: '', annotations: [] }
@@ -721,11 +741,26 @@ const session_config = {
 		},
 
 		link_collection_item: function (tr) {
+			const image_id = nanoid();
+			const image = {
+				id: image_id,
+				type: 'image',
+				src: '',
+				width: 800,
+				height: 600,
+				alt: '',
+				scale: 1.0,
+				focal_point_x: 0.5,
+				focal_point_y: 0.5,
+				object_fit: 'cover'
+			};
+			tr.create(image);
 			const new_link_collection_item = {
 				id: nanoid(),
 				type: 'link_collection_item',
 				href: '',
 				target: '_self',
+				image: image_id,
 				preline: { text: '', annotations: [] },
 				title: { text: '', annotations: [] },
 				description: { text: '', annotations: [] }

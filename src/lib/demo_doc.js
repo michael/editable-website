@@ -398,10 +398,48 @@ export const demo_doc = {
 				'footer_column_4'
 			]
 		},
+		link_collection_item_1_image: {
+			id: 'link_collection_item_1_image',
+			type: 'image',
+			src: '/sample-images/8.jpg',
+			width: 800,
+			height: 600,
+			alt: 'Getting started',
+			scale: 1.0,
+			focal_point_x: 0.5,
+			focal_point_y: 0.5,
+			object_fit: 'cover'
+		},
+		link_collection_item_2_image: {
+			id: 'link_collection_item_2_image',
+			type: 'image',
+			src: '/sample-images/9.jpg',
+			width: 800,
+			height: 600,
+			alt: 'Customization',
+			scale: 1.0,
+			focal_point_x: 0.5,
+			focal_point_y: 0.5,
+			object_fit: 'cover'
+		},
+		link_collection_item_3_image: {
+			id: 'link_collection_item_3_image',
+			type: 'image',
+			src: '/sample-images/10.jpg',
+			width: 800,
+			height: 600,
+			alt: 'Svedit documentation',
+			scale: 1.0,
+			focal_point_x: 0.5,
+			focal_point_y: 0.5,
+			object_fit: 'cover'
+		},
 		link_collection_item_1: {
 			id: 'link_collection_item_1',
 			type: 'link_collection_item',
 			href: '/docs/getting-started',
+			target: '_self',
+			image: 'link_collection_item_1_image',
 			preline: { text: 'Documentation', annotations: [] },
 			title: { text: 'Getting started', annotations: [] },
 			description: { text: 'Learn how to set up your first editable website in minutes.', annotations: [] }
@@ -410,6 +448,8 @@ export const demo_doc = {
 			id: 'link_collection_item_2',
 			type: 'link_collection_item',
 			href: '/docs/customization',
+			target: '_self',
+			image: 'link_collection_item_2_image',
 			preline: { text: 'Guide', annotations: [] },
 			title: { text: 'Customization', annotations: [] },
 			description: { text: 'Adapt colors, fonts, and layouts to match your brand.', annotations: [] }
@@ -418,6 +458,8 @@ export const demo_doc = {
 			id: 'link_collection_item_3',
 			type: 'link_collection_item',
 			href: 'https://github.com/michael/svedit',
+			target: '_blank',
+			image: 'link_collection_item_3_image',
 			preline: { text: 'API Reference', annotations: [] },
 			title: { text: 'Svedit documentation', annotations: [] },
 			description: { text: 'Explore the full API for building custom content types.', annotations: [] }
