@@ -9,7 +9,7 @@
 
 	function create_link() {
 		if (link_input_value) {
-			svedit.session.apply(svedit.session.tr.annotate_text('link', { href: link_input_value }));
+			svedit.session.apply(svedit.session.tr.annotate_text('link', { href: link_input_value, target: '_self' }));
 		}
 		close();
 	}
