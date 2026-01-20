@@ -42,7 +42,6 @@
 	}
 
 	function handle_backdrop_click(event) {
-		// Close if clicking on the backdrop (the dialog element itself, not its contents)
 		if (event.target === dialog_ref) {
 			close();
 		}
@@ -50,12 +49,10 @@
 
 	$effect(() => {
 		if (edit_link_command?.show_prompt && dialog_ref) {
-			// Initialize with current values
 			href_input_value = target_node?.href || '';
 			open_in_new_tab = target_node?.target === '_blank';
 			dialog_ref.showModal();
 
-			// Focus and select input after dialog opens
 			if (href_input_ref) {
 				href_input_ref.focus();
 				href_input_ref.select();
@@ -68,46 +65,34 @@
 
 <dialog
 	bind:this={dialog_ref}
-	class="edit-link-dialog absolute z-40 mt-1 bg-white p-4 shadow-xl overflow-visible max-h-90"
+	class="edit-link-dialog absolute z-40 mt-1 m-0 bg-white p-0 shadow-xl overflow-visible max-h-90 border border-(--editing-stroke-color)"
 	style="position-anchor: --{path.join('-')}; position-area: block-end span-all; justify-self: anchor-center;"
 	onclick={handle_backdrop_click}
 >
-	<div class="flex flex-col gap-3">
-		<h2 class="text-lg font-semibold text-gray-900">Edit Link</h2>
-		<div class="flex flex-col gap-2">
-			<label for="edit-link-href" class="text-sm text-gray-600">URL</label>
-			<input
-				id="edit-link-href"
-				bind:this={href_input_ref}
-				type="url"
-				bind:value={href_input_value}
-				placeholder="https://example.com"
-				class="w-72 border border-gray-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-				onkeydown={handle_keydown}
-			/>
-		</div>
-		<label class="flex items-center gap-2 cursor-pointer">
-			<input
-				type="checkbox"
-				bind:checked={open_in_new_tab}
-				class="w-4 h-4 cursor-pointer"
-			/>
-			<span class="text-sm text-gray-600">Open in new tab</span>
-		</label>
-		<div class="flex justify-end gap-2">
+	<div class="flex flex-col">
+		<input
+			bind:this={href_input_ref}
+			type="url"
+			bind:value={href_input_value}
+			placeholder="https://example.com"
+			class="w-72 px-3 py-2 text-sm text-gray-700 outline-none border-b border-gray-200 focus:border-(--editing-stroke-color)"
+			onkeydown={handle_keydown}
+		/>
+		<div class="flex items-center justify-between px-3 py-2">
+			<label class="flex items-center gap-2 cursor-pointer">
+				<input
+					type="checkbox"
+					bind:checked={open_in_new_tab}
+					class="w-4 h-4 cursor-pointer accent-(--editing-stroke-color)"
+				/>
+				<span class="text-sm text-gray-600">Open in new tab</span>
+			</label>
 			<button
 				type="button"
-				class="cursor-pointer px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100"
-				onclick={close}
-			>
-				Cancel
-			</button>
-			<button
-				type="button"
-				class="cursor-pointer bg-blue-500 px-3 py-1.5 text-sm text-white hover:bg-blue-600"
+				class="text-sm font-medium text-(--editing-stroke-color) cursor-pointer shrink-0 hover:opacity-80"
 				onclick={save}
 			>
-				Save
+				UPDATE
 			</button>
 		</div>
 	</div>
@@ -115,6 +100,6 @@
 
 <style>
 	.edit-link-dialog::backdrop {
-		background: rgba(0, 0, 0, 0.3);
+		background: rgba(0, 0, 0, 0.15);
 	}
 </style>
