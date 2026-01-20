@@ -397,7 +397,7 @@ export default [
 				footer_1: {
 					id: 'footer_1',
 					type: 'footer',
-					copyright: { text: '© Editable Website 2025', annotations: [] },
+					copyright: { text: '© Editable Website 2026', annotations: [] },
 					footer_link_columns: [
 						'footer_column_1',
 						'footer_column_2',

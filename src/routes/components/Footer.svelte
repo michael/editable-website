@@ -6,6 +6,13 @@
 	const svedit = getContext('svedit');
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
+	let column_count = $derived(node.footer_link_columns?.length || 0);
+	let grid_cols_class = $derived(
+		column_count <= 1 ? 'lg:grid-cols-1' :
+		column_count === 2 ? 'lg:grid-cols-2' :
+		column_count === 3 ? 'lg:grid-cols-3' :
+		'lg:grid-cols-4'
+	);
 </script>
 
 <Node {path} class="border-t border-b border-gray-400">
@@ -19,7 +26,7 @@
 				/>
 			</div>
 			<NodeArrayProperty
-				class="footer-columns order-1 md:order-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 flex-1"
+				class="footer-columns order-1 md:order-2 grid grid-cols-2 {grid_cols_class} flex-1"
 				path={[...path, 'footer_link_columns']}
 			/>
 		</div>
