@@ -6,7 +6,17 @@
 	let { path } = $props();
 
 	let edit_link_command = $derived(svedit.session.commands?.edit_link);
-	let target_node = $derived(svedit.session.selected_node);
+	let target_node = $derived(get_target_node());
+
+	function get_target_node() {
+		const selected_node = svedit.session.selected_node;
+		if (selected_node && 'href' in selected_node) return selected_node;
+
+		const active_link = svedit.session.active_annotation('link');
+		if (active_link) return svedit.session.get(active_link.node_id);
+
+		return null;
+	}
 	let href_input_value = $state('');
 	let open_in_new_tab = $state(false);
 	let href_input_ref = $state();
