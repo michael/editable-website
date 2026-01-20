@@ -480,12 +480,10 @@ export const demo_doc = {
 			body: [
 				'feature_1',
 				'prose_1',
-				'prose_2',
-				'prose_3',
-				'prose_4',
 				'link_collection_1',
+				'prose_2',
 				'gallery_1',
-				'figure_1'
+				'prose_3'
 			],
 			nav: 'nav_1',
 			footer: 'footer_1'
