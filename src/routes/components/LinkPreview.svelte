@@ -5,6 +5,8 @@
 
 	let { node, path } = $props();
 
+	let is_annotation = $derived(svedit.session.kind(node) === 'annotation');
+
 	function handle_edit() {
 		const edit_link_command = svedit.session.commands?.edit_link;
 		if (edit_link_command) {
@@ -34,6 +36,15 @@
 			>
 				EDIT
 			</button>
+			{#if is_annotation}
+				<button
+					type="button"
+					class="text-sm text-editing cursor-pointer shrink-0 hover:opacity-80"
+					onclick={() => svedit.session.apply(svedit.session.tr.annotate_text('link'))}
+				>
+					REMOVE
+				</button>
+			{/if}
 		</div>
 	{:else}
 		<button
