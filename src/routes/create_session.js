@@ -105,6 +105,7 @@ const document_schema = define_document_schema({
 		kind: 'block',
 		properties: {
 			href: { type: 'string' },
+			target: { type: 'string', default: '_self' },
 			label: {
 				type: 'annotated_text',
 				node_types: [],
@@ -126,6 +127,7 @@ const document_schema = define_document_schema({
 		kind: 'block',
 		properties: {
 			href: { type: 'string' },
+			target: { type: 'string', default: '_self' },
 			label: {
 				type: 'annotated_text',
 				node_types: [],
@@ -222,6 +224,7 @@ const document_schema = define_document_schema({
 		kind: 'block',
 		properties: {
 			href: { type: 'string' },
+			target: { type: 'string', default: '_self' },
 			preline: {
 				type: 'annotated_text',
 				node_types: MINIMAL_ANNOTATIONS,
@@ -264,7 +267,8 @@ const document_schema = define_document_schema({
 	link: {
 		kind: 'annotation',
 		properties: {
-			href: { type: 'string' }
+			href: { type: 'string' },
+			target: { type: 'string', default: '_self' }
 		}
 	},
 	strong: {

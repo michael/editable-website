@@ -8,6 +8,7 @@
 	let edit_link_command = $derived(svedit.session.commands?.edit_link);
 	let target_node = $derived(svedit.session.selected_node);
 	let href_input_value = $state('');
+	let open_in_new_tab = $state(false);
 	let href_input_ref = $state();
 	let dialog_ref = $state();
 
@@ -15,6 +16,7 @@
 		if (target_node && 'href' in target_node) {
 			const tr = svedit.session.tr;
 			tr.set([target_node.id, 'href'], href_input_value);
+			tr.set([target_node.id, 'target'], open_in_new_tab ? '_blank' : '_self');
 			svedit.session.apply(tr);
 		}
 		close();
@@ -48,8 +50,9 @@
 
 	$effect(() => {
 		if (edit_link_command?.show_prompt && dialog_ref) {
-			// Initialize with current href value
+			// Initialize with current values
 			href_input_value = target_node?.href || '';
+			open_in_new_tab = target_node?.target === '_blank';
 			dialog_ref.showModal();
 
 			// Focus and select input after dialog opens
@@ -83,6 +86,14 @@
 				onkeydown={handle_keydown}
 			/>
 		</div>
+		<label class="flex items-center gap-2 cursor-pointer">
+			<input
+				type="checkbox"
+				bind:checked={open_in_new_tab}
+				class="w-4 h-4 cursor-pointer"
+			/>
+			<span class="text-sm text-gray-600">Open in new tab</span>
+		</label>
 		<div class="flex justify-end gap-2">
 			<button
 				type="button"

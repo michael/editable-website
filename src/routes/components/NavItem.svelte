@@ -10,6 +10,7 @@
 <Node {path}>
 	<svelte:element
 		this={svedit.editable ? 'div' : 'a'}
+		target={node?.target || '_self'}
 		href={svedit.editable ? undefined : node.href}
 		class="nav-item"
 	>
