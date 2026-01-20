@@ -10,16 +10,16 @@
 
 <Node {path} class="border-t border-b border-gray-400">
 	<div class="{TW_LIMITER}">
-		<div class="flex items-stretch border-l border-r border-gray-400">
-			<div class="w-1/4 flex items-center {TW_PAGE_PADDING_X} py-4">
+		<div class="flex flex-col md:flex-row md:items-stretch border-l border-r border-gray-400">
+			<div class="order-2 md:order-1 md:w-1/4 flex items-center justify-center md:justify-start {TW_PAGE_PADDING_X} py-4 border-t md:border-t-0 border-gray-400">
 				<AnnotatedTextProperty
-					class="text-sm text-gray-600"
+					class="text-sm text-gray-600 text-center md:text-left"
 					path={[...path, 'copyright']}
 					placeholder="© 2025 Company"
 				/>
 			</div>
 			<NodeArrayProperty
-				class="footer-columns flex items-stretch flex-1"
+				class="footer-columns order-1 md:order-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 flex-1"
 				path={[...path, 'footer_link_columns']}
 			/>
 		</div>
@@ -37,7 +37,13 @@
 	:global(.footer-columns > *) {
 		display: flex;
 		flex-direction: column;
-		flex: 1;
 		border-left: 1px solid rgb(156, 163, 175);
+	}
+
+	@media (max-width: 767px) {
+		:global(.footer-columns > *) {
+			border-left: none;
+			border-top: 1px solid rgb(156, 163, 175);
+		}
 	}
 </style>
