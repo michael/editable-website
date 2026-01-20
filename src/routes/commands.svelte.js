@@ -169,3 +169,37 @@ export class ToggleLinkCommand extends Command {
 		}
 	}
 }
+
+/**
+ * Command that opens the edit link dialog for link-ish nodes (nodes with href property).
+ */
+export class EditLinkCommand extends Command {
+	show_prompt = $state(false);
+
+	constructor(context) {
+		super(context);
+
+		// Reset show_prompt when selection changes
+		$effect(() => {
+			// Access selection to track it
+			this.context.session.selection;
+			// Reset prompt state on any selection change
+			this.show_prompt = false;
+		});
+	}
+
+	is_enabled() {
+		const { session, editable } = this.context;
+		if (!editable || !session.selection) return false;
+
+		// Check if selected_node has an href property (link-ish node)
+		const selected_node = session.selected_node;
+		return selected_node && 'href' in selected_node;
+	}
+
+	execute() {
+		if (this.is_enabled()) {
+			this.show_prompt = true;
+		}
+	}
+}

@@ -2,6 +2,7 @@
 	import { getContext } from 'svelte';
 	import ImageControls from './ImageControls.svelte';
 	import CreateLink from './CreateLink.svelte';
+	import EditLink from './EditLink.svelte';
 	import LinkPreview from './LinkPreview.svelte';
 
 	const svedit = getContext('svedit');
@@ -99,8 +100,12 @@
 	{/each}
 {/if}
 
-{#if link_preview}
+{#if link_preview && !svedit.session.commands?.edit_link?.show_prompt}
 	<LinkPreview node={link_preview.node} path={link_preview.path} />
+{/if}
+
+{#if link_preview && svedit.session.commands?.edit_link?.show_prompt}
+	<EditLink path={link_preview.path} />
 {/if}
 
 {#if svedit.session.commands?.toggle_link?.show_prompt}

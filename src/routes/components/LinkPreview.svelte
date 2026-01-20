@@ -6,8 +6,10 @@
 	let { node, path } = $props();
 
 	function handle_edit() {
-		// TODO: Trigger EditLink modal via EditLinkCommand
-		console.log('Edit link:', node.href);
+		const edit_link_command = svedit.session.commands?.edit_link;
+		if (edit_link_command) {
+			edit_link_command.show_prompt = true;
+		}
 	}
 </script>
 

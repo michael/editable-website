@@ -15,7 +15,8 @@ import {
 	CycleLayoutCommand,
 	CycleNodeTypeCommand,
 	ResetImageCommand,
-	ToggleLinkCommand
+	ToggleLinkCommand,
+	EditLinkCommand
 } from './commands.svelte.js';
 
 // System components
@@ -419,7 +420,8 @@ const session_config = {
 			cycle_node_type_next: new CycleNodeTypeCommand('next', context),
 			cycle_node_type_previous: new CycleNodeTypeCommand('previous', context),
 			reset_image: new ResetImageCommand(context),
-			toggle_link: new ToggleLinkCommand(context)
+			toggle_link: new ToggleLinkCommand(context),
+			edit_link: new EditLinkCommand(context)
 		};
 
 		// Define keymap binding keys to commands
@@ -439,7 +441,7 @@ const session_config = {
 			backspace: [commands.reset_image],
 			// Fallback for iOS, as property selection triggers auto capitalization (shift pressed)
 			'shift+backspace': [commands.reset_image],
-			'meta+k,ctrl+k': [commands.toggle_link]
+			'meta+k,ctrl+k': [commands.edit_link, commands.toggle_link]
 		});
 
 		return { commands, keymap };

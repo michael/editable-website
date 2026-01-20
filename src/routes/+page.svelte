@@ -96,9 +96,9 @@
 		{#if editable}
 			<div class="flex-column mx-auto my-10 w-full max-w-5xl gap-y-2">
 				<p>Selection:</p>
-				<pre class="debug-info p-4">{JSON.stringify(session.selection || {}, null, '  ')}</pre>
+				<pre tabindex="-1" class="debug-info p-4">{JSON.stringify(session.selection || {}, null, '  ')}</pre>
 				<p>Nodes:</p>
-				<pre class="debug-info p-4">{JSON.stringify(session.to_json(), null, '  ')}</pre>
+				<pre tabindex="-1" class="debug-info p-4">{JSON.stringify(session.to_json(), null, '  ')}</pre>
 			</div>
 		{/if}
 	</div>
