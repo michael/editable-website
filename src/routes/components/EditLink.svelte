@@ -75,7 +75,7 @@
 			type="url"
 			bind:value={href_input_value}
 			placeholder="https://example.com"
-			class="w-72 px-3 py-2 text-sm text-gray-700 outline-none border-b border-gray-200 focus:border-editing"
+			class="w-72 px-3 py-2 text-sm text-gray-700 border-b border-gray-200 focus:border-editing focus:ring-editing"
 			onkeydown={handle_keydown}
 		/>
 		<div class="flex items-center justify-between px-3 py-2">
