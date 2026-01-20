@@ -93,24 +93,24 @@
 		<!-- <Toolbar {session} {focus_canvas} bind:editable /> -->
 		<Svedit {session} bind:editable bind:this={svedit_ref} path={[session.doc.document_id]} />
 
-		{#if editable}
+		<!-- {#if editable}
 			<div class="flex-column mx-auto my-10 w-full max-w-5xl gap-y-2">
 				<p>Selection:</p>
 				<pre tabindex="-1" class="debug-info p-4">{JSON.stringify(session.selection || {}, null, '  ')}</pre>
 				<p>Nodes:</p>
 				<pre tabindex="-1" class="debug-info p-4">{JSON.stringify(session.to_json(), null, '  ')}</pre>
 			</div>
-		{/if}
+		{/if} -->
 	</div>
 {/key}
 
 <style>
-	.debug-info {
+	/*.debug-info {
 		text-wrap: wrap;
 		height: 12lh;
 		overflow-y: auto;
 		color: white;
 		background: var(--primary-fill-color);
 		font-size: 12px;
-	}
+	}*/
 </style>

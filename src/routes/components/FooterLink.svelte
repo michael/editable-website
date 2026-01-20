@@ -13,7 +13,8 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
+		class="flex items-center justify-center py-4"
 	>
-		<AnnotatedTextProperty class="px-2 py-1" path={[...path, 'label']} placeholder="Label" />
+		<AnnotatedTextProperty path={[...path, 'label']} placeholder="Label" />
 	</svelte:element>
 </Node>

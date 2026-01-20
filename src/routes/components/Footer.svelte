@@ -1,29 +1,43 @@
 <script>
 	import { getContext } from 'svelte';
 	import { AnnotatedTextProperty, NodeArrayProperty, Node } from 'svedit';
-	const svedit = getContext('svedit');
+	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 
+	const svedit = getContext('svedit');
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
 </script>
 
-<Node {path}>
-	<div class="footer relative mx-3 flex px-4 py-12 sm:px-6 md:mx-8 lg:mx-12">
-		<div
-			class="mx-auto grid w-full grid-cols-1 gap-6 md:max-w-5xl md:grid-cols-4 md:gap-8 lg:grid-cols-6"
-		>
-			<!-- Copyright column -->
-			<AnnotatedTextProperty
-				class="col-span-1 flex-col gap-4 sm:col-span-2"
-				path={[...path, 'copyright']}
-				placeholder="Copyright"
-			/>
-
-			<!-- Link columns wrapper using subgrid -->
+<Node {path} class="border-t border-b border-gray-400">
+	<div class="{TW_LIMITER}">
+		<div class="flex items-stretch border-l border-r border-gray-400">
+			<div class="w-1/4 flex items-center {TW_PAGE_PADDING_X} py-4">
+				<AnnotatedTextProperty
+					class="text-sm text-gray-600"
+					path={[...path, 'copyright']}
+					placeholder="© 2025 Company"
+				/>
+			</div>
 			<NodeArrayProperty
-				class="[--layout-orientation:vertical] md:[--layout-orientation:horizontal] link-columns grid grid-cols-subgrid col-span-1 md:col-span-2 lg:col-span-4 gap-6 lg:gap-8"
+				class="footer-columns flex items-stretch flex-1"
 				path={[...path, 'footer_link_columns']}
 			/>
 		</div>
 	</div>
 </Node>
+<div class="{TW_LIMITER} w-full">
+	<div class="h-8 border-l border-r border-gray-400"></div>
+</div>
+
+<style>
+	:global(.footer-columns) {
+		--layout-orientation: horizontal;
+	}
+
+	:global(.footer-columns > *) {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		border-left: 1px solid rgb(156, 163, 175);
+	}
+</style>

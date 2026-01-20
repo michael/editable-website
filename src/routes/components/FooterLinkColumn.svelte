@@ -8,15 +8,24 @@
 </script>
 
 <Node {path}>
-	<div class="footer-link-column flex flex-col gap-4 pb-8">
-		<AnnotatedTextProperty
-			class="font-lora h6 scroll-mt-24 font-medium text-balance text-black"
-			path={[...path, 'label']}
-			placeholder="Label"
-		/>
+	<div class="footer-link-column flex flex-col">
 		<NodeArrayProperty
-			class="[--layout-orientation:vertical] footer-links flex flex-col text-sm"
+			class="footer-links flex flex-col"
 			path={[...path, 'footer_links']}
 		/>
 	</div>
 </Node>
+
+<style>
+	:global(.footer-links) {
+		--layout-orientation: vertical;
+	}
+
+	:global(.footer-links > *) {
+		border-bottom: 1px solid rgb(156, 163, 175);
+	}
+
+	:global(.footer-links > *:last-child) {
+		border-bottom: none;
+	}
+</style>
