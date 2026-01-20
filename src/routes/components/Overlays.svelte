@@ -8,6 +8,14 @@
 	const svedit = getContext('svedit');
 
 	let is_dragging = $state(false);
+	let overlays_ref = $state();
+
+	function handle_mousemove(e) {
+		if (e.buttons !== 1) return;
+		// Only set is_dragging if drag started outside overlays
+		if (overlays_ref?.contains(e.target)) return;
+		is_dragging = true;
+	}
 
 	let node_array_selection_paths = $derived(get_node_array_selection_paths());
 	let selected_property = $derived(
@@ -76,43 +84,45 @@
 	}
 </script>
 
-{#if svedit.session.selection?.type === 'property'}
-	{#if is_image_selected}
-		<div
-			class="image-controls-overlay property-selection-overlay"
-			style="position-anchor: --{svedit.session.selection.path.join('-')};"
-		>
-			{#if selected_property.src}
-				<ImageControls path={svedit.session.selection.path} />
-			{/if}
-		</div>
-	{:else}
-		<div
-			class="property-selection-overlay"
-			style="position-anchor: --{svedit.session.selection.path.join('-')};"
-		></div>
+<div bind:this={overlays_ref}>
+	{#if svedit.session.selection?.type === 'property'}
+		{#if is_image_selected}
+			<div
+				class="image-controls-overlay property-selection-overlay"
+				style="position-anchor: --{svedit.session.selection.path.join('-')};"
+			>
+				{#if selected_property.src}
+					<ImageControls path={svedit.session.selection.path} />
+				{/if}
+			</div>
+		{:else}
+			<div
+				class="property-selection-overlay"
+				style="position-anchor: --{svedit.session.selection.path.join('-')};"
+			></div>
+		{/if}
 	{/if}
-{/if}
-<!-- Here we render  and other stuff that should lay atop of the canvas -->
-<!-- NOTE: we are using CSS Anchor Positioning, which currently only works in the latest Chrome browser -->
-{#if node_array_selection_paths}
-	<!-- Render node selection fragments (one per selected node)-->
-	{#each node_array_selection_paths as path (path.join('-'))}
-		<div class="node-selection-fragment" style="position-anchor: --{path.join('-')};"></div>
-	{/each}
-{/if}
+	<!-- Here we render  and other stuff that should lay atop of the canvas -->
+	<!-- NOTE: we are using CSS Anchor Positioning, which currently only works in the latest Chrome browser -->
+	{#if node_array_selection_paths}
+		<!-- Render node selection fragments (one per selected node)-->
+		{#each node_array_selection_paths as path (path.join('-'))}
+			<div class="node-selection-fragment" style="position-anchor: --{path.join('-')};"></div>
+		{/each}
+	{/if}
 
-{#if link_preview && !svedit.session.commands?.edit_link?.show_prompt && !is_dragging}
-	<LinkPreview node={link_preview.node} path={link_preview.path} />
-{/if}
+	{#if link_preview && !svedit.session.commands?.edit_link?.show_prompt && !is_dragging}
+		<LinkPreview node={link_preview.node} path={link_preview.path} />
+	{/if}
 
-{#if link_preview && svedit.session.commands?.edit_link?.show_prompt}
-	<EditLink path={link_preview.path} />
-{/if}
+	{#if link_preview && svedit.session.commands?.edit_link?.show_prompt}
+		<EditLink path={link_preview.path} />
+	{/if}
 
-{#if svedit.session.commands?.toggle_link?.show_prompt}
-	<CreateLink />
-{/if}
+	{#if svedit.session.commands?.toggle_link?.show_prompt}
+		<CreateLink />
+	{/if}
+</div>
 
 <style>
 	/* This should be an exact overlay */
@@ -139,4 +149,4 @@
 	}
 </style>
 
-<svelte:document onmousemove={(e) => { if (e.buttons === 1) is_dragging = true; }} onmouseup={() => is_dragging = false} />
+<svelte:document onmousemove={handle_mousemove} onmouseup={() => is_dragging = false} />
