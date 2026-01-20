@@ -6,25 +6,25 @@ export const demo_doc = {
 		nav_item_1: {
 			id: 'nav_item_1',
 			type: 'nav_item',
-			url: '/',
+			href: '/',
 			label: { text: 'Home', annotations: [] }
 		},
 		nav_item_2: {
 			id: 'nav_item_2',
 			type: 'nav_item',
-			url: '/projects',
+			href: '/projects',
 			label: { text: 'Projects', annotations: [] }
 		},
 		nav_item_3: {
 			id: 'nav_item_3',
 			type: 'nav_item',
-			url: '/blog',
+			href: '/blog',
 			label: { text: 'Blog', annotations: [] }
 		},
 		nav_item_4: {
 			id: 'nav_item_4',
 			type: 'nav_item',
-			url: '/about',
+			href: '/about',
 			label: { text: 'About', annotations: [] }
 		},
 		nav_1: {
@@ -294,73 +294,73 @@ export const demo_doc = {
 		footer_link_1_1: {
 			id: 'footer_link_1_1',
 			type: 'footer_link',
-			url: '/about',
+			href: '/about',
 			label: { text: 'About Us', annotations: [] }
 		},
 		footer_link_1_2: {
 			id: 'footer_link_1_2',
 			type: 'footer_link',
-			url: '/team',
+			href: '/team',
 			label: { text: 'Our Team', annotations: [] }
 		},
 		footer_link_1_3: {
 			id: 'footer_link_1_3',
 			type: 'footer_link',
-			url: '/careers',
+			href: '/careers',
 			label: { text: 'Careers', annotations: [] }
 		},
 		footer_link_2_1: {
 			id: 'footer_link_2_1',
 			type: 'footer_link',
-			url: '/products',
+			href: '/products',
 			label: { text: 'Products', annotations: [] }
 		},
 		footer_link_2_2: {
 			id: 'footer_link_2_2',
 			type: 'footer_link',
-			url: '/services',
+			href: '/services',
 			label: { text: 'Services', annotations: [] }
 		},
 		footer_link_2_3: {
 			id: 'footer_link_2_3',
 			type: 'footer_link',
-			url: '/pricing',
+			href: '/pricing',
 			label: { text: 'Pricing', annotations: [] }
 		},
 		footer_link_3_1: {
 			id: 'footer_link_3_1',
 			type: 'footer_link',
-			url: '/docs',
+			href: '/docs',
 			label: { text: 'Documentation', annotations: [] }
 		},
 		footer_link_3_2: {
 			id: 'footer_link_3_2',
 			type: 'footer_link',
-			url: '/api',
+			href: '/api',
 			label: { text: 'API Reference', annotations: [] }
 		},
 		footer_link_3_3: {
 			id: 'footer_link_3_3',
 			type: 'footer_link',
-			url: '/guides',
+			href: '/guides',
 			label: { text: 'Guides', annotations: [] }
 		},
 		footer_link_4_1: {
 			id: 'footer_link_4_1',
 			type: 'footer_link',
-			url: '/contact',
+			href: '/contact',
 			label: { text: 'Contact', annotations: [] }
 		},
 		footer_link_4_2: {
 			id: 'footer_link_4_2',
 			type: 'footer_link',
-			url: '/support',
+			href: '/support',
 			label: { text: 'Support', annotations: [] }
 		},
 		footer_link_4_3: {
 			id: 'footer_link_4_3',
 			type: 'footer_link',
-			url: '/privacy',
+			href: '/privacy',
 			label: { text: 'Privacy Policy', annotations: [] }
 		},
 		footer_column_1: {

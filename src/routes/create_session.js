@@ -103,7 +103,7 @@ const document_schema = define_document_schema({
 	footer_link: {
 		kind: 'block',
 		properties: {
-			url: { type: 'string' },
+			href: { type: 'string' },
 			label: {
 				type: 'annotated_text',
 				node_types: [],
@@ -124,7 +124,7 @@ const document_schema = define_document_schema({
 	nav_item: {
 		kind: 'block',
 		properties: {
-			url: { type: 'string' },
+			href: { type: 'string' },
 			label: {
 				type: 'annotated_text',
 				node_types: [],
