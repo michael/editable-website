@@ -8,7 +8,7 @@
 	function handle_edit() {
 		const edit_link_command = svedit.session.commands?.edit_link;
 		if (edit_link_command) {
-			edit_link_command.show_prompt = true;
+			edit_link_command.execute();
 		}
 	}
 </script>

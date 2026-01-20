@@ -192,9 +192,15 @@ export class EditLinkCommand extends Command {
 		const { session, editable } = this.context;
 		if (!editable || !session.selection) return false;
 
-		// Check if selected_node has an href property (link-ish node)
+		// Check if selected_node has an href property (link-ish block node)
 		const selected_node = session.selected_node;
-		return selected_node && 'href' in selected_node;
+		if (selected_node && 'href' in selected_node) return true;
+
+		// Check for active link annotation (text link)
+		const active_link = session.active_annotation('link');
+		if (active_link) return true;
+
+		return false;
 	}
 
 	execute() {
