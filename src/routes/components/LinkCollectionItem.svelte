@@ -9,6 +9,7 @@
 	let node = $derived(svedit.session.get(path));
 	let image_node = $derived(svedit.session.get([...path, 'image']));
 	let is_selected = $derived(is_image_selected());
+	let render_as_link = $derived(!svedit.editable && node.href);
 
 	function is_image_selected() {
 		const path_of_selection = svedit?.session?.selection?.path?.join('.');
@@ -19,9 +20,9 @@
 
 <Node class="link-collection-item" {path}>
 	<svelte:element
-		this={svedit.editable ? 'div' : 'a'}
-		href={svedit.editable ? undefined : node.href}
-		target={svedit.editable ? undefined : node.target}
+		this={render_as_link ? 'a' : 'div'}
+		href={render_as_link ? node.href : undefined}
+		target={render_as_link ? node.target : undefined}
 		class="block"
 	>
 		<div class="{TW_PAGE_PADDING} pb-0!">
@@ -37,7 +38,7 @@
 			</CustomProperty>
 		</div>
 		<div class="{TW_PAGE_PADDING} pt-0!">
-			<AnnotatedTextProperty class="text-sm text-gray-500 pt-8" path={[...path, 'preline']} placeholder="Preline" />
+			<AnnotatedTextProperty class="text-sm text-gray-400 pt-8 uppercase" path={[...path, 'preline']} placeholder="Preline" />
 			<AnnotatedTextProperty class="text-3xl text-balance pt-1" path={[...path, 'title']} placeholder="Title" />
 			<AnnotatedTextProperty class="text-balance pt-2" path={[...path, 'description']} placeholder="Description" />
 		</div>
