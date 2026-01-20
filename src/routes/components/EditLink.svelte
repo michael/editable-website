@@ -99,7 +99,7 @@
 			</label>
 			<button
 				type="button"
-				class="text-sm font-medium text-editing cursor-pointer shrink-0 hover:opacity-80"
+				class="text-sm text-editing cursor-pointer shrink-0 hover:opacity-80"
 				onclick={save}
 			>
 				UPDATE
