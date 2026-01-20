@@ -13,6 +13,16 @@
 			edit_link_command.execute();
 		}
 	}
+
+	function handle_remove() {
+		if (is_annotation) {
+			svedit.session.apply(svedit.session.tr.annotate_text('link'));
+		} else {
+			const tr = svedit.session.tr;
+			tr.set([node.id, 'href'], '');
+			svedit.session.apply(tr);
+		}
+	}
 </script>
 
 <div
@@ -36,15 +46,13 @@
 			>
 				EDIT
 			</button>
-			{#if is_annotation}
-				<button
-					type="button"
-					class="text-sm text-editing cursor-pointer shrink-0 hover:opacity-80"
-					onclick={() => svedit.session.apply(svedit.session.tr.annotate_text('link'))}
-				>
-					REMOVE
-				</button>
-			{/if}
+			<button
+				type="button"
+				class="text-sm text-editing cursor-pointer shrink-0 hover:opacity-80"
+				onclick={handle_remove}
+			>
+				REMOVE
+			</button>
 		</div>
 	{:else}
 		<button
