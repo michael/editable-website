@@ -5,13 +5,14 @@
 
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
+	let render_as_link = $derived(!svedit.editable && node.href);
 </script>
 
 <Node {path}>
 	<svelte:element
-		this={svedit.editable ? 'div' : 'a'}
-		href={svedit.editable ? undefined : node.href}
-		target={node?.target || '_self'}
+		this={render_as_link ? 'a' : 'div'}
+		href={render_as_link ? node.href : undefined}
+		target={render_as_link ? node.target : undefined}
 	>
 		<AnnotatedTextProperty class="px-2 py-1" path={[...path, 'label']} placeholder="Label" />
 	</svelte:element>
