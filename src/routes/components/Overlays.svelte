@@ -7,6 +7,8 @@
 
 	const svedit = getContext('svedit');
 
+	let is_dragging = $state(false);
+
 	let node_array_selection_paths = $derived(get_node_array_selection_paths());
 	let selected_property = $derived(
 		svedit.session.selection?.type === 'property'
@@ -100,7 +102,7 @@
 	{/each}
 {/if}
 
-{#if link_preview && !svedit.session.commands?.edit_link?.show_prompt}
+{#if link_preview && !svedit.session.commands?.edit_link?.show_prompt && !is_dragging}
 	<LinkPreview node={link_preview.node} path={link_preview.path} />
 {/if}
 
@@ -136,3 +138,5 @@
 		pointer-events: auto;
 	}
 </style>
+
+<svelte:document onmousemove={(e) => { if (e.buttons === 1) is_dragging = true; }} onmouseup={() => is_dragging = false} />
