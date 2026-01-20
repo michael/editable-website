@@ -47,7 +47,7 @@ import Highlight from './components/Highlight.svelte';
 import Link from './components/Link.svelte';
 
 const ALL_ANNOTATIONS = ['strong', 'emphasis', 'highlight', 'link'];
-const TITLE_ANNOTATIONS = ['emphasis', 'highlight'];
+const MINIMAL_ANNOTATIONS = ['emphasis', 'highlight'];
 
 const document_schema = define_document_schema({
 	page: {
@@ -223,17 +223,17 @@ const document_schema = define_document_schema({
 			href: { type: 'string' },
 			preline: {
 				type: 'annotated_text',
-				node_types: [],
+				node_types: MINIMAL_ANNOTATIONS,
 				allow_newlines: false
 			},
 			title: {
 				type: 'annotated_text',
-				node_types: TITLE_ANNOTATIONS,
+				node_types: MINIMAL_ANNOTATIONS,
 				allow_newlines: false
 			},
 			description: {
 				type: 'annotated_text',
-				node_types: ALL_ANNOTATIONS,
+				node_types: MINIMAL_ANNOTATIONS,
 				allow_newlines: true
 			}
 		}
