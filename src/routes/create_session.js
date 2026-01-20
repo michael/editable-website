@@ -702,6 +702,7 @@ const session_config = {
 						id: nanoid(),
 						type: 'link_collection_item',
 						href: '',
+						target: '_self',
 						preline: { text: '', annotations: [] },
 						title: { text: '', annotations: [] },
 						description: { text: '', annotations: [] }
@@ -724,6 +725,7 @@ const session_config = {
 				id: nanoid(),
 				type: 'link_collection_item',
 				href: '',
+				target: '_self',
 				preline: { text: '', annotations: [] },
 				title: { text: '', annotations: [] },
 				description: { text: '', annotations: [] }
