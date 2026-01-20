@@ -25,6 +25,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Use snake_case for all variable names, function names, and identifiers
 - This applies to JavaScript/TypeScript code, test files, and any new code written
 
+**Styling:**
+- Use Tailwind CSS classes whenever possible
+- Minimize custom CSS - only use it for things Tailwind can't handle (e.g., CSS custom properties like `var(--editing-stroke-color)`)
+- Use Tailwind's arbitrary value syntax for custom properties: `text-(--editing-stroke-color)`, `border-(--editing-stroke-color)`
+- Do not use rounded corners (keep elements rectangular)
+
 **What to NOT change (keep camelCase):**
 - `window.getSelection()` - native API
 - `document.activeElement` - native API
