@@ -56,7 +56,7 @@ const document_schema = define_document_schema({
 		properties: {
 			body: {
 				type: 'node_array',
-				node_types: ['prose', 'figure', 'gallery', 'feature'],
+				node_types: ['prose', 'figure', 'gallery', 'feature', 'link_collection'],
 				default_node_type: 'prose'
 			},
 			nav: {
