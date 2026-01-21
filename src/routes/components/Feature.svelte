@@ -38,7 +38,7 @@
 {#snippet big_title()}
 	<AnnotatedTextProperty
 		tag="h1"
-		class="text-3xl md:text-4xl lg:text-5xl text-balance"
+		class="font-bold text-3xl md:text-4xl lg:text-5xl text-balance"
 		path={[...path, 'title']}
 		placeholder={TITLE_PLACEHOLDER}
 	/>

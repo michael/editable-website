@@ -26,13 +26,13 @@
 	function get_text_style(layout) {
 		switch (layout) {
 			case 1:
-				return 'text-3xl md:text-4xl lg:text-5xl pt-20 pb-4 text-balance';
+				return 'font-bold text-3xl md:text-4xl lg:text-5xl pt-20 pb-4 text-balance';
 			case 2:
-				return 'text-2xl md:text-3xl lg:text-4xl pt-10 pb-4 text-balance';
+				return 'font-bold text-2xl md:text-3xl lg:text-4xl pt-10 pb-4 text-balance';
 			case 3:
-				return 'text-xl md:text-2xl lg:text-3xl pt-6 pb-4 text-balance';
+				return 'font-bold text-xl md:text-2xl lg:text-3xl pt-6 pb-4 text-balance';
 			default:
-				return 'text-4xl text-balance';
+				return 'font-bold text-4xl text-balance';
 		}
 	}
 
