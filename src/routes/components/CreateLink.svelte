@@ -4,17 +4,20 @@
 	const svedit = getContext('svedit');
 
 	let toggle_link_command = $derived(svedit.session.commands?.toggle_link);
-	let link_input_value = $state('https://');
-	let link_input_ref;
+	let href_input_value = $state('https://');
+	let open_in_new_tab = $state(false);
+	let href_input_ref = $state();
+	let dialog_ref = $state();
 
 	function create_link() {
-		if (link_input_value) {
-			svedit.session.apply(svedit.session.tr.annotate_text('link', { href: link_input_value, target: '_self' }));
+		if (href_input_value) {
+			svedit.session.apply(
+				svedit.session.tr.annotate_text('link', {
+					href: href_input_value,
+					target: open_in_new_tab ? '_blank' : '_self'
+				})
+			);
 		}
-		close();
-	}
-
-	function cancel() {
 		close();
 	}
 
@@ -23,7 +26,8 @@
 			toggle_link_command.show_prompt = false;
 		}
 		svedit.focus_canvas();
-		link_input_value = 'https://';
+		href_input_value = 'https://';
+		open_in_new_tab = false;
 	}
 
 	function handle_keydown(event) {
@@ -34,58 +38,67 @@
 			create_link();
 		} else if (event.key === 'Escape') {
 			event.preventDefault();
-			cancel();
+			close();
+		}
+	}
+
+	function handle_backdrop_click(event) {
+		if (event.target === dialog_ref) {
+			close();
 		}
 	}
 
 	$effect(() => {
-		if (toggle_link_command?.show_prompt && link_input_ref) {
-			link_input_ref.focus();
-			link_input_ref.select();
+		if (toggle_link_command?.show_prompt && dialog_ref) {
+			dialog_ref.showModal();
+
+			if (href_input_ref) {
+				href_input_ref.focus();
+				href_input_ref.select();
+			}
+		} else if (dialog_ref?.open) {
+			dialog_ref.close();
 		}
 	});
 </script>
 
-<div
-	class="create-link-popover flex items-center gap-2 rounded-md bg-white px-3 py-2 text-sm shadow-md"
+<dialog
+	bind:this={dialog_ref}
+	class="create-link-dialog absolute z-40 mt-1 m-0 bg-white p-0 shadow-xl overflow-visible max-h-90 border border-editing"
+	style="position-anchor: --selection-highlight; position-area: block-end span-all; justify-self: anchor-center;"
+	onclick={handle_backdrop_click}
 >
-	<input
-		bind:this={link_input_ref}
-		type="url"
-		bind:value={link_input_value}
-		placeholder="https://example.com"
-		class="w-48 rounded border border-gray-400 px-2 py-1 text-sm outline-none focus:border-blue-500"
-		onkeydown={handle_keydown}
-	/>
-	<button
-		type="button"
-		class="cursor-pointer rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600"
-		onclick={create_link}
-	>
-		Create
-	</button>
-	<button
-		aria-label="Cancel"
-		type="button"
-		class="shrink-0 cursor-pointer rounded p-0.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-		onclick={cancel}
-	>
-		<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-			<line x1="18" y1="6" x2="6" y2="18"></line>
-			<line x1="6" y1="6" x2="18" y2="18"></line>
-		</svg>
-	</button>
-</div>
+	<div class="flex flex-col">
+		<input
+			bind:this={href_input_ref}
+			type="url"
+			bind:value={href_input_value}
+			placeholder="https://example.com"
+			class="w-72 px-3 py-2 text-sm text-gray-700 border-b border-gray-200 focus:border-editing focus:ring-editing"
+			onkeydown={handle_keydown}
+		/>
+		<div class="flex items-center justify-between px-3 py-2">
+			<label class="flex items-center gap-2 cursor-pointer">
+				<input
+					type="checkbox"
+					bind:checked={open_in_new_tab}
+					class="w-4 h-4 cursor-pointer text-editing focus:ring-editing"
+				/>
+				<span class="text-sm text-gray-600">Open in new tab</span>
+			</label>
+			<button
+				type="button"
+				class="text-sm text-editing cursor-pointer shrink-0 hover:opacity-80"
+				onclick={create_link}
+			>
+				CREATE
+			</button>
+		</div>
+	</div>
+</dialog>
 
 <style>
-	.create-link-popover {
-	  position-anchor: --selection-highlight;
-		position: absolute;
-		position-area: block-end span-all;
-		justify-self: anchor-center;
-		margin-top: 4px;
-		pointer-events: auto;
-		z-index: 30;
-		position-try-fallbacks: flip-block;
+	.create-link-dialog::backdrop {
+		background: rgba(0, 0, 0, 0.15);
 	}
 </style>

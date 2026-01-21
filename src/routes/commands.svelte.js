@@ -206,8 +206,9 @@ export class EditLinkCommand extends Command {
 	execute() {
 		if (this.is_enabled()) {
 			const { session } = this.context;
-			// Select the parent node if a property is selected
-			if (session.selection?.type === 'text' || session.selection?.type === 'property') {
+			// Select the parent node if a property is selected (but not for annotation links)
+			const active_link = session.active_annotation('link');
+			if (!active_link && (session.selection?.type === 'text' || session.selection?.type === 'property')) {
 				session.select_parent();
 			}
 			// Wait for selection change to settle before showing prompt
