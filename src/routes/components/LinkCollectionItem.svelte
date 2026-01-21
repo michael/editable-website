@@ -23,7 +23,8 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="block"
+		class="block transition-all duration-150 ease-out"
+		class:hover-effect={render_as_link}
 	>
 		<div class="{TW_PAGE_PADDING} pb-0!">
 			<CustomProperty path={[...path, 'image']}>
@@ -44,3 +45,12 @@
 		</div>
 	</svelte:element>
 </Node>
+
+<style>
+	.hover-effect:hover {
+		box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.15);
+	}
+	.hover-effect:active {
+		box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.2);
+	}
+</style>
