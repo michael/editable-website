@@ -26,7 +26,7 @@
 				/>
 			</div>
 			<NodeArrayProperty
-				class="footer-columns order-1 md:order-2 grid grid-cols-2 {grid_cols_class} flex-1 [--layout-orientation:horizontal] *:flex *:flex-col *:border-l *:border-gray-400 max-md:*:border-t max-md:[&>*:nth-child(1)]:border-t-0 max-md:[&>*:nth-child(2)]:border-t-0 max-md:[&>*:nth-child(odd)]:border-l-0"
+				class="footer-columns order-1 md:order-2 grid grid-cols-2 {grid_cols_class} flex-1 [--layout-orientation:horizontal] *:flex *:flex-col *:border-l *:border-gray-400 max-md:*:border-t max-md:[&>*:nth-child(1)]:border-t-0 max-md:[&>*:nth-child(2)]:border-t-0 max-md:[&>*:nth-child(odd)]:border-l-0 max-lg:[&>*:nth-child(n+3)]:border-t lg:[&>*:nth-child(n+5)]:border-t"
 				path={[...path, 'footer_link_columns']}
 			/>
 		</div>

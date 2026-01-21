@@ -32,5 +32,8 @@
 		border-bottom: 1px solid rgb(156, 163, 175);
 	}
 
+	:global(.footer-links > *:last-child) {
+		border-bottom: none;
+	}
 
 </style>
