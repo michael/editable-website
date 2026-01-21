@@ -1,492 +1,853 @@
 // Hardcoded demo_doc for static deployment
 // This replaces the database seed for demo purposes
 export const demo_doc = {
-	document_id: 'page_1',
-	nodes: {
-		nav_item_1: {
-			id: 'nav_item_1',
-			type: 'nav_item',
-			href: '/',
-			label: { text: 'Home', annotations: [] }
-		},
-		nav_item_2: {
-			id: 'nav_item_2',
-			type: 'nav_item',
-			href: '/projects',
-			label: { text: 'Projects', annotations: [] }
-		},
-		nav_item_3: {
-			id: 'nav_item_3',
-			type: 'nav_item',
-			href: '/blog',
-			label: { text: 'Blog', annotations: [] }
-		},
-		nav_item_4: {
-			id: 'nav_item_4',
-			type: 'nav_item',
-			href: '/about',
-			label: { text: 'About', annotations: [] }
-		},
-		nav_1: {
-			id: 'nav_1',
-			type: 'nav',
-			nav_items: ['nav_item_1', 'nav_item_2', 'nav_item_3', 'nav_item_4']
-		},
-
-
-		heading_1: {
-			id: 'heading_1',
-			type: 'heading',
-			layout: 1,
-			content: {
-				text: 'A SvelteKit template for building CMS-free editable websites',
-				annotations: []
-			}
-		},
-		paragraph_1: {
-			id: 'paragraph_1',
-			type: 'paragraph',
-			content: {
-				text: 'This is an early demo of Editable Website v2. It builds on top of Svedit (which replaces ProseMirror) and provides you with a simple framework to build entirely custom websites and apps in Svelte, while site owners can edit content directly in the layout - no CMS needed.',
-				annotations: []
-			}
-		},
-		prose_1: {
-			id: 'prose_1',
-			type: 'prose',
-			layout: 1,
-			content: ['heading_1', 'paragraph_1']
-		},
-		heading_2: {
-			id: 'heading_2',
-			type: 'heading',
-			layout: 2,
-			content: {
-				text: 'Predefined content types, which you can tailor to your needs',
-				annotations: []
-			}
-		},
-		paragraph_2: {
-			id: 'paragraph_2',
-			type: 'paragraph',
-			content: {
-				text: "Editable Website ships with predefined content types like Text, Heroes, CTAs, Galleries, Accordions, etc. It provides a starting point, covering 80% of what most websites need, and makes it easy for you to add what's missing.",
-				annotations: []
-			}
-		},
-		paragraph_3: {
-			id: 'paragraph_3',
-			type: 'paragraph',
-			content: {
-				text: "For instance, you might want to add a custom FrontpageHero.svelte that includes some title and description (which are editable) but also some custom animations, which you'll code into that component.",
-				annotations: []
-			}
-		},
-		prose_2: {
-			id: 'prose_2',
-			type: 'prose',
-			layout: 2,
-			content: ['heading_2', 'paragraph_2', 'paragraph_3']
-		},
-		heading_3: {
-			id: 'heading_3',
-			type: 'heading',
-			layout: 2,
-			content: { text: 'Design-System based on Tailwind v4', annotations: [] }
-		},
-		paragraph_4: {
-			id: 'paragraph_4',
-			type: 'paragraph',
-			content: {
-				text: "If you're familiar with using Tailwind, you know how to style editable websites. In app.css you'll be able to change the defaults for spacing, colors, and typography, and for many sites this might be all you have to do.",
-				annotations: []
-			}
-		},
-		paragraph_5: {
-			id: 'paragraph_5',
-			type: 'paragraph',
-			content: {
-				text: 'However, sometimes you want to implement very custom specific layouts and control every pixel. This is when you start adapting the existing components or create new ones. If you know Svelte, you know Editable Website.',
-				annotations: []
-			}
-		},
-		prose_3: {
-			id: 'prose_3',
-			type: 'prose',
-			layout: 3,
-			content: ['heading_3', 'paragraph_4', 'paragraph_5']
-		},
-		heading_4: {
-			id: 'heading_4',
-			type: 'heading',
-			layout: 2,
-			content: { text: 'Built-in image processing', annotations: [] }
-		},
-		paragraph_6: {
-			id: 'paragraph_6',
-			type: 'paragraph',
-			content: {
-				text: 'When you paste an image onto the page, it gets uploaded in the background, and Editable Website generates a set of sizes in an optimized web format that is provided to srcset.',
-				annotations: []
-			}
-		},
-		prose_4: {
-			id: 'prose_4',
-			type: 'prose',
-			layout: 1,
-			content: ['heading_4', 'paragraph_6']
-		},
-		feature_1_image: {
-			id: 'feature_1_image',
-			type: 'image',
-			src: '/sample-images/1.jpg',
-			width: 800,
-			height: 600,
-			alt: 'Feature image',
-			scale: 1.0,
-			focal_point_x: 0.5,
-			focal_point_y: 0.5,
-			object_fit: 'cover'
-		},
-		feature_1: {
-			id: 'feature_1',
-			type: 'feature',
-			layout: 1,
-			image: 'feature_1_image',
-			title: { text: 'Build websites that anyone can edit', annotations: [] },
-			description: {
-				text: 'No CMS needed. Content editors can make changes directly in the layout, seeing exactly how their changes will look.',
-				annotations: []
-			}
-		},
-		figure_1_image: {
-			id: 'figure_1_image',
-			type: 'image',
-			src: '/sample-images/2.jpg',
-			width: 800,
-			height: 600,
-			alt: 'Sample image',
-			scale: 1.0,
-			focal_point_x: 0.5,
-			focal_point_y: 0.5,
-			object_fit: 'cover'
-		},
-		figure_1: {
-			id: 'figure_1',
-			type: 'figure',
-			image: 'figure_1_image'
-		},
-		gallery_item_1_image: {
-			id: 'gallery_item_1_image',
-			type: 'image',
-			src: '/sample-images/2.jpg',
-			width: 800,
-			height: 600,
-			alt: 'Sample image',
-			scale: 1.0,
-			focal_point_x: 0.5,
-			focal_point_y: 0.5,
-			object_fit: 'cover'
-		},
-		gallery_item_2_image: {
-			id: 'gallery_item_2_image',
-			type: 'image',
-			src: '/sample-images/3.jpg',
-			width: 800,
-			height: 600,
-			alt: 'Sample image',
-			scale: 1.0,
-			focal_point_x: 0.5,
-			focal_point_y: 0.5,
-			object_fit: 'cover'
-		},
-		gallery_item_3_image: {
-			id: 'gallery_item_3_image',
-			type: 'image',
-			src: '/sample-images/4.jpg',
-			width: 800,
-			height: 600,
-			alt: 'Sample image',
-			scale: 1.0,
-			focal_point_x: 0.5,
-			focal_point_y: 0.5,
-			object_fit: 'cover'
-		},
-		gallery_item_4_image: {
-			id: 'gallery_item_4_image',
-			type: 'image',
-			src: '/sample-images/5.jpg',
-			width: 800,
-			height: 600,
-			alt: 'Sample image',
-			scale: 1.0,
-			focal_point_x: 0.5,
-			focal_point_y: 0.5,
-			object_fit: 'cover'
-		},
-		gallery_item_5_image: {
-			id: 'gallery_item_5_image',
-			type: 'image',
-			src: '/sample-images/6.jpg',
-			width: 800,
-			height: 600,
-			alt: 'Sample image',
-			scale: 1.0,
-			focal_point_x: 0.5,
-			focal_point_y: 0.5,
-			object_fit: 'cover'
-		},
-		gallery_item_6_image: {
-			id: 'gallery_item_6_image',
-			type: 'image',
-			src: '/sample-images/7.jpg',
-			width: 800,
-			height: 600,
-			alt: 'Sample image',
-			scale: 1.0,
-			focal_point_x: 0.5,
-			focal_point_y: 0.5,
-			object_fit: 'cover'
-		},
-		gallery_item_1: {
-			id: 'gallery_item_1',
-			type: 'gallery_item',
-			image: 'gallery_item_1_image'
-		},
-		gallery_item_2: {
-			id: 'gallery_item_2',
-			type: 'gallery_item',
-			image: 'gallery_item_2_image'
-		},
-		gallery_item_3: {
-			id: 'gallery_item_3',
-			type: 'gallery_item',
-			image: 'gallery_item_3_image'
-		},
-		gallery_item_4: {
-			id: 'gallery_item_4',
-			type: 'gallery_item',
-			image: 'gallery_item_4_image'
-		},
-		gallery_item_5: {
-			id: 'gallery_item_5',
-			type: 'gallery_item',
-			image: 'gallery_item_5_image'
-		},
-		gallery_item_6: {
-			id: 'gallery_item_6',
-			type: 'gallery_item',
-			image: 'gallery_item_6_image'
-		},
-		gallery_1: {
-			id: 'gallery_1',
-			type: 'gallery',
-			layout: 1,
-			gallery_items: [
-				'gallery_item_1',
-				'gallery_item_2',
-				'gallery_item_3',
-				'gallery_item_4',
-				'gallery_item_5',
-				'gallery_item_6'
-			]
-		},
-		footer_link_1_1: {
-			id: 'footer_link_1_1',
-			type: 'footer_link',
-			href: '/about',
-			label: { text: 'About Us', annotations: [] }
-		},
-		footer_link_1_2: {
-			id: 'footer_link_1_2',
-			type: 'footer_link',
-			href: '/team',
-			label: { text: 'Our Team', annotations: [] }
-		},
-		footer_link_1_3: {
-			id: 'footer_link_1_3',
-			type: 'footer_link',
-			href: '/careers',
-			label: { text: 'Careers', annotations: [] }
-		},
-		footer_link_2_1: {
-			id: 'footer_link_2_1',
-			type: 'footer_link',
-			href: '/products',
-			label: { text: 'Products', annotations: [] }
-		},
-		footer_link_2_2: {
-			id: 'footer_link_2_2',
-			type: 'footer_link',
-			href: '/services',
-			label: { text: 'Services', annotations: [] }
-		},
-		footer_link_2_3: {
-			id: 'footer_link_2_3',
-			type: 'footer_link',
-			href: '/pricing',
-			label: { text: 'Pricing', annotations: [] }
-		},
-		footer_link_3_1: {
-			id: 'footer_link_3_1',
-			type: 'footer_link',
-			href: '/docs',
-			label: { text: 'Documentation', annotations: [] }
-		},
-		footer_link_3_2: {
-			id: 'footer_link_3_2',
-			type: 'footer_link',
-			href: '/api',
-			label: { text: 'API Reference', annotations: [] }
-		},
-		footer_link_3_3: {
-			id: 'footer_link_3_3',
-			type: 'footer_link',
-			href: '/guides',
-			label: { text: 'Guides', annotations: [] }
-		},
-		footer_link_4_1: {
-			id: 'footer_link_4_1',
-			type: 'footer_link',
-			href: '/contact',
-			label: { text: 'Contact', annotations: [] }
-		},
-		footer_link_4_2: {
-			id: 'footer_link_4_2',
-			type: 'footer_link',
-			href: '/support',
-			label: { text: 'Support', annotations: [] }
-		},
-		footer_link_4_3: {
-			id: 'footer_link_4_3',
-			type: 'footer_link',
-			href: '/privacy',
-			label: { text: 'Privacy Policy', annotations: [] }
-		},
-		footer_column_1: {
-			id: 'footer_column_1',
-			type: 'footer_link_column',
-			label: { text: 'Company', annotations: [] },
-			footer_links: ['footer_link_1_1', 'footer_link_1_2', 'footer_link_1_3']
-		},
-		footer_column_2: {
-			id: 'footer_column_2',
-			type: 'footer_link_column',
-			label: { text: 'Products', annotations: [] },
-			footer_links: ['footer_link_2_1', 'footer_link_2_2', 'footer_link_2_3']
-		},
-		footer_column_3: {
-			id: 'footer_column_3',
-			type: 'footer_link_column',
-			label: { text: 'Resources', annotations: [] },
-			footer_links: ['footer_link_3_1', 'footer_link_3_2', 'footer_link_3_3']
-		},
-		footer_column_4: {
-			id: 'footer_column_4',
-			type: 'footer_link_column',
-			label: { text: 'Legal', annotations: [] },
-			footer_links: ['footer_link_4_1', 'footer_link_4_2', 'footer_link_4_3']
-		},
-		footer_1: {
-			id: 'footer_1',
-			type: 'footer',
-			copyright: { text: '© Editable Website 2026', annotations: [] },
-			footer_link_columns: [
-				'footer_column_1',
-				'footer_column_2',
-				'footer_column_3',
-				'footer_column_4'
-			]
-		},
-		link_collection_item_1_image: {
-			id: 'link_collection_item_1_image',
-			type: 'image',
-			src: '/sample-images/8.jpg',
-			width: 800,
-			height: 600,
-			alt: 'Getting started',
-			scale: 1.0,
-			focal_point_x: 0.5,
-			focal_point_y: 0.5,
-			object_fit: 'cover'
-		},
-		link_collection_item_2_image: {
-			id: 'link_collection_item_2_image',
-			type: 'image',
-			src: '/sample-images/9.jpg',
-			width: 800,
-			height: 600,
-			alt: 'Customization',
-			scale: 1.0,
-			focal_point_x: 0.5,
-			focal_point_y: 0.5,
-			object_fit: 'cover'
-		},
-		link_collection_item_3_image: {
-			id: 'link_collection_item_3_image',
-			type: 'image',
-			src: '/sample-images/10.jpg',
-			width: 800,
-			height: 600,
-			alt: 'Svedit documentation',
-			scale: 1.0,
-			focal_point_x: 0.5,
-			focal_point_y: 0.5,
-			object_fit: 'cover'
-		},
-		link_collection_item_1: {
-			id: 'link_collection_item_1',
-			type: 'link_collection_item',
-			href: '/docs/getting-started',
-			target: '_self',
-			image: 'link_collection_item_1_image',
-			preline: { text: 'Documentation', annotations: [] },
-			title: { text: 'Getting started', annotations: [] },
-			description: { text: 'Learn how to set up your first editable website in minutes.', annotations: [] }
-		},
-		link_collection_item_2: {
-			id: 'link_collection_item_2',
-			type: 'link_collection_item',
-			href: '/docs/customization',
-			target: '_self',
-			image: 'link_collection_item_2_image',
-			preline: { text: 'Guide', annotations: [] },
-			title: { text: 'Customization', annotations: [] },
-			description: { text: 'Adapt colors, fonts, and layouts to match your brand.', annotations: [] }
-		},
-		link_collection_item_3: {
-			id: 'link_collection_item_3',
-			type: 'link_collection_item',
-			href: 'https://github.com/michael/svedit',
-			target: '_blank',
-			image: 'link_collection_item_3_image',
-			preline: { text: 'API Reference', annotations: [] },
-			title: { text: 'Svedit documentation', annotations: [] },
-			description: { text: 'Explore the full API for building custom content types.', annotations: [] }
-		},
-		link_collection_1: {
-			id: 'link_collection_1',
-			type: 'link_collection',
-			layout: 1,
-			link_collection_items: [
-				'link_collection_item_1',
-				'link_collection_item_2',
-				'link_collection_item_3'
-			]
-		},
-		page_1: {
-			id: 'page_1',
-			type: 'page',
-			body: [
-				'feature_1',
-				'prose_1',
-				'link_collection_1',
-				'prose_2',
-				'gallery_1',
-				'prose_3'
-			],
-			nav: 'nav_1',
-			footer: 'footer_1'
-		}
-	}
+    "document_id": "page_1",
+    "nodes": {
+        "JspHschzJHJyNmmZzgfBKtt": {
+            "id": "JspHschzJHJyNmmZzgfBKtt",
+            "type": "heading",
+            "layout": 1,
+            "content": {
+                "text": "This website is different",
+                "annotations": []
+            }
+        },
+        "erAbuczAkUtnAGHYKgAUGkp": {
+            "id": "erAbuczAkUtnAGHYKgAUGkp",
+            "type": "paragraph",
+            "content": {
+                "text": "I'll show you why. All you need is a Desktop computer, and five minutes of your attention.",
+                "annotations": []
+            }
+        },
+        "fdsxRajBxzDSFBBHEwSmqfZ": {
+            "id": "fdsxRajBxzDSFBBHEwSmqfZ",
+            "type": "paragraph",
+            "content": {
+                "text": "Are you ready?",
+                "annotations": []
+            }
+        },
+        "cHakxekvzavEawKMsPmfVWr": {
+            "id": "cHakxekvzavEawKMsPmfVWr",
+            "type": "prose",
+            "layout": 2,
+            "content": [
+                "JspHschzJHJyNmmZzgfBKtt",
+                "erAbuczAkUtnAGHYKgAUGkp",
+                "fdsxRajBxzDSFBBHEwSmqfZ"
+            ]
+        },
+        "feature_1_image": {
+            "id": "feature_1_image",
+            "type": "image",
+            "src": "/sample-images/1.jpg",
+            "width": 800,
+            "height": 600,
+            "alt": "Feature image",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "vAhBcybjFJsXPkmRQrwWPaT": {
+            "id": "vAhBcybjFJsXPkmRQrwWPaT",
+            "type": "strong"
+        },
+        "GjYMCGyPdWVrmkGcWazPTAJ": {
+            "id": "GjYMCGyPdWVrmkGcWazPTAJ",
+            "type": "strong"
+        },
+        "TKBzGfCyPtcywrWNafpMFUx": {
+            "id": "TKBzGfCyPtcywrWNafpMFUx",
+            "type": "strong"
+        },
+        "BYnvjBNEvJqBdqQmUyeUzgn": {
+            "id": "BYnvjBNEvJqBdqQmUyeUzgn",
+            "type": "strong"
+        },
+        "kJNavahEZGWKeAtWTgEQqnp": {
+            "id": "kJNavahEZGWKeAtWTgEQqnp",
+            "type": "strong"
+        },
+        "feature_1": {
+            "id": "feature_1",
+            "type": "feature",
+            "layout": 1,
+            "image": "feature_1_image",
+            "title": {
+                "text": "Press ⌘+E",
+                "annotations": []
+            },
+            "description": {
+                "text": "Or Ctrl+E if you are on Windows or Linux. Isn't that cool? You can move the cursor with the arrow keys or make selections with the mouse. You can edit anything you see on the screen. For basic text formatting use ⌘+B (Bold) ⌘+I (Italic) and ⌘+K to turn text into a link. To undo accidental changes press ⌘+Z.",
+                "annotations": [
+                    {
+                        "start_offset": 3,
+                        "end_offset": 9,
+                        "node_id": "vAhBcybjFJsXPkmRQrwWPaT"
+                    },
+                    {
+                        "start_offset": 213,
+                        "end_offset": 216,
+                        "node_id": "GjYMCGyPdWVrmkGcWazPTAJ"
+                    },
+                    {
+                        "start_offset": 224,
+                        "end_offset": 227,
+                        "node_id": "TKBzGfCyPtcywrWNafpMFUx"
+                    },
+                    {
+                        "start_offset": 241,
+                        "end_offset": 244,
+                        "node_id": "BYnvjBNEvJqBdqQmUyeUzgn"
+                    },
+                    {
+                        "start_offset": 304,
+                        "end_offset": 307,
+                        "node_id": "kJNavahEZGWKeAtWTgEQqnp"
+                    }
+                ]
+            }
+        },
+        "heading_1": {
+            "id": "heading_1",
+            "type": "heading",
+            "layout": 1,
+            "content": {
+                "text": "Want to add new content?",
+                "annotations": []
+            }
+        },
+        "paragraph_1": {
+            "id": "paragraph_1",
+            "type": "paragraph",
+            "content": {
+                "text": "Click the little dotted horizontal gap after this section.",
+                "annotations": []
+            }
+        },
+        "nEMtsBhedGGXSTRtThSrbUa": {
+            "id": "nEMtsBhedGGXSTRtThSrbUa",
+            "type": "strong"
+        },
+        "GXsYzSEsdkPMKMyRbWqGTZQ": {
+            "id": "GXsYzSEsdkPMKMyRbWqGTZQ",
+            "type": "paragraph",
+            "content": {
+                "text": "You should see a big blinking cursor spanning the window from left to right.",
+                "annotations": [
+                    {
+                        "start_offset": 17,
+                        "end_offset": 36,
+                        "node_id": "nEMtsBhedGGXSTRtThSrbUa"
+                    }
+                ]
+            }
+        },
+        "CpCARDQGFNdNtTqtJmGUgfU": {
+            "id": "CpCARDQGFNdNtTqtJmGUgfU",
+            "type": "strong"
+        },
+        "DvsqCrvhcWpFHbUbDmjfJZF": {
+            "id": "DvsqCrvhcWpFHbUbDmjfJZF",
+            "type": "paragraph",
+            "content": {
+                "text": "Press Enter. This creates a new block.",
+                "annotations": [
+                    {
+                        "start_offset": 6,
+                        "end_offset": 11,
+                        "node_id": "CpCARDQGFNdNtTqtJmGUgfU"
+                    }
+                ]
+            }
+        },
+        "tEvwCCrEaGqPWeStQxZZrGQ": {
+            "id": "tEvwCCrEaGqPWeStQxZZrGQ",
+            "type": "strong"
+        },
+        "bnsnQEmqhPWjFTpuBHFeFZq": {
+            "id": "bnsnQEmqhPWjFTpuBHFeFZq",
+            "type": "paragraph",
+            "content": {
+                "text": "Press Ctrl+Alt+Down to select the next block type.",
+                "annotations": [
+                    {
+                        "start_offset": 6,
+                        "end_offset": 19,
+                        "node_id": "tEvwCCrEaGqPWeStQxZZrGQ"
+                    }
+                ]
+            }
+        },
+        "nZKHXbhVMgzydvcHWkjvuHp": {
+            "id": "nZKHXbhVMgzydvcHWkjvuHp",
+            "type": "strong"
+        },
+        "RFttuRrZckKYCUnChPwfcYJ": {
+            "id": "RFttuRrZckKYCUnChPwfcYJ",
+            "type": "paragraph",
+            "content": {
+                "text": "Most blocks support multiple layouts. Switch them with Ctrl+Alt+Right.",
+                "annotations": [
+                    {
+                        "start_offset": 55,
+                        "end_offset": 69,
+                        "node_id": "nZKHXbhVMgzydvcHWkjvuHp"
+                    }
+                ]
+            }
+        },
+        "EFajkFtKyVkZAhavjBvDYjD": {
+            "id": "EFajkFtKyVkZAhavjBvDYjD",
+            "type": "paragraph",
+            "content": {
+                "text": "Wow, you're editing web pages like a pro!",
+                "annotations": []
+            }
+        },
+        "prose_1": {
+            "id": "prose_1",
+            "type": "prose",
+            "layout": 2,
+            "content": [
+                "heading_1",
+                "paragraph_1",
+                "GXsYzSEsdkPMKMyRbWqGTZQ",
+                "DvsqCrvhcWpFHbUbDmjfJZF",
+                "bnsnQEmqhPWjFTpuBHFeFZq",
+                "RFttuRrZckKYCUnChPwfcYJ",
+                "EFajkFtKyVkZAhavjBvDYjD"
+            ]
+        },
+        "jEhPHUyzqvpNeSHYfKCkYgS": {
+            "id": "jEhPHUyzqvpNeSHYfKCkYgS",
+            "type": "image",
+            "src": "/sample-images/2.jpg",
+            "width": 800,
+            "height": 600,
+            "alt": "Sample image",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "wtvHDBrCzJVgacTaJqAwNJk": {
+            "id": "wtvHDBrCzJVgacTaJqAwNJk",
+            "type": "gallery_item",
+            "image": "jEhPHUyzqvpNeSHYfKCkYgS"
+        },
+        "ZjdBYZdXQedwuTdVFGHdDEj": {
+            "id": "ZjdBYZdXQedwuTdVFGHdDEj",
+            "type": "image",
+            "src": "/sample-images/3.jpg",
+            "width": 800,
+            "height": 600,
+            "alt": "Sample image",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "TQRANBXMrzXXZTtzxAYhhZf": {
+            "id": "TQRANBXMrzXXZTtzxAYhhZf",
+            "type": "gallery_item",
+            "image": "ZjdBYZdXQedwuTdVFGHdDEj"
+        },
+        "CYZFDvXrnaqxAKrErdZtgTF": {
+            "id": "CYZFDvXrnaqxAKrErdZtgTF",
+            "type": "image",
+            "src": "/sample-images/4.jpg",
+            "width": 800,
+            "height": 600,
+            "alt": "Sample image",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "beUAyJnBJXjTAKhxdYKntGJ": {
+            "id": "beUAyJnBJXjTAKhxdYKntGJ",
+            "type": "gallery_item",
+            "image": "CYZFDvXrnaqxAKrErdZtgTF"
+        },
+        "YWKrnJxsfvSqvrHNvHxsUqh": {
+            "id": "YWKrnJxsfvSqvrHNvHxsUqh",
+            "type": "image",
+            "src": "/sample-images/5.jpg",
+            "width": 800,
+            "height": 600,
+            "alt": "Sample image",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "MzpuTMAeCBUMFnKDDPyWGfV": {
+            "id": "MzpuTMAeCBUMFnKDDPyWGfV",
+            "type": "gallery_item",
+            "image": "YWKrnJxsfvSqvrHNvHxsUqh"
+        },
+        "spkJQPkQCPMJknRJmScqBKS": {
+            "id": "spkJQPkQCPMJknRJmScqBKS",
+            "type": "image",
+            "src": "/sample-images/6.jpg",
+            "width": 800,
+            "height": 600,
+            "alt": "Sample image",
+            "scale": 1,
+            "focal_point_x": 0.47698363938380317,
+            "focal_point_y": 0.617126937984496,
+            "object_fit": "cover"
+        },
+        "WmTFTnBddcSfnVGuxfTdARj": {
+            "id": "WmTFTnBddcSfnVGuxfTdARj",
+            "type": "gallery_item",
+            "image": "spkJQPkQCPMJknRJmScqBKS"
+        },
+        "WvZvagTjGbBfFmnkZBswXAA": {
+            "id": "WvZvagTjGbBfFmnkZBswXAA",
+            "type": "image",
+            "src": "/sample-images/7.jpg",
+            "width": 800,
+            "height": 600,
+            "alt": "Sample image",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "RtTVXJkYyHazUXuFhcYTHqe": {
+            "id": "RtTVXJkYyHazUXuFhcYTHqe",
+            "type": "gallery_item",
+            "image": "WvZvagTjGbBfFmnkZBswXAA"
+        },
+        "BPdekRaDEUcQZqtEwPwBvyu": {
+            "id": "BPdekRaDEUcQZqtEwPwBvyu",
+            "type": "gallery",
+            "layout": 1,
+            "gallery_items": [
+                "wtvHDBrCzJVgacTaJqAwNJk",
+                "TQRANBXMrzXXZTtzxAYhhZf",
+                "beUAyJnBJXjTAKhxdYKntGJ",
+                "MzpuTMAeCBUMFnKDDPyWGfV",
+                "WmTFTnBddcSfnVGuxfTdARj",
+                "RtTVXJkYyHazUXuFhcYTHqe"
+            ]
+        },
+        "CTcJfCGYJyfkWxSPZFjxXTT": {
+            "id": "CTcJfCGYJyfkWxSPZFjxXTT",
+            "type": "heading",
+            "layout": 2,
+            "content": {
+                "text": "Let's add some images to the gallery above",
+                "annotations": []
+            }
+        },
+        "zwWSsaYvfMcFBvxbPGrFPrB": {
+            "id": "zwWSsaYvfMcFBvxbPGrFPrB",
+            "type": "paragraph",
+            "content": {
+                "text": "Open a folder on your computer that has some images.",
+                "annotations": []
+            }
+        },
+        "HuxNVmQGupqHNVMMmAdNRQM": {
+            "id": "HuxNVmQGupqHNVMMmAdNRQM",
+            "type": "strong"
+        },
+        "paWyPUKZWBUeznzFrQnYcQk": {
+            "id": "paWyPUKZWBUeznzFrQnYcQk",
+            "type": "paragraph",
+            "content": {
+                "text": "Select a couple and copy them with ⌘+C.",
+                "annotations": [
+                    {
+                        "start_offset": 35,
+                        "end_offset": 38,
+                        "node_id": "HuxNVmQGupqHNVMMmAdNRQM"
+                    }
+                ]
+            }
+        },
+        "HVDESaUhzanEZJaxjHvZAWR": {
+            "id": "HVDESaUhzanEZJaxjHvZAWR",
+            "type": "paragraph",
+            "content": {
+                "text": "Now put the cursor after an image in the image grid.",
+                "annotations": []
+            }
+        },
+        "xHyVrrHSnkcHSRPBFkdayAB": {
+            "id": "xHyVrrHSnkcHSRPBFkdayAB",
+            "type": "strong"
+        },
+        "kSsctjkVHVJKWYFqMxSpgZH": {
+            "id": "kSsctjkVHVJKWYFqMxSpgZH",
+            "type": "paragraph",
+            "content": {
+                "text": "Paste your images with ⌘+V.",
+                "annotations": [
+                    {
+                        "start_offset": 23,
+                        "end_offset": 26,
+                        "node_id": "xHyVrrHSnkcHSRPBFkdayAB"
+                    }
+                ]
+            }
+        },
+        "BwUdtezSTfmfuzQRSjsFsKb": {
+            "id": "BwUdtezSTfmfuzQRSjsFsKb",
+            "type": "paragraph",
+            "content": {
+                "text": "You can also replace images, by selecting an image on the page and ",
+                "annotations": []
+            }
+        },
+        "fKZMgjKFZTwbcyXSERgVRty": {
+            "id": "fKZMgjKFZTwbcyXSERgVRty",
+            "type": "prose",
+            "layout": 2,
+            "content": [
+                "CTcJfCGYJyfkWxSPZFjxXTT",
+                "zwWSsaYvfMcFBvxbPGrFPrB",
+                "paWyPUKZWBUeznzFrQnYcQk",
+                "HVDESaUhzanEZJaxjHvZAWR",
+                "kSsctjkVHVJKWYFqMxSpgZH",
+                "BwUdtezSTfmfuzQRSjsFsKb"
+            ]
+        },
+        "link_collection_item_1_image": {
+            "id": "link_collection_item_1_image",
+            "type": "image",
+            "src": "/sample-images/8.jpg",
+            "width": 800,
+            "height": 600,
+            "alt": "Getting started",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "link_collection_item_1": {
+            "id": "link_collection_item_1",
+            "type": "link_collection_item",
+            "href": "/docs/getting-started",
+            "target": "_self",
+            "image": "link_collection_item_1_image",
+            "preline": {
+                "text": "Documentation",
+                "annotations": []
+            },
+            "title": {
+                "text": "Getting started",
+                "annotations": []
+            },
+            "description": {
+                "text": "Learn how to set up your first editable website in minutes.",
+                "annotations": []
+            }
+        },
+        "link_collection_item_2_image": {
+            "id": "link_collection_item_2_image",
+            "type": "image",
+            "src": "/sample-images/9.jpg",
+            "width": 800,
+            "height": 600,
+            "alt": "Customization",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "link_collection_item_2": {
+            "id": "link_collection_item_2",
+            "type": "link_collection_item",
+            "href": "/docs/customization",
+            "target": "_self",
+            "image": "link_collection_item_2_image",
+            "preline": {
+                "text": "Guide",
+                "annotations": []
+            },
+            "title": {
+                "text": "Customization",
+                "annotations": []
+            },
+            "description": {
+                "text": "Adapt colors, fonts, and layouts to match your brand.",
+                "annotations": []
+            }
+        },
+        "link_collection_item_3_image": {
+            "id": "link_collection_item_3_image",
+            "type": "image",
+            "src": "/sample-images/10.jpg",
+            "width": 800,
+            "height": 600,
+            "alt": "Svedit documentation",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "link_collection_item_3": {
+            "id": "link_collection_item_3",
+            "type": "link_collection_item",
+            "href": "https://github.com/michael/svedit",
+            "target": "_blank",
+            "image": "link_collection_item_3_image",
+            "preline": {
+                "text": "API Reference",
+                "annotations": []
+            },
+            "title": {
+                "text": "Svedit documentation",
+                "annotations": []
+            },
+            "description": {
+                "text": "Explore the full API for building custom content types.",
+                "annotations": []
+            }
+        },
+        "link_collection_1": {
+            "id": "link_collection_1",
+            "type": "link_collection",
+            "layout": 1,
+            "link_collection_items": [
+                "link_collection_item_1",
+                "link_collection_item_2",
+                "link_collection_item_3"
+            ]
+        },
+        "heading_3": {
+            "id": "heading_3",
+            "type": "heading",
+            "layout": 1,
+            "content": {
+                "text": "And links?",
+                "annotations": []
+            }
+        },
+        "paragraph_4": {
+            "id": "paragraph_4",
+            "type": "paragraph",
+            "content": {
+                "text": "Click on one of the cards above.",
+                "annotations": []
+            }
+        },
+        "xaHApWhVyFxgVPFwksdcZgz": {
+            "id": "xaHApWhVyFxgVPFwksdcZgz",
+            "type": "strong"
+        },
+        "uKPwpfCeeqamEwehApYsrYk": {
+            "id": "uKPwpfCeeqamEwehApYsrYk",
+            "type": "paragraph",
+            "content": {
+                "text": "It will show a little link preview at the bottom of the card.",
+                "annotations": [
+                    {
+                        "start_offset": 22,
+                        "end_offset": 34,
+                        "node_id": "xaHApWhVyFxgVPFwksdcZgz"
+                    }
+                ]
+            }
+        },
+        "YTTzVWphJSPZzxMdHtSwhwU": {
+            "id": "YTTzVWphJSPZzxMdHtSwhwU",
+            "type": "strong"
+        },
+        "prAcjhEnaTxGFMcXPqEQspc": {
+            "id": "prAcjhEnaTxGFMcXPqEQspc",
+            "type": "paragraph",
+            "content": {
+                "text": "Click edit or press Cmd+K to bring up the link editor.",
+                "annotations": [
+                    {
+                        "start_offset": 20,
+                        "end_offset": 25,
+                        "node_id": "YTTzVWphJSPZzxMdHtSwhwU"
+                    }
+                ]
+            }
+        },
+        "wmJnPFjPEubKbkERrrtRcNT": {
+            "id": "wmJnPFjPEubKbkERrrtRcNT",
+            "type": "strong"
+        },
+        "paragraph_5": {
+            "id": "paragraph_5",
+            "type": "paragraph",
+            "content": {
+                "text": "Change the url you want to link to and press Enter.",
+                "annotations": [
+                    {
+                        "start_offset": 45,
+                        "end_offset": 50,
+                        "node_id": "wmJnPFjPEubKbkERrrtRcNT"
+                    }
+                ]
+            }
+        },
+        "uaHDneaZQYbNNgNhSwRccnt": {
+            "id": "uaHDneaZQYbNNgNhSwRccnt",
+            "type": "paragraph",
+            "content": {
+                "text": "In the exact same way you can edit links of the top navigation and the footer links.",
+                "annotations": []
+            }
+        },
+        "prose_3": {
+            "id": "prose_3",
+            "type": "prose",
+            "layout": 2,
+            "content": [
+                "heading_3",
+                "paragraph_4",
+                "uKPwpfCeeqamEwehApYsrYk",
+                "prAcjhEnaTxGFMcXPqEQspc",
+                "paragraph_5",
+                "uaHDneaZQYbNNgNhSwRccnt"
+            ]
+        },
+        "nav_item_1": {
+            "id": "nav_item_1",
+            "type": "nav_item",
+            "href": "/",
+            "label": {
+                "text": "Home",
+                "annotations": []
+            }
+        },
+        "nav_item_2": {
+            "id": "nav_item_2",
+            "type": "nav_item",
+            "href": "/projects",
+            "label": {
+                "text": "Projects",
+                "annotations": []
+            }
+        },
+        "nav_item_3": {
+            "id": "nav_item_3",
+            "type": "nav_item",
+            "href": "/blog",
+            "label": {
+                "text": "Blog",
+                "annotations": []
+            },
+            "target": "_self"
+        },
+        "nav_item_4": {
+            "id": "nav_item_4",
+            "type": "nav_item",
+            "href": "/about",
+            "label": {
+                "text": "About",
+                "annotations": []
+            }
+        },
+        "nav_1": {
+            "id": "nav_1",
+            "type": "nav",
+            "nav_items": [
+                "nav_item_1",
+                "nav_item_2",
+                "nav_item_3",
+                "nav_item_4"
+            ]
+        },
+        "footer_link_1_1": {
+            "id": "footer_link_1_1",
+            "type": "footer_link",
+            "href": "/about",
+            "label": {
+                "text": "About Us",
+                "annotations": []
+            }
+        },
+        "footer_link_1_2": {
+            "id": "footer_link_1_2",
+            "type": "footer_link",
+            "href": "/team",
+            "label": {
+                "text": "Our Team",
+                "annotations": []
+            }
+        },
+        "footer_link_1_3": {
+            "id": "footer_link_1_3",
+            "type": "footer_link",
+            "href": "/careers",
+            "label": {
+                "text": "Careers",
+                "annotations": []
+            }
+        },
+        "footer_column_1": {
+            "id": "footer_column_1",
+            "type": "footer_link_column",
+            "label": {
+                "text": "Company",
+                "annotations": []
+            },
+            "footer_links": [
+                "footer_link_1_1",
+                "footer_link_1_2",
+                "footer_link_1_3"
+            ]
+        },
+        "footer_link_2_1": {
+            "id": "footer_link_2_1",
+            "type": "footer_link",
+            "href": "/products",
+            "label": {
+                "text": "Products",
+                "annotations": []
+            }
+        },
+        "footer_link_2_2": {
+            "id": "footer_link_2_2",
+            "type": "footer_link",
+            "href": "/services",
+            "label": {
+                "text": "Services",
+                "annotations": []
+            }
+        },
+        "footer_link_2_3": {
+            "id": "footer_link_2_3",
+            "type": "footer_link",
+            "href": "/pricing",
+            "label": {
+                "text": "Pricing",
+                "annotations": []
+            }
+        },
+        "footer_column_2": {
+            "id": "footer_column_2",
+            "type": "footer_link_column",
+            "label": {
+                "text": "Products",
+                "annotations": []
+            },
+            "footer_links": [
+                "footer_link_2_1",
+                "footer_link_2_2",
+                "footer_link_2_3"
+            ]
+        },
+        "footer_link_3_1": {
+            "id": "footer_link_3_1",
+            "type": "footer_link",
+            "href": "/docs",
+            "label": {
+                "text": "Documentation",
+                "annotations": []
+            }
+        },
+        "footer_link_3_2": {
+            "id": "footer_link_3_2",
+            "type": "footer_link",
+            "href": "/api",
+            "label": {
+                "text": "API Reference",
+                "annotations": []
+            }
+        },
+        "footer_link_3_3": {
+            "id": "footer_link_3_3",
+            "type": "footer_link",
+            "href": "/guides",
+            "label": {
+                "text": "Guides",
+                "annotations": []
+            }
+        },
+        "footer_column_3": {
+            "id": "footer_column_3",
+            "type": "footer_link_column",
+            "label": {
+                "text": "Resources",
+                "annotations": []
+            },
+            "footer_links": [
+                "footer_link_3_1",
+                "footer_link_3_2",
+                "footer_link_3_3"
+            ]
+        },
+        "footer_link_4_1": {
+            "id": "footer_link_4_1",
+            "type": "footer_link",
+            "href": "/contact",
+            "label": {
+                "text": "Contact",
+                "annotations": []
+            }
+        },
+        "footer_link_4_2": {
+            "id": "footer_link_4_2",
+            "type": "footer_link",
+            "href": "/support",
+            "label": {
+                "text": "Support",
+                "annotations": []
+            }
+        },
+        "footer_link_4_3": {
+            "id": "footer_link_4_3",
+            "type": "footer_link",
+            "href": "/privacy",
+            "label": {
+                "text": "Privacy Policy",
+                "annotations": []
+            }
+        },
+        "footer_column_4": {
+            "id": "footer_column_4",
+            "type": "footer_link_column",
+            "label": {
+                "text": "Legal",
+                "annotations": []
+            },
+            "footer_links": [
+                "footer_link_4_1",
+                "footer_link_4_2",
+                "footer_link_4_3"
+            ]
+        },
+        "footer_1": {
+            "id": "footer_1",
+            "type": "footer",
+            "copyright": {
+                "text": "© Editable Website 2026",
+                "annotations": []
+            },
+            "footer_link_columns": [
+                "footer_column_1",
+                "footer_column_2",
+                "footer_column_3",
+                "footer_column_4"
+            ]
+        },
+        "page_1": {
+            "id": "page_1",
+            "type": "page",
+            "body": [
+                "cHakxekvzavEawKMsPmfVWr",
+                "feature_1",
+                "prose_1",
+                "BPdekRaDEUcQZqtEwPwBvyu",
+                "fKZMgjKFZTwbcyXSERgVRty",
+                "link_collection_1",
+                "prose_3"
+            ],
+            "nav": "nav_1",
+            "footer": "footer_1"
+        }
+    }
 };

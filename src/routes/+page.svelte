@@ -38,6 +38,7 @@
 		async execute() {
 			// TODO: persist changes to database
 			// await save_document(this.context.session);
+			console.log('Document saved', session.to_json());
 			session.selection = null;
 			this.context.editable = false;
 		}
