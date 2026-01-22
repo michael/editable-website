@@ -8,7 +8,7 @@ export const demo_doc = {
             "type": "heading",
             "layout": 1,
             "content": {
-                "text": "This website is different",
+                "text": "This is not an ordinary website",
                 "annotations": []
             }
         },
@@ -16,7 +16,7 @@ export const demo_doc = {
             "id": "erAbuczAkUtnAGHYKgAUGkp",
             "type": "paragraph",
             "content": {
-                "text": "I'll show you why. All you need is a Desktop computer, and five minutes of your attention.",
+                "text": "I'll show you why. All you need is a physical keyboard.",
                 "annotations": []
             }
         },
@@ -24,7 +24,7 @@ export const demo_doc = {
             "id": "fdsxRajBxzDSFBBHEwSmqfZ",
             "type": "paragraph",
             "content": {
-                "text": "Are you ready?",
+                "text": "Ready?",
                 "annotations": []
             }
         },
@@ -707,6 +707,18 @@ export const demo_doc = {
                 "PXDJsbaPreVcBdYwmemxbfN"
             ]
         },
+        "nav_logo": {
+            "id": "nav_logo",
+            "type": "image",
+            "src": "/sample-images/logo.svg",
+            "width": 100,
+            "height": 100,
+            "alt": "Logo",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
         "nav_item_1": {
             "id": "nav_item_1",
             "type": "nav_item",
@@ -737,18 +749,6 @@ export const demo_doc = {
             },
             "target": "_self"
         },
-        "nav_logo": {
-            "id": "nav_logo",
-            "type": "image",
-            "src": "/sample-images/logo.svg",
-            "width": 100,
-            "height": 100,
-            "alt": "Logo",
-            "scale": 1,
-            "focal_point_x": 0.5,
-            "focal_point_y": 0.5,
-            "object_fit": "cover"
-        },
         "nav_1": {
             "id": "nav_1",
             "type": "nav",
@@ -758,6 +758,18 @@ export const demo_doc = {
                 "nav_item_2",
                 "nav_item_4"
             ]
+        },
+        "footer_logo": {
+            "id": "footer_logo",
+            "type": "image",
+            "src": "/sample-images/logo.svg",
+            "width": 100,
+            "height": 100,
+            "alt": "Logo",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
         },
         "footer_link_1_1": {
             "id": "footer_link_1_1",
@@ -930,18 +942,6 @@ export const demo_doc = {
                 "footer_link_4_2",
                 "footer_link_4_3"
             ]
-        },
-        "footer_logo": {
-            "id": "footer_logo",
-            "type": "image",
-            "src": "/sample-images/logo.svg",
-            "width": 100,
-            "height": 100,
-            "alt": "Logo",
-            "scale": 1,
-            "focal_point_x": 0.5,
-            "focal_point_y": 0.5,
-            "object_fit": "cover"
         },
         "footer_1": {
             "id": "footer_1",
