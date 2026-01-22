@@ -2,11 +2,17 @@
 @plugin '@tailwindcss/forms';
 
 :root {
-	--primary-fill-color: oklch(32.11% 0 0);
-	--canvas-fill-color: oklch(100% 0 0);
-	--secondary-fill-color: oklch(97% 0 0);
-	--primary-text-color: oklch(32.11% 0 0);
-	--stroke-color: oklch(0 0 0 / 0.1);
+	/* Base colors - configure these per site */
+	--background: oklch(0% 0 0); /* black */
+	--foreground: oklch(100% 0 0); /* white */
+	--accent: oklch(45% 0.31 285); /* purple */
+
+	/* Derived colors - these can be overridden per site, but we don't recommend it */
+	--foreground-muted: oklch(from var(--foreground) l c h / 50%); /* subtitles, secondary text */
+	--foreground-subtle: oklch(from var(--foreground) l c h / 10%); /* hairlines, borders */
+	--accent-muted: oklch(from var(--accent) l c h / 50%); /* hover states, fills */
+
+	/* Editor colors */
 	--editing-fill-color: oklch(59.71% 0.22 283 / 0.1);
 	--editing-stroke-color: oklch(59.71% 0.22 283);
 }

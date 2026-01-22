@@ -9,7 +9,7 @@
 
 <Node {path}>
 	<div class="footer-link-column flex flex-col">
-		<div class="px-4 py-1.5 border-b border-gray-400 text-center">
+		<div class="px-4 py-1.5 border-b border-(--foreground-subtle) text-center">
 			<AnnotatedTextProperty
 				class="text-xs uppercase text-gray-400"
 				path={[...path, 'label']}
@@ -28,12 +28,12 @@
 		--layout-orientation: vertical;
 	}
 
-	:global(.footer-links > *) {
-		border-bottom: 1px solid rgb(156, 163, 175);
+	/*:global(.footer-links > *) {
+		border-bottom: 1px solid var(--foreground-subtle);
 	}
 
 	:global(.footer-links > *:last-child) {
 		border-bottom: none;
-	}
+	}*/
 
 </style>

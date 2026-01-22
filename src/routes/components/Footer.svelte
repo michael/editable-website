@@ -15,10 +15,10 @@
 	);
 </script>
 
-<Node {path} class="border-t border-b border-gray-400">
+<Node {path} class="border-t border-b border-(--foreground-subtle)">
 	<div class="{TW_LIMITER}">
-		<div class="flex flex-col md:flex-row md:items-stretch border-l border-r border-gray-400">
-			<div class="order-2 md:order-1 md:w-1/4 flex items-center justify-center md:justify-start {TW_PAGE_PADDING_X} py-4 border-t md:border-t-0 border-gray-400">
+		<div class="flex flex-col md:flex-row md:items-stretch border-l border-r border-(--foreground-subtle)">
+			<div class="order-2 md:order-1 md:w-1/4 flex items-center justify-center md:justify-start {TW_PAGE_PADDING_X} py-4 border-t md:border-t-0 border-(--foreground-subtle)">
 				<AnnotatedTextProperty
 					class="text-center md:text-left"
 					path={[...path, 'copyright']}
@@ -26,12 +26,12 @@
 				/>
 			</div>
 			<NodeArrayProperty
-				class="footer-columns order-1 md:order-2 grid grid-cols-2 {grid_cols_class} flex-1 [--layout-orientation:horizontal] *:flex *:flex-col *:border-l *:border-gray-400 max-md:*:border-t max-md:[&>*:nth-child(1)]:border-t-0 max-md:[&>*:nth-child(2)]:border-t-0 max-md:[&>*:nth-child(odd)]:border-l-0 max-lg:[&>*:nth-child(n+3)]:border-t lg:[&>*:nth-child(n+5)]:border-t"
+				class="footer-columns order-1 md:order-2 grid grid-cols-2 {grid_cols_class} flex-1 [--layout-orientation:horizontal] *:flex *:flex-col *:border-l *:border-(--foreground-subtle) max-md:*:border-t max-md:[&>*:nth-child(1)]:border-t-0 max-md:[&>*:nth-child(2)]:border-t-0 max-md:[&>*:nth-child(odd)]:border-l-0 max-lg:[&>*:nth-child(n+3)]:border-t lg:[&>*:nth-child(n+5)]:border-t"
 				path={[...path, 'footer_link_columns']}
 			/>
 		</div>
 	</div>
 </Node>
 <div class="{TW_LIMITER} w-full">
-	<div class="h-12 border-l border-r border-gray-400"></div>
+	<div class="h-12 border-l border-r border-(--foreground-subtle)"></div>
 </div>

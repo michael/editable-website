@@ -43,10 +43,10 @@
 </script>
 
 <Node {path}>
-	<div class="border-t border-gray-400">
+	<div class="border-t border-(--foreground-subtle)">
 		<div class="{TW_LIMITER} w-full">
-			<div class="-mb-px max-xl:-mr-px xl:border-l border-gray-400">
-				<NodeArrayProperty class="{grid_layout} *:border-gray-400 *:border-r *:border-b" path={[...path, 'gallery_items']} />
+			<div class="-mb-px max-xl:-mr-px xl:border-l border-(--foreground-subtle)">
+				<NodeArrayProperty class="{grid_layout} *:border-(--foreground-subtle) *:border-r *:border-b" path={[...path, 'gallery_items']} />
 			</div>
 		</div>
 	</div>

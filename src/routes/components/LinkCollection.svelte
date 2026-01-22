@@ -9,11 +9,11 @@
 </script>
 
 <Node {path}>
-	<div class="border-t border-gray-400 [--layout-orientation:horizontal]">
+	<div class="border-t border-(--foreground-subtle) [--layout-orientation:horizontal]">
 		<div class="{TW_LIMITER} w-full">
-			<div class="-mb-px max-xl:-mr-px xl:border-l border-gray-400">
+			<div class="-mb-px max-xl:-mr-px xl:border-l border-(--foreground-subtle)">
 				<NodeArrayProperty
-					class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 *:border-gray-400 *:border-r *:border-b"
+					class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 *:border-(--foreground-subtle) *:border-r *:border-b"
 					path={[...path, 'link_collection_items']}
 				/>
 			</div>

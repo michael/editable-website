@@ -8,7 +8,7 @@
 
 <Node {path}>
 	<div class="{TW_LIMITER}">
-		<div class="flex items-stretch border-l border-r border-gray-400">
+		<div class="flex items-stretch border-l border-r border-(--foreground-subtle)">
 			<div class="w-1/4 flex items-center {TW_PAGE_PADDING_X} py-4">
 				<span class="text-2xl font-extralight tracking-wide">LOGO</span>
 			</div>
@@ -27,9 +27,8 @@
 		align-items: center;
 		justify-content: center;
 		flex: 1;
-		border-left: 1px solid rgb(156, 163, 175);
+		/*border-left: 1px solid var(--foreground-subtle);*/
 		text-align: center;
 	}
-
 
 </style>

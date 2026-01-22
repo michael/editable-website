@@ -18,7 +18,7 @@
 </script>
 
 <Node {path}>
-	<div class="border-t border-gray-400">
+	<div class="border-t border-(--foreground-subtle)">
 		<div class="figure mx-auto w-full max-w-5xl py-16">
 			<CustomProperty path={[...path, 'image']}>
 				<div
