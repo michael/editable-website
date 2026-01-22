@@ -737,9 +737,22 @@ export const demo_doc = {
             },
             "target": "_self"
         },
+        "nav_logo": {
+            "id": "nav_logo",
+            "type": "image",
+            "src": "/sample-images/logo.svg",
+            "width": 100,
+            "height": 100,
+            "alt": "Logo",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
         "nav_1": {
             "id": "nav_1",
             "type": "nav",
+            "logo": "nav_logo",
             "nav_items": [
                 "nav_item_1",
                 "nav_item_2",

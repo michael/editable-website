@@ -116,6 +116,11 @@ const document_schema = define_document_schema({
 	nav: {
 		kind: 'block',
 		properties: {
+			logo: {
+				type: 'node',
+				node_types: ['image'],
+				default_node_type: 'image'
+			},
 			nav_items: {
 				type: 'node_array',
 				node_types: ['nav_item'],
