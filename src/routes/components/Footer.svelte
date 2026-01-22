@@ -16,28 +16,25 @@
 	);
 </script>
 
-<Node {path} class="border-t border-b border-(--foreground-subtle)">
+<Node {path} class="border-t border-(--foreground-subtle)">
 	<div class="{TW_LIMITER}">
-		<div class="flex flex-col md:flex-row md:items-stretch border-l border-r border-(--foreground-subtle)">
-			<div class="order-2 md:order-1 md:w-1/4 flex flex-col justify-center md:items-start items-center {TW_PAGE_PADDING_X} py-4 border-t md:border-t-0 border-(--foreground-subtle)">
+		<div class="flex flex-col md:flex-row md:items-start border-l border-r border-(--foreground-subtle) py-12 md:py-16">
+			<div class="md:w-1/4 flex flex-col md:items-start items-center {TW_PAGE_PADDING_X}">
 				<CustomProperty path={[...path, 'logo']}>
 					<div class="h-10 w-10 overflow-hidden mb-4" contenteditable="false">
 						<Image path={[...path, 'logo']} />
 					</div>
 				</CustomProperty>
 				<AnnotatedTextProperty
-					class="text-center md:text-left"
+					class="text-center md:text-left text-(--foreground-muted)"
 					path={[...path, 'copyright']}
 					placeholder="© 2025 Company"
 				/>
 			</div>
 			<NodeArrayProperty
-				class="footer-columns order-1 md:order-2 grid grid-cols-2 {grid_cols_class} flex-1 [--layout-orientation:horizontal] *:flex *:flex-col *:border-l *:border-(--foreground-subtle) max-md:*:border-t max-md:[&>*:nth-child(1)]:border-t-0 max-md:[&>*:nth-child(2)]:border-t-0 max-md:[&>*:nth-child(odd)]:border-l-0 max-lg:[&>*:nth-child(n+3)]:border-t lg:[&>*:nth-child(n+5)]:border-t"
+				class="footer-columns grid grid-cols-2 {grid_cols_class} flex-1 gap-8 mt-8 md:mt-0 {TW_PAGE_PADDING_X} md:px-0 [--layout-orientation:horizontal]"
 				path={[...path, 'footer_link_columns']}
 			/>
 		</div>
 	</div>
 </Node>
-<div class="{TW_LIMITER} w-full">
-	<div class="h-12 border-l border-r border-(--foreground-subtle)"></div>
-</div>
