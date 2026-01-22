@@ -10,7 +10,7 @@
 
 	let app_el = $state();
 	let svedit_ref = $state();
-	let editable = $state(true);
+	let editable = $state(false);
 
 	function focus_canvas() {
 		if (svedit_ref) {

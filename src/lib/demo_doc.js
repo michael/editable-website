@@ -339,9 +339,9 @@ export const demo_doc = {
         "CTcJfCGYJyfkWxSPZFjxXTT": {
             "id": "CTcJfCGYJyfkWxSPZFjxXTT",
             "type": "heading",
-            "layout": 2,
+            "layout": 1,
             "content": {
-                "text": "Let's add some images to the gallery above",
+                "text": "Let's add some images",
                 "annotations": []
             }
         },
@@ -375,7 +375,7 @@ export const demo_doc = {
             "id": "HVDESaUhzanEZJaxjHvZAWR",
             "type": "paragraph",
             "content": {
-                "text": "Now put the cursor after an image in the image grid.",
+                "text": "Now put the cursor after an image in the gallery above.",
                 "annotations": []
             }
         },
@@ -401,7 +401,7 @@ export const demo_doc = {
             "id": "BwUdtezSTfmfuzQRSjsFsKb",
             "type": "paragraph",
             "content": {
-                "text": "You can also replace images, by selecting an image on the page and ",
+                "text": "You can also replace images, by selecting an image and then paste.",
                 "annotations": []
             }
         },
@@ -433,8 +433,8 @@ export const demo_doc = {
         "link_collection_item_1": {
             "id": "link_collection_item_1",
             "type": "link_collection_item",
-            "href": "/docs/getting-started",
-            "target": "_self",
+            "href": "https://github.com/michael/editable-website?tab=readme-ov-file#getting-started",
+            "target": "_blank",
             "image": "link_collection_item_1_image",
             "preline": {
                 "text": "Documentation",
@@ -464,8 +464,8 @@ export const demo_doc = {
         "link_collection_item_2": {
             "id": "link_collection_item_2",
             "type": "link_collection_item",
-            "href": "/docs/customization",
-            "target": "_self",
+            "href": "https://github.com/michael/editable-website/blob/main/src/routes/components/NavItem.svelte",
+            "target": "_blank",
             "image": "link_collection_item_2_image",
             "preline": {
                 "text": "Guide",
@@ -495,7 +495,7 @@ export const demo_doc = {
         "link_collection_item_3": {
             "id": "link_collection_item_3",
             "type": "link_collection_item",
-            "href": "https://github.com/michael/svedit",
+            "href": "https://github.com/michael/svedit?tab=readme-ov-file#svedit",
             "target": "_blank",
             "image": "link_collection_item_3_image",
             "preline": {
@@ -613,30 +613,116 @@ export const demo_doc = {
                 "uaHDneaZQYbNNgNhSwRccnt"
             ]
         },
+        "hqrrTdEbTPaqzEcYMczhBZb": {
+            "id": "hqrrTdEbTPaqzEcYMczhBZb",
+            "type": "image",
+            "src": "/sample-images/michael.jpg",
+            "width": 682,
+            "height": 1024,
+            "alt": "Feature image",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "RrpSjGbCdmKKSgjedcufHWu": {
+            "id": "RrpSjGbCdmKKSgjedcufHWu",
+            "type": "strong"
+        },
+        "YTMHBcPkYXJMRUnuSAhrTDE": {
+            "id": "YTMHBcPkYXJMRUnuSAhrTDE",
+            "type": "feature",
+            "layout": 1,
+            "image": "hqrrTdEbTPaqzEcYMczhBZb",
+            "title": {
+                "text": "Hello, I'm Michael",
+                "annotations": []
+            },
+            "description": {
+                "text": "I spent the last couple of years building this. I call it Editable Website. It is made for website developers, who want to control the structure and layout in code, while allowing site owners to edit content in a way that's intuitive, fun, and just works.",
+                "annotations": [
+                    {
+                        "start_offset": 58,
+                        "end_offset": 74,
+                        "node_id": "RrpSjGbCdmKKSgjedcufHWu"
+                    }
+                ]
+            }
+        },
+        "gwEJMMJzgJxkkgHWwhCeCXm": {
+            "id": "gwEJMMJzgJxkkgHWwhCeCXm",
+            "type": "heading",
+            "layout": 1,
+            "content": {
+                "text": "When can you use it?",
+                "annotations": []
+            }
+        },
+        "rAYrMTKXAGXAGghSWjpHqdn": {
+            "id": "rAYrMTKXAGXAGghSWjpHqdn",
+            "type": "paragraph",
+            "content": {
+                "text": "Soon. I mean... in a couple of months. If everything goes well. Stay tuned!",
+                "annotations": []
+            }
+        },
+        "xzqEyRFgyRkpSTTBhHNVfyz": {
+            "id": "xzqEyRFgyRkpSTTBhHNVfyz",
+            "type": "link",
+            "href": "https://mutter.co",
+            "target": "_blank"
+        },
+        "MHRscHxqaGXxxjbZVhfNyNW": {
+            "id": "MHRscHxqaGXxxjbZVhfNyNW",
+            "type": "link",
+            "href": "https://sonjastojanovic.com",
+            "target": "_blank"
+        },
+        "PXDJsbaPreVcBdYwmemxbfN": {
+            "id": "PXDJsbaPreVcBdYwmemxbfN",
+            "type": "paragraph",
+            "content": {
+                "text": "Thank you Johannes Mutter for helping me with the design. Also, big thanks to my family and friends and in particular my wife Sonja for your support and listening to me talking about Editable Website for hundreds of hours.",
+                "annotations": [
+                    {
+                        "start_offset": 10,
+                        "end_offset": 25,
+                        "node_id": "xzqEyRFgyRkpSTTBhHNVfyz"
+                    },
+                    {
+                        "start_offset": 126,
+                        "end_offset": 131,
+                        "node_id": "MHRscHxqaGXxxjbZVhfNyNW"
+                    }
+                ]
+            }
+        },
+        "RwhuaDtvrdCHEEKHupsJJxa": {
+            "id": "RwhuaDtvrdCHEEKHupsJJxa",
+            "type": "prose",
+            "layout": 2,
+            "content": [
+                "gwEJMMJzgJxkkgHWwhCeCXm",
+                "rAYrMTKXAGXAGghSWjpHqdn",
+                "PXDJsbaPreVcBdYwmemxbfN"
+            ]
+        },
         "nav_item_1": {
             "id": "nav_item_1",
             "type": "nav_item",
-            "href": "/",
+            "href": "#blocks",
             "label": {
-                "text": "Home",
+                "text": "Blocks",
                 "annotations": []
-            }
+            },
+            "target": "_self"
         },
         "nav_item_2": {
             "id": "nav_item_2",
             "type": "nav_item",
-            "href": "/projects",
+            "href": "#images",
             "label": {
-                "text": "Projects",
-                "annotations": []
-            }
-        },
-        "nav_item_3": {
-            "id": "nav_item_3",
-            "type": "nav_item",
-            "href": "/blog",
-            "label": {
-                "text": "Blog",
+                "text": "Images",
                 "annotations": []
             },
             "target": "_self"
@@ -644,11 +730,12 @@ export const demo_doc = {
         "nav_item_4": {
             "id": "nav_item_4",
             "type": "nav_item",
-            "href": "/about",
+            "href": "#links",
             "label": {
-                "text": "About",
+                "text": "Links",
                 "annotations": []
-            }
+            },
+            "target": "_self"
         },
         "nav_1": {
             "id": "nav_1",
@@ -656,36 +743,38 @@ export const demo_doc = {
             "nav_items": [
                 "nav_item_1",
                 "nav_item_2",
-                "nav_item_3",
                 "nav_item_4"
             ]
         },
         "footer_link_1_1": {
             "id": "footer_link_1_1",
             "type": "footer_link",
-            "href": "/about",
+            "href": "#about",
             "label": {
-                "text": "About Us",
+                "text": "About",
                 "annotations": []
-            }
+            },
+            "target": "_self"
         },
         "footer_link_1_2": {
             "id": "footer_link_1_2",
             "type": "footer_link",
-            "href": "/team",
+            "href": "#projects",
             "label": {
-                "text": "Our Team",
+                "text": "Projects",
                 "annotations": []
-            }
+            },
+            "target": "_self"
         },
         "footer_link_1_3": {
             "id": "footer_link_1_3",
             "type": "footer_link",
-            "href": "/careers",
+            "href": "#ideas",
             "label": {
-                "text": "Careers",
+                "text": "Ideas",
                 "annotations": []
-            }
+            },
+            "target": "_self"
         },
         "footer_column_1": {
             "id": "footer_column_1",
@@ -703,29 +792,32 @@ export const demo_doc = {
         "footer_link_2_1": {
             "id": "footer_link_2_1",
             "type": "footer_link",
-            "href": "/products",
+            "href": "#products",
             "label": {
                 "text": "Products",
                 "annotations": []
-            }
+            },
+            "target": "_self"
         },
         "footer_link_2_2": {
             "id": "footer_link_2_2",
             "type": "footer_link",
-            "href": "/services",
+            "href": "#services",
             "label": {
                 "text": "Services",
                 "annotations": []
-            }
+            },
+            "target": "_self"
         },
         "footer_link_2_3": {
             "id": "footer_link_2_3",
             "type": "footer_link",
-            "href": "/pricing",
+            "href": "#pricing",
             "label": {
                 "text": "Pricing",
                 "annotations": []
-            }
+            },
+            "target": "_self"
         },
         "footer_column_2": {
             "id": "footer_column_2",
@@ -743,29 +835,32 @@ export const demo_doc = {
         "footer_link_3_1": {
             "id": "footer_link_3_1",
             "type": "footer_link",
-            "href": "/docs",
+            "href": "#docs",
             "label": {
                 "text": "Documentation",
                 "annotations": []
-            }
+            },
+            "target": "_self"
         },
         "footer_link_3_2": {
             "id": "footer_link_3_2",
             "type": "footer_link",
-            "href": "/api",
+            "href": "#api",
             "label": {
                 "text": "API Reference",
                 "annotations": []
-            }
+            },
+            "target": "_self"
         },
         "footer_link_3_3": {
             "id": "footer_link_3_3",
             "type": "footer_link",
-            "href": "/guides",
+            "href": "#guides",
             "label": {
                 "text": "Guides",
                 "annotations": []
-            }
+            },
+            "target": "_self"
         },
         "footer_column_3": {
             "id": "footer_column_3",
@@ -783,29 +878,32 @@ export const demo_doc = {
         "footer_link_4_1": {
             "id": "footer_link_4_1",
             "type": "footer_link",
-            "href": "/contact",
+            "href": "#contact",
             "label": {
                 "text": "Contact",
                 "annotations": []
-            }
+            },
+            "target": "_self"
         },
         "footer_link_4_2": {
             "id": "footer_link_4_2",
             "type": "footer_link",
-            "href": "/support",
+            "href": "#support",
             "label": {
                 "text": "Support",
                 "annotations": []
-            }
+            },
+            "target": "_self"
         },
         "footer_link_4_3": {
             "id": "footer_link_4_3",
             "type": "footer_link",
-            "href": "/privacy",
+            "href": "#privacy",
             "label": {
                 "text": "Privacy Policy",
                 "annotations": []
-            }
+            },
+            "target": "_self"
         },
         "footer_column_4": {
             "id": "footer_column_4",
@@ -844,7 +942,9 @@ export const demo_doc = {
                 "BPdekRaDEUcQZqtEwPwBvyu",
                 "fKZMgjKFZTwbcyXSERgVRty",
                 "link_collection_1",
-                "prose_3"
+                "prose_3",
+                "YTMHBcPkYXJMRUnuSAhrTDE",
+                "RwhuaDtvrdCHEEKHupsJJxa"
             ],
             "nav": "nav_1",
             "footer": "footer_1"
