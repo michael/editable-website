@@ -8,7 +8,7 @@
 </script>
 
 <Node {path}>
-	<div class="footer-link-column flex flex-col gap-2">
+	<div class="footer-link-column flex flex-col gap-2 px-4">
 		<AnnotatedTextProperty
 			class="font-bold"
 			path={[...path, 'label']}
