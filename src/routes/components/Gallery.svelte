@@ -43,7 +43,7 @@
 </script>
 
 <Node {path}>
-	<div class="border-t border-(--foreground-subtle)">
+	<div class="border-b border-(--foreground-subtle)">
 		<div class="{TW_LIMITER} w-full">
 			<div class="border-l border-r border-(--foreground-subtle)">
 				<div class="bg-(--foreground-subtle)">
