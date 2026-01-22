@@ -74,6 +74,11 @@ const document_schema = define_document_schema({
 	footer: {
 		kind: 'block',
 		properties: {
+			logo: {
+				type: 'node',
+				node_types: ['image'],
+				default_node_type: 'image'
+			},
 			copyright: {
 				type: 'annotated_text',
 				node_types: [],

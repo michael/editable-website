@@ -931,9 +931,22 @@ export const demo_doc = {
                 "footer_link_4_3"
             ]
         },
+        "footer_logo": {
+            "id": "footer_logo",
+            "type": "image",
+            "src": "/sample-images/logo.svg",
+            "width": 100,
+            "height": 100,
+            "alt": "Logo",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
         "footer_1": {
             "id": "footer_1",
             "type": "footer",
+            "logo": "footer_logo",
             "copyright": {
                 "text": "© Editable Website 2026",
                 "annotations": []

@@ -1,7 +1,8 @@
 <script>
 	import { getContext } from 'svelte';
-	import { AnnotatedTextProperty, NodeArrayProperty, Node } from 'svedit';
+	import { AnnotatedTextProperty, NodeArrayProperty, Node, CustomProperty } from 'svedit';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
+	import Image from './Image.svelte';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
@@ -18,7 +19,12 @@
 <Node {path} class="border-t border-b border-(--foreground-subtle)">
 	<div class="{TW_LIMITER}">
 		<div class="flex flex-col md:flex-row md:items-stretch border-l border-r border-(--foreground-subtle)">
-			<div class="order-2 md:order-1 md:w-1/4 flex items-center justify-center md:justify-start {TW_PAGE_PADDING_X} py-4 border-t md:border-t-0 border-(--foreground-subtle)">
+			<div class="order-2 md:order-1 md:w-1/4 flex flex-col justify-center md:items-start items-center {TW_PAGE_PADDING_X} py-4 border-t md:border-t-0 border-(--foreground-subtle)">
+				<CustomProperty path={[...path, 'logo']}>
+					<div class="h-10 w-10 overflow-hidden mb-4" contenteditable="false">
+						<Image path={[...path, 'logo']} />
+					</div>
+				</CustomProperty>
 				<AnnotatedTextProperty
 					class="text-center md:text-left"
 					path={[...path, 'copyright']}
