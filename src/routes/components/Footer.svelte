@@ -19,20 +19,20 @@
 <Node {path} class="border-t border-(--foreground-subtle) text-sm">
 	<div class="{TW_LIMITER}">
 		<div class="flex flex-col md:flex-row md:items-start border-l border-r border-(--foreground-subtle) py-12 md:py-16 {TW_PAGE_PADDING_X}">
-			<div class="md:w-1/3 flex flex-col md:items-start items-center">
+			<div class="md:w-1/3 flex flex-col items-start">
 				<CustomProperty path={[...path, 'logo']}>
-					<div class="h-18 w-10 overflow-hidden mb-8" contenteditable="false">
+					<div class="h-18 w-10 overflow-hidden mb-4" contenteditable="false">
 						<Image path={[...path, 'logo']} />
 					</div>
 				</CustomProperty>
 				<AnnotatedTextProperty
-					class="text-center md:text-left"
+					class="mb-8 md:mb-0"
 					path={[...path, 'copyright']}
 					placeholder="© 2025 Company"
 				/>
 			</div>
 			<NodeArrayProperty
-				class="footer-columns grid grid-cols-2 {grid_cols_class} flex-1 mt-8 md:mt-0 gap-y-12 [--layout-orientation:horizontal]"
+				class="footer-columns grid grid-cols-2 {grid_cols_class} flex-1 gap-x-8 gap-y-12 mt-8 md:mt-0 [--layout-orientation:horizontal]"
 				path={[...path, 'footer_link_columns']}
 			/>
 		</div>
