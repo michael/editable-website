@@ -15,7 +15,7 @@
 		<div class="flex items-stretch border-l border-r border-(--foreground-subtle) text-sm">
 			<div class="flex items-center flex-1 {TW_PAGE_PADDING_X} py-4">
 				<CustomProperty path={[...path, 'logo']}>
-					<div class="h-10 overflow-hidden" contenteditable="false">
+					<div class="w-10 h-10 overflow-hidden" contenteditable="false">
 						<Image path={[...path, 'logo']} />
 					</div>
 				</CustomProperty>

@@ -21,12 +21,12 @@
 		<div class="flex flex-col md:flex-row md:items-start border-l border-r border-(--foreground-subtle) py-12 md:py-16 {TW_PAGE_PADDING_X}">
 			<div class="md:w-1/3 flex flex-col items-start">
 				<CustomProperty path={[...path, 'logo']}>
-					<div class="h-18 w-10 overflow-hidden mb-4" contenteditable="false">
+					<div class="h-18 w-18 overflow-hidden" contenteditable="false">
 						<Image path={[...path, 'logo']} />
 					</div>
 				</CustomProperty>
 				<AnnotatedTextProperty
-					class="mb-8 md:mb-0"
+					class="mt-4 mb-8 md:mb-0"
 					path={[...path, 'copyright']}
 					placeholder="© 2025 Company"
 				/>
