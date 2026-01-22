@@ -30,7 +30,7 @@
 	style="position-anchor: --{path.join('-')}; position-area: block-end span-all; justify-self: anchor-center;"
 >
 	{#if node.href}
-		<div class="flex items-center gap-3 bg-white border border-editing px-3 py-2">
+		<div class="flex items-center gap-3 bg-white border border-(--editing-stroke-color) px-3 py-2">
 			<a
 				href={node.href}
 				target="_blank"
@@ -41,14 +41,14 @@
 			</a>
 			<button
 				type="button"
-				class="text-sm text-editing cursor-pointer shrink-0 hover:opacity-80"
+				class="text-sm text-(--editing-stroke-color) cursor-pointer shrink-0 hover:opacity-80"
 				onclick={handle_edit}
 			>
 				EDIT
 			</button>
 			<button
 				type="button"
-				class="text-sm text-editing cursor-pointer shrink-0 hover:opacity-80"
+				class="text-sm text-(--editing-stroke-color) cursor-pointer shrink-0 hover:opacity-80"
 				onclick={handle_remove}
 			>
 				REMOVE
@@ -57,7 +57,7 @@
 	{:else}
 		<button
 			type="button"
-			class="bg-white border border-editing text-editing text-sm px-12 py-2 cursor-pointer hover:bg-gray-50"
+			class="bg-white border border-(--editing-stroke-color) text-(--editing-stroke-color) text-sm px-12 py-2 cursor-pointer hover:bg-gray-50"
 			onclick={handle_edit}
 		>
 			CREATE LINK
