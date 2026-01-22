@@ -10,7 +10,7 @@
 
 	let app_el = $state();
 	let svedit_ref = $state();
-	let editable = $state(true);
+	let editable = $state(false);
 
 	function focus_canvas() {
 		if (svedit_ref) {
@@ -38,6 +38,7 @@
 		async execute() {
 			// TODO: persist changes to database
 			// await save_document(this.context.session);
+			console.log('Document saved', session.to_json());
 			session.selection = null;
 			this.context.editable = false;
 		}
