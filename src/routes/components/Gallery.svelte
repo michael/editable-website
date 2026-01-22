@@ -45,8 +45,8 @@
 <Node {path}>
 	<div class="border-t border-(--foreground-subtle)">
 		<div class="{TW_LIMITER} w-full">
-			<div class="-mb-px max-xl:-mr-px xl:border-l border-(--foreground-subtle)">
-				<NodeArrayProperty class="{grid_layout} *:border-(--foreground-subtle) *:border-r *:border-b" path={[...path, 'gallery_items']} />
+			<div class="xl:border-l xl:border-r border-(--foreground-subtle)">
+				<NodeArrayProperty class="{grid_layout} *:border-(--foreground-subtle) *:border-l *:first:border-l-0" path={[...path, 'gallery_items']} />
 			</div>
 		</div>
 	</div>
