@@ -1,0 +1,23 @@
+# Fly.io configuration
+# Docs: https://fly.io/docs/reference/configuration/
+
+app = '{{APP_NAME}}'
+primary_region = '{{REGION}}'
+
+[build]
+
+[mounts]
+  source = 'data'
+  destination = '/data'
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_start_machines = true
+  auto_stop_machines = 'stop'
+  min_machines_running = 0
+
+[[vm]]
+  memory = '512mb'
+  cpu_kind = 'shared'
+  cpus = 1
