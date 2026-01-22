@@ -75,7 +75,7 @@
 
 <dialog
 	bind:this={dialog_ref}
-	class="edit-link-dialog absolute z-40 mt-1 m-0 bg-white p-0 shadow-xl overflow-visible max-h-90 border border-editing"
+	class="edit-link-dialog absolute z-40 mt-1 m-0 bg-white p-0 shadow-xl overflow-visible max-h-90 border border-(--editing-stroke-color)"
 	style="position-anchor: --{path.join('-')}; position-area: block-end span-all; justify-self: anchor-center;"
 	onclick={handle_backdrop_click}
 >
@@ -85,7 +85,7 @@
 			type="url"
 			bind:value={href_input_value}
 			placeholder="https://example.com"
-			class="w-72 px-3 py-2 text-sm text-gray-700 border-b border-gray-200 focus:border-editing focus:ring-editing"
+			class="w-72 px-3 py-2 text-sm text-gray-700 border-b border-gray-200 focus:border-(--editing-stroke-color) focus:ring-(--editing-stroke-color)"
 			onkeydown={handle_keydown}
 		/>
 		<div class="flex items-center justify-between px-3 py-2">
@@ -93,13 +93,13 @@
 				<input
 					type="checkbox"
 					bind:checked={open_in_new_tab}
-					class="w-4 h-4 cursor-pointer text-editing focus:ring-editing"
+					class="w-4 h-4 cursor-pointer text-(--editing-stroke-color) focus:ring-(--editing-stroke-color)"
 				/>
 				<span class="text-sm text-gray-600">Open in new tab</span>
 			</label>
 			<button
 				type="button"
-				class="text-sm text-editing cursor-pointer shrink-0 hover:opacity-80"
+				class="text-sm text-(--editing-stroke-color) cursor-pointer shrink-0 hover:opacity-80"
 				onclick={save}
 			>
 				UPDATE

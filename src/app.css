@@ -18,11 +18,7 @@
 }
 
 @theme {
-	--inline-page-margin: --spacing(5);
-	--two-column-inline-margin: --spacing(15);
 	--max-width-8xl: 90rem;
-	--color-editing: oklch(59.71% 0.22 283);
-	--color-editing-fill: oklch(59.71% 0.22 283 / 0.1);
 }
 
 @layer utilities {
