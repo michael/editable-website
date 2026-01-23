@@ -60,7 +60,7 @@
 	.cursor-trap {
 		/*outline: 1px dashed var(--editing-stroke-color);*/
 		outline: 1px dashed color-mix(in srgb, var(--editing-stroke-color) 30%, transparent);
-		position: relative;
+		position: absolute;
 		cursor: pointer;
 		z-index: 20;
 	}
@@ -86,8 +86,10 @@
 
 	/* Vertical layout (default) */
 	.cursor-trap[data-orientation='vertical'] {
+		bottom: -6px;
+		left: 0;
+		right: 0;
 		height: 12px;
-		margin-bottom: -12px;
 	}
 
 	.cursor-trap[data-orientation='vertical'] .svedit-selectable {
@@ -109,13 +111,12 @@
 	}
 
 	.cursor-trap[data-orientation='vertical'].position-zero-cursor-trap {
-		margin-bottom: 0;
-		margin-top: -12px;
+		bottom: auto;
+		top: -6px;
 	}
 
 	/* Horizontal layout */
 	.cursor-trap[data-orientation='horizontal'] {
-		position: absolute;
 		right: -6px;
 		top: 0;
 		bottom: 0;
@@ -143,7 +144,5 @@
 	.cursor-trap[data-orientation='horizontal'].position-zero-cursor-trap {
 		right: auto;
 		left: -6px;
-		margin-top: 0;
-		margin-bottom: 0;
 	}
 </style>
