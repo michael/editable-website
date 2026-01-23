@@ -13,14 +13,24 @@
 	let layout_orientation = $state('vertical');
 
 	$effect(() => {
-		if (cursor_trap_el) {
-			const parent = cursor_trap_el.parentElement;
-			if (parent) {
-				const style = getComputedStyle(parent);
-				const orientation = style.getPropertyValue('--layout-orientation').trim();
-				layout_orientation = orientation || 'vertical';
+		function update_orientation() {
+			if (cursor_trap_el) {
+				const parent = cursor_trap_el.parentElement;
+				if (parent) {
+					const style = getComputedStyle(parent);
+					const orientation = style.getPropertyValue('--layout-orientation').trim();
+					layout_orientation = orientation || 'vertical';
+				}
 			}
 		}
+
+		update_orientation();
+
+		window.addEventListener('resize', update_orientation);
+
+		return () => {
+			window.removeEventListener('resize', update_orientation);
+		};
 	});
 
 	function _is_focused() {
@@ -85,6 +95,7 @@
 	}
 
 	/* Vertical layout (default) */
+	/* TODO: Use @container style(--layout-orientation: vertical) { ... } as soon as Firefox supports it */
 	.cursor-trap[data-orientation='vertical'] {
 		bottom: -6px;
 		left: 0;
@@ -116,6 +127,7 @@
 	}
 
 	/* Horizontal layout */
+	/* TODO: Use @container style(--layout-orientation: horizontal) { ... } as soon as Firefox supports it */
 	.cursor-trap[data-orientation='horizontal'] {
 		right: -6px;
 		top: 0;
