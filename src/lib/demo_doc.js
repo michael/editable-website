@@ -506,7 +506,7 @@ export const demo_doc = {
             "target": "_blank",
             "image": "ReRqxYxMdAUVaMuudfJhzsS",
             "preline": {
-                "text": "Deep Tech VENtURE CAPITAL",
+                "text": "VENtURE CAPITAL",
                 "annotations": []
             },
             "title": {
@@ -514,7 +514,7 @@ export const demo_doc = {
                 "annotations": []
             },
             "description": {
-                "text": "Explore the full API for building custom content types.",
+                "text": "An early-stage industrial deep tech fund.",
                 "annotations": []
             }
         },
@@ -751,7 +751,7 @@ export const demo_doc = {
         "nav_item_4": {
             "id": "nav_item_4",
             "type": "nav_item",
-            "href": "#fjeQygAVqzwZZVHbMHyJybG",
+            "href": "#RwhuaDtvrdCHEEKHupsJJxa",
             "label": {
                 "text": "Links",
                 "annotations": []
