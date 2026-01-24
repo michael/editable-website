@@ -67,7 +67,7 @@
 		<div class="grid grid-cols-1 md:grid-cols-2 xl:border-r xl:border-l border-(--foreground-subtle)">
 			<div class="flex flex-col {TW_PAGE_PADDING}">
 				<div class="max-md:pt-6">{@render big_title()}</div>
-				<div class="flex-1" contenteditable="false"></div>
+				<div class="flex-1" contenteditable="false">&ZeroWidthSpace;</div>
 				<div class="{TW_MOBILE_LEFT_INSET} max-md:pt-16 max-md:pb-6">
 					{@render description()}
 				</div>
