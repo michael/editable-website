@@ -272,6 +272,57 @@ export const demo_doc = {
             "type": "gallery_item",
             "image": "CYZFDvXrnaqxAKrErdZtgTF"
         },
+        "eacGfUcvXCCcCkkRVJEzVQA": {
+            "id": "eacGfUcvXCCcCkkRVJEzVQA",
+            "type": "image",
+            "src": "",
+            "width": 800,
+            "height": 600,
+            "alt": "Sample image",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "nHBtjKafchwuYjvfWRKfyPB": {
+            "id": "nHBtjKafchwuYjvfWRKfyPB",
+            "type": "gallery_item",
+            "image": "eacGfUcvXCCcCkkRVJEzVQA"
+        },
+        "qpYkBxBfWxnHPXaHEYqmkNK": {
+            "id": "qpYkBxBfWxnHPXaHEYqmkNK",
+            "type": "image",
+            "src": "",
+            "width": 800,
+            "height": 600,
+            "alt": "Sample image",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "SwVVZbqrUVwkbyRmfSfCTjH": {
+            "id": "SwVVZbqrUVwkbyRmfSfCTjH",
+            "type": "gallery_item",
+            "image": "qpYkBxBfWxnHPXaHEYqmkNK"
+        },
+        "asBnEpdtbyJQCEvNWuyADWR": {
+            "id": "asBnEpdtbyJQCEvNWuyADWR",
+            "type": "image",
+            "src": "",
+            "width": 800,
+            "height": 600,
+            "alt": "Sample image",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "tyPwGsNvAepCesRRspqreba": {
+            "id": "tyPwGsNvAepCesRRspqreba",
+            "type": "gallery_item",
+            "image": "asBnEpdtbyJQCEvNWuyADWR"
+        },
         "BPdekRaDEUcQZqtEwPwBvyu": {
             "id": "BPdekRaDEUcQZqtEwPwBvyu",
             "type": "gallery",
@@ -279,7 +330,10 @@ export const demo_doc = {
             "gallery_items": [
                 "wtvHDBrCzJVgacTaJqAwNJk",
                 "TQRANBXMrzXXZTtzxAYhhZf",
-                "beUAyJnBJXjTAKhxdYKntGJ"
+                "beUAyJnBJXjTAKhxdYKntGJ",
+                "nHBtjKafchwuYjvfWRKfyPB",
+                "SwVVZbqrUVwkbyRmfSfCTjH",
+                "tyPwGsNvAepCesRRspqreba"
             ]
         },
         "CTcJfCGYJyfkWxSPZFjxXTT": {
@@ -410,8 +464,8 @@ export const demo_doc = {
             "height": 600,
             "alt": "Customization",
             "scale": 1.1046221254112045,
-            "focal_point_x": 0.5,
-            "focal_point_y": 0.5,
+            "focal_point_x": 0.44171255631911605,
+            "focal_point_y": 0.5189998480012166,
             "object_fit": "cover"
         },
         "link_collection_item_2": {
@@ -421,15 +475,46 @@ export const demo_doc = {
             "target": "_blank",
             "image": "link_collection_item_2_image",
             "preline": {
-                "text": "REAL ESTATE",
+                "text": "Flooring design",
                 "annotations": []
             },
             "title": {
-                "text": "Customization",
+                "text": "Colbourns",
                 "annotations": []
             },
             "description": {
-                "text": "Adapt colors, fonts, and layouts to match your brand. ",
+                "text": "London-based designer of premium-quality, elegant rugs.",
+                "annotations": []
+            }
+        },
+        "ReRqxYxMdAUVaMuudfJhzsS": {
+            "id": "ReRqxYxMdAUVaMuudfJhzsS",
+            "type": "image",
+            "src": "/sample-images/tomorrow-vc.webp",
+            "width": 800,
+            "height": 600,
+            "alt": "Svedit documentation",
+            "scale": 1,
+            "focal_point_x": 0.37967324276969855,
+            "focal_point_y": 0.928836332684825,
+            "object_fit": "cover"
+        },
+        "YnBCBuemwpaUxQwHrFJNgMW": {
+            "id": "YnBCBuemwpaUxQwHrFJNgMW",
+            "type": "link_collection_item",
+            "href": "https://github.com/michael/svedit?tab=readme-ov-file#svedit",
+            "target": "_blank",
+            "image": "ReRqxYxMdAUVaMuudfJhzsS",
+            "preline": {
+                "text": "API Reference",
+                "annotations": []
+            },
+            "title": {
+                "text": "Svedit documentation",
+                "annotations": []
+            },
+            "description": {
+                "text": "Explore the full API for building custom content types.",
                 "annotations": []
             }
         },
@@ -441,8 +526,8 @@ export const demo_doc = {
             "height": 600,
             "alt": "Getting started",
             "scale": 1,
-            "focal_point_x": 0.48238870942535544,
-            "focal_point_y": 0.9651021400778204,
+            "focal_point_x": 0.36639671907333987,
+            "focal_point_y": 0.5451422665369637,
             "object_fit": "cover"
         },
         "AVydYvhksUBMjCSEccZJGXa": {
@@ -464,45 +549,14 @@ export const demo_doc = {
                 "annotations": []
             }
         },
-        "link_collection_item_3_image": {
-            "id": "link_collection_item_3_image",
-            "type": "image",
-            "src": "/sample-images/tomorrow-vc.webp",
-            "width": 800,
-            "height": 600,
-            "alt": "Svedit documentation",
-            "scale": 1,
-            "focal_point_x": 0.5,
-            "focal_point_y": 0.5,
-            "object_fit": "cover"
-        },
-        "link_collection_item_3": {
-            "id": "link_collection_item_3",
-            "type": "link_collection_item",
-            "href": "https://github.com/michael/svedit?tab=readme-ov-file#svedit",
-            "target": "_blank",
-            "image": "link_collection_item_3_image",
-            "preline": {
-                "text": "API Reference",
-                "annotations": []
-            },
-            "title": {
-                "text": "Svedit documentation",
-                "annotations": []
-            },
-            "description": {
-                "text": "Explore the full API for building custom content types.",
-                "annotations": []
-            }
-        },
         "link_collection_1": {
             "id": "link_collection_1",
             "type": "link_collection",
             "layout": 1,
             "link_collection_items": [
                 "link_collection_item_2",
-                "AVydYvhksUBMjCSEccZJGXa",
-                "link_collection_item_3"
+                "YnBCBuemwpaUxQwHrFJNgMW",
+                "AVydYvhksUBMjCSEccZJGXa"
             ]
         },
         "zcWGCzGzkydKFgZmChMbjdW": {
@@ -577,14 +631,6 @@ export const demo_doc = {
                 ]
             }
         },
-        "uaHDneaZQYbNNgNhSwRccnt": {
-            "id": "uaHDneaZQYbNNgNhSwRccnt",
-            "type": "paragraph",
-            "content": {
-                "text": "In the exact same way you can edit links of the top navigation and the footer links.",
-                "annotations": []
-            }
-        },
         "prose_3": {
             "id": "prose_3",
             "type": "prose",
@@ -593,8 +639,7 @@ export const demo_doc = {
                 "KaPaAdxGyjaRVJZDwqsWPzt",
                 "uKPwpfCeeqamEwehApYsrYk",
                 "prAcjhEnaTxGFMcXPqEQspc",
-                "paragraph_5",
-                "uaHDneaZQYbNNgNhSwRccnt"
+                "paragraph_5"
             ]
         },
         "hqrrTdEbTPaqzEcYMczhBZb": {
@@ -623,11 +668,11 @@ export const demo_doc = {
                 "annotations": []
             },
             "description": {
-                "text": "I spent the last couple of years building this. I call it Editable Website. It is made for website developers, who want to control the structure and layout in code, while allowing site owners to edit content in a way that's intuitive, fun, and just works.",
+                "text": "And what you just tried is Editable Website. I made it for website developers, who want to control the structure and layout in code, while allowing site owners to edit content in a way that's intuitive, fun, and just works.",
                 "annotations": [
                     {
-                        "start_offset": 58,
-                        "end_offset": 74,
+                        "start_offset": 27,
+                        "end_offset": 43,
                         "node_id": "RrpSjGbCdmKKSgjedcufHWu"
                     }
                 ]
