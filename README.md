@@ -39,6 +39,74 @@ npm run dev
 
 This is v2, a complete rewrite using [Svedit](https://github.com/michael/svedit). It's under active development — feel free to explore locally, but hold off on production deployments for now.
 
+## Deploying to Fly.io
+
+### Prerequisites
+
+1. Install the Fly CLI: https://fly.io/docs/flyctl/install/
+2. Sign up or log in: `fly auth login`
+
+### First-time setup
+
+Run the init command to create your deployment configuration:
+
+```sh
+npm run deploy:init
+```
+
+This will ask for your app name and region, then create:
+- `fly.toml` — Fly.io configuration
+- `Dockerfile` — Container build instructions  
+- `.env.production.example` — Template for your secrets
+
+Copy the example and add your values:
+
+```sh
+cp .env.production.example .env.production
+```
+
+Edit `.env.production` with your actual values (this file is gitignored).
+
+### Deploy
+
+Build and deploy your site:
+
+```sh
+npm run build
+npm run deploy
+```
+
+Your site will be live at `https://your-app-name.fly.dev`
+
+### Updating secrets
+
+When you add new secrets to `deploy/config.js`:
+
+1. Add the value to `.env.production`
+2. Run `npm run deploy:secrets`
+
+### Custom domain
+
+```sh
+fly certs add yourdomain.com
+```
+
+Then configure DNS to point to your Fly.io app:
+
+| Type  | Name | Value                    |
+|-------|------|--------------------------|
+| CNAME | www  | your-app-name.fly.dev    |
+
+For the root domain (@), use one of these options:
+- **ALIAS/ANAME** (if your DNS supports it): Point to `your-app-name.fly.dev`
+- **A/AAAA records**: Run `fly ips list` and create A (IPv4) and AAAA (IPv6) records
+
+## Deploying to other platforms
+
+This repo is configured for Fly.io deployment by default (using `@sveltejs/adapter-node`). 
+
+**For Vercel or Cloudflare Pages:** You'll need to switch the adapter in `svelte.config.js`.
+
 ## Looking for v1?
 
 Find it [here](https://github.com/michael/editable-website/tree/v1).
