@@ -21,9 +21,14 @@
 		<div class="flex flex-col md:flex-row md:items-start border-l border-r border-(--foreground-subtle) py-12 md:py-16 {TW_PAGE_PADDING_X}">
 			<div class="md:w-1/3 flex flex-col items-start">
 				<CustomProperty path={[...path, 'logo']}>
-					<div class="h-18 w-18 overflow-hidden" contenteditable="false">
+					<svelte:element
+						this={svedit.editable ? 'div' : 'a'}
+						href={svedit.editable ? undefined : '/'}
+						class="h-18 w-18 overflow-hidden block"
+						contenteditable={svedit.editable ? 'false' : undefined}
+					>
 						<Image path={[...path, 'logo']} />
-					</div>
+					</svelte:element>
 				</CustomProperty>
 				<AnnotatedTextProperty
 					class="mt-4 mb-8 md:mb-0"
