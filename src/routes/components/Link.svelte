@@ -6,6 +6,7 @@
 </script>
 
 <a
+	id={node.id}
 	data-node-id={node.id}
 	href={node?.href}
 	target={node?.target || '_self'}
