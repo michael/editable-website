@@ -16,7 +16,7 @@ export const demo_doc = {
             "id": "erAbuczAkUtnAGHYKgAUGkp",
             "type": "paragraph",
             "content": {
-                "text": "I'll show you why. All you need is a physical keyboard.",
+                "text": "I'll show you why. All you need is a physical keyboard. Michael aufreiter",
                 "annotations": []
             }
         },
@@ -456,7 +456,7 @@ export const demo_doc = {
             "width": 800,
             "height": 600,
             "alt": "Customization",
-            "scale": 1,
+            "scale": 1.1046221254112045,
             "focal_point_x": 0.5,
             "focal_point_y": 0.5,
             "object_fit": "cover"
@@ -472,11 +472,11 @@ export const demo_doc = {
                 "annotations": []
             },
             "title": {
-                "text": "Customization",
+                "text": "Customization, oh no",
                 "annotations": []
             },
             "description": {
-                "text": "Adapt colors, fonts, and layouts to match your brand.",
+                "text": "Adapt colors, fonts, and layouts to match your brand. ",
                 "annotations": []
             }
         },
@@ -722,7 +722,7 @@ export const demo_doc = {
         "nav_item_1": {
             "id": "nav_item_1",
             "type": "nav_item",
-            "href": "#blocks",
+            "href": "#prose_1",
             "label": {
                 "text": "Blocks",
                 "annotations": []
@@ -732,7 +732,7 @@ export const demo_doc = {
         "nav_item_2": {
             "id": "nav_item_2",
             "type": "nav_item",
-            "href": "#images",
+            "href": "#BPdekRaDEUcQZqtEwPwBvyu",
             "label": {
                 "text": "Images",
                 "annotations": []
@@ -742,7 +742,7 @@ export const demo_doc = {
         "nav_item_4": {
             "id": "nav_item_4",
             "type": "nav_item",
-            "href": "#links",
+            "href": "#RwhuaDtvrdCHEEKHupsJJxa",
             "label": {
                 "text": "Links",
                 "annotations": []
