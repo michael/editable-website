@@ -16,7 +16,7 @@ export const demo_doc = {
             "id": "erAbuczAkUtnAGHYKgAUGkp",
             "type": "paragraph",
             "content": {
-                "text": "I'll show you why. All you need is a physical keyboard. Michael aufreiter",
+                "text": "I'll show you why. All you need is a physical keyboard.",
                 "annotations": []
             }
         },
