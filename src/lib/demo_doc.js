@@ -16,7 +16,7 @@ export const demo_doc = {
             "id": "erAbuczAkUtnAGHYKgAUGkp",
             "type": "paragraph",
             "content": {
-                "text": "I'll show you why. All you need is a physical keyboard.",
+                "text": "I'll show you why. All you need is a computer with a physical keyboard.",
                 "annotations": []
             }
         },
@@ -246,8 +246,8 @@ export const demo_doc = {
             "height": 600,
             "alt": "Sample image",
             "scale": 1,
-            "focal_point_x": 0.5,
-            "focal_point_y": 0.5,
+            "focal_point_x": 0.6705601092896176,
+            "focal_point_y": 0.4532274590163934,
             "object_fit": "cover"
         },
         "TQRANBXMrzXXZTtzxAYhhZf": {
@@ -263,65 +263,14 @@ export const demo_doc = {
             "height": 600,
             "alt": "Sample image",
             "scale": 1,
-            "focal_point_x": 0.5,
-            "focal_point_y": 0.5,
+            "focal_point_x": 0.6223360655737706,
+            "focal_point_y": 0.5899931693989071,
             "object_fit": "cover"
         },
         "beUAyJnBJXjTAKhxdYKntGJ": {
             "id": "beUAyJnBJXjTAKhxdYKntGJ",
             "type": "gallery_item",
             "image": "CYZFDvXrnaqxAKrErdZtgTF"
-        },
-        "YWKrnJxsfvSqvrHNvHxsUqh": {
-            "id": "YWKrnJxsfvSqvrHNvHxsUqh",
-            "type": "image",
-            "src": "/sample-images/5.jpg",
-            "width": 800,
-            "height": 600,
-            "alt": "Sample image",
-            "scale": 1,
-            "focal_point_x": 0.5,
-            "focal_point_y": 0.5,
-            "object_fit": "cover"
-        },
-        "MzpuTMAeCBUMFnKDDPyWGfV": {
-            "id": "MzpuTMAeCBUMFnKDDPyWGfV",
-            "type": "gallery_item",
-            "image": "YWKrnJxsfvSqvrHNvHxsUqh"
-        },
-        "spkJQPkQCPMJknRJmScqBKS": {
-            "id": "spkJQPkQCPMJknRJmScqBKS",
-            "type": "image",
-            "src": "/sample-images/6.jpg",
-            "width": 800,
-            "height": 600,
-            "alt": "Sample image",
-            "scale": 1,
-            "focal_point_x": 0.47698363938380317,
-            "focal_point_y": 0.617126937984496,
-            "object_fit": "cover"
-        },
-        "WmTFTnBddcSfnVGuxfTdARj": {
-            "id": "WmTFTnBddcSfnVGuxfTdARj",
-            "type": "gallery_item",
-            "image": "spkJQPkQCPMJknRJmScqBKS"
-        },
-        "WvZvagTjGbBfFmnkZBswXAA": {
-            "id": "WvZvagTjGbBfFmnkZBswXAA",
-            "type": "image",
-            "src": "/sample-images/7.jpg",
-            "width": 800,
-            "height": 600,
-            "alt": "Sample image",
-            "scale": 1,
-            "focal_point_x": 0.5,
-            "focal_point_y": 0.5,
-            "object_fit": "cover"
-        },
-        "RtTVXJkYyHazUXuFhcYTHqe": {
-            "id": "RtTVXJkYyHazUXuFhcYTHqe",
-            "type": "gallery_item",
-            "image": "WvZvagTjGbBfFmnkZBswXAA"
         },
         "BPdekRaDEUcQZqtEwPwBvyu": {
             "id": "BPdekRaDEUcQZqtEwPwBvyu",
@@ -330,10 +279,7 @@ export const demo_doc = {
             "gallery_items": [
                 "wtvHDBrCzJVgacTaJqAwNJk",
                 "TQRANBXMrzXXZTtzxAYhhZf",
-                "beUAyJnBJXjTAKhxdYKntGJ",
-                "MzpuTMAeCBUMFnKDDPyWGfV",
-                "WmTFTnBddcSfnVGuxfTdARj",
-                "RtTVXJkYyHazUXuFhcYTHqe"
+                "beUAyJnBJXjTAKhxdYKntGJ"
             ]
         },
         "CTcJfCGYJyfkWxSPZFjxXTT": {
@@ -418,41 +364,48 @@ export const demo_doc = {
                 "BwUdtezSTfmfuzQRSjsFsKb"
             ]
         },
-        "link_collection_item_1_image": {
-            "id": "link_collection_item_1_image",
-            "type": "image",
-            "src": "/sample-images/8.jpg",
-            "width": 800,
-            "height": 600,
-            "alt": "Getting started",
-            "scale": 1,
-            "focal_point_x": 0.5,
-            "focal_point_y": 0.5,
-            "object_fit": "cover"
-        },
-        "link_collection_item_1": {
-            "id": "link_collection_item_1",
-            "type": "link_collection_item",
-            "href": "https://github.com/michael/editable-website?tab=readme-ov-file#getting-started",
-            "target": "_blank",
-            "image": "link_collection_item_1_image",
-            "preline": {
-                "text": "Documentation",
-                "annotations": []
-            },
-            "title": {
-                "text": "Getting started",
-                "annotations": []
-            },
-            "description": {
-                "text": "Learn how to set up your first editable website in minutes.",
+        "PUSwJmhpEuAHaZhDDvWpAxq": {
+            "id": "PUSwJmhpEuAHaZhDDvWpAxq",
+            "type": "heading",
+            "layout": 1,
+            "content": {
+                "text": "And links?",
                 "annotations": []
             }
+        },
+        "BdvrqvWrszEABerzzazNZkj": {
+            "id": "BdvrqvWrszEABerzzazNZkj",
+            "type": "link",
+            "href": "https://mutter.co",
+            "target": "_blank"
+        },
+        "xdrynBphfNQpngAkhqNgqeh": {
+            "id": "xdrynBphfNQpngAkhqNgqeh",
+            "type": "paragraph",
+            "content": {
+                "text": "Below are websites Johannes Mutter and I have already launched using the technology you are just trying out:",
+                "annotations": [
+                    {
+                        "start_offset": 19,
+                        "end_offset": 34,
+                        "node_id": "BdvrqvWrszEABerzzazNZkj"
+                    }
+                ]
+            }
+        },
+        "fjeQygAVqzwZZVHbMHyJybG": {
+            "id": "fjeQygAVqzwZZVHbMHyJybG",
+            "type": "prose",
+            "layout": 2,
+            "content": [
+                "PUSwJmhpEuAHaZhDDvWpAxq",
+                "xdrynBphfNQpngAkhqNgqeh"
+            ]
         },
         "link_collection_item_2_image": {
             "id": "link_collection_item_2_image",
             "type": "image",
-            "src": "/sample-images/9.jpg",
+            "src": "/sample-images/colbourns.webp",
             "width": 800,
             "height": 600,
             "alt": "Customization",
@@ -468,11 +421,11 @@ export const demo_doc = {
             "target": "_blank",
             "image": "link_collection_item_2_image",
             "preline": {
-                "text": "Guide",
+                "text": "REAL ESTATE",
                 "annotations": []
             },
             "title": {
-                "text": "Customization, oh no",
+                "text": "Customization",
                 "annotations": []
             },
             "description": {
@@ -480,10 +433,41 @@ export const demo_doc = {
                 "annotations": []
             }
         },
+        "SwaNBGTTykjgVTHJsUCgHuB": {
+            "id": "SwaNBGTTykjgVTHJsUCgHuB",
+            "type": "image",
+            "src": "/sample-images/gluecksmaurer.webp",
+            "width": 800,
+            "height": 600,
+            "alt": "Getting started",
+            "scale": 1,
+            "focal_point_x": 0.48238870942535544,
+            "focal_point_y": 0.9651021400778204,
+            "object_fit": "cover"
+        },
+        "AVydYvhksUBMjCSEccZJGXa": {
+            "id": "AVydYvhksUBMjCSEccZJGXa",
+            "type": "link_collection_item",
+            "href": "https://github.com/michael/editable-website?tab=readme-ov-file#getting-started",
+            "target": "_blank",
+            "image": "SwaNBGTTykjgVTHJsUCgHuB",
+            "preline": {
+                "text": "Deep Tech VENtURE CAPITAL",
+                "annotations": []
+            },
+            "title": {
+                "text": "Visionaries Tomorrow",
+                "annotations": []
+            },
+            "description": {
+                "text": "Learn how to set up your first editable website in minutes.",
+                "annotations": []
+            }
+        },
         "link_collection_item_3_image": {
             "id": "link_collection_item_3_image",
             "type": "image",
-            "src": "/sample-images/10.jpg",
+            "src": "/sample-images/tomorrow-vc.webp",
             "width": 800,
             "height": 600,
             "alt": "Svedit documentation",
@@ -516,26 +500,27 @@ export const demo_doc = {
             "type": "link_collection",
             "layout": 1,
             "link_collection_items": [
-                "link_collection_item_1",
                 "link_collection_item_2",
+                "AVydYvhksUBMjCSEccZJGXa",
                 "link_collection_item_3"
             ]
         },
-        "heading_3": {
-            "id": "heading_3",
-            "type": "heading",
-            "layout": 1,
-            "content": {
-                "text": "And links?",
-                "annotations": []
-            }
+        "zcWGCzGzkydKFgZmChMbjdW": {
+            "id": "zcWGCzGzkydKFgZmChMbjdW",
+            "type": "strong"
         },
-        "paragraph_4": {
-            "id": "paragraph_4",
+        "KaPaAdxGyjaRVJZDwqsWPzt": {
+            "id": "KaPaAdxGyjaRVJZDwqsWPzt",
             "type": "paragraph",
             "content": {
                 "text": "Click on one of the cards above.",
-                "annotations": []
+                "annotations": [
+                    {
+                        "start_offset": 0,
+                        "end_offset": 5,
+                        "node_id": "zcWGCzGzkydKFgZmChMbjdW"
+                    }
+                ]
             }
         },
         "xaHApWhVyFxgVPFwksdcZgz": {
@@ -605,8 +590,7 @@ export const demo_doc = {
             "type": "prose",
             "layout": 2,
             "content": [
-                "heading_3",
-                "paragraph_4",
+                "KaPaAdxGyjaRVJZDwqsWPzt",
                 "uKPwpfCeeqamEwehApYsrYk",
                 "prAcjhEnaTxGFMcXPqEQspc",
                 "paragraph_5",
@@ -654,45 +638,26 @@ export const demo_doc = {
             "type": "heading",
             "layout": 1,
             "content": {
-                "text": "When can you use it?",
+                "text": "Join the waitlist",
                 "annotations": []
             }
         },
-        "rAYrMTKXAGXAGghSWjpHqdn": {
-            "id": "rAYrMTKXAGXAGghSWjpHqdn",
+        "tWbtbGXxEpydcjHXcmRUAQH": {
+            "id": "tWbtbGXxEpydcjHXcmRUAQH",
+            "type": "link",
+            "href": "#",
+            "target": "_self"
+        },
+        "qcDuCmTjrJzNnEeCECKqSUc": {
+            "id": "qcDuCmTjrJzNnEeCECKqSUc",
             "type": "paragraph",
             "content": {
-                "text": "Soon. I mean... in a couple of months. If everything goes well. Stay tuned!",
-                "annotations": []
-            }
-        },
-        "xzqEyRFgyRkpSTTBhHNVfyz": {
-            "id": "xzqEyRFgyRkpSTTBhHNVfyz",
-            "type": "link",
-            "href": "https://mutter.co",
-            "target": "_blank"
-        },
-        "MHRscHxqaGXxxjbZVhfNyNW": {
-            "id": "MHRscHxqaGXxxjbZVhfNyNW",
-            "type": "link",
-            "href": "https://sonjastojanovic.com",
-            "target": "_blank"
-        },
-        "PXDJsbaPreVcBdYwmemxbfN": {
-            "id": "PXDJsbaPreVcBdYwmemxbfN",
-            "type": "paragraph",
-            "content": {
-                "text": "Thank you Johannes Mutter for helping me with the design. Also, big thanks to my family and friends and in particular my wife Sonja for your support and listening to me talking about Editable Website for hundreds of hours.",
+                "text": "Sign up to be notified when Editable Website is ready.\nI’ll invite the first few sign-ups to a face-to-face conversation.",
                 "annotations": [
                     {
-                        "start_offset": 10,
-                        "end_offset": 25,
-                        "node_id": "xzqEyRFgyRkpSTTBhHNVfyz"
-                    },
-                    {
-                        "start_offset": 126,
-                        "end_offset": 131,
-                        "node_id": "MHRscHxqaGXxxjbZVhfNyNW"
+                        "start_offset": 0,
+                        "end_offset": 7,
+                        "node_id": "tWbtbGXxEpydcjHXcmRUAQH"
                     }
                 ]
             }
@@ -703,8 +668,7 @@ export const demo_doc = {
             "layout": 2,
             "content": [
                 "gwEJMMJzgJxkkgHWwhCeCXm",
-                "rAYrMTKXAGXAGghSWjpHqdn",
-                "PXDJsbaPreVcBdYwmemxbfN"
+                "qcDuCmTjrJzNnEeCECKqSUc"
             ]
         },
         "nav_logo": {
@@ -724,7 +688,7 @@ export const demo_doc = {
             "type": "nav_item",
             "href": "#prose_1",
             "label": {
-                "text": "Blocks",
+                "text": "Editing",
                 "annotations": []
             },
             "target": "_self"
@@ -749,6 +713,16 @@ export const demo_doc = {
             },
             "target": "_self"
         },
+        "HGXFbpfvSREjXTrvUnMpkWu": {
+            "id": "HGXFbpfvSREjXTrvUnMpkWu",
+            "type": "nav_item",
+            "href": "#RwhuaDtvrdCHEEKHupsJJxa",
+            "target": "_self",
+            "label": {
+                "text": "Sign up",
+                "annotations": []
+            }
+        },
         "nav_1": {
             "id": "nav_1",
             "type": "nav",
@@ -756,7 +730,8 @@ export const demo_doc = {
             "nav_items": [
                 "nav_item_1",
                 "nav_item_2",
-                "nav_item_4"
+                "nav_item_4",
+                "HGXFbpfvSREjXTrvUnMpkWu"
             ]
         },
         "footer_logo": {
@@ -774,173 +749,86 @@ export const demo_doc = {
         "footer_link_1_1": {
             "id": "footer_link_1_1",
             "type": "footer_link",
-            "href": "#about",
+            "href": "https://github.com/michael/editable-website?tab=readme-ov-file#getting-started",
             "label": {
-                "text": "About",
+                "text": "Get started",
                 "annotations": []
             },
-            "target": "_self"
-        },
-        "footer_link_1_2": {
-            "id": "footer_link_1_2",
-            "type": "footer_link",
-            "href": "#projects",
-            "label": {
-                "text": "Projects",
-                "annotations": []
-            },
-            "target": "_self"
-        },
-        "footer_link_1_3": {
-            "id": "footer_link_1_3",
-            "type": "footer_link",
-            "href": "#ideas",
-            "label": {
-                "text": "Ideas",
-                "annotations": []
-            },
-            "target": "_self"
+            "target": "_blank"
         },
         "footer_column_1": {
             "id": "footer_column_1",
             "type": "footer_link_column",
             "label": {
-                "text": "Company",
+                "text": "Product",
                 "annotations": []
             },
             "footer_links": [
-                "footer_link_1_1",
-                "footer_link_1_2",
-                "footer_link_1_3"
+                "footer_link_1_1"
             ]
+        },
+        "uavzfSnSpTRrHSfJpbfvpsh": {
+            "id": "uavzfSnSpTRrHSfJpbfvpsh",
+            "type": "footer_link",
+            "href": "https://github.com/michael/editable-website",
+            "target": "_blank",
+            "label": {
+                "text": "Source Code",
+                "annotations": []
+            }
         },
         "footer_link_2_1": {
             "id": "footer_link_2_1",
             "type": "footer_link",
-            "href": "#products",
+            "href": "https://svedit.dev",
             "label": {
-                "text": "Products",
+                "text": "Svedit",
                 "annotations": []
             },
-            "target": "_self"
-        },
-        "footer_link_2_2": {
-            "id": "footer_link_2_2",
-            "type": "footer_link",
-            "href": "#services",
-            "label": {
-                "text": "Services",
-                "annotations": []
-            },
-            "target": "_self"
-        },
-        "footer_link_2_3": {
-            "id": "footer_link_2_3",
-            "type": "footer_link",
-            "href": "#pricing",
-            "label": {
-                "text": "Pricing",
-                "annotations": []
-            },
-            "target": "_self"
+            "target": "_blank"
         },
         "footer_column_2": {
             "id": "footer_column_2",
-            "type": "footer_link_column",
-            "label": {
-                "text": "Products",
-                "annotations": []
-            },
-            "footer_links": [
-                "footer_link_2_1",
-                "footer_link_2_2",
-                "footer_link_2_3"
-            ]
-        },
-        "footer_link_3_1": {
-            "id": "footer_link_3_1",
-            "type": "footer_link",
-            "href": "#docs",
-            "label": {
-                "text": "Documentation",
-                "annotations": []
-            },
-            "target": "_self"
-        },
-        "footer_link_3_2": {
-            "id": "footer_link_3_2",
-            "type": "footer_link",
-            "href": "#api",
-            "label": {
-                "text": "API Reference",
-                "annotations": []
-            },
-            "target": "_self"
-        },
-        "footer_link_3_3": {
-            "id": "footer_link_3_3",
-            "type": "footer_link",
-            "href": "#guides",
-            "label": {
-                "text": "Guides",
-                "annotations": []
-            },
-            "target": "_self"
-        },
-        "footer_column_3": {
-            "id": "footer_column_3",
             "type": "footer_link_column",
             "label": {
                 "text": "Resources",
                 "annotations": []
             },
             "footer_links": [
-                "footer_link_3_1",
-                "footer_link_3_2",
-                "footer_link_3_3"
+                "uavzfSnSpTRrHSfJpbfvpsh",
+                "footer_link_2_1"
             ]
         },
-        "footer_link_4_1": {
-            "id": "footer_link_4_1",
+        "cCMbgzNjRjVjrvWuHJCvJkx": {
+            "id": "cCMbgzNjRjVjrvWuHJCvJkx",
             "type": "footer_link",
-            "href": "#contact",
+            "href": "https://youtu.be/o4kcABS-XH4?t=3226",
+            "target": "_blank",
             "label": {
-                "text": "Contact",
+                "text": "This week in Svelte",
+                "annotations": []
+            }
+        },
+        "footer_link_3_2": {
+            "id": "footer_link_3_2",
+            "type": "footer_link",
+            "href": "https://www.youtube.com/watch?v=T2RMYj_1g9E",
+            "label": {
+                "text": "Building a rich text editor in Svelte 5",
                 "annotations": []
             },
-            "target": "_self"
+            "target": "_blank"
         },
-        "footer_link_4_2": {
-            "id": "footer_link_4_2",
-            "type": "footer_link",
-            "href": "#support",
-            "label": {
-                "text": "Support",
-                "annotations": []
-            },
-            "target": "_self"
-        },
-        "footer_link_4_3": {
-            "id": "footer_link_4_3",
-            "type": "footer_link",
-            "href": "#privacy",
-            "label": {
-                "text": "Privacy Policy",
-                "annotations": []
-            },
-            "target": "_self"
-        },
-        "footer_column_4": {
-            "id": "footer_column_4",
+        "footer_column_3": {
+            "id": "footer_column_3",
             "type": "footer_link_column",
             "label": {
-                "text": "Legal",
+                "text": "Videos",
                 "annotations": []
             },
             "footer_links": [
-                "footer_link_4_1",
-                "footer_link_4_2",
-                "footer_link_4_3"
+                "cCMbgzNjRjVjrvWuHJCvJkx",
+                "footer_link_3_2"
             ]
         },
         "footer_1": {
@@ -954,8 +842,7 @@ export const demo_doc = {
             "footer_link_columns": [
                 "footer_column_1",
                 "footer_column_2",
-                "footer_column_3",
-                "footer_column_4"
+                "footer_column_3"
             ]
         },
         "page_1": {
@@ -967,6 +854,7 @@ export const demo_doc = {
                 "prose_1",
                 "BPdekRaDEUcQZqtEwPwBvyu",
                 "fKZMgjKFZTwbcyXSERgVRty",
+                "fjeQygAVqzwZZVHbMHyJybG",
                 "link_collection_1",
                 "prose_3",
                 "YTMHBcPkYXJMRUnuSAhrTDE",
