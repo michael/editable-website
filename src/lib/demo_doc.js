@@ -275,7 +275,7 @@ export const demo_doc = {
         "eacGfUcvXCCcCkkRVJEzVQA": {
             "id": "eacGfUcvXCCcCkkRVJEzVQA",
             "type": "image",
-            "src": "",
+            "src": "/sample-images/5.jpg",
             "width": 800,
             "height": 600,
             "alt": "Sample image",
@@ -292,7 +292,7 @@ export const demo_doc = {
         "qpYkBxBfWxnHPXaHEYqmkNK": {
             "id": "qpYkBxBfWxnHPXaHEYqmkNK",
             "type": "image",
-            "src": "",
+            "src": "/sample-images/6.jpg",
             "width": 800,
             "height": 600,
             "alt": "Sample image",
@@ -309,7 +309,7 @@ export const demo_doc = {
         "asBnEpdtbyJQCEvNWuyADWR": {
             "id": "asBnEpdtbyJQCEvNWuyADWR",
             "type": "image",
-            "src": "",
+            "src": "/sample-images/7.jpg",
             "width": 800,
             "height": 600,
             "alt": "Sample image",
@@ -471,7 +471,7 @@ export const demo_doc = {
         "link_collection_item_2": {
             "id": "link_collection_item_2",
             "type": "link_collection_item",
-            "href": "https://github.com/michael/editable-website/blob/main/src/routes/components/NavItem.svelte",
+            "href": "https://colbourns.com",
             "target": "_blank",
             "image": "link_collection_item_2_image",
             "preline": {
@@ -502,15 +502,15 @@ export const demo_doc = {
         "YnBCBuemwpaUxQwHrFJNgMW": {
             "id": "YnBCBuemwpaUxQwHrFJNgMW",
             "type": "link_collection_item",
-            "href": "https://github.com/michael/svedit?tab=readme-ov-file#svedit",
+            "href": "https://tomorrow.vc",
             "target": "_blank",
             "image": "ReRqxYxMdAUVaMuudfJhzsS",
             "preline": {
-                "text": "API Reference",
+                "text": "Deep Tech VENtURE CAPITAL",
                 "annotations": []
             },
             "title": {
-                "text": "Svedit documentation",
+                "text": "Visionaries Tomorrow",
                 "annotations": []
             },
             "description": {
@@ -533,19 +533,19 @@ export const demo_doc = {
         "AVydYvhksUBMjCSEccZJGXa": {
             "id": "AVydYvhksUBMjCSEccZJGXa",
             "type": "link_collection_item",
-            "href": "https://github.com/michael/editable-website?tab=readme-ov-file#getting-started",
+            "href": "https://gluecksmaurer.de",
             "target": "_blank",
             "image": "SwaNBGTTykjgVTHJsUCgHuB",
             "preline": {
-                "text": "Deep Tech VENtURE CAPITAL",
+                "text": "Real Estate",
                 "annotations": []
             },
             "title": {
-                "text": "Visionaries Tomorrow",
+                "text": "Glücksmaurer",
                 "annotations": []
             },
             "description": {
-                "text": "Learn how to set up your first editable website in minutes.",
+                "text": "Innovative real estate agent in Worms, Germany.",
                 "annotations": []
             }
         },
