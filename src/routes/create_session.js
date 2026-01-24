@@ -6,6 +6,7 @@ import {
 	InsertDefaultNodeCommand,
 	AddNewLineCommand,
 	BreakTextNodeCommand,
+	ToggleAnnotationCommand,
 	UndoCommand,
 	RedoCommand,
 	SelectParentCommand
@@ -431,6 +432,9 @@ const session_config = {
 			insert_default_node: new InsertDefaultNodeCommand(context),
 			add_new_line: new AddNewLineCommand(context),
 			break_text_node: new BreakTextNodeCommand(context),
+			toggle_strong: new ToggleAnnotationCommand('strong', context),
+			toggle_emphasis: new ToggleAnnotationCommand('emphasis', context),
+			toggle_highlight: new ToggleAnnotationCommand('highlight', context),
 			undo: new UndoCommand(context),
 			redo: new RedoCommand(context),
 			select_parent: new SelectParentCommand(context),
@@ -450,6 +454,9 @@ const session_config = {
 			// In case of a node cursor, fall back to inserting a default node. This is needed
 			// because on iOS selecting a node cursor triggers auto capitalization (shift pressed)
 			'shift+enter': [commands.add_new_line, commands.insert_default_node],
+			'meta+b,ctrl+b': [commands.toggle_strong],
+			'meta+i,ctrl+i': [commands.toggle_emphasis],
+			'meta+u,ctrl+u': [commands.toggle_highlight],
 			'meta+z,ctrl+z': [commands.undo],
 			'meta+shift+z,ctrl+shift+z': [commands.redo],
 			escape: [commands.select_parent],
