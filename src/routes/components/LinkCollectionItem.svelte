@@ -18,12 +18,12 @@
 	}
 </script>
 
-<Node class="link-collection-item" {path}>
+<Node class="link-collection-item h-full" {path}>
 	<svelte:element
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="block transition-all duration-150 ease-out"
+		class="block transition-all duration-150 ease-out h-full flex flex-col"
 		class:hover-effect={render_as_link}
 	>
 		<div class="{TW_PAGE_PADDING} pb-0!">
