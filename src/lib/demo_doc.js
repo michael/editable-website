@@ -123,7 +123,7 @@ export const demo_doc = {
             "id": "paragraph_1",
             "type": "paragraph",
             "content": {
-                "text": "Click the little dotted horizontal gap after this section.",
+                "text": "Click the little dashed horizontal gap after this section.",
                 "annotations": []
             }
         },
@@ -631,6 +631,24 @@ export const demo_doc = {
                 ]
             }
         },
+        "YPBsfxSTJtDWtsDWWuQFkxD": {
+            "id": "YPBsfxSTJtDWtsDWWuQFkxD",
+            "type": "strong"
+        },
+        "HMvmSRXETenwQqewaXnhdsj": {
+            "id": "HMvmSRXETenwQqewaXnhdsj",
+            "type": "paragraph",
+            "content": {
+                "text": "Now is a good time to save your changes with Cmd+S.",
+                "annotations": [
+                    {
+                        "start_offset": 45,
+                        "end_offset": 50,
+                        "node_id": "YPBsfxSTJtDWtsDWWuQFkxD"
+                    }
+                ]
+            }
+        },
         "prose_3": {
             "id": "prose_3",
             "type": "prose",
@@ -639,7 +657,8 @@ export const demo_doc = {
                 "KaPaAdxGyjaRVJZDwqsWPzt",
                 "uKPwpfCeeqamEwehApYsrYk",
                 "prAcjhEnaTxGFMcXPqEQspc",
-                "paragraph_5"
+                "paragraph_5",
+                "HMvmSRXETenwQqewaXnhdsj"
             ]
         },
         "hqrrTdEbTPaqzEcYMczhBZb": {
@@ -668,11 +687,11 @@ export const demo_doc = {
                 "annotations": []
             },
             "description": {
-                "text": "And what you just tried is Editable Website. I made it for website developers, who want to control the structure and layout in code, while allowing site owners to edit content in a way that's intuitive, fun, and just works.",
+                "text": "And you just tried Editable Website. I made it for website developers who want to control the structure and layout in code, while allowing site owners to edit content in a way that's intuitive, fun, and \"just works.\"",
                 "annotations": [
                     {
-                        "start_offset": 27,
-                        "end_offset": 43,
+                        "start_offset": 19,
+                        "end_offset": 35,
                         "node_id": "RrpSjGbCdmKKSgjedcufHWu"
                     }
                 ]
@@ -690,8 +709,8 @@ export const demo_doc = {
         "tWbtbGXxEpydcjHXcmRUAQH": {
             "id": "tWbtbGXxEpydcjHXcmRUAQH",
             "type": "link",
-            "href": "#",
-            "target": "_self"
+            "href": "https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform?usp=dialog",
+            "target": "_blank"
         },
         "qcDuCmTjrJzNnEeCECKqSUc": {
             "id": "qcDuCmTjrJzNnEeCECKqSUc",
@@ -741,7 +760,7 @@ export const demo_doc = {
         "nav_item_2": {
             "id": "nav_item_2",
             "type": "nav_item",
-            "href": "#BPdekRaDEUcQZqtEwPwBvyu",
+            "href": "#fKZMgjKFZTwbcyXSERgVRty",
             "label": {
                 "text": "Images",
                 "annotations": []
@@ -751,7 +770,7 @@ export const demo_doc = {
         "nav_item_4": {
             "id": "nav_item_4",
             "type": "nav_item",
-            "href": "#RwhuaDtvrdCHEEKHupsJJxa",
+            "href": "#fjeQygAVqzwZZVHbMHyJybG",
             "label": {
                 "text": "Links",
                 "annotations": []
@@ -844,25 +863,25 @@ export const demo_doc = {
                 "footer_link_2_1"
             ]
         },
+        "ewuBYPxRqFsJXffTuwqssXg": {
+            "id": "ewuBYPxRqFsJXffTuwqssXg",
+            "type": "footer_link",
+            "href": "https://www.youtube.com/watch?v=T2RMYj_1g9E",
+            "label": {
+                "text": "Introduction",
+                "annotations": []
+            },
+            "target": "_blank"
+        },
         "cCMbgzNjRjVjrvWuHJCvJkx": {
             "id": "cCMbgzNjRjVjrvWuHJCvJkx",
             "type": "footer_link",
             "href": "https://youtu.be/o4kcABS-XH4?t=3226",
             "target": "_blank",
             "label": {
-                "text": "This week in Svelte",
+                "text": "Update 2025-10",
                 "annotations": []
             }
-        },
-        "footer_link_3_2": {
-            "id": "footer_link_3_2",
-            "type": "footer_link",
-            "href": "https://www.youtube.com/watch?v=T2RMYj_1g9E",
-            "label": {
-                "text": "Building a rich text editor in Svelte 5",
-                "annotations": []
-            },
-            "target": "_blank"
         },
         "footer_column_3": {
             "id": "footer_column_3",
@@ -872,8 +891,8 @@ export const demo_doc = {
                 "annotations": []
             },
             "footer_links": [
-                "cCMbgzNjRjVjrvWuHJCvJkx",
-                "footer_link_3_2"
+                "ewuBYPxRqFsJXffTuwqssXg",
+                "cCMbgzNjRjVjrvWuHJCvJkx"
             ]
         },
         "footer_1": {
