@@ -94,19 +94,32 @@
 			</button>
 
 			<!-- Menu items -->
-			<nav class="flex flex-col px-5 sm:px-7 pt-16">
+			<nav class="flex flex-col pt-16 pb-5 px-3">
+				<div class="flex flex-col gap-px bg-(--foreground-subtle)">
 				{#each nav_items as _node_id, index (index)}
 					{@const item = svedit.session.get([...path, 'nav_items', index])}
-					<a
-						href={item.href || '#'}
-						target={item.target}
-						class="text-3xl font-semibold py-2"
-						onclick={close_mobile_menu}
-					>
-						{item.label?.text || ''}
-					</a>
-				{/each}
-			</nav>
+					{#if item.layout === 2}
+						<a
+							href={item.href || '#'}
+							target={item.target}
+							class="text-3xl font-semibold py-2 px-3 sm:px-5 bg-(--foreground) text-(--background)"
+							onclick={close_mobile_menu}
+						>
+							{item.label?.text || ''}
+						</a>
+					{:else}
+						<a
+							href={item.href || '#'}
+							target={item.target}
+							class="text-3xl font-semibold py-2 px-3 sm:px-5 bg-(--background)"
+							onclick={close_mobile_menu}
+						>
+							{item.label?.text || ''}
+						</a>
+					{/if}
+			{/each}
+			</div>
+		</nav>
 		</div>
 	{/if}
 	</div>
