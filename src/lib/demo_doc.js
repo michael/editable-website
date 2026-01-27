@@ -210,7 +210,7 @@ export const demo_doc = {
         "prose_1": {
             "id": "prose_1",
             "type": "prose",
-            "layout": 2,
+            "layout": 1,
             "content": [
                 "heading_1",
                 "paragraph_1",
@@ -408,7 +408,7 @@ export const demo_doc = {
         "fKZMgjKFZTwbcyXSERgVRty": {
             "id": "fKZMgjKFZTwbcyXSERgVRty",
             "type": "prose",
-            "layout": 2,
+            "layout": 1,
             "content": [
                 "CTcJfCGYJyfkWxSPZFjxXTT",
                 "zwWSsaYvfMcFBvxbPGrFPrB",
@@ -450,7 +450,7 @@ export const demo_doc = {
         "fjeQygAVqzwZZVHbMHyJybG": {
             "id": "fjeQygAVqzwZZVHbMHyJybG",
             "type": "prose",
-            "layout": 2,
+            "layout": 1,
             "content": [
                 "PUSwJmhpEuAHaZhDDvWpAxq",
                 "xdrynBphfNQpngAkhqNgqeh"
@@ -652,7 +652,7 @@ export const demo_doc = {
         "prose_3": {
             "id": "prose_3",
             "type": "prose",
-            "layout": 2,
+            "layout": 1,
             "content": [
                 "KaPaAdxGyjaRVJZDwqsWPzt",
                 "uKPwpfCeeqamEwehApYsrYk",
