@@ -52,7 +52,7 @@
 			</div>
 
 			<!-- Desktop menu (hidden on mobile) -->
-			<NodeArrayProperty class="nav-items hidden md:flex items-stretch {TW_PAGE_PADDING_X}" path={[...path, 'nav_items']} />
+			<NodeArrayProperty class="nav-items hidden md:flex items-stretch gap-x-3 py-4 {TW_PAGE_PADDING_X}" path={[...path, 'nav_items']} />
 
 			<!-- Hamburger button (visible on mobile only) -->
 			<button
