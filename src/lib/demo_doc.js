@@ -210,7 +210,7 @@ export const demo_doc = {
         "prose_1": {
             "id": "prose_1",
             "type": "prose",
-            "layout": 2,
+            "layout": 1,
             "content": [
                 "heading_1",
                 "paragraph_1",
@@ -408,7 +408,7 @@ export const demo_doc = {
         "fKZMgjKFZTwbcyXSERgVRty": {
             "id": "fKZMgjKFZTwbcyXSERgVRty",
             "type": "prose",
-            "layout": 2,
+            "layout": 1,
             "content": [
                 "CTcJfCGYJyfkWxSPZFjxXTT",
                 "zwWSsaYvfMcFBvxbPGrFPrB",
@@ -450,7 +450,7 @@ export const demo_doc = {
         "fjeQygAVqzwZZVHbMHyJybG": {
             "id": "fjeQygAVqzwZZVHbMHyJybG",
             "type": "prose",
-            "layout": 2,
+            "layout": 1,
             "content": [
                 "PUSwJmhpEuAHaZhDDvWpAxq",
                 "xdrynBphfNQpngAkhqNgqeh"
@@ -652,7 +652,7 @@ export const demo_doc = {
         "prose_3": {
             "id": "prose_3",
             "type": "prose",
-            "layout": 2,
+            "layout": 1,
             "content": [
                 "KaPaAdxGyjaRVJZDwqsWPzt",
                 "uKPwpfCeeqamEwehApYsrYk",
@@ -750,6 +750,7 @@ export const demo_doc = {
         "nav_item_1": {
             "id": "nav_item_1",
             "type": "nav_item",
+            "layout": 1,
             "href": "#prose_1",
             "label": {
                 "text": "Editing",
@@ -760,6 +761,7 @@ export const demo_doc = {
         "nav_item_2": {
             "id": "nav_item_2",
             "type": "nav_item",
+            "layout": 1,
             "href": "#fKZMgjKFZTwbcyXSERgVRty",
             "label": {
                 "text": "Images",
@@ -770,6 +772,7 @@ export const demo_doc = {
         "nav_item_4": {
             "id": "nav_item_4",
             "type": "nav_item",
+            "layout": 1,
             "href": "#fjeQygAVqzwZZVHbMHyJybG",
             "label": {
                 "text": "Links",
@@ -780,6 +783,7 @@ export const demo_doc = {
         "HGXFbpfvSREjXTrvUnMpkWu": {
             "id": "HGXFbpfvSREjXTrvUnMpkWu",
             "type": "nav_item",
+            "layout": 2,
             "href": "#RwhuaDtvrdCHEEKHupsJJxa",
             "target": "_self",
             "label": {

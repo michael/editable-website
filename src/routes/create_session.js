@@ -137,6 +137,7 @@ const document_schema = define_document_schema({
 	nav_item: {
 		kind: 'block',
 		properties: {
+			layout: { type: 'integer', default: 1 },
 			href: { type: 'string' },
 			target: { type: 'string', default: '_self' },
 			label: {
@@ -415,7 +416,8 @@ const session_config = {
 		heading: 3,
 		figure: 1,
 		feature: 6,
-		gallery: 4
+		gallery: 4,
+		nav_item: 2
 	},
 
 	/**
