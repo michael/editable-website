@@ -10,9 +10,9 @@
 	let image_node = $derived(svedit.session.get([...path, 'image']));
 	let is_selected = $derived(is_image_selected());
 
-	const TITLE_PLACEHOLDER = 'MODULUS MATRIX - 85 Social housing in Cornellà Cornellà 2021';
+	const TITLE_PLACEHOLDER = 'A compelling feature title that captures attention';
 	const DESCRIPTION_PLACEHOLDER =
-		'Para los 10.000 m2 de superficie edificada del nuevo edificio ubicado en Cornellà de Llobregat (Barcelona), que consta de 85 viviendas sociales distribuidas en 5 alturas, se han utilizado un total de 8.300 m2 de madera KM0 procedente del País Vasco. El diseño de una matriz de habitaciones comunicantes, que elimina pasillos para garantizar el máximo aprovechamiento en planta, y el uso de la madera en favor de las posibilidades de industrialización del edificio, la mejora de la calidad de la construcción y la notable reducción de los plazos de ejecución y las emisiones de C02, son los ejes de este nuevo edificio de viviendas.';
+		'Describe the key benefit or unique aspect of this feature. Explain how it solves a problem or improves the user experience. Keep the tone conversational yet informative. Add specific details that build credibility and help visitors understand exactly what they will get. The best descriptions balance clarity with persuasion, making it easy for readers to see the value while feeling confident in their understanding of what is being offered.';
 
 	function is_image_selected() {
 		const path_of_selection = svedit?.session?.selection?.path?.join('.');
