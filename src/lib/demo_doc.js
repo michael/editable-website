@@ -750,6 +750,7 @@ export const demo_doc = {
         "nav_item_1": {
             "id": "nav_item_1",
             "type": "nav_item",
+            "layout": 1,
             "href": "#prose_1",
             "label": {
                 "text": "Editing",
@@ -760,6 +761,7 @@ export const demo_doc = {
         "nav_item_2": {
             "id": "nav_item_2",
             "type": "nav_item",
+            "layout": 1,
             "href": "#fKZMgjKFZTwbcyXSERgVRty",
             "label": {
                 "text": "Images",
@@ -770,6 +772,7 @@ export const demo_doc = {
         "nav_item_4": {
             "id": "nav_item_4",
             "type": "nav_item",
+            "layout": 1,
             "href": "#fjeQygAVqzwZZVHbMHyJybG",
             "label": {
                 "text": "Links",
@@ -780,6 +783,7 @@ export const demo_doc = {
         "HGXFbpfvSREjXTrvUnMpkWu": {
             "id": "HGXFbpfvSREjXTrvUnMpkWu",
             "type": "nav_item",
+            "layout": 2,
             "href": "#RwhuaDtvrdCHEEKHupsJJxa",
             "target": "_self",
             "label": {
