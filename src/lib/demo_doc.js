@@ -716,7 +716,7 @@ export const demo_doc = {
             "id": "qcDuCmTjrJzNnEeCECKqSUc",
             "type": "paragraph",
             "content": {
-                "text": "Sign up to be notified when Editable Website is ready.\nI’ll invite the first few sign-ups to a face-to-face conversation.",
+                "text": "Sign up to be notified when Editable Website is ready. I’ll invite the first few sign-ups to a face-to-face conversation.",
                 "annotations": [
                     {
                         "start_offset": 0,
