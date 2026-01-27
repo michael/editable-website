@@ -41,6 +41,8 @@ import LinkCollection from './components/LinkCollection.svelte';
 import LinkCollectionItem from './components/LinkCollectionItem.svelte';
 import Figure from './components/Figure.svelte';
 import Feature from './components/Feature.svelte';
+import Hero from './components/Hero.svelte';
+import Button from './components/Button.svelte';
 import Image from './components/Image.svelte';
 
 import Strong from './components/Strong.svelte';
@@ -57,7 +59,7 @@ const document_schema = define_document_schema({
 		properties: {
 			body: {
 				type: 'node_array',
-				node_types: ['prose', 'figure', 'gallery', 'feature', 'link_collection'],
+				node_types: ['prose', 'figure', 'gallery', 'feature', 'link_collection', 'hero'],
 				default_node_type: 'prose'
 			},
 			nav: {
@@ -135,6 +137,40 @@ const document_schema = define_document_schema({
 		}
 	},
 	nav_item: {
+		kind: 'block',
+		properties: {
+			layout: { type: 'integer', default: 1 },
+			href: { type: 'string' },
+			target: { type: 'string', default: '_self' },
+			label: {
+				type: 'annotated_text',
+				node_types: [],
+				allow_newlines: false
+			}
+		}
+	},
+	hero: {
+		kind: 'block',
+		properties: {
+			layout: { type: 'integer', default: 1 },
+			title: {
+				type: 'annotated_text',
+				node_types: [],
+				allow_newlines: false
+			},
+			description: {
+				type: 'annotated_text',
+				node_types: [],
+				allow_newlines: false
+			},
+			buttons: {
+				type: 'node_array',
+				node_types: ['button'],
+				default_node_type: 'button'
+			}
+		}
+	},
+	button: {
 		kind: 'block',
 		properties: {
 			layout: { type: 'integer', default: 1 },
@@ -320,6 +356,8 @@ const session_config = {
 		Footer,
 		FooterLinkColumn,
 		FooterLink,
+		Hero,
+		Button,
 		Prose,
 		Heading,
 		Paragraph,
@@ -417,7 +455,9 @@ const session_config = {
 		figure: 1,
 		feature: 6,
 		gallery: 4,
-		nav_item: 2
+		nav_item: 2,
+		button: 2,
+		hero: 4
 	},
 
 	/**
@@ -616,6 +656,29 @@ const session_config = {
 			//   anchor_offset: 0,
 			//   focus_offset: 0
 			// });
+		},
+		hero: function (tr, content = { text: '', annotations: [] }, layout = 1) {
+			const new_hero_id = tr.build('new_hero', {
+				new_hero: {
+					id: 'new_hero',
+					type: 'hero',
+					title: { text: '', annotations: [] },
+					description: { text: '', annotations: [] },
+					buttons: []
+				}
+			});
+
+			tr.insert_nodes([new_hero_id]);
+		},
+		button: function (tr, content = { text: '', annotations: [] }, layout = 1) {
+			const new_button_id = tr.build('new_button', {
+				new_button: {
+					id: 'new_button',
+					type: 'button'
+				}
+			});
+
+			tr.insert_nodes([new_button_id]);
 		},
 		footer_link: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_footer_link_id = tr.build('new_footer_link', {

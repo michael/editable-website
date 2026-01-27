@@ -3,40 +3,19 @@
 export const demo_doc = {
     "document_id": "page_1",
     "nodes": {
-        "JspHschzJHJyNmmZzgfBKtt": {
-            "id": "JspHschzJHJyNmmZzgfBKtt",
-            "type": "heading",
+        "hero_1": {
+            "id": "hero_1",
+            "type": "hero",
             "layout": 1,
-            "content": {
+            "title": {
                 "text": "This is not an ordinary website",
                 "annotations": []
-            }
-        },
-        "erAbuczAkUtnAGHYKgAUGkp": {
-            "id": "erAbuczAkUtnAGHYKgAUGkp",
-            "type": "paragraph",
-            "content": {
-                "text": "I'll show you why. All you need is a computer with a physical keyboard.",
+            },
+            "description": {
+                "text": "I'll show you why. All you need is a computer with a physical keyboard. Are you ready?",
                 "annotations": []
-            }
-        },
-        "fdsxRajBxzDSFBBHEwSmqfZ": {
-            "id": "fdsxRajBxzDSFBBHEwSmqfZ",
-            "type": "paragraph",
-            "content": {
-                "text": "Ready?",
-                "annotations": []
-            }
-        },
-        "cHakxekvzavEawKMsPmfVWr": {
-            "id": "cHakxekvzavEawKMsPmfVWr",
-            "type": "prose",
-            "layout": 2,
-            "content": [
-                "JspHschzJHJyNmmZzgfBKtt",
-                "erAbuczAkUtnAGHYKgAUGkp",
-                "fdsxRajBxzDSFBBHEwSmqfZ"
-            ]
+            },
+            "buttons": []
         },
         "feature_1_image": {
             "id": "feature_1_image",
@@ -697,43 +676,32 @@ export const demo_doc = {
                 ]
             }
         },
-        "gwEJMMJzgJxkkgHWwhCeCXm": {
-            "id": "gwEJMMJzgJxkkgHWwhCeCXm",
-            "type": "heading",
+        "PvpNcGKnqTTBbvbRZeDUYSN": {
+            "id": "PvpNcGKnqTTBbvbRZeDUYSN",
+            "type": "button",
             "layout": 1,
-            "content": {
-                "text": "Join the waitlist",
+            "href": "https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform?usp=dialog",
+            "target": "_blank",
+            "label": {
+                "text": "Sign up",
                 "annotations": []
             }
         },
-        "tWbtbGXxEpydcjHXcmRUAQH": {
-            "id": "tWbtbGXxEpydcjHXcmRUAQH",
-            "type": "link",
-            "href": "https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform?usp=dialog",
-            "target": "_blank"
-        },
-        "qcDuCmTjrJzNnEeCECKqSUc": {
-            "id": "qcDuCmTjrJzNnEeCECKqSUc",
-            "type": "paragraph",
-            "content": {
+        "UBNYngEBJYtDWgeabtDJqWW": {
+            "id": "UBNYngEBJYtDWgeabtDJqWW",
+            "type": "hero",
+            "title": {
+                "text": "Join the waitlist",
+                "annotations": []
+            },
+            "description": {
                 "text": "Sign up to be notified when Editable Website is ready. I’ll invite the first few sign-ups to a face-to-face conversation.",
-                "annotations": [
-                    {
-                        "start_offset": 0,
-                        "end_offset": 7,
-                        "node_id": "tWbtbGXxEpydcjHXcmRUAQH"
-                    }
-                ]
-            }
-        },
-        "RwhuaDtvrdCHEEKHupsJJxa": {
-            "id": "RwhuaDtvrdCHEEKHupsJJxa",
-            "type": "prose",
-            "layout": 2,
-            "content": [
-                "gwEJMMJzgJxkkgHWwhCeCXm",
-                "qcDuCmTjrJzNnEeCECKqSUc"
-            ]
+                "annotations": []
+            },
+            "buttons": [
+                "PvpNcGKnqTTBbvbRZeDUYSN"
+            ],
+            "layout": 3
         },
         "nav_logo": {
             "id": "nav_logo",
@@ -917,7 +885,7 @@ export const demo_doc = {
             "id": "page_1",
             "type": "page",
             "body": [
-                "cHakxekvzavEawKMsPmfVWr",
+                "hero_1",
                 "feature_1",
                 "prose_1",
                 "BPdekRaDEUcQZqtEwPwBvyu",
@@ -926,7 +894,7 @@ export const demo_doc = {
                 "link_collection_1",
                 "prose_3",
                 "YTMHBcPkYXJMRUnuSAhrTDE",
-                "RwhuaDtvrdCHEEKHupsJJxa"
+                "UBNYngEBJYtDWgeabtDJqWW"
             ],
             "nav": "nav_1",
             "footer": "footer_1"
