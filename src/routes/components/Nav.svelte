@@ -1,6 +1,7 @@
 <script>
 	import { getContext } from 'svelte';
 	import { NodeArrayProperty, Node, CustomProperty } from 'svedit';
+	import { slide } from 'svelte/transition';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 	import Image from './Image.svelte';
 
@@ -11,6 +12,18 @@
 	let nav_items = $derived(node.nav_items || []);
 
 	let mobile_menu_open = $state(false);
+
+	$effect(() => {
+		if (mobile_menu_open) {
+			document.body.style.overflow = 'hidden';
+		} else {
+			document.body.style.overflow = '';
+		}
+
+		return () => {
+			document.body.style.overflow = '';
+		};
+	});
 
 	function toggle_mobile_menu() {
 		mobile_menu_open = !mobile_menu_open;
@@ -62,24 +75,40 @@
 			</button>
 		</div>
 
-		<!-- Mobile menu (read-only, visible when open, hidden on desktop) -->
-		{#if mobile_menu_open}
-			<div class="md:hidden border-l border-r border-b border-(--foreground-subtle)" contenteditable="false">
-				<div class="flex flex-col {TW_PAGE_PADDING_X} pt-2 pb-12">
-					{#each nav_items as _node_id, index (index)}
-						{@const item = svedit.session.get([...path, 'nav_items', index])}
-						<a
-							href={item.href || '#'}
-							target={item.target}
-							class="text-sm py-1 text-right hover:underline"
-							onclick={close_mobile_menu}
-						>
-							{item.label?.text || ''}
-						</a>
-					{/each}
-				</div>
-			</div>
-		{/if}
+	<!-- Mobile menu overlay (read-only, visible when open, hidden on desktop) -->
+	{#if mobile_menu_open}
+		<div
+			class="md:hidden fixed inset-0 bg-(--background) z-50"
+			contenteditable="false"
+			transition:slide={{ duration: 200 }}
+		>
+			<!-- Close button in top right -->
+			<button
+				class="cursor-pointer absolute top-4 right-4 p-2"
+				onclick={close_mobile_menu}
+				aria-label="Close menu"
+			>
+				<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+				</svg>
+			</button>
+
+			<!-- Menu items -->
+			<nav class="flex flex-col px-5 sm:px-7 pt-16">
+				{#each nav_items as _node_id, index (index)}
+					{@const item = svedit.session.get([...path, 'nav_items', index])}
+					<a
+						href={item.href || '#'}
+						target={item.target}
+						class="text-3xl font-semibold py-2"
+						onclick={close_mobile_menu}
+					>
+						{item.label?.text || ''}
+					</a>
+				{/each}
+			</nav>
+		</div>
+	{/if}
 	</div>
 </Node>
 
