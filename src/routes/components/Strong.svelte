@@ -5,4 +5,4 @@
 	let node = $derived(svedit.session.get(path));
 </script>
 
-<strong id={node.id} data-node-id={node.id}>{content}</strong>
+<strong class="font-normal text-(--foreground-accent)" id={node.id} data-node-id={node.id}>{content}</strong>
