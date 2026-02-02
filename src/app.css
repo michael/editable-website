@@ -25,6 +25,7 @@ body::before {
 	--foreground-muted: oklch(from var(--foreground) l c h / 50%); /* subtitles, secondary text */
 	--foreground-subtle: color-mix(in oklch, var(--background) 90%, var(--foreground) 20%); /* hairlines, borders - fully opaque warm grey */
 	--accent-muted: oklch(from var(--accent) l c h / 50%); /* hover states, fills */
+	--background-accent: color-mix(in oklch, var(--background) 50%, white 50%); /* lighter background - fully opaque */
 
 	/* Editor colors */
 	--editing-fill-color: oklch(0.56 0.17 36 / 0.1);

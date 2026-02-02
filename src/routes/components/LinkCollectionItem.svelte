@@ -18,7 +18,7 @@
 	}
 </script>
 
-<Node class="link-collection-item h-full bg-white/50" {path}>
+<Node class="link-collection-item h-full bg-(--background-accent)" {path}>
 	<svelte:element
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
