@@ -14,7 +14,7 @@
 	<div class="{TW_LIMITER}">
 		<div class="border-(--foreground-subtle) xl:border-r xl:border-l {TW_BLOCK_PADDING_Y}">
 			<div class="{TW_PAGE_PADDING_X} max-w-4xl">
-				<NodeArrayProperty path={[...path, 'content']} />
+				<NodeArrayProperty class="space-y-4" path={[...path, 'content']} />
 			</div>
 		</div>
 	</div>
@@ -25,7 +25,7 @@
 	<div class="{TW_LIMITER}">
 		<div class="border-(--foreground-subtle) xl:border-r xl:border-l {TW_BLOCK_PADDING_Y}">
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-4xl text-center">
-				<NodeArrayProperty path={[...path, 'content']} />
+				<NodeArrayProperty class="space-y-4" path={[...path, 'content']} />
 			</div>
 		</div>
 	</div>
@@ -38,7 +38,7 @@
 			<!-- IMPORTANT: Keep in sync with TW_PAGE_PADDING_X -->
 			<div class="max-sm:pl-5 max-md:pl-7 pr-5 sm:pr-7 md:pr-10 lg:pr-14 col-span-3 md:col-span-2 md:col-start-2">
 				<div class="{TW_MOBILE_LEFT_INSET}">
-					<NodeArrayProperty path={[...path, 'content']} />
+					<NodeArrayProperty class="space-y-4" path={[...path, 'content']} />
 				</div>
 			</div>
 		</div>

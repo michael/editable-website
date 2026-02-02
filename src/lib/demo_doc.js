@@ -29,9 +29,42 @@ export const demo_doc = {
             "focal_point_y": 0.5,
             "object_fit": "cover"
         },
+        "scMJHWjbgxEKQWPUekXXayf": {
+            "id": "scMJHWjbgxEKQWPUekXXayf",
+            "type": "text",
+            "layout": 5,
+            "content": {
+                "text": "EDITING",
+                "annotations": []
+            }
+        },
+        "feature_1_intro_heading": {
+            "id": "feature_1_intro_heading",
+            "type": "text",
+            "layout": 2,
+            "content": {
+                "text": "Press ⌘+E",
+                "annotations": []
+            }
+        },
         "vAhBcybjFJsXPkmRQrwWPaT": {
             "id": "vAhBcybjFJsXPkmRQrwWPaT",
             "type": "strong"
+        },
+        "feature_1_outro_paragraph": {
+            "id": "feature_1_outro_paragraph",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "Or Ctrl+E if you are on Windows or Linux. Isn't that cool? You can move the cursor with the arrow keys or make selections with the mouse. You can edit anything you see on the screen.",
+                "annotations": [
+                    {
+                        "start_offset": 3,
+                        "end_offset": 9,
+                        "node_id": "vAhBcybjFJsXPkmRQrwWPaT"
+                    }
+                ]
+            }
         },
         "GjYMCGyPdWVrmkGcWazPTAJ": {
             "id": "GjYMCGyPdWVrmkGcWazPTAJ",
@@ -49,44 +82,31 @@ export const demo_doc = {
             "id": "kJNavahEZGWKeAtWTgEQqnp",
             "type": "strong"
         },
-        "feature_1_intro_heading": {
-            "id": "feature_1_intro_heading",
-            "type": "heading",
+        "WjasMkTrmjdrXTsDgeUHQap": {
+            "id": "WjasMkTrmjdrXTsDgeUHQap",
+            "type": "text",
             "layout": 1,
             "content": {
-                "text": "Press ⌘+E",
-                "annotations": []
-            }
-        },
-        "feature_1_outro_paragraph": {
-            "id": "feature_1_outro_paragraph",
-            "type": "paragraph",
-            "content": {
-                "text": "Or Ctrl+E if you are on Windows or Linux. Isn't that cool? You can move the cursor with the arrow keys or make selections with the mouse. You can edit anything you see on the screen. For basic text formatting use ⌘+B (Bold) ⌘+I (Italic) and ⌘+K to turn text into a link. To undo accidental changes press ⌘+Z.",
+                "text": "For basic text formatting use ⌘+B (Bold) ⌘+I (Italic) and ⌘+K to turn text into a link. To undo accidental changes press ⌘+Z.",
                 "annotations": [
                     {
-                        "start_offset": 3,
-                        "end_offset": 9,
-                        "node_id": "vAhBcybjFJsXPkmRQrwWPaT"
-                    },
-                    {
-                        "start_offset": 213,
-                        "end_offset": 216,
+                        "start_offset": 30,
+                        "end_offset": 33,
                         "node_id": "GjYMCGyPdWVrmkGcWazPTAJ"
                     },
                     {
-                        "start_offset": 224,
-                        "end_offset": 227,
+                        "start_offset": 41,
+                        "end_offset": 44,
                         "node_id": "TKBzGfCyPtcywrWNafpMFUx"
                     },
                     {
-                        "start_offset": 241,
-                        "end_offset": 244,
+                        "start_offset": 58,
+                        "end_offset": 61,
                         "node_id": "BYnvjBNEvJqBdqQmUyeUzgn"
                     },
                     {
-                        "start_offset": 304,
-                        "end_offset": 307,
+                        "start_offset": 121,
+                        "end_offset": 124,
                         "node_id": "kJNavahEZGWKeAtWTgEQqnp"
                     }
                 ]
@@ -97,13 +117,19 @@ export const demo_doc = {
             "type": "feature",
             "layout": 1,
             "image": "feature_1_image",
-            "intro": ["feature_1_intro_heading"],
-            "outro": ["feature_1_outro_paragraph"]
+            "intro": [
+                "scMJHWjbgxEKQWPUekXXayf",
+                "feature_1_intro_heading"
+            ],
+            "outro": [
+                "feature_1_outro_paragraph",
+                "WjasMkTrmjdrXTsDgeUHQap"
+            ]
         },
         "heading_1": {
             "id": "heading_1",
-            "type": "heading",
-            "layout": 1,
+            "type": "text",
+            "layout": 2,
             "content": {
                 "text": "Want to add new content?",
                 "annotations": []
@@ -111,7 +137,8 @@ export const demo_doc = {
         },
         "paragraph_1": {
             "id": "paragraph_1",
-            "type": "paragraph",
+            "type": "text",
+            "layout": 1,
             "content": {
                 "text": "Click the little dashed horizontal gap after this section.",
                 "annotations": []
@@ -123,7 +150,8 @@ export const demo_doc = {
         },
         "GXsYzSEsdkPMKMyRbWqGTZQ": {
             "id": "GXsYzSEsdkPMKMyRbWqGTZQ",
-            "type": "paragraph",
+            "type": "text",
+            "layout": 1,
             "content": {
                 "text": "You should see a big blinking cursor spanning the window from left to right.",
                 "annotations": [
@@ -141,7 +169,8 @@ export const demo_doc = {
         },
         "DvsqCrvhcWpFHbUbDmjfJZF": {
             "id": "DvsqCrvhcWpFHbUbDmjfJZF",
-            "type": "paragraph",
+            "type": "text",
+            "layout": 1,
             "content": {
                 "text": "Press Enter. This creates a new block.",
                 "annotations": [
@@ -159,7 +188,8 @@ export const demo_doc = {
         },
         "bnsnQEmqhPWjFTpuBHFeFZq": {
             "id": "bnsnQEmqhPWjFTpuBHFeFZq",
-            "type": "paragraph",
+            "type": "text",
+            "layout": 1,
             "content": {
                 "text": "Press Ctrl+Alt+Down to select the next block type.",
                 "annotations": [
@@ -177,7 +207,8 @@ export const demo_doc = {
         },
         "RFttuRrZckKYCUnChPwfcYJ": {
             "id": "RFttuRrZckKYCUnChPwfcYJ",
-            "type": "paragraph",
+            "type": "text",
+            "layout": 1,
             "content": {
                 "text": "Most blocks support multiple layouts. Switch them with Ctrl+Alt+Right.",
                 "annotations": [
@@ -191,7 +222,8 @@ export const demo_doc = {
         },
         "EFajkFtKyVkZAhavjBvDYjD": {
             "id": "EFajkFtKyVkZAhavjBvDYjD",
-            "type": "paragraph",
+            "type": "text",
+            "layout": 1,
             "content": {
                 "text": "Wow, you're editing web pages like a pro!",
                 "annotations": []
@@ -328,8 +360,8 @@ export const demo_doc = {
         },
         "CTcJfCGYJyfkWxSPZFjxXTT": {
             "id": "CTcJfCGYJyfkWxSPZFjxXTT",
-            "type": "heading",
-            "layout": 1,
+            "type": "text",
+            "layout": 2,
             "content": {
                 "text": "Let's add some images",
                 "annotations": []
@@ -337,7 +369,8 @@ export const demo_doc = {
         },
         "zwWSsaYvfMcFBvxbPGrFPrB": {
             "id": "zwWSsaYvfMcFBvxbPGrFPrB",
-            "type": "paragraph",
+            "type": "text",
+            "layout": 1,
             "content": {
                 "text": "Open a folder on your computer that has some images.",
                 "annotations": []
@@ -349,7 +382,8 @@ export const demo_doc = {
         },
         "paWyPUKZWBUeznzFrQnYcQk": {
             "id": "paWyPUKZWBUeznzFrQnYcQk",
-            "type": "paragraph",
+            "type": "text",
+            "layout": 1,
             "content": {
                 "text": "Select a couple and copy them with ⌘+C.",
                 "annotations": [
@@ -363,7 +397,8 @@ export const demo_doc = {
         },
         "HVDESaUhzanEZJaxjHvZAWR": {
             "id": "HVDESaUhzanEZJaxjHvZAWR",
-            "type": "paragraph",
+            "type": "text",
+            "layout": 1,
             "content": {
                 "text": "Now put the cursor after an image in the gallery above.",
                 "annotations": []
@@ -375,7 +410,8 @@ export const demo_doc = {
         },
         "kSsctjkVHVJKWYFqMxSpgZH": {
             "id": "kSsctjkVHVJKWYFqMxSpgZH",
-            "type": "paragraph",
+            "type": "text",
+            "layout": 1,
             "content": {
                 "text": "Paste your images with ⌘+V.",
                 "annotations": [
@@ -389,7 +425,8 @@ export const demo_doc = {
         },
         "BwUdtezSTfmfuzQRSjsFsKb": {
             "id": "BwUdtezSTfmfuzQRSjsFsKb",
-            "type": "paragraph",
+            "type": "text",
+            "layout": 1,
             "content": {
                 "text": "You can also replace images, by selecting an image and then paste.",
                 "annotations": []
@@ -408,10 +445,19 @@ export const demo_doc = {
                 "BwUdtezSTfmfuzQRSjsFsKb"
             ]
         },
+        "UCheDuVYdGBsHPkZnSnuTDZ": {
+            "id": "UCheDuVYdGBsHPkZnSnuTDZ",
+            "type": "text",
+            "layout": 5,
+            "content": {
+                "text": "",
+                "annotations": []
+            }
+        },
         "PUSwJmhpEuAHaZhDDvWpAxq": {
             "id": "PUSwJmhpEuAHaZhDDvWpAxq",
-            "type": "heading",
-            "layout": 1,
+            "type": "text",
+            "layout": 2,
             "content": {
                 "text": "And links?",
                 "annotations": []
@@ -425,7 +471,8 @@ export const demo_doc = {
         },
         "xdrynBphfNQpngAkhqNgqeh": {
             "id": "xdrynBphfNQpngAkhqNgqeh",
-            "type": "paragraph",
+            "type": "text",
+            "layout": 1,
             "content": {
                 "text": "Below are websites Johannes Mutter and I have already launched using the technology you are just trying out:",
                 "annotations": [
@@ -442,6 +489,7 @@ export const demo_doc = {
             "type": "prose",
             "layout": 1,
             "content": [
+                "UCheDuVYdGBsHPkZnSnuTDZ",
                 "PUSwJmhpEuAHaZhDDvWpAxq",
                 "xdrynBphfNQpngAkhqNgqeh"
             ]
@@ -555,7 +603,8 @@ export const demo_doc = {
         },
         "KaPaAdxGyjaRVJZDwqsWPzt": {
             "id": "KaPaAdxGyjaRVJZDwqsWPzt",
-            "type": "paragraph",
+            "type": "text",
+            "layout": 1,
             "content": {
                 "text": "Click on one of the cards above.",
                 "annotations": [
@@ -573,7 +622,8 @@ export const demo_doc = {
         },
         "uKPwpfCeeqamEwehApYsrYk": {
             "id": "uKPwpfCeeqamEwehApYsrYk",
-            "type": "paragraph",
+            "type": "text",
+            "layout": 1,
             "content": {
                 "text": "It will show a little link preview at the bottom of the card.",
                 "annotations": [
@@ -591,7 +641,8 @@ export const demo_doc = {
         },
         "prAcjhEnaTxGFMcXPqEQspc": {
             "id": "prAcjhEnaTxGFMcXPqEQspc",
-            "type": "paragraph",
+            "type": "text",
+            "layout": 1,
             "content": {
                 "text": "Click edit or press Cmd+K to bring up the link editor.",
                 "annotations": [
@@ -609,7 +660,8 @@ export const demo_doc = {
         },
         "paragraph_5": {
             "id": "paragraph_5",
-            "type": "paragraph",
+            "type": "text",
+            "layout": 1,
             "content": {
                 "text": "Change the url you want to link to and press Enter.",
                 "annotations": [
@@ -627,7 +679,8 @@ export const demo_doc = {
         },
         "HMvmSRXETenwQqewaXnhdsj": {
             "id": "HMvmSRXETenwQqewaXnhdsj",
-            "type": "paragraph",
+            "type": "text",
+            "layout": 1,
             "content": {
                 "text": "Now is a good time to save your changes with Cmd+S.",
                 "annotations": [
@@ -663,22 +716,23 @@ export const demo_doc = {
             "focal_point_y": 0.5,
             "object_fit": "cover"
         },
-        "RrpSjGbCdmKKSgjedcufHWu": {
-            "id": "RrpSjGbCdmKKSgjedcufHWu",
-            "type": "strong"
-        },
         "feature_2_intro_heading": {
             "id": "feature_2_intro_heading",
-            "type": "heading",
-            "layout": 1,
+            "type": "text",
+            "layout": 2,
             "content": {
                 "text": "Hello, I'm Michael",
                 "annotations": []
             }
         },
+        "RrpSjGbCdmKKSgjedcufHWu": {
+            "id": "RrpSjGbCdmKKSgjedcufHWu",
+            "type": "strong"
+        },
         "feature_2_outro_paragraph": {
             "id": "feature_2_outro_paragraph",
-            "type": "paragraph",
+            "type": "text",
+            "layout": 1,
             "content": {
                 "text": "And you just tried Editable Website. I made it for website developers who want to control the structure and layout in code, while allowing site owners to edit content in a way that's intuitive, fun, and \"just works.\"",
                 "annotations": [
@@ -695,8 +749,12 @@ export const demo_doc = {
             "type": "feature",
             "layout": 1,
             "image": "hqrrTdEbTPaqzEcYMczhBZb",
-            "intro": ["feature_2_intro_heading"],
-            "outro": ["feature_2_outro_paragraph"]
+            "intro": [
+                "feature_2_intro_heading"
+            ],
+            "outro": [
+                "feature_2_outro_paragraph"
+            ]
         },
         "PvpNcGKnqTTBbvbRZeDUYSN": {
             "id": "PvpNcGKnqTTBbvbRZeDUYSN",
