@@ -98,26 +98,15 @@
 				<div class="flex flex-col gap-px bg-(--foreground-subtle)">
 				{#each nav_items as _node_id, index (index)}
 					{@const item = svedit.session.get([...path, 'nav_items', index])}
-					{#if item.layout === 2}
-						<a
-							href={item.href || '#'}
-							target={item.target}
-							class="text-3xl font-semibold py-2 px-3 sm:px-5 bg-(--foreground) text-(--background)"
-							onclick={close_mobile_menu}
-						>
-							{item.label?.text || ''}
-						</a>
-					{:else}
-						<a
-							href={item.href || '#'}
-							target={item.target}
-							class="text-3xl font-semibold py-2 px-3 sm:px-5 bg-(--background)"
-							onclick={close_mobile_menu}
-						>
-							{item.label?.text || ''}
-						</a>
-					{/if}
-			{/each}
+					<a
+						href={item.href || '#'}
+						target={item.target}
+						class="text-3xl font-semibold py-2 px-3 sm:px-5 bg-(--background)"
+						onclick={close_mobile_menu}
+					>
+						{item.label?.text || ''}
+					</a>
+				{/each}
 			</div>
 		</nav>
 		</div>
