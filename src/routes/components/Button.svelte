@@ -14,7 +14,7 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="flex items-center justify-center bg-(--accent) text-(--background) px-5 py-2"
+		class="flex items-center justify-center bg-(--accent) text-(--background) px-5 py-2 rounded-(--border-radius)"
 		class:hover:opacity-80={render_as_link}
 	>
 		<AnnotatedTextProperty
@@ -29,7 +29,7 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="flex items-center justify-center border border-(--foreground-muted) px-5 py-2 {render_as_link ? 'hover:bg-(--foreground-subtle)' : ''}"
+		class="flex items-center justify-center border border-(--foreground-muted) px-5 py-2 rounded-(--border-radius) {render_as_link ? 'hover:bg-(--foreground-subtle)' : ''}"
 	>
 		<AnnotatedTextProperty
 			path={[...path, 'label']}
