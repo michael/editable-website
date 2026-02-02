@@ -291,10 +291,25 @@ export default [
 					type: 'gallery_item',
 					image: 'gallery_item_6_image'
 				},
+				gallery_1_intro_text: {
+					id: 'gallery_1_intro_text',
+					type: 'text',
+					layout: 2,
+					content: { text: '', annotations: [] }
+				},
+
+				gallery_1_outro_text: {
+					id: 'gallery_1_outro_text',
+					type: 'text',
+					layout: 1,
+					content: { text: '', annotations: [] }
+				},
+
 				gallery_1: {
 					id: 'gallery_1',
 					type: 'gallery',
 					layout: 1,
+					intro: ['gallery_1_intro_text'],
 					gallery_items: [
 						'gallery_item_1',
 						'gallery_item_2',
@@ -302,7 +317,8 @@ export default [
 						'gallery_item_4',
 						'gallery_item_5',
 						'gallery_item_6'
-					]
+					],
+					outro: ['gallery_1_outro_text']
 				},
 				footer_link_1_1: {
 					id: 'footer_link_1_1',

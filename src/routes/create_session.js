@@ -231,9 +231,19 @@ const document_schema = define_document_schema({
 		kind: 'block',
 		properties: {
 			layout: { type: 'integer', default: 1 },
+			intro: {
+				type: 'node_array',
+				node_types: ['text'],
+				default_node_type: 'text'
+			},
 			gallery_items: {
 				type: 'node_array',
 				node_types: ['gallery_item']
+			},
+			outro: {
+				type: 'node_array',
+				node_types: ['text'],
+				default_node_type: 'text'
 			}
 		}
 	},
@@ -692,6 +702,16 @@ const session_config = {
 		},
 
 		gallery: function (tr) {
+			// Create intro text
+			const intro_text = {
+				id: nanoid(),
+				type: 'text',
+				layout: 2,
+				content: { text: '', annotations: [] }
+			};
+			tr.create(intro_text);
+
+			// Create gallery items
 			const new_gallery_items = [];
 			for (let i = 0; i < 6; i++) {
 				const gallery_item_image = {
@@ -715,11 +735,23 @@ const session_config = {
 				tr.create(gallery_item);
 				new_gallery_items.push(gallery_item.id);
 			}
+
+			// Create outro text
+			const outro_text = {
+				id: nanoid(),
+				type: 'text',
+				layout: 1,
+				content: { text: '', annotations: [] }
+			};
+			tr.create(outro_text);
+
 			const new_gallery = {
 				id: nanoid(),
 				type: 'gallery',
 				layout: 1,
-				gallery_items: new_gallery_items
+				intro: [intro_text.id],
+				gallery_items: new_gallery_items,
+				outro: [outro_text.id]
 			};
 			tr.create(new_gallery);
 			tr.insert_nodes([new_gallery.id]);
