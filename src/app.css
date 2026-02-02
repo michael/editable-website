@@ -22,7 +22,7 @@ body::before {
 
 	/* Derived colors - these can be overridden per site, but I don't recommend it */
 	--foreground-muted: oklch(from var(--foreground) l c h / 50%); /* subtitles, secondary text */
-	--foreground-subtle: oklch(from var(--foreground) l c h / 10%); /* hairlines, borders */
+	--foreground-subtle: color-mix(in oklch, var(--background) 90%, var(--foreground) 10%); /* hairlines, borders - fully opaque warm grey */
 	--accent-muted: oklch(from var(--accent) l c h / 50%); /* hover states, fills */
 
 	/* Editor colors */
