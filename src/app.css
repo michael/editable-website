@@ -19,10 +19,11 @@ body::before {
 	--foreground: oklch(0.5 0 0); /* medium grey #656565 */
 	--accent: oklch(0.56 0.17 36); /* orange */
 	--border-radius: 0.25rem; /* slight rounded corners for buttons, nav items */
+	--foreground-accent: oklch(0 0 0); /* black - used for strong/emphasis text */
 
 	/* Derived colors - these can be overridden per site, but I don't recommend it */
 	--foreground-muted: oklch(from var(--foreground) l c h / 50%); /* subtitles, secondary text */
-	--foreground-subtle: color-mix(in oklch, var(--background) 90%, var(--foreground) 10%); /* hairlines, borders - fully opaque warm grey */
+	--foreground-subtle: color-mix(in oklch, var(--background) 90%, var(--foreground) 20%); /* hairlines, borders - fully opaque warm grey */
 	--accent-muted: oklch(from var(--accent) l c h / 50%); /* hover states, fills */
 
 	/* Editor colors */
