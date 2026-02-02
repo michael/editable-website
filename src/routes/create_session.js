@@ -576,24 +576,29 @@ const session_config = {
 					focal_point_y: 0.5,
 					object_fit: 'cover'
 				},
+				intro_text: {
+					id: 'intro_text',
+					type: 'text',
+					layout: 2,
+					content: { text: '', annotations: [] }
+				},
+				outro_text: {
+					id: 'outro_text',
+					type: 'text',
+					layout: 1,
+					content: { text: '', annotations: [] }
+				},
 				new_feature: {
 					id: 'new_feature',
 					type: 'feature',
 					layout: 1,
 					image: 'feature_image',
-					title: { text: '', annotations: [] },
-					description: { text: '', annotations: [] }
+					intro: ['intro_text'],
+					outro: ['outro_text']
 				}
 			});
 
 			tr.insert_nodes([new_feature_id]);
-			// Set selection to the title field
-			// tr.set_selection({
-			// 	type: 'text',
-			// 	path: [...tr.selection.path, tr.selection.focus_offset - 1, 'title'],
-			// 	anchor_offset: 0,
-			// 	focus_offset: 0
-			// });
 		},
 		figure: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_figure_id = tr.build('new_figure', {
