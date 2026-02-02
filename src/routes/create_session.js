@@ -33,8 +33,7 @@ import FooterLinkColumn from './components/FooterLinkColumn.svelte';
 import FooterLink from './components/FooterLink.svelte';
 
 import Prose from './components/Prose.svelte';
-import Heading from './components/Heading.svelte';
-import Paragraph from './components/Paragraph.svelte';
+import Text from './components/Text.svelte';
 import Gallery from './components/Gallery.svelte';
 import GalleryItem from './components/GalleryItem.svelte';
 import LinkCollection from './components/LinkCollection.svelte';
@@ -189,29 +188,19 @@ const document_schema = define_document_schema({
 			layout: { type: 'integer', default: 1 },
 			content: {
 				type: 'node_array',
-				node_types: ['heading', 'paragraph'],
-				default_node_type: 'paragraph'
+				node_types: ['text'],
+				default_node_type: 'text'
 			}
 		}
 	},
-	paragraph: {
-		kind: 'text',
-		properties: {
-			content: {
-				type: 'annotated_text',
-				node_types: ALL_ANNOTATIONS,
-				allow_newlines: true
-			}
-		}
-	},
-	heading: {
+	text: {
 		kind: 'text',
 		properties: {
 			layout: { type: 'integer', default: 1 },
 			content: {
 				type: 'annotated_text',
 				node_types: ALL_ANNOTATIONS,
-				allow_newlines: false
+				allow_newlines: true
 			}
 		}
 	},
@@ -306,13 +295,13 @@ const document_schema = define_document_schema({
 			},
 			intro: {
 				type: 'node_array',
-				node_types: ['heading', 'paragraph'],
-				default_node_type: 'heading'
+				node_types: ['text'],
+				default_node_type: 'text'
 			},
 			outro: {
 				type: 'node_array',
-				node_types: ['heading', 'paragraph'],
-				default_node_type: 'paragraph'
+				node_types: ['text'],
+				default_node_type: 'text'
 			}
 		}
 	},
@@ -359,8 +348,7 @@ const session_config = {
 		Hero,
 		Button,
 		Prose,
-		Heading,
-		Paragraph,
+		Text,
 		Image,
 		Figure,
 		Feature,
@@ -435,23 +423,21 @@ const session_config = {
 			html += '</div>\n';
 			return html;
 		},
-		paragraph: (node) => {
-			return `<p>${node.content.text}</p>\n`;
-		},
-		heading: (node) => {
+		text: (node) => {
 			const tag_name =
 				{
-					1: 'h1',
-					2: 'h2',
-					3: 'h3'
-				}[node.layout] ?? 'h2';
+					1: 'p',
+					2: 'h1',
+					3: 'h2',
+					4: 'h3',
+					5: 'p'
+				}[node.layout] ?? 'p';
 			return `<${tag_name}>${node.content.text}</${tag_name}>\n`;
 		}
 	},
 	node_layouts: {
 		prose: 3,
-		paragraph: 1,
-		heading: 3,
+		text: 5,
 		figure: 1,
 		feature: 6,
 		gallery: 4,
@@ -521,14 +507,15 @@ const session_config = {
 		prose: function (tr) {
 			const new_heading = {
 				id: nanoid(),
-				type: 'heading',
-				layout: 1,
+				type: 'text',
+				layout: 2,
 				content: { text: '', annotations: [] }
 			};
 			tr.create(new_heading);
 			const new_paragraph = {
 				id: nanoid(),
-				type: 'paragraph',
+				type: 'text',
+				layout: 1,
 				content: { text: '', annotations: [] }
 			};
 			tr.create(new_paragraph);
@@ -548,31 +535,15 @@ const session_config = {
 			// 	focus_offset: 0
 			// });
 		},
-		paragraph: function (tr, content = { text: '', annotations: [] }) {
-			const new_paragraph = {
+		text: function (tr, content = { text: '', annotations: [] }, layout = 1) {
+			const new_text = {
 				id: nanoid(),
-				type: 'paragraph',
-				content
-			};
-			tr.create(new_paragraph);
-			tr.insert_nodes([new_paragraph.id]);
-			// NOTE: Relies on insert_nodes selecting the newly inserted node(s)
-			tr.set_selection({
 				type: 'text',
-				path: [...tr.selection.path, tr.selection.focus_offset - 1, 'content'],
-				anchor_offset: 0,
-				focus_offset: 0
-			});
-		},
-		heading: function (tr, content = { text: '', annotations: [] }, layout = 1) {
-			const new_heading = {
-				id: nanoid(),
-				type: 'heading',
 				layout,
 				content
 			};
-			tr.create(new_heading);
-			tr.insert_nodes([new_heading.id]);
+			tr.create(new_text);
+			tr.insert_nodes([new_text.id]);
 			// NOTE: Relies on insert_nodes selecting the newly inserted node(s)
 			tr.set_selection({
 				type: 'text',

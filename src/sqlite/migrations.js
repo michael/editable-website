@@ -43,8 +43,8 @@ export default [
 			nodes: {
 				heading_1: {
 					id: 'heading_1',
-					type: 'heading',
-					layout: 1,
+					type: 'text',
+					layout: 2,
 					content: {
 						text: 'A SvelteKit template for building CMS-free editable websites',
 						annotations: []
@@ -52,7 +52,8 @@ export default [
 				},
 				paragraph_1: {
 					id: 'paragraph_1',
-					type: 'paragraph',
+					type: 'text',
+					layout: 1,
 					content: {
 						text: 'This is an early demo of Editable Website v2. It builds on top of Svedit (which replaces ProseMirror) and provides you with a simple framework to build entirely custom websites and apps in Svelte, while site owners can edit content directly in the layout - no CMS needed.',
 						annotations: []
@@ -66,8 +67,8 @@ export default [
 				},
 				heading_2: {
 					id: 'heading_2',
-					type: 'heading',
-					layout: 2,
+					type: 'text',
+					layout: 3,
 					content: {
 						text: 'Predefined content types, which you can tailor to your needs',
 						annotations: []
@@ -75,7 +76,8 @@ export default [
 				},
 				paragraph_2: {
 					id: 'paragraph_2',
-					type: 'paragraph',
+					type: 'text',
+					layout: 1,
 					content: {
 						text: "Editable Website ships with predefined content types like Text, Heroes, CTAs, Galleries, Accordions, etc. It provides a starting point, covering 80% of what most websites need, and makes it easy for you to add what's missing.",
 						annotations: []
@@ -83,7 +85,8 @@ export default [
 				},
 				paragraph_3: {
 					id: 'paragraph_3',
-					type: 'paragraph',
+					type: 'text',
+					layout: 1,
 					content: {
 						text: "For instance, you might want to add a custom FrontpageHero.svelte that includes some title and description (which are editable) but also some custom animations, which you'll code into that component.",
 						annotations: []
@@ -97,13 +100,14 @@ export default [
 				},
 				heading_3: {
 					id: 'heading_3',
-					type: 'heading',
-					layout: 2,
+					type: 'text',
+					layout: 3,
 					content: { text: 'Design-System based on Tailwind v4', annotations: [] }
 				},
 				paragraph_4: {
 					id: 'paragraph_4',
-					type: 'paragraph',
+					type: 'text',
+					layout: 1,
 					content: {
 						text: "If you're familiar with using Tailwind, you know how to style editable websites. In app.css you'll be able to change the defaults for spacing, colors, and typography, and for many sites this might be all you have to do.",
 						annotations: []
@@ -111,7 +115,8 @@ export default [
 				},
 				paragraph_5: {
 					id: 'paragraph_5',
-					type: 'paragraph',
+					type: 'text',
+					layout: 1,
 					content: {
 						text: 'However, sometimes you want to implement very custom specific layouts and control every pixel. This is when you start adapting the existing components or create new ones. If you know Svelte, you know Editable Website.',
 						annotations: []
@@ -125,13 +130,14 @@ export default [
 				},
 				heading_4: {
 					id: 'heading_4',
-					type: 'heading',
-					layout: 2,
+					type: 'text',
+					layout: 3,
 					content: { text: 'Built-in image processing', annotations: [] }
 				},
 				paragraph_6: {
 					id: 'paragraph_6',
-					type: 'paragraph',
+					type: 'text',
+					layout: 1,
 					content: {
 						text: 'When you paste an image onto the page, it gets uploaded in the background, and Editable Website generates a set of sizes in an optimized web format that is provided to srcset.',
 						annotations: []
