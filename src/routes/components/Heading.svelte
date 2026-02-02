@@ -26,7 +26,7 @@
 	function get_text_style(layout) {
 		switch (layout) {
 			case 1:
-				return 'font-bold text-3xl md:text-4xl lg:text-5xl pt-20 pb-4 text-balance';
+				return 'font-bold text-3xl md:text-4xl lg:text-5xl pt-20 pb-4 text-balance text-(--accent)';
 			case 2:
 				return 'font-bold text-2xl md:text-3xl lg:text-4xl pt-10 pb-4 text-balance';
 			case 3:
