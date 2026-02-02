@@ -18,15 +18,15 @@
 	}
 </script>
 
-<Node class="link-collection-item h-full" {path}>
+<Node class="link-collection-item h-full bg-white/50" {path}>
 	<svelte:element
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="transition-all duration-150 ease-out h-full flex flex-col"
+		class="transition-all duration-150 ease-out h-full flex flex-col border border-(--foreground-subtle) rounded-(--border-radius) hover:border-(--accent) overflow-hidden"
 		class:hover-effect={render_as_link}
 	>
-		<div class="{TW_PAGE_PADDING} pb-0!">
+		<div class="p-6 pb-0">
 			<CustomProperty path={[...path, 'image']}>
 				<div
 					contenteditable="false"
@@ -38,8 +38,8 @@
 				</div>
 			</CustomProperty>
 		</div>
-		<div class="{TW_PAGE_PADDING} pt-0!">
-			<AnnotatedTextProperty class="text-sm text-(--foreground-accent) pt-8 uppercase" path={[...path, 'preline']} placeholder="Preline" />
+		<div class="p-6">
+			<AnnotatedTextProperty class="text-sm text-(--foreground-accent) uppercase" path={[...path, 'preline']} placeholder="Preline" />
 			<AnnotatedTextProperty class="font-light text-(--foreground-accent) text-xl md:text-2xl lg:text-3xl text-balance pt-1" path={[...path, 'title']} placeholder="Title" />
 			<AnnotatedTextProperty class="text-balance pt-2" path={[...path, 'description']} placeholder="Description" />
 		</div>

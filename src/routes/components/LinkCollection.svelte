@@ -1,7 +1,7 @@
 <script>
 	import { getContext } from 'svelte';
 	import { Node, NodeArrayProperty } from 'svedit';
-	import { TW_LIMITER } from '../tailwind_theme.js';
+	import { TW_LIMITER, TW_PAGE_PADDING } from '../tailwind_theme.js';
 	let { path } = $props();
 
 	const svedit = getContext('svedit');
@@ -11,9 +11,9 @@
 <Node {path}>
 	<div class="border-b border-(--foreground-subtle) [--layout-orientation:horizontal]">
 		<div class="{TW_LIMITER} w-full">
-			<div class="border-l border-r border-(--foreground-subtle)">
+			<div class="border-l border-r border-(--foreground-subtle) {TW_PAGE_PADDING}">
 				<NodeArrayProperty
-					class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+					class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-7 md:gap-10 lg:gap-14"
 					path={[...path, 'link_collection_items']}
 				/>
 			</div>
