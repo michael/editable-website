@@ -63,7 +63,7 @@
 
 <Node {path}>
 	<div class="border-b border-(--foreground-subtle)">
-		<div class="{TW_LIMITER} w-full">
+		<div class="{TW_LIMITER} w-full ">
 			<div class="border-l border-r border-(--foreground-subtle)">
 				{@render intro()}
 				<div class="px-5 sm:px-7 md:px-10 lg:px-14">
