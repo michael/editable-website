@@ -16,7 +16,7 @@
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-5xl text-center">
 				<AnnotatedTextProperty
 					tag="h1"
-					class="font-bold text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-balance"
+					class="font-bold text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-balance text-(--accent)"
 					path={[...path, 'title']}
 					placeholder="Your bold statement goes here"
 				/>
@@ -41,7 +41,7 @@
 			<div class="{TW_PAGE_PADDING_X} max-w-4xl">
 				<AnnotatedTextProperty
 					tag="h1"
-					class="font-bold text-3xl md:text-4xl lg:text-5xl text-balance"
+					class="font-bold text-3xl md:text-4xl lg:text-5xl text-balance text-(--accent)"
 					path={[...path, 'title']}
 					placeholder="Your bold statement goes here"
 				/>
@@ -66,7 +66,7 @@
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-4xl text-center">
 				<AnnotatedTextProperty
 					tag="h1"
-					class="font-bold text-3xl md:text-4xl lg:text-5xl text-balance"
+					class="font-bold text-3xl md:text-4xl lg:text-5xl text-balance text-(--accent)"
 					path={[...path, 'title']}
 					placeholder="Your bold statement goes here"
 				/>
@@ -93,7 +93,7 @@
 				<div class="{TW_MOBILE_LEFT_INSET}">
 					<AnnotatedTextProperty
 						tag="h1"
-						class="font-bold text-3xl md:text-4xl lg:text-5xl text-balance"
+						class="font-bold text-3xl md:text-4xl lg:text-5xl text-balance text-(--accent)"
 						path={[...path, 'title']}
 						placeholder="Your bold statement goes here"
 					/>
