@@ -22,7 +22,7 @@
 <!-- Layout 1: Left-aligned -->
 {#snippet layout_1()}
 	<div class="{TW_LIMITER}">
-		<div class="border-(--foreground-subtle) xl:border-r xl:border-l {TW_BLOCK_PADDING_Y}">
+		<div class="border-(--foreground-subtle) border-r border-l {TW_BLOCK_PADDING_Y}">
 			<div class="{TW_PAGE_PADDING_X} max-w-4xl">
 				{@render content()}
 			</div>

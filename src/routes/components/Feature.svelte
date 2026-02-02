@@ -48,7 +48,7 @@
 <!-- Default layout for Feature -->
 {#snippet layout_1()}
 	<div class="{TW_LIMITER}">
-		<div class="grid grid-cols-1 md:grid-cols-2 xl:border-r xl:border-l border-(--foreground-subtle)">
+		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--foreground-subtle)">
 			<div class="flex flex-col {TW_PAGE_PADDING}">
 				<div class="max-md:pt-6">{@render intro()}</div>
 				<div class="flex-1" contenteditable="false">&ZeroWidthSpace;</div>
@@ -67,7 +67,7 @@
 {#snippet layout_2()}
 	<!-- Limiter -->
 	<div class="{TW_LIMITER}">
-		<div class="grid grid-cols-2 xl:border-r xl:border-l border-(--foreground-subtle)">
+		<div class="grid grid-cols-2 border-r border-l border-(--foreground-subtle)">
 			<div class="border-r p-15 border-(--foreground-subtle)">
 				{@render image(3 / 4)}
 			</div>

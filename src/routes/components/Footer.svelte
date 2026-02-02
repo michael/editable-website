@@ -37,7 +37,7 @@
 				/>
 			</div>
 			<NodeArrayProperty
-				class="footer-columns grid grid-cols-2 {grid_cols_class} flex-1 gap-x-8 gap-y-12 mt-8 md:mt-0 [--layout-orientation:horizontal]"
+				class="footer-columns grid grid-cols-1 sm:grid-cols-2 {grid_cols_class} flex-1 gap-x-8 gap-y-12 mt-8 md:mt-0 [--layout-orientation:horizontal]"
 				path={[...path, 'footer_link_columns']}
 			/>
 		</div>

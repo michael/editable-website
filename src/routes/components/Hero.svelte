@@ -12,7 +12,7 @@
 
 {#snippet layout_1()}
 	<div class="{TW_LIMITER}">
-		<div class="border-(--foreground-subtle) xl:border-r xl:border-l py-20 md:py-28 lg:py-36">
+		<div class="border-(--foreground-subtle) border-r border-l py-20 md:py-28 lg:py-36">
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-5xl text-center">
 				<AnnotatedTextProperty
 					tag="h1"
@@ -37,7 +37,7 @@
 
 {#snippet layout_2()}
 	<div class="{TW_LIMITER}">
-		<div class="border-(--foreground-subtle) xl:border-r xl:border-l py-20 md:py-28 lg:py-36">
+		<div class="border-(--foreground-subtle) border-r border-l py-20 md:py-28 lg:py-36">
 			<div class="{TW_PAGE_PADDING_X} max-w-4xl">
 				<AnnotatedTextProperty
 					tag="h1"
@@ -62,7 +62,7 @@
 
 {#snippet layout_3()}
 	<div class="{TW_LIMITER}">
-		<div class="border-(--foreground-subtle) xl:border-r xl:border-l py-20 md:py-28 lg:py-36">
+		<div class="border-(--foreground-subtle) border-r border-l py-20 md:py-28 lg:py-36">
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-4xl text-center">
 				<AnnotatedTextProperty
 					tag="h1"
@@ -87,7 +87,7 @@
 
 {#snippet layout_4()}
 	<div class="{TW_LIMITER}">
-		<div class="border-(--foreground-subtle) xl:border-r xl:border-l grid grid-cols-3 py-20 md:py-28 lg:py-36">
+		<div class="border-(--foreground-subtle) border-r border-l grid grid-cols-3 py-20 md:py-28 lg:py-36">
 			<!-- IMPORTANT: Keep in sync with TW_PAGE_PADDING_X -->
 			<div class="max-sm:pl-5 max-md:pl-7 pr-5 sm:pr-7 md:pr-10 lg:pr-14 col-span-3 md:col-span-2 md:col-start-2">
 				<div class="{TW_MOBILE_LEFT_INSET}">
