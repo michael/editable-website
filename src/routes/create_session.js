@@ -304,15 +304,15 @@ const document_schema = define_document_schema({
 				node_types: ['image'],
 				default_node_type: 'image'
 			},
-			title: {
-				type: 'annotated_text',
-				node_types: ALL_ANNOTATIONS,
-				allow_newlines: false
+			intro: {
+				type: 'node_array',
+				node_types: ['heading', 'paragraph'],
+				default_node_type: 'heading'
 			},
-			description: {
-				type: 'annotated_text',
-				node_types: ALL_ANNOTATIONS,
-				allow_newlines: true
+			outro: {
+				type: 'node_array',
+				node_types: ['heading', 'paragraph'],
+				default_node_type: 'paragraph'
 			}
 		}
 	},

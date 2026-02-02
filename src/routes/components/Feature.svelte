@@ -1,6 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
-	import { Node, CustomProperty, AnnotatedTextProperty } from 'svedit';
+	import { Node, CustomProperty, NodeArrayProperty } from 'svedit';
 	import Image from './Image.svelte';
 	import { TW_PAGE_PADDING, TW_MOBILE_LEFT_INSET, TW_LIMITER } from '../tailwind_theme.js';
 
@@ -9,10 +9,6 @@
 	let node = $derived(svedit.session.get(path));
 	let image_node = $derived(svedit.session.get([...path, 'image']));
 	let is_selected = $derived(is_image_selected());
-
-	const TITLE_PLACEHOLDER = 'A compelling feature title that captures attention';
-	const DESCRIPTION_PLACEHOLDER =
-		'Describe the key benefit or unique aspect of this feature. Explain how it solves a problem or improves the user experience. Keep the tone conversational yet informative. Add specific details that build credibility and help visitors understand exactly what they will get. The best descriptions balance clarity with persuasion, making it easy for readers to see the value while feeling confident in their understanding of what is being offered.';
 
 	function is_image_selected() {
 		const path_of_selection = svedit?.session?.selection?.path?.join('.');
@@ -35,29 +31,17 @@
 	</CustomProperty>
 {/snippet}
 
-{#snippet big_title()}
-	<AnnotatedTextProperty
-		tag="h1"
-		class="font-light text-3xl md:text-4xl lg:text-5xl text-balance text-(--accent)"
-		path={[...path, 'title']}
-		placeholder={TITLE_PLACEHOLDER}
+{#snippet intro()}
+	<NodeArrayProperty
+		class="feature-intro space-y-4"
+		path={[...path, 'intro']}
 	/>
 {/snippet}
 
-{#snippet small_title()}
-	<AnnotatedTextProperty
-		tag="h1"
-		class="text-xl text-balance uppercase text-(--accent)"
-		path={[...path, 'title']}
-		placeholder={TITLE_PLACEHOLDER}
-	/>
-{/snippet}
-
-{#snippet description()}
-	<AnnotatedTextProperty
-		tag="p"
-		path={[...path, 'description']}
-		placeholder={DESCRIPTION_PLACEHOLDER}
+{#snippet outro()}
+	<NodeArrayProperty
+		class="feature-outro"
+		path={[...path, 'outro']}
 	/>
 {/snippet}
 
@@ -66,10 +50,10 @@
 	<div class="{TW_LIMITER}">
 		<div class="grid grid-cols-1 md:grid-cols-2 xl:border-r xl:border-l border-(--foreground-subtle)">
 			<div class="flex flex-col {TW_PAGE_PADDING}">
-				<div class="max-md:pt-6">{@render big_title()}</div>
+				<div class="max-md:pt-6">{@render intro()}</div>
 				<div class="flex-1" contenteditable="false">&ZeroWidthSpace;</div>
 				<div class="{TW_MOBILE_LEFT_INSET} max-md:pt-16 max-md:pb-6">
-					{@render description()}
+					{@render outro()}
 				</div>
 			</div>
 			<div class="{TW_PAGE_PADDING} md:border-l border-(--foreground-subtle)">
@@ -88,9 +72,9 @@
 				{@render image(3 / 4)}
 			</div>
 			<div class="flex flex-col p-15">
-				{@render big_title()}
+				{@render intro()}
 				<div class="flex-1" contenteditable="false"></div>
-				{@render description()}
+				{@render outro()}
 			</div>
 		</div>
 	</div>
@@ -103,9 +87,9 @@
 			{@render image(3 / 4)}
 		</div>
 		<div class="flex flex-col p-15">
-			{@render big_title()}
+			{@render intro()}
 			<div class="flex-1" contenteditable="false"></div>
-			{@render description()}
+			{@render outro()}
 		</div>
 	</div>
 {/snippet}
@@ -114,9 +98,9 @@
 {#snippet layout_4()}
 	<div class="mx-auto grid max-w-7xl grid-cols-2">
 		<div class="flex flex-col p-15">
-			{@render big_title()}
+			{@render intro()}
 			<div class="flex-1" contenteditable="false"></div>
-			{@render description()}
+			{@render outro()}
 		</div>
 		<div>
 			{@render image(3 / 4)}
@@ -129,8 +113,8 @@
 	<div class="mx-auto grid max-w-7xl grid-cols-2">
 		<div class="flex flex-col p-15">
 			<div class="flex-1" contenteditable="false"></div>
-			{@render small_title()}
-			<div class="pt-4">{@render description()}</div>
+			{@render intro()}
+			<div class="pt-4">{@render outro()}</div>
 		</div>
 		<div class="p-15">
 			{@render image(3 / 4)}
@@ -145,8 +129,8 @@
 			{@render image(3 / 4)}
 		</div>
 		<div class="flex flex-col p-15">
-			{@render small_title()}
-			<div class="pt-4">{@render description()}</div>
+			{@render intro()}
+			<div class="pt-4">{@render outro()}</div>
 			<div class="flex-1" contenteditable="false"></div>
 		</div>
 	</div>

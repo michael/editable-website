@@ -49,16 +49,19 @@ export const demo_doc = {
             "id": "kJNavahEZGWKeAtWTgEQqnp",
             "type": "strong"
         },
-        "feature_1": {
-            "id": "feature_1",
-            "type": "feature",
+        "feature_1_intro_heading": {
+            "id": "feature_1_intro_heading",
+            "type": "heading",
             "layout": 1,
-            "image": "feature_1_image",
-            "title": {
+            "content": {
                 "text": "Press ⌘+E",
                 "annotations": []
-            },
-            "description": {
+            }
+        },
+        "feature_1_outro_paragraph": {
+            "id": "feature_1_outro_paragraph",
+            "type": "paragraph",
+            "content": {
                 "text": "Or Ctrl+E if you are on Windows or Linux. Isn't that cool? You can move the cursor with the arrow keys or make selections with the mouse. You can edit anything you see on the screen. For basic text formatting use ⌘+B (Bold) ⌘+I (Italic) and ⌘+K to turn text into a link. To undo accidental changes press ⌘+Z.",
                 "annotations": [
                     {
@@ -88,6 +91,14 @@ export const demo_doc = {
                     }
                 ]
             }
+        },
+        "feature_1": {
+            "id": "feature_1",
+            "type": "feature",
+            "layout": 1,
+            "image": "feature_1_image",
+            "intro": ["feature_1_intro_heading"],
+            "outro": ["feature_1_outro_paragraph"]
         },
         "heading_1": {
             "id": "heading_1",
@@ -656,16 +667,19 @@ export const demo_doc = {
             "id": "RrpSjGbCdmKKSgjedcufHWu",
             "type": "strong"
         },
-        "YTMHBcPkYXJMRUnuSAhrTDE": {
-            "id": "YTMHBcPkYXJMRUnuSAhrTDE",
-            "type": "feature",
+        "feature_2_intro_heading": {
+            "id": "feature_2_intro_heading",
+            "type": "heading",
             "layout": 1,
-            "image": "hqrrTdEbTPaqzEcYMczhBZb",
-            "title": {
+            "content": {
                 "text": "Hello, I'm Michael",
                 "annotations": []
-            },
-            "description": {
+            }
+        },
+        "feature_2_outro_paragraph": {
+            "id": "feature_2_outro_paragraph",
+            "type": "paragraph",
+            "content": {
                 "text": "And you just tried Editable Website. I made it for website developers who want to control the structure and layout in code, while allowing site owners to edit content in a way that's intuitive, fun, and \"just works.\"",
                 "annotations": [
                     {
@@ -675,6 +689,14 @@ export const demo_doc = {
                     }
                 ]
             }
+        },
+        "YTMHBcPkYXJMRUnuSAhrTDE": {
+            "id": "YTMHBcPkYXJMRUnuSAhrTDE",
+            "type": "feature",
+            "layout": 1,
+            "image": "hqrrTdEbTPaqzEcYMczhBZb",
+            "intro": ["feature_2_intro_heading"],
+            "outro": ["feature_2_outro_paragraph"]
         },
         "PvpNcGKnqTTBbvbRZeDUYSN": {
             "id": "PvpNcGKnqTTBbvbRZeDUYSN",

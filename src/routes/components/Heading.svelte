@@ -26,11 +26,11 @@
 	function get_text_style(layout) {
 		switch (layout) {
 			case 1:
-				return 'font-light text-3xl md:text-4xl lg:text-5xl pt-20 pb-4 text-balance text-(--accent)';
+				return 'font-light text-3xl md:text-4xl lg:text-5xl text-balance text-(--accent)';
 			case 2:
-				return 'font-light text-2xl md:text-3xl lg:text-4xl pt-10 pb-4 text-balance';
+				return 'font-light text-2xl md:text-3xl lg:text-4xl text-balance';
 			case 3:
-				return 'font-light text-xl md:text-2xl lg:text-3xl pt-6 pb-4 text-balance';
+				return 'font-light text-xl md:text-2xl lg:text-3xl text-balance';
 			default:
 				return 'font-light text-4xl text-balance';
 		}
