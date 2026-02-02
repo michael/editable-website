@@ -10,7 +10,6 @@
 <Node {path}>
 	<AnnotatedTextProperty
 		tag="p"
-		class="py-4 text-balance	"
 		path={[...path, 'content']}
 		placeholder="Paragraph"
 	/>
