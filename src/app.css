@@ -6,6 +6,7 @@
 	--background: #f7f7f4; /*oklch(92.8% 0.006 264.531); /* light grey */
 	--foreground: oklch(20.5% 0 0); /* almost black */
 	--accent: oklch(0.56 0.17 36); /* orange */
+	--border-radius: 0.25rem; /* slight rounded corners for buttons, nav items */
 
 	/* Derived colors - these can be overridden per site, but I don't recommend it */
 	--foreground-muted: oklch(from var(--foreground) l c h / 50%); /* subtitles, secondary text */
