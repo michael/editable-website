@@ -345,10 +345,29 @@ export const demo_doc = {
             "type": "gallery_item",
             "image": "asBnEpdtbyJQCEvNWuyADWR"
         },
+        "gallery_1_intro_text": {
+            "id": "gallery_1_intro_text",
+            "type": "text",
+            "layout": 2,
+            "content": {
+                "text": "",
+                "annotations": []
+            }
+        },
+        "gallery_1_outro_text": {
+            "id": "gallery_1_outro_text",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "",
+                "annotations": []
+            }
+        },
         "BPdekRaDEUcQZqtEwPwBvyu": {
             "id": "BPdekRaDEUcQZqtEwPwBvyu",
             "type": "gallery",
             "layout": 1,
+            "intro": ["gallery_1_intro_text"],
             "gallery_items": [
                 "wtvHDBrCzJVgacTaJqAwNJk",
                 "TQRANBXMrzXXZTtzxAYhhZf",
@@ -356,7 +375,8 @@ export const demo_doc = {
                 "nHBtjKafchwuYjvfWRKfyPB",
                 "SwVVZbqrUVwkbyRmfSfCTjH",
                 "tyPwGsNvAepCesRRspqreba"
-            ]
+            ],
+            "outro": ["gallery_1_outro_text"]
         },
         "CTcJfCGYJyfkWxSPZFjxXTT": {
             "id": "CTcJfCGYJyfkWxSPZFjxXTT",
