@@ -4,7 +4,7 @@
 export const TW_LIMITER = 'mx-auto max-w-8xl px-2 md:px-4 lg:px-6 xl:px-8';
 
 export const TW_PAGE_PADDING_X = 'px-5 sm:px-7 md:px-10 lg:px-14';
-export const TW_BLOCK_PADDING_Y = 'py-12 md:py-14 lg:py-18';
+export const TW_BLOCK_PADDING_Y = 'py-10 sm:py-12 md:py-10 lg:py-14';
 
 // When you want to sync vertical padding with the horizontal page padding
 export const TW_PAGE_PADDING = 'p-5 sm:p-7 md:p-10 lg:p-14';
