@@ -5,7 +5,7 @@
 	/* Base colors - configure these per site */
 	--background: #f7f7f4; /*oklch(92.8% 0.006 264.531); /* light grey */
 	--foreground: oklch(20.5% 0 0); /* almost black */
-	--accent: oklch(45% 0.31 285); /* purple */
+	--accent: oklch(0.56 0.17 36); /* orange */
 
 	/* Derived colors - these can be overridden per site, but I don't recommend it */
 	--foreground-muted: oklch(from var(--foreground) l c h / 50%); /* subtitles, secondary text */
@@ -13,8 +13,8 @@
 	--accent-muted: oklch(from var(--accent) l c h / 50%); /* hover states, fills */
 
 	/* Editor colors */
-	--editing-fill-color: oklch(59.71% 0.22 283 / 0.1);
-	--editing-stroke-color: oklch(59.71% 0.22 283);
+	--editing-fill-color: oklch(0.56 0.17 36 / 0.1);
+	--editing-stroke-color: oklch(0.56 0.17 36);
 }
 
 @theme {
