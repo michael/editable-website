@@ -16,7 +16,7 @@ body::before {
 :root {
 	/* Base colors - configure these per site */
 	--background: #f7f7f4; /*oklch(92.8% 0.006 264.531); /* light grey */
-	--foreground: oklch(20.5% 0 0); /* almost black */
+	--foreground: oklch(0.5 0 0); /* medium grey #656565 */
 	--accent: oklch(0.56 0.17 36); /* orange */
 	--border-radius: 0.25rem; /* slight rounded corners for buttons, nav items */
 
