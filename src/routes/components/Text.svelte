@@ -38,7 +38,7 @@
 			case 4:
 				return 'font-light text-xl md:text-2xl lg:text-3xl text-balance';
 			case 5:
-				return 'text-sm font-medium uppercase tracking-wider';
+				return 'text-sm font-medium uppercase tracking-wider text-(--foreground-accent)';
 			default:
 				return '';
 		}

@@ -33,14 +33,14 @@
 
 {#snippet intro()}
 	<NodeArrayProperty
-		class="ew-feature-intro space-y-4"
+		class="ew-feature-intro space-y-8"
 		path={[...path, 'intro']}
 	/>
 {/snippet}
 
 {#snippet outro()}
 	<NodeArrayProperty
-		class="ew-feature-outro space-y-4"
+		class="ew-feature-outro space-y-8"
 		path={[...path, 'outro']}
 	/>
 {/snippet}
