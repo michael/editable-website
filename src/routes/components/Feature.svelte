@@ -49,10 +49,10 @@
 {#snippet layout_1()}
 	<div class="{TW_LIMITER}">
 		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--foreground-subtle)">
-			<div class="flex flex-col {TW_PAGE_PADDING}">
-				<div class="max-md:pt-6">{@render intro()}</div>
+			<div class="flex flex-col {TW_PAGE_PADDING} pb-0">
+				<div class="">{@render intro()}</div>
 				<div class="flex-1" contenteditable="false">&ZeroWidthSpace;</div>
-				<div class="{TW_MOBILE_LEFT_INSET} max-md:pt-16 max-md:pb-6">
+				<div class="">
 					{@render outro()}
 				</div>
 			</div>
