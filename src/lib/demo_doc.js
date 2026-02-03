@@ -418,11 +418,11 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Below are websites Johannes Mutter and I have launched using the technology you are just trying out:",
+                "text": "Johannes Mutter and I have already launched a few sites that are in-place editable.",
                 "annotations": [
                     {
-                        "start_offset": 19,
-                        "end_offset": 34,
+                        "start_offset": 0,
+                        "end_offset": 15,
                         "node_id": "XnqUnfKXhvagBBEtfBHkCMS"
                     }
                 ]
@@ -630,17 +630,45 @@ export const demo_doc = {
             "id": "RrpSjGbCdmKKSgjedcufHWu",
             "type": "strong"
         },
+        "tEdhDXtJUrYJnMjrUWFYjNS": {
+            "id": "tEdhDXtJUrYJnMjrUWFYjNS",
+            "type": "strong"
+        },
         "feature_2_outro_paragraph": {
             "id": "feature_2_outro_paragraph",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "And you just tried Editable Website. I made it for website developers who want to control the structure and layout in code, while allowing site owners to edit content in a way that's intuitive, fun, and \"just works.\"",
+                "text": "And you just tried Editable Website. I made it for developers who want to control the structure and layout in code, while allowing site owners to edit content in a way that's intuitive, fun, and \"just works.\"",
                 "annotations": [
                     {
                         "start_offset": 19,
                         "end_offset": 35,
                         "node_id": "RrpSjGbCdmKKSgjedcufHWu"
+                    },
+                    {
+                        "start_offset": 51,
+                        "end_offset": 61,
+                        "node_id": "tEdhDXtJUrYJnMjrUWFYjNS"
+                    }
+                ]
+            }
+        },
+        "SRHjbCFGMEvETHGsPTMwkhr": {
+            "id": "SRHjbCFGMEvETHGsPTMwkhr",
+            "type": "strong"
+        },
+        "grqHKByVFQSDZhumJjqvPxE": {
+            "id": "grqHKByVFQSDZhumJjqvPxE",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "If you're not a programmer, but a curious tinkerer who is not afraid of step-by-step technical instructions, this might be for you as well.",
+                "annotations": [
+                    {
+                        "start_offset": 34,
+                        "end_offset": 50,
+                        "node_id": "SRHjbCFGMEvETHGsPTMwkhr"
                     }
                 ]
             }
@@ -654,7 +682,8 @@ export const demo_doc = {
                 "feature_2_intro_heading"
             ],
             "outro": [
-                "feature_2_outro_paragraph"
+                "feature_2_outro_paragraph",
+                "grqHKByVFQSDZhumJjqvPxE"
             ]
         },
         "PvpNcGKnqTTBbvbRZeDUYSN": {
