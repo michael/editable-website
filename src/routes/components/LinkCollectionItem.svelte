@@ -18,12 +18,12 @@
 	}
 </script>
 
-<Node class="link-collection-item h-full bg-(--background-accent)" {path}>
+<Node class="link-collection-item h-full" {path}>
 	<svelte:element
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="transition-all duration-150 ease-out h-full flex flex-col border border-(--foreground-subtle) rounded-(--border-radius) hover:border-(--accent) overflow-hidden"
+		class="transition-all duration-150 ease-out h-full flex flex-col border bg-(--background-accent) border-(--foreground-subtle) rounded-(--border-radius) hover:border-(--accent) overflow-hidden"
 		class:hover-effect={render_as_link}
 	>
 		<div class="p-6 pb-0">

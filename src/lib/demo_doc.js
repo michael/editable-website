@@ -29,15 +29,6 @@ export const demo_doc = {
             "focal_point_y": 0.5,
             "object_fit": "cover"
         },
-        "scMJHWjbgxEKQWPUekXXayf": {
-            "id": "scMJHWjbgxEKQWPUekXXayf",
-            "type": "text",
-            "layout": 5,
-            "content": {
-                "text": "EDITING",
-                "annotations": []
-            }
-        },
         "feature_1_intro_heading": {
             "id": "feature_1_intro_heading",
             "type": "text",
@@ -118,13 +109,21 @@ export const demo_doc = {
             "layout": 1,
             "image": "feature_1_image",
             "intro": [
-                "scMJHWjbgxEKQWPUekXXayf",
                 "feature_1_intro_heading"
             ],
             "outro": [
                 "feature_1_outro_paragraph",
                 "WjasMkTrmjdrXTsDgeUHQap"
             ]
+        },
+        "HWcSGEAsZyfeQFjgvKrMpZc": {
+            "id": "HWcSGEAsZyfeQFjgvKrMpZc",
+            "type": "text",
+            "layout": 5,
+            "content": {
+                "text": "EDITING",
+                "annotations": []
+            }
         },
         "heading_1": {
             "id": "heading_1",
@@ -135,48 +134,29 @@ export const demo_doc = {
                 "annotations": []
             }
         },
-        "paragraph_1": {
-            "id": "paragraph_1",
-            "type": "text",
-            "layout": 1,
-            "content": {
-                "text": "Click the little dashed horizontal gap after this section.",
-                "annotations": []
-            }
-        },
         "nEMtsBhedGGXSTRtThSrbUa": {
             "id": "nEMtsBhedGGXSTRtThSrbUa",
             "type": "strong"
-        },
-        "GXsYzSEsdkPMKMyRbWqGTZQ": {
-            "id": "GXsYzSEsdkPMKMyRbWqGTZQ",
-            "type": "text",
-            "layout": 1,
-            "content": {
-                "text": "You should see a big blinking cursor spanning the window from left to right.",
-                "annotations": [
-                    {
-                        "start_offset": 17,
-                        "end_offset": 36,
-                        "node_id": "nEMtsBhedGGXSTRtThSrbUa"
-                    }
-                ]
-            }
         },
         "CpCARDQGFNdNtTqtJmGUgfU": {
             "id": "CpCARDQGFNdNtTqtJmGUgfU",
             "type": "strong"
         },
-        "DvsqCrvhcWpFHbUbDmjfJZF": {
-            "id": "DvsqCrvhcWpFHbUbDmjfJZF",
+        "paragraph_1": {
+            "id": "paragraph_1",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Press Enter. This creates a new block.",
+                "text": "Click the little dashed horizontal gap after this section. You should see a big blinking cursor spanning the window from left to right. Press Enter. This creates a new block.",
                 "annotations": [
                     {
-                        "start_offset": 6,
-                        "end_offset": 11,
+                        "start_offset": 76,
+                        "end_offset": 95,
+                        "node_id": "nEMtsBhedGGXSTRtThSrbUa"
+                    },
+                    {
+                        "start_offset": 142,
+                        "end_offset": 147,
                         "node_id": "CpCARDQGFNdNtTqtJmGUgfU"
                     }
                 ]
@@ -186,35 +166,25 @@ export const demo_doc = {
             "id": "tEvwCCrEaGqPWeStQxZZrGQ",
             "type": "strong"
         },
+        "nZKHXbhVMgzydvcHWkjvuHp": {
+            "id": "nZKHXbhVMgzydvcHWkjvuHp",
+            "type": "strong"
+        },
         "bnsnQEmqhPWjFTpuBHFeFZq": {
             "id": "bnsnQEmqhPWjFTpuBHFeFZq",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Press Ctrl+Alt+Down to select the next block type.",
+                "text": "Press Ctrl+Alt+Down to select the next block type. Most blocks support multiple layouts. Switch them with Ctrl+Alt+Right.",
                 "annotations": [
                     {
                         "start_offset": 6,
                         "end_offset": 19,
                         "node_id": "tEvwCCrEaGqPWeStQxZZrGQ"
-                    }
-                ]
-            }
-        },
-        "nZKHXbhVMgzydvcHWkjvuHp": {
-            "id": "nZKHXbhVMgzydvcHWkjvuHp",
-            "type": "strong"
-        },
-        "RFttuRrZckKYCUnChPwfcYJ": {
-            "id": "RFttuRrZckKYCUnChPwfcYJ",
-            "type": "text",
-            "layout": 1,
-            "content": {
-                "text": "Most blocks support multiple layouts. Switch them with Ctrl+Alt+Right.",
-                "annotations": [
+                    },
                     {
-                        "start_offset": 55,
-                        "end_offset": 69,
+                        "start_offset": 106,
+                        "end_offset": 120,
                         "node_id": "nZKHXbhVMgzydvcHWkjvuHp"
                     }
                 ]
@@ -234,14 +204,30 @@ export const demo_doc = {
             "type": "prose",
             "layout": 1,
             "content": [
+                "HWcSGEAsZyfeQFjgvKrMpZc",
                 "heading_1",
                 "paragraph_1",
-                "GXsYzSEsdkPMKMyRbWqGTZQ",
-                "DvsqCrvhcWpFHbUbDmjfJZF",
                 "bnsnQEmqhPWjFTpuBHFeFZq",
-                "RFttuRrZckKYCUnChPwfcYJ",
                 "EFajkFtKyVkZAhavjBvDYjD"
             ]
+        },
+        "AHXsSZcYYwnXKYzHbDnSRRh": {
+            "id": "AHXsSZcYYwnXKYzHbDnSRRh",
+            "type": "text",
+            "layout": 5,
+            "content": {
+                "text": "IMAGES",
+                "annotations": []
+            }
+        },
+        "gallery_1_intro_text": {
+            "id": "gallery_1_intro_text",
+            "type": "text",
+            "layout": 2,
+            "content": {
+                "text": "Let's add some images",
+                "annotations": []
+            }
         },
         "jEhPHUyzqvpNeSHYfKCkYgS": {
             "id": "jEhPHUyzqvpNeSHYfKCkYgS",
@@ -345,21 +331,40 @@ export const demo_doc = {
             "type": "gallery_item",
             "image": "asBnEpdtbyJQCEvNWuyADWR"
         },
-        "gallery_1_intro_text": {
-            "id": "gallery_1_intro_text",
-            "type": "text",
-            "layout": 2,
-            "content": {
-                "text": "",
-                "annotations": []
-            }
+        "WVthcjFTUskZVgQCxuuvpKD": {
+            "id": "WVthcjFTUskZVgQCxuuvpKD",
+            "type": "strong"
         },
-        "gallery_1_outro_text": {
-            "id": "gallery_1_outro_text",
+        "GrPWMNNJYqSkavTsXJmeWMJ": {
+            "id": "GrPWMNNJYqSkavTsXJmeWMJ",
+            "type": "strong"
+        },
+        "CTBYpBamZaGzTVJgMpsPxBA": {
+            "id": "CTBYpBamZaGzTVJgMpsPxBA",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "",
+                "text": "Open a folder on your computer that has some images. Select a couple and copy them with ⌘+C. Now put the cursor after an image in the gallery below. Paste your images with ⌘+V.",
+                "annotations": [
+                    {
+                        "start_offset": 88,
+                        "end_offset": 91,
+                        "node_id": "WVthcjFTUskZVgQCxuuvpKD"
+                    },
+                    {
+                        "start_offset": 172,
+                        "end_offset": 175,
+                        "node_id": "GrPWMNNJYqSkavTsXJmeWMJ"
+                    }
+                ]
+            }
+        },
+        "fusxKWJHCvGnMBCnHxNyrVP": {
+            "id": "fusxKWJHCvGnMBCnHxNyrVP",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "You can also replace images, by selecting an image and then paste.",
                 "annotations": []
             }
         },
@@ -367,7 +372,10 @@ export const demo_doc = {
             "id": "BPdekRaDEUcQZqtEwPwBvyu",
             "type": "gallery",
             "layout": 1,
-            "intro": ["gallery_1_intro_text"],
+            "intro": [
+                "AHXsSZcYYwnXKYzHbDnSRRh",
+                "gallery_1_intro_text"
+            ],
             "gallery_items": [
                 "wtvHDBrCzJVgacTaJqAwNJk",
                 "TQRANBXMrzXXZTtzxAYhhZf",
@@ -376,143 +384,49 @@ export const demo_doc = {
                 "SwVVZbqrUVwkbyRmfSfCTjH",
                 "tyPwGsNvAepCesRRspqreba"
             ],
-            "outro": ["gallery_1_outro_text"]
-        },
-        "CTcJfCGYJyfkWxSPZFjxXTT": {
-            "id": "CTcJfCGYJyfkWxSPZFjxXTT",
-            "type": "text",
-            "layout": 2,
-            "content": {
-                "text": "Let's add some images",
-                "annotations": []
-            }
-        },
-        "zwWSsaYvfMcFBvxbPGrFPrB": {
-            "id": "zwWSsaYvfMcFBvxbPGrFPrB",
-            "type": "text",
-            "layout": 1,
-            "content": {
-                "text": "Open a folder on your computer that has some images.",
-                "annotations": []
-            }
-        },
-        "HuxNVmQGupqHNVMMmAdNRQM": {
-            "id": "HuxNVmQGupqHNVMMmAdNRQM",
-            "type": "strong"
-        },
-        "paWyPUKZWBUeznzFrQnYcQk": {
-            "id": "paWyPUKZWBUeznzFrQnYcQk",
-            "type": "text",
-            "layout": 1,
-            "content": {
-                "text": "Select a couple and copy them with ⌘+C.",
-                "annotations": [
-                    {
-                        "start_offset": 35,
-                        "end_offset": 38,
-                        "node_id": "HuxNVmQGupqHNVMMmAdNRQM"
-                    }
-                ]
-            }
-        },
-        "HVDESaUhzanEZJaxjHvZAWR": {
-            "id": "HVDESaUhzanEZJaxjHvZAWR",
-            "type": "text",
-            "layout": 1,
-            "content": {
-                "text": "Now put the cursor after an image in the gallery above.",
-                "annotations": []
-            }
-        },
-        "xHyVrrHSnkcHSRPBFkdayAB": {
-            "id": "xHyVrrHSnkcHSRPBFkdayAB",
-            "type": "strong"
-        },
-        "kSsctjkVHVJKWYFqMxSpgZH": {
-            "id": "kSsctjkVHVJKWYFqMxSpgZH",
-            "type": "text",
-            "layout": 1,
-            "content": {
-                "text": "Paste your images with ⌘+V.",
-                "annotations": [
-                    {
-                        "start_offset": 23,
-                        "end_offset": 26,
-                        "node_id": "xHyVrrHSnkcHSRPBFkdayAB"
-                    }
-                ]
-            }
-        },
-        "BwUdtezSTfmfuzQRSjsFsKb": {
-            "id": "BwUdtezSTfmfuzQRSjsFsKb",
-            "type": "text",
-            "layout": 1,
-            "content": {
-                "text": "You can also replace images, by selecting an image and then paste.",
-                "annotations": []
-            }
-        },
-        "fKZMgjKFZTwbcyXSERgVRty": {
-            "id": "fKZMgjKFZTwbcyXSERgVRty",
-            "type": "prose",
-            "layout": 1,
-            "content": [
-                "CTcJfCGYJyfkWxSPZFjxXTT",
-                "zwWSsaYvfMcFBvxbPGrFPrB",
-                "paWyPUKZWBUeznzFrQnYcQk",
-                "HVDESaUhzanEZJaxjHvZAWR",
-                "kSsctjkVHVJKWYFqMxSpgZH",
-                "BwUdtezSTfmfuzQRSjsFsKb"
+            "outro": [
+                "CTBYpBamZaGzTVJgMpsPxBA",
+                "fusxKWJHCvGnMBCnHxNyrVP"
             ]
         },
-        "UCheDuVYdGBsHPkZnSnuTDZ": {
-            "id": "UCheDuVYdGBsHPkZnSnuTDZ",
+        "FMmrrRxdfRzhujVmergnVxA": {
+            "id": "FMmrrRxdfRzhujVmergnVxA",
             "type": "text",
             "layout": 5,
             "content": {
-                "text": "",
+                "text": "Links",
                 "annotations": []
             }
         },
-        "PUSwJmhpEuAHaZhDDvWpAxq": {
-            "id": "PUSwJmhpEuAHaZhDDvWpAxq",
+        "AjbSGnXVcWpHBurCTrKxYSs": {
+            "id": "AjbSGnXVcWpHBurCTrKxYSs",
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "And links?",
+                "text": "How about linking to other pages?",
                 "annotations": []
             }
         },
-        "BdvrqvWrszEABerzzazNZkj": {
-            "id": "BdvrqvWrszEABerzzazNZkj",
+        "XnqUnfKXhvagBBEtfBHkCMS": {
+            "id": "XnqUnfKXhvagBBEtfBHkCMS",
             "type": "link",
             "href": "https://mutter.co",
             "target": "_blank"
         },
-        "xdrynBphfNQpngAkhqNgqeh": {
-            "id": "xdrynBphfNQpngAkhqNgqeh",
+        "mNdyyHZgUEQBdRQUQVsuryV": {
+            "id": "mNdyyHZgUEQBdRQUQVsuryV",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Below are websites Johannes Mutter and I have already launched using the technology you are just trying out:",
+                "text": "Below are websites Johannes Mutter and I have launched using the technology you are just trying out:",
                 "annotations": [
                     {
                         "start_offset": 19,
                         "end_offset": 34,
-                        "node_id": "BdvrqvWrszEABerzzazNZkj"
+                        "node_id": "XnqUnfKXhvagBBEtfBHkCMS"
                     }
                 ]
             }
-        },
-        "fjeQygAVqzwZZVHbMHyJybG": {
-            "id": "fjeQygAVqzwZZVHbMHyJybG",
-            "type": "prose",
-            "layout": 1,
-            "content": [
-                "UCheDuVYdGBsHPkZnSnuTDZ",
-                "PUSwJmhpEuAHaZhDDvWpAxq",
-                "xdrynBphfNQpngAkhqNgqeh"
-            ]
         },
         "link_collection_item_2_image": {
             "id": "link_collection_item_2_image",
@@ -607,98 +521,58 @@ export const demo_doc = {
                 "annotations": []
             }
         },
-        "link_collection_1": {
-            "id": "link_collection_1",
-            "type": "link_collection",
-            "layout": 1,
-            "link_collection_items": [
-                "link_collection_item_2",
-                "YnBCBuemwpaUxQwHrFJNgMW",
-                "AVydYvhksUBMjCSEccZJGXa"
-            ]
-        },
-        "zcWGCzGzkydKFgZmChMbjdW": {
-            "id": "zcWGCzGzkydKFgZmChMbjdW",
+        "vbjEnekAgSwRBffjUXUBCxM": {
+            "id": "vbjEnekAgSwRBffjUXUBCxM",
             "type": "strong"
         },
-        "KaPaAdxGyjaRVJZDwqsWPzt": {
-            "id": "KaPaAdxGyjaRVJZDwqsWPzt",
+        "YqbRJjNqVrWGnSyKNjHjtpq": {
+            "id": "YqbRJjNqVrWGnSyKNjHjtpq",
+            "type": "strong"
+        },
+        "zNnBwMTsCRnDkJmDKGzAPsD": {
+            "id": "zNnBwMTsCRnDkJmDKGzAPsD",
+            "type": "strong"
+        },
+        "fDzAKPaVuZXPrmxUwktkSzU": {
+            "id": "fDzAKPaVuZXPrmxUwktkSzU",
+            "type": "strong"
+        },
+        "bCJcAyERSdbjXEPNbPQEpmg": {
+            "id": "bCJcAyERSdbjXEPNbPQEpmg",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Click on one of the cards above.",
+                "text": "Click on one of the cards above. It will show a little link preview at the bottom of the card. Click edit or press Cmd+K to bring up the link editor. Change the url you want to link to and press Enter.",
                 "annotations": [
                     {
                         "start_offset": 0,
                         "end_offset": 5,
-                        "node_id": "zcWGCzGzkydKFgZmChMbjdW"
-                    }
-                ]
-            }
-        },
-        "xaHApWhVyFxgVPFwksdcZgz": {
-            "id": "xaHApWhVyFxgVPFwksdcZgz",
-            "type": "strong"
-        },
-        "uKPwpfCeeqamEwehApYsrYk": {
-            "id": "uKPwpfCeeqamEwehApYsrYk",
-            "type": "text",
-            "layout": 1,
-            "content": {
-                "text": "It will show a little link preview at the bottom of the card.",
-                "annotations": [
+                        "node_id": "vbjEnekAgSwRBffjUXUBCxM"
+                    },
                     {
-                        "start_offset": 22,
-                        "end_offset": 34,
-                        "node_id": "xaHApWhVyFxgVPFwksdcZgz"
-                    }
-                ]
-            }
-        },
-        "YTTzVWphJSPZzxMdHtSwhwU": {
-            "id": "YTTzVWphJSPZzxMdHtSwhwU",
-            "type": "strong"
-        },
-        "prAcjhEnaTxGFMcXPqEQspc": {
-            "id": "prAcjhEnaTxGFMcXPqEQspc",
-            "type": "text",
-            "layout": 1,
-            "content": {
-                "text": "Click edit or press Cmd+K to bring up the link editor.",
-                "annotations": [
+                        "start_offset": 55,
+                        "end_offset": 67,
+                        "node_id": "YqbRJjNqVrWGnSyKNjHjtpq"
+                    },
                     {
-                        "start_offset": 20,
-                        "end_offset": 25,
-                        "node_id": "YTTzVWphJSPZzxMdHtSwhwU"
-                    }
-                ]
-            }
-        },
-        "wmJnPFjPEubKbkERrrtRcNT": {
-            "id": "wmJnPFjPEubKbkERrrtRcNT",
-            "type": "strong"
-        },
-        "paragraph_5": {
-            "id": "paragraph_5",
-            "type": "text",
-            "layout": 1,
-            "content": {
-                "text": "Change the url you want to link to and press Enter.",
-                "annotations": [
+                        "start_offset": 115,
+                        "end_offset": 120,
+                        "node_id": "zNnBwMTsCRnDkJmDKGzAPsD"
+                    },
                     {
-                        "start_offset": 45,
-                        "end_offset": 50,
-                        "node_id": "wmJnPFjPEubKbkERrrtRcNT"
+                        "start_offset": 195,
+                        "end_offset": 200,
+                        "node_id": "fDzAKPaVuZXPrmxUwktkSzU"
                     }
                 ]
             }
         },
-        "YPBsfxSTJtDWtsDWWuQFkxD": {
-            "id": "YPBsfxSTJtDWtsDWWuQFkxD",
+        "RNEtTPYtgVXzkqRsaJxVyDb": {
+            "id": "RNEtTPYtgVXzkqRsaJxVyDb",
             "type": "strong"
         },
-        "HMvmSRXETenwQqewaXnhdsj": {
-            "id": "HMvmSRXETenwQqewaXnhdsj",
+        "eHMzaBPMwqEkvrZFvRCsRKB": {
+            "id": "eHMzaBPMwqEkvrZFvRCsRKB",
             "type": "text",
             "layout": 1,
             "content": {
@@ -707,21 +581,28 @@ export const demo_doc = {
                     {
                         "start_offset": 45,
                         "end_offset": 50,
-                        "node_id": "YPBsfxSTJtDWtsDWWuQFkxD"
+                        "node_id": "RNEtTPYtgVXzkqRsaJxVyDb"
                     }
                 ]
             }
         },
-        "prose_3": {
-            "id": "prose_3",
-            "type": "prose",
+        "link_collection_1": {
+            "id": "link_collection_1",
+            "type": "link_collection",
             "layout": 1,
-            "content": [
-                "KaPaAdxGyjaRVJZDwqsWPzt",
-                "uKPwpfCeeqamEwehApYsrYk",
-                "prAcjhEnaTxGFMcXPqEQspc",
-                "paragraph_5",
-                "HMvmSRXETenwQqewaXnhdsj"
+            "intro": [
+                "FMmrrRxdfRzhujVmergnVxA",
+                "AjbSGnXVcWpHBurCTrKxYSs",
+                "mNdyyHZgUEQBdRQUQVsuryV"
+            ],
+            "link_collection_items": [
+                "link_collection_item_2",
+                "YnBCBuemwpaUxQwHrFJNgMW",
+                "AVydYvhksUBMjCSEccZJGXa"
+            ],
+            "outro": [
+                "bCJcAyERSdbjXEPNbPQEpmg",
+                "eHMzaBPMwqEkvrZFvRCsRKB"
             ]
         },
         "hqrrTdEbTPaqzEcYMczhBZb": {
@@ -830,7 +711,7 @@ export const demo_doc = {
             "id": "nav_item_2",
             "type": "nav_item",
             "layout": 1,
-            "href": "#fKZMgjKFZTwbcyXSERgVRty",
+            "href": "#BPdekRaDEUcQZqtEwPwBvyu",
             "label": {
                 "text": "Images",
                 "annotations": []
@@ -841,7 +722,7 @@ export const demo_doc = {
             "id": "nav_item_4",
             "type": "nav_item",
             "layout": 1,
-            "href": "#fjeQygAVqzwZZVHbMHyJybG",
+            "href": "#link_collection_1",
             "label": {
                 "text": "Links",
                 "annotations": []
@@ -989,10 +870,7 @@ export const demo_doc = {
                 "feature_1",
                 "prose_1",
                 "BPdekRaDEUcQZqtEwPwBvyu",
-                "fKZMgjKFZTwbcyXSERgVRty",
-                "fjeQygAVqzwZZVHbMHyJybG",
                 "link_collection_1",
-                "prose_3",
                 "YTMHBcPkYXJMRUnuSAhrTDE",
                 "UBNYngEBJYtDWgeabtDJqWW"
             ],

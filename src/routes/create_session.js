@@ -261,9 +261,19 @@ const document_schema = define_document_schema({
 		kind: 'block',
 		properties: {
 			layout: { type: 'integer', default: 1 },
+			intro: {
+				type: 'node_array',
+				node_types: ['text'],
+				default_node_type: 'text'
+			},
 			link_collection_items: {
 				type: 'node_array',
 				node_types: ['link_collection_item']
+			},
+			outro: {
+				type: 'node_array',
+				node_types: ['text'],
+				default_node_type: 'text'
 			}
 		}
 	},
@@ -791,6 +801,16 @@ const session_config = {
 		},
 
 		link_collection: function (tr) {
+			// Create intro text
+			const intro_text = {
+				id: nanoid(),
+				type: 'text',
+				layout: 2,
+				content: { text: '', annotations: [] }
+			};
+			tr.create(intro_text);
+
+			// Create link collection items
 			const new_link_collection_items = [];
 			for (let i = 0; i < 3; i++) {
 				const image_id = nanoid();
@@ -820,11 +840,23 @@ const session_config = {
 				tr.create(link_collection_item);
 				new_link_collection_items.push(link_collection_item.id);
 			}
+
+			// Create outro text
+			const outro_text = {
+				id: nanoid(),
+				type: 'text',
+				layout: 1,
+				content: { text: '', annotations: [] }
+			};
+			tr.create(outro_text);
+
 			const new_link_collection = {
 				id: nanoid(),
 				type: 'link_collection',
 				layout: 1,
-				link_collection_items: new_link_collection_items
+				intro: [intro_text.id],
+				link_collection_items: new_link_collection_items,
+				outro: [outro_text.id]
 			};
 			tr.create(new_link_collection);
 			tr.insert_nodes([new_link_collection.id]);
