@@ -65,16 +65,17 @@
 
 <!-- Like layout 1 but flipped horizontally -->
 {#snippet layout_2()}
-	<!-- Limiter -->
 	<div class="{TW_LIMITER}">
-		<div class="grid grid-cols-2 border-r border-l border-(--foreground-subtle)">
-			<div class="border-r p-15 border-(--foreground-subtle)">
+		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--foreground-subtle)">
+			<div class="{TW_PAGE_PADDING} md:border-r border-(--foreground-subtle) max-md:order-2">
 				{@render image(3 / 4)}
 			</div>
-			<div class="flex flex-col p-15">
-				{@render intro()}
-				<div class="flex-1" contenteditable="false"></div>
-				{@render outro()}
+			<div class="flex flex-col {TW_PAGE_PADDING} pb-0 max-md:order-1">
+				<div class="">{@render intro()}</div>
+				<div class="flex-1" contenteditable="false">&ZeroWidthSpace;</div>
+				<div class="">
+					{@render outro()}
+				</div>
 			</div>
 		</div>
 	</div>
