@@ -99,16 +99,20 @@
 	</div>
 {/snippet}
 
-<!-- Like layout 2 but, but image stretches to edges -->
+<!-- Like layout 3 but flipped (image left, text right, full bleed) -->
 {#snippet layout_4()}
-	<div class="mx-auto grid max-w-7xl grid-cols-2">
-		<div class="flex flex-col p-15">
-			{@render intro()}
-			<div class="flex-1" contenteditable="false"></div>
-			{@render outro()}
-		</div>
-		<div>
-			{@render image(3 / 4)}
+	<div class="{TW_LIMITER}">
+		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--foreground-subtle)">
+			<div class="md:border-r border-(--foreground-subtle) max-md:order-2">
+				{@render image(3 / 4)}
+			</div>
+			<div class="flex flex-col {TW_PAGE_PADDING} max-md:order-1">
+				<div class="">{@render intro()}</div>
+				<div class="flex-1" contenteditable="false">&ZeroWidthSpace;</div>
+				<div class="">
+					{@render outro()}
+				</div>
+			</div>
 		</div>
 	</div>
 {/snippet}
