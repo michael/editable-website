@@ -50,14 +50,14 @@
 {#snippet intro()}
 	{@const intro_padding = has_intro ? 'py-5 sm:py-7 md:py-10 lg:py-14' : 'py-2.5 sm:py-3.5 md:py-5 lg:py-7'}
 	<div class="{TW_PAGE_PADDING_X} max-w-4xl lg:text-lg {intro_padding}">
-		<NodeArrayProperty class="ew-intro space-y-8 {heading_spacing}" path={[...path, 'intro']} />
+		<NodeArrayProperty class="ew-intro space-y-5 md:space-y-8 {heading_spacing}" path={[...path, 'intro']} />
 	</div>
 {/snippet}
 
 {#snippet outro()}
-		{@const outro_padding = has_outro ? 'py-5 sm:py-7 md:py-10 lg:py-14' : 'py-2.5 sm:py-3.5 md:py-5 lg:py-7'}
+		{@const outro_padding = has_outro ? 'pt-5 sm:pt-7 pb-10 sm:pb-12 md:py-10 lg:py-14' : 'pt-2.5 sm:pt-3.5 pb-10 sm:pb-12 md:py-10 lg:py-14'}
 		<div class="{TW_PAGE_PADDING_X} max-w-4xl lg:text-lg {outro_padding}">
-			<NodeArrayProperty class="ew-outro space-y-8 {heading_spacing}" path={[...path, 'outro']} />
+			<NodeArrayProperty class="ew-outro space-y-5 md:space-y-8 {heading_spacing}" path={[...path, 'outro']} />
 		</div>
 {/snippet}
 
