@@ -459,7 +459,7 @@ const session_config = {
 		prose: 3,
 		text: 5,
 		figure: 1,
-		feature: 6,
+		feature: 4,
 		gallery: 4,
 		nav_item: 2,
 		button: 2,

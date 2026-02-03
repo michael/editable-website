@@ -117,35 +117,7 @@
 	</div>
 {/snippet}
 
-<!-- Like layout 1 but title (small) + description aligned at top -->
-{#snippet layout_5()}
-	<div class="mx-auto grid max-w-7xl grid-cols-2">
-		<div class="flex flex-col p-15">
-			<div class="flex-1" contenteditable="false"></div>
-			{@render intro()}
-			<div class="pt-4">{@render outro()}</div>
-		</div>
-		<div class="p-15">
-			{@render image(3 / 4)}
-		</div>
-	</div>
-{/snippet}
-
-<!-- Like layout 2 but title (small) + description aligned at bottom -->
-{#snippet layout_6()}
-	<div class="mx-auto grid max-w-7xl grid-cols-2">
-		<div class="p-15">
-			{@render image(3 / 4)}
-		</div>
-		<div class="flex flex-col p-15">
-			{@render intro()}
-			<div class="pt-4">{@render outro()}</div>
-			<div class="flex-1" contenteditable="false"></div>
-		</div>
-	</div>
-{/snippet}
-
 <Node class="ew-feature lg:text-lg border-b border-(--foreground-subtle)" {path}>
-	{@const layouts = [layout_1, layout_2, layout_3, layout_4, layout_5, layout_6]}
+	{@const layouts = [layout_1, layout_2, layout_3, layout_4]}
 	{@render layouts[node.layout - 1]()}
 </Node>
