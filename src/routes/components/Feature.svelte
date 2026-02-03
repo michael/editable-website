@@ -40,7 +40,7 @@
 
 {#snippet outro()}
 	<NodeArrayProperty
-		class="ew-feature-outro space-y-8"
+		class="ew-feature-outro space-y-5 md:space-y-8"
 		path={[...path, 'outro']}
 	/>
 {/snippet}
