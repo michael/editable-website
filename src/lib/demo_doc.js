@@ -733,7 +733,7 @@ export const demo_doc = {
             "id": "HGXFbpfvSREjXTrvUnMpkWu",
             "type": "nav_item",
             "layout": 2,
-            "href": "#RwhuaDtvrdCHEEKHupsJJxa",
+            "href": "#UBNYngEBJYtDWgeabtDJqWW",
             "target": "_self",
             "label": {
                 "text": "Sign up",
