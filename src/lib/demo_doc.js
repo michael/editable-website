@@ -3,6 +3,10 @@
 export const demo_doc = {
     "document_id": "page_1",
     "nodes": {
+        "fknRwUGjuUxkHGnnFcQzYBv": {
+            "id": "fknRwUGjuUxkHGnnFcQzYBv",
+            "type": "strong"
+        },
         "hero_1": {
             "id": "hero_1",
             "type": "hero",
@@ -12,8 +16,14 @@ export const demo_doc = {
                 "annotations": []
             },
             "description": {
-                "text": "I'll show you why. All you need is a computer with a physical keyboard. Are you ready?",
-                "annotations": []
+                "text": "I'll show you why. All you need is a computer with a physical keyboard. Ready?",
+                "annotations": [
+                    {
+                        "start_offset": 53,
+                        "end_offset": 70,
+                        "node_id": "fknRwUGjuUxkHGnnFcQzYBv"
+                    }
+                ]
             },
             "buttons": []
         },
@@ -42,17 +52,26 @@ export const demo_doc = {
             "id": "vAhBcybjFJsXPkmRQrwWPaT",
             "type": "strong"
         },
+        "VgheaqwXaMzmyvuaJySbPvC": {
+            "id": "VgheaqwXaMzmyvuaJySbPvC",
+            "type": "strong"
+        },
         "feature_1_outro_paragraph": {
             "id": "feature_1_outro_paragraph",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Or Ctrl+E if you are on Windows or Linux. Isn't that cool? You can move the cursor with the arrow keys or make selections with the mouse. You can edit anything you see on the screen.",
+                "text": "Or Ctrl+E if you are on Windows or Linux. You can move the cursor with the arrow keys or make selections with the mouse. You can edit anything you see on the screen.",
                 "annotations": [
                     {
                         "start_offset": 3,
                         "end_offset": 9,
                         "node_id": "vAhBcybjFJsXPkmRQrwWPaT"
+                    },
+                    {
+                        "start_offset": 129,
+                        "end_offset": 142,
+                        "node_id": "VgheaqwXaMzmyvuaJySbPvC"
                     }
                 ]
             }
@@ -190,15 +209,6 @@ export const demo_doc = {
                 ]
             }
         },
-        "EFajkFtKyVkZAhavjBvDYjD": {
-            "id": "EFajkFtKyVkZAhavjBvDYjD",
-            "type": "text",
-            "layout": 1,
-            "content": {
-                "text": "Wow, you're editing web pages like a pro!",
-                "annotations": []
-            }
-        },
         "prose_1": {
             "id": "prose_1",
             "type": "prose",
@@ -207,8 +217,7 @@ export const demo_doc = {
                 "HWcSGEAsZyfeQFjgvKrMpZc",
                 "heading_1",
                 "paragraph_1",
-                "bnsnQEmqhPWjFTpuBHFeFZq",
-                "EFajkFtKyVkZAhavjBvDYjD"
+                "bnsnQEmqhPWjFTpuBHFeFZq"
             ]
         },
         "AHXsSZcYYwnXKYzHbDnSRRh": {
@@ -686,6 +695,14 @@ export const demo_doc = {
                 "grqHKByVFQSDZhumJjqvPxE"
             ]
         },
+        "PbgBggKGaprkCMjUtmnNDXJ": {
+            "id": "PbgBggKGaprkCMjUtmnNDXJ",
+            "type": "strong"
+        },
+        "HCwAqVNTtuCzcJxYAyuSbPR": {
+            "id": "HCwAqVNTtuCzcJxYAyuSbPR",
+            "type": "strong"
+        },
         "PvpNcGKnqTTBbvbRZeDUYSN": {
             "id": "PvpNcGKnqTTBbvbRZeDUYSN",
             "type": "button",
@@ -706,7 +723,18 @@ export const demo_doc = {
             },
             "description": {
                 "text": "Sign up to be notified when Editable Website is ready. I’ll invite the first few sign-ups to a face-to-face conversation.",
-                "annotations": []
+                "annotations": [
+                    {
+                        "start_offset": 11,
+                        "end_offset": 22,
+                        "node_id": "PbgBggKGaprkCMjUtmnNDXJ"
+                    },
+                    {
+                        "start_offset": 95,
+                        "end_offset": 120,
+                        "node_id": "HCwAqVNTtuCzcJxYAyuSbPR"
+                    }
+                ]
             },
             "buttons": [
                 "PvpNcGKnqTTBbvbRZeDUYSN"
