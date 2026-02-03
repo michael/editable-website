@@ -81,16 +81,20 @@
 	</div>
 {/snippet}
 
-<!-- Like layout 1 but image stretches to edges -->
+<!-- Like layout 1 but image stretches to edges (full bleed) -->
 {#snippet layout_3()}
-	<div class="mx-auto grid max-w-7xl grid-cols-2">
-		<div>
-			{@render image(3 / 4)}
-		</div>
-		<div class="flex flex-col p-15">
-			{@render intro()}
-			<div class="flex-1" contenteditable="false"></div>
-			{@render outro()}
+	<div class="{TW_LIMITER}">
+		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--foreground-subtle)">
+			<div class="flex flex-col {TW_PAGE_PADDING} pb-0">
+				<div class="">{@render intro()}</div>
+				<div class="flex-1" contenteditable="false">&ZeroWidthSpace;</div>
+				<div class="">
+					{@render outro()}
+				</div>
+			</div>
+			<div class="md:border-l border-(--foreground-subtle)">
+				{@render image(3 / 4)}
+			</div>
 		</div>
 	</div>
 {/snippet}
