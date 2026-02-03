@@ -729,7 +729,7 @@ export const demo_doc = {
             "id": "nav_item_1",
             "type": "nav_item",
             "layout": 1,
-            "href": "#prose_1",
+            "href": "/#prose_1",
             "label": {
                 "text": "Editing",
                 "annotations": []
@@ -740,7 +740,7 @@ export const demo_doc = {
             "id": "nav_item_2",
             "type": "nav_item",
             "layout": 1,
-            "href": "#BPdekRaDEUcQZqtEwPwBvyu",
+            "href": "/#BPdekRaDEUcQZqtEwPwBvyu",
             "label": {
                 "text": "Images",
                 "annotations": []
@@ -751,7 +751,7 @@ export const demo_doc = {
             "id": "nav_item_4",
             "type": "nav_item",
             "layout": 1,
-            "href": "#link_collection_1",
+            "href": "/#link_collection_1",
             "label": {
                 "text": "Links",
                 "annotations": []
@@ -792,26 +792,48 @@ export const demo_doc = {
             "focal_point_y": 0.5,
             "object_fit": "cover"
         },
-        "footer_link_1_1": {
-            "id": "footer_link_1_1",
+        "WVvBSREFCThNYcpgvfUnWkF": {
+            "id": "WVvBSREFCThNYcpgvfUnWkF",
             "type": "footer_link",
-            "href": "https://github.com/michael/editable-website?tab=readme-ov-file#getting-started",
+            "href": "/#prose_1",
+            "target": "_self",
             "label": {
-                "text": "Get started",
+                "text": "Editing",
                 "annotations": []
-            },
-            "target": "_blank"
+            }
         },
-        "footer_column_1": {
-            "id": "footer_column_1",
-            "type": "footer_link_column",
+        "eDAnnFjNdZpzYMtpSqReBxf": {
+            "id": "eDAnnFjNdZpzYMtpSqReBxf",
+            "type": "footer_link",
+            "href": "/#BPdekRaDEUcQZqtEwPwBvyu",
+            "target": "_self",
             "label": {
-                "text": "Product",
+                "text": "Images",
                 "annotations": []
-            },
+            }
+        },
+        "GwPeRFYtAyrcCMfpuyzdWZp": {
+            "id": "GwPeRFYtAyrcCMfpuyzdWZp",
+            "type": "footer_link",
+            "href": "/#link_collection_1",
+            "target": "_self",
+            "label": {
+                "text": "Links",
+                "annotations": []
+            }
+        },
+        "fcSSWQUTYajjknPChgGsPZz": {
+            "id": "fcSSWQUTYajjknPChgGsPZz",
+            "type": "footer_link_column",
             "footer_links": [
-                "footer_link_1_1"
-            ]
+                "WVvBSREFCThNYcpgvfUnWkF",
+                "eDAnnFjNdZpzYMtpSqReBxf",
+                "GwPeRFYtAyrcCMfpuyzdWZp"
+            ],
+            "label": {
+                "text": "Demo",
+                "annotations": []
+            }
         },
         "uavzfSnSpTRrHSfJpbfvpsh": {
             "id": "uavzfSnSpTRrHSfJpbfvpsh",
@@ -886,7 +908,7 @@ export const demo_doc = {
                 "annotations": []
             },
             "footer_link_columns": [
-                "footer_column_1",
+                "fcSSWQUTYajjknPChgGsPZz",
                 "footer_column_2",
                 "footer_column_3"
             ]
