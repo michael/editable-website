@@ -85,7 +85,7 @@
 {#snippet layout_3()}
 	<div class="{TW_LIMITER}">
 		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--foreground-subtle)">
-			<div class="flex flex-col {TW_PAGE_PADDING} pb-0">
+			<div class="flex flex-col {TW_PAGE_PADDING}">
 				<div class="">{@render intro()}</div>
 				<div class="flex-1" contenteditable="false">&ZeroWidthSpace;</div>
 				<div class="">
