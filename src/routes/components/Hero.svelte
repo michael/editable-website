@@ -22,7 +22,7 @@
 				/>
 				<AnnotatedTextProperty
 					tag="p"
-					class="mt-6 text-lg md:text-xl lg:text-2xl text-balance font-light"
+					class="mt-6 text-balance"
 					path={[...path, 'description']}
 					placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
 				/>
@@ -47,7 +47,7 @@
 				/>
 				<AnnotatedTextProperty
 					tag="p"
-					class="mt-6 text-lg md:text-xl lg:text-2xl text-balance font-light"
+					class="mt-6 text-balance"
 					path={[...path, 'description']}
 					placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
 				/>
@@ -72,7 +72,7 @@
 				/>
 				<AnnotatedTextProperty
 					tag="p"
-					class="mt-6 text-lg md:text-xl lg:text-2xl text-balance font-light"
+					class="mt-6 text-balance"
 					path={[...path, 'description']}
 					placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
 				/>
@@ -99,7 +99,7 @@
 					/>
 					<AnnotatedTextProperty
 						tag="p"
-						class="mt-6 text-lg md:text-xl lg:text-2xl text-balance font-light"
+						class="mt-6 text-balance"
 						path={[...path, 'description']}
 						placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
 					/>
@@ -113,7 +113,7 @@
 	</div>
 {/snippet}
 
-<Node class="ew-hero border-b border-(--foreground-subtle)" {path}>
+<Node class="ew-hero lg:text-lg border-b border-(--foreground-subtle)" {path}>
 	{@const layouts = [layout_1, layout_2, layout_3, layout_4]}
 	{@render layouts[layout - 1]()}
 </Node>
