@@ -78,7 +78,7 @@
 	<!-- Mobile menu overlay (read-only, visible when open, hidden on desktop) -->
 	{#if mobile_menu_open}
 		<div
-			class="md:hidden fixed inset-0 bg-(--background) z-50"
+			class="md:hidden fixed inset-0 bg-(--background-accent)/80 backdrop-blur-sm z-50"
 			contenteditable="false"
 			transition:slide={{ duration: 200 }}
 		>
@@ -95,20 +95,18 @@
 
 			<!-- Menu items -->
 			<nav class="flex flex-col pt-16 pb-5 px-3">
-				<div class="flex flex-col gap-px bg-(--foreground-subtle)">
 				{#each nav_items as _node_id, index (index)}
 					{@const item = svedit.session.get([...path, 'nav_items', index])}
 					<a
 						href={item.href || '#'}
 						target={item.target}
-						class="text-3xl font-semibold py-2 px-3 sm:px-5 bg-(--background)"
+						class="text-3xl font-light text-(--accent) py-2 px-3 sm:px-5"
 						onclick={close_mobile_menu}
 					>
 						{item.label?.text || ''}
 					</a>
 				{/each}
-			</div>
-		</nav>
+			</nav>
 		</div>
 	{/if}
 	</div>
