@@ -154,12 +154,12 @@ const document_schema = define_document_schema({
 			layout: { type: 'integer', default: 1 },
 			title: {
 				type: 'annotated_text',
-				node_types: [],
+				node_types: ALL_ANNOTATIONS,
 				allow_newlines: false
 			},
 			description: {
 				type: 'annotated_text',
-				node_types: [],
+				node_types: ALL_ANNOTATIONS,
 				allow_newlines: false
 			},
 			buttons: {
