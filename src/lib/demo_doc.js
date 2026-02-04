@@ -153,67 +153,48 @@ export const demo_doc = {
                 "annotations": []
             }
         },
-        "nEMtsBhedGGXSTRtThSrbUa": {
-            "id": "nEMtsBhedGGXSTRtThSrbUa",
-            "type": "strong"
-        },
         "uNNkhjBKaWDxGAwDDzeWmpz": {
             "id": "uNNkhjBKaWDxGAwDDzeWmpz",
             "type": "strong"
+        },
+        "CpCARDQGFNdNtTqtJmGUgfU": {
+            "id": "CpCARDQGFNdNtTqtJmGUgfU",
+            "type": "strong"
+        },
+        "uQYweZvzfBPuDJgdZSEhwEd": {
+            "id": "uQYweZvzfBPuDJgdZSEhwEd",
+            "type": "highlight"
+        },
+        "BZgUADjeHvqnMuTWrMRpneM": {
+            "id": "BZgUADjeHvqnMuTWrMRpneM",
+            "type": "highlight"
         },
         "paragraph_1": {
             "id": "paragraph_1",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Click the little dashed horizontal gap after this section. You should see a big blinking cursor. ",
+                "text": "Click the dashed horizontal gap after this section. You get a blinking cursor. Press Enter. This creates a new block. While the whole block is still selected press Ctrl+Shift+Down to select the next block type. Many blocks support multiple layouts. Switch them with Ctrl+Shift+Right.",
                 "annotations": [
                     {
-                        "start_offset": 76,
-                        "end_offset": 95,
-                        "node_id": "nEMtsBhedGGXSTRtThSrbUa"
-                    },
-                    {
-                        "start_offset": 17,
-                        "end_offset": 38,
+                        "start_offset": 10,
+                        "end_offset": 31,
                         "node_id": "uNNkhjBKaWDxGAwDDzeWmpz"
-                    }
-                ]
-            }
-        },
-        "CpCARDQGFNdNtTqtJmGUgfU": {
-            "id": "CpCARDQGFNdNtTqtJmGUgfU",
-            "type": "strong"
-        },
-        "tEvwCCrEaGqPWeStQxZZrGQ": {
-            "id": "tEvwCCrEaGqPWeStQxZZrGQ",
-            "type": "strong"
-        },
-        "nZKHXbhVMgzydvcHWkjvuHp": {
-            "id": "nZKHXbhVMgzydvcHWkjvuHp",
-            "type": "strong"
-        },
-        "FfuaXJcFQGwfTNMuzXWCyUr": {
-            "id": "FfuaXJcFQGwfTNMuzXWCyUr",
-            "type": "text",
-            "layout": 1,
-            "content": {
-                "text": "Press Enter. This creates a new block. While the whole block is still selected press Ctrl+Alt+Down to select the next block type. Many blocks support multiple layouts. Switch them with Ctrl+Alt+Right.",
-                "annotations": [
-                    {
-                        "start_offset": 6,
-                        "end_offset": 11,
-                        "node_id": "CpCARDQGFNdNtTqtJmGUgfU"
                     },
                     {
                         "start_offset": 85,
-                        "end_offset": 98,
-                        "node_id": "tEvwCCrEaGqPWeStQxZZrGQ"
+                        "end_offset": 90,
+                        "node_id": "CpCARDQGFNdNtTqtJmGUgfU"
                     },
                     {
-                        "start_offset": 185,
-                        "end_offset": 199,
-                        "node_id": "nZKHXbhVMgzydvcHWkjvuHp"
+                        "start_offset": 164,
+                        "end_offset": 179,
+                        "node_id": "uQYweZvzfBPuDJgdZSEhwEd"
+                    },
+                    {
+                        "start_offset": 266,
+                        "end_offset": 282,
+                        "node_id": "BZgUADjeHvqnMuTWrMRpneM"
                     }
                 ]
             }
@@ -291,7 +272,6 @@ export const demo_doc = {
                 "HWcSGEAsZyfeQFjgvKrMpZc",
                 "heading_1",
                 "paragraph_1",
-                "FfuaXJcFQGwfTNMuzXWCyUr",
                 "dwMqDGUwHVvVkdzahPEWDuR",
                 "uNprzMQcMQztTppEeTKssBd"
             ]
