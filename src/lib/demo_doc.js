@@ -149,7 +149,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Want to add new content?",
+                "text": "Add, select, and move blocks",
                 "annotations": []
             }
         },
@@ -157,8 +157,8 @@ export const demo_doc = {
             "id": "nEMtsBhedGGXSTRtThSrbUa",
             "type": "strong"
         },
-        "CpCARDQGFNdNtTqtJmGUgfU": {
-            "id": "CpCARDQGFNdNtTqtJmGUgfU",
+        "uNNkhjBKaWDxGAwDDzeWmpz": {
+            "id": "uNNkhjBKaWDxGAwDDzeWmpz",
             "type": "strong"
         },
         "paragraph_1": {
@@ -166,7 +166,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Click the little dashed horizontal gap after this section. You should see a big blinking cursor spanning the window from left to right. Press Enter. This creates a new block.",
+                "text": "Click the little dashed horizontal gap after this section. You should see a big blinking cursor. ",
                 "annotations": [
                     {
                         "start_offset": 76,
@@ -174,12 +174,16 @@ export const demo_doc = {
                         "node_id": "nEMtsBhedGGXSTRtThSrbUa"
                     },
                     {
-                        "start_offset": 142,
-                        "end_offset": 147,
-                        "node_id": "CpCARDQGFNdNtTqtJmGUgfU"
+                        "start_offset": 17,
+                        "end_offset": 38,
+                        "node_id": "uNNkhjBKaWDxGAwDDzeWmpz"
                     }
                 ]
             }
+        },
+        "CpCARDQGFNdNtTqtJmGUgfU": {
+            "id": "CpCARDQGFNdNtTqtJmGUgfU",
+            "type": "strong"
         },
         "tEvwCCrEaGqPWeStQxZZrGQ": {
             "id": "tEvwCCrEaGqPWeStQxZZrGQ",
@@ -189,22 +193,92 @@ export const demo_doc = {
             "id": "nZKHXbhVMgzydvcHWkjvuHp",
             "type": "strong"
         },
-        "bnsnQEmqhPWjFTpuBHFeFZq": {
-            "id": "bnsnQEmqhPWjFTpuBHFeFZq",
+        "FfuaXJcFQGwfTNMuzXWCyUr": {
+            "id": "FfuaXJcFQGwfTNMuzXWCyUr",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Press Ctrl+Alt+Down to select the next block type. Most blocks support multiple layouts. Switch them with Ctrl+Alt+Right.",
+                "text": "Press Enter. This creates a new block. While the whole block is still selected press Ctrl+Alt+Down to select the next block type. Many blocks support multiple layouts. Switch them with Ctrl+Alt+Right.",
                 "annotations": [
                     {
                         "start_offset": 6,
-                        "end_offset": 19,
+                        "end_offset": 11,
+                        "node_id": "CpCARDQGFNdNtTqtJmGUgfU"
+                    },
+                    {
+                        "start_offset": 85,
+                        "end_offset": 98,
                         "node_id": "tEvwCCrEaGqPWeStQxZZrGQ"
                     },
                     {
-                        "start_offset": 106,
-                        "end_offset": 120,
+                        "start_offset": 185,
+                        "end_offset": 199,
                         "node_id": "nZKHXbhVMgzydvcHWkjvuHp"
+                    }
+                ]
+            }
+        },
+        "fgdUqhtVCdcEbjHwKmKCgqe": {
+            "id": "fgdUqhtVCdcEbjHwKmKCgqe",
+            "type": "strong"
+        },
+        "GxDRTsjzaqFJfNRcENDCqTU": {
+            "id": "GxDRTsjzaqFJfNRcENDCqTU",
+            "type": "strong"
+        },
+        "RQJJwzbjfRzeePxsnUpkebc": {
+            "id": "RQJJwzbjfRzeePxsnUpkebc",
+            "type": "strong"
+        },
+        "dwMqDGUwHVvVkdzahPEWDuR": {
+            "id": "dwMqDGUwHVvVkdzahPEWDuR",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "Select multiple whole blocks by dragging from a top-level block gap. Press Cmd+X to cut these sections. Now select another top-level gap and paste them with Cmd+V. This works everywhere, including the top-level nav and the footer links.",
+                "annotations": [
+                    {
+                        "start_offset": 75,
+                        "end_offset": 80,
+                        "node_id": "fgdUqhtVCdcEbjHwKmKCgqe"
+                    },
+                    {
+                        "start_offset": 157,
+                        "end_offset": 162,
+                        "node_id": "GxDRTsjzaqFJfNRcENDCqTU"
+                    },
+                    {
+                        "start_offset": 32,
+                        "end_offset": 67,
+                        "node_id": "RQJJwzbjfRzeePxsnUpkebc"
+                    }
+                ]
+            }
+        },
+        "KGdTbszPsbFNkrPMbGSJwpX": {
+            "id": "KGdTbszPsbFNkrPMbGSJwpX",
+            "type": "strong"
+        },
+        "gRAyWEXjtgjxsZcFPTFNwTw": {
+            "id": "gRAyWEXjtgjxsZcFPTFNwTw",
+            "type": "strong"
+        },
+        "uNprzMQcMQztTppEeTKssBd": {
+            "id": "uNprzMQcMQztTppEeTKssBd",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "Pro tip: To select the enclosing block, press ESC multiple times. Useful when you currently edit text, but want to change the layout at a higher level.",
+                "annotations": [
+                    {
+                        "start_offset": 46,
+                        "end_offset": 49,
+                        "node_id": "KGdTbszPsbFNkrPMbGSJwpX"
+                    },
+                    {
+                        "start_offset": 0,
+                        "end_offset": 8,
+                        "node_id": "gRAyWEXjtgjxsZcFPTFNwTw"
                     }
                 ]
             }
@@ -217,7 +291,9 @@ export const demo_doc = {
                 "HWcSGEAsZyfeQFjgvKrMpZc",
                 "heading_1",
                 "paragraph_1",
-                "bnsnQEmqhPWjFTpuBHFeFZq"
+                "FfuaXJcFQGwfTNMuzXWCyUr",
+                "dwMqDGUwHVvVkdzahPEWDuR",
+                "uNprzMQcMQztTppEeTKssBd"
             ]
         },
         "AHXsSZcYYwnXKYzHbDnSRRh": {
@@ -234,7 +310,44 @@ export const demo_doc = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Let's add some images",
+                "text": "Add images to a gallery",
+                "annotations": []
+            }
+        },
+        "MqTMgFwNJjMjvwQRbBsRbXB": {
+            "id": "MqTMgFwNJjMjvwQRbBsRbXB",
+            "type": "strong"
+        },
+        "pmWcAFvaSjAXwBRUHCDQThJ": {
+            "id": "pmWcAFvaSjAXwBRUHCDQThJ",
+            "type": "strong"
+        },
+        "DpajqNKpCCFFqZHtbttRRwM": {
+            "id": "DpajqNKpCCFFqZHtbttRRwM",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "Open a folder on your computer that has some images. Select a couple and copy them with ⌘+C. Now put the cursor after an image in the gallery below. Paste your images with ⌘+V.",
+                "annotations": [
+                    {
+                        "start_offset": 88,
+                        "end_offset": 91,
+                        "node_id": "MqTMgFwNJjMjvwQRbBsRbXB"
+                    },
+                    {
+                        "start_offset": 172,
+                        "end_offset": 175,
+                        "node_id": "pmWcAFvaSjAXwBRUHCDQThJ"
+                    }
+                ]
+            }
+        },
+        "SkRzjYjZtzJYCDksZKAZFZs": {
+            "id": "SkRzjYjZtzJYCDksZKAZFZs",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "You can also replace images, by selecting an image and then paste.",
                 "annotations": []
             }
         },
@@ -340,50 +453,15 @@ export const demo_doc = {
             "type": "gallery_item",
             "image": "asBnEpdtbyJQCEvNWuyADWR"
         },
-        "WVthcjFTUskZVgQCxuuvpKD": {
-            "id": "WVthcjFTUskZVgQCxuuvpKD",
-            "type": "strong"
-        },
-        "GrPWMNNJYqSkavTsXJmeWMJ": {
-            "id": "GrPWMNNJYqSkavTsXJmeWMJ",
-            "type": "strong"
-        },
-        "CTBYpBamZaGzTVJgMpsPxBA": {
-            "id": "CTBYpBamZaGzTVJgMpsPxBA",
-            "type": "text",
-            "layout": 1,
-            "content": {
-                "text": "Open a folder on your computer that has some images. Select a couple and copy them with ⌘+C. Now put the cursor after an image in the gallery below. Paste your images with ⌘+V.",
-                "annotations": [
-                    {
-                        "start_offset": 88,
-                        "end_offset": 91,
-                        "node_id": "WVthcjFTUskZVgQCxuuvpKD"
-                    },
-                    {
-                        "start_offset": 172,
-                        "end_offset": 175,
-                        "node_id": "GrPWMNNJYqSkavTsXJmeWMJ"
-                    }
-                ]
-            }
-        },
-        "fusxKWJHCvGnMBCnHxNyrVP": {
-            "id": "fusxKWJHCvGnMBCnHxNyrVP",
-            "type": "text",
-            "layout": 1,
-            "content": {
-                "text": "You can also replace images, by selecting an image and then paste.",
-                "annotations": []
-            }
-        },
         "BPdekRaDEUcQZqtEwPwBvyu": {
             "id": "BPdekRaDEUcQZqtEwPwBvyu",
             "type": "gallery",
             "layout": 1,
             "intro": [
                 "AHXsSZcYYwnXKYzHbDnSRRh",
-                "gallery_1_intro_text"
+                "gallery_1_intro_text",
+                "DpajqNKpCCFFqZHtbttRRwM",
+                "SkRzjYjZtzJYCDksZKAZFZs"
             ],
             "gallery_items": [
                 "wtvHDBrCzJVgacTaJqAwNJk",
@@ -393,10 +471,7 @@ export const demo_doc = {
                 "SwVVZbqrUVwkbyRmfSfCTjH",
                 "tyPwGsNvAepCesRRspqreba"
             ],
-            "outro": [
-                "CTBYpBamZaGzTVJgMpsPxBA",
-                "fusxKWJHCvGnMBCnHxNyrVP"
-            ]
+            "outro": []
         },
         "FMmrrRxdfRzhujVmergnVxA": {
             "id": "FMmrrRxdfRzhujVmergnVxA",
@@ -412,7 +487,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "How about linking to other pages?",
+                "text": "Link to other pages",
                 "annotations": []
             }
         },
