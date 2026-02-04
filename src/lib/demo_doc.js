@@ -52,9 +52,9 @@ export const demo_doc = {
             "id": "vAhBcybjFJsXPkmRQrwWPaT",
             "type": "strong"
         },
-        "VgheaqwXaMzmyvuaJySbPvC": {
-            "id": "VgheaqwXaMzmyvuaJySbPvC",
-            "type": "strong"
+        "uqxqsNMvMMNkyekKbMezJkg": {
+            "id": "uqxqsNMvMMNkyekKbMezJkg",
+            "type": "highlight"
         },
         "feature_1_outro_paragraph": {
             "id": "feature_1_outro_paragraph",
@@ -71,7 +71,7 @@ export const demo_doc = {
                     {
                         "start_offset": 129,
                         "end_offset": 142,
-                        "node_id": "VgheaqwXaMzmyvuaJySbPvC"
+                        "node_id": "uqxqsNMvMMNkyekKbMezJkg"
                     }
                 ]
             }
@@ -655,6 +655,10 @@ export const demo_doc = {
             "id": "RNEtTPYtgVXzkqRsaJxVyDb",
             "type": "strong"
         },
+        "rTNFjAJQKBQdktmmZBgrvNq": {
+            "id": "rTNFjAJQKBQdktmmZBgrvNq",
+            "type": "highlight"
+        },
         "eHMzaBPMwqEkvrZFvRCsRKB": {
             "id": "eHMzaBPMwqEkvrZFvRCsRKB",
             "type": "text",
@@ -666,6 +670,11 @@ export const demo_doc = {
                         "start_offset": 45,
                         "end_offset": 50,
                         "node_id": "RNEtTPYtgVXzkqRsaJxVyDb"
+                    },
+                    {
+                        "start_offset": 22,
+                        "end_offset": 39,
+                        "node_id": "rTNFjAJQKBQdktmmZBgrvNq"
                     }
                 ]
             }
@@ -718,6 +727,10 @@ export const demo_doc = {
             "id": "tEdhDXtJUrYJnMjrUWFYjNS",
             "type": "strong"
         },
+        "jByjZepmsrsgWCbRGRbRGrM": {
+            "id": "jByjZepmsrsgWCbRGRbRGrM",
+            "type": "highlight"
+        },
         "feature_2_outro_paragraph": {
             "id": "feature_2_outro_paragraph",
             "type": "text",
@@ -734,6 +747,11 @@ export const demo_doc = {
                         "start_offset": 51,
                         "end_offset": 61,
                         "node_id": "tEdhDXtJUrYJnMjrUWFYjNS"
+                    },
+                    {
+                        "start_offset": 195,
+                        "end_offset": 208,
+                        "node_id": "jByjZepmsrsgWCbRGRbRGrM"
                     }
                 ]
             }
@@ -770,13 +788,17 @@ export const demo_doc = {
                 "grqHKByVFQSDZhumJjqvPxE"
             ]
         },
-        "PbgBggKGaprkCMjUtmnNDXJ": {
-            "id": "PbgBggKGaprkCMjUtmnNDXJ",
-            "type": "strong"
-        },
         "HCwAqVNTtuCzcJxYAyuSbPR": {
             "id": "HCwAqVNTtuCzcJxYAyuSbPR",
             "type": "strong"
+        },
+        "yegxmDUThczhsnzmQtKxGSy": {
+            "id": "yegxmDUThczhsnzmQtKxGSy",
+            "type": "strong"
+        },
+        "WypFyWvQzSeNxMkPQJNmxmv": {
+            "id": "WypFyWvQzSeNxMkPQJNmxmv",
+            "type": "highlight"
         },
         "PvpNcGKnqTTBbvbRZeDUYSN": {
             "id": "PvpNcGKnqTTBbvbRZeDUYSN",
@@ -800,14 +822,19 @@ export const demo_doc = {
                 "text": "Sign up to be notified when Editable Website is ready. I’ll invite the first few sign-ups to a face-to-face conversation.",
                 "annotations": [
                     {
-                        "start_offset": 11,
-                        "end_offset": 22,
-                        "node_id": "PbgBggKGaprkCMjUtmnNDXJ"
-                    },
-                    {
                         "start_offset": 95,
                         "end_offset": 120,
                         "node_id": "HCwAqVNTtuCzcJxYAyuSbPR"
+                    },
+                    {
+                        "start_offset": 14,
+                        "end_offset": 22,
+                        "node_id": "yegxmDUThczhsnzmQtKxGSy"
+                    },
+                    {
+                        "start_offset": 28,
+                        "end_offset": 44,
+                        "node_id": "WypFyWvQzSeNxMkPQJNmxmv"
                     }
                 ]
             },
