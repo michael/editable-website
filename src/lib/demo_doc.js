@@ -703,12 +703,8 @@ export const demo_doc = {
             "id": "RrpSjGbCdmKKSgjedcufHWu",
             "type": "strong"
         },
-        "tEdhDXtJUrYJnMjrUWFYjNS": {
-            "id": "tEdhDXtJUrYJnMjrUWFYjNS",
-            "type": "strong"
-        },
-        "jByjZepmsrsgWCbRGRbRGrM": {
-            "id": "jByjZepmsrsgWCbRGRbRGrM",
+        "ffaWPhmwTcPSkWfHbHnQqtG": {
+            "id": "ffaWPhmwTcPSkWfHbHnQqtG",
             "type": "highlight"
         },
         "feature_2_outro_paragraph": {
@@ -716,7 +712,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "And you just tried Editable Website. I made it for developers who want to control the structure and layout in code, while allowing site owners to edit content in a way that's intuitive, fun, and \"just works.\"",
+                "text": "And you just tried Editable Website. I made it for developers who want to control the site structure and layout in code, while allowing site owners to edit content in a way that's intuitive, fun, and \"just works.\"",
                 "annotations": [
                     {
                         "start_offset": 19,
@@ -726,19 +722,14 @@ export const demo_doc = {
                     {
                         "start_offset": 51,
                         "end_offset": 61,
-                        "node_id": "tEdhDXtJUrYJnMjrUWFYjNS"
-                    },
-                    {
-                        "start_offset": 195,
-                        "end_offset": 208,
-                        "node_id": "jByjZepmsrsgWCbRGRbRGrM"
+                        "node_id": "ffaWPhmwTcPSkWfHbHnQqtG"
                     }
                 ]
             }
         },
-        "SRHjbCFGMEvETHGsPTMwkhr": {
-            "id": "SRHjbCFGMEvETHGsPTMwkhr",
-            "type": "strong"
+        "gmPGYpZHZrCJdYCeGvHDRXt": {
+            "id": "gmPGYpZHZrCJdYCeGvHDRXt",
+            "type": "highlight"
         },
         "grqHKByVFQSDZhumJjqvPxE": {
             "id": "grqHKByVFQSDZhumJjqvPxE",
@@ -750,7 +741,7 @@ export const demo_doc = {
                     {
                         "start_offset": 34,
                         "end_offset": 50,
-                        "node_id": "SRHjbCFGMEvETHGsPTMwkhr"
+                        "node_id": "gmPGYpZHZrCJdYCeGvHDRXt"
                     }
                 ]
             }
