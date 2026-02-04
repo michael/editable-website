@@ -32,6 +32,8 @@ body {
 
 @theme {
 	--max-width-8xl: 90rem;
+	--font-sans: Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', source-sans-pro, sans-serif;
+	--font-heading: Rockwell, 'Rockwell Nova', 'Roboto Slab', 'DejaVu Serif', 'Sitka Small', serif;
 }
 
 @layer utilities {
