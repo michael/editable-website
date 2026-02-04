@@ -18,6 +18,31 @@
 		}
 	}
 
+	function check_browser_support() {
+		const ua = navigator.userAgent;
+		let browser = null;
+		let version = 0;
+
+		if (ua.includes('Chrome/')) {
+			browser = 'Chrome';
+			version = parseInt(ua.match(/Chrome\/(\d+)/)?.[1] || '0');
+		} else if (ua.includes('Firefox/')) {
+			browser = 'Firefox';
+			version = parseInt(ua.match(/Firefox\/(\d+)/)?.[1] || '0');
+		} else if (ua.includes('Safari/') && !ua.includes('Chrome')) {
+			browser = 'Safari';
+			version = parseInt(ua.match(/Version\/(\d+)/)?.[1] || '0');
+		}
+
+		const min_versions = { Chrome: 142, Firefox: 147, Safari: 26 };
+
+		if (browser && min_versions[browser] && version < min_versions[browser]) {
+			return { supported: false, browser, version, required: min_versions[browser] };
+		}
+
+		return { supported: true };
+	}
+
 	class EditCommand extends Command {
 		is_enabled() {
 			// Disabled if edit mode is already on
@@ -25,6 +50,10 @@
 		}
 
 		execute() {
+			const browser_check = check_browser_support();
+			if (!browser_check.supported) {
+				alert(`Your browser (${browser_check.browser} ${browser_check.version}) may not fully support the editor. For the best experience, please upgrade to ${browser_check.browser} ${browser_check.required} or newer.`);
+			}
 			this.context.editable = true;
 		}
 	}
