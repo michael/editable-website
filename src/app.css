@@ -16,7 +16,8 @@ body {
 	--accent: oklch(0.56 0.17 36); /* orange */
 	--border-radius: 0.25rem; /* slight rounded corners for buttons, nav items */
 	--foreground-accent: oklch(0 0 0); /* black - used for headings, titles */
-	--strong-mix: color-mix(in oklch, currentColor 50%, black); /* darkened text for strong/emphasis */
+	--strong-mix: color-mix(in oklch, currentColor 70%, black); /* darkened text for strong/emphasis */
+	--highlight-background: oklch(from var(--accent) l c h / 10%); /* light orange highlight for text annotations */
 
 	/* Derived colors - these can be overridden per site, but I don't recommend it */
 	--foreground-muted: oklch(from var(--foreground) l c h / 50%); /* subtitles, secondary text */
@@ -24,9 +25,9 @@ body {
 	--accent-muted: oklch(from var(--accent) l c h / 50%); /* hover states, fills */
 	--background-accent: color-mix(in oklch, var(--background) 50%, white 50%); /* lighter background - fully opaque */
 
-	/* Editor colors */
-	--editing-fill-color: oklch(0.56 0.17 36 / 0.1);
-	--editing-stroke-color: oklch(0.56 0.17 36);
+	/* Editor colors - soft teal complements orange accent */
+	--editing-fill-color: oklch(0.85 0.08 180 / 30%);
+	--editing-stroke-color: oklch(0.55 0.12 180);
 }
 
 @theme {
