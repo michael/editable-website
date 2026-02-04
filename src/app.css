@@ -15,7 +15,8 @@ body {
 	--foreground: oklch(0.5 0 0); /* medium grey #656565 */
 	--accent: oklch(0.56 0.17 36); /* orange */
 	--border-radius: 0.25rem; /* slight rounded corners for buttons, nav items */
-	--foreground-accent: oklch(0 0 0); /* black - used for strong/emphasis text */
+	--foreground-accent: oklch(0 0 0); /* black - used for headings, titles */
+	--strong-mix: color-mix(in oklch, currentColor 50%, black); /* darkened text for strong/emphasis */
 
 	/* Derived colors - these can be overridden per site, but I don't recommend it */
 	--foreground-muted: oklch(from var(--foreground) l c h / 50%); /* subtitles, secondary text */
