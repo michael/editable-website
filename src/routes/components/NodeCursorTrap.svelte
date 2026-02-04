@@ -69,7 +69,7 @@
 <style>
 	.cursor-trap {
 		/*outline: 1px dashed var(--editing-stroke-color);*/
-		outline: 1px dashed color-mix(in srgb, var(--editing-stroke-color) 30%, transparent);
+		outline: 1px dashed color-mix(in srgb, var(--editing-stroke-color) 50%, transparent);
 		position: absolute;
 		cursor: pointer;
 		z-index: 20;
