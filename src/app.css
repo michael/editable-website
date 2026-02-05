@@ -36,7 +36,7 @@ body {
 
 	--font-*: initial;
 	--font-body: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-	--font-heading: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+	--font-heading: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 	--default-font-family: var(--font-body);
 }
 
