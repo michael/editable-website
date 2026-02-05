@@ -26,7 +26,7 @@
 		class="transition-all duration-150 ease-out h-full flex flex-col border bg-(--background-accent) border-(--foreground-subtle) rounded-(--border-radius) hover:border-(--accent) overflow-hidden"
 		class:hover-effect={render_as_link}
 	>
-		<div class="p-5 md:p-6 pb-0">
+		<div class="p-5 md:p-6 pb-0!">
 			<CustomProperty path={[...path, 'image']}>
 				<div
 					contenteditable="false"
@@ -39,8 +39,8 @@
 			</CustomProperty>
 		</div>
 		<div class="p-5 md:p-6">
-			<AnnotatedTextProperty class="font-medium text-sm uppercase tracking-wider text-(--foreground-accent) mb-2" path={[...path, 'preline']} placeholder="Preline" />
-			<AnnotatedTextProperty class="font-heading text-(--foreground-accent) text-xl md:text-2xl lg:text-3xl text-balance pt-1" path={[...path, 'title']} placeholder="Title" />
+			<AnnotatedTextProperty class="font-medium text-xs md:text-sm uppercase tracking-wider text-(--foreground-accent) mb-2" path={[...path, 'preline']} placeholder="Preline" />
+			<AnnotatedTextProperty class="font-heading text-(--foreground-accent) text-2xl lg:text-3xl text-balance pt-1" path={[...path, 'title']} placeholder="Title" />
 			<AnnotatedTextProperty class="text-balance pt-2" path={[...path, 'description']} placeholder="Description" />
 		</div>
 	</svelte:element>

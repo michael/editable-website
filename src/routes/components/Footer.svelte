@@ -18,7 +18,7 @@
 
 <Node {path} class="text-sm">
 	<div class="{TW_LIMITER}">
-		<div class="flex flex-col md:flex-row md:items-start border-l border-r border-(--foreground-subtle) py-12 md:py-16 {TW_PAGE_PADDING_X}">
+		<div class="flex flex-col md:flex-row md:items-start border-l border-r border-(--foreground-subtle) py-10 md:py-16 {TW_PAGE_PADDING_X}">
 			<div class="md:w-1/3 flex flex-col items-start">
 				<CustomProperty path={[...path, 'logo']}>
 					<svelte:element
@@ -31,13 +31,13 @@
 					</svelte:element>
 				</CustomProperty>
 				<AnnotatedTextProperty
-					class="mt-4 mb-8 md:mb-0"
+					class="mt-4 mb-0 md:mb-0"
 					path={[...path, 'copyright']}
 					placeholder="© 2025 Company"
 				/>
 			</div>
 			<NodeArrayProperty
-				class="footer-columns grid grid-cols-1 sm:grid-cols-2 {grid_cols_class} flex-1 gap-x-8 gap-y-12 mt-8 md:mt-0 [--layout-orientation:horizontal]"
+				class="footer-columns grid grid-cols-1 md:grid-cols-2 {grid_cols_class} flex-1 gap-x-8 gap-y-6 md:gap-y-12 mt-8 md:mt-0 [--layout-orientation:horizontal]"
 				path={[...path, 'footer_link_columns']}
 			/>
 		</div>

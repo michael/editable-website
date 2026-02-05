@@ -11,7 +11,7 @@ body {
 
 :root {
 	/* Base colors - configure these per site */
-	--background: #f7f7f4; /*oklch(92.8% 0.006 264.531); /* light grey */
+	--background: #f7f7f4; /* light grey */
 	--foreground: oklch(0.5 0 0); /* medium grey #656565 */
 	--accent: oklch(0.56 0.17 36); /* orange */
 	--border-radius: 0.25rem; /* slight rounded corners for buttons, nav items */
@@ -30,10 +30,14 @@ body {
 	--editing-stroke-color: oklch(0.55 0.12 180);
 }
 
+
 @theme {
 	--max-width-8xl: 90rem;
-	--font-sans: Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', source-sans-pro, sans-serif;
-	--font-heading: Rockwell, 'Rockwell Nova', 'Roboto Slab', 'DejaVu Serif', 'Sitka Small', serif;
+
+	--font-*: initial;
+	--font-body: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	--font-heading: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+	--default-font-family: var(--font-body);
 }
 
 @layer utilities {

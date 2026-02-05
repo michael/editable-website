@@ -11,7 +11,8 @@
 	const heading_spacing = `
 		[&>div:has(h1)~div>h1]:pt-8
 		[&>div:has(h2)~div>h2]:pt-6
-		[&>div:has(h3)~div>h3]:pt-4
+		[&>div:has(h3)~div>h3]:pt-6
+		[&>span:has(.ew-eyebrow)~div>span.ew-eyebrow]:pt-6
 	`;
 </script>
 

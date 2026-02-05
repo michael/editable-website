@@ -216,16 +216,16 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Select multiple whole blocks by dragging from a top-level block gap. Press Cmd+X to cut these sections. Now select another top-level gap and paste them with Cmd+V. This works everywhere, including the top-level nav and the footer links.",
+                "text": "Select multiple whole blocks by dragging from a top-level block gap. Press ⌘+X to cut these sections. Now select another top-level gap and paste them with ⌘+V. This works everywhere, including the top-level nav and the footer links.",
                 "annotations": [
                     {
                         "start_offset": 75,
-                        "end_offset": 80,
+                        "end_offset": 78,
                         "node_id": "fgdUqhtVCdcEbjHwKmKCgqe"
                     },
                     {
-                        "start_offset": 157,
-                        "end_offset": 162,
+                        "start_offset": 155,
+                        "end_offset": 158,
                         "node_id": "GxDRTsjzaqFJfNRcENDCqTU"
                     },
                     {
@@ -606,7 +606,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Click on one of the cards above. It will show a little link preview at the bottom of the card. Click edit or press Cmd+K to bring up the link editor. Change the url you want to link to and press Enter.",
+                "text": "Click on one of the cards above. It will show a little link preview at the bottom of the card. Click edit or press ⌘+K to bring up the link editor. Change the url you want to link to and press Enter.",
                 "annotations": [
                     {
                         "start_offset": 0,
@@ -620,12 +620,12 @@ export const demo_doc = {
                     },
                     {
                         "start_offset": 115,
-                        "end_offset": 120,
+                        "end_offset": 118,
                         "node_id": "zNnBwMTsCRnDkJmDKGzAPsD"
                     },
                     {
-                        "start_offset": 195,
-                        "end_offset": 200,
+                        "start_offset": 193,
+                        "end_offset": 198,
                         "node_id": "fDzAKPaVuZXPrmxUwktkSzU"
                     }
                 ]
@@ -644,11 +644,11 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Now is a good time to save your changes with Cmd+S.",
+                "text": "Now is a good time to save your changes with ⌘+S.",
                 "annotations": [
                     {
                         "start_offset": 45,
-                        "end_offset": 50,
+                        "end_offset": 48,
                         "node_id": "RNEtTPYtgVXzkqRsaJxVyDb"
                     },
                     {
