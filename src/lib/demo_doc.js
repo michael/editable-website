@@ -44,7 +44,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Press ⌘+E",
+                "text": "Press Cmd+E",
                 "annotations": []
             }
         },
@@ -97,26 +97,26 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "For basic text formatting use ⌘+B (Bold) ⌘+I (Italic) and ⌘+K to turn text into a link. To undo accidental changes press ⌘+Z.",
+                "text": "For basic text formatting use Cmd+B (Bold) Cmd+I (Italic) and Cmd+K to turn text into a link. To undo accidental changes press Cmd+Z.",
                 "annotations": [
                     {
                         "start_offset": 30,
-                        "end_offset": 33,
+                        "end_offset": 35,
                         "node_id": "GjYMCGyPdWVrmkGcWazPTAJ"
                     },
                     {
-                        "start_offset": 41,
-                        "end_offset": 44,
+                        "start_offset": 43,
+                        "end_offset": 48,
                         "node_id": "TKBzGfCyPtcywrWNafpMFUx"
                     },
                     {
-                        "start_offset": 58,
-                        "end_offset": 61,
+                        "start_offset": 62,
+                        "end_offset": 67,
                         "node_id": "BYnvjBNEvJqBdqQmUyeUzgn"
                     },
                     {
-                        "start_offset": 121,
-                        "end_offset": 124,
+                        "start_offset": 127,
+                        "end_offset": 132,
                         "node_id": "kJNavahEZGWKeAtWTgEQqnp"
                     }
                 ]
@@ -216,16 +216,16 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Select multiple whole blocks by dragging from a top-level block gap. Press ⌘+X to cut these sections. Now select another top-level gap and paste them with ⌘+V. This works everywhere, including the top-level nav and the footer links.",
+                "text": "Select multiple whole blocks by dragging from a top-level block gap. Press Cmd+X to cut these sections. Now select another top-level gap and paste them with Cmd+V. This works everywhere, including the top-level nav and the footer links.",
                 "annotations": [
                     {
                         "start_offset": 75,
-                        "end_offset": 78,
+                        "end_offset": 80,
                         "node_id": "fgdUqhtVCdcEbjHwKmKCgqe"
                     },
                     {
-                        "start_offset": 155,
-                        "end_offset": 158,
+                        "start_offset": 157,
+                        "end_offset": 162,
                         "node_id": "GxDRTsjzaqFJfNRcENDCqTU"
                     },
                     {
@@ -236,12 +236,12 @@ export const demo_doc = {
                 ]
             }
         },
-        "KGdTbszPsbFNkrPMbGSJwpX": {
-            "id": "KGdTbszPsbFNkrPMbGSJwpX",
-            "type": "strong"
-        },
         "gRAyWEXjtgjxsZcFPTFNwTw": {
             "id": "gRAyWEXjtgjxsZcFPTFNwTw",
+            "type": "strong"
+        },
+        "UBZNEtcCMnPpFMYkqDMgwWv": {
+            "id": "UBZNEtcCMnPpFMYkqDMgwWv",
             "type": "strong"
         },
         "uNprzMQcMQztTppEeTKssBd": {
@@ -249,17 +249,17 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Pro tip: To select the enclosing block, press ESC multiple times. Useful when you currently edit text, but want to change the layout at a higher level.",
+                "text": "Pro tip: To select the enclosing block, press Esc multiple times. Useful when you currently edit text, but want to change the layout at a higher level.",
                 "annotations": [
-                    {
-                        "start_offset": 46,
-                        "end_offset": 49,
-                        "node_id": "KGdTbszPsbFNkrPMbGSJwpX"
-                    },
                     {
                         "start_offset": 0,
                         "end_offset": 8,
                         "node_id": "gRAyWEXjtgjxsZcFPTFNwTw"
+                    },
+                    {
+                        "start_offset": 46,
+                        "end_offset": 49,
+                        "node_id": "UBZNEtcCMnPpFMYkqDMgwWv"
                     }
                 ]
             }
@@ -307,16 +307,16 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Open a folder on your computer that has some images. Select a couple and copy them with ⌘+C. Now put the cursor after an image in the gallery below. Paste your images with ⌘+V.",
+                "text": "Open a folder on your computer that has some images. Select a couple and copy them with Cmd+C. Now put the cursor after an image in the gallery below. Paste your images with Cmd+V.",
                 "annotations": [
                     {
                         "start_offset": 88,
-                        "end_offset": 91,
+                        "end_offset": 93,
                         "node_id": "MqTMgFwNJjMjvwQRbBsRbXB"
                     },
                     {
-                        "start_offset": 172,
-                        "end_offset": 175,
+                        "start_offset": 174,
+                        "end_offset": 179,
                         "node_id": "pmWcAFvaSjAXwBRUHCDQThJ"
                     }
                 ]
@@ -606,7 +606,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Click on one of the cards above. It will show a little link preview at the bottom of the card. Click edit or press ⌘+K to bring up the link editor. Change the url you want to link to and press Enter.",
+                "text": "Click on one of the cards above. It will show a little link preview at the bottom of the card. Click edit or press Cmd+K to bring up the link editor. Change the url you want to link to and press Enter.",
                 "annotations": [
                     {
                         "start_offset": 0,
@@ -620,12 +620,12 @@ export const demo_doc = {
                     },
                     {
                         "start_offset": 115,
-                        "end_offset": 118,
+                        "end_offset": 120,
                         "node_id": "zNnBwMTsCRnDkJmDKGzAPsD"
                     },
                     {
-                        "start_offset": 193,
-                        "end_offset": 198,
+                        "start_offset": 195,
+                        "end_offset": 200,
                         "node_id": "fDzAKPaVuZXPrmxUwktkSzU"
                     }
                 ]
@@ -644,11 +644,11 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Now is a good time to save your changes with ⌘+S.",
+                "text": "Now is a good time to save your changes with Cmd+S.",
                 "annotations": [
                     {
                         "start_offset": 45,
-                        "end_offset": 48,
+                        "end_offset": 50,
                         "node_id": "RNEtTPYtgVXzkqRsaJxVyDb"
                     },
                     {
