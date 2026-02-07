@@ -17,23 +17,6 @@ export const demo_doc = {
             },
             "buttons": []
         },
-        "zxtnkHgCxmNUNgTQxPhaycX": {
-            "id": "zxtnkHgCxmNUNgTQxPhaycX",
-            "type": "text",
-            "layout": 1,
-            "content": {
-                "text": "This demo shows how it feels to edit a website in-place. Everything on the page can be changed, moved, or rearranged. The experience is interactive — the more you try, the more you understand what owning an editable site feels like.",
-                "annotations": []
-            }
-        },
-        "kAcGQwFmpTHhXmdKUkpRarr": {
-            "id": "kAcGQwFmpTHhXmdKUkpRarr",
-            "type": "prose",
-            "layout": 1,
-            "content": [
-                "zxtnkHgCxmNUNgTQxPhaycX"
-            ]
-        },
         "feature_1_image": {
             "id": "feature_1_image",
             "type": "image",
@@ -223,7 +206,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "To select multiple blocks at once, drag from a top-level gap. Cut them with Cmd + X and paste with Cmd + V at the new position. This is how you move blocks around.",
+                "text": "To select multiple blocks at once, drag from a top-level gap. Cut them with Cmd+X and paste with Cmd+V at the new position. This is how you move blocks around.",
                 "annotations": [
                     {
                         "start_offset": 35,
@@ -232,12 +215,12 @@ export const demo_doc = {
                     },
                     {
                         "start_offset": 76,
-                        "end_offset": 83,
+                        "end_offset": 81,
                         "node_id": "MANjnkyXphJatsEgehFTXfq"
                     },
                     {
-                        "start_offset": 99,
-                        "end_offset": 106,
+                        "start_offset": 97,
+                        "end_offset": 102,
                         "node_id": "HtXmHxNBRWNFDefgWVtxzcY"
                     }
                 ]
@@ -292,8 +275,8 @@ export const demo_doc = {
                 "annotations": []
             }
         },
-        "gallery_1_intro_text": {
-            "id": "gallery_1_intro_text",
+        "BfpsPAaqmJXnRrHzwJCSMHE": {
+            "id": "BfpsPAaqmJXnRrHzwJCSMHE",
             "type": "text",
             "layout": 2,
             "content": {
@@ -446,7 +429,7 @@ export const demo_doc = {
             "layout": 1,
             "intro": [
                 "AHXsSZcYYwnXKYzHbDnSRRh",
-                "gallery_1_intro_text",
+                "BfpsPAaqmJXnRrHzwJCSMHE",
                 "DpajqNKpCCFFqZHtbttRRwM",
                 "SkRzjYjZtzJYCDksZKAZFZs"
             ],
@@ -478,23 +461,48 @@ export const demo_doc = {
                 "annotations": []
             }
         },
-        "XnqUnfKXhvagBBEtfBHkCMS": {
-            "id": "XnqUnfKXhvagBBEtfBHkCMS",
-            "type": "link",
-            "href": "https://mutter.co",
-            "target": "_blank"
+        "WfZfGKaAEWGManmBReNUYRE": {
+            "id": "WfZfGKaAEWGManmBReNUYRE",
+            "type": "strong"
         },
-        "tZaRuDwREZUUVyJmJnPgbZn": {
-            "id": "tZaRuDwREZUUVyJmJnPgbZn",
+        "AYFTGYRNYcvzEtPvneWrwXz": {
+            "id": "AYFTGYRNYcvzEtPvneWrwXz",
+            "type": "strong"
+        },
+        "HKxZjnxPdyvkZNCxBxfKBmm": {
+            "id": "HKxZjnxPdyvkZNCxBxfKBmm",
+            "type": "strong"
+        },
+        "dJyPkzuxWJtUXTgwQadDGYg": {
+            "id": "dJyPkzuxWJtUXTgwQadDGYg",
+            "type": "strong"
+        },
+        "VdjTDrdPmtXRuYKNUMeRmKK": {
+            "id": "VdjTDrdPmtXRuYKNUMeRmKK",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Johannes Mutter and I already launched a few sites that are in-place editable.",
+                "text": "Click on one of the cards below. A link preview appears at the bottom. Click “edit” or press Cmd+K to bring up the link editor. Change the URL and press Enter.",
                 "annotations": [
                     {
                         "start_offset": 0,
-                        "end_offset": 15,
-                        "node_id": "XnqUnfKXhvagBBEtfBHkCMS"
+                        "end_offset": 5,
+                        "node_id": "WfZfGKaAEWGManmBReNUYRE"
+                    },
+                    {
+                        "start_offset": 35,
+                        "end_offset": 47,
+                        "node_id": "AYFTGYRNYcvzEtPvneWrwXz"
+                    },
+                    {
+                        "start_offset": 153,
+                        "end_offset": 158,
+                        "node_id": "HKxZjnxPdyvkZNCxBxfKBmm"
+                    },
+                    {
+                        "start_offset": 93,
+                        "end_offset": 98,
+                        "node_id": "dJyPkzuxWJtUXTgwQadDGYg"
                     }
                 ]
             }
@@ -592,62 +600,37 @@ export const demo_doc = {
                 "annotations": []
             }
         },
-        "vbjEnekAgSwRBffjUXUBCxM": {
-            "id": "vbjEnekAgSwRBffjUXUBCxM",
-            "type": "strong"
+        "VqaqUWzRKUJrZzQYqqurggB": {
+            "id": "VqaqUWzRKUJrZzQYqqurggB",
+            "type": "link",
+            "href": "https://mutter.co",
+            "target": "_blank"
         },
-        "YqbRJjNqVrWGnSyKNjHjtpq": {
-            "id": "YqbRJjNqVrWGnSyKNjHjtpq",
-            "type": "strong"
-        },
-        "SymHqcNwUXBRVqgvQdZhTJd": {
-            "id": "SymHqcNwUXBRVqgvQdZhTJd",
-            "type": "strong"
-        },
-        "YDMhhSJkVbZtUFFUQdXSrZX": {
-            "id": "YDMhhSJkVbZtUFFUQdXSrZX",
-            "type": "strong"
-        },
-        "bCJcAyERSdbjXEPNbPQEpmg": {
-            "id": "bCJcAyERSdbjXEPNbPQEpmg",
+        "kZQHRTYyJtbmsJfnXaRgVtZ": {
+            "id": "kZQHRTYyJtbmsJfnXaRgVtZ",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Click on one of the cards above. A link preview appears at the bottom. Click “edit” or press Cmd+K to bring up the link editor. Change the URL and press Enter.",
+                "text": "FYI, those links are live in-place editable websites Johannes Mutter and I have already launched.",
                 "annotations": [
                     {
-                        "start_offset": 0,
-                        "end_offset": 5,
-                        "node_id": "vbjEnekAgSwRBffjUXUBCxM"
-                    },
-                    {
-                        "start_offset": 35,
-                        "end_offset": 47,
-                        "node_id": "YqbRJjNqVrWGnSyKNjHjtpq"
-                    },
-                    {
-                        "start_offset": 153,
-                        "end_offset": 158,
-                        "node_id": "SymHqcNwUXBRVqgvQdZhTJd"
-                    },
-                    {
-                        "start_offset": 93,
-                        "end_offset": 98,
-                        "node_id": "YDMhhSJkVbZtUFFUQdXSrZX"
+                        "start_offset": 53,
+                        "end_offset": 68,
+                        "node_id": "VqaqUWzRKUJrZzQYqqurggB"
                     }
                 ]
             }
         },
-        "RNEtTPYtgVXzkqRsaJxVyDb": {
-            "id": "RNEtTPYtgVXzkqRsaJxVyDb",
+        "bGpNAMWYnvxUmtNtzKhQRBE": {
+            "id": "bGpNAMWYnvxUmtNtzKhQRBE",
             "type": "strong"
         },
-        "rTNFjAJQKBQdktmmZBgrvNq": {
-            "id": "rTNFjAJQKBQdktmmZBgrvNq",
+        "UtFrRqWAKjBnnkWGxcUSENy": {
+            "id": "UtFrRqWAKjBnnkWGxcUSENy",
             "type": "highlight"
         },
-        "eHMzaBPMwqEkvrZFvRCsRKB": {
-            "id": "eHMzaBPMwqEkvrZFvRCsRKB",
+        "ukQBuacbzqYwYzknqQNNASD": {
+            "id": "ukQBuacbzqYwYzknqQNNASD",
             "type": "text",
             "layout": 1,
             "content": {
@@ -656,12 +639,12 @@ export const demo_doc = {
                     {
                         "start_offset": 45,
                         "end_offset": 50,
-                        "node_id": "RNEtTPYtgVXzkqRsaJxVyDb"
+                        "node_id": "bGpNAMWYnvxUmtNtzKhQRBE"
                     },
                     {
                         "start_offset": 22,
                         "end_offset": 39,
-                        "node_id": "rTNFjAJQKBQdktmmZBgrvNq"
+                        "node_id": "UtFrRqWAKjBnnkWGxcUSENy"
                     }
                 ]
             }
@@ -673,7 +656,7 @@ export const demo_doc = {
             "intro": [
                 "FMmrrRxdfRzhujVmergnVxA",
                 "AjbSGnXVcWpHBurCTrKxYSs",
-                "tZaRuDwREZUUVyJmJnPgbZn"
+                "VdjTDrdPmtXRuYKNUMeRmKK"
             ],
             "link_collection_items": [
                 "link_collection_item_2",
@@ -681,8 +664,8 @@ export const demo_doc = {
                 "AVydYvhksUBMjCSEccZJGXa"
             ],
             "outro": [
-                "bCJcAyERSdbjXEPNbPQEpmg",
-                "eHMzaBPMwqEkvrZFvRCsRKB"
+                "kZQHRTYyJtbmsJfnXaRgVtZ",
+                "ukQBuacbzqYwYzknqQNNASD"
             ]
         },
         "hqrrTdEbTPaqzEcYMczhBZb": {
@@ -1026,7 +1009,6 @@ export const demo_doc = {
             "type": "page",
             "body": [
                 "hero_1",
-                "kAcGQwFmpTHhXmdKUkpRarr",
                 "feature_1",
                 "prose_1",
                 "BPdekRaDEUcQZqtEwPwBvyu",
