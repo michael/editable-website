@@ -87,26 +87,26 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "For basic text formatting use Cmd+B (Bold) Cmd+I (Italic) and Cmd+K to turn text into a link. To undo accidental changes press Cmd+Z.",
+                "text": "For basic text formatting use Cmd/Ctrl+B (Bold) Cmd/Ctrl+I (Italic) and Cmd/Ctrl+K to turn text into a link. To undo accidental changes press Cmd/Ctrl+Z.",
                 "annotations": [
                     {
                         "start_offset": 30,
-                        "end_offset": 35,
+                        "end_offset": 40,
                         "node_id": "GjYMCGyPdWVrmkGcWazPTAJ"
                     },
                     {
-                        "start_offset": 43,
-                        "end_offset": 48,
+                        "start_offset": 48,
+                        "end_offset": 58,
                         "node_id": "TKBzGfCyPtcywrWNafpMFUx"
                     },
                     {
-                        "start_offset": 62,
-                        "end_offset": 67,
+                        "start_offset": 72,
+                        "end_offset": 82,
                         "node_id": "BYnvjBNEvJqBdqQmUyeUzgn"
                     },
                     {
-                        "start_offset": 127,
-                        "end_offset": 132,
+                        "start_offset": 142,
+                        "end_offset": 152,
                         "node_id": "kJNavahEZGWKeAtWTgEQqnp"
                     }
                 ]
@@ -206,7 +206,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "To select multiple blocks at once, drag from a top-level gap. Cut them with Cmd+X and paste with Cmd+V at the new position. This is how you move blocks around.",
+                "text": "To select multiple blocks at once, drag from a top-level gap. Cut them with Cmd/Ctrl+X and paste with Cmd/Ctrl+V at the new position. This is how you move blocks around.",
                 "annotations": [
                     {
                         "start_offset": 35,
@@ -215,12 +215,12 @@ export const demo_doc = {
                     },
                     {
                         "start_offset": 76,
-                        "end_offset": 81,
+                        "end_offset": 86,
                         "node_id": "MANjnkyXphJatsEgehFTXfq"
                     },
                     {
-                        "start_offset": 97,
-                        "end_offset": 102,
+                        "start_offset": 102,
+                        "end_offset": 112,
                         "node_id": "HtXmHxNBRWNFDefgWVtxzcY"
                     }
                 ]
@@ -297,16 +297,16 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Open a folder on your computer that has some images. Select a couple and copy them with Cmd+C. Now put the cursor after an image in the gallery below. Paste your images with Cmd+V.",
+                "text": "Open a folder on your computer that has some images. Select a couple and copy them with Cmd/Ctrl+C. Put the cursor after an image below. Paste your images with Cmd/Ctrl+V.",
                 "annotations": [
                     {
                         "start_offset": 88,
-                        "end_offset": 93,
+                        "end_offset": 98,
                         "node_id": "MqTMgFwNJjMjvwQRbBsRbXB"
                     },
                     {
-                        "start_offset": 174,
-                        "end_offset": 179,
+                        "start_offset": 160,
+                        "end_offset": 170,
                         "node_id": "pmWcAFvaSjAXwBRUHCDQThJ"
                     }
                 ]
@@ -482,7 +482,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Click on one of the cards below. A link preview appears at the bottom. Click “edit” or press Cmd+K to bring up the link editor. Change the URL and press Enter.",
+                "text": "Click on one of the cards below. A link preview appears at the bottom. Click “edit” or press Cmd/Ctrl+K to bring up the link editor. Change the URL and press Enter.",
                 "annotations": [
                     {
                         "start_offset": 0,
@@ -495,13 +495,13 @@ export const demo_doc = {
                         "node_id": "AYFTGYRNYcvzEtPvneWrwXz"
                     },
                     {
-                        "start_offset": 153,
-                        "end_offset": 158,
+                        "start_offset": 158,
+                        "end_offset": 163,
                         "node_id": "HKxZjnxPdyvkZNCxBxfKBmm"
                     },
                     {
                         "start_offset": 93,
-                        "end_offset": 98,
+                        "end_offset": 103,
                         "node_id": "dJyPkzuxWJtUXTgwQadDGYg"
                     }
                 ]
@@ -634,11 +634,11 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Now is a good time to save your changes with Cmd+S.",
+                "text": "Now is a good time to save your changes with Cmd/Ctrl+S.",
                 "annotations": [
                     {
                         "start_offset": 45,
-                        "end_offset": 50,
+                        "end_offset": 55,
                         "node_id": "bGpNAMWYnvxUmtNtzKhQRBE"
                     },
                     {
@@ -702,16 +702,16 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "And you just tried Editable Website. I made it for developers who want to control the site structure and layout in code, while allowing site owners to edit content in a way that's intuitive, fun, and “just works.”",
+                "text": "And you just tried Editable Website™. I made it for developers who want to control the site structure and layout in code, while allowing site owners to edit content in a way that's intuitive, fun, and “just works.”",
                 "annotations": [
                     {
                         "start_offset": 19,
-                        "end_offset": 35,
+                        "end_offset": 36,
                         "node_id": "RrpSjGbCdmKKSgjedcufHWu"
                     },
                     {
-                        "start_offset": 51,
-                        "end_offset": 61,
+                        "start_offset": 52,
+                        "end_offset": 62,
                         "node_id": "ffaWPhmwTcPSkWfHbHnQqtG"
                     }
                 ]
@@ -753,10 +753,6 @@ export const demo_doc = {
             "id": "HCwAqVNTtuCzcJxYAyuSbPR",
             "type": "strong"
         },
-        "yegxmDUThczhsnzmQtKxGSy": {
-            "id": "yegxmDUThczhsnzmQtKxGSy",
-            "type": "strong"
-        },
         "WypFyWvQzSeNxMkPQJNmxmv": {
             "id": "WypFyWvQzSeNxMkPQJNmxmv",
             "type": "highlight"
@@ -780,21 +776,16 @@ export const demo_doc = {
                 "annotations": []
             },
             "description": {
-                "text": "Sign up to be notified when Editable Website is ready. I’ll invite the first few sign-ups to a face-to-face conversation.",
+                "text": "Sign up and I'll let you know as soon as Editable Website is ready. The first few sign-ups will get an invite to a face-to-face conversation.",
                 "annotations": [
                     {
-                        "start_offset": 95,
-                        "end_offset": 120,
+                        "start_offset": 115,
+                        "end_offset": 140,
                         "node_id": "HCwAqVNTtuCzcJxYAyuSbPR"
                     },
                     {
-                        "start_offset": 14,
-                        "end_offset": 22,
-                        "node_id": "yegxmDUThczhsnzmQtKxGSy"
-                    },
-                    {
-                        "start_offset": 28,
-                        "end_offset": 44,
+                        "start_offset": 41,
+                        "end_offset": 57,
                         "node_id": "WypFyWvQzSeNxMkPQJNmxmv"
                     }
                 ]
