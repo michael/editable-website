@@ -17,6 +17,23 @@ export const demo_doc = {
             },
             "buttons": []
         },
+        "zxtnkHgCxmNUNgTQxPhaycX": {
+            "id": "zxtnkHgCxmNUNgTQxPhaycX",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "This demo shows how it feels to edit a website in-place. Everything on the page can be changed, moved, or rearranged. The experience is interactive — the more you try, the more you understand what owning an editable site feels like.",
+                "annotations": []
+            }
+        },
+        "kAcGQwFmpTHhXmdKUkpRarr": {
+            "id": "kAcGQwFmpTHhXmdKUkpRarr",
+            "type": "prose",
+            "layout": 1,
+            "content": [
+                "zxtnkHgCxmNUNgTQxPhaycX"
+            ]
+        },
         "feature_1_image": {
             "id": "feature_1_image",
             "type": "image",
@@ -51,7 +68,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Or Ctrl+E if you are on Windows or Linux. Now you can move the cursor with the arrow keys or make selections with the mouse. You can edit anything you see on the screen.",
+                "text": "Or Ctrl+E if you are on Windows or Linux. Now you can move the cursor with the arrow keys or make selections with the mouse. You can edit anything you see on the page.",
                 "annotations": [
                     {
                         "start_offset": 3,
@@ -164,7 +181,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Click the dashed horizontal gap after this section. You get a blinking cursor. Press Enter. This creates a new block. While the whole block is still selected press Ctrl+Shift+Down to select the next block type. Many blocks support multiple layouts. Switch them with Ctrl+Shift+Right.",
+                "text": "Click the dashed horizontal gap after any section. When you see a big blinking cursor, press Enter. This creates a new block. While the block is selected press Ctrl+Shift+Down to select the next block type. Many blocks support multiple layouts. Switch them with Ctrl+Shift+Right.",
                 "annotations": [
                     {
                         "start_offset": 10,
@@ -172,33 +189,33 @@ export const demo_doc = {
                         "node_id": "uNNkhjBKaWDxGAwDDzeWmpz"
                     },
                     {
-                        "start_offset": 85,
-                        "end_offset": 90,
+                        "start_offset": 93,
+                        "end_offset": 98,
                         "node_id": "CpCARDQGFNdNtTqtJmGUgfU"
                     },
                     {
-                        "start_offset": 164,
-                        "end_offset": 179,
+                        "start_offset": 160,
+                        "end_offset": 175,
                         "node_id": "uQYweZvzfBPuDJgdZSEhwEd"
                     },
                     {
-                        "start_offset": 266,
-                        "end_offset": 282,
+                        "start_offset": 262,
+                        "end_offset": 278,
                         "node_id": "BZgUADjeHvqnMuTWrMRpneM"
                     }
                 ]
             }
         },
-        "fgdUqhtVCdcEbjHwKmKCgqe": {
-            "id": "fgdUqhtVCdcEbjHwKmKCgqe",
+        "FUPWegwyesfgapGGEmmejWy": {
+            "id": "FUPWegwyesfgapGGEmmejWy",
             "type": "strong"
         },
-        "GxDRTsjzaqFJfNRcENDCqTU": {
-            "id": "GxDRTsjzaqFJfNRcENDCqTU",
+        "MANjnkyXphJatsEgehFTXfq": {
+            "id": "MANjnkyXphJatsEgehFTXfq",
             "type": "strong"
         },
-        "RQJJwzbjfRzeePxsnUpkebc": {
-            "id": "RQJJwzbjfRzeePxsnUpkebc",
+        "HtXmHxNBRWNFDefgWVtxzcY": {
+            "id": "HtXmHxNBRWNFDefgWVtxzcY",
             "type": "strong"
         },
         "dwMqDGUwHVvVkdzahPEWDuR": {
@@ -206,22 +223,22 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Select multiple whole blocks by dragging from a top-level block gap. Press Cmd+X to cut these sections. Now select another top-level gap and paste them with Cmd+V. This works everywhere, including the top-level nav and the footer links.",
+                "text": "To select multiple blocks at once, drag from a top-level gap. Cut them with Cmd + X and paste with Cmd + V at the new position. This is how you move blocks around.",
                 "annotations": [
                     {
-                        "start_offset": 75,
-                        "end_offset": 80,
-                        "node_id": "fgdUqhtVCdcEbjHwKmKCgqe"
+                        "start_offset": 35,
+                        "end_offset": 60,
+                        "node_id": "FUPWegwyesfgapGGEmmejWy"
                     },
                     {
-                        "start_offset": 157,
-                        "end_offset": 162,
-                        "node_id": "GxDRTsjzaqFJfNRcENDCqTU"
+                        "start_offset": 76,
+                        "end_offset": 83,
+                        "node_id": "MANjnkyXphJatsEgehFTXfq"
                     },
                     {
-                        "start_offset": 32,
-                        "end_offset": 67,
-                        "node_id": "RQJJwzbjfRzeePxsnUpkebc"
+                        "start_offset": 99,
+                        "end_offset": 106,
+                        "node_id": "HtXmHxNBRWNFDefgWVtxzcY"
                     }
                 ]
             }
@@ -239,7 +256,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Pro tip: To select the enclosing block, press Esc multiple times. Useful when you currently edit text, but want to change the layout at a higher level.",
+                "text": "Pro tip: To select the enclosing block, press Esc multiple times. Useful when you’re editing text but want to change the layout above it.",
                 "annotations": [
                     {
                         "start_offset": 0,
@@ -317,7 +334,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "You can also replace images, by selecting an image and then paste.",
+                "text": "To replace an image, select it first, then paste the new one.",
                 "annotations": []
             }
         },
@@ -467,12 +484,12 @@ export const demo_doc = {
             "href": "https://mutter.co",
             "target": "_blank"
         },
-        "mNdyyHZgUEQBdRQUQVsuryV": {
-            "id": "mNdyyHZgUEQBdRQUQVsuryV",
+        "tZaRuDwREZUUVyJmJnPgbZn": {
+            "id": "tZaRuDwREZUUVyJmJnPgbZn",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Johannes Mutter and I have already launched a few sites that are in-place editable.",
+                "text": "Johannes Mutter and I already launched a few sites that are in-place editable.",
                 "annotations": [
                     {
                         "start_offset": 0,
@@ -583,12 +600,12 @@ export const demo_doc = {
             "id": "YqbRJjNqVrWGnSyKNjHjtpq",
             "type": "strong"
         },
-        "zNnBwMTsCRnDkJmDKGzAPsD": {
-            "id": "zNnBwMTsCRnDkJmDKGzAPsD",
+        "SymHqcNwUXBRVqgvQdZhTJd": {
+            "id": "SymHqcNwUXBRVqgvQdZhTJd",
             "type": "strong"
         },
-        "fDzAKPaVuZXPrmxUwktkSzU": {
-            "id": "fDzAKPaVuZXPrmxUwktkSzU",
+        "YDMhhSJkVbZtUFFUQdXSrZX": {
+            "id": "YDMhhSJkVbZtUFFUQdXSrZX",
             "type": "strong"
         },
         "bCJcAyERSdbjXEPNbPQEpmg": {
@@ -596,7 +613,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Click on one of the cards above. It will show a little link preview at the bottom of the card. Click edit or press Cmd+K to bring up the link editor. Change the url you want to link to and press Enter.",
+                "text": "Click on one of the cards above. A link preview appears at the bottom. Click “edit” or press Cmd+K to bring up the link editor. Change the URL and press Enter.",
                 "annotations": [
                     {
                         "start_offset": 0,
@@ -604,19 +621,19 @@ export const demo_doc = {
                         "node_id": "vbjEnekAgSwRBffjUXUBCxM"
                     },
                     {
-                        "start_offset": 55,
-                        "end_offset": 67,
+                        "start_offset": 35,
+                        "end_offset": 47,
                         "node_id": "YqbRJjNqVrWGnSyKNjHjtpq"
                     },
                     {
-                        "start_offset": 115,
-                        "end_offset": 120,
-                        "node_id": "zNnBwMTsCRnDkJmDKGzAPsD"
+                        "start_offset": 153,
+                        "end_offset": 158,
+                        "node_id": "SymHqcNwUXBRVqgvQdZhTJd"
                     },
                     {
-                        "start_offset": 195,
-                        "end_offset": 200,
-                        "node_id": "fDzAKPaVuZXPrmxUwktkSzU"
+                        "start_offset": 93,
+                        "end_offset": 98,
+                        "node_id": "YDMhhSJkVbZtUFFUQdXSrZX"
                     }
                 ]
             }
@@ -656,7 +673,7 @@ export const demo_doc = {
             "intro": [
                 "FMmrrRxdfRzhujVmergnVxA",
                 "AjbSGnXVcWpHBurCTrKxYSs",
-                "mNdyyHZgUEQBdRQUQVsuryV"
+                "tZaRuDwREZUUVyJmJnPgbZn"
             ],
             "link_collection_items": [
                 "link_collection_item_2",
@@ -702,7 +719,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "And you just tried Editable Website. I made it for developers who want to control the site structure and layout in code, while allowing site owners to edit content in a way that's intuitive, fun, and \"just works.\"",
+                "text": "And you just tried Editable Website. I made it for developers who want to control the site structure and layout in code, while allowing site owners to edit content in a way that's intuitive, fun, and “just works.”",
                 "annotations": [
                     {
                         "start_offset": 19,
@@ -726,11 +743,11 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "If you're not a programmer, but a curious tinkerer who is not afraid of step-by-step technical instructions, this might be for you as well.",
+                "text": "If you're not a programmer but a curious tinkerer who isn’t afraid of following a few step-by-step technical instructions, this might be for you as well.",
                 "annotations": [
                     {
-                        "start_offset": 34,
-                        "end_offset": 50,
+                        "start_offset": 33,
+                        "end_offset": 49,
                         "node_id": "gmPGYpZHZrCJdYCeGvHDRXt"
                     }
                 ]
@@ -1009,6 +1026,7 @@ export const demo_doc = {
             "type": "page",
             "body": [
                 "hero_1",
+                "kAcGQwFmpTHhXmdKUkpRarr",
                 "feature_1",
                 "prose_1",
                 "BPdekRaDEUcQZqtEwPwBvyu",
