@@ -82,6 +82,9 @@ export class CycleNodeTypeCommand extends Command {
 		// If we are not dealing with a node selection in a container, return
 		if (node_array_schema.type !== 'node_array') return;
 
+		// Do nothing if there's only one type to switch to
+		if (node_array_schema.node_types?.length <= 1) return;
+
 		const current_type_index = node_array_schema.node_types.indexOf(node.type);
 		let new_type_index;
 
