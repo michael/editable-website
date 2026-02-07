@@ -16,7 +16,7 @@
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-5xl text-center">
 				<AnnotatedTextProperty
 					tag="h1"
-					class="font-heading text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-balance text-(--accent)"
+					class="font-heading text-5xl md:text-6xl lg:text-7xl text-balance text-(--accent)"
 					path={[...path, 'title']}
 					placeholder="Your bold statement goes here"
 				/>
