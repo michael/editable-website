@@ -78,16 +78,12 @@ export const demo_doc = {
             "id": "BYnvjBNEvJqBdqQmUyeUzgn",
             "type": "strong"
         },
-        "kJNavahEZGWKeAtWTgEQqnp": {
-            "id": "kJNavahEZGWKeAtWTgEQqnp",
-            "type": "strong"
-        },
         "WjasMkTrmjdrXTsDgeUHQap": {
             "id": "WjasMkTrmjdrXTsDgeUHQap",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "For basic text formatting use Cmd/Ctrl+B (Bold) Cmd/Ctrl+I (Italic) and Cmd/Ctrl+K to turn text into a link. To undo accidental changes press Cmd/Ctrl+Z.",
+                "text": "For basic text formatting use Cmd/Ctrl+B (Bold) Cmd/Ctrl+I (Italic) and Cmd/Ctrl+K to turn text into a link.",
                 "annotations": [
                     {
                         "start_offset": 30,
@@ -103,10 +99,24 @@ export const demo_doc = {
                         "start_offset": 72,
                         "end_offset": 82,
                         "node_id": "BYnvjBNEvJqBdqQmUyeUzgn"
-                    },
+                    }
+                ]
+            }
+        },
+        "kJNavahEZGWKeAtWTgEQqnp": {
+            "id": "kJNavahEZGWKeAtWTgEQqnp",
+            "type": "strong"
+        },
+        "YdzrGEwxckMvaZPBPCRDKSj": {
+            "id": "YdzrGEwxckMvaZPBPCRDKSj",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "To undo accidental changes press Cmd/Ctrl+Z.",
+                "annotations": [
                     {
-                        "start_offset": 142,
-                        "end_offset": 152,
+                        "start_offset": 33,
+                        "end_offset": 43,
                         "node_id": "kJNavahEZGWKeAtWTgEQqnp"
                     }
                 ]
@@ -122,7 +132,8 @@ export const demo_doc = {
             ],
             "outro": [
                 "feature_1_outro_paragraph",
-                "WjasMkTrmjdrXTsDgeUHQap"
+                "WjasMkTrmjdrXTsDgeUHQap",
+                "YdzrGEwxckMvaZPBPCRDKSj"
             ]
         },
         "HWcSGEAsZyfeQFjgvKrMpZc": {
