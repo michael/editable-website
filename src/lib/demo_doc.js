@@ -12,7 +12,7 @@ export const demo_doc = {
                 "annotations": []
             },
             "description": {
-                "text": "Let me show you how they do it.",
+                "text": "Want me to show you how they do it?",
                 "annotations": []
             },
             "buttons": []
@@ -141,7 +141,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 5,
             "content": {
-                "text": "EDITING",
+                "text": "Editing",
                 "annotations": []
             }
         },
@@ -282,7 +282,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 5,
             "content": {
-                "text": "IMAGES",
+                "text": "Images",
                 "annotations": []
             }
         },
@@ -568,7 +568,7 @@ export const demo_doc = {
             "target": "_blank",
             "image": "ReRqxYxMdAUVaMuudfJhzsS",
             "preline": {
-                "text": "VENtURE CAPITAL",
+                "text": "Venture capital",
                 "annotations": []
             },
             "title": {
@@ -599,7 +599,7 @@ export const demo_doc = {
             "target": "_blank",
             "image": "SwaNBGTTykjgVTHJsUCgHuB",
             "preline": {
-                "text": "Real Estate",
+                "text": "Real estate",
                 "annotations": []
             },
             "title": {
