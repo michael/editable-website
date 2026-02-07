@@ -12,7 +12,7 @@ export const demo_doc = {
                 "annotations": []
             },
             "description": {
-                "text": "Let me show you how the do it.",
+                "text": "Let me show you how they do it.",
                 "annotations": []
             },
             "buttons": []
