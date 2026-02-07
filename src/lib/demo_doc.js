@@ -3,27 +3,17 @@
 export const demo_doc = {
     "document_id": "page_1",
     "nodes": {
-        "fknRwUGjuUxkHGnnFcQzYBv": {
-            "id": "fknRwUGjuUxkHGnnFcQzYBv",
-            "type": "strong"
-        },
         "hero_1": {
             "id": "hero_1",
             "type": "hero",
             "layout": 1,
             "title": {
-                "text": "This is not an ordinary website",
+                "text": "There are people who actually enjoy editing their website",
                 "annotations": []
             },
             "description": {
-                "text": "I'll show you why. All you need is a computer with a physical keyboard. Ready?",
-                "annotations": [
-                    {
-                        "start_offset": 53,
-                        "end_offset": 70,
-                        "node_id": "fknRwUGjuUxkHGnnFcQzYBv"
-                    }
-                ]
+                "text": "Let me show you how the do it.",
+                "annotations": []
             },
             "buttons": []
         },
@@ -61,7 +51,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Or Ctrl+E if you are on Windows or Linux. You can move the cursor with the arrow keys or make selections with the mouse. You can edit anything you see on the screen.",
+                "text": "Or Ctrl+E if you are on Windows or Linux. Now you can move the cursor with the arrow keys or make selections with the mouse. You can edit anything you see on the screen.",
                 "annotations": [
                     {
                         "start_offset": 3,
@@ -69,8 +59,8 @@ export const demo_doc = {
                         "node_id": "vAhBcybjFJsXPkmRQrwWPaT"
                     },
                     {
-                        "start_offset": 129,
-                        "end_offset": 142,
+                        "start_offset": 133,
+                        "end_offset": 146,
                         "node_id": "uqxqsNMvMMNkyekKbMezJkg"
                     }
                 ]
