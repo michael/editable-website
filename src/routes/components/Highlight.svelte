@@ -8,8 +8,8 @@
 <mark
 	id={node.id}
 	data-node-id={node.id}
-	class="bg-transparent underline decoration-solid decoration-(--accent) underline-offset-4"
-	style="anchor-name: --{path.join('-')}; text-decoration-thickness: var(--highlight-thickness, 2px);">{content}</mark>
+	class="bg-transparent text-inherit underline decoration-solid decoration-(--accent) underline-offset-4"
+	style="anchor-name: --{path.join('-')}; text-decoration-thickness: var(--highlight-thickness, 4px);">{content}</mark>
 
 
 <style>
