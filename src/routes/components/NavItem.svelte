@@ -15,7 +15,7 @@
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
 		class="flex items-center justify-center w-full h-full"
-		class:hover:text-(--foreground-accent)={render_as_link}
+		class:hover:text-(--foreground)={render_as_link}
 	>
 		<AnnotatedTextProperty
 			class="px-3 py-1 sm:px-4"

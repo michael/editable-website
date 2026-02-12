@@ -1,25 +1,30 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 
-/* Subtle paper texture - creates a noise pattern for a tactile feel */
-/*body {
-	background-color: var(--background);
-	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.3'/%3E%3C/svg%3E");
-	background-size: 200px 200px;
-	background-repeat: repeat;
-}*/
-
 :root {
-	/* Base colors - configure these per site */
-	--background: oklch(0.98 0.002 264); /* light grey #F9FAFB */
-	--foreground: oklch(0.21 0.034 264); /* dark grey #111827 */
-	--accent: oklch(0.8 0.13 175); /* teal #22DABF */
+	/* Default colorset */
+	--background: oklch(0.98 0.002 264);
+	--foreground: oklch(0.21 0.034 264);
+	--accent: oklch(0.8 0.13 175);
+	--accent-foreground: oklch(0.21 0.034 264);
+
+	/* Alternative colorset 1 */
+	--background-alt1: oklch(0.21 0.034 264);
+	--foreground-alt1: oklch(0.98 0.002 264);
+	--accent-alt1: oklch(0.7 0.19 22);
+	--accent-foreground-alt1: oklch(0.21 0.034 264);
+
+	/* Alternative colorset 2 */
+	--background-alt2: #2B2D6E;
+	--foreground-alt2: oklch(0.98 0.002 264);
+	--accent-alt2: oklch(0.8 0.13 175);
+	--accent-foreground-alt2: oklch(0.21 0.034 264);
+
 	--border-radius: 0.25rem; /* slight rounded corners for buttons, nav items */
-	--foreground-accent: oklch(0 0 0); /* black - used for headings, titles */
 
 	/* Derived colors - these can be overridden per site, but I don't recommend it */
 	/*--foreground-muted: oklch(from var(--foreground) l c h / 50%); */ /* subtitles, secondary text */
-	--foreground-subtle: color-mix(in oklch, var(--background) 90%, var(--foreground) 8%); /* hairlines, borders - fully opaque warm grey */
+	--foreground-subtle: transparent; /*color-mix(in oklch, var(--background) 90%, var(--foreground) 8%); */ /* hairlines, borders - fully opaque warm grey */
 	--accent-muted: oklch(from var(--accent) l c h / 50%); /* hover states, fills */
 	--background-accent: color-mix(in oklch, var(--background) 50%, white 50%); /* lighter background - fully opaque */
 
