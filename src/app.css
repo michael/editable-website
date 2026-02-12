@@ -20,7 +20,7 @@
 	--accent-alt2: oklch(0.8 0.13 175);
 	--accent-foreground-alt2: oklch(0.21 0.034 264);
 
-	--border-radius: 0.25rem; /* slight rounded corners for buttons, nav items */
+	--border-radius: 0.5rem; /* slight rounded corners for buttons, nav items */
 
 	/* Derived colors - these can be overridden per site, but I don't recommend it */
 	/*--foreground-muted: oklch(from var(--foreground) l c h / 50%); */ /* subtitles, secondary text */
