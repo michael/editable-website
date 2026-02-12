@@ -8,5 +8,20 @@
 <mark
 	id={node.id}
 	data-node-id={node.id}
-	class="bg-transparent text-(--strong-mix) underline decoration-wavy decoration-(--accent) decoration-2 underline-offset-4"
-	style="anchor-name: --{path.join('-')};">{content}</mark>
+	class="bg-transparent text-(--strong-mix) underline decoration-solid decoration-(--accent) underline-offset-4"
+	style="anchor-name: --{path.join('-')}; text-decoration-thickness: var(--highlight-thickness, 2px);">{content}</mark>
+
+
+<style>
+	:global(h1) {
+		--highlight-thickness: 4px;
+	}
+
+	:global(h2) {
+		--highlight-thickness: 3px;
+	}
+
+	:global(h3) {
+		--highlight-thickness: 2px;
+	}
+</style>

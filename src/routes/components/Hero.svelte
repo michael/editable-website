@@ -16,7 +16,7 @@
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-5xl text-center">
 				<AnnotatedTextProperty
 					tag="h1"
-					class="font-heading text-5xl md:text-6xl lg:text-7xl text-balance text-(--foreground)"
+					class="ew-h1 font-heading text-5xl md:text-6xl lg:text-7xl text-balance text-(--foreground)"
 					path={[...path, 'title']}
 					placeholder="Your bold statement goes here"
 				/>
@@ -41,7 +41,7 @@
 			<div class="{TW_PAGE_PADDING_X} max-w-4xl">
 				<AnnotatedTextProperty
 					tag="h1"
-					class="font-heading text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground)"
+					class="ew-h1 font-heading text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground)"
 					path={[...path, 'title']}
 					placeholder="Your bold statement goes here"
 				/>
@@ -66,7 +66,7 @@
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-4xl text-center">
 				<AnnotatedTextProperty
 					tag="h1"
-					class="font-heading text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground)"
+					class="ew-h1 font-heading text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground)"
 					path={[...path, 'title']}
 					placeholder="Your bold statement goes here"
 				/>
@@ -93,7 +93,7 @@
 				<div class="{TW_MOBILE_LEFT_INSET}">
 					<AnnotatedTextProperty
 						tag="h1"
-						class="font-heading text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground)"
+						class="ew-h1 font-heading text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground)"
 						path={[...path, 'title']}
 						placeholder="Your bold statement goes here"
 					/>
@@ -122,5 +122,9 @@
 	/* When buttons array is empty, prevent the empty node placeholder from taking up vertical space */
 	:global(.hero-buttons.empty .node.empty-node-array) {
 		position: absolute !important;
+	}
+
+	:global(.ew-hero h1) {
+		--highlight-thickness: 6px;
 	}
 </style>
