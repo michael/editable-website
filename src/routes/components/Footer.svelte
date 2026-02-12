@@ -16,7 +16,7 @@
 	);
 </script>
 
-<Node {path} class="text-sm">
+<Node {path} class="lg:text-lg">
 	<div class="{TW_LIMITER}">
 		<div class="flex flex-col md:flex-row md:items-start border-l border-r border-(--foreground-subtle) py-10 md:py-16 {TW_PAGE_PADDING_X}">
 			<div class="md:w-1/3 flex flex-col items-start">
