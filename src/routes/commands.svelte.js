@@ -1,5 +1,5 @@
 import { Command, is_selection_collapsed } from 'svedit';
-import { get_layout_node } from './app_utils.js';
+import { get_layout_node, get_colorset_node } from './app_utils.js';
 
 /**
  * Command that cycles through available layouts for a node.
@@ -100,6 +100,31 @@ export class CycleNodeTypeCommand extends Command {
 		const tr = session.tr;
 		session.config.inserters[new_type](tr);
 		tr.set_selection(old_selection);
+		session.apply(tr);
+	}
+}
+
+/**
+ * Command that cycles through colorset options (0, 1, 2).
+ * Finds the nearest ancestor with a colorset property and cycles it.
+ */
+export class CycleColorsetCommand extends Command {
+	colorset_node = $derived(get_colorset_node(this.context.session));
+
+	is_enabled() {
+		return this.context.editable && this.colorset_node !== null;
+	}
+
+	execute() {
+		const session = this.context.session;
+		const node = this.colorset_node;
+		if (!node) return;
+
+		// Cycle through 0, 1, 2
+		const new_colorset = (node.colorset + 1) % 3;
+
+		const tr = session.tr;
+		tr.set([node.id, 'colorset'], new_colorset);
 		session.apply(tr);
 	}
 }
