@@ -11,6 +11,7 @@ export const demo_doc = {
             "id": "hero_1",
             "type": "hero",
             "layout": 1,
+            "colorset": 0,
             "title": {
                 "text": "There are people who actually enjoy editing their website",
                 "annotations": [
@@ -136,6 +137,7 @@ export const demo_doc = {
             "id": "feature_1",
             "type": "feature",
             "layout": 1,
+            "colorset": 0,
             "image": "feature_1_image",
             "intro": [
                 "feature_1_intro_heading"
@@ -279,6 +281,7 @@ export const demo_doc = {
             "id": "prose_1",
             "type": "prose",
             "layout": 1,
+            "colorset": 0,
             "content": [
                 "HWcSGEAsZyfeQFjgvKrMpZc",
                 "heading_1",
@@ -657,6 +660,7 @@ export const demo_doc = {
             "id": "link_collection_1",
             "type": "link_collection",
             "layout": 1,
+            "colorset": 0,
             "intro": [
                 "FMmrrRxdfRzhujVmergnVxA",
                 "AjbSGnXVcWpHBurCTrKxYSs",
@@ -744,6 +748,7 @@ export const demo_doc = {
             "id": "YTMHBcPkYXJMRUnuSAhrTDE",
             "type": "feature",
             "layout": 1,
+            "colorset": 0,
             "image": "hqrrTdEbTPaqzEcYMczhBZb",
             "intro": [
                 "feature_2_intro_heading"
@@ -775,6 +780,7 @@ export const demo_doc = {
         "UBNYngEBJYtDWgeabtDJqWW": {
             "id": "UBNYngEBJYtDWgeabtDJqWW",
             "type": "hero",
+            "colorset": 0,
             "title": {
                 "text": "Join the waitlist",
                 "annotations": []

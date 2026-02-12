@@ -7,6 +7,7 @@
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
 	let layout = $derived(node.layout || 1);
+	let colorset_class = $derived(node.colorset ? `ew-colorset-${node.colorset}` : '');
 
 	const heading_spacing = `
 		[&>div:has(h1)~div>h1]:pt-8
@@ -56,7 +57,7 @@
 	</div>
 {/snippet}
 
-<Node class="ew-prose lg:text-lg layout-{layout} border-b border-(--foreground-subtle)" {path}>
+<Node class="ew-prose lg:text-lg layout-{layout} border-b border-(--foreground-subtle) bg-(--background) text-(--foreground) {colorset_class}" {path}>
 	{@const layouts = [layout_1, layout_2, layout_3]}
 	{@render layouts[layout - 1]()}
 </Node>

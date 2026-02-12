@@ -6,6 +6,7 @@
 
 	const svedit = getContext('svedit');
 	let node = $derived(svedit.session.get(path));
+	let colorset_class = $derived(node.colorset ? `ew-colorset-${node.colorset}` : '');
 	let has_intro = $derived(node.intro && node.intro.length > 0);
 	let has_outro = $derived(node.outro && node.outro.length > 0);
 
@@ -31,7 +32,7 @@
 {/snippet}
 
 <Node {path}>
-	<div class="border-b border-(--foreground-subtle)">
+	<div class="border-b border-(--foreground-subtle) bg-(--background) text-(--foreground) {colorset_class}">
 		<div class="{TW_LIMITER} w-full">
 			<div class="border-l border-r border-(--foreground-subtle)">
 				{@render intro()}
