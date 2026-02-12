@@ -153,6 +153,7 @@ const document_schema = define_document_schema({
 		kind: 'block',
 		properties: {
 			layout: { type: 'integer', default: 1 },
+			colorset: { type: 'integer', default: 0 },
 			title: {
 				type: 'annotated_text',
 				node_types: ALL_ANNOTATIONS,
@@ -187,6 +188,7 @@ const document_schema = define_document_schema({
 		kind: 'block',
 		properties: {
 			layout: { type: 'integer', default: 1 },
+			colorset: { type: 'integer', default: 0 },
 			content: {
 				type: 'node_array',
 				node_types: ['text'],
@@ -263,6 +265,7 @@ const document_schema = define_document_schema({
 		kind: 'block',
 		properties: {
 			layout: { type: 'integer', default: 1 },
+			colorset: { type: 'integer', default: 0 },
 			intro: {
 				type: 'node_array',
 				node_types: ['text'],
@@ -310,6 +313,7 @@ const document_schema = define_document_schema({
 		kind: 'block',
 		properties: {
 			layout: { type: 'integer', default: 1 },
+			colorset: { type: 'integer', default: 0 },
 			image: {
 				type: 'node',
 				node_types: ['image'],
@@ -547,6 +551,7 @@ const session_config = {
 				id: nanoid(),
 				type: 'prose',
 				layout: 1,
+				colorset: 0,
 				content: [new_heading.id, new_paragraph.id]
 			};
 			tr.create(new_prose);
@@ -603,13 +608,14 @@ const session_config = {
 					content: { text: '', annotations: [] }
 				},
 				new_feature: {
-					id: 'new_feature',
-					type: 'feature',
-					layout: 1,
-					image: 'feature_image',
-					intro: ['intro_text'],
-					outro: ['outro_text']
-				}
+						id: 'new_feature',
+						type: 'feature',
+						layout: 1,
+						colorset: 0,
+						image: 'feature_image',
+						intro: ['intro_text'],
+						outro: ['outro_text']
+					}
 			});
 
 			tr.insert_nodes([new_feature_id]);
@@ -662,6 +668,7 @@ const session_config = {
 				new_hero: {
 					id: 'new_hero',
 					type: 'hero',
+					colorset: 0,
 					title: { text: '', annotations: [] },
 					description: { text: '', annotations: [] },
 					buttons: []
@@ -859,6 +866,7 @@ const session_config = {
 				id: nanoid(),
 				type: 'link_collection',
 				layout: 1,
+				colorset: 0,
 				intro: [intro_text.id],
 				link_collection_items: new_link_collection_items,
 				outro: [outro_text.id]

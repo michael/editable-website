@@ -8,6 +8,7 @@
 	let node = $derived(svedit.session.get(path));
 	let has_buttons = $derived(node.buttons?.length > 0);
 	let layout = $derived(node.layout || 1);
+	let colorset_class = $derived(node.colorset ? `ew-colorset-${node.colorset}` : '');
 </script>
 
 {#snippet layout_1()}
@@ -113,7 +114,7 @@
 	</div>
 {/snippet}
 
-<Node class="ew-hero lg:text-lg border-b border-(--foreground-subtle)" {path}>
+<Node class="ew-hero lg:text-lg border-b border-(--foreground-subtle) bg-(--background) text-(--foreground) {colorset_class}" {path}>
 	{@const layouts = [layout_1, layout_2, layout_3, layout_4]}
 	{@render layouts[layout - 1]()}
 </Node>

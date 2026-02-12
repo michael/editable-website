@@ -7,6 +7,7 @@
 	const svedit = getContext('svedit');
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
+	let colorset_class = $derived(node.colorset ? `ew-colorset-${node.colorset}` : '');
 	let image_node = $derived(svedit.session.get([...path, 'image']));
 	let is_selected = $derived(is_image_selected());
 
@@ -117,7 +118,7 @@
 	</div>
 {/snippet}
 
-<Node class="ew-feature lg:text-lg border-b border-(--foreground-subtle)" {path}>
+<Node class="ew-feature lg:text-lg border-b border-(--foreground-subtle) bg-(--background) text-(--foreground) {colorset_class}" {path}>
 	{@const layouts = [layout_1, layout_2, layout_3, layout_4]}
 	{@render layouts[node.layout - 1]()}
 </Node>
