@@ -3,16 +3,26 @@
 export const demo_doc = {
     "document_id": "page_1",
     "nodes": {
+        "yfRkSRxguKNCMBZYTaAbsmq": {
+            "id": "yfRkSRxguKNCMBZYTaAbsmq",
+            "type": "highlight"
+        },
         "hero_1": {
             "id": "hero_1",
             "type": "hero",
             "layout": 1,
             "title": {
                 "text": "There are people who actually enjoy editing their website",
-                "annotations": []
+                "annotations": [
+                    {
+                        "start_offset": 21,
+                        "end_offset": 35,
+                        "node_id": "yfRkSRxguKNCMBZYTaAbsmq"
+                    }
+                ]
             },
             "description": {
-                "text": "Want me to show you how they do it?",
+                "text": "Let me show you how they do it.",
                 "annotations": []
             },
             "buttons": []
@@ -472,14 +482,6 @@ export const demo_doc = {
                 "annotations": []
             }
         },
-        "WfZfGKaAEWGManmBReNUYRE": {
-            "id": "WfZfGKaAEWGManmBReNUYRE",
-            "type": "strong"
-        },
-        "AYFTGYRNYcvzEtPvneWrwXz": {
-            "id": "AYFTGYRNYcvzEtPvneWrwXz",
-            "type": "strong"
-        },
         "HKxZjnxPdyvkZNCxBxfKBmm": {
             "id": "HKxZjnxPdyvkZNCxBxfKBmm",
             "type": "strong"
@@ -495,16 +497,6 @@ export const demo_doc = {
             "content": {
                 "text": "Click on one of the cards below. A link preview appears at the bottom. Click “edit” or press Cmd/Ctrl+K to bring up the link editor. Change the URL and press Enter.",
                 "annotations": [
-                    {
-                        "start_offset": 0,
-                        "end_offset": 5,
-                        "node_id": "WfZfGKaAEWGManmBReNUYRE"
-                    },
-                    {
-                        "start_offset": 35,
-                        "end_offset": 47,
-                        "node_id": "AYFTGYRNYcvzEtPvneWrwXz"
-                    },
                     {
                         "start_offset": 158,
                         "end_offset": 163,

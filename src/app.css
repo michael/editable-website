@@ -16,12 +16,10 @@
 	--accent: oklch(0.8 0.13 175); /* teal #22DABF */
 	--border-radius: 0.25rem; /* slight rounded corners for buttons, nav items */
 	--foreground-accent: oklch(0 0 0); /* black - used for headings, titles */
-	--strong-mix: color-mix(in oklch, currentColor 70%, black); /* darkened text for strong/emphasis */
-	--highlight-background: oklch(from var(--accent) l c h / 10%); /* light orange highlight for text annotations */
 
 	/* Derived colors - these can be overridden per site, but I don't recommend it */
-	--foreground-muted: oklch(from var(--foreground) l c h / 50%); /* subtitles, secondary text */
-	--foreground-subtle: color-mix(in oklch, var(--background) 90%, var(--foreground) 20%); /* hairlines, borders - fully opaque warm grey */
+	/*--foreground-muted: oklch(from var(--foreground) l c h / 50%); */ /* subtitles, secondary text */
+	--foreground-subtle: color-mix(in oklch, var(--background) 90%, var(--foreground) 8%); /* hairlines, borders - fully opaque warm grey */
 	--accent-muted: oklch(from var(--accent) l c h / 50%); /* hover states, fills */
 	--background-accent: color-mix(in oklch, var(--background) 50%, white 50%); /* lighter background - fully opaque */
 

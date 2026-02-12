@@ -6,3 +6,9 @@
 </script>
 
 <strong class="font-semibold" id={node.id} data-node-id={node.id}>{content}</strong>
+
+<style>
+	/*:global(h1 strong,h2 strong,h3 strong) {
+		font-weight: inherit;
+	}*/
+</style>
