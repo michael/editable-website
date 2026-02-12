@@ -62,6 +62,7 @@
 		--foreground: var(--foreground-alt1);
 		--accent: var(--accent-alt1);
 		--accent-foreground: var(--accent-foreground-alt1);
+		--foreground-subtle: color-mix(in oklch, var(--background) 90%, var(--foreground) 8%);
 	}
 
 	.ew-colorset-2 {
@@ -69,5 +70,6 @@
 		--foreground: var(--foreground-alt2);
 		--accent: var(--accent-alt2);
 		--accent-foreground: var(--accent-foreground-alt2);
+		--foreground-subtle: color-mix(in oklch, var(--background) 90%, var(--foreground) 8%);
 	}
 }
