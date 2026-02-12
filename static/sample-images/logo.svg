@@ -1,16 +1,16 @@
 <svg class="pb-8 w-14 sm:w-24 mx-auto" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!-- Bottom bar with rounded corners -->
   <path d="M162 112 Q164 111 165 113 L165 145 Q164 147 162 148 L66 200 Q64 201 63 199 L63 167 Q64 165 66 164 L162 112 Z"
-        fill="oklch(0.21 0.034 264)"
+        fill="currentColor"
         stroke="none"/>
 
   <!-- Middle bar with rounded corners -->
   <path d="M134 68 Q136 67 137 69 L137 101 Q136 103 134 104 L38 156 Q36 157 35 155 L35 123 Q36 121 38 120 L134 68 Z"
-        fill="oklch(0.21 0.034 264)"
+        fill="currentColor"
         stroke="none"/>
 
   <!-- Top bar with rounded corners -->
   <path d="M162 2 Q164 1 165 3 L165 35 Q164 37 162 38 L66 90 Q64 91 63 89 L63 57 Q64 55 66 54 L162 2 Z"
-        fill="oklch(0.21 0.034 264)"
+        fill="currentColor"
         stroke="none"/>
 </svg>
