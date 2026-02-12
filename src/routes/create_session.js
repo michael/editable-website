@@ -15,6 +15,7 @@ import nanoid from './nanoid.js';
 import {
 	CycleLayoutCommand,
 	CycleNodeTypeCommand,
+	CycleColorsetCommand,
 	ResetImageCommand,
 	ToggleLinkCommand,
 	EditLinkCommand
@@ -493,7 +494,8 @@ const session_config = {
 			cycle_node_type_previous: new CycleNodeTypeCommand('previous', context),
 			reset_image: new ResetImageCommand(context),
 			toggle_link: new ToggleLinkCommand(context),
-			edit_link: new EditLinkCommand(context)
+			edit_link: new EditLinkCommand(context),
+			cycle_colorset: new CycleColorsetCommand(context)
 		};
 
 		// Define keymap binding keys to commands
@@ -516,7 +518,8 @@ const session_config = {
 			backspace: [commands.reset_image],
 			// Fallback for iOS, as property selection triggers auto capitalization (shift pressed)
 			'shift+backspace': [commands.reset_image],
-			'meta+k,ctrl+k': [commands.edit_link, commands.toggle_link]
+			'meta+k,ctrl+k': [commands.edit_link, commands.toggle_link],
+			'ctrl+shift+c': [commands.cycle_colorset]
 		});
 
 		return { commands, keymap };
