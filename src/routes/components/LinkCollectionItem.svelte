@@ -2,7 +2,6 @@
 	import { getContext } from 'svelte';
 	import { Node, CustomProperty, AnnotatedTextProperty } from 'svedit';
 	import Image from './Image.svelte';
-	import { TW_PAGE_PADDING } from '../tailwind_theme.js';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
@@ -18,41 +17,42 @@
 	}
 </script>
 
-<Node class="link-collection-item h-full" {path}>
+<Node class="link-collection-item group" {path}>
 	<svelte:element
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="transition-all duration-150 ease-out h-full flex flex-col border bg-(--background-accent) border-(--foreground-subtle) rounded-(--border-radius) hover:border-(--accent) overflow-hidden"
-		class:hover-effect={render_as_link}
+		class="block"
 	>
-		<div class="p-5 md:p-6 pb-0!">
-			<CustomProperty path={[...path, 'image']}>
-				<div
-					contenteditable="false"
-					style:aspect-ratio={4 / 3}
-					class="w-full overflow-hidden select-none"
-					class:ew-bg-checkerboard={(is_selected || !image_node.src) && svedit.editable}
-				>
-					<Image path={[...path, 'image']} />
-				</div>
-			</CustomProperty>
-		</div>
-		<div class="p-5 md:p-6">
-			<AnnotatedTextProperty class="font-medium text-xs md:text-sm uppercase tracking-wider text-(--foreground) mb-2" path={[...path, 'preline']} placeholder="Preline" />
-			<AnnotatedTextProperty class="font-heading text-(--foreground) text-2xl lg:text-3xl text-balance pt-1" path={[...path, 'title']} placeholder="Title" />
+		<CustomProperty path={[...path, 'image']}>
+			<div
+				contenteditable="false"
+				style:aspect-ratio={4 / 3}
+				class="w-full overflow-hidden select-none"
+				class:ew-bg-checkerboard={(is_selected || !image_node.src) && svedit.editable}
+			>
+				<Image path={[...path, 'image']} />
+			</div>
+		</CustomProperty>
+		<div class="pt-4">
+			<AnnotatedTextProperty class="font-medium text-xs md:text-sm uppercase tracking-wider text-(--foreground) opacity-60 mb-2" path={[...path, 'preline']} placeholder="Preline" />
+			<AnnotatedTextProperty class="title-underline font-heading text-(--foreground) text-2xl lg:text-3xl text-balance pt-1" path={[...path, 'title']} placeholder="Title" />
 			<AnnotatedTextProperty class="text-balance pt-2" path={[...path, 'description']} placeholder="Description" />
 		</div>
 	</svelte:element>
 </Node>
 
 <style>
-	@media (hover: hover) {
-		.hover-effect:hover {
-			box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.12);
-		}
-		.hover-effect:active {
-			box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.18);
-		}
+	:global(.title-underline) {
+		display: inline;
+		background: linear-gradient(to left, var(--accent), var(--accent));
+		background-size: 0 3px;
+		background-position: 0 100%, 100% 100%;
+		background-repeat: no-repeat;
+		transition: background-size cubic-bezier(0.8, 0, 0.2, 1) 0.4s;
+	}
+
+	:global(.group:hover .title-underline) {
+		background-size: 100% 3px;
 	}
 </style>

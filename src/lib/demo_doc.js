@@ -451,7 +451,7 @@ export const demo_doc = {
             "id": "BPdekRaDEUcQZqtEwPwBvyu",
             "type": "gallery",
             "layout": 1,
-            "colorset": 2,
+            "colorset": 0,
             "intro": [
                 "AHXsSZcYYwnXKYzHbDnSRRh",
                 "BfpsPAaqmJXnRrHzwJCSMHE",
