@@ -58,4 +58,19 @@
 			-10px 0px;
 		background-color: rgba(255, 255, 255, 0.5);
 	}
+
+	/* Colorset utility classes - remap base variables to alternative sets */
+	.ew-colorset-1 {
+		--background: var(--background-alt1, var(--background));
+		--foreground: var(--foreground-alt1, var(--foreground));
+		--accent: var(--accent-alt1, var(--accent));
+		--accent-foreground: var(--accent-foreground-alt1, var(--accent-foreground));
+	}
+
+	.ew-colorset-2 {
+		--background: var(--background-alt2, var(--background));
+		--foreground: var(--foreground-alt2, var(--foreground));
+		--accent: var(--accent-alt2, var(--accent));
+		--accent-foreground: var(--accent-foreground-alt2, var(--accent-foreground));
+	}
 }
