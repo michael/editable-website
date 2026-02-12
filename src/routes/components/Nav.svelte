@@ -63,12 +63,12 @@
 			>
 				{#if mobile_menu_open}
 					<!-- Close icon -->
-					<svg class="w-6 h-6 stroke-(--accent)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<svg class="w-6 h-6 stroke-(--foreground)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="square" stroke-linejoin="miter" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
 					</svg>
 				{:else}
 					<!-- Hamburger icon (2 lines) -->
-					<svg class="w-6 h-6 stroke-(--accent)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<svg class="w-6 h-6 stroke-(--foreground)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="square" stroke-linejoin="miter" stroke-width="1.5" d="M4 8h16M4 16h16" />
 					</svg>
 				{/if}
@@ -78,7 +78,7 @@
 	<!-- Mobile menu overlay (read-only, visible when open, hidden on desktop) -->
 	{#if mobile_menu_open}
 		<div
-			class="md:hidden fixed inset-0 bg-(--background-accent)/80 backdrop-blur-sm z-50"
+			class="md:hidden fixed inset-0 bg-(--background)/80 backdrop-blur-sm z-50"
 			contenteditable="false"
 			transition:slide={{ duration: 200 }}
 		>
@@ -88,7 +88,7 @@
 				onclick={close_mobile_menu}
 				aria-label="Close menu"
 			>
-				<svg class="w-6 h-6 stroke-(--accent)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<svg class="w-6 h-6 stroke-(--foreground)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="square" stroke-linejoin="miter" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
 				</svg>
 			</button>
@@ -100,7 +100,7 @@
 					<a
 						href={item.href || '#'}
 						target={item.target}
-						class="text-3xl font-heading text-(--accent) py-2 px-3 sm:px-5"
+						class="text-3xl font-heading text-(--foreground) py-2 px-3 sm:px-5"
 						onclick={close_mobile_menu}
 					>
 						{item.label?.text || ''}

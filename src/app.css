@@ -11,7 +11,7 @@
 	/* Alternative colorset 1 */
 	--background-alt1: oklch(0.21 0.034 264);
 	--foreground-alt1: oklch(0.98 0.002 264);
-	--accent-alt1: oklch(0.7 0.19 22);
+	--accent-alt1: oklch(0.8 0.13 175); /* oklch(0.7 0.19 22); */
 	--accent-foreground-alt1: oklch(0.21 0.034 264);
 
 	/* Alternative colorset 2 */
@@ -23,10 +23,7 @@
 	--border-radius: 0.5rem; /* slight rounded corners for buttons, nav items */
 
 	/* Derived colors - these can be overridden per site, but I don't recommend it */
-	/*--foreground-muted: oklch(from var(--foreground) l c h / 50%); */ /* subtitles, secondary text */
-	--foreground-subtle: transparent; /*color-mix(in oklch, var(--background) 90%, var(--foreground) 8%); */ /* hairlines, borders - fully opaque warm grey */
-	--accent-muted: oklch(from var(--accent) l c h / 50%); /* hover states, fills */
-	--background-accent: color-mix(in oklch, var(--background) 50%, white 50%); /* lighter background - fully opaque */
+	--foreground-subtle: color-mix(in oklch, var(--background) 90%, var(--foreground) 8%); /* hairlines, borders - fully opaque warm grey */
 
 	/* Editor colors - purple/violet complements teal accent */
 	--editing-fill-color: oklch(59.71% 0.22 283 / 0.1);
