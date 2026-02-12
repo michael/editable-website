@@ -231,6 +231,7 @@ const document_schema = define_document_schema({
 		kind: 'block',
 		properties: {
 			layout: { type: 'integer', default: 1 },
+			colorset: { type: 'integer', default: 0 },
 			intro: {
 				type: 'node_array',
 				node_types: ['text'],
@@ -764,6 +765,7 @@ const session_config = {
 				id: nanoid(),
 				type: 'gallery',
 				layout: 1,
+				colorset: 0,
 				intro: [intro_text.id],
 				gallery_items: new_gallery_items,
 				outro: [outro_text.id]

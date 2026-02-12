@@ -98,6 +98,12 @@ Content is defined through schemas that specify:
 3. Selection state is synchronized between internal model and DOM
 4. Components render content based on document state and schema definitions
 
+## Schema and Inserter
+
+When adding new properties to a node type:
+1. Add to schema in `create_session.js` (`document_schema`)
+2. Add to inserter in `create_session.js` (`inserters`)
+
 ## Available MCP Tools
 
 You are able to use the Svelte MCP server, where you have access to comprehensive Svelte 5 and SvelteKit documentation. Here's how to use the available tools effectively:
