@@ -23,7 +23,7 @@ export const demo_doc = {
                 ]
             },
             "description": {
-                "text": "Let me show you how they do it.",
+                "text": "I'd like to show you how they do it.",
                 "annotations": []
             },
             "buttons": []
@@ -277,17 +277,47 @@ export const demo_doc = {
                 ]
             }
         },
+        "ybNbBkMErnzQyRqpStQKMQZ": {
+            "id": "ybNbBkMErnzQyRqpStQKMQZ",
+            "type": "text",
+            "layout": 2,
+            "content": {
+                "text": "Change color",
+                "annotations": []
+            }
+        },
+        "yMDFtuvupWEduFuTEADNHWt": {
+            "id": "yMDFtuvupWEduFuTEADNHWt",
+            "type": "highlight"
+        },
+        "JVAAazPetYAsCvHAunXtuCF": {
+            "id": "JVAAazPetYAsCvHAunXtuCF",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "Press Ctrl+Shift+C to change the color surface of the current section.",
+                "annotations": [
+                    {
+                        "start_offset": 6,
+                        "end_offset": 18,
+                        "node_id": "yMDFtuvupWEduFuTEADNHWt"
+                    }
+                ]
+            }
+        },
         "prose_1": {
             "id": "prose_1",
             "type": "prose",
             "layout": 1,
-            "colorset": 0,
+            "colorset": 2,
             "content": [
                 "HWcSGEAsZyfeQFjgvKrMpZc",
                 "heading_1",
                 "paragraph_1",
                 "dwMqDGUwHVvVkdzahPEWDuR",
-                "uNprzMQcMQztTppEeTKssBd"
+                "uNprzMQcMQztTppEeTKssBd",
+                "ybNbBkMErnzQyRqpStQKMQZ",
+                "JVAAazPetYAsCvHAunXtuCF"
             ]
         },
         "AHXsSZcYYwnXKYzHbDnSRRh": {
@@ -660,7 +690,7 @@ export const demo_doc = {
             "id": "link_collection_1",
             "type": "link_collection",
             "layout": 1,
-            "colorset": 0,
+            "colorset": 1,
             "intro": [
                 "FMmrrRxdfRzhujVmergnVxA",
                 "AjbSGnXVcWpHBurCTrKxYSs",
