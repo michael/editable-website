@@ -27,7 +27,7 @@
 						class="h-18 w-18 overflow-hidden block"
 						contenteditable={svedit.editable ? 'false' : undefined}
 					>
-						<Image path={[...path, 'logo']} />
+						<Image path={[...path, 'logo']} mask={true} />
 					</svelte:element>
 				</CustomProperty>
 				<AnnotatedTextProperty

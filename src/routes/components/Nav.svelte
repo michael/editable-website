@@ -46,7 +46,7 @@
 						class="w-10 h-10 overflow-hidden block"
 						contenteditable={svedit.editable ? 'false' : undefined}
 					>
-						<Image path={[...path, 'logo']} />
+						<Image path={[...path, 'logo']} mask={true} />
 					</svelte:element>
 				</CustomProperty>
 			</div>
