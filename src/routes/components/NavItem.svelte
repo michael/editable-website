@@ -14,11 +14,9 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="flex items-center justify-center w-full h-full"
-		class:hover:underline={render_as_link}
+		class="nav-item-link flex items-center justify-center w-full mx-3 sm:mx-4 pb-1"
 	>
 		<AnnotatedTextProperty
-			class="px-3 py-1 sm:px-4"
 			path={[...path, 'label']}
 			placeholder="Label"
 		/>
@@ -30,11 +28,11 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="flex items-center justify-center w-full h-full bg-(--accent) text-(--accent-foreground) ml-2 rounded-(--border-radius)"
+		class="flex items-center justify-center w-full h-full bg-(--accent) text-(--accent-foreground) rounded-(--border-radius)"
 		class:hover:opacity-80={render_as_link}
 	>
 		<AnnotatedTextProperty
-			class="px-3 py-1 sm:px-4"
+			class="px-3 sm:px-4"
 			path={[...path, 'label']}
 			placeholder="Label"
 		/>
@@ -48,3 +46,17 @@
 		{@render layout_1()}
 	{/if}
 </Node>
+
+<style>
+	.nav-item-link {
+		background: linear-gradient(to left, var(--accent), var(--accent));
+		background-size: 0 4px;
+		background-position: 0 100%, 100% 100%;
+		background-repeat: no-repeat;
+		transition: background-size cubic-bezier(0.8, 0, 0.2, 1) 0.4s;
+	}
+
+	.nav-item-link:hover {
+		background-size: 100% 4px;
+	}
+</style>
