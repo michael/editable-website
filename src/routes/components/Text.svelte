@@ -32,13 +32,13 @@
 			case 1:
 				return '';
 			case 2:
-				return 'font-heading text-3xl md:text-4xl lg:text-5xl text-balance text-(--accent) [text-box:trim-both_cap_alphabetic]';
+				return 'font-heading text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground) [text-box:trim-both_cap_alphabetic]';
 			case 3:
-				return 'font-heading text-2xl md:text-3xl lg:text-4xl text-balance text-(--foreground-accent) [text-box:trim-both_cap_alphabetic]';
+				return 'font-heading text-2xl md:text-3xl lg:text-4xl text-balance text-(--foreground) [text-box:trim-both_cap_alphabetic]';
 			case 4:
-				return 'font-heading text-xl md:text-2xl lg:text-3xl text-balance text-(--foreground-accent)';
+				return 'font-heading text-xl md:text-2xl lg:text-3xl text-balance text-(--foreground)';
 			case 5:
-				return 'ew-eyebrow block text-xs md:text-sm font-medium uppercase tracking-wider text-(--foreground-accent)';
+				return 'ew-eyebrow block text-xs md:text-sm font-medium uppercase tracking-wider text-(--foreground)';
 			default:
 				return '';
 		}

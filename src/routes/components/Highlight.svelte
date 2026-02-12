@@ -8,5 +8,5 @@
 <mark
 	id={node.id}
 	data-node-id={node.id}
-	class="text-(--strong-mix) [background:linear-gradient(to_bottom,transparent_10%,var(--highlight-background)_10%,var(--highlight-background)_90%,transparent_90%)]"
+	class="bg-transparent text-(--strong-mix) underline decoration-wavy decoration-(--accent) decoration-2 underline-offset-4"
 	style="anchor-name: --{path.join('-')};">{content}</mark>

@@ -2,18 +2,18 @@
 @plugin '@tailwindcss/forms';
 
 /* Subtle paper texture - creates a noise pattern for a tactile feel */
-body {
+/*body {
 	background-color: var(--background);
 	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.3'/%3E%3C/svg%3E");
 	background-size: 200px 200px;
 	background-repeat: repeat;
-}
+}*/
 
 :root {
 	/* Base colors - configure these per site */
-	--background: #f7f7f4; /* light grey */
-	--foreground: oklch(0.5 0 0); /* medium grey #656565 */
-	--accent: oklch(0.56 0.17 36); /* orange */
+	--background: oklch(0.98 0.002 264); /* light grey #F9FAFB */
+	--foreground: oklch(0.21 0.034 264); /* dark grey #111827 */
+	--accent: oklch(0.8 0.13 175); /* teal #22DABF */
 	--border-radius: 0.25rem; /* slight rounded corners for buttons, nav items */
 	--foreground-accent: oklch(0 0 0); /* black - used for headings, titles */
 	--strong-mix: color-mix(in oklch, currentColor 70%, black); /* darkened text for strong/emphasis */
@@ -25,9 +25,9 @@ body {
 	--accent-muted: oklch(from var(--accent) l c h / 50%); /* hover states, fills */
 	--background-accent: color-mix(in oklch, var(--background) 50%, white 50%); /* lighter background - fully opaque */
 
-	/* Editor colors - soft teal complements orange accent */
-	--editing-fill-color: oklch(0.85 0.08 180 / 30%);
-	--editing-stroke-color: oklch(0.55 0.12 180);
+	/* Editor colors - purple/violet complements teal accent */
+	--editing-fill-color: oklch(59.71% 0.22 283 / 0.1);
+  --editing-stroke-color: oklch(59.71% 0.22 283);
 }
 
 
