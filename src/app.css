@@ -1,6 +1,10 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 
+html {
+	scroll-behavior: smooth;
+}
+
 :root {
 	/* Default colorset */
 	--background: oklch(0.98 0.002 264);
