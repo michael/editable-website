@@ -453,7 +453,7 @@ export const demo_doc = {
         "BPdekRaDEUcQZqtEwPwBvyu": {
             "id": "BPdekRaDEUcQZqtEwPwBvyu",
             "type": "gallery",
-            "layout": 2,
+            "layout": 1,
             "colorset": 0,
             "intro": [
                 "AHXsSZcYYwnXKYzHbDnSRRh",
