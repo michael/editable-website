@@ -18,7 +18,7 @@
 </script>
 
 {#snippet intro()}
-	{@const intro_padding = has_intro ? 'pt-10 sm:pt-14 md:pt-16 lg:pt-20 pb-5 sm:pb-7 md:pb-10 lg:pb-14' : 'pt-10 sm:pt-14 md:pt-16 lg:pt-20'}
+	{@const intro_padding = has_intro ? 'pt-10 sm:pt-14 md:pt-16 lg:pt-20 pb-2 sm:pb-3 md:pb-5 lg:pb-7' : 'pt-10 sm:pt-14 md:pt-16 lg:pt-20'}
 	<div class="{TW_PAGE_PADDING_X} max-w-4xl lg:text-lg {intro_padding}">
 		<NodeArrayProperty class="ew-intro space-y-5 md:space-y-8 {heading_spacing}" path={[...path, 'intro']} />
 	</div>
