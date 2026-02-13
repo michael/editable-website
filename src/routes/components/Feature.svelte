@@ -20,11 +20,12 @@
 </script>
 
 <!-- Primitives -->
-{#snippet image(aspect_ratio)}
+{#snippet image(aspect_ratio, border_radius = false)}
 	<CustomProperty class="ew-image-property" path={[...path, 'image']}>
 		<div
 			contenteditable="false"
 			style:aspect-ratio={aspect_ratio}
+			style:border-radius={border_radius ? 'var(--border-radius)' : undefined}
 			class="ew-image-wrapper h-full w-full overflow-hidden select-none"
 			class:ew-bg-checkerboard={is_selected || !image_node.src}
 		>
@@ -59,7 +60,7 @@
 				</div>
 			</div>
 			<div class="{TW_PAGE_PADDING} md:border-l border-(--border-color)" use:reveal={{ delay: 200 }}>
-				{@render image(3 / 4)}
+				{@render image(3 / 4, true)}
 			</div>
 		</div>
 	</div>
@@ -70,7 +71,7 @@
 	<div class="{TW_LIMITER}">
 		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--border-color) pt-5 sm:pt-7 md:pt-0">
 			<div class="{TW_PAGE_PADDING} md:border-r border-(--border-color) max-md:order-2" use:reveal={{ delay: 200 }}>
-				{@render image(3 / 4)}
+				{@render image(3 / 4, true)}
 			</div>
 			<div class="flex flex-col {TW_PAGE_PADDING} pb-0 max-md:order-1" use:reveal>
 				<div class="">{@render intro()}</div>
