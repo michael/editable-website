@@ -50,7 +50,7 @@
 <!-- Default layout for Feature -->
 {#snippet layout_1()}
 	<div class="{TW_LIMITER}">
-		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--border-color)">
+		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--border-color) pt-5 sm:pt-7 md:pt-0">
 			<div class="flex flex-col {TW_PAGE_PADDING} pb-0" use:reveal>
 				<div class="">{@render intro()}</div>
 				<div class="flex-1" contenteditable="false">&ZeroWidthSpace;</div>
@@ -68,7 +68,7 @@
 <!-- Like layout 1 but flipped horizontally -->
 {#snippet layout_2()}
 	<div class="{TW_LIMITER}">
-		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--border-color)">
+		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--border-color) pt-5 sm:pt-7 md:pt-0">
 			<div class="{TW_PAGE_PADDING} md:border-r border-(--border-color) max-md:order-2" use:reveal={{ delay: 200 }}>
 				{@render image(3 / 4)}
 			</div>
@@ -86,7 +86,7 @@
 <!-- Like layout 1 but image stretches to edges (full bleed) -->
 {#snippet layout_3()}
 	<div class="{TW_LIMITER}">
-		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--border-color)">
+		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--border-color) pt-5 sm:pt-7 md:pt-0">
 			<div class="flex flex-col {TW_PAGE_PADDING}" use:reveal>
 				<div class="">{@render intro()}</div>
 				<div class="flex-1" contenteditable="false">&ZeroWidthSpace;</div>
@@ -104,7 +104,7 @@
 <!-- Like layout 3 but flipped (image left, text right, full bleed) -->
 {#snippet layout_4()}
 	<div class="{TW_LIMITER}">
-		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--border-color)">
+		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--border-color) pt-5 sm:pt-7 md:pt-0">
 			<div class="md:border-r border-(--border-color) max-md:order-2" use:reveal={{ delay: 200 }}>
 				{@render image(3 / 4)}
 			</div>
