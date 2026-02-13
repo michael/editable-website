@@ -2,9 +2,11 @@
 	import { getContext } from 'svelte';
 	import { Node, AnnotatedTextProperty, CustomProperty } from 'svedit';
 	import Image from './Image.svelte';
+	import { reveal } from '../reveal.js';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
+	let item_index = $derived(typeof path[path.length - 1] === 'number' ? path[path.length - 1] : 0);
 	let node = $derived(svedit.session.get(path));
 	let image_node = $derived(svedit.session.get([...path, 'image']));
 	let is_selected = $derived(is_image_selected());
@@ -17,6 +19,7 @@
 </script>
 
 <Node class="gallery-item" {path}>
+  <div use:reveal={{ delay: item_index * 150 }}>
 	<CustomProperty class="image-property" path={[...path, 'image']}>
 		<!--
 			We need a div with contenteditable="false" to wrap the image,
@@ -32,4 +35,5 @@
 			<Image path={[...path, 'image']} />
 		</div>
 	</CustomProperty>
+  </div>
 </Node>

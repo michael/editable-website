@@ -3,6 +3,7 @@
 	import { Node, CustomProperty, NodeArrayProperty } from 'svedit';
 	import Image from './Image.svelte';
 	import { TW_PAGE_PADDING, TW_MOBILE_LEFT_INSET, TW_LIMITER } from '../tailwind_theme.js';
+	import { reveal } from '../reveal.js';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
@@ -50,14 +51,14 @@
 {#snippet layout_1()}
 	<div class="{TW_LIMITER}">
 		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--foreground-subtle)">
-			<div class="flex flex-col {TW_PAGE_PADDING} pb-0">
+			<div class="flex flex-col {TW_PAGE_PADDING} pb-0" use:reveal>
 				<div class="">{@render intro()}</div>
 				<div class="flex-1" contenteditable="false">&ZeroWidthSpace;</div>
 				<div class="">
 					{@render outro()}
 				</div>
 			</div>
-			<div class="{TW_PAGE_PADDING} md:border-l border-(--foreground-subtle)">
+			<div class="{TW_PAGE_PADDING} md:border-l border-(--foreground-subtle)" use:reveal={{ delay: 200 }}>
 				{@render image(3 / 4)}
 			</div>
 		</div>
@@ -68,10 +69,10 @@
 {#snippet layout_2()}
 	<div class="{TW_LIMITER}">
 		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--foreground-subtle)">
-			<div class="{TW_PAGE_PADDING} md:border-r border-(--foreground-subtle) max-md:order-2">
+			<div class="{TW_PAGE_PADDING} md:border-r border-(--foreground-subtle) max-md:order-2" use:reveal={{ delay: 200 }}>
 				{@render image(3 / 4)}
 			</div>
-			<div class="flex flex-col {TW_PAGE_PADDING} pb-0 max-md:order-1">
+			<div class="flex flex-col {TW_PAGE_PADDING} pb-0 max-md:order-1" use:reveal>
 				<div class="">{@render intro()}</div>
 				<div class="flex-1" contenteditable="false">&ZeroWidthSpace;</div>
 				<div class="">
@@ -86,14 +87,14 @@
 {#snippet layout_3()}
 	<div class="{TW_LIMITER}">
 		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--foreground-subtle)">
-			<div class="flex flex-col {TW_PAGE_PADDING}">
+			<div class="flex flex-col {TW_PAGE_PADDING}" use:reveal>
 				<div class="">{@render intro()}</div>
 				<div class="flex-1" contenteditable="false">&ZeroWidthSpace;</div>
 				<div class="">
 					{@render outro()}
 				</div>
 			</div>
-			<div class="md:border-l border-(--foreground-subtle)">
+			<div class="md:border-l border-(--foreground-subtle)" use:reveal={{ delay: 200 }}>
 				{@render image(3 / 4)}
 			</div>
 		</div>
@@ -104,10 +105,10 @@
 {#snippet layout_4()}
 	<div class="{TW_LIMITER}">
 		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--foreground-subtle)">
-			<div class="md:border-r border-(--foreground-subtle) max-md:order-2">
+			<div class="md:border-r border-(--foreground-subtle) max-md:order-2" use:reveal={{ delay: 200 }}>
 				{@render image(3 / 4)}
 			</div>
-			<div class="flex flex-col {TW_PAGE_PADDING} max-md:order-1">
+			<div class="flex flex-col {TW_PAGE_PADDING} max-md:order-1" use:reveal>
 				<div class="">{@render intro()}</div>
 				<div class="flex-1" contenteditable="false">&ZeroWidthSpace;</div>
 				<div class="">

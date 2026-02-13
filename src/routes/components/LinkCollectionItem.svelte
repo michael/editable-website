@@ -2,9 +2,11 @@
 	import { getContext } from 'svelte';
 	import { Node, CustomProperty, AnnotatedTextProperty } from 'svedit';
 	import Image from './Image.svelte';
+	import { reveal } from '../reveal.js';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
+	let item_index = $derived(typeof path[path.length - 1] === 'number' ? path[path.length - 1] : 0);
 	let node = $derived(svedit.session.get(path));
 	let image_node = $derived(svedit.session.get([...path, 'image']));
 	let is_selected = $derived(is_image_selected());
@@ -23,6 +25,7 @@
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
 		class="block"
+		use:reveal={{ delay: item_index * 150 }}
 	>
 		<CustomProperty path={[...path, 'image']}>
 			<div
