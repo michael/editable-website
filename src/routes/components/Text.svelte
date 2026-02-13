@@ -1,6 +1,7 @@
 <script>
 	import { getContext } from 'svelte';
 	import { Node, AnnotatedTextProperty } from 'svedit';
+	import { reveal } from '../reveal.js';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
@@ -63,10 +64,12 @@
 </script>
 
 <Node {path}>
-	<AnnotatedTextProperty
-		{tag}
-		class={text_style}
-		path={[...path, 'content']}
-		{placeholder}
-	/>
+	<div use:reveal>
+		<AnnotatedTextProperty
+			{tag}
+			class={text_style}
+			path={[...path, 'content']}
+			{placeholder}
+		/>
+	</div>
 </Node>

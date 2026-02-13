@@ -77,3 +77,27 @@ html {
 		--foreground-subtle: color-mix(in oklch, var(--background) 90%, var(--foreground) 8%);
 	}
 }
+
+/* Scroll-triggered reveal animations
+   Comment out the block below to disable */
+.reveal-hidden {
+	opacity: 0;
+	transform: translateY(30px);
+}
+
+.revealed {
+	opacity: 1;
+	transform: translateY(0);
+	transition: opacity 0.8s cubic-bezier(0, 0, 0.2, 1), transform 0.8s cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Disable reveal animations inside the editor */
+[contenteditable="true"] .reveal-hidden {
+	opacity: 1;
+	transform: none;
+}
+
+[contenteditable="true"] .revealed {
+	transition: none;
+}
+
