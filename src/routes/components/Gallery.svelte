@@ -56,7 +56,7 @@
 {/snippet}
 
 {#snippet outro()}
-	{@const outro_padding = has_outro ? 'pt-5 sm:pt-7 md:pt-10 lg:pt-14 pb-20 sm:pb-24 md:pb-28 lg:pb-32' : 'pb-20 sm:pb-24 md:pb-28 lg:pb-32'}
+	{@const outro_padding = has_outro ? 'pt-5 sm:pt-7 md:pt-10 lg:pt-14 pb-10 sm:pb-14 md:pb-16 lg:pb-20' : 'pb-2.5 sm:pb-3.5 md:pb-5 lg:pb-7'}
 	<div class="{TW_PAGE_PADDING_X} max-w-4xl lg:text-lg {outro_padding}">
 		<NodeArrayProperty class="ew-outro space-y-5 md:space-y-8 {heading_spacing}" path={[...path, 'outro']} />
 	</div>
@@ -67,7 +67,7 @@
 		<div class="{TW_LIMITER} w-full ">
 			<div class="border-l border-r border-(--border-color)">
 				{@render intro()}
-				<div class="{TW_PAGE_PADDING_X} py-8 sm:py-10 md:py-12 lg:py-14">
+				<div class="{TW_PAGE_PADDING_X} py-2.5 sm:py-3.5 md:py-5 lg:py-7">
 					<NodeArrayProperty class="gap-5 sm:gap-7 md:gap-10 lg:gap-14 {grid_layout}" path={[...path, 'gallery_items']} />
 				</div>
 				{@render outro()}
