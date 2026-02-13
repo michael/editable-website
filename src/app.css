@@ -1,6 +1,23 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 
+/* Override default border width utilities to use --border-thickness */
+@utility border {
+	border-width: var(--border-thickness);
+}
+@utility border-t {
+	border-top-width: var(--border-thickness);
+}
+@utility border-r {
+	border-right-width: var(--border-thickness);
+}
+@utility border-b {
+	border-bottom-width: var(--border-thickness);
+}
+@utility border-l {
+	border-left-width: var(--border-thickness);
+}
+
 html {
 	scroll-behavior: smooth;
 }
@@ -28,9 +45,10 @@ html {
 	--accent-foreground-alt2: oklch(0.21 0.034 264);
 
 	--border-radius: 0.5rem; /* slight rounded corners for buttons, nav items */
+	--border-thickness: 0px;
 
 	/* Derived colors - these can be overridden per site, but I don't recommend it */
-	--foreground-subtle: color-mix(in oklch, var(--background) 90%, var(--foreground) 8%); /* hairlines, borders - fully opaque warm grey */
+	--border-color: color-mix(in oklch, var(--background) 90%, var(--foreground) 8%); /* hairlines, borders - fully opaque warm grey */
 
 	/* Editor colors - purple/violet complements teal accent */
 	--editing-fill-color: oklch(59.71% 0.22 283 / 0.1);
@@ -70,7 +88,7 @@ html {
 		--accent: var(--accent-alt1);
 		--accent-light: var(--accent-light-alt1);
 		--accent-foreground: var(--accent-foreground-alt1);
-		--foreground-subtle: color-mix(in oklch, var(--background) 90%, var(--foreground) 8%);
+		--border-color: color-mix(in oklch, var(--background) 90%, var(--foreground) 8%);
 	}
 
 	.ew-colorset-2 {
@@ -79,7 +97,7 @@ html {
 		--accent: var(--accent-alt2);
 		--accent-light: var(--accent-light-alt2);
 		--accent-foreground: var(--accent-foreground-alt2);
-		--foreground-subtle: color-mix(in oklch, var(--background) 90%, var(--foreground) 8%);
+		--border-color: color-mix(in oklch, var(--background) 90%, var(--foreground) 8%);
 	}
 }
 

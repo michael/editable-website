@@ -32,9 +32,9 @@
 {/snippet}
 
 <Node {path}>
-	<div class="border-b border-(--foreground-subtle) bg-(--background) text-(--foreground) {colorset_class}">
+	<div class="border-b border-(--border-color) bg-(--background) text-(--foreground) {colorset_class}">
 		<div class="{TW_LIMITER} w-full">
-			<div class="border-l border-r border-(--foreground-subtle)">
+			<div class="border-l border-r border-(--border-color)">
 				{@render intro()}
 				<div class="{TW_PAGE_PADDING_X}">
 					<NodeArrayProperty

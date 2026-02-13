@@ -50,7 +50,7 @@
 <!-- Default layout for Feature -->
 {#snippet layout_1()}
 	<div class="{TW_LIMITER}">
-		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--foreground-subtle)">
+		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--border-color)">
 			<div class="flex flex-col {TW_PAGE_PADDING} pb-0" use:reveal>
 				<div class="">{@render intro()}</div>
 				<div class="flex-1" contenteditable="false">&ZeroWidthSpace;</div>
@@ -58,7 +58,7 @@
 					{@render outro()}
 				</div>
 			</div>
-			<div class="{TW_PAGE_PADDING} md:border-l border-(--foreground-subtle)" use:reveal={{ delay: 200 }}>
+			<div class="{TW_PAGE_PADDING} md:border-l border-(--border-color)" use:reveal={{ delay: 200 }}>
 				{@render image(3 / 4)}
 			</div>
 		</div>
@@ -68,8 +68,8 @@
 <!-- Like layout 1 but flipped horizontally -->
 {#snippet layout_2()}
 	<div class="{TW_LIMITER}">
-		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--foreground-subtle)">
-			<div class="{TW_PAGE_PADDING} md:border-r border-(--foreground-subtle) max-md:order-2" use:reveal={{ delay: 200 }}>
+		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--border-color)">
+			<div class="{TW_PAGE_PADDING} md:border-r border-(--border-color) max-md:order-2" use:reveal={{ delay: 200 }}>
 				{@render image(3 / 4)}
 			</div>
 			<div class="flex flex-col {TW_PAGE_PADDING} pb-0 max-md:order-1" use:reveal>
@@ -86,7 +86,7 @@
 <!-- Like layout 1 but image stretches to edges (full bleed) -->
 {#snippet layout_3()}
 	<div class="{TW_LIMITER}">
-		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--foreground-subtle)">
+		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--border-color)">
 			<div class="flex flex-col {TW_PAGE_PADDING}" use:reveal>
 				<div class="">{@render intro()}</div>
 				<div class="flex-1" contenteditable="false">&ZeroWidthSpace;</div>
@@ -94,7 +94,7 @@
 					{@render outro()}
 				</div>
 			</div>
-			<div class="md:border-l border-(--foreground-subtle)" use:reveal={{ delay: 200 }}>
+			<div class="md:border-l border-(--border-color)" use:reveal={{ delay: 200 }}>
 				{@render image(3 / 4)}
 			</div>
 		</div>
@@ -104,8 +104,8 @@
 <!-- Like layout 3 but flipped (image left, text right, full bleed) -->
 {#snippet layout_4()}
 	<div class="{TW_LIMITER}">
-		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--foreground-subtle)">
-			<div class="md:border-r border-(--foreground-subtle) max-md:order-2" use:reveal={{ delay: 200 }}>
+		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--border-color)">
+			<div class="md:border-r border-(--border-color) max-md:order-2" use:reveal={{ delay: 200 }}>
 				{@render image(3 / 4)}
 			</div>
 			<div class="flex flex-col {TW_PAGE_PADDING} max-md:order-1" use:reveal>
@@ -119,7 +119,7 @@
 	</div>
 {/snippet}
 
-<Node class="ew-feature lg:text-lg border-b border-(--foreground-subtle) bg-(--background) text-(--foreground) {colorset_class}" {path}>
+<Node class="ew-feature lg:text-lg border-b border-(--border-color) bg-(--background) text-(--foreground) {colorset_class}" {path}>
 	{@const layouts = [layout_1, layout_2, layout_3, layout_4]}
 	{@render layouts[node.layout - 1]()}
 </Node>

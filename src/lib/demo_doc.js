@@ -127,7 +127,7 @@ export const demo_doc = {
         "feature_1": {
             "id": "feature_1",
             "type": "feature",
-            "layout": 3,
+            "layout": 1,
             "colorset": 0,
             "image": "feature_1_image",
             "intro": [
@@ -741,7 +741,7 @@ export const demo_doc = {
         "YTMHBcPkYXJMRUnuSAhrTDE": {
             "id": "YTMHBcPkYXJMRUnuSAhrTDE",
             "type": "feature",
-            "layout": 4,
+            "layout": 2,
             "colorset": 0,
             "image": "hqrrTdEbTPaqzEcYMczhBZb",
             "intro": [

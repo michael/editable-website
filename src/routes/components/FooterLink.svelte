@@ -15,6 +15,9 @@
 		target={render_as_link ? node.target : undefined}
 		class="block py-1"
 		class:hover:underline={render_as_link}
+		class:hover:decoration-2={render_as_link}
+		class:hover:decoration-(--accent)={render_as_link}
+		class:hover:underline-offset-2={render_as_link}
 	>
 		<AnnotatedTextProperty path={[...path, 'label']} placeholder="Label" />
 	</svelte:element>

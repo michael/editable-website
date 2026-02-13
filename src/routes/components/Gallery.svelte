@@ -63,9 +63,9 @@
 {/snippet}
 
 <Node {path}>
-	<div class="border-b border-(--foreground-subtle) bg-(--background) text-(--foreground) {colorset_class}">
+	<div class="border-b border-(--border-color) bg-(--background) text-(--foreground) {colorset_class}">
 		<div class="{TW_LIMITER} w-full ">
-			<div class="border-l border-r border-(--foreground-subtle)">
+			<div class="border-l border-r border-(--border-color)">
 				{@render intro()}
 				<div class="px-5 sm:px-7 md:px-10 lg:px-14">
 					<NodeArrayProperty class="gap-5 sm:gap-7 md:gap-10 lg:gap-14 {grid_layout}" path={[...path, 'gallery_items']} />
