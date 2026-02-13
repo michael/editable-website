@@ -38,7 +38,7 @@
 				{@render intro()}
 				<div class="{TW_PAGE_PADDING_X} py-8 sm:py-10 md:py-12 lg:py-14">
 					<NodeArrayProperty
-						class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-12 md:gap-10 lg:gap-14 [--layout-orientation:horizontal]"
+						class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-16 md:gap-10 lg:gap-14 [--layout-orientation:horizontal]"
 						path={[...path, 'link_collection_items']}
 					/>
 				</div>
