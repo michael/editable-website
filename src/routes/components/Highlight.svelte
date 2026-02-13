@@ -5,23 +5,23 @@
 	let node = $derived(svedit.session.get(path));
 </script>
 
-<mark
+<span
 	id={node.id}
 	data-node-id={node.id}
-	class="bg-transparent text-inherit underline decoration-solid decoration-(--accent) underline-offset-4"
-	style="anchor-name: --{path.join('-')}; text-decoration-thickness: var(--highlight-thickness, 4px);">{content}</mark>
-
+	class="highlight-mark text-inherit"
+	style="anchor-name: --{path.join('-')};">{content}</span>
 
 <style>
-	:global(h1) {
-		--highlight-thickness: 4px;
-	}
-
-	:global(h2) {
-		--highlight-thickness: 3px;
-	}
-
-	:global(h3) {
-		--highlight-thickness: 2px;
+	.highlight-mark {
+		background: linear-gradient(
+			to bottom,
+			transparent 38%,
+			var(--accent-light) 38%,
+			var(--accent-light) 82%,
+			transparent 82%
+		);
+		text-decoration: none;
+		/*box-decoration-break: clone;
+		-webkit-box-decoration-break: clone;*/
 	}
 </style>

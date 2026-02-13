@@ -14,7 +14,7 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="nav-item-link flex items-center justify-center w-full mx-3 sm:mx-4 pb-1"
+		class="nav-item-link flex items-center justify-center w-full mx-3 sm:mx-4"
 	>
 		<AnnotatedTextProperty
 			path={[...path, 'label']}
@@ -50,13 +50,13 @@
 <style>
 	.nav-item-link {
 		background: linear-gradient(to left, var(--accent), var(--accent));
-		background-size: 0 4px;
+		background-size: 0 2px;
 		background-position: 0 100%, 100% 100%;
 		background-repeat: no-repeat;
 		transition: background-size cubic-bezier(0.8, 0, 0.2, 1) 0.4s;
 	}
 
 	.nav-item-link:hover {
-		background-size: 100% 4px;
+		background-size: 100% 2px;
 	}
 </style>

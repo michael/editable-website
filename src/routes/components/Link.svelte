@@ -10,6 +10,6 @@
 	data-node-id={node.id}
 	href={node?.href}
 	target={node?.target || '_self'}
-	class="underline"
+	class="underline decoration-1 decoration-(--accent) underline-offset-2"
 	style="anchor-name: --{path.join('-')};">{content}</a
 >

@@ -10,18 +10,21 @@ html {
 	--background: oklch(0.98 0.002 264);
 	--foreground: oklch(0.21 0.034 264);
 	--accent: oklch(0.8 0.13 175);
+	--accent-light: oklch(0.94 0.04 175);
 	--accent-foreground: oklch(0.21 0.034 264);
 
 	/* Alternative colorset 1 */
 	--background-alt1: oklch(0.21 0.034 264);
 	--foreground-alt1: oklch(0.98 0.002 264);
 	--accent-alt1: oklch(0.8 0.13 175); /* oklch(0.7 0.19 22); */
+	--accent-light-alt1: oklch(0.8 0.13 175 / 0.3);
 	--accent-foreground-alt1: oklch(0.21 0.034 264);
 
 	/* Alternative colorset 2 */
 	--background-alt2: #2B2D6E;
 	--foreground-alt2: oklch(0.98 0.002 264);
 	--accent-alt2: oklch(0.8 0.13 175);
+	--accent-light-alt2: oklch(0.8 0.13 175 / 0.3);
 	--accent-foreground-alt2: oklch(0.21 0.034 264);
 
 	--border-radius: 0.5rem; /* slight rounded corners for buttons, nav items */
@@ -65,6 +68,7 @@ html {
 		--background: var(--background-alt1);
 		--foreground: var(--foreground-alt1);
 		--accent: var(--accent-alt1);
+		--accent-light: var(--accent-light-alt1);
 		--accent-foreground: var(--accent-foreground-alt1);
 		--foreground-subtle: color-mix(in oklch, var(--background) 90%, var(--foreground) 8%);
 	}
@@ -73,6 +77,7 @@ html {
 		--background: var(--background-alt2);
 		--foreground: var(--foreground-alt2);
 		--accent: var(--accent-alt2);
+		--accent-light: var(--accent-light-alt2);
 		--accent-foreground: var(--accent-foreground-alt2);
 		--foreground-subtle: color-mix(in oklch, var(--background) 90%, var(--foreground) 8%);
 	}
@@ -100,4 +105,3 @@ html {
 [contenteditable="true"] .revealed {
 	transition: none;
 }
-
