@@ -616,35 +616,25 @@ export const demo_doc = {
             "href": "https://mutter.co",
             "target": "_blank"
         },
+        "bGpNAMWYnvxUmtNtzKhQRBE": {
+            "id": "bGpNAMWYnvxUmtNtzKhQRBE",
+            "type": "strong"
+        },
         "kZQHRTYyJtbmsJfnXaRgVtZ": {
             "id": "kZQHRTYyJtbmsJfnXaRgVtZ",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "By the way, those links are live in-place editable websites Johannes Mutter and I have already launched.",
+                "text": "By the way, those links are live in-place editable websites Johannes Mutter and I have already launched. Before you read on, save your changes with Cmd+S.",
                 "annotations": [
                     {
                         "start_offset": 60,
                         "end_offset": 75,
                         "node_id": "VqaqUWzRKUJrZzQYqqurggB"
-                    }
-                ]
-            }
-        },
-        "bGpNAMWYnvxUmtNtzKhQRBE": {
-            "id": "bGpNAMWYnvxUmtNtzKhQRBE",
-            "type": "strong"
-        },
-        "RFkSDBBnwVQcthZuaQfvKwg": {
-            "id": "RFkSDBBnwVQcthZuaQfvKwg",
-            "type": "text",
-            "layout": 1,
-            "content": {
-                "text": "Okay, now is a good time to save your changes with Cmd+S before you read on.",
-                "annotations": [
+                    },
                     {
-                        "start_offset": 51,
-                        "end_offset": 56,
+                        "start_offset": 148,
+                        "end_offset": 153,
                         "node_id": "bGpNAMWYnvxUmtNtzKhQRBE"
                     }
                 ]
@@ -666,8 +656,7 @@ export const demo_doc = {
                 "AVydYvhksUBMjCSEccZJGXa"
             ],
             "outro": [
-                "kZQHRTYyJtbmsJfnXaRgVtZ",
-                "RFkSDBBnwVQcthZuaQfvKwg"
+                "kZQHRTYyJtbmsJfnXaRgVtZ"
             ]
         },
         "hqrrTdEbTPaqzEcYMczhBZb": {
@@ -728,11 +717,11 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "If you're not a programmer but a curious tinkerer who isn’t afraid of following a few step-by-step technical instructions, this might be for you as well.",
+                "text": "But, if you are a curious tinkerer, brave enough to follow a few step-by-step technical instructions, this might be for you as well.",
                 "annotations": [
                     {
-                        "start_offset": 33,
-                        "end_offset": 49,
+                        "start_offset": 18,
+                        "end_offset": 34,
                         "node_id": "YVmaBvzbaqJVmjkxWSNqXEr"
                     }
                 ]

@@ -18,14 +18,14 @@
 </script>
 
 {#snippet intro()}
-	{@const intro_padding = has_intro ? 'py-5 sm:py-7 md:py-10 lg:py-14' : 'py-2.5 sm:py-3.5 md:py-5 lg:py-7'}
+	{@const intro_padding = has_intro ? 'pt-10 sm:pt-14 md:pt-16 lg:pt-20 pb-5 sm:pb-7 md:pb-10 lg:pb-14' : 'pt-10 sm:pt-14 md:pt-16 lg:pt-20'}
 	<div class="{TW_PAGE_PADDING_X} max-w-4xl lg:text-lg {intro_padding}">
 		<NodeArrayProperty class="ew-intro space-y-5 md:space-y-8 {heading_spacing}" path={[...path, 'intro']} />
 	</div>
 {/snippet}
 
 {#snippet outro()}
-	{@const outro_padding = has_outro ? 'pt-5 sm:pt-7 pb-10 sm:pb-12 md:py-10 lg:py-14' : 'pt-2.5 sm:pt-3.5 pb-10 sm:pb-12 md:py-5 lg:py-7'}
+	{@const outro_padding = has_outro ? 'pt-5 sm:pt-7 md:pt-10 lg:pt-14 pb-20 sm:pb-24 md:pb-28 lg:pb-32' : 'pb-20 sm:pb-24 md:pb-28 lg:pb-32'}
 	<div class="{TW_PAGE_PADDING_X} max-w-4xl lg:text-lg {outro_padding}">
 		<NodeArrayProperty class="ew-intro space-y-5 md:space-y-8 {heading_spacing}" path={[...path, 'outro']} />
 	</div>
@@ -36,9 +36,9 @@
 		<div class="{TW_LIMITER} w-full">
 			<div class="border-l border-r border-(--border-color)">
 				{@render intro()}
-				<div class="{TW_PAGE_PADDING_X}">
+				<div class="{TW_PAGE_PADDING_X} py-8 sm:py-10 md:py-12 lg:py-14">
 					<NodeArrayProperty
-						class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-7 md:gap-10 lg:gap-14 [--layout-orientation:horizontal]"
+						class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-12 md:gap-10 lg:gap-14 [--layout-orientation:horizontal]"
 						path={[...path, 'link_collection_items']}
 					/>
 				</div>
