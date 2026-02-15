@@ -15,7 +15,7 @@
 {#snippet layout_1()}
 	<div class="{TW_LIMITER}">
 		<div class="border-(--border-color) border-r border-l py-20 md:py-28 lg:py-36">
-			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-5xl text-center" use:reveal>
+			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-5xl md:text-center" use:reveal>
 				<AnnotatedTextProperty
 					tag="h1"
 					class="ew-h1 font-heading text-5xl md:text-6xl lg:text-7xl text-balance text-(--foreground)"
@@ -24,12 +24,12 @@
 				/>
 				<AnnotatedTextProperty
 					tag="p"
-					class="mt-6 text-balance"
+					class="mt-12 text-xl md:text-2xl lg:text-3xl text-balance"
 					path={[...path, 'description']}
 					placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
 				/>
 				<NodeArrayProperty
-					class="hero-buttons [--layout-orientation:horizontal] flex flex-wrap items-center justify-center gap-4 mt-10{!has_buttons ? ' empty' : ''}"
+					class="hero-buttons [--layout-orientation:horizontal] flex flex-wrap items-center md:justify-center gap-4 mt-10{!has_buttons ? ' empty' : ''}"
 					path={[...path, 'buttons']}
 				/>
 			</div>
