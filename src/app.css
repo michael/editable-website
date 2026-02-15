@@ -1,6 +1,22 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 
+@font-face {
+	font-family: 'IBM Plex Sans';
+	src: url('/fonts/IBM-Plex-Sans-Var-Roman.woff2') format('woff2');
+	font-weight: 100 700;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'IBM Plex Sans';
+	src: url('/fonts/IBM-Plex-Sans Var-Italic.woff2') format('woff2');
+	font-weight: 100 700;
+	font-style: italic;
+	font-display: swap;
+}
+
 /* Override default border width utilities to use --border-thickness */
 @utility border {
 	border-width: var(--border-thickness);
@@ -60,8 +76,8 @@ html {
 	--max-width-8xl: 90rem;
 
 	--font-*: initial;
-	--font-body: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-	--font-heading: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+	--font-body: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+	--font-heading: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
 	--default-font-family: var(--font-body);
 }
 
