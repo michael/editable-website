@@ -3,27 +3,27 @@
 export const demo_doc = {
     "document_id": "page_1",
     "nodes": {
-        "YtHrwYwZBGYXddUkaewYasN": {
-            "id": "YtHrwYwZBGYXddUkaewYasN",
-            "type": "highlight"
+        "HZTrNsJRpDQwcgGTYgunawS": {
+            "id": "HZTrNsJRpDQwcgGTYgunawS",
+            "type": "emphasis"
         },
         "hero_1": {
             "id": "hero_1",
             "type": "hero",
             "layout": 1,
-            "colorset": 0,
+            "colorset": 1,
             "title": {
-                "text": "There are people who actually enjoy editing their website",
+                "text": "There are people who actually enjoy editing their website.",
                 "annotations": [
                     {
                         "start_offset": 21,
                         "end_offset": 35,
-                        "node_id": "YtHrwYwZBGYXddUkaewYasN"
+                        "node_id": "HZTrNsJRpDQwcgGTYgunawS"
                     }
                 ]
             },
             "description": {
-                "text": "I'd like to show you how they do it.",
+                "text": "Want to know how they do it?",
                 "annotations": []
             },
             "buttons": []
@@ -31,7 +31,7 @@ export const demo_doc = {
         "feature_1_image": {
             "id": "feature_1_image",
             "type": "image",
-            "src": "/sample-images/1.jpg",
+            "src": "/sample-images/cmde.webp",
             "width": 800,
             "height": 600,
             "alt": "Feature image",
@@ -49,12 +49,12 @@ export const demo_doc = {
                 "annotations": []
             }
         },
-        "vAhBcybjFJsXPkmRQrwWPaT": {
-            "id": "vAhBcybjFJsXPkmRQrwWPaT",
+        "NqvFNPVXFhYFbgmYAWwSWHC": {
+            "id": "NqvFNPVXFhYFbgmYAWwSWHC",
             "type": "strong"
         },
-        "feature_1_outro_paragraph": {
-            "id": "feature_1_outro_paragraph",
+        "ywTQktXzgyRqzsUNXjZztQw": {
+            "id": "ywTQktXzgyRqzsUNXjZztQw",
             "type": "text",
             "layout": 1,
             "content": {
@@ -63,7 +63,7 @@ export const demo_doc = {
                     {
                         "start_offset": 3,
                         "end_offset": 9,
-                        "node_id": "vAhBcybjFJsXPkmRQrwWPaT"
+                        "node_id": "NqvFNPVXFhYFbgmYAWwSWHC"
                     }
                 ]
             }
@@ -80,12 +80,16 @@ export const demo_doc = {
             "id": "BYnvjBNEvJqBdqQmUyeUzgn",
             "type": "strong"
         },
+        "kJNavahEZGWKeAtWTgEQqnp": {
+            "id": "kJNavahEZGWKeAtWTgEQqnp",
+            "type": "strong"
+        },
         "WjasMkTrmjdrXTsDgeUHQap": {
             "id": "WjasMkTrmjdrXTsDgeUHQap",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "For basic text formatting use Cmd+B for bold, Cmd+I for italics, and Cmd+K to turn text into a link.",
+                "text": "For basic text formatting use Cmd+B for bold, Cmd+I for italics, and Cmd+K to turn text into a link. To undo accidental changes press Cmd+Z.",
                 "annotations": [
                     {
                         "start_offset": 30,
@@ -101,24 +105,10 @@ export const demo_doc = {
                         "start_offset": 69,
                         "end_offset": 74,
                         "node_id": "BYnvjBNEvJqBdqQmUyeUzgn"
-                    }
-                ]
-            }
-        },
-        "kJNavahEZGWKeAtWTgEQqnp": {
-            "id": "kJNavahEZGWKeAtWTgEQqnp",
-            "type": "strong"
-        },
-        "YdzrGEwxckMvaZPBPCRDKSj": {
-            "id": "YdzrGEwxckMvaZPBPCRDKSj",
-            "type": "text",
-            "layout": 1,
-            "content": {
-                "text": "To undo accidental changes press Cmd+Z.",
-                "annotations": [
+                    },
                     {
-                        "start_offset": 33,
-                        "end_offset": 38,
+                        "start_offset": 134,
+                        "end_offset": 139,
                         "node_id": "kJNavahEZGWKeAtWTgEQqnp"
                     }
                 ]
@@ -127,16 +117,15 @@ export const demo_doc = {
         "feature_1": {
             "id": "feature_1",
             "type": "feature",
-            "layout": 1,
+            "layout": 3,
             "colorset": 0,
             "image": "feature_1_image",
             "intro": [
-                "feature_1_intro_heading"
+                "feature_1_intro_heading",
+                "ywTQktXzgyRqzsUNXjZztQw"
             ],
             "outro": [
-                "feature_1_outro_paragraph",
-                "WjasMkTrmjdrXTsDgeUHQap",
-                "YdzrGEwxckMvaZPBPCRDKSj"
+                "WjasMkTrmjdrXTsDgeUHQap"
             ]
         },
         "HWcSGEAsZyfeQFjgvKrMpZc": {
@@ -680,16 +669,16 @@ export const demo_doc = {
                 "annotations": []
             }
         },
-        "RrpSjGbCdmKKSgjedcufHWu": {
-            "id": "RrpSjGbCdmKKSgjedcufHWu",
+        "CGzGPxRRHDDefsjFFkGURhD": {
+            "id": "CGzGPxRRHDDefsjFFkGURhD",
             "type": "strong"
         },
-        "FuhgPutkBaNpvXYxjxTKBNP": {
-            "id": "FuhgPutkBaNpvXYxjxTKBNP",
+        "VrESQKDcWmzNVTwFrFJfwuQ": {
+            "id": "VrESQKDcWmzNVTwFrFJfwuQ",
             "type": "strong"
         },
-        "feature_2_outro_paragraph": {
-            "id": "feature_2_outro_paragraph",
+        "qDAyeabdhVEXjBWXyyqfUPb": {
+            "id": "qDAyeabdhVEXjBWXyyqfUPb",
             "type": "text",
             "layout": 1,
             "content": {
@@ -698,12 +687,12 @@ export const demo_doc = {
                     {
                         "start_offset": 19,
                         "end_offset": 36,
-                        "node_id": "RrpSjGbCdmKKSgjedcufHWu"
+                        "node_id": "CGzGPxRRHDDefsjFFkGURhD"
                     },
                     {
                         "start_offset": 52,
                         "end_offset": 62,
-                        "node_id": "FuhgPutkBaNpvXYxjxTKBNP"
+                        "node_id": "VrESQKDcWmzNVTwFrFJfwuQ"
                     }
                 ]
             }
@@ -734,10 +723,10 @@ export const demo_doc = {
             "colorset": 0,
             "image": "hqrrTdEbTPaqzEcYMczhBZb",
             "intro": [
-                "feature_2_intro_heading"
+                "feature_2_intro_heading",
+                "qDAyeabdhVEXjBWXyyqfUPb"
             ],
             "outro": [
-                "feature_2_outro_paragraph",
                 "grqHKByVFQSDZhumJjqvPxE"
             ]
         },

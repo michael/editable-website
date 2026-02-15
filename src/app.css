@@ -61,7 +61,7 @@ html {
 	--accent-foreground-alt2: oklch(0.21 0.034 264);
 
 	--border-radius: 0.5rem; /* slight rounded corners for buttons, nav items */
-	--border-thickness: 1px;
+	--border-thickness: 0px;
 
 	/* Derived colors - these can be overridden per site, but I don't recommend it */
 	--border-color: color-mix(in oklch, var(--background) 90%, var(--foreground) 8%); /* hairlines, borders - fully opaque warm grey */
@@ -73,7 +73,7 @@ html {
 
 
 @theme {
-	--max-width-8xl: 90rem;
+	/*--max-width-8xl: 90rem;*/
 
 	--font-*: initial;
 	--font-body: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
