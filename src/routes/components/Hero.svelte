@@ -24,7 +24,7 @@
 				/>
 				<AnnotatedTextProperty
 					tag="p"
-					class="mt-12 text-xl md:text-2xl lg:text-3xl text-balance"
+					class="mt-6 md:mt-8 text-xl md:text-2xl lg:text-3xl text-balance"
 					path={[...path, 'description']}
 					placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
 				/>
