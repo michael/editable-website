@@ -49,7 +49,7 @@
 		<div class="border-(--border-color) xl:border-r xl:border-l grid grid-cols-3 {TW_BLOCK_PADDING_Y}">
 			<!-- IMPORTANT: Keep in sync with TW_PAGE_PADDING_X -->
 			<div class="max-sm:pl-5 max-md:pl-7 pr-5 sm:pr-7 md:pr-10 lg:pr-14 col-span-3 md:col-span-2 md:col-start-2">
-				<div class="{TW_MOBILE_LEFT_INSET}">
+				<div class="{TW_MOBILE_LEFT_INSET} max-w-4xl">
 					{@render content()}
 				</div>
 			</div>
