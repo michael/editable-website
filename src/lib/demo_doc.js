@@ -726,10 +726,6 @@ export const demo_doc = {
                 "grqHKByVFQSDZhumJjqvPxE"
             ]
         },
-        "HCwAqVNTtuCzcJxYAyuSbPR": {
-            "id": "HCwAqVNTtuCzcJxYAyuSbPR",
-            "type": "strong"
-        },
         "PvpNcGKnqTTBbvbRZeDUYSN": {
             "id": "PvpNcGKnqTTBbvbRZeDUYSN",
             "type": "button",
@@ -737,7 +733,7 @@ export const demo_doc = {
             "href": "https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform?usp=dialog",
             "target": "_blank",
             "label": {
-                "text": "Sign up",
+                "text": "Notify me",
                 "annotations": []
             }
         },
@@ -746,18 +742,12 @@ export const demo_doc = {
             "type": "hero",
             "colorset": 0,
             "title": {
-                "text": "Join the waitlist",
+                "text": "Be an early bird",
                 "annotations": []
             },
             "description": {
-                "text": "Sign up and I'll let you know as soon as Editable Website is ready. The first few sign-ups will get an invite to a face-to-face conversation.",
-                "annotations": [
-                    {
-                        "start_offset": 115,
-                        "end_offset": 140,
-                        "node_id": "HCwAqVNTtuCzcJxYAyuSbPR"
-                    }
-                ]
+                "text": "Leave your email and I'll let you know as soon as Editable Website is ready. First ones in get to chat with me in a video call.",
+                "annotations": []
             },
             "buttons": [
                 "PvpNcGKnqTTBbvbRZeDUYSN"
@@ -816,7 +806,7 @@ export const demo_doc = {
             "href": "#UBNYngEBJYtDWgeabtDJqWW",
             "target": "_self",
             "label": {
-                "text": "Sign up",
+                "text": "Notify me",
                 "annotations": []
             }
         },
