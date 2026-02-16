@@ -717,7 +717,7 @@ export const demo_doc = {
         "YTMHBcPkYXJMRUnuSAhrTDE": {
             "id": "YTMHBcPkYXJMRUnuSAhrTDE",
             "type": "feature",
-            "layout": 2,
+            "layout": 4,
             "colorset": 0,
             "image": "hqrrTdEbTPaqzEcYMczhBZb",
             "body": [
