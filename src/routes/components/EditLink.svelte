@@ -75,7 +75,7 @@
 
 <dialog
 	bind:this={dialog_ref}
-	class="edit-link-dialog absolute z-40 mt-1 m-0 bg-white p-0 shadow-xl overflow-visible max-h-90 border border-(--editing-stroke-color)"
+	class="edit-link-dialog absolute z-40 mt-1 m-0 bg-white p-0 shadow-xl overflow-visible max-h-90 border-1 border-(--editing-stroke-color)"
 	style="position-anchor: --{path.join('-')}; position-area: block-end span-all; justify-self: anchor-center;"
 	onclick={handle_backdrop_click}
 >
@@ -85,7 +85,7 @@
 			type="url"
 			bind:value={href_input_value}
 			placeholder="https://example.com"
-			class="w-72 px-3 py-2 text-sm text-gray-700 border-b border-gray-200 focus:border-(--editing-stroke-color) focus:ring-(--editing-stroke-color)"
+			class="w-72 px-3 py-2 text-sm text-gray-700 border-0 outline-none focus:ring-1 focus:ring-(--editing-stroke-color)"
 			onkeydown={handle_keydown}
 		/>
 		<div class="flex items-center justify-between px-3 py-2">
