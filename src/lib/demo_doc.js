@@ -612,7 +612,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "By the way, those links are live in-place editable websites Johannes Mutter and I have already launched. Before you read on, save your changes with Cmd+S.",
+                "text": "By the way, above links are live in-place editable websites Johannes Mutter and I have already launched. Before you read on, save your changes with Cmd+S.",
                 "annotations": [
                     {
                         "start_offset": 60,
@@ -671,45 +671,58 @@ export const demo_doc = {
             "id": "CGzGPxRRHDDefsjFFkGURhD",
             "type": "strong"
         },
-        "VrESQKDcWmzNVTwFrFJfwuQ": {
-            "id": "VrESQKDcWmzNVTwFrFJfwuQ",
-            "type": "strong"
-        },
         "qDAyeabdhVEXjBWXyyqfUPb": {
             "id": "qDAyeabdhVEXjBWXyyqfUPb",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "And you just tried Editable Website™. I made it for developers who want to control the site structure and layout in code, while allowing site owners to edit content in a way that's intuitive, fun, and “just works.”",
+                "text": "And you just tried Editable Website™. I built it to make editing websites second nature. You can focus on your content and forget about the rest.",
                 "annotations": [
                     {
                         "start_offset": 19,
                         "end_offset": 36,
                         "node_id": "CGzGPxRRHDDefsjFFkGURhD"
-                    },
-                    {
-                        "start_offset": 52,
-                        "end_offset": 62,
-                        "node_id": "VrESQKDcWmzNVTwFrFJfwuQ"
                     }
                 ]
             }
         },
-        "YVmaBvzbaqJVmjkxWSNqXEr": {
-            "id": "YVmaBvzbaqJVmjkxWSNqXEr",
-            "type": "strong"
-        },
-        "grqHKByVFQSDZhumJjqvPxE": {
-            "id": "grqHKByVFQSDZhumJjqvPxE",
+        "FHgMqAZJccdbJbhMnzKqCNp": {
+            "id": "FHgMqAZJccdbJbhMnzKqCNp",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "But, if you are a curious tinkerer, brave enough to follow a few step-by-step technical instructions, this might be for you as well.",
+                "text": "But without loosing flexibility. You can set up your site with fonts and colors matching your brand, which are then applied consistently.",
+                "annotations": []
+            }
+        },
+        "hrpbdxkBCHAUkcprWmBjFvj": {
+            "id": "hrpbdxkBCHAUkcprWmBjFvj",
+            "type": "link",
+            "href": "https://svelte.dev",
+            "target": "_blank"
+        },
+        "gpFSJcCvCskrSVEjdSJwGQH": {
+            "id": "gpFSJcCvCskrSVEjdSJwGQH",
+            "type": "link",
+            "href": "https://github.com/michael/editable-website",
+            "target": "_blank"
+        },
+        "NjNteBhckwxGAUfbYRMGrDz": {
+            "id": "NjNteBhckwxGAUfbYRMGrDz",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "The source code is yours. So you can change every pixel of your site, create new content types, or integrate 3rd party data. Everything you can do with Svelte, you can do with Editable Website too.",
                 "annotations": [
                     {
-                        "start_offset": 18,
-                        "end_offset": 34,
-                        "node_id": "YVmaBvzbaqJVmjkxWSNqXEr"
+                        "start_offset": 152,
+                        "end_offset": 158,
+                        "node_id": "hrpbdxkBCHAUkcprWmBjFvj"
+                    },
+                    {
+                        "start_offset": 4,
+                        "end_offset": 15,
+                        "node_id": "gpFSJcCvCskrSVEjdSJwGQH"
                     }
                 ]
             }
@@ -723,7 +736,8 @@ export const demo_doc = {
             "body": [
                 "feature_2_intro_heading",
                 "qDAyeabdhVEXjBWXyyqfUPb",
-                "grqHKByVFQSDZhumJjqvPxE"
+                "FHgMqAZJccdbJbhMnzKqCNp",
+                "NjNteBhckwxGAUfbYRMGrDz"
             ]
         },
         "PvpNcGKnqTTBbvbRZeDUYSN": {
