@@ -430,57 +430,6 @@ export const demo_doc = {
             "type": "gallery_item",
             "image": "UGfbRKEMbGwgcUjhpgXausS"
         },
-        "gsTWgkmWrvebfuhYbHrbZaX": {
-            "id": "gsTWgkmWrvebfuhYbHrbZaX",
-            "type": "image",
-            "src": "",
-            "width": 800,
-            "height": 600,
-            "alt": "Sample image",
-            "scale": 1,
-            "focal_point_x": 0.5,
-            "focal_point_y": 0.5,
-            "object_fit": "cover"
-        },
-        "XhbEqGEReGWhsMqaUVaGffJ": {
-            "id": "XhbEqGEReGWhsMqaUVaGffJ",
-            "type": "gallery_item",
-            "image": "gsTWgkmWrvebfuhYbHrbZaX"
-        },
-        "mZuuDvAYYrqtmdkugvPtQEw": {
-            "id": "mZuuDvAYYrqtmdkugvPtQEw",
-            "type": "image",
-            "src": "",
-            "width": 800,
-            "height": 600,
-            "alt": "Sample image",
-            "scale": 1,
-            "focal_point_x": 0.5,
-            "focal_point_y": 0.5,
-            "object_fit": "cover"
-        },
-        "eJHsGBsqjEzUekufaFgHKtw": {
-            "id": "eJHsGBsqjEzUekufaFgHKtw",
-            "type": "gallery_item",
-            "image": "mZuuDvAYYrqtmdkugvPtQEw"
-        },
-        "DSqHzEncaEbFJqGKnSYaHqj": {
-            "id": "DSqHzEncaEbFJqGKnSYaHqj",
-            "type": "image",
-            "src": "",
-            "width": 800,
-            "height": 600,
-            "alt": "Sample image",
-            "scale": 1,
-            "focal_point_x": 0.5,
-            "focal_point_y": 0.5,
-            "object_fit": "cover"
-        },
-        "WnPYjYjVNEEQzwZGSZJCFJc": {
-            "id": "WnPYjYjVNEEQzwZGSZJCFJc",
-            "type": "gallery_item",
-            "image": "DSqHzEncaEbFJqGKnSYaHqj"
-        },
         "BPdekRaDEUcQZqtEwPwBvyu": {
             "id": "BPdekRaDEUcQZqtEwPwBvyu",
             "type": "gallery",
@@ -495,10 +444,7 @@ export const demo_doc = {
             "gallery_items": [
                 "wtvHDBrCzJVgacTaJqAwNJk",
                 "TQRANBXMrzXXZTtzxAYhhZf",
-                "HtSTZfjTcDSkttVaTUKMYAj",
-                "XhbEqGEReGWhsMqaUVaGffJ",
-                "eJHsGBsqjEzUekufaFgHKtw",
-                "WnPYjYjVNEEQzwZGSZJCFJc"
+                "HtSTZfjTcDSkttVaTUKMYAj"
             ],
             "outro": []
         },
