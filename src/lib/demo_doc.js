@@ -74,7 +74,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Press Cmd+E",
+                "text": "Press Cmd+E for the fun to start.",
                 "annotations": [
                     {
                         "start_offset": 6,
@@ -188,49 +188,49 @@ export const demo_doc = {
                 "annotations": []
             }
         },
-        "CpCARDQGFNdNtTqtJmGUgfU": {
-            "id": "CpCARDQGFNdNtTqtJmGUgfU",
+        "GZGpvNSHNjPJtHVfmGbRBNf": {
+            "id": "GZGpvNSHNjPJtHVfmGbRBNf",
             "type": "strong"
         },
-        "HXQbBPeacEjUDHxrNeaFgVg": {
-            "id": "HXQbBPeacEjUDHxrNeaFgVg",
+        "TfUCWjmVMpUWSNWhBkBjTgB": {
+            "id": "TfUCWjmVMpUWSNWhBkBjTgB",
             "type": "strong"
         },
-        "NAUvTSNkwmUymtjZsbHMbQs": {
-            "id": "NAUvTSNkwmUymtjZsbHMbQs",
+        "AhtqSnmhHaQtuUbmTcJAgeF": {
+            "id": "AhtqSnmhHaQtuUbmTcJAgeF",
             "type": "strong"
         },
-        "paragraph_1": {
-            "id": "paragraph_1",
+        "fuxtxNCceDRcdbcHhtqsYwJ": {
+            "id": "fuxtxNCceDRcdbcHhtqsYwJ",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Click the dashed horizontal gap after any section. When you see a big blinking cursor, press Enter to create a new block. While the block is selected press Ctrl+Shift+Down to select the next block type. Many blocks support multiple layouts. Switch them with Ctrl+Shift+Right.",
+                "text": "Click any dashed gap and press Enter to create a new block. Ctrl+Shift+Down cycles through block types. Ctrl+Shift+Right switches layouts.",
                 "annotations": [
                     {
-                        "start_offset": 93,
-                        "end_offset": 98,
-                        "node_id": "CpCARDQGFNdNtTqtJmGUgfU"
+                        "start_offset": 31,
+                        "end_offset": 36,
+                        "node_id": "GZGpvNSHNjPJtHVfmGbRBNf"
                     },
                     {
-                        "start_offset": 258,
-                        "end_offset": 274,
-                        "node_id": "HXQbBPeacEjUDHxrNeaFgVg"
+                        "start_offset": 60,
+                        "end_offset": 75,
+                        "node_id": "TfUCWjmVMpUWSNWhBkBjTgB"
                     },
                     {
-                        "start_offset": 156,
-                        "end_offset": 171,
-                        "node_id": "NAUvTSNkwmUymtjZsbHMbQs"
+                        "start_offset": 104,
+                        "end_offset": 120,
+                        "node_id": "AhtqSnmhHaQtuUbmTcJAgeF"
                     }
                 ]
             }
         },
-        "MANjnkyXphJatsEgehFTXfq": {
-            "id": "MANjnkyXphJatsEgehFTXfq",
+        "DreRwEbXrsyDqxXvxHpGnbX": {
+            "id": "DreRwEbXrsyDqxXvxHpGnbX",
             "type": "strong"
         },
-        "HtXmHxNBRWNFDefgWVtxzcY": {
-            "id": "HtXmHxNBRWNFDefgWVtxzcY",
+        "BpErqkznZNMAvpMfbKfyhvt": {
+            "id": "BpErqkznZNMAvpMfbKfyhvt",
             "type": "strong"
         },
         "dwMqDGUwHVvVkdzahPEWDuR": {
@@ -238,45 +238,45 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "To select multiple blocks at once, drag from a top-level gap. Cut them with Cmd+X and paste with Cmd+V at the new position. This is how you move blocks around.",
+                "text": "To move blocks, drag from a gap to select multiple, then cut with Cmd+X and paste with Cmd+V.",
                 "annotations": [
                     {
-                        "start_offset": 76,
-                        "end_offset": 81,
-                        "node_id": "MANjnkyXphJatsEgehFTXfq"
+                        "start_offset": 66,
+                        "end_offset": 71,
+                        "node_id": "DreRwEbXrsyDqxXvxHpGnbX"
                     },
                     {
-                        "start_offset": 97,
-                        "end_offset": 102,
-                        "node_id": "HtXmHxNBRWNFDefgWVtxzcY"
+                        "start_offset": 87,
+                        "end_offset": 92,
+                        "node_id": "BpErqkznZNMAvpMfbKfyhvt"
                     }
                 ]
             }
         },
-        "gRAyWEXjtgjxsZcFPTFNwTw": {
-            "id": "gRAyWEXjtgjxsZcFPTFNwTw",
+        "FGHDfRZMdeYQeVJBarNFeHa": {
+            "id": "FGHDfRZMdeYQeVJBarNFeHa",
             "type": "strong"
         },
-        "UBZNEtcCMnPpFMYkqDMgwWv": {
-            "id": "UBZNEtcCMnPpFMYkqDMgwWv",
+        "gkHzcWkcKRsYffDnwJtGnjG": {
+            "id": "gkHzcWkcKRsYffDnwJtGnjG",
             "type": "strong"
         },
-        "uNprzMQcMQztTppEeTKssBd": {
-            "id": "uNprzMQcMQztTppEeTKssBd",
+        "smJYScwGbZgRVDAJWhNGxvG": {
+            "id": "smJYScwGbZgRVDAJWhNGxvG",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Pro tip: To select the enclosing block, press Esc multiple times. Useful when you’re editing text but want to change the layout above it.",
+                "text": "Pro tip: Press Esc to select the parent block. Useful when editing text but wanting to change the layout above.",
                 "annotations": [
                     {
                         "start_offset": 0,
                         "end_offset": 8,
-                        "node_id": "gRAyWEXjtgjxsZcFPTFNwTw"
+                        "node_id": "FGHDfRZMdeYQeVJBarNFeHa"
                     },
                     {
-                        "start_offset": 46,
-                        "end_offset": 49,
-                        "node_id": "UBZNEtcCMnPpFMYkqDMgwWv"
+                        "start_offset": 15,
+                        "end_offset": 18,
+                        "node_id": "gkHzcWkcKRsYffDnwJtGnjG"
                     }
                 ]
             }
@@ -290,8 +290,8 @@ export const demo_doc = {
                 "annotations": []
             }
         },
-        "dqJqWSESvApGerKgukjQpkw": {
-            "id": "dqJqWSESvApGerKgukjQpkw",
+        "GXQufWAsQazeWSgFBnwvTQA": {
+            "id": "GXQufWAsQazeWSgFBnwvTQA",
             "type": "strong"
         },
         "JVAAazPetYAsCvHAunXtuCF": {
@@ -299,12 +299,12 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Press Ctrl+Shift+C to change the color surface of the current section.",
+                "text": "Ctrl+Shift+C cycles through color surfaces.",
                 "annotations": [
                     {
-                        "start_offset": 6,
-                        "end_offset": 18,
-                        "node_id": "dqJqWSESvApGerKgukjQpkw"
+                        "start_offset": 0,
+                        "end_offset": 12,
+                        "node_id": "GXQufWAsQazeWSgFBnwvTQA"
                     }
                 ]
             }
@@ -317,9 +317,9 @@ export const demo_doc = {
             "content": [
                 "HWcSGEAsZyfeQFjgvKrMpZc",
                 "heading_1",
-                "paragraph_1",
+                "fuxtxNCceDRcdbcHhtqsYwJ",
                 "dwMqDGUwHVvVkdzahPEWDuR",
-                "uNprzMQcMQztTppEeTKssBd",
+                "smJYScwGbZgRVDAJWhNGxvG",
                 "ybNbBkMErnzQyRqpStQKMQZ",
                 "JVAAazPetYAsCvHAunXtuCF"
             ]
