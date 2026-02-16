@@ -18,8 +18,8 @@
 
 <Node {path} class="lg:text-lg">
 	<div class="{TW_LIMITER}">
-		<div class="flex flex-col md:flex-row md:items-start border-l border-r border-(--border-color) py-10 md:py-16 {TW_PAGE_PADDING_X}">
-			<div class="md:w-1/3 flex flex-col items-start">
+		<div class="flex flex-col items-center text-center md:text-left md:flex-row md:items-start border-l border-r border-(--border-color) py-10 md:py-16 {TW_PAGE_PADDING_X}">
+			<div class="flex flex-col items-center md:items-start md:w-1/3">
 				<CustomProperty path={[...path, 'logo']}>
 					<svelte:element
 						this={svedit.editable ? 'div' : 'a'}
@@ -37,7 +37,7 @@
 				/>
 			</div>
 			<NodeArrayProperty
-				class="footer-columns grid grid-cols-1 md:grid-cols-2 {grid_cols_class} flex-1 gap-x-8 gap-y-6 md:gap-y-12 mt-8 md:mt-0 [--layout-orientation:horizontal]"
+				class="footer-columns grid grid-cols-1 md:grid-cols-2 {grid_cols_class} flex-1 gap-x-8 gap-y-6 md:gap-y-12 mt-12 md:mt-0 [--layout-orientation:horizontal]"
 				path={[...path, 'footer_link_columns']}
 			/>
 		</div>

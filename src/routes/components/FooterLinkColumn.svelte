@@ -8,14 +8,14 @@
 </script>
 
 <Node {path}>
-	<div class="footer-link-column flex flex-col gap-2">
+	<div class="footer-link-column flex flex-col items-center md:items-start gap-3 md:gap-6">
 		<AnnotatedTextProperty
 			class="text-xs md:text-sm font-medium uppercase tracking-wider text-(--foreground) opacity-60"
 			path={[...path, 'label']}
 			placeholder="Column Label"
 		/>
 		<NodeArrayProperty
-			class="footer-links flex flex-col"
+			class="footer-links flex flex-col items-center md:items-start"
 			path={[...path, 'footer_links']}
 		/>
 	</div>
