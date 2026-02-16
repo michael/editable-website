@@ -649,7 +649,7 @@ export const demo_doc = {
         "hqrrTdEbTPaqzEcYMczhBZb": {
             "id": "hqrrTdEbTPaqzEcYMczhBZb",
             "type": "image",
-            "src": "/sample-images/michael.jpg",
+            "src": "/sample-images/michael.webp",
             "width": 682,
             "height": 1024,
             "alt": "Feature image",
