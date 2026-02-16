@@ -46,7 +46,7 @@
 	<div class="{TW_LIMITER}">
 		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--border-color) pt-5 sm:pt-7 md:pt-0">
 			<div class="flex flex-col justify-center {TW_PAGE_PADDING} pb-0" use:reveal>
-				<div class="">{@render body()}</div>
+				<div class="max-w-2xl">{@render body()}</div>
 			</div>
 			<div class="{TW_PAGE_PADDING} md:border-l border-(--border-color)" use:reveal={{ delay: 200 }}>
 				{@render image(3 / 4, true)}
@@ -63,7 +63,7 @@
 				{@render image(3 / 4, true)}
 			</div>
 			<div class="flex flex-col justify-center {TW_PAGE_PADDING} pb-0 max-md:order-1" use:reveal>
-				<div class="">{@render body()}</div>
+				<div class="max-w-2xl">{@render body()}</div>
 			</div>
 		</div>
 	</div>
@@ -74,7 +74,7 @@
 	<div class="{TW_LIMITER}">
 		<div class="grid grid-cols-1 md:grid-cols-2 border-r border-l border-(--border-color) pt-5 sm:pt-7 md:pt-0">
 			<div class="flex flex-col justify-center {TW_PAGE_PADDING}" use:reveal>
-				<div class="">{@render body()}</div>
+				<div class="max-w-2xl">{@render body()}</div>
 			</div>
 			<div class="md:border-l border-(--border-color)" use:reveal={{ delay: 200 }}>
 				{@render image(3 / 4)}
@@ -91,7 +91,7 @@
 				{@render image(3 / 4)}
 			</div>
 			<div class="flex flex-col justify-center {TW_PAGE_PADDING} max-md:order-1" use:reveal>
-				<div class="">{@render body()}</div>
+				<div class="max-w-2xl">{@render body()}</div>
 			</div>
 		</div>
 	</div>
