@@ -108,7 +108,7 @@
 <svelte:window onkeydown={key_mapper.handle_keydown.bind(key_mapper)} />
 
 <svelte:head>
-	<title>Editable Website v2</title>
+	<title>Editable Website</title>
 </svelte:head>
 
 <!--
