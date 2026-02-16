@@ -319,12 +319,7 @@ const document_schema = define_document_schema({
 				node_types: ['image'],
 				default_node_type: 'image'
 			},
-			intro: {
-				type: 'node_array',
-				node_types: ['text'],
-				default_node_type: 'text'
-			},
-			outro: {
+			body: {
 				type: 'node_array',
 				node_types: ['text'],
 				default_node_type: 'text'
@@ -595,16 +590,10 @@ const session_config = {
 					focal_point_y: 0.5,
 					object_fit: 'cover'
 				},
-				intro_text: {
-					id: 'intro_text',
+				body_text: {
+					id: 'body_text',
 					type: 'text',
 					layout: 2,
-					content: { text: '', annotations: [] }
-				},
-				outro_text: {
-					id: 'outro_text',
-					type: 'text',
-					layout: 1,
 					content: { text: '', annotations: [] }
 				},
 				new_feature: {
@@ -613,8 +602,7 @@ const session_config = {
 						layout: 1,
 						colorset: 0,
 						image: 'feature_image',
-						intro: ['intro_text'],
-						outro: ['outro_text']
+						body: ['body_text']
 					}
 			});
 

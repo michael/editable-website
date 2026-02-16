@@ -120,11 +120,9 @@ export const demo_doc = {
             "layout": 3,
             "colorset": 0,
             "image": "feature_1_image",
-            "intro": [
+            "body": [
                 "feature_1_intro_heading",
-                "ywTQktXzgyRqzsUNXjZztQw"
-            ],
-            "outro": [
+                "ywTQktXzgyRqzsUNXjZztQw",
                 "WjasMkTrmjdrXTsDgeUHQap"
             ]
         },
@@ -722,11 +720,9 @@ export const demo_doc = {
             "layout": 2,
             "colorset": 0,
             "image": "hqrrTdEbTPaqzEcYMczhBZb",
-            "intro": [
+            "body": [
                 "feature_2_intro_heading",
-                "qDAyeabdhVEXjBWXyyqfUPb"
-            ],
-            "outro": [
+                "qDAyeabdhVEXjBWXyyqfUPb",
                 "grqHKByVFQSDZhumJjqvPxE"
             ]
         },
