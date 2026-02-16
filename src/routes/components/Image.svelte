@@ -2,6 +2,7 @@
 	import { getContext } from 'svelte';
 	const svedit = getContext('svedit');
 
+	/** @type {{ path: any[], mask?: boolean }} */
 	let { path, mask = false } = $props();
 	let node = $derived(svedit.session.get(path));
 	let is_svg = $derived(node.src?.endsWith('.svg'));
