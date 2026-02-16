@@ -33,7 +33,7 @@
 				style:aspect-ratio={4 / 3}
 				style:border-radius="var(--image-border-radius)"
 				class="w-full overflow-hidden select-none"
-				class:ew-bg-checkerboard={(is_selected || !image_node.src) && svedit.editable}
+				class:ew-bg-checkerboard={is_selected || !image_node.src}
 			>
 				<Image path={[...path, 'image']} />
 			</div>
