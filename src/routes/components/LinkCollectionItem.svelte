@@ -31,7 +31,7 @@
 			<div
 				contenteditable="false"
 				style:aspect-ratio={4 / 3}
-				style:border-radius="var(--border-radius)"
+				style:border-radius="var(--image-border-radius)"
 				class="w-full overflow-hidden select-none"
 				class:ew-bg-checkerboard={(is_selected || !image_node.src) && svedit.editable}
 			>

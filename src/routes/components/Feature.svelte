@@ -25,7 +25,7 @@
 		<div
 			contenteditable="false"
 			style:aspect-ratio={aspect_ratio}
-			style:border-radius={border_radius ? 'var(--border-radius)' : undefined}
+			style:border-radius={border_radius ? 'var(--image-border-radius)' : undefined}
 			class="ew-image-wrapper h-full w-full overflow-hidden select-none"
 			class:ew-bg-checkerboard={is_selected || !image_node.src}
 		>

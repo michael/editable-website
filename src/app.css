@@ -60,7 +60,8 @@ html {
 	--accent-light-alt2: oklch(0.8 0.13 175 / 0.3);
 	--accent-foreground-alt2: oklch(0.21 0.034 264);
 
-	--border-radius: 0.5rem; /* slight rounded corners for buttons, nav items */
+	--button-border-radius: 3rem; /* rounded corners for buttons, nav items */
+	--image-border-radius: 0rem;
 	--border-thickness: 0px;
 
 	/* Derived colors - these can be overridden per site, but I don't recommend it */
