@@ -88,6 +88,10 @@ export const demo_doc = {
             "id": "mJJVsmhXFryqKCkHveUKfqD",
             "type": "strong"
         },
+        "gJFSTSTgdcxbyumjfJmwPZJ": {
+            "id": "gJFSTSTgdcxbyumjfJmwPZJ",
+            "type": "strong"
+        },
         "ywTQktXzgyRqzsUNXjZztQw": {
             "id": "ywTQktXzgyRqzsUNXjZztQw",
             "type": "text",
@@ -99,6 +103,11 @@ export const demo_doc = {
                         "start_offset": 56,
                         "end_offset": 62,
                         "node_id": "mJJVsmhXFryqKCkHveUKfqD"
+                    },
+                    {
+                        "start_offset": 89,
+                        "end_offset": 99,
+                        "node_id": "gJFSTSTgdcxbyumjfJmwPZJ"
                     }
                 ]
             }
@@ -124,26 +133,26 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "For basic text formatting use Cmd+B for bold, Cmd+I for italics, and Cmd+K to turn text into a link. To undo accidental changes press Cmd+Z.",
+                "text": "Cmd+B for bold, Cmd+I for italics, and Cmd+K to turn text into a link. Undo with Cmd+Z. Missing the admin panel? Toolbars? There's none.",
                 "annotations": [
                     {
-                        "start_offset": 30,
-                        "end_offset": 35,
+                        "start_offset": 0,
+                        "end_offset": 5,
                         "node_id": "GjYMCGyPdWVrmkGcWazPTAJ"
                     },
                     {
-                        "start_offset": 46,
-                        "end_offset": 51,
+                        "start_offset": 16,
+                        "end_offset": 21,
                         "node_id": "TKBzGfCyPtcywrWNafpMFUx"
                     },
                     {
-                        "start_offset": 69,
-                        "end_offset": 74,
+                        "start_offset": 39,
+                        "end_offset": 44,
                         "node_id": "BYnvjBNEvJqBdqQmUyeUzgn"
                     },
                     {
-                        "start_offset": 134,
-                        "end_offset": 139,
+                        "start_offset": 81,
+                        "end_offset": 86,
                         "node_id": "kJNavahEZGWKeAtWTgEQqnp"
                     }
                 ]
