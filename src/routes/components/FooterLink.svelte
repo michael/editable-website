@@ -9,16 +9,17 @@
 </script>
 
 <Node {path}>
-	<svelte:element
-		this={render_as_link ? 'a' : 'div'}
-		href={render_as_link ? node.href : undefined}
-		target={render_as_link ? node.target : undefined}
-		class="block py-1"
-		class:hover:underline={render_as_link}
-		class:hover:decoration-2={render_as_link}
-		class:hover:decoration-(--accent)={render_as_link}
-		class:hover:underline-offset-2={render_as_link}
-	>
-		<AnnotatedTextProperty path={[...path, 'label']} placeholder="Label" />
-	</svelte:element>
+	<div class="block py-1">
+		<svelte:element
+			this={render_as_link ? 'a' : 'div'}
+			href={render_as_link ? node.href : undefined}
+			target={render_as_link ? node.target : undefined}
+			class:hover:underline={render_as_link}
+			class:hover:decoration-2={render_as_link}
+			class:hover:decoration-(--accent)={render_as_link}
+			class:hover:underline-offset-2={render_as_link}
+		>
+			<AnnotatedTextProperty class="inline" path={[...path, 'label']} placeholder="Label" />
+		</svelte:element>
+	</div>
 </Node>

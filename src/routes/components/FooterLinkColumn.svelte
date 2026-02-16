@@ -15,7 +15,7 @@
 			placeholder="Column Label"
 		/>
 		<NodeArrayProperty
-			class="footer-links flex flex-col items-center md:items-start"
+			class="footer-links w-full flex flex-col items-center md:items-stretch"
 			path={[...path, 'footer_links']}
 		/>
 	</div>
