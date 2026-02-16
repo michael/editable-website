@@ -7,6 +7,28 @@ export const demo_doc = {
             "id": "HZTrNsJRpDQwcgGTYgunawS",
             "type": "emphasis"
         },
+        "CYtVzYewmwdZntQUhbbJNEa": {
+            "id": "CYtVzYewmwdZntQUhbbJNEa",
+            "type": "button",
+            "layout": 1,
+            "href": "/#feature_1",
+            "target": "_self",
+            "label": {
+                "text": "OH YES!",
+                "annotations": []
+            }
+        },
+        "TzrqcQdWwaUteYzxybZAzED": {
+            "id": "TzrqcQdWwaUteYzxybZAzED",
+            "type": "button",
+            "layout": 2,
+            "href": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "target": "_blank",
+            "label": {
+                "text": "NO, THANKS",
+                "annotations": []
+            }
+        },
         "hero_1": {
             "id": "hero_1",
             "type": "hero",
@@ -26,7 +48,10 @@ export const demo_doc = {
                 "text": "Want to know how they do it?",
                 "annotations": []
             },
-            "buttons": []
+            "buttons": [
+                "CYtVzYewmwdZntQUhbbJNEa",
+                "TzrqcQdWwaUteYzxybZAzED"
+            ]
         },
         "feature_1_image": {
             "id": "feature_1_image",
@@ -265,8 +290,8 @@ export const demo_doc = {
                 ]
             }
         },
-        "prose_1": {
-            "id": "prose_1",
+        "xKmNqPrStVwYzAbCdEfGh": {
+            "id": "xKmNqPrStVwYzAbCdEfGh",
             "type": "prose",
             "layout": 3,
             "colorset": 2,
@@ -369,27 +394,10 @@ export const demo_doc = {
             "type": "gallery_item",
             "image": "ZjdBYZdXQedwuTdVFGHdDEj"
         },
-        "CYZFDvXrnaqxAKrErdZtgTF": {
-            "id": "CYZFDvXrnaqxAKrErdZtgTF",
+        "UGfbRKEMbGwgcUjhpgXausS": {
+            "id": "UGfbRKEMbGwgcUjhpgXausS",
             "type": "image",
-            "src": "/sample-images/4.jpg",
-            "width": 800,
-            "height": 600,
-            "alt": "Sample image",
-            "scale": 1,
-            "focal_point_x": 0.6223360655737706,
-            "focal_point_y": 0.5899931693989071,
-            "object_fit": "cover"
-        },
-        "beUAyJnBJXjTAKhxdYKntGJ": {
-            "id": "beUAyJnBJXjTAKhxdYKntGJ",
-            "type": "gallery_item",
-            "image": "CYZFDvXrnaqxAKrErdZtgTF"
-        },
-        "eacGfUcvXCCcCkkRVJEzVQA": {
-            "id": "eacGfUcvXCCcCkkRVJEzVQA",
-            "type": "image",
-            "src": "/sample-images/5.jpg",
+            "src": "",
             "width": 800,
             "height": 600,
             "alt": "Sample image",
@@ -398,44 +406,10 @@ export const demo_doc = {
             "focal_point_y": 0.5,
             "object_fit": "cover"
         },
-        "nHBtjKafchwuYjvfWRKfyPB": {
-            "id": "nHBtjKafchwuYjvfWRKfyPB",
+        "HtSTZfjTcDSkttVaTUKMYAj": {
+            "id": "HtSTZfjTcDSkttVaTUKMYAj",
             "type": "gallery_item",
-            "image": "eacGfUcvXCCcCkkRVJEzVQA"
-        },
-        "qpYkBxBfWxnHPXaHEYqmkNK": {
-            "id": "qpYkBxBfWxnHPXaHEYqmkNK",
-            "type": "image",
-            "src": "/sample-images/6.jpg",
-            "width": 800,
-            "height": 600,
-            "alt": "Sample image",
-            "scale": 1,
-            "focal_point_x": 0.5,
-            "focal_point_y": 0.5,
-            "object_fit": "cover"
-        },
-        "SwVVZbqrUVwkbyRmfSfCTjH": {
-            "id": "SwVVZbqrUVwkbyRmfSfCTjH",
-            "type": "gallery_item",
-            "image": "qpYkBxBfWxnHPXaHEYqmkNK"
-        },
-        "asBnEpdtbyJQCEvNWuyADWR": {
-            "id": "asBnEpdtbyJQCEvNWuyADWR",
-            "type": "image",
-            "src": "/sample-images/7.jpg",
-            "width": 800,
-            "height": 600,
-            "alt": "Sample image",
-            "scale": 1,
-            "focal_point_x": 0.5,
-            "focal_point_y": 0.5,
-            "object_fit": "cover"
-        },
-        "tyPwGsNvAepCesRRspqreba": {
-            "id": "tyPwGsNvAepCesRRspqreba",
-            "type": "gallery_item",
-            "image": "asBnEpdtbyJQCEvNWuyADWR"
+            "image": "UGfbRKEMbGwgcUjhpgXausS"
         },
         "BPdekRaDEUcQZqtEwPwBvyu": {
             "id": "BPdekRaDEUcQZqtEwPwBvyu",
@@ -451,10 +425,7 @@ export const demo_doc = {
             "gallery_items": [
                 "wtvHDBrCzJVgacTaJqAwNJk",
                 "TQRANBXMrzXXZTtzxAYhhZf",
-                "beUAyJnBJXjTAKhxdYKntGJ",
-                "nHBtjKafchwuYjvfWRKfyPB",
-                "SwVVZbqrUVwkbyRmfSfCTjH",
-                "tyPwGsNvAepCesRRspqreba"
+                "HtSTZfjTcDSkttVaTUKMYAj"
             ],
             "outro": []
         },
@@ -597,6 +568,37 @@ export const demo_doc = {
                 "annotations": []
             }
         },
+        "EyhArmHQuWTgcpXNKVeNxpW": {
+            "id": "EyhArmHQuWTgcpXNKVeNxpW",
+            "type": "image",
+            "src": "",
+            "width": 800,
+            "height": 600,
+            "alt": "",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "VznmxwWdfgSDFqCjBFrfDKs": {
+            "id": "VznmxwWdfgSDFqCjBFrfDKs",
+            "type": "link_collection_item",
+            "href": "",
+            "target": "_self",
+            "image": "EyhArmHQuWTgcpXNKVeNxpW",
+            "preline": {
+                "text": "",
+                "annotations": []
+            },
+            "title": {
+                "text": "",
+                "annotations": []
+            },
+            "description": {
+                "text": "",
+                "annotations": []
+            }
+        },
         "VqaqUWzRKUJrZzQYqqurggB": {
             "id": "VqaqUWzRKUJrZzQYqqurggB",
             "type": "link",
@@ -627,8 +629,8 @@ export const demo_doc = {
                 ]
             }
         },
-        "link_collection_1": {
-            "id": "link_collection_1",
+        "jLnPqRsTuVwXyZaBcDeFg": {
+            "id": "jLnPqRsTuVwXyZaBcDeFg",
             "type": "link_collection",
             "layout": 1,
             "colorset": 1,
@@ -640,7 +642,8 @@ export const demo_doc = {
             "link_collection_items": [
                 "link_collection_item_2",
                 "YnBCBuemwpaUxQwHrFJNgMW",
-                "AVydYvhksUBMjCSEccZJGXa"
+                "AVydYvhksUBMjCSEccZJGXa",
+                "VznmxwWdfgSDFqCjBFrfDKs"
             ],
             "outro": [
                 "kZQHRTYyJtbmsJfnXaRgVtZ"
@@ -784,7 +787,7 @@ export const demo_doc = {
             "id": "nav_item_1",
             "type": "nav_item",
             "layout": 1,
-            "href": "/#prose_1",
+            "href": "/#xKmNqPrStVwYzAbCdEfGh",
             "label": {
                 "text": "Editing",
                 "annotations": []
@@ -806,7 +809,7 @@ export const demo_doc = {
             "id": "nav_item_4",
             "type": "nav_item",
             "layout": 1,
-            "href": "/#link_collection_1",
+            "href": "/#jLnPqRsTuVwXyZaBcDeFg",
             "label": {
                 "text": "Links",
                 "annotations": []
@@ -850,7 +853,7 @@ export const demo_doc = {
         "WVvBSREFCThNYcpgvfUnWkF": {
             "id": "WVvBSREFCThNYcpgvfUnWkF",
             "type": "footer_link",
-            "href": "/#prose_1",
+            "href": "/#xKmNqPrStVwYzAbCdEfGh",
             "target": "_self",
             "label": {
                 "text": "Editing",
@@ -870,7 +873,7 @@ export const demo_doc = {
         "GwPeRFYtAyrcCMfpuyzdWZp": {
             "id": "GwPeRFYtAyrcCMfpuyzdWZp",
             "type": "footer_link",
-            "href": "/#link_collection_1",
+            "href": "/#jLnPqRsTuVwXyZaBcDeFg",
             "target": "_self",
             "label": {
                 "text": "Links",
@@ -974,9 +977,9 @@ export const demo_doc = {
             "body": [
                 "hero_1",
                 "feature_1",
-                "prose_1",
+                "xKmNqPrStVwYzAbCdEfGh",
                 "BPdekRaDEUcQZqtEwPwBvyu",
-                "link_collection_1",
+                "jLnPqRsTuVwXyZaBcDeFg",
                 "YTMHBcPkYXJMRUnuSAhrTDE",
                 "UBNYngEBJYtDWgeabtDJqWW"
             ],
