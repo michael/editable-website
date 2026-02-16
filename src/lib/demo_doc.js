@@ -3,8 +3,8 @@
 export const demo_doc = {
     "document_id": "page_1",
     "nodes": {
-        "HZTrNsJRpDQwcgGTYgunawS": {
-            "id": "HZTrNsJRpDQwcgGTYgunawS",
+        "RqBBgJQGWfVSwewNBhYMYzq": {
+            "id": "RqBBgJQGWfVSwewNBhYMYzq",
             "type": "emphasis"
         },
         "CYtVzYewmwdZntQUhbbJNEa": {
@@ -40,7 +40,7 @@ export const demo_doc = {
                     {
                         "start_offset": 21,
                         "end_offset": 35,
-                        "node_id": "HZTrNsJRpDQwcgGTYgunawS"
+                        "node_id": "RqBBgJQGWfVSwewNBhYMYzq"
                     }
                 ]
             },
@@ -65,17 +65,27 @@ export const demo_doc = {
             "focal_point_y": 0.5,
             "object_fit": "cover"
         },
+        "RyZThddGgFjnpsnTmzTGBfA": {
+            "id": "RyZThddGgFjnpsnTmzTGBfA",
+            "type": "strong"
+        },
         "WsXcDfVgBhNjMkLqAzPeRt": {
             "id": "WsXcDfVgBhNjMkLqAzPeRt",
             "type": "text",
             "layout": 2,
             "content": {
                 "text": "Press Cmd+E",
-                "annotations": []
+                "annotations": [
+                    {
+                        "start_offset": 6,
+                        "end_offset": 11,
+                        "node_id": "RyZThddGgFjnpsnTmzTGBfA"
+                    }
+                ]
             }
         },
-        "NqvFNPVXFhYFbgmYAWwSWHC": {
-            "id": "NqvFNPVXFhYFbgmYAWwSWHC",
+        "mJJVsmhXFryqKCkHveUKfqD": {
+            "id": "mJJVsmhXFryqKCkHveUKfqD",
             "type": "strong"
         },
         "ywTQktXzgyRqzsUNXjZztQw": {
@@ -83,12 +93,12 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Or Ctrl+E if you are on Windows or Linux. Now you can move the cursor with the arrow keys or make selections with the mouse. You can edit anything you see on the page.",
+                "text": "That's it. Unless you're on Windows or Linux, then it's Ctrl+E. Move the cursor with the arrow keys. Select with the mouse. Edit anything you see.",
                 "annotations": [
                     {
-                        "start_offset": 3,
-                        "end_offset": 9,
-                        "node_id": "NqvFNPVXFhYFbgmYAWwSWHC"
+                        "start_offset": 56,
+                        "end_offset": 62,
+                        "node_id": "mJJVsmhXFryqKCkHveUKfqD"
                     }
                 ]
             }
@@ -165,7 +175,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Add, select, and move blocks",
+                "text": "Add, select, and move blocks.",
                 "annotations": []
             }
         },
@@ -267,7 +277,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Change color",
+                "text": "Change color.",
                 "annotations": []
             }
         },
@@ -319,7 +329,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Add images to a gallery",
+                "text": "Add images to a gallery.",
                 "annotations": []
             }
         },
@@ -497,7 +507,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Link to other pages",
+                "text": "Link to other pages.",
                 "annotations": []
             }
         },
@@ -720,7 +730,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Hello, I'm Michael",
+                "text": "Hello, I'm Michael.",
                 "annotations": []
             }
         },
@@ -748,7 +758,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "But without loosing flexibility. You can set up your site with fonts and colors matching your brand, which are then applied consistently.",
+                "text": "Without loosing flexibility, though. Set up your site with fonts and colors matching your brand, applied consistently throughout.",
                 "annotations": []
             }
         },
@@ -769,11 +779,11 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "The source code is yours. So you can change every pixel of your site, create new content types, or integrate 3rd party data. Everything you can do with Svelte, you can do with Editable Website too.",
+                "text": "The source code is yours. Change every pixel of your site, create new content types, or integrate 3rd party data. Everything you can do with Svelte, you can do with Editable Website too.",
                 "annotations": [
                     {
-                        "start_offset": 152,
-                        "end_offset": 158,
+                        "start_offset": 141,
+                        "end_offset": 147,
                         "node_id": "hrpbdxkBCHAUkcprWmBjFvj"
                     },
                     {
@@ -813,7 +823,7 @@ export const demo_doc = {
             "type": "hero",
             "colorset": 0,
             "title": {
-                "text": "Be an early bird",
+                "text": "Be an early bird.",
                 "annotations": []
             },
             "description": {
