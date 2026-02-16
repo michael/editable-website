@@ -11,7 +11,7 @@ export const demo_doc = {
             "id": "CYtVzYewmwdZntQUhbbJNEa",
             "type": "button",
             "layout": 1,
-            "href": "/#feature_1",
+            "href": "/#RtYpQwXsZvNmKjHgFdSaLe",
             "target": "_self",
             "label": {
                 "text": "OH YES!",
@@ -53,8 +53,8 @@ export const demo_doc = {
                 "TzrqcQdWwaUteYzxybZAzED"
             ]
         },
-        "feature_1_image": {
-            "id": "feature_1_image",
+        "VbNcMxZaQwErTyUiOpLkJh": {
+            "id": "VbNcMxZaQwErTyUiOpLkJh",
             "type": "image",
             "src": "/sample-images/cmde.webp",
             "width": 800,
@@ -65,8 +65,8 @@ export const demo_doc = {
             "focal_point_y": 0.5,
             "object_fit": "cover"
         },
-        "feature_1_intro_heading": {
-            "id": "feature_1_intro_heading",
+        "WsXcDfVgBhNjMkLqAzPeRt": {
+            "id": "WsXcDfVgBhNjMkLqAzPeRt",
             "type": "text",
             "layout": 2,
             "content": {
@@ -139,14 +139,14 @@ export const demo_doc = {
                 ]
             }
         },
-        "feature_1": {
-            "id": "feature_1",
+        "RtYpQwXsZvNmKjHgFdSaLe": {
+            "id": "RtYpQwXsZvNmKjHgFdSaLe",
             "type": "feature",
             "layout": 3,
             "colorset": 0,
-            "image": "feature_1_image",
+            "image": "VbNcMxZaQwErTyUiOpLkJh",
             "body": [
-                "feature_1_intro_heading",
+                "WsXcDfVgBhNjMkLqAzPeRt",
                 "ywTQktXzgyRqzsUNXjZztQw",
                 "WjasMkTrmjdrXTsDgeUHQap"
             ]
@@ -411,6 +411,57 @@ export const demo_doc = {
             "type": "gallery_item",
             "image": "UGfbRKEMbGwgcUjhpgXausS"
         },
+        "gsTWgkmWrvebfuhYbHrbZaX": {
+            "id": "gsTWgkmWrvebfuhYbHrbZaX",
+            "type": "image",
+            "src": "",
+            "width": 800,
+            "height": 600,
+            "alt": "Sample image",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "XhbEqGEReGWhsMqaUVaGffJ": {
+            "id": "XhbEqGEReGWhsMqaUVaGffJ",
+            "type": "gallery_item",
+            "image": "gsTWgkmWrvebfuhYbHrbZaX"
+        },
+        "mZuuDvAYYrqtmdkugvPtQEw": {
+            "id": "mZuuDvAYYrqtmdkugvPtQEw",
+            "type": "image",
+            "src": "",
+            "width": 800,
+            "height": 600,
+            "alt": "Sample image",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "eJHsGBsqjEzUekufaFgHKtw": {
+            "id": "eJHsGBsqjEzUekufaFgHKtw",
+            "type": "gallery_item",
+            "image": "mZuuDvAYYrqtmdkugvPtQEw"
+        },
+        "DSqHzEncaEbFJqGKnSYaHqj": {
+            "id": "DSqHzEncaEbFJqGKnSYaHqj",
+            "type": "image",
+            "src": "",
+            "width": 800,
+            "height": 600,
+            "alt": "Sample image",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "WnPYjYjVNEEQzwZGSZJCFJc": {
+            "id": "WnPYjYjVNEEQzwZGSZJCFJc",
+            "type": "gallery_item",
+            "image": "DSqHzEncaEbFJqGKnSYaHqj"
+        },
         "BPdekRaDEUcQZqtEwPwBvyu": {
             "id": "BPdekRaDEUcQZqtEwPwBvyu",
             "type": "gallery",
@@ -425,7 +476,10 @@ export const demo_doc = {
             "gallery_items": [
                 "wtvHDBrCzJVgacTaJqAwNJk",
                 "TQRANBXMrzXXZTtzxAYhhZf",
-                "HtSTZfjTcDSkttVaTUKMYAj"
+                "HtSTZfjTcDSkttVaTUKMYAj",
+                "XhbEqGEReGWhsMqaUVaGffJ",
+                "eJHsGBsqjEzUekufaFgHKtw",
+                "WnPYjYjVNEEQzwZGSZJCFJc"
             ],
             "outro": []
         },
@@ -976,7 +1030,7 @@ export const demo_doc = {
             "type": "page",
             "body": [
                 "hero_1",
-                "feature_1",
+                "RtYpQwXsZvNmKjHgFdSaLe",
                 "xKmNqPrStVwYzAbCdEfGh",
                 "BPdekRaDEUcQZqtEwPwBvyu",
                 "jLnPqRsTuVwXyZaBcDeFg",
