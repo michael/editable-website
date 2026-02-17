@@ -203,7 +203,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Add, select, and move blocks.",
+                "text": "Add, select, and move blocks",
                 "annotations": []
             }
         },
@@ -305,7 +305,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Change color.",
+                "text": "Change color",
                 "annotations": []
             }
         },
@@ -357,7 +357,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Add images to a gallery.",
+                "text": "Add images to a gallery",
                 "annotations": []
             }
         },
@@ -481,7 +481,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Link to other pages.",
+                "text": "Link to other pages",
                 "annotations": []
             }
         },
@@ -704,7 +704,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Hello, I'm Michael.",
+                "text": "Hello, I'm Michael",
                 "annotations": []
             }
         },
@@ -797,7 +797,7 @@ export const demo_doc = {
             "type": "hero",
             "colorset": 0,
             "title": {
-                "text": "Be an early bird.",
+                "text": "Be an early bird",
                 "annotations": []
             },
             "description": {
