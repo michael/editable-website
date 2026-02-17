@@ -22,8 +22,8 @@ export const demo_doc = {
             "id": "TzrqcQdWwaUteYzxybZAzED",
             "type": "button",
             "layout": 2,
-            "href": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-            "target": "_blank",
+            "href": "/#YTMHBcPkYXJMRUnuSAhrTDE",
+            "target": "_self",
             "label": {
                 "text": "NO, THANKS",
                 "annotations": []
@@ -45,7 +45,7 @@ export const demo_doc = {
                 ]
             },
             "description": {
-                "text": "Want to know how they do it?",
+                "text": "Want to see how they do it?",
                 "annotations": []
             },
             "buttons": [
@@ -732,7 +732,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Without loosing flexibility, though. Set up your site with fonts and colors matching your style. Within an hour you are ready to launch your personalized site.",
+                "text": "Without loosing flexibility, though. Set up your site with fonts and colors matching your style. Within an hour you are ready to launch your site.",
                 "annotations": []
             }
         },
