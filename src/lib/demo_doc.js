@@ -74,7 +74,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Press Cmd+E for the fun to start.",
+                "text": "Press Cmd+E",
                 "annotations": [
                     {
                         "start_offset": 6,
@@ -128,12 +128,16 @@ export const demo_doc = {
             "id": "kJNavahEZGWKeAtWTgEQqnp",
             "type": "strong"
         },
+        "dzcnFWQyFtKpXahQceYCUda": {
+            "id": "dzcnFWQyFtKpXahQceYCUda",
+            "type": "strong"
+        },
         "WjasMkTrmjdrXTsDgeUHQap": {
             "id": "WjasMkTrmjdrXTsDgeUHQap",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Cmd+B for bold, Cmd+I for italics, and Cmd+K to turn text into a link. Undo with Cmd+Z. Missing the admin panel? Toolbars? There's none.",
+                "text": "Cmd+B for bold, Cmd+I for italics, and Cmd+K to turn text into a link. Undo with Cmd+Z. Save changes with Cmd+S.",
                 "annotations": [
                     {
                         "start_offset": 0,
@@ -154,8 +158,22 @@ export const demo_doc = {
                         "start_offset": 81,
                         "end_offset": 86,
                         "node_id": "kJNavahEZGWKeAtWTgEQqnp"
+                    },
+                    {
+                        "start_offset": 106,
+                        "end_offset": 111,
+                        "node_id": "dzcnFWQyFtKpXahQceYCUda"
                     }
                 ]
+            }
+        },
+        "DxBvNYzBgktMyKjKkKyYcAN": {
+            "id": "DxBvNYzBgktMyKjKkKyYcAN",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "Missing the admin panel? Toolbars? There aren’t any.",
+                "annotations": []
             }
         },
         "RtYpQwXsZvNmKjHgFdSaLe": {
@@ -167,7 +185,8 @@ export const demo_doc = {
             "body": [
                 "WsXcDfVgBhNjMkLqAzPeRt",
                 "ywTQktXzgyRqzsUNXjZztQw",
-                "WjasMkTrmjdrXTsDgeUHQap"
+                "WjasMkTrmjdrXTsDgeUHQap",
+                "DxBvNYzBgktMyKjKkKyYcAN"
             ]
         },
         "HWcSGEAsZyfeQFjgvKrMpZc": {
@@ -382,7 +401,7 @@ export const demo_doc = {
         "jEhPHUyzqvpNeSHYfKCkYgS": {
             "id": "jEhPHUyzqvpNeSHYfKCkYgS",
             "type": "image",
-            "src": "/sample-images/2.jpg",
+            "src": "/sample-images/user1-desktop.webp",
             "width": 800,
             "height": 600,
             "alt": "Sample image",
@@ -399,7 +418,7 @@ export const demo_doc = {
         "ZjdBYZdXQedwuTdVFGHdDEj": {
             "id": "ZjdBYZdXQedwuTdVFGHdDEj",
             "type": "image",
-            "src": "/sample-images/3.jpg",
+            "src": "/sample-images/user1-notebook.webp",
             "width": 800,
             "height": 600,
             "alt": "Sample image",
@@ -713,7 +732,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Without loosing flexibility, though. Set up your site with fonts and colors matching your brand, applied consistently throughout.",
+                "text": "Without loosing flexibility, though. Set up your site with fonts and colors matching your style. Within an hour you are ready to launch your personalized site.",
                 "annotations": []
             }
         },
@@ -734,11 +753,11 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "The source code is yours. Change every pixel of your site, create new content types, or integrate 3rd party data. Everything you can do with Svelte, you can do with Editable Website too.",
+                "text": "The source code is yours too. Change every pixel of your site, create new content types, or integrate 3rd party data. Everything you can do with Svelte, you can do with Editable Website too.",
                 "annotations": [
                     {
-                        "start_offset": 141,
-                        "end_offset": 147,
+                        "start_offset": 145,
+                        "end_offset": 151,
                         "node_id": "hrpbdxkBCHAUkcprWmBjFvj"
                     },
                     {
