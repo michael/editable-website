@@ -172,7 +172,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Missing the admin panel? Toolbars? There aren’t any.",
+                "text": "Looking for the admin panel? Toolbars? There aren’t any.",
                 "annotations": []
             }
         },
