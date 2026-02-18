@@ -25,7 +25,7 @@
 {/snippet}
 
 {#snippet outro()}
-	{@const outro_padding = has_outro ? 'pt-5 sm:pt-7 md:pt-10 lg:pt-14 pb-20 sm:pb-24 md:pb-28 lg:pb-32' : 'pb-20 sm:pb-24 md:pb-28 lg:pb-32'}
+	{@const outro_padding = has_outro ? 'pt-2 sm:pt-3 md:pt-4 lg:pt-6 pb-20 sm:pb-24 md:pb-28 lg:pb-32' : 'pb-20 sm:pb-24 md:pb-28 lg:pb-32'}
 	<div class="{TW_PAGE_PADDING_X} max-w-4xl lg:text-lg {outro_padding}">
 		<NodeArrayProperty class="ew-intro space-y-5 md:space-y-8 {heading_spacing}" path={[...path, 'outro']} />
 	</div>
