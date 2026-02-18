@@ -42,7 +42,7 @@ html {
 	/* Default colorset */
 	--background: oklch(1 0 0);
 	--foreground: oklch(0.21 0.034 264);
-	--accent: oklch(0.67 0.09 205);
+	--accent: oklch(0.21 0.034 264);
 	--accent-light: oklch(0.67 0.09 205 / 0.3);
 	--accent-foreground: oklch(1 0 0);
 
@@ -62,7 +62,7 @@ html {
 
 	--button-border-radius: 3rem; /* rounded corners for buttons, nav items */
 	--image-border-radius: 0rem;
-	--border-thickness: 0px;
+	--border-thickness: 1px;
 
 	/* Derived colors - these can be overridden per site, but I don't recommend it */
 	--border-color: color-mix(in oklch, var(--background) 90%, var(--foreground) 8%); /* hairlines, borders - fully opaque warm grey */
