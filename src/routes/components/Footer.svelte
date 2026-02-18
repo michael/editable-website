@@ -31,7 +31,7 @@
 					</svelte:element>
 				</CustomProperty>
 				<AnnotatedTextProperty
-					class="mt-4 mb-0 md:mb-0"
+					class="mt-6 mb-0 md:mb-0"
 					path={[...path, 'copyright']}
 					placeholder="© 2025 Company"
 				/>

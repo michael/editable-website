@@ -14,7 +14,7 @@ export const demo_doc = {
             "href": "/#RtYpQwXsZvNmKjHgFdSaLe",
             "target": "_self",
             "label": {
-                "text": "I'M CURIOUS!",
+                "text": "Yes, I'm curious",
                 "annotations": []
             }
         },
@@ -25,7 +25,7 @@ export const demo_doc = {
             "href": "/#YTMHBcPkYXJMRUnuSAhrTDE",
             "target": "_self",
             "label": {
-                "text": "NO, THANKS",
+                "text": "No, thanks",
                 "annotations": []
             }
         },

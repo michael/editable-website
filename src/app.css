@@ -61,7 +61,7 @@ html {
 	--accent-foreground-alt2: oklch(0.98 0 0);
 
 	--button-border-radius: 3rem; /* rounded corners for buttons, nav items */
-	--image-border-radius: 2rem;
+	--image-border-radius: 0.5rem;
 	--border-thickness: 0px;
 
 	/* Derived colors - these can be overridden per site, but I don't recommend it */
