@@ -10,9 +10,9 @@
 }
 
 @font-face {
-	font-family: 'IBM Plex Sans';
-	src: url('/fonts/IBM-Plex-Sans-Var-Italic.woff2') format('woff2');
-	font-weight: 100 700;
+	font-family: 'Inter';
+	src: url('/fonts/InterVariable-Italic.woff2') format('woff2');
+	font-weight: 100 900;
 	font-style: italic;
 	font-display: block;
 }
@@ -40,25 +40,25 @@ html {
 
 :root {
 	/* Default colorset */
-	--background: oklch(0.98 0.002 264);
+	--background: oklch(1 0 0);
 	--foreground: oklch(0.21 0.034 264);
-	--accent: oklch(0.8 0.13 175);
-	--accent-light: oklch(0.94 0.04 175);
-	--accent-foreground: oklch(0.21 0.034 264);
+	--accent: oklch(0.67 0.09 205);
+	--accent-light: oklch(0.67 0.09 205 / 0.3);
+	--accent-foreground: oklch(1 0 0);
 
 	/* Alternative colorset 1 */
-	--background-alt1: oklch(0.21 0.034 264);
-	--foreground-alt1: oklch(0.98 0.002 264);
-	--accent-alt1: oklch(0.8 0.13 175); /* oklch(0.7 0.19 22); */
-	--accent-light-alt1: oklch(0.8 0.13 175 / 0.3);
-	--accent-foreground-alt1: oklch(0.21 0.034 264);
+	--background-alt1: oklch(0.67 0.09 205);
+	--foreground-alt1: oklch(1 0 0);
+	--accent-alt1: oklch(1 0 0); /* oklch(0.7 0.19 22); */
+	--accent-light-alt1: oklch(0.67 0.09 205 / 0.3);
+	--accent-foreground-alt1:  oklch(0.67 0.09 205);
 
 	/* Alternative colorset 2 */
-	--background-alt2: #2B2D6E;
-	--foreground-alt2: oklch(0.98 0.002 264);
-	--accent-alt2: oklch(0.8 0.13 175);
-	--accent-light-alt2: oklch(0.8 0.13 175 / 0.3);
-	--accent-foreground-alt2: oklch(0.21 0.034 264);
+	--background-alt2: oklch(0.98 0.002 264);
+	--foreground-alt2: oklch(0.21 0.034 264);
+	--accent-alt2: oklch(0.67 0.09 205);
+	--accent-light-alt2: oklch(0.67 0.09 205 / 0.3);
+	--accent-foreground-alt2: oklch(0.98 0.002 264);
 
 	--button-border-radius: 3rem; /* rounded corners for buttons, nav items */
 	--image-border-radius: 0rem;
@@ -74,11 +74,11 @@ html {
 
 
 @theme {
-	/*--max-width-8xl: 90rem;*/
+	--max-width-8xl: 80rem;
 
 	--font-*: initial;
-	--font-body: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
-	--font-heading: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+	--font-body: ui-sans-serif, system-ui, sans-serif;
+	--font-heading: ui-sans-serif, system-ui, sans-serif;
 	--default-font-family: var(--font-body);
 }
 
