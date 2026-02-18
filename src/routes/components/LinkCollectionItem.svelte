@@ -32,14 +32,14 @@
 				contenteditable="false"
 				style:aspect-ratio={4 / 3}
 				style:border-radius="var(--image-border-radius)"
-				class="w-full overflow-hidden select-none"
+				class="w-full overflow-hidden select-none [corner-shape:squircle]"
 				class:ew-bg-checkerboard={is_selected || !image_node.src}
 			>
 				<Image path={[...path, 'image']} />
 			</div>
 		</CustomProperty>
 		<div class="pt-4">
-			<AnnotatedTextProperty class="font-medium text-xs md:text-sm uppercase tracking-wider text-(--foreground) opacity-60 mb-2" path={[...path, 'preline']} placeholder="Preline" />
+			<AnnotatedTextProperty class="font-mono font-medium text-xs md:text-sm uppercase tracking-wider text-(--foreground) opacity-60 mb-2" path={[...path, 'preline']} placeholder="Preline" />
 			<AnnotatedTextProperty class="{!svedit.editable ? 'title-underline' : ''} font-heading text-(--foreground) text-2xl lg:text-3xl text-balance pt-1" path={[...path, 'title']} placeholder="Title" />
 			<AnnotatedTextProperty class="text-balance pt-2" path={[...path, 'description']} placeholder="Description" />
 		</div>

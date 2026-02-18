@@ -40,11 +40,11 @@ html {
 
 :root {
 	/* Default colorset */
-	--background: oklch(1 0 0);
-	--foreground: oklch(0.21 0.034 264);
+	--background: oklch(0.98 0 0);
+	--foreground: oklch(0 0 0); /*oklch(0.21 0.034 264);*/
 	--accent: oklch(0.21 0.034 264);
-	--accent-light: oklch(0.67 0.09 205 / 0.3);
-	--accent-foreground: oklch(1 0 0);
+	--accent-light: oklch(0 0 0 / 0.3);
+	--accent-foreground: oklch(0.98 0 0);
 
 	/* Alternative colorset 1 */
 	--background-alt1: oklch(0.67 0.09 205);
@@ -54,15 +54,15 @@ html {
 	--accent-foreground-alt1:  oklch(0.67 0.09 205);
 
 	/* Alternative colorset 2 */
-	--background-alt2: oklch(0.98 0.002 264);
+	--background-alt2: oklch(0.98 0 0);
 	--foreground-alt2: oklch(0.21 0.034 264);
 	--accent-alt2: oklch(0.67 0.09 205);
 	--accent-light-alt2: oklch(0.67 0.09 205 / 0.3);
-	--accent-foreground-alt2: oklch(0.98 0.002 264);
+	--accent-foreground-alt2: oklch(0.98 0 0);
 
 	--button-border-radius: 3rem; /* rounded corners for buttons, nav items */
-	--image-border-radius: 0rem;
-	--border-thickness: 1px;
+	--image-border-radius: 2rem;
+	--border-thickness: 0px;
 
 	/* Derived colors - these can be overridden per site, but I don't recommend it */
 	--border-color: color-mix(in oklch, var(--background) 90%, var(--foreground) 8%); /* hairlines, borders - fully opaque warm grey */
@@ -79,6 +79,7 @@ html {
 	--font-*: initial;
 	--font-body: ui-sans-serif, system-ui, sans-serif;
 	--font-heading: ui-sans-serif, system-ui, sans-serif;
+	--font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 	--default-font-family: var(--font-body);
 }
 

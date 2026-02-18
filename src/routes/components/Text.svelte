@@ -39,7 +39,7 @@
 			case 4:
 				return 'ew-h3 font-heading text-xl md:text-2xl lg:text-3xl text-balance text-(--foreground)';
 			case 5:
-				return 'ew-eyebrow block text-xs md:text-sm font-medium uppercase tracking-wider text-(--foreground) opacity-60';
+				return 'ew-eyebrow font-mono block text-xs md:text-sm font-medium uppercase tracking-wider text-(--foreground) opacity-60';
 			default:
 				return '';
 		}
