@@ -14,7 +14,7 @@ export const demo_doc = {
             "href": "/#RtYpQwXsZvNmKjHgFdSaLe",
             "target": "_self",
             "label": {
-                "text": "OH YES!",
+                "text": "I'M CURIOUS!",
                 "annotations": []
             }
         },
@@ -290,34 +290,6 @@ export const demo_doc = {
                 ]
             }
         },
-        "ybNbBkMErnzQyRqpStQKMQZ": {
-            "id": "ybNbBkMErnzQyRqpStQKMQZ",
-            "type": "text",
-            "layout": 2,
-            "content": {
-                "text": "Change color",
-                "annotations": []
-            }
-        },
-        "GXQufWAsQazeWSgFBnwvTQA": {
-            "id": "GXQufWAsQazeWSgFBnwvTQA",
-            "type": "strong"
-        },
-        "JVAAazPetYAsCvHAunXtuCF": {
-            "id": "JVAAazPetYAsCvHAunXtuCF",
-            "type": "text",
-            "layout": 1,
-            "content": {
-                "text": "Ctrl+Shift+C cycles through color surfaces.",
-                "annotations": [
-                    {
-                        "start_offset": 0,
-                        "end_offset": 12,
-                        "node_id": "GXQufWAsQazeWSgFBnwvTQA"
-                    }
-                ]
-            }
-        },
         "xKmNqPrStVwYzAbCdEfGh": {
             "id": "xKmNqPrStVwYzAbCdEfGh",
             "type": "prose",
@@ -328,9 +300,7 @@ export const demo_doc = {
                 "heading_1",
                 "fuxtxNCceDRcdbcHhtqsYwJ",
                 "dwMqDGUwHVvVkdzahPEWDuR",
-                "smJYScwGbZgRVDAJWhNGxvG",
-                "ybNbBkMErnzQyRqpStQKMQZ",
-                "JVAAazPetYAsCvHAunXtuCF"
+                "smJYScwGbZgRVDAJWhNGxvG"
             ]
         },
         "AHXsSZcYYwnXKYzHbDnSRRh": {
