@@ -26,7 +26,7 @@
 			contenteditable="false"
 			style:aspect-ratio={aspect_ratio}
 			style:border-radius={border_radius ? 'var(--image-border-radius)' : undefined}
-			class="ew-image-wrapper h-full w-full overflow-hidden select-none"
+			class="ew-image-wrapper h-full w-full overflow-hidden select-none [corner-shape:squircle]"
 			class:ew-bg-checkerboard={is_selected || !image_node.src}
 		>
 			<Image path={[...path, 'image']} />
