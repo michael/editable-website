@@ -61,8 +61,8 @@ export const demo_doc = {
             "height": 600,
             "alt": "Feature image",
             "scale": 1,
-            "focal_point_x": 0.5,
-            "focal_point_y": 0.5,
+            "focal_point_x": 0.5329817181174089,
+            "focal_point_y": 0.47301940896272265,
             "object_fit": "cover"
         },
         "WsXcDfVgBhNjMkLqAzPeRt": {
@@ -162,7 +162,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Looking for the admin panel? Toolbars? There aren’t any.",
+                "text": "Looking for the admin panel? Toolbars? There aren’t any. It's just you, and your content.",
                 "annotations": []
             }
         },
