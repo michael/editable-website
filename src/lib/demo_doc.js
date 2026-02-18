@@ -473,6 +473,37 @@ export const demo_doc = {
                 ]
             }
         },
+        "nprCMwYvJvUEmRaHBsxfgUd": {
+            "id": "nprCMwYvJvUEmRaHBsxfgUd",
+            "type": "image",
+            "src": "/sample-images/gluecksmaurer.webp",
+            "width": 800,
+            "height": 600,
+            "alt": "Getting started",
+            "scale": 1,
+            "focal_point_x": 0.43320363152669056,
+            "focal_point_y": 0.4116619557277606,
+            "object_fit": "cover"
+        },
+        "JUmgwJDKqdxVxJeBHkBdjVq": {
+            "id": "JUmgwJDKqdxVxJeBHkBdjVq",
+            "type": "link_collection_item",
+            "href": "https://gluecksmaurer.de",
+            "target": "_blank",
+            "image": "nprCMwYvJvUEmRaHBsxfgUd",
+            "preline": {
+                "text": "Real estate",
+                "annotations": []
+            },
+            "title": {
+                "text": "Glücksmaurer",
+                "annotations": []
+            },
+            "description": {
+                "text": "Innovative real estate agent in Worms, Germany.",
+                "annotations": []
+            }
+        },
         "link_collection_item_2_image": {
             "id": "link_collection_item_2_image",
             "type": "image",
@@ -535,68 +566,6 @@ export const demo_doc = {
                 "annotations": []
             }
         },
-        "SwaNBGTTykjgVTHJsUCgHuB": {
-            "id": "SwaNBGTTykjgVTHJsUCgHuB",
-            "type": "image",
-            "src": "/sample-images/gluecksmaurer.webp",
-            "width": 800,
-            "height": 600,
-            "alt": "Getting started",
-            "scale": 1,
-            "focal_point_x": 0.36639671907333987,
-            "focal_point_y": 0.5451422665369637,
-            "object_fit": "cover"
-        },
-        "AVydYvhksUBMjCSEccZJGXa": {
-            "id": "AVydYvhksUBMjCSEccZJGXa",
-            "type": "link_collection_item",
-            "href": "https://gluecksmaurer.de",
-            "target": "_blank",
-            "image": "SwaNBGTTykjgVTHJsUCgHuB",
-            "preline": {
-                "text": "Real estate",
-                "annotations": []
-            },
-            "title": {
-                "text": "Glücksmaurer",
-                "annotations": []
-            },
-            "description": {
-                "text": "Innovative real estate agent in Worms, Germany.",
-                "annotations": []
-            }
-        },
-        "EyhArmHQuWTgcpXNKVeNxpW": {
-            "id": "EyhArmHQuWTgcpXNKVeNxpW",
-            "type": "image",
-            "src": "",
-            "width": 800,
-            "height": 600,
-            "alt": "",
-            "scale": 1,
-            "focal_point_x": 0.5,
-            "focal_point_y": 0.5,
-            "object_fit": "cover"
-        },
-        "VznmxwWdfgSDFqCjBFrfDKs": {
-            "id": "VznmxwWdfgSDFqCjBFrfDKs",
-            "type": "link_collection_item",
-            "href": "",
-            "target": "_self",
-            "image": "EyhArmHQuWTgcpXNKVeNxpW",
-            "preline": {
-                "text": "",
-                "annotations": []
-            },
-            "title": {
-                "text": "",
-                "annotations": []
-            },
-            "description": {
-                "text": "",
-                "annotations": []
-            }
-        },
         "VqaqUWzRKUJrZzQYqqurggB": {
             "id": "VqaqUWzRKUJrZzQYqqurggB",
             "type": "link",
@@ -638,10 +607,9 @@ export const demo_doc = {
                 "VdjTDrdPmtXRuYKNUMeRmKK"
             ],
             "link_collection_items": [
+                "JUmgwJDKqdxVxJeBHkBdjVq",
                 "link_collection_item_2",
-                "YnBCBuemwpaUxQwHrFJNgMW",
-                "AVydYvhksUBMjCSEccZJGXa",
-                "VznmxwWdfgSDFqCjBFrfDKs"
+                "YnBCBuemwpaUxQwHrFJNgMW"
             ],
             "outro": [
                 "kZQHRTYyJtbmsJfnXaRgVtZ"
