@@ -33,7 +33,7 @@ export const demo_doc = {
             "id": "hero_1",
             "type": "hero",
             "layout": 1,
-            "colorset": 1,
+            "colorset": 0,
             "title": {
                 "text": "There are people who actually enjoy editing their website.",
                 "annotations": [
@@ -65,23 +65,13 @@ export const demo_doc = {
             "focal_point_y": 0.5,
             "object_fit": "cover"
         },
-        "RyZThddGgFjnpsnTmzTGBfA": {
-            "id": "RyZThddGgFjnpsnTmzTGBfA",
-            "type": "strong"
-        },
         "WsXcDfVgBhNjMkLqAzPeRt": {
             "id": "WsXcDfVgBhNjMkLqAzPeRt",
             "type": "text",
             "layout": 2,
             "content": {
                 "text": "Press Cmd+E",
-                "annotations": [
-                    {
-                        "start_offset": 6,
-                        "end_offset": 11,
-                        "node_id": "RyZThddGgFjnpsnTmzTGBfA"
-                    }
-                ]
+                "annotations": []
             }
         },
         "mJJVsmhXFryqKCkHveUKfqD": {
@@ -179,7 +169,7 @@ export const demo_doc = {
         "RtYpQwXsZvNmKjHgFdSaLe": {
             "id": "RtYpQwXsZvNmKjHgFdSaLe",
             "type": "feature",
-            "layout": 3,
+            "layout": 1,
             "colorset": 0,
             "image": "VbNcMxZaQwErTyUiOpLkJh",
             "body": [
@@ -331,8 +321,8 @@ export const demo_doc = {
         "xKmNqPrStVwYzAbCdEfGh": {
             "id": "xKmNqPrStVwYzAbCdEfGh",
             "type": "prose",
-            "layout": 3,
-            "colorset": 2,
+            "layout": 1,
+            "colorset": 0,
             "content": [
                 "HWcSGEAsZyfeQFjgvKrMpZc",
                 "heading_1",
@@ -671,7 +661,7 @@ export const demo_doc = {
             "id": "jLnPqRsTuVwXyZaBcDeFg",
             "type": "link_collection",
             "layout": 1,
-            "colorset": 1,
+            "colorset": 0,
             "intro": [
                 "FMmrrRxdfRzhujVmergnVxA",
                 "AjbSGnXVcWpHBurCTrKxYSs",
@@ -771,7 +761,7 @@ export const demo_doc = {
         "YTMHBcPkYXJMRUnuSAhrTDE": {
             "id": "YTMHBcPkYXJMRUnuSAhrTDE",
             "type": "feature",
-            "layout": 4,
+            "layout": 2,
             "colorset": 0,
             "image": "hqrrTdEbTPaqzEcYMczhBZb",
             "body": [
