@@ -663,7 +663,7 @@ export const demo_doc = {
         "mCnpWzerAfgKhFFRJwCkQuB": {
             "id": "mCnpWzerAfgKhFFRJwCkQuB",
             "type": "link",
-            "href": "https://github.com/michael/svedit/?tab=readme-ov-file#why-svedit",
+            "href": "https://letsken.com/michael/minimum-viable-rich-text-editor-for-svelte-5",
             "target": "_blank"
         },
         "CfvasqyKgByVWHWXcSZZsnm": {
