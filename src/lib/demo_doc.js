@@ -3,29 +3,14 @@
 export const demo_doc = {
     "document_id": "page_1",
     "nodes": {
-        "RqBBgJQGWfVSwewNBhYMYzq": {
-            "id": "RqBBgJQGWfVSwewNBhYMYzq",
-            "type": "emphasis"
-        },
-        "CYtVzYewmwdZntQUhbbJNEa": {
-            "id": "CYtVzYewmwdZntQUhbbJNEa",
+        "ccHVKDeyhrRVfKZCpXvxhac": {
+            "id": "ccHVKDeyhrRVfKZCpXvxhac",
             "type": "button",
             "layout": 1,
             "href": "/#RtYpQwXsZvNmKjHgFdSaLe",
             "target": "_self",
             "label": {
-                "text": "Yes, I'm curious",
-                "annotations": []
-            }
-        },
-        "TzrqcQdWwaUteYzxybZAzED": {
-            "id": "TzrqcQdWwaUteYzxybZAzED",
-            "type": "button",
-            "layout": 2,
-            "href": "/#YTMHBcPkYXJMRUnuSAhrTDE",
-            "target": "_self",
-            "label": {
-                "text": "No, thanks",
+                "text": "Try Editable Website",
                 "annotations": []
             }
         },
@@ -35,22 +20,15 @@ export const demo_doc = {
             "layout": 1,
             "colorset": 0,
             "title": {
-                "text": "There are people who actually enjoy editing their website.",
-                "annotations": [
-                    {
-                        "start_offset": 21,
-                        "end_offset": 35,
-                        "node_id": "RqBBgJQGWfVSwewNBhYMYzq"
-                    }
-                ]
+                "text": "Imagine your clients could edit their website live on the page 😮",
+                "annotations": []
             },
             "description": {
-                "text": "Want to see how they do it?",
+                "text": "Dream no more…",
                 "annotations": []
             },
             "buttons": [
-                "CYtVzYewmwdZntQUhbbJNEa",
-                "TzrqcQdWwaUteYzxybZAzED"
+                "ccHVKDeyhrRVfKZCpXvxhac"
             ]
         },
         "VbNcMxZaQwErTyUiOpLkJh": {
@@ -65,21 +43,26 @@ export const demo_doc = {
             "focal_point_y": 0.47301940896272265,
             "object_fit": "cover"
         },
+        "uqZnrCRbzCkBWmYNQYkFePY": {
+            "id": "uqZnrCRbzCkBWmYNQYkFePY",
+            "type": "text",
+            "layout": 5,
+            "content": {
+                "text": "Editing",
+                "annotations": []
+            }
+        },
         "WsXcDfVgBhNjMkLqAzPeRt": {
             "id": "WsXcDfVgBhNjMkLqAzPeRt",
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Press Cmd+E",
+                "text": "Edit live on the page",
                 "annotations": []
             }
         },
-        "mJJVsmhXFryqKCkHveUKfqD": {
-            "id": "mJJVsmhXFryqKCkHveUKfqD",
-            "type": "strong"
-        },
-        "gJFSTSTgdcxbyumjfJmwPZJ": {
-            "id": "gJFSTSTgdcxbyumjfJmwPZJ",
+        "RezNUsxYmfpmFMezpgEbqYu": {
+            "id": "RezNUsxYmfpmFMezpgEbqYu",
             "type": "strong"
         },
         "ywTQktXzgyRqzsUNXjZztQw": {
@@ -87,72 +70,105 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "That's it. Unless you're on Windows or Linux, then it's Ctrl+E. Move the cursor with the arrow keys. Select with the mouse. Edit anything you see.",
+                "text": "Press ⌘ / Ctrl + e to enter edit mode.\nClick where you want to edit.\nMove around with the arrow keys.\nChange anything you see!",
                 "annotations": [
                     {
-                        "start_offset": 56,
-                        "end_offset": 62,
-                        "node_id": "mJJVsmhXFryqKCkHveUKfqD"
-                    },
-                    {
-                        "start_offset": 89,
-                        "end_offset": 99,
-                        "node_id": "gJFSTSTgdcxbyumjfJmwPZJ"
+                        "start_offset": 6,
+                        "end_offset": 18,
+                        "node_id": "RezNUsxYmfpmFMezpgEbqYu"
                     }
                 ]
             }
         },
-        "GjYMCGyPdWVrmkGcWazPTAJ": {
-            "id": "GjYMCGyPdWVrmkGcWazPTAJ",
+        "NhhsYbqTRzPtpQcHFUgwFhP": {
+            "id": "NhhsYbqTRzPtpQcHFUgwFhP",
             "type": "strong"
         },
-        "TKBzGfCyPtcywrWNafpMFUx": {
-            "id": "TKBzGfCyPtcywrWNafpMFUx",
+        "ypAZzWFdhamCaTMKmZMZPMm": {
+            "id": "ypAZzWFdhamCaTMKmZMZPMm",
             "type": "strong"
         },
-        "BYnvjBNEvJqBdqQmUyeUzgn": {
-            "id": "BYnvjBNEvJqBdqQmUyeUzgn",
+        "wuyFjXptXyMvgYKUcvtTggC": {
+            "id": "wuyFjXptXyMvgYKUcvtTggC",
             "type": "strong"
         },
-        "kJNavahEZGWKeAtWTgEQqnp": {
-            "id": "kJNavahEZGWKeAtWTgEQqnp",
+        "ZWDXzUmKJbqDwJbNTbhEtWQ": {
+            "id": "ZWDXzUmKJbqDwJbNTbhEtWQ",
             "type": "strong"
         },
-        "dzcnFWQyFtKpXahQceYCUda": {
-            "id": "dzcnFWQyFtKpXahQceYCUda",
+        "zqyQQtSbzxtdTTsVTYuuXEh": {
+            "id": "zqyQQtSbzxtdTTsVTYuuXEh",
             "type": "strong"
+        },
+        "CUTpvupqUbXQDyMjBczwfCj": {
+            "id": "CUTpvupqUbXQDyMjBczwfCj",
+            "type": "emphasis"
+        },
+        "PYHXbxRMREHBpAqxbdsUXzP": {
+            "id": "PYHXbxRMREHBpAqxbdsUXzP",
+            "type": "strong"
+        },
+        "djTpcsEQTzfGMSRctKenpWt": {
+            "id": "djTpcsEQTzfGMSRctKenpWt",
+            "type": "emphasis"
+        },
+        "eUteADFhxtenJraxpeprgHr": {
+            "id": "eUteADFhxtenJraxpeprgHr",
+            "type": "link",
+            "href": "#",
+            "target": "_self"
         },
         "WjasMkTrmjdrXTsDgeUHQap": {
             "id": "WjasMkTrmjdrXTsDgeUHQap",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Cmd+B for bold, Cmd+I for italics, and Cmd+K to turn text into a link. Undo with Cmd+Z. Save changes with Cmd+S.",
+                "text": "Bold, italics and links with ⌘ / Ctrl + b, i and k\nUndo with ⌘ / Ctrl + z\nSave changes with ⌘ / Ctrl + s\n(On this example page, changes are not persisted. On a real site, a logged in user would have their changes persisted to a database.)",
                 "annotations": [
                     {
+                        "start_offset": 29,
+                        "end_offset": 41,
+                        "node_id": "NhhsYbqTRzPtpQcHFUgwFhP"
+                    },
+                    {
+                        "start_offset": 43,
+                        "end_offset": 45,
+                        "node_id": "ypAZzWFdhamCaTMKmZMZPMm"
+                    },
+                    {
+                        "start_offset": 49,
+                        "end_offset": 50,
+                        "node_id": "wuyFjXptXyMvgYKUcvtTggC"
+                    },
+                    {
+                        "start_offset": 61,
+                        "end_offset": 73,
+                        "node_id": "ZWDXzUmKJbqDwJbNTbhEtWQ"
+                    },
+                    {
+                        "start_offset": 92,
+                        "end_offset": 104,
+                        "node_id": "zqyQQtSbzxtdTTsVTYuuXEh"
+                    },
+                    {
+                        "start_offset": 105,
+                        "end_offset": 238,
+                        "node_id": "CUTpvupqUbXQDyMjBczwfCj"
+                    },
+                    {
                         "start_offset": 0,
-                        "end_offset": 5,
-                        "node_id": "GjYMCGyPdWVrmkGcWazPTAJ"
+                        "end_offset": 4,
+                        "node_id": "PYHXbxRMREHBpAqxbdsUXzP"
                     },
                     {
-                        "start_offset": 16,
-                        "end_offset": 21,
-                        "node_id": "TKBzGfCyPtcywrWNafpMFUx"
+                        "start_offset": 6,
+                        "end_offset": 13,
+                        "node_id": "djTpcsEQTzfGMSRctKenpWt"
                     },
                     {
-                        "start_offset": 39,
-                        "end_offset": 44,
-                        "node_id": "BYnvjBNEvJqBdqQmUyeUzgn"
-                    },
-                    {
-                        "start_offset": 81,
-                        "end_offset": 86,
-                        "node_id": "kJNavahEZGWKeAtWTgEQqnp"
-                    },
-                    {
-                        "start_offset": 106,
-                        "end_offset": 111,
-                        "node_id": "dzcnFWQyFtKpXahQceYCUda"
+                        "start_offset": 18,
+                        "end_offset": 23,
+                        "node_id": "eUteADFhxtenJraxpeprgHr"
                     }
                 ]
             }
@@ -162,7 +178,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Looking for the admin panel? Toolbars? There aren’t any. It's just you, and your content.",
+                "text": "Looking for the admin panel? Toolbars?\nThere aren’t any! It's just you, and your content.",
                 "annotations": []
             }
         },
@@ -173,6 +189,7 @@ export const demo_doc = {
             "colorset": 0,
             "image": "VbNcMxZaQwErTyUiOpLkJh",
             "body": [
+                "uqZnrCRbzCkBWmYNQYkFePY",
                 "WsXcDfVgBhNjMkLqAzPeRt",
                 "ywTQktXzgyRqzsUNXjZztQw",
                 "WjasMkTrmjdrXTsDgeUHQap",
@@ -184,7 +201,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 5,
             "content": {
-                "text": "Editing",
+                "text": "Blocks",
                 "annotations": []
             }
         },
@@ -193,8 +210,45 @@ export const demo_doc = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Add, select, and move blocks",
+                "text": "Build with blocks",
                 "annotations": []
+            }
+        },
+        "fuxtxNCceDRcdbcHhtqsYwJ": {
+            "id": "fuxtxNCceDRcdbcHhtqsYwJ",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "In edit mode (⌘ / Ctrl + e) the purple dashed areas let you add blocks.",
+                "annotations": []
+            }
+        },
+        "szexETNtKsPwJPPECvSbMbn": {
+            "id": "szexETNtKsPwJPPECvSbMbn",
+            "type": "strong"
+        },
+        "uDAGgETYUPFDYHKSvDBwmPw": {
+            "id": "uDAGgETYUPFDYHKSvDBwmPw",
+            "type": "strong"
+        },
+        "dAEBKADbvfeaBMhNWgTjKNC": {
+            "id": "dAEBKADbvfeaBMhNWgTjKNC",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "Select the dashed area below this paragraph to see a flashing purple cursor.\nPress Enter to add a block.\nChange block types (paragraph > heading etc) with Ctrl + Shift + Right.",
+                "annotations": [
+                    {
+                        "start_offset": 155,
+                        "end_offset": 175,
+                        "node_id": "szexETNtKsPwJPPECvSbMbn"
+                    },
+                    {
+                        "start_offset": 83,
+                        "end_offset": 88,
+                        "node_id": "uDAGgETYUPFDYHKSvDBwmPw"
+                    }
+                ]
             }
         },
         "GZGpvNSHNjPJtHVfmGbRBNf": {
@@ -205,61 +259,42 @@ export const demo_doc = {
             "id": "TfUCWjmVMpUWSNWhBkBjTgB",
             "type": "strong"
         },
-        "AhtqSnmhHaQtuUbmTcJAgeF": {
-            "id": "AhtqSnmhHaQtuUbmTcJAgeF",
+        "FYVhvjKpVtfRxfXBEQkQAun": {
+            "id": "FYVhvjKpVtfRxfXBEQkQAun",
             "type": "strong"
         },
-        "fuxtxNCceDRcdbcHhtqsYwJ": {
-            "id": "fuxtxNCceDRcdbcHhtqsYwJ",
+        "dKDJFxDKresxkjMUZYKNuKn": {
+            "id": "dKDJFxDKresxkjMUZYKNuKn",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Click any dashed gap and press Enter to create a new block. Ctrl+Shift+Down cycles through block types. Ctrl+Shift+Right switches layouts.",
+                "text": "Select one of the full width dashed areas to see a flashing purple cursor.\nPress Enter to create a new top-level block.\nCtrl + Shift + Down cycles through block types.",
                 "annotations": [
                     {
-                        "start_offset": 31,
-                        "end_offset": 36,
+                        "start_offset": 81,
+                        "end_offset": 86,
                         "node_id": "GZGpvNSHNjPJtHVfmGbRBNf"
                     },
                     {
-                        "start_offset": 60,
-                        "end_offset": 75,
+                        "start_offset": 120,
+                        "end_offset": 139,
                         "node_id": "TfUCWjmVMpUWSNWhBkBjTgB"
                     },
                     {
-                        "start_offset": 104,
-                        "end_offset": 120,
-                        "node_id": "AhtqSnmhHaQtuUbmTcJAgeF"
+                        "start_offset": 18,
+                        "end_offset": 28,
+                        "node_id": "FYVhvjKpVtfRxfXBEQkQAun"
                     }
                 ]
             }
-        },
-        "DreRwEbXrsyDqxXvxHpGnbX": {
-            "id": "DreRwEbXrsyDqxXvxHpGnbX",
-            "type": "strong"
-        },
-        "BpErqkznZNMAvpMfbKfyhvt": {
-            "id": "BpErqkznZNMAvpMfbKfyhvt",
-            "type": "strong"
         },
         "dwMqDGUwHVvVkdzahPEWDuR": {
             "id": "dwMqDGUwHVvVkdzahPEWDuR",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "To move blocks, drag from a gap to select multiple, then cut with Cmd+X and paste with Cmd+V.",
-                "annotations": [
-                    {
-                        "start_offset": 66,
-                        "end_offset": 71,
-                        "node_id": "DreRwEbXrsyDqxXvxHpGnbX"
-                    },
-                    {
-                        "start_offset": 87,
-                        "end_offset": 92,
-                        "node_id": "BpErqkznZNMAvpMfbKfyhvt"
-                    }
-                ]
+                "text": "To move blocks, drag from a dashed area to select multiple, then cut and paste like usual.",
+                "annotations": []
             }
         },
         "FGHDfRZMdeYQeVJBarNFeHa": {
@@ -275,7 +310,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Pro tip: Press Esc to select the parent block. Useful when editing text but wanting to change the layout above.",
+                "text": "Pro tip: Press Esc to select the parent block. Useful when editing text but wanting to change the parent layout.",
                 "annotations": [
                     {
                         "start_offset": 0,
@@ -299,6 +334,8 @@ export const demo_doc = {
                 "HWcSGEAsZyfeQFjgvKrMpZc",
                 "heading_1",
                 "fuxtxNCceDRcdbcHhtqsYwJ",
+                "dAEBKADbvfeaBMhNWgTjKNC",
+                "dKDJFxDKresxkjMUZYKNuKn",
                 "dwMqDGUwHVvVkdzahPEWDuR",
                 "smJYScwGbZgRVDAJWhNGxvG"
             ]
@@ -321,40 +358,12 @@ export const demo_doc = {
                 "annotations": []
             }
         },
-        "MqTMgFwNJjMjvwQRbBsRbXB": {
-            "id": "MqTMgFwNJjMjvwQRbBsRbXB",
-            "type": "strong"
-        },
-        "pmWcAFvaSjAXwBRUHCDQThJ": {
-            "id": "pmWcAFvaSjAXwBRUHCDQThJ",
-            "type": "strong"
-        },
         "DpajqNKpCCFFqZHtbttRRwM": {
             "id": "DpajqNKpCCFFqZHtbttRRwM",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Open a folder on your computer that has some images. Select a couple and copy them with Cmd+C. Put the cursor after an image below. Paste your images with Cmd+V.",
-                "annotations": [
-                    {
-                        "start_offset": 88,
-                        "end_offset": 93,
-                        "node_id": "MqTMgFwNJjMjvwQRbBsRbXB"
-                    },
-                    {
-                        "start_offset": 155,
-                        "end_offset": 160,
-                        "node_id": "pmWcAFvaSjAXwBRUHCDQThJ"
-                    }
-                ]
-            }
-        },
-        "SkRzjYjZtzJYCDksZKAZFZs": {
-            "id": "SkRzjYjZtzJYCDksZKAZFZs",
-            "type": "text",
-            "layout": 1,
-            "content": {
-                "text": "To replace an image, select it first, then paste the new one.",
+                "text": "Open a folder on your computer that has some images.\nSelect one and copy it to the clipboard.\nSelect the placeholder below and paste it.\nTo replace an image, select it first, then paste the new one on top.",
                 "annotations": []
             }
         },
@@ -409,6 +418,15 @@ export const demo_doc = {
             "type": "gallery_item",
             "image": "UGfbRKEMbGwgcUjhpgXausS"
         },
+        "NKtUpjrVYCGaJWYKGACXprb": {
+            "id": "NKtUpjrVYCGaJWYKGACXprb",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "You can even paste several images at once.\nSelect three or four from your computer and copy to the clipboard.\nNow select a vertical dashed area before or after an image above.\nPaste and all the images will be added in one go.",
+                "annotations": []
+            }
+        },
         "BPdekRaDEUcQZqtEwPwBvyu": {
             "id": "BPdekRaDEUcQZqtEwPwBvyu",
             "type": "gallery",
@@ -417,15 +435,16 @@ export const demo_doc = {
             "intro": [
                 "AHXsSZcYYwnXKYzHbDnSRRh",
                 "BfpsPAaqmJXnRrHzwJCSMHE",
-                "DpajqNKpCCFFqZHtbttRRwM",
-                "SkRzjYjZtzJYCDksZKAZFZs"
+                "DpajqNKpCCFFqZHtbttRRwM"
             ],
             "gallery_items": [
                 "wtvHDBrCzJVgacTaJqAwNJk",
                 "TQRANBXMrzXXZTtzxAYhhZf",
                 "HtSTZfjTcDSkttVaTUKMYAj"
             ],
-            "outro": []
+            "outro": [
+                "NKtUpjrVYCGaJWYKGACXprb"
+            ]
         },
         "FMmrrRxdfRzhujVmergnVxA": {
             "id": "FMmrrRxdfRzhujVmergnVxA",
@@ -445,12 +464,8 @@ export const demo_doc = {
                 "annotations": []
             }
         },
-        "HKxZjnxPdyvkZNCxBxfKBmm": {
-            "id": "HKxZjnxPdyvkZNCxBxfKBmm",
-            "type": "strong"
-        },
-        "dJyPkzuxWJtUXTgwQadDGYg": {
-            "id": "dJyPkzuxWJtUXTgwQadDGYg",
+        "XDMsYPfWXKqvhCMsEDWfDnx": {
+            "id": "XDMsYPfWXKqvhCMsEDWfDnx",
             "type": "strong"
         },
         "VdjTDrdPmtXRuYKNUMeRmKK": {
@@ -458,17 +473,12 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Click on one of the cards below. A link preview appears at the bottom. Click “edit” or press Cmd+K to bring up the link editor. Change the URL and press Enter.",
+                "text": "Click on one of the cards below.\nA link preview appears at the bottom.\nClick “EDIT” or press Press ⌘ / Ctrl + k to bring up the link editor.",
                 "annotations": [
                     {
-                        "start_offset": 153,
-                        "end_offset": 158,
-                        "node_id": "HKxZjnxPdyvkZNCxBxfKBmm"
-                    },
-                    {
-                        "start_offset": 93,
-                        "end_offset": 98,
-                        "node_id": "dJyPkzuxWJtUXTgwQadDGYg"
+                        "start_offset": 99,
+                        "end_offset": 111,
+                        "node_id": "XDMsYPfWXKqvhCMsEDWfDnx"
                     }
                 ]
             }
@@ -543,8 +553,8 @@ export const demo_doc = {
             "height": 600,
             "alt": "Svedit documentation",
             "scale": 1,
-            "focal_point_x": 0.37967324276969855,
-            "focal_point_y": 0.928836332684825,
+            "focal_point_x": 0.4449945007030935,
+            "focal_point_y": 1,
             "object_fit": "cover"
         },
         "YnBCBuemwpaUxQwHrFJNgMW": {
@@ -572,26 +582,17 @@ export const demo_doc = {
             "href": "https://mutter.co",
             "target": "_blank"
         },
-        "bGpNAMWYnvxUmtNtzKhQRBE": {
-            "id": "bGpNAMWYnvxUmtNtzKhQRBE",
-            "type": "strong"
-        },
         "kZQHRTYyJtbmsJfnXaRgVtZ": {
             "id": "kZQHRTYyJtbmsJfnXaRgVtZ",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "By the way, above links are live in-place editable websites Johannes Mutter and I have already launched. Before you read on, save your changes with Cmd+S.",
+                "text": "The cards above are links to examples of live in-place editable websites Johannes Mutter and I have already launched using this technology.\nYou can see that any design is possible - it's just HTML and CSS.",
                 "annotations": [
                     {
-                        "start_offset": 60,
-                        "end_offset": 75,
+                        "start_offset": 73,
+                        "end_offset": 88,
                         "node_id": "VqaqUWzRKUJrZzQYqqurggB"
-                    },
-                    {
-                        "start_offset": 148,
-                        "end_offset": 153,
-                        "node_id": "bGpNAMWYnvxUmtNtzKhQRBE"
                     }
                 ]
             }
@@ -615,6 +616,111 @@ export const demo_doc = {
                 "kZQHRTYyJtbmsJfnXaRgVtZ"
             ]
         },
+        "pkcwHuntQjySVjwuVNaSTge": {
+            "id": "pkcwHuntQjySVjwuVNaSTge",
+            "type": "text",
+            "layout": 5,
+            "content": {
+                "text": "Built for developers, designed for everyone",
+                "annotations": []
+            }
+        },
+        "AQHAsyghanqZPmyutAJZBxM": {
+            "id": "AQHAsyghanqZPmyutAJZBxM",
+            "type": "text",
+            "layout": 2,
+            "content": {
+                "text": "How does this work?",
+                "annotations": []
+            }
+        },
+        "vgkGZptsehnZagrGcVweyJY": {
+            "id": "vgkGZptsehnZagrGcVweyJY",
+            "type": "link",
+            "href": "https://svedit.dev/",
+            "target": "_self"
+        },
+        "mCnpWzerAfgKhFFRJwCkQuB": {
+            "id": "mCnpWzerAfgKhFFRJwCkQuB",
+            "type": "link",
+            "href": "https://github.com/michael/svedit/?tab=readme-ov-file#why-svedit",
+            "target": "_blank"
+        },
+        "CfvasqyKgByVWHWXcSZZsnm": {
+            "id": "CfvasqyKgByVWHWXcSZZsnm",
+            "type": "link",
+            "href": "https://svelte.dev/",
+            "target": "_blank"
+        },
+        "PscvEBWBfhraXpPKjPPkCMC": {
+            "id": "PscvEBWBfhraXpPKjPPkCMC",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "This site uses a new open source rich text editor I've created - Svedit. It uses Svelte and enables the editing experience you're trying here. Learn more about why I created yet another rich text editor!",
+                "annotations": [
+                    {
+                        "start_offset": 65,
+                        "end_offset": 71,
+                        "node_id": "vgkGZptsehnZagrGcVweyJY"
+                    },
+                    {
+                        "start_offset": 174,
+                        "end_offset": 202,
+                        "node_id": "mCnpWzerAfgKhFFRJwCkQuB"
+                    },
+                    {
+                        "start_offset": 81,
+                        "end_offset": 87,
+                        "node_id": "CfvasqyKgByVWHWXcSZZsnm"
+                    }
+                ]
+            }
+        },
+        "ermaxuxbvqxdcafghaVjZUt": {
+            "id": "ermaxuxbvqxdcafghaVjZUt",
+            "type": "link",
+            "href": "https://svelte.dev/docs/kit/introduction",
+            "target": "_blank"
+        },
+        "hpXfpDueZmgNjRfMUBREPnh": {
+            "id": "hpXfpDueZmgNjRfMUBREPnh",
+            "type": "link",
+            "href": "https://github.com/michael/editable-website",
+            "target": "_blank"
+        },
+        "FtSTnsYRZXTpZMRBHGPJmHC": {
+            "id": "FtSTnsYRZXTpZMRBHGPJmHC",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "Editable Website builds on Svedit using Sveltekit to enable full websites with multiple pages, a persistent backend where only an admin can make changes. Take a look at the source code for this site.",
+                "annotations": [
+                    {
+                        "start_offset": 40,
+                        "end_offset": 49,
+                        "node_id": "ermaxuxbvqxdcafghaVjZUt"
+                    },
+                    {
+                        "start_offset": 173,
+                        "end_offset": 184,
+                        "node_id": "hpXfpDueZmgNjRfMUBREPnh"
+                    }
+                ]
+            }
+        },
+        "XVJGXtwnQMvcrcuByAtcWNa": {
+            "id": "XVJGXtwnQMvcrcuByAtcWNa",
+            "type": "prose",
+            "layout": 1,
+            "colorset": 0,
+            "content": [
+                "pkcwHuntQjySVjwuVNaSTge",
+                "AQHAsyghanqZPmyutAJZBxM",
+                "PscvEBWBfhraXpPKjPPkCMC",
+                "FtSTnsYRZXTpZMRBHGPJmHC"
+            ]
+        },
         "hqrrTdEbTPaqzEcYMczhBZb": {
             "id": "hqrrTdEbTPaqzEcYMczhBZb",
             "type": "image",
@@ -627,8 +733,8 @@ export const demo_doc = {
             "focal_point_y": 0.5,
             "object_fit": "cover"
         },
-        "feature_2_intro_heading": {
-            "id": "feature_2_intro_heading",
+        "pCjecUjAFDGgGpgquwGrCdp": {
+            "id": "pCjecUjAFDGgGpgquwGrCdp",
             "type": "text",
             "layout": 2,
             "content": {
@@ -636,64 +742,43 @@ export const demo_doc = {
                 "annotations": []
             }
         },
-        "CGzGPxRRHDDefsjFFkGURhD": {
-            "id": "CGzGPxRRHDDefsjFFkGURhD",
-            "type": "strong"
+        "gnbpgBsBYZqEwRxqRZSMHdd": {
+            "id": "gnbpgBsBYZqEwRxqRZSMHdd",
+            "type": "link",
+            "href": "https://letsken.com/michael/how-to-implement-a-web-based-rich-text-editor-in-2023",
+            "target": "_blank"
         },
         "qDAyeabdhVEXjBWXyyqfUPb": {
             "id": "qDAyeabdhVEXjBWXyyqfUPb",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "And you just tried Editable Website™. I built it to make editing websites second nature. You can focus on your content and forget about the rest.",
+                "text": "Since 2011 I’ve been taming web browsers to behave correctly and predictably when editing rich text.",
                 "annotations": [
                     {
-                        "start_offset": 19,
-                        "end_offset": 36,
-                        "node_id": "CGzGPxRRHDDefsjFFkGURhD"
+                        "start_offset": 21,
+                        "end_offset": 40,
+                        "node_id": "gnbpgBsBYZqEwRxqRZSMHdd"
                     }
                 ]
             }
         },
-        "FHgMqAZJccdbJbhMnzKqCNp": {
-            "id": "FHgMqAZJccdbJbhMnzKqCNp",
+        "QVXhuysTRgRyQHVQnfTVCpV": {
+            "id": "QVXhuysTRgRyQHVQnfTVCpV",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Without loosing flexibility, though. Set up your site with fonts and colors matching your style. Within an hour you are ready to launch your site.",
+                "text": "I want you to be able to launch websites that anyone can edit. No more calls asking you to update someone's WordPress site! They'll be able to do it themselves.",
                 "annotations": []
             }
-        },
-        "hrpbdxkBCHAUkcprWmBjFvj": {
-            "id": "hrpbdxkBCHAUkcprWmBjFvj",
-            "type": "link",
-            "href": "https://svelte.dev",
-            "target": "_blank"
-        },
-        "gpFSJcCvCskrSVEjdSJwGQH": {
-            "id": "gpFSJcCvCskrSVEjdSJwGQH",
-            "type": "link",
-            "href": "https://github.com/michael/editable-website",
-            "target": "_blank"
         },
         "NjNteBhckwxGAUfbYRMGrDz": {
             "id": "NjNteBhckwxGAUfbYRMGrDz",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "The source code is yours too. Change every pixel of your site, create new content types, or integrate 3rd party data. Everything you can do with Svelte, you can do with Editable Website too.",
-                "annotations": [
-                    {
-                        "start_offset": 145,
-                        "end_offset": 151,
-                        "node_id": "hrpbdxkBCHAUkcprWmBjFvj"
-                    },
-                    {
-                        "start_offset": 4,
-                        "end_offset": 15,
-                        "node_id": "gpFSJcCvCskrSVEjdSJwGQH"
-                    }
-                ]
+                "text": "Most CMSs are too complex for clients and too restrictive for developers. Change every pixel of your site, create new content types, or integrate 3rd party data. Everything you can do with Svelte, you can do with Editable Website.",
+                "annotations": []
             }
         },
         "YTMHBcPkYXJMRUnuSAhrTDE": {
@@ -703,9 +788,9 @@ export const demo_doc = {
             "colorset": 0,
             "image": "hqrrTdEbTPaqzEcYMczhBZb",
             "body": [
-                "feature_2_intro_heading",
+                "pCjecUjAFDGgGpgquwGrCdp",
                 "qDAyeabdhVEXjBWXyyqfUPb",
-                "FHgMqAZJccdbJbhMnzKqCNp",
+                "QVXhuysTRgRyQHVQnfTVCpV",
                 "NjNteBhckwxGAUfbYRMGrDz"
             ]
         },
@@ -716,7 +801,7 @@ export const demo_doc = {
             "href": "https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform?usp=dialog",
             "target": "_blank",
             "label": {
-                "text": "Notify me",
+                "text": "Join the Technical Preview",
                 "annotations": []
             }
         },
@@ -725,11 +810,11 @@ export const demo_doc = {
             "type": "hero",
             "colorset": 0,
             "title": {
-                "text": "Be an early bird",
+                "text": "I love it! How can I get it?",
                 "annotations": []
             },
             "description": {
-                "text": "Leave your email and I'll let you know as soon as Editable Website is ready. First ones in get to chat with me in a video call.",
+                "text": "This is an an initial preview of Editable Website. There's more to do before you can use it in production. Be the first to hear when it's ready:",
                 "annotations": []
             },
             "buttons": [
@@ -749,47 +834,36 @@ export const demo_doc = {
             "focal_point_y": 0.5,
             "object_fit": "cover"
         },
-        "nav_item_1": {
-            "id": "nav_item_1",
+        "DDmmrQzcAxWJfdhatTbkRTh": {
+            "id": "DDmmrQzcAxWJfdhatTbkRTh",
             "type": "nav_item",
             "layout": 1,
-            "href": "/#xKmNqPrStVwYzAbCdEfGh",
+            "href": "/#RtYpQwXsZvNmKjHgFdSaLe",
+            "target": "_self",
             "label": {
-                "text": "Editing",
+                "text": "Try it",
                 "annotations": []
-            },
-            "target": "_self"
+            }
         },
-        "nav_item_2": {
-            "id": "nav_item_2",
-            "type": "nav_item",
-            "layout": 1,
-            "href": "/#BPdekRaDEUcQZqtEwPwBvyu",
-            "label": {
-                "text": "Images",
-                "annotations": []
-            },
-            "target": "_self"
-        },
-        "nav_item_4": {
-            "id": "nav_item_4",
+        "GyKyQvRAvkgnywmxTVgvrnF": {
+            "id": "GyKyQvRAvkgnywmxTVgvrnF",
             "type": "nav_item",
             "layout": 1,
             "href": "/#jLnPqRsTuVwXyZaBcDeFg",
-            "label": {
-                "text": "Links",
-                "annotations": []
-            },
-            "target": "_self"
-        },
-        "HGXFbpfvSREjXTrvUnMpkWu": {
-            "id": "HGXFbpfvSREjXTrvUnMpkWu",
-            "type": "nav_item",
-            "layout": 2,
-            "href": "#UBNYngEBJYtDWgeabtDJqWW",
             "target": "_self",
             "label": {
-                "text": "Notify me",
+                "text": "About",
+                "annotations": []
+            }
+        },
+        "FKgjxHCeSbVZrdnPuxYkMYp": {
+            "id": "FKgjxHCeSbVZrdnPuxYkMYp",
+            "type": "nav_item",
+            "layout": 2,
+            "href": "https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform",
+            "target": "_blank",
+            "label": {
+                "text": "Join the Technical Preview",
                 "annotations": []
             }
         },
@@ -798,10 +872,9 @@ export const demo_doc = {
             "type": "nav",
             "logo": "nav_logo",
             "nav_items": [
-                "nav_item_1",
-                "nav_item_2",
-                "nav_item_4",
-                "HGXFbpfvSREjXTrvUnMpkWu"
+                "DDmmrQzcAxWJfdhatTbkRTh",
+                "GyKyQvRAvkgnywmxTVgvrnF",
+                "FKgjxHCeSbVZrdnPuxYkMYp"
             ]
         },
         "footer_logo": {
@@ -816,13 +889,23 @@ export const demo_doc = {
             "focal_point_y": 0.5,
             "object_fit": "cover"
         },
+        "EtcfbabRCtPSvSpfFfjPeza": {
+            "id": "EtcfbabRCtPSvSpfFfjPeza",
+            "type": "footer_link",
+            "href": "/#RtYpQwXsZvNmKjHgFdSaLe",
+            "target": "_self",
+            "label": {
+                "text": "Editing",
+                "annotations": []
+            }
+        },
         "WVvBSREFCThNYcpgvfUnWkF": {
             "id": "WVvBSREFCThNYcpgvfUnWkF",
             "type": "footer_link",
             "href": "/#xKmNqPrStVwYzAbCdEfGh",
             "target": "_self",
             "label": {
-                "text": "Editing",
+                "text": "Blocks",
                 "annotations": []
             }
         },
@@ -850,12 +933,13 @@ export const demo_doc = {
             "id": "fcSSWQUTYajjknPChgGsPZz",
             "type": "footer_link_column",
             "footer_links": [
+                "EtcfbabRCtPSvSpfFfjPeza",
                 "WVvBSREFCThNYcpgvfUnWkF",
                 "eDAnnFjNdZpzYMtpSqReBxf",
                 "GwPeRFYtAyrcCMfpuyzdWZp"
             ],
             "label": {
-                "text": "Demo",
+                "text": "On this page",
                 "annotations": []
             }
         },
@@ -865,7 +949,7 @@ export const demo_doc = {
             "href": "https://github.com/michael/editable-website",
             "target": "_blank",
             "label": {
-                "text": "Source Code",
+                "text": "Editable Website",
                 "annotations": []
             }
         },
@@ -883,7 +967,7 @@ export const demo_doc = {
             "id": "footer_column_2",
             "type": "footer_link_column",
             "label": {
-                "text": "Resources",
+                "text": "Star on GitHub",
                 "annotations": []
             },
             "footer_links": [
@@ -946,6 +1030,7 @@ export const demo_doc = {
                 "xKmNqPrStVwYzAbCdEfGh",
                 "BPdekRaDEUcQZqtEwPwBvyu",
                 "jLnPqRsTuVwXyZaBcDeFg",
+                "XVJGXtwnQMvcrcuByAtcWNa",
                 "YTMHBcPkYXJMRUnuSAhrTDE",
                 "UBNYngEBJYtDWgeabtDJqWW"
             ],
