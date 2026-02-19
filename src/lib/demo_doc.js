@@ -954,7 +954,7 @@ export const demo_doc = {
             "id": "GyKyQvRAvkgnywmxTVgvrnF",
             "type": "nav_item",
             "layout": 1,
-            "href": "/#jLnPqRsTuVwXyZaBcDeFg",
+            "href": "/#XVJGXtwnQMvcrcuByAtcWNa",
             "target": "_self",
             "label": {
                 "text": "About",
