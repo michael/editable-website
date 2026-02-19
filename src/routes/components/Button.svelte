@@ -14,7 +14,7 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="flex items-center justify-center bg-(--accent) text-(--accent-foreground) px-5 py-3 rounded-(--button-border-radius) font-medium"
+		class="flex items-center justify-center bg-(--accent) text-(--accent-foreground) min-w-12 lg:min-w-13 px-5 py-3 rounded-(--button-border-radius) font-medium"
 		class:hover:opacity-80={render_as_link}
 	>
 		<AnnotatedTextProperty
