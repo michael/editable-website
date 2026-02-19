@@ -863,7 +863,7 @@ export const demo_doc = {
         "TPsjXxZhtuyfJQRytAVcRgJ": {
             "id": "TPsjXxZhtuyfJQRytAVcRgJ",
             "type": "link",
-            "href": "https://https://trails-shop.at",
+            "href": "https://trails-shop.at",
             "target": "_blank"
         },
         "SUfVhRdtQwruDYJvgkETZxk": {
