@@ -10,7 +10,7 @@ export const demo_doc = {
             "href": "/#RtYpQwXsZvNmKjHgFdSaLe",
             "target": "_self",
             "label": {
-                "text": "Try Editable Website",
+                "text": "↓",
                 "annotations": []
             }
         },
@@ -20,7 +20,7 @@ export const demo_doc = {
             "layout": 1,
             "colorset": 0,
             "title": {
-                "text": "Imagine your clients could edit their website live on the page 😮",
+                "text": "Imagine you could edit your website live on the page",
                 "annotations": []
             },
             "description": {
@@ -57,7 +57,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Edit live on the page",
+                "text": "This is Editable Website",
                 "annotations": []
             }
         },
@@ -214,13 +214,23 @@ export const demo_doc = {
                 "annotations": []
             }
         },
+        "uVqjDxZmZPZVjZtDhJRTWPe": {
+            "id": "uVqjDxZmZPZVjZtDhJRTWPe",
+            "type": "strong"
+        },
         "fuxtxNCceDRcdbcHhtqsYwJ": {
             "id": "fuxtxNCceDRcdbcHhtqsYwJ",
             "type": "text",
             "layout": 1,
             "content": {
                 "text": "In edit mode (⌘ / Ctrl + e) the purple dashed areas let you add blocks.",
-                "annotations": []
+                "annotations": [
+                    {
+                        "start_offset": 14,
+                        "end_offset": 26,
+                        "node_id": "uVqjDxZmZPZVjZtDhJRTWPe"
+                    }
+                ]
             }
         },
         "szexETNtKsPwJPPECvSbMbn": {
@@ -418,13 +428,23 @@ export const demo_doc = {
             "type": "gallery_item",
             "image": "UGfbRKEMbGwgcUjhpgXausS"
         },
+        "YUfmQBfsRybjdcMgwrRYVGw": {
+            "id": "YUfmQBfsRybjdcMgwrRYVGw",
+            "type": "strong"
+        },
         "NKtUpjrVYCGaJWYKGACXprb": {
             "id": "NKtUpjrVYCGaJWYKGACXprb",
             "type": "text",
             "layout": 1,
             "content": {
                 "text": "You can even paste several images at once.\nSelect three or four from your computer and copy to the clipboard.\nNow select a vertical dashed area before or after an image above.\nPaste and all the images will be added in one go.",
-                "annotations": []
+                "annotations": [
+                    {
+                        "start_offset": 13,
+                        "end_offset": 41,
+                        "node_id": "YUfmQBfsRybjdcMgwrRYVGw"
+                    }
+                ]
             }
         },
         "BPdekRaDEUcQZqtEwPwBvyu": {
@@ -521,7 +541,7 @@ export const demo_doc = {
             "width": 800,
             "height": 600,
             "alt": "Customization",
-            "scale": 1.1046221254112045,
+            "scale": 1,
             "focal_point_x": 0.3904038894325596,
             "focal_point_y": 0.5509243899928726,
             "object_fit": "cover"
@@ -587,7 +607,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "The cards above are links to examples of live in-place editable websites Johannes Mutter and I have already launched using this technology.\nYou can see that any design is possible - it's just HTML and CSS.",
+                "text": "The cards above are links to examples of live in-place editable websites Johannes Mutter and I have already launched using this technology.\nYou can see that any design is possible - it’s just HTML and CSS… ahem, Tailwind.",
                 "annotations": [
                     {
                         "start_offset": 73,
@@ -694,7 +714,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Editable Website builds on Svedit using Sveltekit to enable full websites with multiple pages, a persistent backend where only an admin can make changes. Take a look at the source code for this site.",
+                "text": "Editable Website builds on Svedit using SvelteKit to enable full websites with multiple pages and a persistent backend where only an admin can make changes. Take a look at the source code for this site.",
                 "annotations": [
                     {
                         "start_offset": 40,
@@ -702,8 +722,8 @@ export const demo_doc = {
                         "node_id": "ermaxuxbvqxdcafghaVjZUt"
                     },
                     {
-                        "start_offset": 173,
-                        "end_offset": 184,
+                        "start_offset": 176,
+                        "end_offset": 187,
                         "node_id": "hpXfpDueZmgNjRfMUBREPnh"
                     }
                 ]
@@ -821,6 +841,91 @@ export const demo_doc = {
                 "PvpNcGKnqTTBbvbRZeDUYSN"
             ],
             "layout": 3
+        },
+        "ERqkusuryvGKBzKayXyhxXE": {
+            "id": "ERqkusuryvGKBzKayXyhxXE",
+            "type": "link",
+            "href": "https://mutter.co",
+            "target": "_blank"
+        },
+        "XCdmKqAtyRNPKKRZJaNUfyX": {
+            "id": "XCdmKqAtyRNPKKRZJaNUfyX",
+            "type": "link",
+            "href": "https://keybits.net",
+            "target": "_blank"
+        },
+        "yjdxqchTwgSjeTVgXeZhrrv": {
+            "id": "yjdxqchTwgSjeTVgXeZhrrv",
+            "type": "link",
+            "href": "https://sonjastojanovic.com",
+            "target": "_blank"
+        },
+        "TPsjXxZhtuyfJQRytAVcRgJ": {
+            "id": "TPsjXxZhtuyfJQRytAVcRgJ",
+            "type": "link",
+            "href": "https://https://trails-shop.at",
+            "target": "_blank"
+        },
+        "SUfVhRdtQwruDYJvgkETZxk": {
+            "id": "SUfVhRdtQwruDYJvgkETZxk",
+            "type": "link",
+            "href": "https://postlmayrdesign.com",
+            "target": "_blank"
+        },
+        "amXvCtNxBsTJFzfeTCpdMsN": {
+            "id": "amXvCtNxBsTJFzfeTCpdMsN",
+            "type": "link",
+            "href": "https://aufreiter.co",
+            "target": "_blank"
+        },
+        "PjwvEAbrZCxZFcqJqayVyhR": {
+            "id": "PjwvEAbrZCxZFcqJqayVyhR",
+            "type": "text",
+            "layout": 5,
+            "content": {
+                "text": "Big thanks to Johannes Mutter for helping with concept, design, and engineering, Tom Atkins for support with positioning and copywriting, and Sonja Stojanovic for modelling and being the very first happy Editable Website user - followed by Trails, Postlmayr Design, Aufreiter Architektur, and many more.",
+                "annotations": [
+                    {
+                        "start_offset": 14,
+                        "end_offset": 29,
+                        "node_id": "ERqkusuryvGKBzKayXyhxXE"
+                    },
+                    {
+                        "start_offset": 81,
+                        "end_offset": 91,
+                        "node_id": "XCdmKqAtyRNPKKRZJaNUfyX"
+                    },
+                    {
+                        "start_offset": 142,
+                        "end_offset": 158,
+                        "node_id": "yjdxqchTwgSjeTVgXeZhrrv"
+                    },
+                    {
+                        "start_offset": 240,
+                        "end_offset": 246,
+                        "node_id": "TPsjXxZhtuyfJQRytAVcRgJ"
+                    },
+                    {
+                        "start_offset": 248,
+                        "end_offset": 264,
+                        "node_id": "SUfVhRdtQwruDYJvgkETZxk"
+                    },
+                    {
+                        "start_offset": 266,
+                        "end_offset": 287,
+                        "node_id": "amXvCtNxBsTJFzfeTCpdMsN"
+                    }
+                ]
+            }
+        },
+        "wmrbpSFAFUmMRPDumcjKqpF": {
+            "id": "wmrbpSFAFUmMRPDumcjKqpF",
+            "type": "prose",
+            "layout": 2,
+            "colorset": 0,
+            "content": [
+                "PjwvEAbrZCxZFcqJqayVyhR"
+            ]
         },
         "nav_logo": {
             "id": "nav_logo",
@@ -1032,7 +1137,8 @@ export const demo_doc = {
                 "jLnPqRsTuVwXyZaBcDeFg",
                 "XVJGXtwnQMvcrcuByAtcWNa",
                 "YTMHBcPkYXJMRUnuSAhrTDE",
-                "UBNYngEBJYtDWgeabtDJqWW"
+                "UBNYngEBJYtDWgeabtDJqWW",
+                "wmrbpSFAFUmMRPDumcjKqpF"
             ],
             "nav": "nav_1",
             "footer": "footer_1"
