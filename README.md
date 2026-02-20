@@ -35,6 +35,10 @@ npm run dev
 
 <!--**Note:** After `git pull`, delete `data/db.sqlite3` to pick up schema changes.-->
 
+## License
+
+Editable Website will at least be source-available. There will likely be an affordable one-time registration fee (per domain) for personal use, and a higher fee for commercial projects. I'm still working on the details. If you’re open to discussion, join the [technical preview](https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform).
+
 ## Status
 
 This is v2, a complete rewrite using [Svedit](https://github.com/michael/svedit). It's under active development — feel free to explore locally, but hold off on production deployments for now.
