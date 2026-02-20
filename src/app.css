@@ -2,9 +2,9 @@
 @plugin '@tailwindcss/forms';
 
 @font-face {
-	font-family: 'IBM Plex Sans';
-	src: url('/fonts/IBM-Plex-Sans-Var-Roman.woff2') format('woff2');
-	font-weight: 100 700;
+	font-family: 'Inter';
+	src: url('/fonts/InterVariable.woff2') format('woff2');
+	font-weight: 100 900;
 	font-style: normal;
 	font-display: block;
 }
@@ -14,6 +14,14 @@
 	src: url('/fonts/InterVariable-Italic.woff2') format('woff2');
 	font-weight: 100 900;
 	font-style: italic;
+	font-display: block;
+}
+
+@font-face {
+	font-family: 'Goudy Bookletter 1911';
+	src: url('/fonts/Goudy-Bookletter-1911.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
 	font-display: block;
 }
 
@@ -72,13 +80,11 @@ html {
   --editing-stroke-color: oklch(59.71% 0.22 283);
 }
 
-
 @theme {
 	--max-width-8xl: 80rem;
-
 	--font-*: initial;
-	--font-body: ui-sans-serif, system-ui, sans-serif;
-	--font-heading: ui-sans-serif, system-ui, sans-serif;
+	--font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+	--font-heading: 'Goudy Bookletter 1911', ui-serif, Georgia, serif;
 	--font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 	--default-font-family: var(--font-body);
 }

@@ -18,13 +18,13 @@
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-5xl text-center w-full" use:reveal>
 				<AnnotatedTextProperty
 					tag="h1"
-					class="ew-h1 font-heading text-5xl md:text-6xl lg:text-7xl text-balance text-(--foreground)"
+					class="ew-h1 leading-tight font-heading text-5xl md:text-6xl lg:text-7xl text-balance text-(--foreground)"
 					path={[...path, 'title']}
 					placeholder="Your bold statement goes here"
 				/>
 				<AnnotatedTextProperty
 					tag="p"
-					class="mt-6 md:mt-8 text-xl md:text-2xl lg:text-3xl text-balance"
+					class="mt-6 md:mt-8 text-lg md:text-xl text-balance"
 					path={[...path, 'description']}
 					placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
 				/>

@@ -9,12 +9,14 @@
 	let layout = $derived(node.layout || 1);
 </script>
 
+
+
 {#snippet layout_1()}
 	<svelte:element
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="ew-button px-5 py-3 [min-width: calc(1lh + 2 * 3 * 4px)] flex items-center justify-center bg-(--accent) text-(--accent-foreground) rounded-(--button-border-radius) font-medium"
+		class="ew-button flex items-center justify-center px-4 py-3 min-w-[calc(1lh+24px)] bg-(--accent) text-(--accent-foreground) rounded-(--button-border-radius)"
 		class:hover:opacity-80={render_as_link}
 	>
 		<AnnotatedTextProperty
@@ -29,7 +31,7 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="flex items-center justify-center outline-2 outline-(--foreground) text-(--foreground) px-5 py-3 rounded-(--button-border-radius) font-medium {render_as_link ? 'hover:bg-(--foreground)/10' : ''}"
+		class="ew-button flex items-center justify-center px-4 py-3 outline-2 outline-(--foreground) text-(--foreground) rounded-(--button-border-radius) {render_as_link ? 'hover:bg-(--foreground)/10' : ''}"
 	>
 		<AnnotatedTextProperty
 			path={[...path, 'label']}
