@@ -1072,7 +1072,7 @@ export const demo_doc = {
             "id": "footer_column_2",
             "type": "footer_link_column",
             "label": {
-                "text": "Star on GitHub",
+                "text": "GitHub",
                 "annotations": []
             },
             "footer_links": [
