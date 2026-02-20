@@ -20,7 +20,7 @@ export const demo_doc = {
             "layout": 1,
             "colorset": 0,
             "title": {
-                "text": "Imagine you could edit your website live on the page",
+                "text": "Imagine you could edit ✍️ your website live on the page",
                 "annotations": []
             },
             "description": {
