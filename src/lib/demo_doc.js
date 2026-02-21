@@ -214,8 +214,8 @@ export const demo_doc = {
                 "annotations": []
             }
         },
-        "fQpgwqneaFUbYMyWsSxJjFR": {
-            "id": "fQpgwqneaFUbYMyWsSxJjFR",
+        "pRPkWyTzrgwfHhbnUgvHPph": {
+            "id": "pRPkWyTzrgwfHhbnUgvHPph",
             "type": "strong"
         },
         "fuxtxNCceDRcdbcHhtqsYwJ": {
@@ -226,9 +226,9 @@ export const demo_doc = {
                 "text": "In edit mode the purple dashed areas let you add blocks.",
                 "annotations": [
                     {
-                        "start_offset": 13,
+                        "start_offset": 17,
                         "end_offset": 36,
-                        "node_id": "fQpgwqneaFUbYMyWsSxJjFR"
+                        "node_id": "pRPkWyTzrgwfHhbnUgvHPph"
                     }
                 ]
             }
