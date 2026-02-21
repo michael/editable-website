@@ -214,8 +214,8 @@ export const demo_doc = {
                 "annotations": []
             }
         },
-        "uVqjDxZmZPZVjZtDhJRTWPe": {
-            "id": "uVqjDxZmZPZVjZtDhJRTWPe",
+        "fQpgwqneaFUbYMyWsSxJjFR": {
+            "id": "fQpgwqneaFUbYMyWsSxJjFR",
             "type": "strong"
         },
         "fuxtxNCceDRcdbcHhtqsYwJ": {
@@ -223,12 +223,12 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "In edit mode (⌘ / Ctrl + e) the purple dashed areas let you add blocks.",
+                "text": "In edit mode the purple dashed areas let you add blocks.",
                 "annotations": [
                     {
-                        "start_offset": 14,
-                        "end_offset": 26,
-                        "node_id": "uVqjDxZmZPZVjZtDhJRTWPe"
+                        "start_offset": 13,
+                        "end_offset": 36,
+                        "node_id": "fQpgwqneaFUbYMyWsSxJjFR"
                     }
                 ]
             }
@@ -239,6 +239,10 @@ export const demo_doc = {
         },
         "uDAGgETYUPFDYHKSvDBwmPw": {
             "id": "uDAGgETYUPFDYHKSvDBwmPw",
+            "type": "strong"
+        },
+        "MheDsAwTmfQDGqdkpMWgXUH": {
+            "id": "MheDsAwTmfQDGqdkpMWgXUH",
             "type": "strong"
         },
         "dAEBKADbvfeaBMhNWgTjKNC": {
@@ -257,6 +261,11 @@ export const demo_doc = {
                         "start_offset": 83,
                         "end_offset": 88,
                         "node_id": "uDAGgETYUPFDYHKSvDBwmPw"
+                    },
+                    {
+                        "start_offset": 11,
+                        "end_offset": 22,
+                        "node_id": "MheDsAwTmfQDGqdkpMWgXUH"
                     }
                 ]
             }
@@ -269,8 +278,8 @@ export const demo_doc = {
             "id": "TfUCWjmVMpUWSNWhBkBjTgB",
             "type": "strong"
         },
-        "FYVhvjKpVtfRxfXBEQkQAun": {
-            "id": "FYVhvjKpVtfRxfXBEQkQAun",
+        "ryUPAdHaGfFcHAqdHPSdUMR": {
+            "id": "ryUPAdHaGfFcHAqdHPSdUMR",
             "type": "strong"
         },
         "dKDJFxDKresxkjMUZYKNuKn": {
@@ -292,11 +301,15 @@ export const demo_doc = {
                     },
                     {
                         "start_offset": 18,
-                        "end_offset": 28,
-                        "node_id": "FYVhvjKpVtfRxfXBEQkQAun"
+                        "end_offset": 41,
+                        "node_id": "ryUPAdHaGfFcHAqdHPSdUMR"
                     }
                 ]
             }
+        },
+        "fwXyaDrZNGRyMhZMbascTYb": {
+            "id": "fwXyaDrZNGRyMhZMbascTYb",
+            "type": "strong"
         },
         "dwMqDGUwHVvVkdzahPEWDuR": {
             "id": "dwMqDGUwHVvVkdzahPEWDuR",
@@ -304,7 +317,13 @@ export const demo_doc = {
             "layout": 1,
             "content": {
                 "text": "To move blocks, drag from a dashed area to select multiple, then cut and paste like usual.",
-                "annotations": []
+                "annotations": [
+                    {
+                        "start_offset": 16,
+                        "end_offset": 35,
+                        "node_id": "fwXyaDrZNGRyMhZMbascTYb"
+                    }
+                ]
             }
         },
         "FGHDfRZMdeYQeVJBarNFeHa": {
@@ -432,6 +451,10 @@ export const demo_doc = {
             "id": "YUfmQBfsRybjdcMgwrRYVGw",
             "type": "strong"
         },
+        "cMtzexVuqMWFgEpxhYjRQFq": {
+            "id": "cMtzexVuqMWFgEpxhYjRQFq",
+            "type": "strong"
+        },
         "NKtUpjrVYCGaJWYKGACXprb": {
             "id": "NKtUpjrVYCGaJWYKGACXprb",
             "type": "text",
@@ -443,6 +466,11 @@ export const demo_doc = {
                         "start_offset": 13,
                         "end_offset": 41,
                         "node_id": "YUfmQBfsRybjdcMgwrRYVGw"
+                    },
+                    {
+                        "start_offset": 123,
+                        "end_offset": 143,
+                        "node_id": "cMtzexVuqMWFgEpxhYjRQFq"
                     }
                 ]
             }
@@ -493,11 +521,11 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Click on one of the cards below.\nA link preview appears at the bottom.\nClick “EDIT” or press Press ⌘ / Ctrl + k to bring up the link editor.",
+                "text": "Click on one of the cards below.\nA link preview appears at the bottom.\nClick “EDIT” or press ⌘ / Ctrl + k to bring up the link editor.",
                 "annotations": [
                     {
-                        "start_offset": 99,
-                        "end_offset": 111,
+                        "start_offset": 93,
+                        "end_offset": 105,
                         "node_id": "XDMsYPfWXKqvhCMsEDWfDnx"
                     }
                 ]
@@ -607,7 +635,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "The cards above are links to examples of live in-place editable websites Johannes Mutter and I have already launched using this technology.\nYou can see that any design is possible - it’s just HTML and CSS… ahem, Tailwind.",
+                "text": "The cards above are links to examples of live in-place editable websites Johannes Mutter and I have already launched using this technology. You can see that any design is possible - it’s just HTML and CSS… ahem, Tailwind.",
                 "annotations": [
                     {
                         "start_offset": 73,
@@ -658,7 +686,7 @@ export const demo_doc = {
             "id": "vgkGZptsehnZagrGcVweyJY",
             "type": "link",
             "href": "https://svedit.dev/",
-            "target": "_self"
+            "target": "_blank"
         },
         "mCnpWzerAfgKhFFRJwCkQuB": {
             "id": "mCnpWzerAfgKhFFRJwCkQuB",

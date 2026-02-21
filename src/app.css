@@ -18,8 +18,8 @@
 }
 
 @font-face {
-	font-family: 'Goudy Bookletter 1911';
-	src: url('/fonts/Goudy-Bookletter-1911.woff2') format('woff2');
+	font-family: 'Libertinos Serif Display';
+	src: url('/fonts/Libertinos-Serif-Display.woff2') format('woff2');
 	font-weight: 400;
 	font-style: normal;
 	font-display: block;
@@ -84,7 +84,7 @@ html {
 	--max-width-8xl: 80rem;
 	--font-*: initial;
 	--font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
-	--font-heading: 'Goudy Bookletter 1911', ui-serif, Georgia, serif;
+	--font-heading: 'Libertinos Serif Display', ui-serif, Georgia, serif;
 	--font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 	--default-font-family: var(--font-body);
 }
