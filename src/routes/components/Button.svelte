@@ -31,7 +31,7 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="ew-button flex items-center justify-center px-4 py-3 outline-2 outline-(--foreground) text-(--foreground) rounded-(--button-border-radius) {render_as_link ? 'hover:bg-(--foreground)/10' : ''}"
+		class="ew-button flex items-center justify-center px-4 py-3 -outline-offset-2 outline-2 outline-(--foreground) text-(--foreground) rounded-(--button-border-radius) {render_as_link ? 'hover:bg-(--foreground)/10' : ''}"
 	>
 		<AnnotatedTextProperty
 			path={[...path, 'label']}
