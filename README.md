@@ -39,12 +39,12 @@ npm run dev
 
 This is v2, a complete rewrite using [Svedit](https://github.com/michael/svedit). It's under active development — feel free to explore locally, but hold off on production deployments for now.
 
-## License
-
-Editable Website will at least be source-available. There will likely be an affordable one-time registration fee (per domain) for personal use, and a higher fee for commercial projects. I'm still working on the details. If you’re open to discussion, join the [technical preview](https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform).
-
 
 ## FAQs
+
+### License?
+
+Editable Website will at least be source-available. There will likely be an affordable one-time registration fee (per domain) for personal use, and a fair fee for commercial projects. I'm still working on the details. If you’re open to discussion, join the [technical preview](https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform).
 
 ### Is mobile editing supported?
 
@@ -52,8 +52,27 @@ Editable Website is desktop-only, simply because keyboard shortcuts don't work o
 
 ### But end-users will be overwhelmed with keyboard shortcuts?
 
-ikely, I agree. The pure keyboard-shortcut-driven approach may be temporary. I want to test out how that purist approach is received. So far, most people have been pleasantly surprised by how intuitive the interface is. It's definitely a different feel when there's just your content and almost no distracting UI, though there's a bit of a learning curve. In practice, I think that eventually I will add a few interface elements, like save, cancel, and browse buttons. Don't expect a full-fledged Google Docs style toolbar though.
+Likely, I agree. The pure keyboard-shortcut-driven approach may be temporary. I want to test out how that purist approach is received. So far, most people have been pleasantly surprised by how intuitive the interface is. It's definitely a different feel when there's just your content and almost no distracting UI, though there's a bit of a learning curve. In practice, I think that eventually I will add a few interface elements, like save, cancel, and browse buttons. Don't expect a full-fledged Google Docs style toolbar though.
 
+### Where is the data stored?
+
+Editable Website stores all content, including source images in an SQLite database. So to backup your site, all you have to do is make regular copies of your site.sqlite3 file.
+
+### How about AI?
+
+Editable Website is a foundational, AI-agnostic tool. That said, it makes perfect sense to utilize AI workflows to help building your custom site. Think prompts like "Create a hero block type with title + description and optional CTA buttons" and "Implement Hero.svelte with 5 distinct layout variations".
+
+### Hosting?
+
+Editable Website runs on any VPS. All you need is Node.js and SQLite. I'm personally using [Fly.io](https://fly.io) for hosting. A Dockerfile will be provided that can be used with Fly.io and other platforms that support Docker.
+
+### Static builds?
+
+There's no point for static builds with Editable Website. The whole idea is that users edit content live, without having to wait for a rebuild to finish. SQLite is fast. Very fast. Web-optimized images are generated on the fly and cached on the server's file system. It makes sense to enable a proxy for images, so they can be delivered from a CDN. 
+
+### Plugins?
+
+Editable Website is modular and you can and should reuse code across projects. However, I purposely don't want to establish a community maintained plugin repository. I want to encourage you to own all your code, for the benefit of simplicity, safety, and control. Share code snippets, not plugins.
 
 ## Looking for v1?
 
