@@ -100,7 +100,7 @@
 					<a
 						href={item.href || '#'}
 						target={item.target}
-						class="text-3xl font-heading text-(--foreground) py-2 px-3 sm:px-5"
+						class="text-3xl font-serif text-(--foreground) py-2 px-3 sm:px-5"
 						onclick={close_mobile_menu}
 					>
 						{item.label?.text || ''}

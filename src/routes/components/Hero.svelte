@@ -18,7 +18,7 @@
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-5xl text-center w-full" use:reveal>
 				<AnnotatedTextProperty
 					tag="h1"
-					class="ew-h1 leading-tight font-heading text-5xl md:text-6xl lg:text-7xl text-balance text-(--foreground)"
+					class="ew-h1 leading-tight font-serif text-5xl md:text-6xl lg:text-7xl text-balance text-(--foreground)"
 					path={[...path, 'title']}
 					placeholder="Your bold statement goes here"
 				/>
@@ -43,7 +43,7 @@
 			<div class="{TW_PAGE_PADDING_X} max-w-4xl" use:reveal>
 				<AnnotatedTextProperty
 					tag="h1"
-					class="ew-h1 font-heading text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground)"
+					class="ew-h1 font-serif text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground)"
 					path={[...path, 'title']}
 					placeholder="Your bold statement goes here"
 				/>
@@ -68,7 +68,7 @@
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-4xl text-center" use:reveal>
 				<AnnotatedTextProperty
 					tag="h1"
-					class="ew-h1 font-heading text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground)"
+					class="ew-h1 font-serif text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground)"
 					path={[...path, 'title']}
 					placeholder="Your bold statement goes here"
 				/>
@@ -95,7 +95,7 @@
 				<div class="{TW_MOBILE_LEFT_INSET}" use:reveal>
 					<AnnotatedTextProperty
 						tag="h1"
-						class="ew-h1 font-heading text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground)"
+						class="ew-h1 font-serif text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground)"
 						path={[...path, 'title']}
 						placeholder="Your bold statement goes here"
 					/>

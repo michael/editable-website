@@ -33,6 +33,25 @@ And run the development server:
 npm run dev
 ```
 
+Next, you probably want to adjust the colors and fonts in [app.css](./src/app.css) to match your style.
+
+```css
+:root {
+	--background: oklch(0.98 0 0);
+	--foreground: oklch(0 0 0);
+	--accent: oklch(0.21 0.034 264);
+	--accent-foreground: oklch(0.98 0 0);
+}
+
+@theme {
+	--font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+	--font-serif: 'Libertinos Serif Display', ui-serif, Georgia, serif;
+	--font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+```
+
+However, likely you'll want to customize more than that. E.g. edit [Button.svelte](./src/routes/components/Button.svelte) to create your very own distinct button style. Anything [src/routes](./src/routes/) is meant to be customized by you for your project.
+
 <!--**Note:** After `git pull`, delete `data/db.sqlite3` to pick up schema changes.-->
 
 ## Status
@@ -47,7 +66,7 @@ The editing infrastructure (Svedit) becomes an integral part of your website (at
 
 ### Is mobile editing supported?
 
-Editable Website is desktop-only, simply because keyboard shortcuts don't work on mobile. This might change in the future, though mobile editing is supported in Svedit. The experience doesn't match my high standards for an editing interface. However, I'll work towards gradually supporting mobile editing. Maybe a good compromise is allowing text changes on mobile (like fixing a typo) while structural editing remains desktop-only.
+Editable Website is desktop-only, simply because keyboard shortcuts don't work on mobile. This might change in the future. Mobile editing is supported in Svedit. The experience doesn't match my high standards for an editing interface. However, I'll work towards gradually supporting mobile editing. Maybe a good compromise is allowing text changes on mobile (like fixing a typo) while structural editing remains desktop-only.
 
 ### But end-users will be overwhelmed with keyboard shortcuts?
 

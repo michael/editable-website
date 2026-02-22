@@ -49,44 +49,38 @@ html {
 :root {
 	/* Default colorset */
 	--background: oklch(0.98 0 0);
-	--foreground: oklch(0 0 0); /*oklch(0.21 0.034 264);*/
+	--foreground: oklch(0 0 0);
 	--accent: oklch(0.21 0.034 264);
-	--accent-light: oklch(0 0 0 / 0.3);
 	--accent-foreground: oklch(0.98 0 0);
 
 	/* Alternative colorset 1 */
 	--background-alt1: oklch(0.67 0.09 205);
 	--foreground-alt1: oklch(1 0 0);
-	--accent-alt1: oklch(1 0 0); /* oklch(0.7 0.19 22); */
-	--accent-light-alt1: oklch(0.67 0.09 205 / 0.3);
+	--accent-alt1: oklch(1 0 0);
 	--accent-foreground-alt1:  oklch(0.67 0.09 205);
 
 	/* Alternative colorset 2 */
 	--background-alt2: oklch(0.98 0 0);
 	--foreground-alt2: oklch(0.21 0.034 264);
 	--accent-alt2: oklch(0.67 0.09 205);
-	--accent-light-alt2: oklch(0.67 0.09 205 / 0.3);
 	--accent-foreground-alt2: oklch(0.98 0 0);
-
-	--button-border-radius: 3rem; /* rounded corners for buttons, nav items */
-	--image-border-radius: 0.5rem;
-	--border-thickness: 0px;
 
 	/* Derived colors - these can be overridden per site, but I don't recommend it */
 	--border-color: color-mix(in oklch, var(--background) 90%, var(--foreground) 8%); /* hairlines, borders - fully opaque warm grey */
 
-	/* Editor colors - purple/violet complements teal accent */
+	/* Editor colors */
 	--editing-fill-color: oklch(59.71% 0.22 283 / 0.1);
   --editing-stroke-color: oklch(59.71% 0.22 283);
+
+  --button-border-radius: 3rem; /* rounded corners for buttons, nav items */
+	--image-border-radius: 0.5rem; /* rounded corners for images */
+	--border-thickness: 0px;
 }
 
 @theme {
-	--max-width-8xl: 80rem;
-	--font-*: initial;
-	--font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
-	--font-heading: 'Libertinos Serif Display', ui-serif, Georgia, serif;
+	--font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+	--font-serif: 'Libertinos Serif Display', ui-serif, Georgia, serif;
 	--font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-	--default-font-family: var(--font-body);
 }
 
 @layer utilities {
@@ -110,7 +104,6 @@ html {
 		--background: var(--background-alt1);
 		--foreground: var(--foreground-alt1);
 		--accent: var(--accent-alt1);
-		--accent-light: var(--accent-light-alt1);
 		--accent-foreground: var(--accent-foreground-alt1);
 		--border-color: color-mix(in oklch, var(--background) 90%, var(--foreground) 8%);
 	}
@@ -119,7 +112,6 @@ html {
 		--background: var(--background-alt2);
 		--foreground: var(--foreground-alt2);
 		--accent: var(--accent-alt2);
-		--accent-light: var(--accent-light-alt2);
 		--accent-foreground: var(--accent-foreground-alt2);
 		--border-color: color-mix(in oklch, var(--background) 90%, var(--foreground) 8%);
 	}
