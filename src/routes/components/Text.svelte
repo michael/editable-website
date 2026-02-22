@@ -39,7 +39,7 @@
 			case 4:
 				return 'ew-h3 font-serif text-xl md:text-2xl lg:text-3xl text-balance text-(--foreground)';
 			case 5:
-				return 'ew-eyebrow leading-loose block text-xs md:text-sm font-medium uppercase tracking-widest text-(--foreground) opacity-60';
+				return 'ew-eyebrow leading-loose block text-xs md:text-sm uppercase tracking-widest text-(--foreground) opacity-60';
 			default:
 				return '';
 		}

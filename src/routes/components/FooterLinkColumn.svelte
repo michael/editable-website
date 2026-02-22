@@ -10,7 +10,7 @@
 <Node {path}>
 	<div class="footer-link-column flex flex-col items-center lg:items-start gap-3 lg:gap-6">
 		<AnnotatedTextProperty
-			class="text-xs md:text-sm font-medium uppercase tracking-widest text-(--foreground) opacity-60"
+			class="text-xs md:text-sm uppercase tracking-widest text-(--foreground) opacity-60"
 			path={[...path, 'label']}
 			placeholder="Column Label"
 		/>

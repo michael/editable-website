@@ -39,7 +39,7 @@
 			</div>
 		</CustomProperty>
 		<div class="pt-4">
-			<AnnotatedTextProperty class="font-medium text-xs md:text-sm uppercase tracking-widest text-(--foreground) opacity-60 mb-2" path={[...path, 'preline']} placeholder="Preline" />
+			<AnnotatedTextProperty class="text-xs md:text-sm uppercase tracking-widest text-(--foreground) opacity-60 mb-2" path={[...path, 'preline']} placeholder="Preline" />
 			<AnnotatedTextProperty class="{!svedit.editable ? 'title-underline' : ''} font-serif text-(--foreground) text-2xl lg:text-3xl text-balance pt-1" path={[...path, 'title']} placeholder="Title" />
 			<AnnotatedTextProperty class="text-balance pt-2" path={[...path, 'description']} placeholder="Description" />
 		</div>
