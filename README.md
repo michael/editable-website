@@ -39,12 +39,11 @@ npm run dev
 
 This is v2, a complete rewrite using [Svedit](https://github.com/michael/svedit). It's under active development — feel free to explore locally, but hold off on production deployments for now.
 
-
 ## FAQs
 
-### License?
+### How is this different to using a CMS?
 
-Editable Website will at least be source-available. There will likely be an affordable one-time registration fee (per domain) for personal use, and a fair fee for commercial projects. I'm still working on the details. If you’re open to discussion, join the [technical preview](https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform).
+The editing infrastructure (Svedit) becomes an integral part of your website (at runtime). This means that for your next website project, you might not need a Content Management System (CMS) anymore. As a developer, all you do is define content types (e.g. Figure) and implement components (e.g. Figure.svelte) — they are editable by default.
 
 ### Is mobile editing supported?
 
@@ -72,8 +71,11 @@ Editable Website runs on any VPS. All you need is Node.js and SQLite. I'm person
 
 ### Static builds?
 
-There's no point for static builds with Editable Website. The whole idea is that users edit content live, without having to wait for a rebuild to finish. SQLite is fast. Very fast. Web-optimized images are generated on the fly and cached on the server's file system. It makes sense to enable a proxy for images, so they can be delivered from a CDN. 
+There's no point for static builds with Editable Website. The whole idea is that users edit content live, without having to wait for a rebuild to finish. SQLite is fast. Very fast. Web-optimized images are generated on the fly and cached on the server's file system. It makes sense to enable a proxy for images, so they can be delivered from a CDN.
 
+### License?
+
+Editable Website will at least be source-available. There will likely be an affordable one-time registration fee (per domain) for personal use, and a fair fee for commercial projects. I'm still working on the details. If you’re open to discussion, join the [technical preview](https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform).
 
 ## Looking for v1?
 
