@@ -250,7 +250,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Select the dashed area below this paragraph to see a flashing purple cursor.\nPress Enter to add a block.\nChange block types (paragraph > heading etc) with Ctrl + Shift + Right.",
+                "text": "Select the dashed area below this paragraph to see a flashing purple cursor.\nPress Enter to add a block.\nChange text styles (paragraph > heading etc) with Ctrl + Shift + Right.",
                 "annotations": [
                     {
                         "start_offset": 155,
@@ -282,12 +282,16 @@ export const demo_doc = {
             "id": "ryUPAdHaGfFcHAqdHPSdUMR",
             "type": "strong"
         },
+        "wrMTxwEDPezkagDwymXFFuq": {
+            "id": "wrMTxwEDPezkagDwymXFFuq",
+            "type": "strong"
+        },
         "dKDJFxDKresxkjMUZYKNuKn": {
             "id": "dKDJFxDKresxkjMUZYKNuKn",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Select one of the full width dashed areas to see a flashing purple cursor.\nPress Enter to create a new top-level block.\nCtrl + Shift + Down cycles through block types.",
+                "text": "Select one of the full width dashed areas to see a flashing purple cursor.\nPress Enter to create a new top-level block.\nCtrl + Shift + Down cycles through block types.\nAgain Ctrl + Shift + Right lets you flip through available layouts.",
                 "annotations": [
                     {
                         "start_offset": 81,
@@ -303,6 +307,11 @@ export const demo_doc = {
                         "start_offset": 18,
                         "end_offset": 41,
                         "node_id": "ryUPAdHaGfFcHAqdHPSdUMR"
+                    },
+                    {
+                        "start_offset": 174,
+                        "end_offset": 194,
+                        "node_id": "wrMTxwEDPezkagDwymXFFuq"
                     }
                 ]
             }
@@ -688,42 +697,17 @@ export const demo_doc = {
             "href": "https://svedit.dev/",
             "target": "_blank"
         },
-        "mCnpWzerAfgKhFFRJwCkQuB": {
-            "id": "mCnpWzerAfgKhFFRJwCkQuB",
-            "type": "link",
-            "href": "https://letsken.com/michael/minimum-viable-rich-text-editor-for-svelte-5",
-            "target": "_blank"
-        },
         "CfvasqyKgByVWHWXcSZZsnm": {
             "id": "CfvasqyKgByVWHWXcSZZsnm",
             "type": "link",
             "href": "https://svelte.dev/",
             "target": "_blank"
         },
-        "PscvEBWBfhraXpPKjPPkCMC": {
-            "id": "PscvEBWBfhraXpPKjPPkCMC",
-            "type": "text",
-            "layout": 1,
-            "content": {
-                "text": "This site uses a new open source rich text editor I've created - Svedit. It uses Svelte and enables the editing experience you're trying here. Learn more about why I created yet another rich text editor!",
-                "annotations": [
-                    {
-                        "start_offset": 65,
-                        "end_offset": 71,
-                        "node_id": "vgkGZptsehnZagrGcVweyJY"
-                    },
-                    {
-                        "start_offset": 174,
-                        "end_offset": 202,
-                        "node_id": "mCnpWzerAfgKhFFRJwCkQuB"
-                    },
-                    {
-                        "start_offset": 81,
-                        "end_offset": 87,
-                        "node_id": "CfvasqyKgByVWHWXcSZZsnm"
-                    }
-                ]
-            }
+        "mCnpWzerAfgKhFFRJwCkQuB": {
+            "id": "mCnpWzerAfgKhFFRJwCkQuB",
+            "type": "link",
+            "href": "https://letsken.com/michael/minimum-viable-rich-text-editor-for-svelte-5",
+            "target": "_blank"
         },
         "ermaxuxbvqxdcafghaVjZUt": {
             "id": "ermaxuxbvqxdcafghaVjZUt",
@@ -731,27 +715,52 @@ export const demo_doc = {
             "href": "https://svelte.dev/docs/kit/introduction",
             "target": "_blank"
         },
+        "PscvEBWBfhraXpPKjPPkCMC": {
+            "id": "PscvEBWBfhraXpPKjPPkCMC",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "This site uses a new open source rich text editor I've created - Svedit. It uses Svelte and enables the editing experience you're trying here. Learn more about why I created yet another rich text editor! Editable Website builds on SvelteKit to enable full websites with multiple pages and a persistent backend where only an admin can make changes.",
+                "annotations": [
+                    {
+                        "start_offset": 65,
+                        "end_offset": 71,
+                        "node_id": "vgkGZptsehnZagrGcVweyJY"
+                    },
+                    {
+                        "start_offset": 81,
+                        "end_offset": 87,
+                        "node_id": "CfvasqyKgByVWHWXcSZZsnm"
+                    },
+                    {
+                        "start_offset": 186,
+                        "end_offset": 202,
+                        "node_id": "mCnpWzerAfgKhFFRJwCkQuB"
+                    },
+                    {
+                        "start_offset": 231,
+                        "end_offset": 240,
+                        "node_id": "ermaxuxbvqxdcafghaVjZUt"
+                    }
+                ]
+            }
+        },
         "hpXfpDueZmgNjRfMUBREPnh": {
             "id": "hpXfpDueZmgNjRfMUBREPnh",
             "type": "link",
             "href": "https://github.com/michael/editable-website",
             "target": "_blank"
         },
-        "FtSTnsYRZXTpZMRBHGPJmHC": {
-            "id": "FtSTnsYRZXTpZMRBHGPJmHC",
+        "EsVdYMdJuVqGfqpQmMBCtap": {
+            "id": "EsVdYMdJuVqGfqpQmMBCtap",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Editable Website builds on Svedit using SvelteKit to enable full websites with multiple pages and a persistent backend where only an admin can make changes. Take a look at the source code for this site.",
+                "text": "Take a look at the source code for this site.",
                 "annotations": [
                     {
-                        "start_offset": 40,
-                        "end_offset": 49,
-                        "node_id": "ermaxuxbvqxdcafghaVjZUt"
-                    },
-                    {
-                        "start_offset": 176,
-                        "end_offset": 187,
+                        "start_offset": 19,
+                        "end_offset": 30,
                         "node_id": "hpXfpDueZmgNjRfMUBREPnh"
                     }
                 ]
@@ -766,7 +775,7 @@ export const demo_doc = {
                 "pkcwHuntQjySVjwuVNaSTge",
                 "AQHAsyghanqZPmyutAJZBxM",
                 "PscvEBWBfhraXpPKjPPkCMC",
-                "FtSTnsYRZXTpZMRBHGPJmHC"
+                "EsVdYMdJuVqGfqpQmMBCtap"
             ]
         },
         "hqrrTdEbTPaqzEcYMczhBZb": {
