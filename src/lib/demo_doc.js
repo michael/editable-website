@@ -1154,7 +1154,7 @@ export const demo_doc = {
             "type": "footer",
             "logo": "footer_logo",
             "copyright": {
-                "text": "Copyright © Editable Website",
+                "text": "© Editable Website",
                 "annotations": []
             },
             "footer_link_columns": [
