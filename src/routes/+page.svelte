@@ -119,7 +119,7 @@
 
 <!-- Workaround for #40: Note that page.url.pathname from $app/state does not work -->
 {#key $page.url.pathname}
-	<div class="demo-wrapper" bind:this={app_el}>
+	<div class="demo-wrapper antialiased" bind:this={app_el}>
 		<!-- <Toolbar {session} {focus_canvas} bind:editable /> -->
 		<Svedit {session} bind:editable bind:this={svedit_ref} path={[session.doc.document_id]} />
 
