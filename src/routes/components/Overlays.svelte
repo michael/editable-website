@@ -179,14 +179,19 @@
 			}
 
 			const container_anchor = `--${array_path.join('-')}`;
+			const ref_first = is_horizontal && count >= 2 ? `--${[...array_path, 0].join('-')}` : null;
+			const ref_second = is_horizontal && count >= 2 ? `--${[...array_path, 1].join('-')}` : null;
 
 			for (let offset = 0; offset <= count; offset++) {
 				const prev = offset > 0 ? `--${[...array_path, offset - 1].join('-')}` : null;
 				const next = offset < count ? `--${[...array_path, offset].join('-')}` : null;
 				if (!prev && !next) continue;
+				const is_trailing_row = prev && !next && ref_first;
 				const style = (prev && next)
 					? (is_horizontal ? build_row_gap_style(prev, next) : build_column_gap_style(prev, next))
-					: build_edge_gap_style(prev || next, !prev, is_horizontal, container_anchor);
+					: is_trailing_row
+						? build_trailing_row_gap_style(prev, ref_first, ref_second, container_anchor)
+						: build_edge_gap_style(prev || next, !prev, is_horizontal);
 				targets.push({
 					key: `${array_path.join('.')}-gap-${offset}`,
 					path: array_path,
@@ -234,10 +239,9 @@
 	/**
 	 * Edge insertion point (before-first or after-last).
 	 * @param {string} anchor  @param {boolean} is_before  @param {boolean} is_horizontal
-	 * @param {string | null} [container_anchor]
 	 * @returns {string}
 	 */
-	function build_edge_gap_style(anchor, is_before, is_horizontal, container_anchor = null) {
+	function build_edge_gap_style(anchor, is_before, is_horizontal) {
 		const cross = is_horizontal
 			? [`top: anchor(${anchor} top)`, `bottom: anchor(${anchor} bottom)`]
 			: [`left: anchor(${anchor} left)`, `right: anchor(${anchor} right)`];
@@ -246,17 +250,52 @@
 			? (is_before ? ['right', 'left', 'left'] : ['left', 'right', 'right'])
 			: (is_before ? ['bottom', 'top', 'top'] : ['top', 'bottom', 'bottom']);
 
-		const use_container = container_anchor && !is_before && is_horizontal;
-		const far_value = use_container
-			? `anchor(${container_anchor} right)`
-			: `calc(anchor(${anchor} ${edge}) - ${EDGE_GAP_PX}px)`;
-
 		return [
 			...cross,
 			`${near}: anchor(${anchor} ${edge})`,
-			`${far}: ${far_value}`,
+			`${far}: calc(anchor(${anchor} ${edge}) - ${EDGE_GAP_PX}px)`,
 			`min-height: ${EDGE_GAP_PX}px`,
 			`min-width: ${EDGE_GAP_PX}px`
+		].join('; ');
+	}
+
+	/**
+	 * Trailing row gap: last insertion point in a horizontal layout.
+	 *
+	 * Uses the same centering math as build_row_gap_style: places both edges at
+	 * `center ± max(gap, min_size)/2` so the visual aligns with between-items gaps
+	 * regardless of whether the container has gap, margin, or zero spacing.
+	 *
+	 * Detects full vs partial row via remaining space between last item and
+	 * container edge. Full rows fall back to a fixed EDGE_GAP_PX strip.
+	 * The multiplier trick selects between branches (same pattern as build_row_gap_style).
+	 *
+	 * gap_L / gap_R are the same column gap but expressed in opposite coordinate
+	 * systems (anchor() resolves from the left or right edge of the containing block
+	 * depending on which inset property it appears in).
+	 * @param {string} last  @param {string} ref_first  @param {string} ref_second
+	 * @param {string} container
+	 * @returns {string}
+	 */
+	function build_trailing_row_gap_style(last, ref_first, ref_second, container) {
+		const min_size = `var(--insertion-point-min-size, 8px)`;
+		const gap_L = `(anchor(${ref_second} left) - anchor(${ref_first} right))`;
+		const gap_R = `(anchor(${ref_first} right) - anchor(${ref_second} left))`;
+
+		const left_value = `calc(anchor(${last} right) + ${gap_L} / 2 - max(${gap_L}, ${min_size}) / 2)`;
+		const partial_right = `calc(anchor(${last} right) - ${gap_R} / 2 - max(${gap_R}, ${min_size}) / 2)`;
+		const edge_right = `calc(anchor(${last} right) - ${EDGE_GAP_PX}px)`;
+
+		const remaining = `(anchor(${last} right) - anchor(${container} right))`;
+		const threshold = `max(${gap_R}, ${EDGE_GAP_PX}px)`;
+		const full_kill = `max(0px, ${threshold} - ${remaining}) * 999`;
+		const partial_kill = `max(0px, ${remaining} - ${threshold}) * 999`;
+
+		return [
+			`top: anchor(${last} top)`,
+			`bottom: anchor(${last} bottom)`,
+			`left: ${left_value}`,
+			`right: max(calc(${partial_right} - ${full_kill}), calc(${edge_right} - ${partial_kill}))`
 		].join('; ');
 	}
 
@@ -611,21 +650,7 @@
 		}
 	}
 
-	/* Last gap in horizontal layout fills remaining row space via container anchor. */
-	/* IMPORTANT: SYNC EDGE_GAP_PX here with the 24px value */
-	@container (width > 24px) {
-		.insertion-point.is-horizontal.is-last > .insertion-caret::before {
-			left: 0;
-		}
 
-		.insertion-point.is-horizontal.is-last > .insertion-indicator::before {
-			left: 0;
-		}
-		.insertion-point.is-horizontal.is-last > .insertion-indicator::after {
-			left: calc(var(--plus-s) / -2);
-			transform: translate(0, -50%);
-		}
-	}
 </style>
 
 <svelte:document onmousemove={handle_mousemove} onmouseup={() => is_dragging = false} />
