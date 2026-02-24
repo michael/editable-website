@@ -76,6 +76,8 @@ Likely, I agree. The pure keyboard-shortcut-driven approach may be temporary. I 
 
 Editable Website stores all content, including source images in an SQLite database. So to backup your site, all you have to do is make regular copies of your site.sqlite3 file.
 
+That said, the current codebase doesn't have the backend implemented yet, as I'm rewriting those parts as well.
+
 ### How about AI?
 
 Editable Website is a foundational, AI-agnostic tool. That said, it makes perfect sense to utilize AI workflows to help building your custom site. Think prompts like "Create a hero block type with title + description and optional CTA buttons" and "Implement Hero.svelte with 5 distinct layout variations".
