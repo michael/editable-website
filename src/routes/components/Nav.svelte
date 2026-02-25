@@ -114,7 +114,7 @@
 
 <style>
 	:global(.nav-items) {
-		--layout-orientation: horizontal;
+		--is-horizontal: 1;
 	}
 
 	:global(.nav-items > *) {

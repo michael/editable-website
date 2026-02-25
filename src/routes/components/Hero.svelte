@@ -29,7 +29,7 @@
 					placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
 				/>
 				<NodeArrayProperty
-					class="hero-buttons [--layout-orientation:horizontal] flex flex-wrap items-center justify-center gap-4 mt-10{!has_buttons ? ' empty' : ''}"
+					class="hero-buttons [--is-horizontal:1] flex flex-wrap items-center justify-center gap-4 mt-10{!has_buttons ? ' empty' : ''}"
 					path={[...path, 'buttons']}
 				/>
 			</div>
@@ -54,7 +54,7 @@
 					placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
 				/>
 				<NodeArrayProperty
-					class="hero-buttons [--layout-orientation:horizontal] flex flex-wrap items-center gap-4 mt-10{!has_buttons ? ' empty' : ''}"
+					class="hero-buttons [--is-horizontal:1] flex flex-wrap items-center gap-4 mt-10{!has_buttons ? ' empty' : ''}"
 					path={[...path, 'buttons']}
 				/>
 			</div>
@@ -79,7 +79,7 @@
 					placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
 				/>
 				<NodeArrayProperty
-					class="hero-buttons [--layout-orientation:horizontal] flex flex-wrap items-center justify-center gap-4 mt-10{!has_buttons ? ' empty' : ''}"
+					class="hero-buttons [--is-horizontal:1] flex flex-wrap items-center justify-center gap-4 mt-10{!has_buttons ? ' empty' : ''}"
 					path={[...path, 'buttons']}
 				/>
 			</div>
@@ -106,7 +106,7 @@
 						placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
 					/>
 					<NodeArrayProperty
-						class="hero-buttons [--layout-orientation:horizontal] flex flex-wrap items-center gap-4 mt-10{!has_buttons ? ' empty' : ''}"
+						class="hero-buttons [--is-horizontal:1] flex flex-wrap items-center gap-4 mt-10{!has_buttons ? ' empty' : ''}"
 						path={[...path, 'buttons']}
 					/>
 				</div>

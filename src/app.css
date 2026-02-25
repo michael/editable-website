@@ -39,6 +39,7 @@ html {
 	/* Editor colors */
 	--editing-fill-color: oklch(59.71% 0.22 283 / 0.1);
   --editing-stroke-color: oklch(59.71% 0.22 283);
+  --stroke-color: oklch(0 0 0 / 0.2);
 
   /* Rounded corners */
   --button-border-radius: 3rem; /* rounded corners for buttons, nav items */
