@@ -1,10 +1,10 @@
-# editable.website v2
+# Editable Website v2
 
-The next generation of [editable.website](https://editable.website) — a complete rewrite designed to make Svelte users very happy.
+The next generation of Editable Website — a complete rewrite designed to make Svelte developers happy.
 
 > **NOTE:** v2 is currently under heavy development. You can try it out, but it's not ready to use yet.
 
-## Who is editable.website for?
+## Who is Editable Website for?
 
 For anyone who enjoys creating websites using Svelte and wants to allow their clients to make edits directly in the layout as they browse their site.
 
@@ -50,7 +50,7 @@ Next, you probably want to adjust the colors and fonts in [app.css](./src/app.cs
 }
 ```
 
-However, likely you'll want to customize more than that. E.g. edit [Button.svelte](./src/routes/components/Button.svelte) to create your very own distinct button style. Anything [src/routes](./src/routes/) is meant to be customized by you for your project.
+However, likely you'll want to customize more than that. E.g. edit [Button.svelte](./src/routes/components/Button.svelte) to create your very own distinct button style. Anything in [src/routes](./src/routes/) is meant to be customized by you for your project.
 
 <!--**Note:** After `git pull`, delete `data/db.sqlite3` to pick up schema changes.-->
 
