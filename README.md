@@ -2,13 +2,13 @@
 
 The next generation of Editable Website — a complete rewrite designed to make Svelte developers happy.
 
-> **NOTE:** v2 is currently under heavy development. You can try it out, but it's not ready to use yet.
+> **NOTE:** v2 is a complete rewrite using [Svedit](https://github.com/michael/svedit). It's under active development — feel free to explore locally, but hold off on production deployments for now.
 
 ## Who is Editable Website for?
 
 For anyone who enjoys creating websites using Svelte and wants to allow their clients to make edits directly in the layout as they browse their site.
 
-You no longer need a CMS. Start from a fully functional, user-editable website that supports common content types: prose, heroes, features, galleries, and listings.
+For your next website project, you might not need a Content Management System (CMS) anymore. Start from a fully functional, user-editable website that supports common content types: prose, heroes, features, galleries, and listings.
 
 Adapt colors and fonts to deploy a beautiful site within minutes — or customize the entire layout and model your own content types using the [Svedit APIs](https://github.com/michael/svedit).
 
@@ -54,15 +54,11 @@ However, likely you'll want to customize more than that. E.g. edit [Button.svelt
 
 <!--**Note:** After `git pull`, delete `data/db.sqlite3` to pick up schema changes.-->
 
-## Status
-
-This is v2, a complete rewrite using [Svedit](https://github.com/michael/svedit). It's under active development — feel free to explore locally, but hold off on production deployments for now.
-
 ## FAQs
 
 ### How is this different to using a CMS?
 
-The editing infrastructure (Svedit) becomes an integral part of your website (at runtime). This means that for your next website project, you might not need a Content Management System (CMS) anymore. As a developer, all you do is define content types (e.g. Figure) and implement components (e.g. Figure.svelte) — they are editable by default.
+The editing infrastructure (Svedit) becomes an integral part of your website (at runtime). As a developer, all you do is define content types (e.g. Figure) and implement components (e.g. Figure.svelte) — they are editable by default.
 
 ### Is mobile editing supported?
 

@@ -644,7 +644,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "The cards above are links to examples of live in-place editable websites Johannes Mutter and I have already launched using this technology. You can see that any design is possible - it’s just HTML and CSS.",
+                "text": "The cards above are links to examples of live in-place editable websites Johannes Mutter and I have already launched using this technology. You can see that any design is possible — it’s just HTML and CSS.",
                 "annotations": [
                     {
                         "start_offset": 73,
@@ -691,22 +691,28 @@ export const demo_doc = {
                 "annotations": []
             }
         },
-        "vgkGZptsehnZagrGcVweyJY": {
-            "id": "vgkGZptsehnZagrGcVweyJY",
-            "type": "link",
-            "href": "https://svedit.dev/",
-            "target": "_blank"
-        },
-        "CfvasqyKgByVWHWXcSZZsnm": {
-            "id": "CfvasqyKgByVWHWXcSZZsnm",
-            "type": "link",
-            "href": "https://svelte.dev/",
-            "target": "_blank"
-        },
-        "ermaxuxbvqxdcafghaVjZUt": {
-            "id": "ermaxuxbvqxdcafghaVjZUt",
+        "vgwPcMefbMumuCsVyAPHhUz": {
+            "id": "vgwPcMefbMumuCsVyAPHhUz",
             "type": "link",
             "href": "https://svelte.dev/docs/kit/introduction",
+            "target": "_blank"
+        },
+        "qHveqveRzQxJzxGakaarEwb": {
+            "id": "qHveqveRzQxJzxGakaarEwb",
+            "type": "link",
+            "href": "https://sqlite.org",
+            "target": "_blank"
+        },
+        "sheNSfrhuAfrBWSKfvWPYGg": {
+            "id": "sheNSfrhuAfrBWSKfvWPYGg",
+            "type": "link",
+            "href": "https://svelte.dev",
+            "target": "_blank"
+        },
+        "NZHwrDvtUBdpyDMvRJEGPcc": {
+            "id": "NZHwrDvtUBdpyDMvRJEGPcc",
+            "type": "link",
+            "href": "https://svedit.dev",
             "target": "_blank"
         },
         "PscvEBWBfhraXpPKjPPkCMC": {
@@ -714,22 +720,27 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "This site uses a new open source rich text editor I've created - Svedit. It uses Svelte and enables the editing experience you're trying here. Editable Website builds on SvelteKit to enable full websites with multiple pages and a persistent backend where only an admin can make changes.",
+                "text": "This site is powered by Svelte and Svedit — an open source rich text editor I've created. Editable Website builds on SvelteKit and SQLite to enable full websites with multiple pages and a persistent backend where only an admin can make changes.",
                 "annotations": [
                     {
-                        "start_offset": 65,
-                        "end_offset": 71,
-                        "node_id": "vgkGZptsehnZagrGcVweyJY"
+                        "start_offset": 117,
+                        "end_offset": 126,
+                        "node_id": "vgwPcMefbMumuCsVyAPHhUz"
                     },
                     {
-                        "start_offset": 81,
-                        "end_offset": 87,
-                        "node_id": "CfvasqyKgByVWHWXcSZZsnm"
+                        "start_offset": 131,
+                        "end_offset": 137,
+                        "node_id": "qHveqveRzQxJzxGakaarEwb"
                     },
                     {
-                        "start_offset": 170,
-                        "end_offset": 179,
-                        "node_id": "ermaxuxbvqxdcafghaVjZUt"
+                        "start_offset": 24,
+                        "end_offset": 30,
+                        "node_id": "sheNSfrhuAfrBWSKfvWPYGg"
+                    },
+                    {
+                        "start_offset": 35,
+                        "end_offset": 41,
+                        "node_id": "NZHwrDvtUBdpyDMvRJEGPcc"
                     }
                 ]
             }
@@ -909,7 +920,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 5,
             "content": {
-                "text": "Big thanks to Johannes Mutter for helping with concept, design, and engineering, Tom Atkins for support with positioning and copywriting, and Sonja Stojanovic for modelling and being the very first happy Editable Website user - followed by Trails, Postlmayr Design, Aufreiter Architektur, and many more.",
+                "text": "Big thanks to Johannes Mutter for helping with concept, design, and engineering, Tom Atkins for support with positioning and copywriting, and Sonja Stojanovic for modelling and being the very first happy Editable Website user — followed by Trails, Postlmayr Design, Aufreiter Architektur, and many more.",
                 "annotations": [
                     {
                         "start_offset": 14,
