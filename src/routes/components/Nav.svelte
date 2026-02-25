@@ -36,7 +36,7 @@
 
 <Node {path}>
 	<div class="{TW_LIMITER}">
-		<div class="flex items-stretch border-l border-r border-(--border-color) lg:text-lg">
+		<div class="flex items-stretch lg:text-lg">
 			<!-- Logo -->
 			<div class="flex items-center flex-1 {TW_PAGE_PADDING_X} py-4">
 				<CustomProperty path={[...path, 'logo']}>

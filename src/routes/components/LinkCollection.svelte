@@ -32,9 +32,9 @@
 {/snippet}
 
 <Node {path}>
-	<div class="border-b border-(--border-color) bg-(--background) text-(--foreground) {colorset_class}">
+	<div class="bg-(--background) text-(--foreground) {colorset_class}">
 		<div class="{TW_LIMITER} w-full">
-			<div class="border-l border-r border-(--border-color)">
+			<div>
 				{@render intro()}
 				<div class="{TW_PAGE_PADDING_X} py-8 sm:py-10 md:py-12 lg:py-14">
 					<NodeArrayProperty

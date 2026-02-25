@@ -18,7 +18,7 @@
 
 <Node {path} class="lg:text-lg">
 	<div class="{TW_LIMITER}">
-		<div class="flex flex-col items-center text-center lg:text-left lg:flex-row lg:items-start border-l border-r border-(--border-color) py-10 lg:py-16 {TW_PAGE_PADDING_X}">
+		<div class="flex flex-col items-center text-center lg:text-left lg:flex-row lg:items-start py-10 lg:py-16 {TW_PAGE_PADDING_X}">
 			<div class="flex flex-col items-center lg:items-start lg:w-1/3">
 				<CustomProperty path={[...path, 'logo']}>
 					<svelte:element

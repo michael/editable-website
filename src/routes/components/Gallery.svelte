@@ -63,9 +63,9 @@
 {/snippet}
 
 <Node {path}>
-	<div class="border-b border-(--border-color) bg-(--background) text-(--foreground) {colorset_class}">
+	<div class="bg-(--background) text-(--foreground) {colorset_class}">
 		<div class="{TW_LIMITER} w-full ">
-			<div class="border-l border-r border-(--border-color)">
+			<div>
 				{@render intro()}
 				<div class="{TW_PAGE_PADDING_X} py-2.5 sm:py-3.5 md:py-5 lg:py-7">
 					<NodeArrayProperty class="gap-5 sm:gap-7 md:gap-10 lg:gap-14 {grid_layout}" path={[...path, 'gallery_items']} />
