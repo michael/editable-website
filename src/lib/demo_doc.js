@@ -456,12 +456,12 @@ export const demo_doc = {
             "type": "gallery_item",
             "image": "UGfbRKEMbGwgcUjhpgXausS"
         },
-        "YUfmQBfsRybjdcMgwrRYVGw": {
-            "id": "YUfmQBfsRybjdcMgwrRYVGw",
-            "type": "strong"
-        },
         "cMtzexVuqMWFgEpxhYjRQFq": {
             "id": "cMtzexVuqMWFgEpxhYjRQFq",
+            "type": "strong"
+        },
+        "BKVAhVQRTzRGhGGqpfrQnsu": {
+            "id": "BKVAhVQRTzRGhGGqpfrQnsu",
             "type": "strong"
         },
         "NKtUpjrVYCGaJWYKGACXprb": {
@@ -472,14 +472,14 @@ export const demo_doc = {
                 "text": "You can even paste several images at once.\nSelect three or four from your computer and copy to the clipboard.\nNow select a vertical dashed area before or after an image above.\nPaste and all the images will be added in one go.",
                 "annotations": [
                     {
-                        "start_offset": 13,
-                        "end_offset": 41,
-                        "node_id": "YUfmQBfsRybjdcMgwrRYVGw"
-                    },
-                    {
                         "start_offset": 123,
                         "end_offset": 143,
                         "node_id": "cMtzexVuqMWFgEpxhYjRQFq"
+                    },
+                    {
+                        "start_offset": 13,
+                        "end_offset": 33,
+                        "node_id": "BKVAhVQRTzRGhGGqpfrQnsu"
                     }
                 ]
             }
@@ -644,7 +644,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "The cards above are links to examples of live in-place editable websites Johannes Mutter and I have already launched using this technology. You can see that any design is possible - it’s just HTML and CSS… ahem, Tailwind.",
+                "text": "The cards above are links to examples of live in-place editable websites Johannes Mutter and I have already launched using this technology. You can see that any design is possible - it’s just HTML and CSS.",
                 "annotations": [
                     {
                         "start_offset": 73,
@@ -703,12 +703,6 @@ export const demo_doc = {
             "href": "https://svelte.dev/",
             "target": "_blank"
         },
-        "mCnpWzerAfgKhFFRJwCkQuB": {
-            "id": "mCnpWzerAfgKhFFRJwCkQuB",
-            "type": "link",
-            "href": "https://letsken.com/michael/minimum-viable-rich-text-editor-for-svelte-5",
-            "target": "_blank"
-        },
         "ermaxuxbvqxdcafghaVjZUt": {
             "id": "ermaxuxbvqxdcafghaVjZUt",
             "type": "link",
@@ -720,7 +714,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "This site uses a new open source rich text editor I've created - Svedit. It uses Svelte and enables the editing experience you're trying here. Learn more about why I created yet another rich text editor! Editable Website builds on SvelteKit to enable full websites with multiple pages and a persistent backend where only an admin can make changes.",
+                "text": "This site uses a new open source rich text editor I've created - Svedit. It uses Svelte and enables the editing experience you're trying here. Editable Website builds on SvelteKit to enable full websites with multiple pages and a persistent backend where only an admin can make changes.",
                 "annotations": [
                     {
                         "start_offset": 65,
@@ -733,13 +727,8 @@ export const demo_doc = {
                         "node_id": "CfvasqyKgByVWHWXcSZZsnm"
                     },
                     {
-                        "start_offset": 186,
-                        "end_offset": 202,
-                        "node_id": "mCnpWzerAfgKhFFRJwCkQuB"
-                    },
-                    {
-                        "start_offset": 231,
-                        "end_offset": 240,
+                        "start_offset": 170,
+                        "end_offset": 179,
                         "node_id": "ermaxuxbvqxdcafghaVjZUt"
                     }
                 ]
