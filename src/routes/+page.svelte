@@ -12,6 +12,10 @@
 	let svedit_ref = $state();
 	let editable = $state(false);
 
+	$effect(() => {
+		document.documentElement.style.scrollBehavior = editable ? 'auto' : 'smooth';
+	});
+
 	function focus_canvas() {
 		if (svedit_ref) {
 			svedit_ref.focus_canvas();
