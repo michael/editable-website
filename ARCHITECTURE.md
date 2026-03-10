@@ -193,12 +193,14 @@ Variants wider than the original are not generated (no upscaling). The original 
 
 Different media types are handled differently:
 
-| Type | Client processing | Stored as | Variants |
+The asset id always includes the file extension. The stem (id without extension) is used to derive the variant directory.
+
+| Type | Client processing | Asset id example | Variants |
 |---|---|---|---|
-| Static images (JPEG, PNG, WebP, HEIC) | Resize to `MAX_IMAGE_WIDTH`, convert to WebP via WASM | `{id}.webp` | Yes (`{id}/w320.webp`, etc.) |
-| Animated GIFs | Passthrough | `{id}.gif` | No |
-| SVGs | Passthrough | `{id}.svg` | No |
-| Videos (MP4, WebM) | Passthrough | `{id}.mp4` / `{id}.webm` | No |
+| Static images (JPEG, PNG, WebP, HEIC) | Resize to `MAX_IMAGE_WIDTH`, convert to WebP via WASM | `a3f2e9.webp` | Yes (`a3f2e9/w320.webp`, etc.) |
+| Animated GIFs | Passthrough | `a3f2e9.gif` | No |
+| SVGs | Passthrough | `a3f2e9.svg` | No |
+| Videos (MP4, WebM) | Passthrough | `a3f2e9.mp4` / `a3f2e9.webm` | No |
 
 ### Image size constraints
 
@@ -235,11 +237,11 @@ Only widths smaller than the original are generated. The original serves as the 
 ### Upload flow
 
 1. User pastes or drops an image onto the page
-2. Client computes the content hash of the user's source file — this becomes the asset id
+2. Client computes the content hash of the user's source file and appends the stored format extension — this becomes the asset id (e.g. `AgvsfNbEMzUNEcragSpuH.webp` for images, `BxKmRtPqWnYFHdJcLuVoZ.mp4` for videos)
 3. Client checks with the server if the asset already exists (`POST /api/assets` with content hash). If it does, server returns existing metadata — skip to step 7 (no processing or upload needed)
 4. Client decodes, resizes to `MAX_IMAGE_WIDTH` if needed, converts to WebP, generates all width variants — all via WASM in a Web Worker
-5. Client uploads the original WebP blob → server stores in `data/assets/{id}.webp` and returns `{ id, width, height }`
-6. Client uploads each variant: `POST /api/assets/{id}/variants` with WebP blob + `X-Variant-Width` header → server writes to `data/assets/{id}/w{width}.webp`
+5. Client uploads the original WebP blob → server stores in `data/assets/{asset_id}` (e.g. `data/assets/AgvsfNbEMzUNEcragSpuH.webp`) and returns `{ id, width, height }`
+6. Client uploads each variant: `POST /api/assets/{asset_id}/variants` with WebP blob + `X-Variant-Width` header → server derives the stem from the asset id and writes to `data/assets/{stem}/w{width}.webp`
 7. Client updates the image node's `src`, `width`, and `height` properties
 8. Videos, animated GIFs, and SVGs skip client-side processing — uploaded as-is
 
