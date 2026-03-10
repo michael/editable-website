@@ -27,7 +27,7 @@ data/
 
 ### SQLite database
 
-The database (`data/site.sqlite3`) contains a `documents` table:
+The database (`data/site.sqlite3`) contains two tables:
 
 ```sql
 CREATE TABLE documents (
@@ -35,7 +35,15 @@ CREATE TABLE documents (
     type TEXT NOT NULL,
     data TEXT
 );
+
+CREATE TABLE asset_refs (
+    asset_id TEXT NOT NULL,
+    document_id TEXT NOT NULL,
+    PRIMARY KEY (asset_id, document_id)
+);
 ```
+
+**`documents`**
 
 - `document_id` — a persistent identifier (nanoid), e.g. `page_1`, `nav_1`
 - `type` — categorizes the document, e.g. `page`
@@ -43,9 +51,15 @@ CREATE TABLE documents (
 
 Each document's `data` column contains a self-contained Svedit document: a `document_id` and a flat `nodes` map where every node is keyed by its `id`.
 
+**`asset_refs`**
+
+Tracks which assets are referenced by which documents. The compound primary key `(asset_id, document_id)` naturally deduplicates — a document referencing the same image five times still produces one row.
+
+This table is the single source of truth for asset ownership. It enables cleanup of orphaned assets and makes cross-page copy-paste work without complications (pasted image nodes point to shared assets that already exist on disk).
+
 ### Assets
 
-Assets (images, videos) are stored as files in `data/assets/`. There is no `assets` table in the database — assets are referenced directly by path from image nodes.
+Assets (images, videos) are stored as files in `data/assets/`. Assets are referenced from image nodes via their `src` property. The `asset_refs` table tracks which documents reference which assets.
 
 ## Documents
 
@@ -215,9 +229,30 @@ Only widths smaller than the original are generated. The original serves as the 
 6. Client updates the image node's `src`, `width`, and `height` properties
 7. Videos, animated GIFs, and SVGs skip client-side processing — uploaded as-is
 
+### Asset reference tracking
+
+The `asset_refs` table is updated on every document save as part of the same save operation:
+
+1. Walk the document's nodes, collect all `src` values from image nodes → the current set of asset ids
+2. Delete all existing `asset_refs` rows for that `document_id`
+3. Insert the new set of `(asset_id, document_id)` pairs
+
+This is a full replace per document — simple, idempotent, and always consistent with the actual document content. No diffing needed.
+
+Since the server already walks the document on save to split out shared documents (nav, footer), collecting asset references happens in that same walk.
+
+Note: shared documents get their own refs. If the nav has a logo image, that ref lives under `nav_1`, not under every page that includes the nav. The asset belongs to the nav document.
+
 ### Asset cleanup
 
-When a document is saved and an image node's `src` has changed (or the node was deleted), the previously referenced asset file may become orphaned. Orphan cleanup can be handled by a periodic task that scans all documents for referenced asset paths and removes any asset directories in `data/assets/` that are no longer referenced.
+On document deletion:
+
+1. Collect the asset ids referenced by the document (from `asset_refs`)
+2. Delete all `asset_refs` rows for that `document_id`
+3. For each affected asset, check if any references remain: `SELECT 1 FROM asset_refs WHERE asset_id = ?`
+4. If zero references remain → delete the asset files from disk (original + variant directory)
+
+This can also run on save if a document previously referenced assets it no longer does — the full-replace logic in "asset reference tracking" naturally drops those rows, and the save handler can check for newly unreferenced assets.
 
 ## API endpoints
 
@@ -236,6 +271,16 @@ When a document is saved and an image node's `src` has changed (or the node was 
 Asset serving endpoints return `Cache-Control: public, max-age=31536000, immutable` — asset ids are content-addressed (or at minimum never reused), so they can be cached forever.
 
 Video and audio originals support HTTP Range requests for seeking.
+
+## No asset manager
+
+There is no asset manager UI and no "pick from existing assets" panel. Adding images always means selecting files from your computer and pasting them into the document — similar to how Google Docs works.
+
+To reuse an image that's already on the site, navigate to the page that has it, copy the node (e.g. a gallery item or figure), and paste it into the target page. The pasted image node points to the same shared asset on disk — no re-upload needed. This keeps the interface simple and avoids building a separate media library.
+
+## Admin interface
+
+The only admin interface is a **site map** — a listing of all pages plus drafts (pages that are not linked anywhere yet). There is no need for a media library, asset browser, or content management dashboard beyond this.
 
 ## Authentication
 
