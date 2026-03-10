@@ -18,7 +18,7 @@
 </script>
 
 {#snippet content()}
-	<NodeArrayProperty class="gap-y-5 md:gap-y-8 {heading_spacing}" path={[...path, 'content']} />
+	<NodeArrayProperty class="flex flex-col gap-5 md:gap-8 {heading_spacing}" path={[...path, 'content']} />
 {/snippet}
 
 <!-- Layout 1: Left-aligned -->
