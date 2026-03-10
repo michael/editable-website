@@ -1,5 +1,7 @@
 # Architecture
 
+> **Work in progress** — this document is actively being developed and may change significantly.
+
 This document describes the backend architecture for Editable Website v2.
 
 ## Overview
