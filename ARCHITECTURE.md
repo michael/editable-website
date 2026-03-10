@@ -1,6 +1,6 @@
 # Architecture
 
-> **Work in progress** — this document is actively being developed and may change significantly.
+> **Work in progress** — this document is actively being developed and may change significantly. It was written with AI assistance and iterated on to serve as a specification for implementation.
 
 This document describes the backend architecture for Editable Website v2.
 
