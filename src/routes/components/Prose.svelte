@@ -18,7 +18,7 @@
 </script>
 
 {#snippet content()}
-	<NodeArrayProperty class="space-y-5 md:space-y-8 {heading_spacing}" path={[...path, 'content']} />
+	<NodeArrayProperty class="gap-y-5 md:gap-y-8 {heading_spacing}" path={[...path, 'content']} />
 {/snippet}
 
 <!-- Layout 1: Left-aligned -->

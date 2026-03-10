@@ -20,14 +20,14 @@
 {#snippet intro()}
 	{@const intro_padding = has_intro ? 'pt-10 sm:pt-14 md:pt-16 lg:pt-20 pb-2 sm:pb-3 md:pb-5 lg:pb-7' : 'pt-10 sm:pt-14 md:pt-16 lg:pt-20'}
 	<div class="{TW_PAGE_PADDING_X} max-w-4xl lg:text-lg {intro_padding}">
-		<NodeArrayProperty class="ew-intro space-y-5 md:space-y-8 {heading_spacing}" path={[...path, 'intro']} />
+		<NodeArrayProperty class="ew-intro gap-y-5 md:gap-y-8 {heading_spacing}" path={[...path, 'intro']} />
 	</div>
 {/snippet}
 
 {#snippet outro()}
 	{@const outro_padding = has_outro ? 'pt-2 sm:pt-3 md:pt-4 lg:pt-6 pb-20 sm:pb-24 md:pb-28 lg:pb-32' : 'pb-20 sm:pb-24 md:pb-28 lg:pb-32'}
 	<div class="{TW_PAGE_PADDING_X} max-w-4xl lg:text-lg {outro_padding}">
-		<NodeArrayProperty class="ew-intro space-y-5 md:space-y-8 {heading_spacing}" path={[...path, 'outro']} />
+		<NodeArrayProperty class="ew-intro gap-y-5 md:gap-y-8 {heading_spacing}" path={[...path, 'outro']} />
 	</div>
 {/snippet}
 
