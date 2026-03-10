@@ -120,7 +120,7 @@ Instead, image nodes reference assets directly via their `src` property:
 {
     "id": "feature_1_image",
     "type": "image",
-    "src": "/assets/AgvsfNbEMzUNEcragSpuH.webp",
+    "src": "AgvsfNbEMzUNEcragSpuH.webp",
     "width": 1600,
     "height": 900,
     "alt": "Feature image",
@@ -131,7 +131,9 @@ Instead, image nodes reference assets directly via their `src` property:
 }
 ```
 
-The `src` includes the file extension (e.g. `.webp`, `.mp4`, `.gif`, `.svg`), so the serving layer can resolve the file directly without a database lookup.
+The `src` stores only the **asset id** (e.g. `AgvsfNbEMzUNEcragSpuH.webp`), not a full URL path. The serving location is determined by the `PUBLIC_ASSET_ORIGIN` environment variable (defaults to `/assets`). This keeps the document data location-agnostic — switching to a CDN or S3 bucket is a config change, not a data migration.
+
+The asset id includes the file extension (e.g. `.webp`, `.mp4`, `.gif`, `.svg`), so the serving layer can resolve the file directly without a database lookup.
 
 This keeps things simple. An image node that appears on one page is local to that page's document. If the same visual asset needs to appear on multiple pages, each page has its own image node pointing to the same asset path. The file on disk is shared, but the node metadata (alt text, focal point, scale, object fit) is per-usage.
 
@@ -160,7 +162,16 @@ data/assets/
 └── ...
 ```
 
-The image node's `src` stores the full asset path including extension (e.g. `/assets/AgvsfNbEMzUNEcragSpuH.webp`). The `width` and `height` of the original are stored on the image node. Variant URLs are derived by stripping the extension and appending `/w{width}.webp` — no database lookup needed for `srcset`:
+The image node's `src` stores the asset id (e.g. `AgvsfNbEMzUNEcragSpuH.webp`). The `width` and `height` of the original are stored on the image node. Full URLs are constructed at render time by prepending `PUBLIC_ASSET_ORIGIN`. Variant URLs are derived by stripping the extension from the asset id to get the stem, then appending `/w{width}.webp` — no database lookup needed for `srcset`:
+
+```
+ASSET_ORIGIN = /assets    (default, or e.g. https://cdn.example.com/assets)
+asset id     = AgvsfNbEMzUNEcragSpuH.webp
+stem         = AgvsfNbEMzUNEcragSpuH
+
+original URL = {ASSET_ORIGIN}/AgvsfNbEMzUNEcragSpuH.webp
+variant URL  = {ASSET_ORIGIN}/AgvsfNbEMzUNEcragSpuH/w320.webp
+```
 
 ```html
 <img
@@ -264,12 +275,14 @@ This can also run on save if a document previously referenced assets it no longe
 
 ### Assets
 
-- `POST /api/assets` — upload an original image, returns `{ id, width, height }`
-- `POST /api/assets/:id/variants` — upload a pre-generated width variant
-- `GET /assets/:id.{ext}` — serve the original (static file serving from `data/assets/`)
-- `GET /assets/:id/w:width.webp` — serve a width variant (static file serving from `data/assets/`)
+- `POST /api/assets` — upload an original, returns `{ id, width, height }` (where `id` is the asset id, e.g. `AgvsfNbEMzUNEcragSpuH.webp`)
+- `POST /api/assets/:asset_id/variants` — upload a pre-generated width variant
+- `GET {ASSET_ORIGIN}/:asset_id` — serve the original (e.g. `/assets/AgvsfNbEMzUNEcragSpuH.webp`)
+- `GET {ASSET_ORIGIN}/:stem/w:width.webp` — serve a width variant (e.g. `/assets/AgvsfNbEMzUNEcragSpuH/w320.webp`)
 
-Asset serving endpoints return `Cache-Control: public, max-age=31536000, immutable` — asset ids are content-addressed (or at minimum never reused), so they can be cached forever.
+`ASSET_ORIGIN` defaults to `/assets` (served from `data/assets/` on disk). Can be configured to point to a CDN or S3 bucket.
+
+Asset serving endpoints return `Cache-Control: public, max-age=31536000, immutable` — asset ids are content-addressed, so they can be cached forever.
 
 Video and audio originals support HTTP Range requests for seeking.
 
