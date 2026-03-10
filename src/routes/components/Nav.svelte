@@ -114,7 +114,7 @@
 
 <style>
 	:global(.nav-items) {
-		--row: 0;
+		--row: 1;
 	}
 
 	:global(.nav-items > *) {
