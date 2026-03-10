@@ -137,11 +137,11 @@ This keeps things simple. An image node that appears on one page is local to tha
 
 ### Asset ids and deduplication
 
-The asset id is the combination of a **content hash** (e.g. SHA-256) of the original file **plus the file extension** — e.g. `AgvsfNbEMzUNEcragSpuH.webp` or `BxKmRtPqWnYFHdJcLuVoZ.mp4`. The extension is determined by the stored format: static images are always converted to WebP (so the extension is `.webp`), while videos, animated GIFs, and SVGs keep their original extension (`.mp4`, `.webm`, `.gif`, `.svg`).
+The asset id is the combination of a **content hash** (e.g. SHA-256) of the user's source file **plus the file extension** of the stored format — e.g. `AgvsfNbEMzUNEcragSpuH.webp` or `BxKmRtPqWnYFHdJcLuVoZ.mp4`. The hash is always computed on the **untouched source file** the user provides (e.g. the original PNG or JPEG), not on the processed WebP output. This ensures the same source file always produces the same id, regardless of encoder version, quality settings, or other processing parameters. The extension is determined by the stored format: static images are always converted to WebP (so the extension is `.webp`), while videos, animated GIFs, and SVGs keep their original extension (`.mp4`, `.webm`, `.gif`, `.svg`).
 
 Because the id is content-derived, inserting the same file twice produces the same id — the upload is skipped and the existing asset is reused. No duplicate files on disk, no wasted storage.
 
-The client computes the hash before uploading. If the server already has a file with that id, it returns the existing asset metadata immediately without accepting the upload body.
+The client computes the hash from the source file before any processing begins. If the server already has a file with that id, it returns the existing asset metadata immediately without accepting the upload body.
 
 ### Asset path convention
 
@@ -222,12 +222,13 @@ Only widths smaller than the original are generated. The original serves as the 
 ### Upload flow
 
 1. User pastes or drops an image onto the page
-2. Client decodes, resizes to `MAX_IMAGE_WIDTH` if needed, converts to WebP, generates all width variants — all via WASM in a Web Worker
-3. Client computes the content hash of the original WebP blob — this becomes the asset id
-4. Client uploads the original: `POST /api/assets` with WebP blob + content hash → if the asset already exists, server returns existing metadata (dedup); otherwise stores in `data/assets/{id}.webp` and returns `{ id, width, height }`
-5. Client uploads each variant: `POST /api/assets/{id}/variants` with WebP blob + `X-Variant-Width` header → server writes to `data/assets/{id}/w{width}.webp`
-6. Client updates the image node's `src`, `width`, and `height` properties
-7. Videos, animated GIFs, and SVGs skip client-side processing — uploaded as-is
+2. Client computes the content hash of the user's source file — this becomes the asset id
+3. Client checks with the server if the asset already exists (`POST /api/assets` with content hash). If it does, server returns existing metadata — skip to step 7 (no processing or upload needed)
+4. Client decodes, resizes to `MAX_IMAGE_WIDTH` if needed, converts to WebP, generates all width variants — all via WASM in a Web Worker
+5. Client uploads the original WebP blob → server stores in `data/assets/{id}.webp` and returns `{ id, width, height }`
+6. Client uploads each variant: `POST /api/assets/{id}/variants` with WebP blob + `X-Variant-Width` header → server writes to `data/assets/{id}/w{width}.webp`
+7. Client updates the image node's `src`, `width`, and `height` properties
+8. Videos, animated GIFs, and SVGs skip client-side processing — uploaded as-is
 
 ### Asset reference tracking
 
