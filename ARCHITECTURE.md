@@ -14,16 +14,14 @@ All persistent data lives in the `data/` directory:
 data/
 ├── site.sqlite3                              # all documents
 └── assets/
+    ├── AgvsfNbEMzUNEcragSpuH.webp            # stored original (≤ MAX_IMAGE_WIDTH)
     ├── AgvsfNbEMzUNEcragSpuH/
-    │   ├── original.webp                     # stored original (≤ MAX_IMAGE_WIDTH)
     │   ├── w320.webp                         # variant
     │   ├── w640.webp
     │   ├── w1024.webp
     │   └── w1536.webp
-    ├── BxKmRtPqWnYFHdJcLuVoZ/
-    │   └── original.mp4                      # video passthrough
-    ├── CyLnStQuXoZAGeBfKwMrJ/
-    │   └── original.gif                      # animated gif passthrough
+    ├── BxKmRtPqWnYFHdJcLuVoZ.mp4            # video passthrough
+    ├── CyLnStQuXoZAGeBfKwMrJ.gif            # animated gif passthrough
     └── ...
 ```
 
@@ -108,7 +106,7 @@ Instead, image nodes reference assets directly via their `src` property:
 {
     "id": "feature_1_image",
     "type": "image",
-    "src": "/assets/AgvsfNbEMzUNEcragSpuH",
+    "src": "/assets/AgvsfNbEMzUNEcragSpuH.webp",
     "width": 1600,
     "height": 900,
     "alt": "Feature image",
@@ -119,31 +117,37 @@ Instead, image nodes reference assets directly via their `src` property:
 }
 ```
 
-This keeps things simple. An image node that appears on one page is local to that page's document. If the same visual asset needs to appear on multiple pages, each page has its own image node pointing to the same asset id. The file on disk is shared, but the node metadata (alt text, focal point, scale, object fit) is per-usage.
+The `src` includes the file extension (e.g. `.webp`, `.mp4`, `.gif`, `.svg`), so the serving layer can resolve the file directly without a database lookup.
+
+This keeps things simple. An image node that appears on one page is local to that page's document. If the same visual asset needs to appear on multiple pages, each page has its own image node pointing to the same asset path. The file on disk is shared, but the node metadata (alt text, focal point, scale, object fit) is per-usage.
 
 ### Asset path convention
 
-Each asset gets a nanoid at upload time. All files for that asset live in a directory:
+Each asset gets a nanoid at upload time. The original is stored with its extension, and width variants (images only) live in a subdirectory:
 
 ```
-data/assets/{id}/
-├── original.{ext}       # the stored original
-├── w320.webp            # variant (images only)
-├── w640.webp
-├── w1024.webp
-└── w1536.webp
+data/assets/
+├── AgvsfNbEMzUNEcragSpuH.webp              # stored original
+├── AgvsfNbEMzUNEcragSpuH/
+│   ├── w320.webp                            # variant
+│   ├── w640.webp
+│   ├── w1024.webp
+│   └── w1536.webp
+├── BxKmRtPqWnYFHdJcLuVoZ.mp4              # video passthrough
+├── CyLnStQuXoZAGeBfKwMrJ.gif              # animated gif passthrough
+└── ...
 ```
 
-The image node's `src` stores the asset id path (e.g. `/assets/AgvsfNbEMzUNEcragSpuH`). The `width` and `height` of the original are stored on the image node. Variant URLs are derived from a global configuration and the original dimensions — no database lookup needed for `srcset`:
+The image node's `src` stores the full asset path including extension (e.g. `/assets/AgvsfNbEMzUNEcragSpuH.webp`). The `width` and `height` of the original are stored on the image node. Variant URLs are derived by stripping the extension and appending `/w{width}.webp` — no database lookup needed for `srcset`:
 
 ```html
 <img
-    src="/assets/AgvsfNbEMzUNEcragSpuH/original.webp"
+    src="/assets/AgvsfNbEMzUNEcragSpuH.webp"
     srcset="
         /assets/AgvsfNbEMzUNEcragSpuH/w320.webp 320w,
         /assets/AgvsfNbEMzUNEcragSpuH/w640.webp 640w,
         /assets/AgvsfNbEMzUNEcragSpuH/w1024.webp 1024w,
-        /assets/AgvsfNbEMzUNEcragSpuH/original.webp 1600w
+        /assets/AgvsfNbEMzUNEcragSpuH.webp 1600w
     "
 />
 ```
@@ -156,10 +160,10 @@ Different media types are handled differently:
 
 | Type | Client processing | Stored as | Variants |
 |---|---|---|---|
-| Static images (JPEG, PNG, WebP, HEIC) | Resize to `MAX_IMAGE_WIDTH`, convert to WebP via WASM | `original.webp` | Yes (`w320.webp`, `w640.webp`, etc.) |
-| Animated GIFs | Passthrough | `original.gif` | No |
-| SVGs | Passthrough | `original.svg` | No |
-| Videos (MP4, WebM) | Passthrough | `original.mp4` / `original.webm` | No |
+| Static images (JPEG, PNG, WebP, HEIC) | Resize to `MAX_IMAGE_WIDTH`, convert to WebP via WASM | `{id}.webp` | Yes (`{id}/w320.webp`, etc.) |
+| Animated GIFs | Passthrough | `{id}.gif` | No |
+| SVGs | Passthrough | `{id}.svg` | No |
+| Videos (MP4, WebM) | Passthrough | `{id}.mp4` / `{id}.webm` | No |
 
 ### Image size constraints
 
@@ -197,7 +201,7 @@ Only widths smaller than the original are generated. The original serves as the 
 
 1. User pastes or drops an image onto the page
 2. Client decodes, resizes to `MAX_IMAGE_WIDTH` if needed, converts to WebP, generates all width variants — all via WASM in a Web Worker
-3. Client uploads the original: `POST /api/assets` with WebP blob → server stores in `data/assets/{id}/original.webp`, returns `{ id, width, height }`
+3. Client uploads the original: `POST /api/assets` with WebP blob → server stores in `data/assets/{id}.webp`, returns `{ id, width, height }`
 4. Client uploads each variant: `POST /api/assets/{id}/variants` with WebP blob + `X-Variant-Width` header → server writes to `data/assets/{id}/w{width}.webp`
 5. Client updates the image node's `src`, `width`, and `height` properties
 6. Videos, animated GIFs, and SVGs skip client-side processing — uploaded as-is
@@ -217,7 +221,7 @@ When a document is saved and an image node's `src` has changed (or the node was 
 
 - `POST /api/assets` — upload an original image, returns `{ id, width, height }`
 - `POST /api/assets/:id/variants` — upload a pre-generated width variant
-- `GET /assets/:id/original.{ext}` — serve the original (static file serving from `data/assets/`)
+- `GET /assets/:id.{ext}` — serve the original (static file serving from `data/assets/`)
 - `GET /assets/:id/w:width.webp` — serve a width variant (static file serving from `data/assets/`)
 
 Asset serving endpoints return `Cache-Control: public, max-age=31536000, immutable` — asset ids are content-addressed (or at minimum never reused), so they can be cached forever.
