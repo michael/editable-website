@@ -32,6 +32,9 @@
 </Node>
 
 <style>
+	.page {
+		--row: 0;
+	}
   :global {
     .body-node-array {
       display: grid;
