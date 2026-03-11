@@ -27,8 +27,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Styling:**
 - Use Tailwind CSS classes whenever possible
-- Minimize custom CSS - only use it for things Tailwind can't handle (e.g., CSS custom properties like `var(--editing-stroke-color)`)
-- Use Tailwind's arbitrary value syntax for custom properties: `text-(--editing-stroke-color)`, `border-(--editing-stroke-color)`
+- Minimize custom CSS - only use it for things Tailwind can't handle (e.g., CSS custom properties like `var(--svedit-editing-stroke)`)
+- Use Tailwind's arbitrary value syntax for custom properties: `text-(--svedit-editing-stroke)`, `border-(--svedit-editing-stroke)`
 - Do not use rounded corners (keep elements rectangular)
 
 **What to NOT change (keep camelCase):**
