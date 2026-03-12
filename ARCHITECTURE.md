@@ -122,7 +122,7 @@ Instead, image nodes reference assets directly via their `src` property:
 {
     "id": "feature_1_image",
     "type": "image",
-    "src": "AgvsfNbEMzUNEcragSpuH.webp",
+    "src": "c4b519da4c0a6512b5d9519aac0d9df7fab9152a6df109515456ada4702fabdb.webp",
     "width": 1600,
     "height": 900,
     "alt": "Feature image",
@@ -133,7 +133,12 @@ Instead, image nodes reference assets directly via their `src` property:
 }
 ```
 
-The `src` stores only the **asset id** (e.g. `AgvsfNbEMzUNEcragSpuH.webp`), not a full URL path. The serving location is determined by the `PUBLIC_ASSET_ORIGIN` environment variable (defaults to `/assets`). This keeps the document data location-agnostic — switching to a CDN or S3 bucket is a config change, not a data migration.
+The `src` field has two modes:
+
+- **During editing (unsaved):** a blob URL (e.g. `blob:http://localhost:5173/a1b2c3d4`). The image displays immediately using the browser's in-memory blob. This is a temporary reference that only lives for the duration of the editing session.
+- **After save (persisted):** an asset id (e.g. `c4b519da...fabdb.webp`). The blob URLs are replaced with asset ids during the save flow, after all assets have been successfully uploaded.
+
+`Image.svelte` checks the `src` value: if it starts with `blob:`, use it directly as the image source. Otherwise, prefix it with `PUBLIC_ASSET_ORIGIN` (defaults to `/assets`) to construct the full URL. This keeps the document data location-agnostic — switching to a CDN or S3 bucket is a config change, not a data migration.
 
 The asset id includes the file extension (e.g. `.webp`, `.mp4`, `.gif`, `.svg`), so the serving layer can resolve the file directly without a database lookup.
 
@@ -240,24 +245,46 @@ For each image the user pastes or drops:
 2. **Resize original** — if width > `MAX_IMAGE_WIDTH`, resize down preserving aspect ratio
 3. **Encode original** — encode as WebP (quality 80)
 4. **Generate variants** — for each configured width smaller than the original: resize → encode as WebP
-5. **Upload** — send original + all variants to the server sequentially (one at a time to keep memory low)
 
-Images are processed one at a time. After generating all variants for one image, raw pixel data is released. Only the encoded WebP blobs are kept in memory until uploaded.
+Images are processed one at a time. After generating all variants for one image, raw pixel data is released. Only the encoded WebP blobs are kept in memory until the next save.
 
 ### Variant widths
 
 See [Image size constraints](#image-size-constraints). The variant widths are fixed and must not be changed. The original always serves as the largest size in `srcset`.
 
-### Upload flow
+### Paste flow
 
-1. User pastes or drops an image onto the page
-2. Client computes the content hash of the user's source file and appends the stored format extension — this becomes the asset id (e.g. `AgvsfNbEMzUNEcragSpuH.webp` for images, `BxKmRtPqWnYFHdJcLuVoZ.mp4` for videos)
-3. Client checks with the server if the asset already exists (`POST /api/assets` with content hash). If it does, server returns existing metadata — skip to step 7 (no processing or upload needed)
-4. Client decodes, resizes to `MAX_IMAGE_WIDTH` if needed, converts to WebP, generates all width variants — all via WASM in a Web Worker
-5. Client uploads the original WebP blob → server stores in `data/assets/{asset_id}` (e.g. `data/assets/AgvsfNbEMzUNEcragSpuH.webp`) and returns `{ id, width, height }`
-6. Client uploads each variant: `POST /api/assets/{asset_id}/variants` with WebP blob + `X-Variant-Width` header → server derives the stem from the asset id and writes to `data/assets/{stem}/w{width}.webp`
-7. Client updates the image node's `src`, `width`, and `height` properties
-8. Videos, animated GIFs, and SVGs skip client-side processing — uploaded as-is
+When the user pastes or drops files into a Svedit document:
+
+1. `handle_image_paste` creates image nodes immediately, with `src` set to a blob URL of the unprocessed source file. Images display instantly — no waiting for processing.
+2. The client computes the SHA-256 hash of the source file. This hash (plus extension) will become the asset id on save.
+3. Background processing starts: decode → resize → encode original as WebP → generate all width variants. Processing is keyed by the blob URL that sits in `image.src`.
+4. The user can continue editing, paste more images, or rearrange content. Background processing does not block the editor.
+5. Videos, animated GIFs, and SVGs skip client-side processing — they are stored as-is.
+
+### Save flow
+
+When the user saves, an all-or-nothing upload+save operation runs:
+
+1. **Wait for processing.** If any pasted images are still being processed in the background, the save waits for them to finish before proceeding. The user sees a progress indication — the save just takes a bit longer.
+
+2. **Upload assets.** For each image node whose `src` is a blob URL (i.e. not yet uploaded):
+
+   a. **Check for duplicates.** Send the asset id (content hash + extension) to the server. If the asset already exists (original + all variants on disk), skip uploading — go to step 2d.
+
+   b. **Upload original.** Stream the original WebP blob to the server. Server stores it at `data/assets/{asset_id}`.
+
+   c. **Upload variants.** Upload each variant sequentially: `POST /api/assets/{asset_id}/variants` with WebP blob + `X-Variant-Width` header. Server stores at `data/assets/{stem}/w{width}.webp`. **If any variant upload fails, the server deletes the original and all variants for that asset id, and the save is aborted.** A partially uploaded asset (missing variants) is not acceptable — it would produce a broken `srcset`.
+
+   d. **Record the mapping.** Map the blob URL → asset id so `src` values can be replaced in step 3.
+
+   If any asset fails to upload entirely (i.e. the original upload fails, or variant upload fails and the server cleans up), the save is **aborted with an error message**. Assets that were successfully uploaded in earlier iterations are left on the server — they are valid, complete assets. On the next save attempt, deduplication will skip them.
+
+3. **Replace blob URLs.** Walk all image nodes in the document. For every `src` that is a blob URL, replace it with the corresponding asset id. Also update `width` and `height` to the processed dimensions (which may differ from the source if the image was resized down to `MAX_IMAGE_WIDTH`).
+
+4. **Save the document.** Upload the document JSON to the server. The server splits shared documents (nav, footer), updates `asset_refs`, and writes to SQLite.
+
+**Atomicity boundary:** the unit of atomicity is the individual asset (original + all its variants). Either a complete asset is on the server, or nothing is. The document is only saved after all assets are successfully uploaded. If the save fails partway through asset uploads, the user sees an error and can retry. Orphaned assets (uploaded but not yet referenced by a saved document) are harmless and will be cleaned up by the normal asset cleanup process.
 
 ### Asset reference tracking
 
@@ -289,14 +316,16 @@ This can also run on save if a document previously referenced assets it no longe
 ### Documents
 
 - `GET /api/documents/:id` — load a document (with shared documents stitched in)
-- `PUT /api/documents/:id` — save a document (server splits shared nodes back out)
+- `PUT /api/documents/:id` — save a document (server splits shared nodes back out, updates `asset_refs`)
 
 ### Assets
 
-- `POST /api/assets` — upload an original, returns `{ id, width, height }` (where `id` is the asset id, e.g. `AgvsfNbEMzUNEcragSpuH.webp`)
-- `POST /api/assets/:asset_id/variants` — upload a pre-generated width variant
-- `GET {ASSET_ORIGIN}/:asset_id` — serve the original (e.g. `/assets/AgvsfNbEMzUNEcragSpuH.webp`)
-- `GET {ASSET_ORIGIN}/:stem/w:width.webp` — serve a width variant (e.g. `/assets/AgvsfNbEMzUNEcragSpuH/w320.webp`)
+- `HEAD /api/assets/:asset_id` — check if an asset exists (original + all expected variants). Returns `200` if complete, `404` if not. Used by the client to skip uploading duplicates.
+- `POST /api/assets` — upload an original. Headers: `X-Content-Hash` (SHA-256 hex), `Content-Type`. Returns `{ id, width, height }`.
+- `POST /api/assets/:asset_id/variants` — upload a pre-generated width variant. Headers: `X-Variant-Width`. Body: WebP blob.
+- `DELETE /api/assets/:asset_id` — delete an asset and all its variants from disk. Used by the client to clean up after a failed variant upload.
+- `GET {ASSET_ORIGIN}/:asset_id` — serve the original
+- `GET {ASSET_ORIGIN}/:stem/w:width.webp` — serve a width variant
 
 `ASSET_ORIGIN` defaults to `/assets` (served from `data/assets/` on disk). Can be configured to point to a CDN or S3 bucket.
 
