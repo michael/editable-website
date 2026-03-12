@@ -210,9 +210,23 @@ The asset id always includes the file extension. The stem (id without extension)
 
 ### Image size constraints
 
-Images are constrained by `MAX_IMAGE_WIDTH` (e.g. 4000px). The client resizes any image wider than this limit before upload.
+Variant widths are fixed:
 
-We constrain width only, not height, because width is what matters for responsive images — `srcset` widths map to viewport widths. An unusually tall image (e.g. 2000×8000 infographic) is a legitimate use case and the file size is naturally bounded by the width constraint combined with WebP compression. Extreme aspect ratios are the user's choice.
+```
+VARIANT_WIDTHS = [320, 640, 1024, 1536, 2048, 3072, 4096]
+```
+
+`MAX_IMAGE_WIDTH` is the largest value in this list (4096). These values never change.
+
+**Rules:**
+
+1. If the source image is wider than `MAX_IMAGE_WIDTH`, resize it down to `MAX_IMAGE_WIDTH` before storing.
+2. Store the original at its actual width (e.g. a 2500px image is stored at 2500px, not rounded to a standard width).
+3. Generate variants for every width in `VARIANT_WIDTHS` that is **strictly smaller** than the stored original's width. Never upscale.
+
+**Example:** user uploads a 2500px wide image → original stored at 2500px, variants generated at 320, 640, 1024, 1536, 2048. Widths 3072 and 4096 are skipped.
+
+Width only is constrained, not height. `srcset` widths map to viewport widths, so height is irrelevant for responsive image selection. Tall images (e.g. 2000×8000 infographics) are a legitimate use case — file size is bounded by the width constraint combined with WebP compression.
 
 ### Client-side image processing
 
@@ -232,13 +246,7 @@ Images are processed one at a time. After generating all variants for one image,
 
 ### Variant widths
 
-The set of variant widths is defined by a global configuration:
-
-```
-IMAGE_SIZES = [320, 640, 1024, 1536, 2048]
-```
-
-Only widths smaller than the original are generated. The original serves as the largest size.
+See [Image size constraints](#image-size-constraints). The variant widths are fixed and must not be changed. The original always serves as the largest size in `srcset`.
 
 ### Upload flow
 
