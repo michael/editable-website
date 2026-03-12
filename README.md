@@ -70,9 +70,7 @@ Likely, I agree. The pure keyboard-shortcut-driven approach may be temporary. I 
 
 ### Where is the data stored?
 
-Editable Website stores all content, including source images in an SQLite database. So to backup your site, all you have to do is make regular copies of your site.sqlite3 file.
-
-That said, the current codebase doesn't have the backend implemented yet, as I'm rewriting those parts as well.
+Editable Website stores all content in an SQLite database and assets (images, videos) on the file system. To backup your site, make regular copies of your `data/` directory, which contains both the `db.sqlite3` file and the `images/` folder.
 
 ### How about AI?
 
