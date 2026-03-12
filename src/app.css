@@ -6,7 +6,7 @@
 	src: url('/fonts/InterVariable.woff2') format('woff2');
 	font-weight: 100 900;
 	font-style: normal;
-	font-display: block;
+	font-display: swap;
 }
 
 @font-face {
@@ -14,7 +14,7 @@
 	src: url('/fonts/InterVariable-Italic.woff2') format('woff2');
 	font-weight: 100 900;
 	font-style: italic;
-	font-display: block;
+	font-display: swap;
 }
 
 @font-face {
@@ -22,7 +22,7 @@
 	src: url('/fonts/Libertinos-Serif-Display.woff2') format('woff2');
 	font-weight: 400;
 	font-style: normal;
-	font-display: block;
+	font-display: swap;
 }
 
 
