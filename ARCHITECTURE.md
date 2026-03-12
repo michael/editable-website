@@ -16,14 +16,14 @@ All persistent data lives in the `data/` directory:
 data/
 ├── site.sqlite3                              # all documents
 └── assets/
-    ├── AgvsfNbEMzUNEcragSpuH.webp            # stored original (≤ MAX_IMAGE_WIDTH)
-    ├── AgvsfNbEMzUNEcragSpuH/
+    ├── c4b519da...fabdb.webp                 # stored original (≤ MAX_IMAGE_WIDTH)
+    ├── c4b519da...fabdb/
     │   ├── w320.webp                         # variant
     │   ├── w640.webp
     │   ├── w1024.webp
     │   └── w1536.webp
-    ├── BxKmRtPqWnYFHdJcLuVoZ.mp4            # video passthrough
-    ├── CyLnStQuXoZAGeBfKwMrJ.gif            # animated gif passthrough
+    ├── e7a3f1bc...abcd.mp4                   # video passthrough
+    ├── f9c2d4ae...cdef.gif                   # animated gif passthrough
     └── ...
 ```
 
