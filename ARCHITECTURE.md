@@ -29,7 +29,7 @@ data/
 
 ### SQLite database
 
-The database (`data/site.sqlite3`) contains two tables:
+The database (`data/site.sqlite3`) contains three tables:
 
 ```sql
 CREATE TABLE documents (
@@ -42,6 +42,11 @@ CREATE TABLE asset_refs (
     asset_id TEXT NOT NULL,
     document_id TEXT NOT NULL,
     PRIMARY KEY (asset_id, document_id)
+);
+
+CREATE TABLE sessions (
+    session_id TEXT NOT NULL PRIMARY KEY,
+    expires INTEGER NOT NULL
 );
 ```
 
@@ -58,6 +63,13 @@ Each document's `data` column contains a self-contained Svedit document: a `docu
 Tracks which assets are referenced by which documents. The compound primary key `(asset_id, document_id)` naturally deduplicates — a document referencing the same image five times still produces one row.
 
 This table is the single source of truth for asset ownership. It enables cleanup of orphaned assets and makes cross-page copy-paste work without complications (pasted image nodes point to shared assets that already exist on disk).
+
+**`sessions`**
+
+- `session_id` — a cryptographically secure UUID (generated via `crypto.randomUUID()`)
+- `expires` — Unix timestamp (seconds) when the session expires
+
+Expired sessions are deleted on lookup. No background cleanup job needed.
 
 ### Assets
 
@@ -260,7 +272,7 @@ When the user pastes or drops files into a Svedit document:
 2. The client computes the SHA-256 hash of the source file. This hash (plus extension) will become the asset id on save.
 3. Background processing starts: decode → resize → encode original as WebP → generate all width variants. Processing is keyed by the blob URL that sits in `image.src`.
 4. The user can continue editing, paste more images, or rearrange content. Background processing does not block the editor.
-5. Videos, animated GIFs, and SVGs skip client-side processing — they are stored as-is.
+5. Videos, animated GIFs, and SVGs skip client-side processing — they'll be used and stored as-is'.
 
 ### Save flow
 
@@ -345,4 +357,42 @@ The only admin interface is a **site map** — a listing of all pages plus draft
 
 ## Authentication
 
-Authentication is handled in `hooks.server.js`. Currently stubbed with `event.locals.user = 'Admin'`. Write operations (saving documents, uploading assets) require authentication. Read operations are public.
+Editable Website is a **single-user application**. There is one admin account. No user registration, no roles, no multi-tenancy.
+
+### Admin password
+
+The admin password is set via the `ADMIN_PASSWORD` environment variable. There is no default — the app refuses to start if `ADMIN_PASSWORD` is not set.
+
+### Login flow
+
+1. User navigates to `/login` and enters the password.
+2. Client sends `POST /api/login` with `{ password }`.
+3. Server compares the password against `ADMIN_PASSWORD`. If it matches:
+   - Generate a session id via `crypto.randomUUID()`
+   - Insert a row into the `sessions` table with an expiry (e.g. 30 days from now)
+   - Set a `session_id` cookie (`HttpOnly`, `SameSite=Strict`, `Secure` in production, `Path=/`)
+   - Return `200`
+4. If the password does not match, return `401`.
+
+### Session validation
+
+In `hooks.server.js`, on every request:
+
+1. Read the `session_id` cookie.
+2. Look up the session in the `sessions` table.
+3. If found and not expired: set `event.locals.user = 'Admin'`.
+4. If not found or expired: delete the cookie, `event.locals.user = null`. Delete the expired row if it exists.
+
+### Logout
+
+`POST /api/logout` deletes the session row from the database and clears the cookie.
+
+### Authorization
+
+- **Read operations are public.** Anyone can view pages and assets.
+- **Write operations require authentication.** Saving documents, uploading assets, and deleting assets check `event.locals.user`. If not authenticated, return `401`.
+
+### API endpoints
+
+- `POST /api/login` — authenticate with `{ password }`, sets session cookie
+- `POST /api/logout` — clears session cookie, deletes session row
