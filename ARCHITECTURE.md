@@ -124,11 +124,11 @@ This means changes to the nav or footer made on any page are persisted to the sh
 
 ## Assets
 
-### No asset nodes
+### Media node types
 
-Assets are **not** tracked as separate entities in the database. There is no `assets` table and no dedicated `asset` node type in the schema.
+There are three media node types: `image`, `video`, and `audio`. Each has only the properties that apply to it.
 
-Instead, image nodes reference assets directly via their `src` property:
+**`image`** — static images (stored as WebP), animated GIFs, SVGs:
 
 ```json
 {
@@ -145,16 +145,68 @@ Instead, image nodes reference assets directly via their `src` property:
 }
 ```
 
+**`video`** — MP4, WebM:
+
+```json
+{
+    "id": "hero_video",
+    "type": "video",
+    "src": "e7a3f1bc...abcd.mp4",
+    "width": 1920,
+    "height": 1080,
+    "alt": "Product demo",
+    "scale": 1.0,
+    "focal_point_x": 0.5,
+    "focal_point_y": 0.5,
+    "object_fit": "cover",
+    "duration": 42.5
+}
+```
+
+**`audio`** — MP3:
+
+```json
+{
+    "id": "podcast_clip",
+    "type": "audio",
+    "src": "f9c2d4ae...cdef.mp3",
+    "alt": "Interview excerpt",
+    "duration": 187.3
+}
+```
+
+Audio nodes have no `width`, `height`, `scale`, `focal_point_x/y`, or `object_fit` — those concepts don't apply. `Audio.svelte` renders a waveform visualization that fills whatever space the container gives it.
+
+### Media property
+
+Container nodes like `gallery_item` reference media via a `node` property that allows all three types:
+
+```
+gallery_item.media → node property, allowed types: ["image", "video", "audio"]
+```
+
+When the user pastes a file over an existing media node, the paste handler checks the file's MIME type, creates the correct node type, deletes the old node, and updates the reference. The schema's allowed types on the `media` property ensure only valid media nodes can be placed there.
+
+### Visual treatment
+
+All media types fill their container the same way visually. In a gallery with fixed aspect ratios, images and videos crop via `focal_point_x/y` and `object_fit`. Audio renders a waveform that fills the available space using the container's aspect ratio. There is no separate "audio player" layout — audio is a visual element like any other media.
+
+### No asset table
+
+Assets are **not** tracked as separate entities in the database. There is no `assets` table. Media nodes reference asset files directly via their `src` property.
+
+### The `src` field
+
 The `src` field has two modes:
 
-- **During editing (unsaved):** a blob URL (e.g. `blob:http://localhost:5173/a1b2c3d4`). The image displays immediately using the browser's in-memory blob. This is a temporary reference that only lives for the duration of the editing session.
+- **During editing (unsaved):** a blob URL (e.g. `blob:http://localhost:5173/a1b2c3d4`). The media displays immediately using the browser's in-memory blob. This is a temporary reference that only lives for the duration of the editing session.
 - **After save (persisted):** an asset id (e.g. `c4b519da...fabdb.webp`). The blob URLs are replaced with asset ids during the save flow, after all assets have been successfully uploaded.
 
-`Image.svelte` checks the `src` value: if it starts with `blob:`, use it directly as the image source. Otherwise, prefix it with `PUBLIC_ASSET_ORIGIN` (defaults to `/assets`) to construct the full URL. This keeps the document data location-agnostic — switching to a CDN or S3 bucket is a config change, not a data migration.
+Each media component (`Image.svelte`, `Video.svelte`, `Audio.svelte`) checks the `src` value: if it starts with `blob:`, use it directly. Otherwise, prefix it with `PUBLIC_ASSET_ORIGIN` (defaults to `/assets`) to construct the full URL. This keeps the document data location-agnostic — switching to a CDN or S3 bucket is a config change, not a data migration.
 
-The asset id includes the file extension (e.g. `.webp`, `.mp4`, `.gif`, `.svg`), so the serving layer can resolve the file directly without a database lookup.
+The asset id includes the file extension (e.g. `.webp`, `.mp4`, `.mp3`), so the serving layer can resolve the file directly without a database lookup.
 
-This keeps things simple. An image node that appears on one page is local to that page's document. If the same visual asset needs to appear on multiple pages, each page has its own image node pointing to the same asset path. The file on disk is shared, but the node metadata (alt text, focal point, scale, object fit) is per-usage.
+A media node that appears on one page is local to that page's document. If the same asset needs to appear on multiple pages, each page has its own media node pointing to the same asset file. The file on disk is shared, but the node metadata (alt text, focal point, scale, object fit) is per-usage.
 
 ### Asset ids and deduplication
 
@@ -166,7 +218,7 @@ The client computes the hash from the source file before any processing begins. 
 
 ### No original filenames
 
-Original filenames are never stored. All asset metadata (alt text, dimensions, scale, focal point) lives on the image node inside the document, not on the asset itself. This means metadata is page-local and redundant by design — changing alt text on one page doesn't affect another page that uses the same asset. It also avoids privacy concerns: user-generated filenames are never exposed via public URLs or headers.
+Original filenames are never stored. All asset metadata (alt text, dimensions, scale, focal point) lives on the media node inside the document, not on the asset itself. This means metadata is page-local and redundant by design — changing alt text on one page doesn't affect another page that uses the same asset. It also avoids privacy concerns: user-generated filenames are never exposed via public URLs or headers.
 
 For downloads, the server sets a `Content-Disposition` header using the first 8 hex characters of the hash as the filename — e.g. `Content-Disposition: inline; filename="c4b519da.webp"`. Short enough for a downloads folder, unique enough to avoid collisions in practice, and free of any user-generated content.
 
@@ -218,12 +270,13 @@ Different media types are handled differently:
 
 The asset id always includes the file extension. The stem (id without extension) is used to derive the variant directory.
 
-| Type | Client processing | Asset id example | Variants |
-|---|---|---|---|
-| Static images (JPEG, PNG, WebP, HEIC) | Resize to `MAX_IMAGE_WIDTH`, convert to WebP via WASM | `c4b519da...fabdb.webp` | Yes (`c4b519da...fabdb/w320.webp`, etc.) |
-| Animated GIFs | Passthrough | `c4b519da...fabdb.gif` | No |
-| SVGs | Passthrough | `c4b519da...fabdb.svg` | No |
-| Videos (MP4, WebM) | Passthrough | `c4b519da...fabdb.mp4` / `.webm` | No |
+| Type | Node type | Client processing | Asset id example | Variants |
+|---|---|---|---|---|
+| Static images (JPEG, PNG, WebP, HEIC) | `image` | Resize to `MAX_IMAGE_WIDTH`, convert to WebP via WASM | `c4b519da...fabdb.webp` | Yes (`c4b519da...fabdb/w320.webp`, etc.) |
+| Animated GIFs | `image` | Passthrough | `c4b519da...fabdb.gif` | No |
+| SVGs | `image` | Passthrough | `c4b519da...fabdb.svg` | No |
+| Videos (MP4, WebM) | `video` | Passthrough | `c4b519da...fabdb.mp4` / `.webm` | No |
+| Audio (MP3) | `audio` | Passthrough | `c4b519da...fabdb.mp3` | No |
 
 ### Image size constraints
 
@@ -302,7 +355,7 @@ When the user saves, an all-or-nothing upload+save operation runs:
 
 The `asset_refs` table is updated on every document save as part of the same save operation:
 
-1. Walk the document's nodes, collect all `src` values from image nodes → the current set of asset ids
+1. Walk the document's nodes, collect all `src` values from media nodes (image, video, audio) → the current set of asset ids
 2. Delete all existing `asset_refs` rows for that `document_id`
 3. Insert the new set of `(asset_id, document_id)` pairs
 
