@@ -47,8 +47,8 @@ CREATE TABLE asset_refs (
 
 **`documents`**
 
-- `document_id` — a persistent identifier (nanoid), e.g. `page_1`, `nav_1`
-- `type` — categorizes the document, e.g. `page`
+- `document_id` — a persistent identifier (nanoid with a custom alphabet — letters only, no numbers, no `_` or `-` — so ids are safe to use as HTML ids; see `src/routes/nanoid.js`)
+- `type` — categorizes the document, e.g. `page`, `nav`, or `footer`
 - `data` — the full Svedit document serialized as JSON (`{ document_id, nodes }`)
 
 Each document's `data` column contains a self-contained Svedit document: a `document_id` and a flat `nodes` map where every node is keyed by its `id`.
@@ -141,11 +141,17 @@ This keeps things simple. An image node that appears on one page is local to tha
 
 ### Asset ids and deduplication
 
-The asset id is the combination of a **content hash** (e.g. SHA-256) of the user's source file **plus the file extension** of the stored format — e.g. `AgvsfNbEMzUNEcragSpuH.webp` or `BxKmRtPqWnYFHdJcLuVoZ.mp4`. The hash is always computed on the **untouched source file** the user provides (e.g. the original PNG or JPEG), not on the processed WebP output. This ensures the same source file always produces the same id, regardless of encoder version, quality settings, or other processing parameters. The extension is determined by the stored format: static images are always converted to WebP (so the extension is `.webp`), while videos, animated GIFs, and SVGs keep their original extension (`.mp4`, `.webm`, `.gif`, `.svg`).
+The asset id is the **SHA-256 hex hash** of the user's source file **plus the file extension** of the stored format — e.g. `c4b519da4c0a6512b5d9519aac0d9df7fab9152a6df109515456ada4702fabdb.webp`. The hash is always computed on the **untouched source file** the user provides (e.g. the original PNG or JPEG), not on the processed WebP output. This ensures the same source file always produces the same id, regardless of encoder version, quality settings, or other processing parameters. The extension is determined by the stored format: static images are always converted to WebP (so the extension is `.webp`), while videos, animated GIFs, and SVGs keep their original extension (`.mp4`, `.webm`, `.gif`, `.svg`).
 
 Because the id is content-derived, inserting the same file twice produces the same id — the upload is skipped and the existing asset is reused. No duplicate files on disk, no wasted storage.
 
 The client computes the hash from the source file before any processing begins. If the server already has a file with that id, it returns the existing asset metadata immediately without accepting the upload body.
+
+### No original filenames
+
+Original filenames are never stored. All asset metadata (alt text, dimensions, scale, focal point) lives on the image node inside the document, not on the asset itself. This means metadata is page-local and redundant by design — changing alt text on one page doesn't affect another page that uses the same asset. It also avoids privacy concerns: user-generated filenames are never exposed via public URLs or headers.
+
+For downloads, the server sets a `Content-Disposition` header using the first 8 hex characters of the hash as the filename — e.g. `Content-Disposition: inline; filename="c4b519da.webp"`. Short enough for a downloads folder, unique enough to avoid collisions in practice, and free of any user-generated content.
 
 ### Asset path convention
 
@@ -153,36 +159,36 @@ The original is stored with its extension, and width variants (images only) live
 
 ```
 data/assets/
-├── AgvsfNbEMzUNEcragSpuH.webp              # stored original
-├── AgvsfNbEMzUNEcragSpuH/
+├── c4b519da4c0a6512b5d9519aac0d9df7fab9152a6df109515456ada4702fabdb.webp
+├── c4b519da4c0a6512b5d9519aac0d9df7fab9152a6df109515456ada4702fabdb/
 │   ├── w320.webp                            # variant
 │   ├── w640.webp
 │   ├── w1024.webp
 │   └── w1536.webp
-├── BxKmRtPqWnYFHdJcLuVoZ.mp4              # video passthrough
-├── CyLnStQuXoZAGeBfKwMrJ.gif              # animated gif passthrough
+├── e7a3f1bc90d245678901234567890abcdef1234567890abcdef1234567890abcd.mp4
+├── f9c2d4ae51b367890123456789abcdef0123456789abcdef0123456789abcdef.gif
 └── ...
 ```
 
-The image node's `src` stores the asset id (e.g. `AgvsfNbEMzUNEcragSpuH.webp`). The `width` and `height` of the original are stored on the image node. Full URLs are constructed at render time by prepending `PUBLIC_ASSET_ORIGIN`. Variant URLs are derived by stripping the extension from the asset id to get the stem, then appending `/w{width}.webp` — no database lookup needed for `srcset`:
+The image node's `src` stores the asset id (e.g. `c4b519da...fabdb.webp`). The `width` and `height` of the original are stored on the image node. Full URLs are constructed at render time by prepending `PUBLIC_ASSET_ORIGIN`. Variant URLs are derived by stripping the extension from the asset id to get the stem, then appending `/w{width}.webp` — no database lookup needed for `srcset`:
 
 ```
 ASSET_ORIGIN = /assets    (default, or e.g. https://cdn.example.com/assets)
-asset id     = AgvsfNbEMzUNEcragSpuH.webp
-stem         = AgvsfNbEMzUNEcragSpuH
+asset id     = c4b519da4c0a6512b5d9519aac0d9df7fab9152a6df109515456ada4702fabdb.webp
+stem         = c4b519da4c0a6512b5d9519aac0d9df7fab9152a6df109515456ada4702fabdb
 
-original URL = {ASSET_ORIGIN}/AgvsfNbEMzUNEcragSpuH.webp
-variant URL  = {ASSET_ORIGIN}/AgvsfNbEMzUNEcragSpuH/w320.webp
+original URL = {ASSET_ORIGIN}/{asset id}
+variant URL  = {ASSET_ORIGIN}/{stem}/w320.webp
 ```
 
 ```html
 <img
-    src="/assets/AgvsfNbEMzUNEcragSpuH.webp"
+    src="/assets/c4b519da...fabdb.webp"
     srcset="
-        /assets/AgvsfNbEMzUNEcragSpuH/w320.webp 320w,
-        /assets/AgvsfNbEMzUNEcragSpuH/w640.webp 640w,
-        /assets/AgvsfNbEMzUNEcragSpuH/w1024.webp 1024w,
-        /assets/AgvsfNbEMzUNEcragSpuH.webp 1600w
+        /assets/c4b519da...fabdb/w320.webp 320w,
+        /assets/c4b519da...fabdb/w640.webp 640w,
+        /assets/c4b519da...fabdb/w1024.webp 1024w,
+        /assets/c4b519da...fabdb.webp 1600w
     "
 />
 ```
@@ -197,10 +203,10 @@ The asset id always includes the file extension. The stem (id without extension)
 
 | Type | Client processing | Asset id example | Variants |
 |---|---|---|---|
-| Static images (JPEG, PNG, WebP, HEIC) | Resize to `MAX_IMAGE_WIDTH`, convert to WebP via WASM | `a3f2e9.webp` | Yes (`a3f2e9/w320.webp`, etc.) |
-| Animated GIFs | Passthrough | `a3f2e9.gif` | No |
-| SVGs | Passthrough | `a3f2e9.svg` | No |
-| Videos (MP4, WebM) | Passthrough | `a3f2e9.mp4` / `a3f2e9.webm` | No |
+| Static images (JPEG, PNG, WebP, HEIC) | Resize to `MAX_IMAGE_WIDTH`, convert to WebP via WASM | `c4b519da...fabdb.webp` | Yes (`c4b519da...fabdb/w320.webp`, etc.) |
+| Animated GIFs | Passthrough | `c4b519da...fabdb.gif` | No |
+| SVGs | Passthrough | `c4b519da...fabdb.svg` | No |
+| Videos (MP4, WebM) | Passthrough | `c4b519da...fabdb.mp4` / `.webm` | No |
 
 ### Image size constraints
 
