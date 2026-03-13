@@ -15,7 +15,7 @@
 	function get_grid_layout() {
 		const layouts = {
 			1: `
-	    	[--layout-orientation:horizontal]
+	    	[--is-horizontal:1]
 				grid grid-cols-6
 
 				*:col-span-6 *:**:[.image-wrapper]:aspect-[2/1]
@@ -23,17 +23,17 @@
 				*:nth-[6n+3]:**:[.image-wrapper]:aspect-square *:nth-[6n+4]:col-span-2 *:nth-[6n+4]:**:[.image-wrapper]:aspect-[4/6] *:nth-[6n+5]:col-span-2 *:nth-[6n+5]:**:[.image-wrapper]:aspect-[4/6] *:nth-[6n+6]:col-span-2 *:nth-[6n+6]:**:[.image-wrapper]:aspect-[4/6]
    		`,
 			2: `
-	     	[--layout-orientation:horizontal]
+	     	[--is-horizontal:1]
 				grid grid-cols-3
 				**:[.image-wrapper]:aspect-[3/4]
    		`,
 			3: `
-	     	[--layout-orientation:horizontal]
+	     	[--is-horizontal:1]
 				grid grid-cols-2 md:grid-cols-4
 				**:[.image-wrapper]:aspect-square
    		`,
 			4: `
-	     	[--layout-orientation:horizontal]
+	     	[--is-horizontal:1]
 				grid grid-cols-1 md:grid-cols-2
 				**:[.image-wrapper]:aspect-[2/1]
    		`

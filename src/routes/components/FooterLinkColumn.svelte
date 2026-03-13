@@ -23,6 +23,6 @@
 
 <style>
 	:global(.footer-links) {
-		--layout-orientation: vertical;
+		--is-horizontal: 0;
 	}
 </style>

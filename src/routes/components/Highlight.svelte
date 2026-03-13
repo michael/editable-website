@@ -8,7 +8,5 @@
 <span
 	id={node.id}
 	data-node-id={node.id}
-	class="bg-(--accent) text-(--accent-foreground) no-underline"
+	class="bg-(--accent) text-(--accent-foreground) no-underline px-2"
 	style="anchor-name: --{path.join('-')};">{content}</span>
-
-
