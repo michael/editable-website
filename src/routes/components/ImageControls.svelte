@@ -115,7 +115,7 @@
 		transform: translate(-50%, -50%);
 		pointer-events: none;
 		mix-blend-mode: difference;
-		border: 1px solid var(--editing-stroke-color);
+		border: 1px solid var(--svedit-editing-stroke);
 		border-radius: 50%;
 	}
 
@@ -127,7 +127,7 @@
 		top: 50%;
 		width: 150%;
 		height: 1px;
-		background: var(--editing-stroke-color);
+		background: var(--svedit-editing-stroke);
 		transform: translate(-50%, -50%);
 	}
 
@@ -139,7 +139,7 @@
 		top: 50%;
 		width: 1px;
 		height: 150%;
-		background: var(--editing-stroke-color);
+		background: var(--svedit-editing-stroke);
 		transform: translate(-50%, -50%);
 	}
 </style>

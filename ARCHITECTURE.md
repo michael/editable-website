@@ -16,20 +16,20 @@ All persistent data lives in the `data/` directory:
 data/
 ├── site.sqlite3                              # all documents
 └── assets/
-    ├── AgvsfNbEMzUNEcragSpuH.webp            # stored original (≤ MAX_IMAGE_WIDTH)
-    ├── AgvsfNbEMzUNEcragSpuH/
+    ├── c4b519da...fabdb.webp                 # stored original (≤ MAX_IMAGE_WIDTH)
+    ├── c4b519da...fabdb/
     │   ├── w320.webp                         # variant
     │   ├── w640.webp
     │   ├── w1024.webp
     │   └── w1536.webp
-    ├── BxKmRtPqWnYFHdJcLuVoZ.mp4            # video passthrough
-    ├── CyLnStQuXoZAGeBfKwMrJ.gif            # animated gif passthrough
+    ├── e7a3f1bc...abcd.mp4                   # video passthrough
+    ├── f9c2d4ae...cdef.gif                   # animated gif passthrough
     └── ...
 ```
 
 ### SQLite database
 
-The database (`data/site.sqlite3`) contains two tables:
+The database (`data/site.sqlite3`) contains three tables:
 
 ```sql
 CREATE TABLE documents (
@@ -43,12 +43,17 @@ CREATE TABLE asset_refs (
     document_id TEXT NOT NULL,
     PRIMARY KEY (asset_id, document_id)
 );
+
+CREATE TABLE sessions (
+    session_id TEXT NOT NULL PRIMARY KEY,
+    expires INTEGER NOT NULL
+);
 ```
 
 **`documents`**
 
-- `document_id` — a persistent identifier (nanoid), e.g. `page_1`, `nav_1`
-- `type` — categorizes the document, e.g. `page`
+- `document_id` — a persistent identifier (nanoid with a custom alphabet — letters only, no numbers, no `_` or `-` — so ids are safe to use as HTML ids; see `src/routes/nanoid.js`)
+- `type` — categorizes the document, e.g. `page`, `nav`, or `footer`
 - `data` — the full Svedit document serialized as JSON (`{ document_id, nodes }`)
 
 Each document's `data` column contains a self-contained Svedit document: a `document_id` and a flat `nodes` map where every node is keyed by its `id`.
@@ -58,6 +63,13 @@ Each document's `data` column contains a self-contained Svedit document: a `docu
 Tracks which assets are referenced by which documents. The compound primary key `(asset_id, document_id)` naturally deduplicates — a document referencing the same image five times still produces one row.
 
 This table is the single source of truth for asset ownership. It enables cleanup of orphaned assets and makes cross-page copy-paste work without complications (pasted image nodes point to shared assets that already exist on disk).
+
+**`sessions`**
+
+- `session_id` — a cryptographically secure UUID (generated via `crypto.randomUUID()`)
+- `expires` — Unix timestamp (seconds) when the session expires
+
+Expired sessions are deleted on lookup. No background cleanup job needed.
 
 ### Assets
 
@@ -112,17 +124,17 @@ This means changes to the nav or footer made on any page are persisted to the sh
 
 ## Assets
 
-### No asset nodes
+### Media node types
 
-Assets are **not** tracked as separate entities in the database. There is no `assets` table and no dedicated `asset` node type in the schema.
+There are three media node types: `image`, `video`, and `audio`. Each has only the properties that apply to it.
 
-Instead, image nodes reference assets directly via their `src` property:
+**`image`** — static images (stored as WebP), animated GIFs, SVGs:
 
 ```json
 {
     "id": "feature_1_image",
     "type": "image",
-    "src": "AgvsfNbEMzUNEcragSpuH.webp",
+    "src": "c4b519da4c0a6512b5d9519aac0d9df7fab9152a6df109515456ada4702fabdb.webp",
     "width": 1600,
     "height": 900,
     "alt": "Feature image",
@@ -133,19 +145,82 @@ Instead, image nodes reference assets directly via their `src` property:
 }
 ```
 
-The `src` stores only the **asset id** (e.g. `AgvsfNbEMzUNEcragSpuH.webp`), not a full URL path. The serving location is determined by the `PUBLIC_ASSET_ORIGIN` environment variable (defaults to `/assets`). This keeps the document data location-agnostic — switching to a CDN or S3 bucket is a config change, not a data migration.
+**`video`** — MP4, WebM:
 
-The asset id includes the file extension (e.g. `.webp`, `.mp4`, `.gif`, `.svg`), so the serving layer can resolve the file directly without a database lookup.
+```json
+{
+    "id": "hero_video",
+    "type": "video",
+    "src": "e7a3f1bc...abcd.mp4",
+    "width": 1920,
+    "height": 1080,
+    "alt": "Product demo",
+    "scale": 1.0,
+    "focal_point_x": 0.5,
+    "focal_point_y": 0.5,
+    "object_fit": "cover",
+    "duration": 42.5
+}
+```
 
-This keeps things simple. An image node that appears on one page is local to that page's document. If the same visual asset needs to appear on multiple pages, each page has its own image node pointing to the same asset path. The file on disk is shared, but the node metadata (alt text, focal point, scale, object fit) is per-usage.
+**`audio`** — MP3:
+
+```json
+{
+    "id": "podcast_clip",
+    "type": "audio",
+    "src": "f9c2d4ae...cdef.mp3",
+    "alt": "Interview excerpt",
+    "duration": 187.3
+}
+```
+
+Audio nodes have no `width`, `height`, `scale`, `focal_point_x/y`, or `object_fit` — those concepts don't apply. `Audio.svelte` renders a waveform visualization that fills whatever space the container gives it.
+
+### Media property
+
+Container nodes like `gallery_item` reference media via a `node` property that allows all three types:
+
+```
+gallery_item.media → node property, allowed types: ["image", "video", "audio"]
+```
+
+When the user pastes a file over an existing media node, the paste handler checks the file's MIME type, creates the correct node type, deletes the old node, and updates the reference. The schema's allowed types on the `media` property ensure only valid media nodes can be placed there.
+
+### Visual treatment
+
+All media types fill their container the same way visually. In a gallery with fixed aspect ratios, images and videos crop via `focal_point_x/y` and `object_fit`. Audio renders a waveform that fills the available space using the container's aspect ratio. There is no separate "audio player" layout — audio is a visual element like any other media.
+
+### No asset table
+
+Assets are **not** tracked as separate entities in the database. There is no `assets` table. Media nodes reference asset files directly via their `src` property.
+
+### The `src` field
+
+The `src` field has two modes:
+
+- **During editing (unsaved):** a blob URL (e.g. `blob:http://localhost:5173/a1b2c3d4`). The media displays immediately using the browser's in-memory blob. This is a temporary reference that only lives for the duration of the editing session.
+- **After save (persisted):** an asset id (e.g. `c4b519da...fabdb.webp`). The blob URLs are replaced with asset ids during the save flow, after all assets have been successfully uploaded.
+
+Each media component (`Image.svelte`, `Video.svelte`, `Audio.svelte`) checks the `src` value: if it starts with `blob:`, use it directly. Otherwise, prefix it with `PUBLIC_ASSET_ORIGIN` (defaults to `/assets`) to construct the full URL. This keeps the document data location-agnostic — switching to a CDN or S3 bucket is a config change, not a data migration.
+
+The asset id includes the file extension (e.g. `.webp`, `.mp4`, `.mp3`), so the serving layer can resolve the file directly without a database lookup.
+
+A media node that appears on one page is local to that page's document. If the same asset needs to appear on multiple pages, each page has its own media node pointing to the same asset file. The file on disk is shared, but the node metadata (alt text, focal point, scale, object fit) is per-usage.
 
 ### Asset ids and deduplication
 
-The asset id is the combination of a **content hash** (e.g. SHA-256) of the user's source file **plus the file extension** of the stored format — e.g. `AgvsfNbEMzUNEcragSpuH.webp` or `BxKmRtPqWnYFHdJcLuVoZ.mp4`. The hash is always computed on the **untouched source file** the user provides (e.g. the original PNG or JPEG), not on the processed WebP output. This ensures the same source file always produces the same id, regardless of encoder version, quality settings, or other processing parameters. The extension is determined by the stored format: static images are always converted to WebP (so the extension is `.webp`), while videos, animated GIFs, and SVGs keep their original extension (`.mp4`, `.webm`, `.gif`, `.svg`).
+The asset id is the **SHA-256 hex hash** of the user's source file **plus the file extension** of the stored format — e.g. `c4b519da4c0a6512b5d9519aac0d9df7fab9152a6df109515456ada4702fabdb.webp`. The hash is always computed on the **untouched source file** the user provides (e.g. the original PNG or JPEG), not on the processed WebP output. This ensures the same source file always produces the same id, regardless of encoder version, quality settings, or other processing parameters. The extension is determined by the stored format: static images are always converted to WebP (so the extension is `.webp`), while videos, animated GIFs, and SVGs keep their original extension (`.mp4`, `.webm`, `.gif`, `.svg`).
 
 Because the id is content-derived, inserting the same file twice produces the same id — the upload is skipped and the existing asset is reused. No duplicate files on disk, no wasted storage.
 
 The client computes the hash from the source file before any processing begins. If the server already has a file with that id, it returns the existing asset metadata immediately without accepting the upload body.
+
+### No original filenames
+
+Original filenames are never stored. All asset metadata (alt text, dimensions, scale, focal point) lives on the media node inside the document, not on the asset itself. This means metadata is page-local and redundant by design — changing alt text on one page doesn't affect another page that uses the same asset. It also avoids privacy concerns: user-generated filenames are never exposed via public URLs or headers.
+
+For downloads, the server sets a `Content-Disposition` header using the first 8 hex characters of the hash as the filename — e.g. `Content-Disposition: inline; filename="c4b519da.webp"`. Short enough for a downloads folder, unique enough to avoid collisions in practice, and free of any user-generated content.
 
 ### Asset path convention
 
@@ -153,36 +228,36 @@ The original is stored with its extension, and width variants (images only) live
 
 ```
 data/assets/
-├── AgvsfNbEMzUNEcragSpuH.webp              # stored original
-├── AgvsfNbEMzUNEcragSpuH/
+├── c4b519da4c0a6512b5d9519aac0d9df7fab9152a6df109515456ada4702fabdb.webp
+├── c4b519da4c0a6512b5d9519aac0d9df7fab9152a6df109515456ada4702fabdb/
 │   ├── w320.webp                            # variant
 │   ├── w640.webp
 │   ├── w1024.webp
 │   └── w1536.webp
-├── BxKmRtPqWnYFHdJcLuVoZ.mp4              # video passthrough
-├── CyLnStQuXoZAGeBfKwMrJ.gif              # animated gif passthrough
+├── e7a3f1bc90d245678901234567890abcdef1234567890abcdef1234567890abcd.mp4
+├── f9c2d4ae51b367890123456789abcdef0123456789abcdef0123456789abcdef.gif
 └── ...
 ```
 
-The image node's `src` stores the asset id (e.g. `AgvsfNbEMzUNEcragSpuH.webp`). The `width` and `height` of the original are stored on the image node. Full URLs are constructed at render time by prepending `PUBLIC_ASSET_ORIGIN`. Variant URLs are derived by stripping the extension from the asset id to get the stem, then appending `/w{width}.webp` — no database lookup needed for `srcset`:
+The image node's `src` stores the asset id (e.g. `c4b519da...fabdb.webp`). The `width` and `height` of the original are stored on the image node. Full URLs are constructed at render time by prepending `PUBLIC_ASSET_ORIGIN`. Variant URLs are derived by stripping the extension from the asset id to get the stem, then appending `/w{width}.webp` — no database lookup needed for `srcset`:
 
 ```
 ASSET_ORIGIN = /assets    (default, or e.g. https://cdn.example.com/assets)
-asset id     = AgvsfNbEMzUNEcragSpuH.webp
-stem         = AgvsfNbEMzUNEcragSpuH
+asset id     = c4b519da4c0a6512b5d9519aac0d9df7fab9152a6df109515456ada4702fabdb.webp
+stem         = c4b519da4c0a6512b5d9519aac0d9df7fab9152a6df109515456ada4702fabdb
 
-original URL = {ASSET_ORIGIN}/AgvsfNbEMzUNEcragSpuH.webp
-variant URL  = {ASSET_ORIGIN}/AgvsfNbEMzUNEcragSpuH/w320.webp
+original URL = {ASSET_ORIGIN}/{asset id}
+variant URL  = {ASSET_ORIGIN}/{stem}/w320.webp
 ```
 
 ```html
 <img
-    src="/assets/AgvsfNbEMzUNEcragSpuH.webp"
+    src="/assets/c4b519da...fabdb.webp"
     srcset="
-        /assets/AgvsfNbEMzUNEcragSpuH/w320.webp 320w,
-        /assets/AgvsfNbEMzUNEcragSpuH/w640.webp 640w,
-        /assets/AgvsfNbEMzUNEcragSpuH/w1024.webp 1024w,
-        /assets/AgvsfNbEMzUNEcragSpuH.webp 1600w
+        /assets/c4b519da...fabdb/w320.webp 320w,
+        /assets/c4b519da...fabdb/w640.webp 640w,
+        /assets/c4b519da...fabdb/w1024.webp 1024w,
+        /assets/c4b519da...fabdb.webp 1600w
     "
 />
 ```
@@ -195,18 +270,33 @@ Different media types are handled differently:
 
 The asset id always includes the file extension. The stem (id without extension) is used to derive the variant directory.
 
-| Type | Client processing | Asset id example | Variants |
-|---|---|---|---|
-| Static images (JPEG, PNG, WebP, HEIC) | Resize to `MAX_IMAGE_WIDTH`, convert to WebP via WASM | `a3f2e9.webp` | Yes (`a3f2e9/w320.webp`, etc.) |
-| Animated GIFs | Passthrough | `a3f2e9.gif` | No |
-| SVGs | Passthrough | `a3f2e9.svg` | No |
-| Videos (MP4, WebM) | Passthrough | `a3f2e9.mp4` / `a3f2e9.webm` | No |
+| Type | Node type | Client processing | Asset id example | Variants |
+|---|---|---|---|---|
+| Static images (JPEG, PNG, WebP, HEIC) | `image` | Resize to `MAX_IMAGE_WIDTH`, convert to WebP via WASM | `c4b519da...fabdb.webp` | Yes (`c4b519da...fabdb/w320.webp`, etc.) |
+| Animated GIFs | `image` | Passthrough | `c4b519da...fabdb.gif` | No |
+| SVGs | `image` | Passthrough | `c4b519da...fabdb.svg` | No |
+| Videos (MP4, WebM) | `video` | Passthrough | `c4b519da...fabdb.mp4` / `.webm` | No |
+| Audio (MP3) | `audio` | Passthrough | `c4b519da...fabdb.mp3` | No |
 
 ### Image size constraints
 
-Images are constrained by `MAX_IMAGE_WIDTH` (e.g. 4000px). The client resizes any image wider than this limit before upload.
+Variant widths are fixed:
 
-We constrain width only, not height, because width is what matters for responsive images — `srcset` widths map to viewport widths. An unusually tall image (e.g. 2000×8000 infographic) is a legitimate use case and the file size is naturally bounded by the width constraint combined with WebP compression. Extreme aspect ratios are the user's choice.
+```
+VARIANT_WIDTHS = [320, 640, 1024, 1536, 2048, 3072, 4096]
+```
+
+`MAX_IMAGE_WIDTH` is the largest value in this list (4096). These values never change.
+
+**Rules:**
+
+1. If the source image is wider than `MAX_IMAGE_WIDTH`, resize it down to `MAX_IMAGE_WIDTH` before storing.
+2. Store the original at its actual width (e.g. a 2500px image is stored at 2500px, not rounded to a standard width).
+3. Generate variants for every width in `VARIANT_WIDTHS` that is **strictly smaller** than the stored original's width. Never upscale.
+
+**Example:** user uploads a 2500px wide image → original stored at 2500px, variants generated at 320, 640, 1024, 1536, 2048. Widths 3072 and 4096 are skipped.
+
+Width only is constrained, not height. `srcset` widths map to viewport widths, so height is irrelevant for responsive image selection. Tall images (e.g. 2000×8000 infographics) are a legitimate use case — file size is bounded by the width constraint combined with WebP compression.
 
 ### Client-side image processing
 
@@ -220,36 +310,52 @@ For each image the user pastes or drops:
 2. **Resize original** — if width > `MAX_IMAGE_WIDTH`, resize down preserving aspect ratio
 3. **Encode original** — encode as WebP (quality 80)
 4. **Generate variants** — for each configured width smaller than the original: resize → encode as WebP
-5. **Upload** — send original + all variants to the server sequentially (one at a time to keep memory low)
 
-Images are processed one at a time. After generating all variants for one image, raw pixel data is released. Only the encoded WebP blobs are kept in memory until uploaded.
+Images are processed one at a time. After generating all variants for one image, raw pixel data is released. Only the encoded WebP blobs are kept in memory until the next save.
 
 ### Variant widths
 
-The set of variant widths is defined by a global configuration:
+See [Image size constraints](#image-size-constraints). The variant widths are fixed and must not be changed. The original always serves as the largest size in `srcset`.
 
-```
-IMAGE_SIZES = [320, 640, 1024, 1536, 2048]
-```
+### Paste flow
 
-Only widths smaller than the original are generated. The original serves as the largest size.
+When the user pastes or drops files into a Svedit document:
 
-### Upload flow
+1. `handle_image_paste` creates image nodes immediately, with `src` set to a blob URL of the unprocessed source file. Images display instantly — no waiting for processing.
+2. The client computes the SHA-256 hash of the source file. This hash (plus extension) will become the asset id on save.
+3. Background processing starts: decode → resize → encode original as WebP → generate all width variants. Processing is keyed by the blob URL that sits in `image.src`.
+4. The user can continue editing, paste more images, or rearrange content. Background processing does not block the editor.
+5. Videos, animated GIFs, and SVGs skip client-side processing — they'll be used and stored as-is'.
 
-1. User pastes or drops an image onto the page
-2. Client computes the content hash of the user's source file and appends the stored format extension — this becomes the asset id (e.g. `AgvsfNbEMzUNEcragSpuH.webp` for images, `BxKmRtPqWnYFHdJcLuVoZ.mp4` for videos)
-3. Client checks with the server if the asset already exists (`POST /api/assets` with content hash). If it does, server returns existing metadata — skip to step 7 (no processing or upload needed)
-4. Client decodes, resizes to `MAX_IMAGE_WIDTH` if needed, converts to WebP, generates all width variants — all via WASM in a Web Worker
-5. Client uploads the original WebP blob → server stores in `data/assets/{asset_id}` (e.g. `data/assets/AgvsfNbEMzUNEcragSpuH.webp`) and returns `{ id, width, height }`
-6. Client uploads each variant: `POST /api/assets/{asset_id}/variants` with WebP blob + `X-Variant-Width` header → server derives the stem from the asset id and writes to `data/assets/{stem}/w{width}.webp`
-7. Client updates the image node's `src`, `width`, and `height` properties
-8. Videos, animated GIFs, and SVGs skip client-side processing — uploaded as-is
+### Save flow
+
+When the user saves, an all-or-nothing upload+save operation runs:
+
+1. **Wait for processing.** If any pasted images are still being processed in the background, the save waits for them to finish before proceeding. The user sees a progress indication — the save just takes a bit longer.
+
+2. **Upload assets.** For each image node whose `src` is a blob URL (i.e. not yet uploaded):
+
+   a. **Check for duplicates.** Send the asset id (content hash + extension) to the server. If the asset already exists (original + all variants on disk), skip uploading — go to step 2d.
+
+   b. **Upload original.** Stream the original WebP blob to the server. Server stores it at `data/assets/{asset_id}`.
+
+   c. **Upload variants.** Upload each variant sequentially: `POST /api/assets/{asset_id}/variants` with WebP blob + `X-Variant-Width` header. Server stores at `data/assets/{stem}/w{width}.webp`. **If any variant upload fails, the server deletes the original and all variants for that asset id, and the save is aborted.** A partially uploaded asset (missing variants) is not acceptable — it would produce a broken `srcset`.
+
+   d. **Record the mapping.** Map the blob URL → asset id so `src` values can be replaced in step 3.
+
+   If any asset fails to upload entirely (i.e. the original upload fails, or variant upload fails and the server cleans up), the save is **aborted with an error message**. Assets that were successfully uploaded in earlier iterations are left on the server — they are valid, complete assets. On the next save attempt, deduplication will skip them.
+
+3. **Replace blob URLs.** Walk all image nodes in the document. For every `src` that is a blob URL, replace it with the corresponding asset id. Also update `width` and `height` to the processed dimensions (which may differ from the source if the image was resized down to `MAX_IMAGE_WIDTH`).
+
+4. **Save the document.** Upload the document JSON to the server. The server splits shared documents (nav, footer), updates `asset_refs`, and writes to SQLite.
+
+**Atomicity boundary:** the unit of atomicity is the individual asset (original + all its variants). Either a complete asset is on the server, or nothing is. The document is only saved after all assets are successfully uploaded. If the save fails partway through asset uploads, the user sees an error and can retry. Orphaned assets (uploaded but not yet referenced by a saved document) are harmless and will be cleaned up by the normal asset cleanup process.
 
 ### Asset reference tracking
 
 The `asset_refs` table is updated on every document save as part of the same save operation:
 
-1. Walk the document's nodes, collect all `src` values from image nodes → the current set of asset ids
+1. Walk the document's nodes, collect all `src` values from media nodes (image, video, audio) → the current set of asset ids
 2. Delete all existing `asset_refs` rows for that `document_id`
 3. Insert the new set of `(asset_id, document_id)` pairs
 
@@ -275,14 +381,16 @@ This can also run on save if a document previously referenced assets it no longe
 ### Documents
 
 - `GET /api/documents/:id` — load a document (with shared documents stitched in)
-- `PUT /api/documents/:id` — save a document (server splits shared nodes back out)
+- `PUT /api/documents/:id` — save a document (server splits shared nodes back out, updates `asset_refs`)
 
 ### Assets
 
-- `POST /api/assets` — upload an original, returns `{ id, width, height }` (where `id` is the asset id, e.g. `AgvsfNbEMzUNEcragSpuH.webp`)
-- `POST /api/assets/:asset_id/variants` — upload a pre-generated width variant
-- `GET {ASSET_ORIGIN}/:asset_id` — serve the original (e.g. `/assets/AgvsfNbEMzUNEcragSpuH.webp`)
-- `GET {ASSET_ORIGIN}/:stem/w:width.webp` — serve a width variant (e.g. `/assets/AgvsfNbEMzUNEcragSpuH/w320.webp`)
+- `HEAD /api/assets/:asset_id` — check if an asset exists (original + all expected variants). Returns `200` if complete, `404` if not. Used by the client to skip uploading duplicates.
+- `POST /api/assets` — upload an original. Headers: `X-Content-Hash` (SHA-256 hex), `Content-Type`. Returns `{ id, width, height }`.
+- `POST /api/assets/:asset_id/variants` — upload a pre-generated width variant. Headers: `X-Variant-Width`. Body: WebP blob.
+- `DELETE /api/assets/:asset_id` — delete an asset and all its variants from disk. Used by the client to clean up after a failed variant upload.
+- `GET {ASSET_ORIGIN}/:asset_id` — serve the original
+- `GET {ASSET_ORIGIN}/:stem/w:width.webp` — serve a width variant
 
 `ASSET_ORIGIN` defaults to `/assets` (served from `data/assets/` on disk). Can be configured to point to a CDN or S3 bucket.
 
@@ -302,4 +410,42 @@ The only admin interface is a **site map** — a listing of all pages plus draft
 
 ## Authentication
 
-Authentication is handled in `hooks.server.js`. Currently stubbed with `event.locals.user = 'Admin'`. Write operations (saving documents, uploading assets) require authentication. Read operations are public.
+Editable Website is a **single-user application**. There is one admin account. No user registration, no roles, no multi-tenancy.
+
+### Admin password
+
+The admin password is set via the `ADMIN_PASSWORD` environment variable. There is no default — the app refuses to start if `ADMIN_PASSWORD` is not set.
+
+### Login flow
+
+1. User navigates to `/login` and enters the password.
+2. Client sends `POST /api/login` with `{ password }`.
+3. Server compares the password against `ADMIN_PASSWORD`. If it matches:
+   - Generate a session id via `crypto.randomUUID()`
+   - Insert a row into the `sessions` table with an expiry (e.g. 30 days from now)
+   - Set a `session_id` cookie (`HttpOnly`, `SameSite=Strict`, `Secure` in production, `Path=/`)
+   - Return `200`
+4. If the password does not match, return `401`.
+
+### Session validation
+
+In `hooks.server.js`, on every request:
+
+1. Read the `session_id` cookie.
+2. Look up the session in the `sessions` table.
+3. If found and not expired: set `event.locals.user = 'Admin'`.
+4. If not found or expired: delete the cookie, `event.locals.user = null`. Delete the expired row if it exists.
+
+### Logout
+
+`POST /api/logout` deletes the session row from the database and clears the cookie.
+
+### Authorization
+
+- **Read operations are public.** Anyone can view pages and assets.
+- **Write operations require authentication.** Saving documents, uploading assets, and deleting assets check `event.locals.user`. If not authenticated, return `401`.
+
+### API endpoints
+
+- `POST /api/login` — authenticate with `{ password }`, sets session cookie
+- `POST /api/logout` — clears session cookie, deletes session row

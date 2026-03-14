@@ -73,7 +73,7 @@
 	/* Placeholder styling */
 	img.placeholder {
 		opacity: 0.7;
-		border: 2px dashed var(--stroke-color);
+		border: 2px dashed var(--svedit-canvas-stroke);
 		border-radius: var(--s-2);
 		padding: var(--s-4);
 		background: var(--canvas-fill-color);

@@ -22,7 +22,6 @@ import {
 } from './commands.svelte.js';
 
 // System components
-import NodeCursorTrap from './components/NodeCursorTrap.svelte';
 import Overlays from './components/Overlays.svelte';
 
 // Node components
@@ -355,7 +354,6 @@ const session_config = {
 	// Provide definitions/overrides for system native components,
 	// such as NodeCursorTrap or Overlays
 	system_components: {
-		NodeCursorTrap,
 		Overlays
 	},
 	// Registry of components for each node type
