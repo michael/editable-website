@@ -4,17 +4,17 @@ import adapter from '@sveltejs/adapter-auto';
 const config = {
 	kit: {
 		adapter: adapter(),
-		// experimental: {
-		// 	remoteFunctions: true
-		// },
+		experimental: {
+			remoteFunctions: true
+		}
 		// alias: {
 		// 	'svedit': '../svedit/src/lib/index.js',
 		// }
 	},
 	compilerOptions: {
-		// experimental: {
-		// 	async: true
-		// }
+		experimental: {
+			async: true
+		}
 	}
 };
 
