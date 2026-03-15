@@ -10,11 +10,19 @@ Editable Website is a SvelteKit application that lets site owners edit content d
 
 ## Data storage
 
-All persistent data lives in the `data/` directory:
+All persistent data lives in a single directory, controlled by the `DATA_DIR` environment variable (defaults to `data/`):
+
+```js
+export const DATA_DIR = process.env.DATA_DIR || 'data';
+const DB_PATH = join(DATA_DIR, 'db.sqlite3');
+const ASSET_PATH = join(DATA_DIR, 'assets');
+```
+
+On Fly.io deployments, `DATA_DIR` points to a persistent volume (e.g. `/data`). Locally it defaults to `./data`.
 
 ```
 data/
-├── site.sqlite3                              # all documents
+├── db.sqlite3                                # all documents
 └── assets/
     ├── c4b519da...fabdb.webp                 # stored original (≤ MAX_IMAGE_WIDTH)
     ├── c4b519da...fabdb/
@@ -29,7 +37,7 @@ data/
 
 ### SQLite database
 
-The database (`data/site.sqlite3`) contains three tables:
+The database (`DB_PATH`) contains three tables:
 
 ```sql
 CREATE TABLE documents (
@@ -73,7 +81,7 @@ Expired sessions are deleted on lookup. No background cleanup job needed.
 
 ### Assets
 
-Assets (images, videos) are stored as files in `data/assets/`. Assets are referenced from image nodes via their `src` property. The `asset_refs` table tracks which documents reference which assets.
+Assets (images, videos) are stored as files in `ASSET_PATH`. Assets are referenced from image nodes via their `src` property. The `asset_refs` table tracks which documents reference which assets.
 
 ## Documents
 
@@ -202,7 +210,7 @@ The `src` field has two modes:
 - **During editing (unsaved):** a blob URL (e.g. `blob:http://localhost:5173/a1b2c3d4`). The media displays immediately using the browser's in-memory blob. This is a temporary reference that only lives for the duration of the editing session.
 - **After save (persisted):** an asset id (e.g. `c4b519da...fabdb.webp`). The blob URLs are replaced with asset ids during the save flow, after all assets have been successfully uploaded.
 
-Each media component (`Image.svelte`, `Video.svelte`, `Audio.svelte`) checks the `src` value: if it starts with `blob:`, use it directly. Otherwise, prefix it with `PUBLIC_ASSET_ORIGIN` (defaults to `/assets`) to construct the full URL. This keeps the document data location-agnostic — switching to a CDN or S3 bucket is a config change, not a data migration.
+Each media component (`Image.svelte`, `Video.svelte`, `Audio.svelte`) checks the `src` value: if it starts with `blob:`, use it directly. Otherwise, prefix it with `/assets` to construct the full URL. The `/assets` route serves files from `ASSET_PATH` on disk.
 
 The asset id includes the file extension (e.g. `.webp`, `.mp4`, `.mp3`), so the serving layer can resolve the file directly without a database lookup.
 
@@ -239,15 +247,14 @@ data/assets/
 └── ...
 ```
 
-The image node's `src` stores the asset id (e.g. `c4b519da...fabdb.webp`). The `width` and `height` of the original are stored on the image node. Full URLs are constructed at render time by prepending `PUBLIC_ASSET_ORIGIN`. Variant URLs are derived by stripping the extension from the asset id to get the stem, then appending `/w{width}.webp` — no database lookup needed for `srcset`:
+The image node's `src` stores the asset id (e.g. `c4b519da...fabdb.webp`). The `width` and `height` of the original are stored on the image node. Full URLs are constructed at render time by prepending `/assets` (which maps to `ASSET_PATH` on disk). Variant URLs are derived by stripping the extension from the asset id to get the stem, then appending `/w{width}.webp` — no database lookup needed for `srcset`:
 
 ```
-ASSET_ORIGIN = /assets    (default, or e.g. https://cdn.example.com/assets)
 asset id     = c4b519da4c0a6512b5d9519aac0d9df7fab9152a6df109515456ada4702fabdb.webp
 stem         = c4b519da4c0a6512b5d9519aac0d9df7fab9152a6df109515456ada4702fabdb
 
-original URL = {ASSET_ORIGIN}/{asset id}
-variant URL  = {ASSET_ORIGIN}/{stem}/w320.webp
+original URL = /assets/{asset id}
+variant URL  = /assets/{stem}/w320.webp
 ```
 
 ```html
@@ -389,10 +396,8 @@ This can also run on save if a document previously referenced assets it no longe
 - `POST /api/assets` — upload an original. Headers: `X-Content-Hash` (SHA-256 hex), `Content-Type`. Returns `{ id, width, height }`.
 - `POST /api/assets/:asset_id/variants` — upload a pre-generated width variant. Headers: `X-Variant-Width`. Body: WebP blob.
 - `DELETE /api/assets/:asset_id` — delete an asset and all its variants from disk. Used by the client to clean up after a failed variant upload.
-- `GET {ASSET_ORIGIN}/:asset_id` — serve the original
-- `GET {ASSET_ORIGIN}/:stem/w:width.webp` — serve a width variant
-
-`ASSET_ORIGIN` defaults to `/assets` (served from `data/assets/` on disk). Can be configured to point to a CDN or S3 bucket.
+- `GET /assets/:asset_id` — serve the original (from `ASSET_PATH` on disk)
+- `GET /assets/:stem/w:width.webp` — serve a width variant
 
 Asset serving endpoints return `Cache-Control: public, max-age=31536000, immutable` — asset ids are content-addressed, so they can be cached forever.
 
@@ -449,3 +454,18 @@ In `hooks.server.js`, on every request:
 
 - `POST /api/login` — authenticate with `{ password }`, sets session cookie
 - `POST /api/logout` — clears session cookie, deletes session row
+
+## Future: optional S3 storage
+
+Assets are stored on the local filesystem (`ASSET_PATH`) by default. This keeps the app fully self-contained — a single deployment with no external dependencies beyond the server itself. For most sites this is sufficient.
+
+If large storage requirements arise (e.g. video-heavy sites with many gigabytes of media), an optional S3-compatible storage backend could be added later. This would involve:
+
+- **An `ASSET_STORAGE` environment variable** — e.g. `s3` (defaults to `local`). When set to `s3`, uploads go to a bucket instead of the local filesystem.
+- **S3 configuration** — `S3_BUCKET`, `S3_REGION`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, and optionally `S3_ENDPOINT` for S3-compatible providers (Cloudflare R2, MinIO, etc.).
+- **An `ASSET_BASE` environment variable** — the public URL prefix for assets, e.g. `https://cdn.example.com/assets`. Required when using S3, since assets are no longer served by the app itself. Media components would use this instead of `/assets` to construct URLs.
+- **A CDN in front of the bucket** — S3 alone doesn't provide edge caching. For production use, a CDN (Cloudflare, CloudFront, etc.) should sit between the bucket and the user. `ASSET_BASE` would point to the CDN domain.
+
+`ASSET_PATH` remains unchanged — it's always a local filesystem path derived from `DATA_DIR` and is only used when `ASSET_STORAGE` is `local`. `ASSET_BASE` is the public-facing URL prefix, only needed when assets are served externally.
+
+The document data model wouldn't need to change — `src` fields still store content-addressed asset ids, and URL construction just swaps the `/assets` prefix for `ASSET_BASE`. This is a deployment concern, not a data migration.
