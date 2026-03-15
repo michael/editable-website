@@ -514,19 +514,21 @@ The document data model wouldn't need to change — `src` fields still store con
 
 This section tracks what to implement next. One step at a time.
 
-### Step 1: database setup and seed data
+### Step 1: database, seed data, and page rendering
 
-Set up the SQLite database with schema creation and seed data.
+**Goal:** the home page (`page_1`) renders at `/` and saving changes persists them to the database. No assets, no authentication — those come in later steps.
 
 - **`src/lib/server/db.js`** — database connection using `node:sqlite`, exports the db instance. Uses `DATA_DIR` for the database path.
-- **`src/lib/server/migrations.js`** — exports an array of migration steps. For now, a single `initial_schema` step that creates all three tables (`documents`, `asset_refs`, `sessions`) and seeds the database with three documents:
+- **`src/lib/server/migrations.js`** — exports an array of migration steps. For now, a single `initial_schema` step that creates the `documents` table and seeds it with three documents:
   - `page_1` (type `page`) — the home page, resembling the current demo document
   - `nav_1` (type `nav`) — the navigation document
   - `footer_1` (type `footer`) — the footer document
 - **`src/lib/server/migrate.js`** — runs pending migrations from `migrations.js` against the database
 - **`src/hooks.server.js`** — uncomment the `migrate()` call in `init()` so migrations run on server startup
 - **`svelte.config.js`** — uncomment experimental async and remote functions
+- **`src/lib/api.remote.js`** — uncomment/wire up `get_document` (query) and `save_document` (action) to read from and write to the database
+- **Page rendering** — `/` loads `page_1` via `get_document`, stitches in `nav_1` and `footer_1`, and renders with Svedit. Saving calls `save_document` which persists changes back to SQLite.
 
 For now, everything stays in the `initial_schema` migration step. While iterating on the schema, it's fine to wipe the database and re-run — real incremental migrations will be added later.
 
-No authentication for now — it slows down development. Auth will be added as a later step.
+No authentication for now — it slows down development. Auth will be added as a later step. No asset handling yet — media uploads and serving come in a later step.
