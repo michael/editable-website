@@ -77,13 +77,24 @@ data/
 
 The database uses Node.js's built-in [`node:sqlite`](https://nodejs.org/api/sqlite.html) module (available since Node.js v22.5). No native addons to compile, no external dependencies — just the runtime.
 
-The database (`DB_PATH`) contains three tables:
+The database (`DB_PATH`) contains five tables:
 
 ```sql
 CREATE TABLE documents (
     document_id TEXT NOT NULL PRIMARY KEY,
     type TEXT NOT NULL,
     data TEXT
+);
+
+CREATE TABLE site_settings (
+    key TEXT NOT NULL PRIMARY KEY,
+    value TEXT
+);
+
+CREATE TABLE document_refs (
+    target_document_id TEXT NOT NULL,
+    source_document_id TEXT NOT NULL,
+    PRIMARY KEY (target_document_id, source_document_id)
 );
 
 CREATE TABLE asset_refs (
@@ -105,6 +116,18 @@ CREATE TABLE sessions (
 - `data` — the full Svedit document serialized as JSON (`{ document_id, nodes }`)
 
 Each document's `data` column contains a self-contained Svedit document: a `document_id` and a flat `nodes` map where every node is keyed by its `id`.
+
+**`site_settings`**
+
+A simple key-value table for site-wide configuration. Currently stores:
+
+- `home_page_id` — the `document_id` of the page that renders at `/` (e.g. `page_1`)
+
+**`document_refs`**
+
+Tracks which documents link to which other documents. Updated on save — the server scans the document's nodes for internal links (annotations on text nodes that point to other pages) and diffs against the existing rows. Same pattern as `asset_refs`.
+
+This table tracks links from all document types — pages, nav, and footer. Since nav and footer are stitched into every page, their links are always live. This is the basis for determining page reachability (see "Page reachability" below).
 
 **`asset_refs`**
 
@@ -453,6 +476,38 @@ To reuse an image that's already on the site, navigate to the page that has it, 
 
 The only admin interface is a **site map** — a listing of all pages plus drafts (pages that are not linked anywhere yet). There is no need for a media library, asset browser, or content management dashboard beyond this.
 
+### Page reachability
+
+A page is **reachable** (and appears in `sitemap.xml`) if it can be reached by following links starting from the home page, nav, or footer. This is a transitive check — a page linked only from a draft is still a draft, because the draft itself isn't reachable.
+
+The traversal starts from three roots:
+
+1. The home page (`home_page_id` from `site_settings`)
+2. `nav_1` — its links are live on every page
+3. `footer_1` — same
+
+From these roots, follow all outgoing `document_refs` recursively to collect the full set of reachable pages. Any page document not in this set is a **draft**. Drafts are visible in the admin site map but not included in `sitemap.xml`. This is a live query — not a precomputed cache — so it always reflects the current state of `document_refs` and `site_settings`.
+
+This can be computed with a single recursive CTE:
+
+```sql
+WITH RECURSIVE reachable(document_id) AS (
+    SELECT value FROM site_settings WHERE key = 'home_page_id'
+    UNION SELECT 'nav_1'
+    UNION SELECT 'footer_1'
+    UNION
+    SELECT target_document_id FROM document_refs
+    JOIN reachable ON reachable.document_id = source_document_id
+)
+SELECT document_id FROM reachable;
+```
+
+This query is cheap — most sites have tens to low hundreds of pages. It runs on demand: when serving `/sitemap.xml`, when rendering the admin site map, or when checking whether a specific page is public. There is no background sync or precomputed reachability table — the query is the source of truth.
+
+`document_refs` is updated on save for all documents, including drafts. A draft's outgoing links are already tracked, so when it becomes linked from a live page, its targets are immediately reachable without re-saving.
+
+When the home page is changed via `site_settings`, pages that were only reachable through the old home page's link tree may become drafts. This is expected — they're still visible in the admin site map and can be re-linked or deleted.
+
 ## Authentication
 
 Editable Website is a **single-user application**. There is one admin account. No user registration, no roles, no multi-tenancy.
@@ -519,10 +574,11 @@ This section tracks what to implement next. One step at a time.
 **Goal:** the home page (`page_1`) renders at `/` and saving changes persists them to the database. No assets, no authentication — those come in later steps.
 
 - **`src/lib/server/db.js`** — database connection using `node:sqlite`, exports the db instance. Uses `DATA_DIR` for the database path.
-- **`src/lib/server/migrations.js`** — exports an array of migration steps. For now, a single `initial_schema` step that creates the `documents` table and seeds it with three documents:
+- **`src/lib/server/migrations.js`** — exports an array of migration steps. For now, a single `initial_schema` step that creates the `documents`, `site_settings`, and `document_refs` tables, and seeds:
   - `page_1` (type `page`) — the home page, resembling the current demo document
   - `nav_1` (type `nav`) — the navigation document
   - `footer_1` (type `footer`) — the footer document
+  - `home_page_id` setting → `page_1`
 - **`src/lib/server/migrate.js`** — runs pending migrations from `migrations.js` against the database
 - **`src/hooks.server.js`** — uncomment the `migrate()` call in `init()` so migrations run on server startup
 - **`svelte.config.js`** — uncomment experimental async and remote functions
