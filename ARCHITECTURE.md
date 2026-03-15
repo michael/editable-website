@@ -37,6 +37,8 @@ data/
 
 ### SQLite database
 
+The database uses Node.js's built-in [`node:sqlite`](https://nodejs.org/api/sqlite.html) module (available since Node.js v22.5). No native addons to compile, no external dependencies — just the runtime.
+
 The database (`DB_PATH`) contains three tables:
 
 ```sql
