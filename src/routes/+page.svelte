@@ -4,10 +4,10 @@
 	import { Svedit, KeyMapper, Command, define_keymap } from 'svedit';
 	import Toolbar from './components/Toolbar.svelte';
 	import { create_session } from './create_session.js';
-	import { demo_doc } from '$lib/demo_doc.js';
+	import { get_document, save_document } from '$lib/api.remote.js';
 
-	let { data } = $props();
-	let session = $derived(create_session(demo_doc));
+	const doc = await get_document('page_1');
+	let session = $derived(create_session(doc));
 
 	let app_el = $state();
 	let svedit_ref = $state();
@@ -70,9 +70,9 @@
 		}
 
 		async execute() {
-			// TODO: persist changes to database
-			// await save_document(this.context.session);
-			console.log('Document saved', session.to_json());
+			const doc_json = session.to_json();
+			await save_document(doc_json);
+			console.log('Document saved');
 			session.selection = null;
 			this.context.editable = false;
 		}
