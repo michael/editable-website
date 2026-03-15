@@ -471,3 +471,22 @@ If large storage requirements arise (e.g. video-heavy sites with many gigabytes 
 `ASSET_PATH` remains unchanged — it's always a local filesystem path derived from `DATA_DIR` and is only used when `ASSET_STORAGE` is `local`. `ASSET_BASE` is the public-facing URL prefix, only needed when assets are served externally.
 
 The document data model wouldn't need to change — `src` fields still store content-addressed asset ids, and URL construction just swaps the `/assets` prefix for `ASSET_BASE`. This is a deployment concern, not a data migration.
+
+## Implementation — next steps
+
+This section tracks what to implement next. One step at a time.
+
+### Step 1: database setup and seed data
+
+Set up the SQLite database with schema creation and seed data.
+
+- **`src/lib/server/db.js`** — database connection using `node:sqlite`, exports the db instance. Uses `DATA_DIR` for the database path.
+- **`src/lib/server/migrations.js`** — exports an array of migration steps. For now, a single `initial_schema` step that creates all three tables (`documents`, `asset_refs`, `sessions`) and seeds the database with three documents:
+  - `page_1` (type `page`) — the home page, resembling the current demo document
+  - `nav_1` (type `nav`) — the navigation document
+  - `footer_1` (type `footer`) — the footer document
+- **`src/lib/server/migrate.js`** — runs pending migrations from `migrations.js` against the database
+
+For now, everything stays in the `initial_schema` migration step. While iterating on the schema, it's fine to wipe the database and re-run — real incremental migrations will be added later.
+
+No authentication for now — it slows down development. Auth will be added as a later step.
