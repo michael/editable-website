@@ -8,6 +8,44 @@ This document describes the backend architecture for Editable Website v2.
 
 Editable Website is a SvelteKit application that lets site owners edit content directly in the browser. The editor (Svedit) works with a graph-based document model — a flat map of nodes with references between them. The backend stores these documents in SQLite and serves them to the frontend, stitching together shared content (nav, footer) with page-specific content into a single document that Svedit can edit locally.
 
+## SvelteKit configuration
+
+The app uses Svelte's experimental async features and SvelteKit's remote functions. Both are enabled in `svelte.config.js`:
+
+```js
+const config = {
+  kit: {
+    adapter: adapter(),
+    experimental: {
+      remoteFunctions: true
+    }
+  },
+  compilerOptions: {
+    experimental: {
+      async: true
+    }
+  }
+};
+```
+
+**Experimental async** allows `await` in Svelte markup and top-level `await` in `<script>` tags, enabling components to load data inline without separate `+page.server.js` load functions.
+
+**Remote functions** (`$app/server`) allow server-side functions to be called directly from components via `query()` and `action()`. This replaces traditional REST endpoints for document loading and saving:
+
+- **`src/lib/api.remote.js`** — server-side functions for document and asset operations, called directly from components. Uses `query()` for reads and `action()` for writes. Access to `locals` (e.g. for auth checks) via `getRequestEvent()`.
+
+**Server initialization** — `src/hooks.server.js` exports an `init()` function (SvelteKit's `ServerInit` hook) that runs once on server startup. This is where database migration runs:
+
+```js
+import migrate from '$lib/server/migrate.js';
+
+export async function init() {
+  migrate();
+}
+```
+
+The `handle` hook runs on every request and is where session validation and `event.locals.user` assignment will happen once authentication is implemented.
+
 ## Data storage
 
 All persistent data lives in a single directory, controlled by the `DATA_DIR` environment variable (defaults to `data/`):
@@ -486,6 +524,8 @@ Set up the SQLite database with schema creation and seed data.
   - `nav_1` (type `nav`) — the navigation document
   - `footer_1` (type `footer`) — the footer document
 - **`src/lib/server/migrate.js`** — runs pending migrations from `migrations.js` against the database
+- **`src/hooks.server.js`** — uncomment the `migrate()` call in `init()` so migrations run on server startup
+- **`svelte.config.js`** — uncomment experimental async and remote functions
 
 For now, everything stays in the `initial_schema` migration step. While iterating on the schema, it's fine to wipe the database and re-run — real incremental migrations will be added later.
 
