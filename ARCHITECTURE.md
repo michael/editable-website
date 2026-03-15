@@ -488,7 +488,7 @@ The traversal starts from three roots:
 
 From these roots, follow all outgoing `document_refs` recursively to collect the full set of reachable pages. Any page document not in this set is a **draft**. Drafts are visible in the admin site map but not included in `sitemap.xml`. This is a live query — not a precomputed cache — so it always reflects the current state of `document_refs` and `site_settings`.
 
-This can be computed with a single recursive CTE:
+A single query returns all pages with a computed `status` column:
 
 ```sql
 WITH RECURSIVE reachable(document_id) AS (
@@ -499,8 +499,14 @@ WITH RECURSIVE reachable(document_id) AS (
     SELECT target_document_id FROM document_refs
     JOIN reachable ON reachable.document_id = source_document_id
 )
-SELECT document_id FROM reachable;
+SELECT d.document_id, d.data,
+    CASE WHEN r.document_id IS NOT NULL THEN 'public' ELSE 'draft' END AS status
+FROM documents d
+LEFT JOIN reachable r ON d.document_id = r.document_id
+WHERE d.type = 'page';
 ```
+
+This serves both the admin site map (all rows) and `sitemap.xml` (filter `WHERE status = 'public'`).
 
 This query is cheap — most sites have tens to low hundreds of pages. It runs on demand: when serving `/sitemap.xml`, when rendering the admin site map, or when checking whether a specific page is public. There is no background sync or precomputed reachability table — the query is the source of truth.
 
