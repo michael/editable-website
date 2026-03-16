@@ -81,6 +81,8 @@
 		}
 
 		async execute() {
+			const save_start = Date.now();
+
 			// Start progress tracking (modal appears after 1s delay)
 			save_progress_visible = true;
 			save_progress_done = false;
@@ -149,10 +151,12 @@
 				session.selection = null;
 				this.context.editable = false;
 
-				// Flash success message
-				save_progress_message = 'Successfully saved';
-				save_progress_done = true;
-				await new Promise((resolve) => setTimeout(resolve, 1500));
+				// Flash success message only if save took more than 3s
+				if (Date.now() - save_start > 3000) {
+					save_progress_message = 'Successfully saved';
+					save_progress_done = true;
+					await new Promise((resolve) => setTimeout(resolve, 1500));
+				}
 				save_progress_visible = false;
 			} catch (err) {
 				console.error('Save failed:', err);
