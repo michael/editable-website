@@ -1,10 +1,6 @@
 import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync } from 'node:fs';
-import { join } from 'node:path';
-
-export const DATA_DIR = process.env.DATA_DIR || 'data';
-export const DB_PATH = join(DATA_DIR, 'db.sqlite3');
-export const ASSET_PATH = join(DATA_DIR, 'assets');
+import { DATA_DIR, DB_PATH } from '$lib/config.js';
 
 // Ensure the data directory exists
 mkdirSync(DATA_DIR, { recursive: true });
