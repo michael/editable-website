@@ -5,9 +5,6 @@
 	import { create_session } from './create_session.js';
 	import { get_document, save_document } from '$lib/api.remote.js';
 
-	const doc = await get_document('page_1');
-	let session = $derived(create_session(doc));
-
 	let app_el = $state();
 	let svedit_ref = $state();
 	let editable = $state(false);
@@ -77,6 +74,10 @@
 		}
 	}
 
+	// Create KeyMapper and provide via context (must happen synchronously before any await)
+	const key_mapper = new KeyMapper();
+	setContext('key_mapper', key_mapper);
+
 	const app_command_context = {
 		get editable() {
 			return editable;
@@ -97,16 +98,16 @@
 		save_document: new SaveCommand(app_command_context)
 	};
 
-	// Create KeyMapper and provide via context
-	const key_mapper = new KeyMapper();
-	setContext('key_mapper', key_mapper);
-
 	// Push app-level keymap scope
 	const app_key_map = define_keymap({
 		'meta+e,ctrl+e': [app_commands.edit_document],
 		'meta+s,ctrl+s': [app_commands.save_document]
 	});
 	key_mapper.push_scope(app_key_map);
+
+	// Load document from database (must be after all synchronous init)
+	const doc = await get_document('page_1');
+	let session = $derived(create_session(doc));
 </script>
 
 <svelte:window onkeydown={key_mapper.handle_keydown.bind(key_mapper)} />
