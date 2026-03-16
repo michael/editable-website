@@ -173,22 +173,28 @@ export const save_document = command(
 			'INSERT INTO documents (document_id, type, data) VALUES(?, ?, ?) ON CONFLICT(document_id) DO UPDATE SET data = excluded.data'
 		);
 
+		const delete_refs = db.prepare('DELETE FROM asset_refs WHERE document_id = ?');
+		const insert_ref = db.prepare('INSERT OR IGNORE INTO asset_refs (asset_id, document_id) VALUES (?, ?)');
+
 		// Wrap all upserts in a transaction so either all succeed or none
 		db.exec('BEGIN');
 		try {
 			// Save page
 			upsert.run(combined_doc.document_id, 'page', JSON.stringify(page_doc));
+			update_asset_refs(combined_doc.document_id, page_node_ids, all_nodes, delete_refs, insert_ref);
 
 			// Save nav if present
 			if (nav_root_id && nav_node_ids.size > 0) {
 				const nav_doc = extract_document(nav_root_id, nav_node_ids, all_nodes);
 				upsert.run(nav_root_id, 'nav', JSON.stringify(nav_doc));
+				update_asset_refs(nav_root_id, nav_node_ids, all_nodes, delete_refs, insert_ref);
 			}
 
 			// Save footer if present
 			if (footer_root_id && footer_node_ids.size > 0) {
 				const footer_doc = extract_document(footer_root_id, footer_node_ids, all_nodes);
 				upsert.run(footer_root_id, 'footer', JSON.stringify(footer_doc));
+				update_asset_refs(footer_root_id, footer_node_ids, all_nodes, delete_refs, insert_ref);
 			}
 
 			db.exec('COMMIT');
@@ -200,3 +206,30 @@ export const save_document = command(
 		return { ok: true };
 	}
 );
+
+/**
+ * Update asset_refs for a sub-document: full replace of all refs for the given document_id.
+ * Collects src values from image nodes in the node set.
+ *
+ * @param {string} document_id
+ * @param {Set<string>} node_ids
+ * @param {Record<string, any>} all_nodes
+ * @param {import('node:sqlite').StatementSync} delete_stmt
+ * @param {import('node:sqlite').StatementSync} insert_stmt
+ */
+function update_asset_refs(document_id, node_ids, all_nodes, delete_stmt, insert_stmt) {
+	// Collect asset ids from image nodes
+	const asset_ids = new Set();
+	for (const node_id of node_ids) {
+		const node = all_nodes[node_id];
+		if (node && node.type === 'image' && typeof node.src === 'string' && node.src && !node.src.startsWith('blob:')) {
+			asset_ids.add(node.src);
+		}
+	}
+
+	// Full replace: delete all existing refs, insert current set
+	delete_stmt.run(document_id);
+	for (const asset_id of asset_ids) {
+		insert_stmt.run(asset_id, document_id);
+	}
+}
