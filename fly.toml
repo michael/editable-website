@@ -20,4 +20,5 @@
   auto_start_machines = true
   auto_stop_machines = "suspend"
   min_machines_running = 0
+  max_machines_running = 1
   processes = ["app"]
