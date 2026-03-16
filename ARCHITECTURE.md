@@ -603,6 +603,8 @@ No authentication for now — it slows down development. Auth will be added as a
 
 This step covers static raster images (JPEG, PNG, WebP, HEIC/HEIF) which get client-side WASM processing, plus animated GIFs and SVGs which pass through unprocessed. The image-resize project serves as the reference implementation for the WASM processing pipeline and upload protocol.
 
+**Modularization principle:** asset processing and upload logic should be extracted into dedicated modules rather than inlined into existing files like `+page.svelte`. The save flow, paste/drop handling, and upload protocol each get their own module. Existing files should only import and call into the new modules — minimal changes to existing code, maximum isolation of new functionality.
+
 #### Dependencies
 
 Install `@jsquash/webp` and `@jsquash/resize` for client-side WASM-based image processing:
