@@ -9,6 +9,7 @@
 
 	const svedit = getContext('svedit');
 	let node = $derived(svedit.session.get(path));
+	let logo_node = $derived(svedit.session.get([...path, 'logo']));
 	let nav_items = $derived(node.nav_items || []);
 
 	let mobile_menu_open = $state(false);
@@ -44,6 +45,7 @@
 						this={svedit.editable ? 'div' : 'a'}
 						href={svedit.editable ? undefined : '/'}
 						class="w-10 h-10 overflow-hidden block"
+						class:ew-bg-checkerboard={!logo_node.src}
 						contenteditable={svedit.editable ? 'false' : undefined}
 					>
 						<Image path={[...path, 'logo']} mask={true} />

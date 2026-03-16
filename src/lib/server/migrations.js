@@ -13,7 +13,7 @@ const nav_1 = {
 		nav_logo: {
 			id: 'nav_logo',
 			type: 'image',
-			src: '/sample-images/logo.svg',
+			src: '',
 			width: 100,
 			height: 100,
 			alt: 'Logo',
@@ -62,7 +62,7 @@ const footer_1 = {
 		footer_logo: {
 			id: 'footer_logo',
 			type: 'image',
-			src: '/sample-images/logo.svg',
+			src: '',
 			width: 100,
 			height: 100,
 			alt: 'Logo',
@@ -200,7 +200,7 @@ const page_1 = {
 		VbNcMxZaQwErTyUiOpLkJh: {
 			id: 'VbNcMxZaQwErTyUiOpLkJh',
 			type: 'image',
-			src: '/sample-images/cmde.webp',
+			src: '',
 			width: 800,
 			height: 600,
 			alt: 'Feature image',
@@ -419,7 +419,7 @@ const page_1 = {
 		jEhPHUyzqvpNeSHYfKCkYgS: {
 			id: 'jEhPHUyzqvpNeSHYfKCkYgS',
 			type: 'image',
-			src: '/sample-images/user1-desktop.webp',
+			src: '',
 			width: 800,
 			height: 600,
 			alt: 'Sample image',
@@ -436,7 +436,7 @@ const page_1 = {
 		ZjdBYZdXQedwuTdVFGHdDEj: {
 			id: 'ZjdBYZdXQedwuTdVFGHdDEj',
 			type: 'image',
-			src: '/sample-images/user1-notebook.webp',
+			src: '',
 			width: 800,
 			height: 600,
 			alt: 'Sample image',
@@ -523,7 +523,7 @@ const page_1 = {
 		nprCMwYvJvUEmRaHBsxfgUd: {
 			id: 'nprCMwYvJvUEmRaHBsxfgUd',
 			type: 'image',
-			src: '/sample-images/gluecksmaurer.webp',
+			src: '',
 			width: 800,
 			height: 600,
 			alt: 'Getting started',
@@ -545,7 +545,7 @@ const page_1 = {
 		link_collection_item_2_image: {
 			id: 'link_collection_item_2_image',
 			type: 'image',
-			src: '/sample-images/colbourns.webp',
+			src: '',
 			width: 800,
 			height: 600,
 			alt: 'Customization',
@@ -570,7 +570,7 @@ const page_1 = {
 		ReRqxYxMdAUVaMuudfJhzsS: {
 			id: 'ReRqxYxMdAUVaMuudfJhzsS',
 			type: 'image',
-			src: '/sample-images/tomorrow-vc.webp',
+			src: '',
 			width: 800,
 			height: 600,
 			alt: 'Svedit documentation',
@@ -709,7 +709,7 @@ const page_1 = {
 		hqrrTdEbTPaqzEcYMczhBZb: {
 			id: 'hqrrTdEbTPaqzEcYMczhBZb',
 			type: 'image',
-			src: '/sample-images/michael.webp',
+			src: '',
 			width: 682,
 			height: 1024,
 			alt: 'Feature image',

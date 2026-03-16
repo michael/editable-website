@@ -7,6 +7,7 @@
 	const svedit = getContext('svedit');
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
+	let logo_node = $derived(svedit.session.get([...path, 'logo']));
 	let column_count = $derived(node.footer_link_columns?.length || 0);
 	let grid_cols_class = $derived(
 		column_count <= 1 ? 'lg:grid-cols-1' :
@@ -25,6 +26,7 @@
 						this={svedit.editable ? 'div' : 'a'}
 						href={svedit.editable ? undefined : '/'}
 						class="h-18 w-18 overflow-hidden block"
+						class:ew-bg-checkerboard={!logo_node.src}
 						contenteditable={svedit.editable ? 'false' : undefined}
 					>
 						<Image path={[...path, 'logo']} mask={true} />
