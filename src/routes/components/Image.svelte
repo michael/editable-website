@@ -55,8 +55,6 @@
 	img {
 		width: 100%;
 		height: 100%;
-		user-select: none;
-		pointer-events: none;
 		transform-origin: center center;
 		/*transition: transform 0.05s linear;*/
 	}
@@ -65,8 +63,6 @@
 	.mask-image {
 		width: 100%;
 		height: 100%;
-		user-select: none;
-		pointer-events: none;
 		background-color: var(--foreground);
 	}
 
