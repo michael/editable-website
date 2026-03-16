@@ -173,19 +173,28 @@ export const save_document = command(
 			'INSERT INTO documents (document_id, type, data) VALUES(?, ?, ?) ON CONFLICT(document_id) DO UPDATE SET data = excluded.data'
 		);
 
-		// Save page
-		upsert.run(combined_doc.document_id, 'page', JSON.stringify(page_doc));
+		// Wrap all upserts in a transaction so either all succeed or none
+		db.exec('BEGIN');
+		try {
+			// Save page
+			upsert.run(combined_doc.document_id, 'page', JSON.stringify(page_doc));
 
-		// Save nav if present
-		if (nav_root_id && nav_node_ids.size > 0) {
-			const nav_doc = extract_document(nav_root_id, nav_node_ids, all_nodes);
-			upsert.run(nav_root_id, 'nav', JSON.stringify(nav_doc));
-		}
+			// Save nav if present
+			if (nav_root_id && nav_node_ids.size > 0) {
+				const nav_doc = extract_document(nav_root_id, nav_node_ids, all_nodes);
+				upsert.run(nav_root_id, 'nav', JSON.stringify(nav_doc));
+			}
 
-		// Save footer if present
-		if (footer_root_id && footer_node_ids.size > 0) {
-			const footer_doc = extract_document(footer_root_id, footer_node_ids, all_nodes);
-			upsert.run(footer_root_id, 'footer', JSON.stringify(footer_doc));
+			// Save footer if present
+			if (footer_root_id && footer_node_ids.size > 0) {
+				const footer_doc = extract_document(footer_root_id, footer_node_ids, all_nodes);
+				upsert.run(footer_root_id, 'footer', JSON.stringify(footer_doc));
+			}
+
+			db.exec('COMMIT');
+		} catch (err) {
+			db.exec('ROLLBACK');
+			throw err;
 		}
 
 		return { ok: true };
