@@ -894,5 +894,14 @@ export default [
 			'home_page_id',
 			'page_1'
 		);
+	},
+	function add_asset_refs({ db }) {
+		db.exec(`
+			CREATE TABLE asset_refs (
+				asset_id TEXT NOT NULL,
+				document_id TEXT NOT NULL,
+				PRIMARY KEY (asset_id, document_id)
+			)
+		`);
 	}
 ];
