@@ -13,10 +13,16 @@
 		replace_blob_urls,
 		cleanup_pending
 	} from '$lib/client/asset-upload.js';
+	import SaveProgressModal from './components/SaveProgressModal.svelte';
 
 	let app_el = $state();
 	let svedit_ref = $state();
 	let editable = $state(false);
+
+	// Save progress modal state
+	let save_progress_visible = $state(false);
+	let save_progress_message = $state('');
+	let save_progress_done = $state(false);
 
 	$effect(() => {
 		document.documentElement.style.scrollBehavior = editable ? 'auto' : 'smooth';
@@ -75,6 +81,11 @@
 		}
 
 		async execute() {
+			// Start progress tracking (modal appears after 1s delay)
+			save_progress_visible = true;
+			save_progress_done = false;
+			save_progress_message = 'Saving…';
+
 			try {
 				let mapping = null;
 
@@ -83,21 +94,34 @@
 				const blob_urls = collect_blob_urls(pre_check.nodes);
 
 				if (blob_urls.length > 0) {
+					const total = blob_urls.length;
+
 					// Re-start processing for any blob URLs missing from the pending map
 					// (e.g. after undo brought back blob URLs cleaned up by a previous save)
 					await ensure_processing(blob_urls);
 
 					// Wait for any images still being processed in the background
 					if (has_pending_processing()) {
-						console.log('Waiting for image processing to finish...');
-						await wait_for_processing();
+						save_progress_message = total === 1
+							? 'Processing image…'
+							: `Processing ${total} images…`;
+						await wait_for_processing(({ done, total: t }) => {
+							if (t > 1) {
+								save_progress_message = `Processing image ${done + 1}/${t}…`;
+							}
+						});
 					}
 
 					// Upload pending assets referenced in the document
-					mapping = await upload_pending(blob_urls);
+					mapping = await upload_pending(blob_urls, ({ phase, index, total: t }) => {
+						if (phase === 'uploading') {
+							save_progress_message = `Uploading image ${index}/${t}…`;
+						}
+					});
 				}
 
 				// 2. Replace blob URLs on the doc_json copy and save
+				save_progress_message = 'Saving…';
 				const doc_json = session.to_json();
 				if (mapping) {
 					replace_blob_urls(doc_json.nodes, mapping);
@@ -124,8 +148,15 @@
 				console.log('Document saved');
 				session.selection = null;
 				this.context.editable = false;
+
+				// Flash success message
+				save_progress_message = 'Successfully saved';
+				save_progress_done = true;
+				await new Promise((resolve) => setTimeout(resolve, 1500));
+				save_progress_visible = false;
 			} catch (err) {
 				console.error('Save failed:', err);
+				save_progress_visible = false;
 				alert('Save failed. Your changes have not been lost — please try again.');
 			}
 		}
@@ -184,6 +215,7 @@
 	<div class="demo-wrapper antialiased" bind:this={app_el}>
 		<!-- <Toolbar {session} {focus_canvas} bind:editable /> -->
 		<Svedit {session} bind:editable bind:this={svedit_ref} path={[session.doc.document_id]} />
+		<SaveProgressModal visible={save_progress_visible} message={save_progress_message} done={save_progress_done} />
 
 		<!-- {#if editable}
 			<div class="flex-column mx-auto my-10 w-full max-w-5xl gap-y-2">

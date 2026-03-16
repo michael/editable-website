@@ -155,12 +155,27 @@ export function has_pending_processing() {
 }
 
 /**
+ * @callback ProcessingProgressCallback
+ * @param {{ done: number, total: number }} progress
+ */
+
+/**
  * Wait until all pending assets have finished processing.
  *
+ * @param {ProcessingProgressCallback} [on_progress] - optional progress callback
  * @returns {Promise<void>}
  */
-export async function wait_for_processing() {
+export async function wait_for_processing(on_progress) {
 	while (has_pending_processing()) {
+		if (on_progress) {
+			let done = 0;
+			let total = 0;
+			for (const entry of pending_assets.values()) {
+				total++;
+				if (entry.status !== 'processing') done++;
+			}
+			on_progress({ done, total });
+		}
 		await new Promise((resolve) => setTimeout(resolve, 100));
 	}
 }
@@ -254,18 +269,26 @@ async function upload_asset(entry) {
 }
 
 /**
+ * @callback UploadProgressCallback
+ * @param {{ phase: 'uploading', index: number, total: number }} progress
+ */
+
+/**
  * Upload pending assets that are referenced in the document.
  * Only uploads entries whose blob URL appears in the provided list.
  * Throws on the first failure (after cleaning up the failed asset).
  *
  * @param {string[]} blob_urls - blob URLs currently in the document's image nodes
+ * @param {UploadProgressCallback} [on_progress] - optional progress callback
  * @returns {Promise<Map<string, { asset_id: string, width: number, height: number }>>}
  */
-export async function upload_pending(blob_urls) {
+export async function upload_pending(blob_urls, on_progress) {
 	/** @type {Map<string, { asset_id: string, width: number, height: number }>} */
 	const mapping = new Map();
+	const total = blob_urls.length;
 
-	for (const blob_url of blob_urls) {
+	for (let i = 0; i < blob_urls.length; i++) {
+		const blob_url = blob_urls[i];
 		const entry = pending_assets.get(blob_url);
 		if (!entry) {
 			throw new Error(`No pending asset found for ${blob_url}`);
@@ -275,6 +298,10 @@ export async function upload_pending(blob_urls) {
 		}
 		if (entry.status !== 'ready') {
 			throw new Error('Some assets are still processing');
+		}
+
+		if (on_progress) {
+			on_progress({ phase: 'uploading', index: i + 1, total });
 		}
 
 		const result = await upload_asset(entry);
