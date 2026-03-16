@@ -67,10 +67,15 @@
 
 		async execute() {
 			const doc_json = session.to_json();
-			await save_document(doc_json);
-			console.log('Document saved');
-			session.selection = null;
-			this.context.editable = false;
+			try {
+				await save_document(doc_json);
+				console.log('Document saved');
+				session.selection = null;
+				this.context.editable = false;
+			} catch (err) {
+				console.error('Save failed:', err);
+				alert('Save failed. Your changes have not been lost — please try again.');
+			}
 		}
 	}
 
