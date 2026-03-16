@@ -1,6 +1,7 @@
 import { getRequestEvent, query, command } from '$app/server';
 import * as v from 'valibot';
 import db from '$lib/server/db.js';
+import { document_schema } from '$lib/document_schema.js';
 
 /**
  * @typedef {Object} DocumentRow
@@ -14,148 +15,6 @@ import db from '$lib/server/db.js';
  * @property {string} document_id
  * @property {Record<string, any>} nodes
  */
-
-// Minimal schema for graph walking — only need property types to follow references
-const walk_schema = {
-	page: {
-		properties: {
-			body: { type: 'node_array' },
-			nav: { type: 'node' },
-			footer: { type: 'node' }
-		}
-	},
-	footer: {
-		properties: {
-			logo: { type: 'node' },
-			copyright: { type: 'annotated_text' },
-			footer_link_columns: { type: 'node_array' }
-		}
-	},
-	footer_link_column: {
-		properties: {
-			label: { type: 'annotated_text' },
-			footer_links: { type: 'node_array' }
-		}
-	},
-	footer_link: {
-		properties: {
-			href: { type: 'string' },
-			target: { type: 'string' },
-			label: { type: 'annotated_text' }
-		}
-	},
-	nav: {
-		properties: {
-			logo: { type: 'node' },
-			nav_items: { type: 'node_array' }
-		}
-	},
-	nav_item: {
-		properties: {
-			layout: { type: 'integer' },
-			href: { type: 'string' },
-			target: { type: 'string' },
-			label: { type: 'annotated_text' }
-		}
-	},
-	hero: {
-		properties: {
-			layout: { type: 'integer' },
-			colorset: { type: 'integer' },
-			title: { type: 'annotated_text' },
-			description: { type: 'annotated_text' },
-			buttons: { type: 'node_array' }
-		}
-	},
-	button: {
-		properties: {
-			layout: { type: 'integer' },
-			href: { type: 'string' },
-			target: { type: 'string' },
-			label: { type: 'annotated_text' }
-		}
-	},
-	prose: {
-		properties: {
-			layout: { type: 'integer' },
-			colorset: { type: 'integer' },
-			content: { type: 'node_array' }
-		}
-	},
-	text: {
-		properties: {
-			layout: { type: 'integer' },
-			content: { type: 'annotated_text' }
-		}
-	},
-	image: {
-		properties: {
-			src: { type: 'string' },
-			width: { type: 'integer' },
-			height: { type: 'integer' },
-			alt: { type: 'string' },
-			focal_point_x: { type: 'number' },
-			focal_point_y: { type: 'number' },
-			scale: { type: 'number' },
-			object_fit: { type: 'string' }
-		}
-	},
-	figure: {
-		properties: {
-			image: { type: 'node' }
-		}
-	},
-	gallery: {
-		properties: {
-			layout: { type: 'integer' },
-			colorset: { type: 'integer' },
-			intro: { type: 'node_array' },
-			gallery_items: { type: 'node_array' },
-			outro: { type: 'node_array' }
-		}
-	},
-	gallery_item: {
-		properties: {
-			image: { type: 'node' }
-		}
-	},
-	link_collection: {
-		properties: {
-			layout: { type: 'integer' },
-			colorset: { type: 'integer' },
-			intro: { type: 'node_array' },
-			link_collection_items: { type: 'node_array' },
-			outro: { type: 'node_array' }
-		}
-	},
-	link_collection_item: {
-		properties: {
-			href: { type: 'string' },
-			target: { type: 'string' },
-			image: { type: 'node' },
-			preline: { type: 'annotated_text' },
-			title: { type: 'annotated_text' },
-			description: { type: 'annotated_text' }
-		}
-	},
-	feature: {
-		properties: {
-			layout: { type: 'integer' },
-			colorset: { type: 'integer' },
-			image: { type: 'node' },
-			body: { type: 'node_array' }
-		}
-	},
-	link: {
-		properties: {
-			href: { type: 'string' },
-			target: { type: 'string' }
-		}
-	},
-	strong: { properties: {} },
-	emphasis: { properties: {} },
-	highlight: { properties: {} }
-};
 
 /**
  * Collect all node ids reachable from a root node by walking node/node_array
@@ -179,7 +38,7 @@ function collect_node_ids(root_id, nodes, exclude_roots) {
 		const node = nodes[id];
 		if (!node) continue;
 
-		const type_schema = walk_schema[node.type];
+		const type_schema = document_schema[node.type];
 		if (!type_schema) continue;
 
 		for (const [prop_name, prop_def] of Object.entries(type_schema.properties)) {
