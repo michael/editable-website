@@ -4,6 +4,14 @@
 	import { Svedit, KeyMapper, Command, define_keymap } from 'svedit';
 	import { create_session } from './create_session.js';
 	import { get_document, save_document } from '$lib/api.remote.js';
+	import {
+		collect_blob_urls,
+		wait_for_processing,
+		has_pending_processing,
+		upload_pending,
+		replace_blob_urls,
+		cleanup_pending
+	} from '$lib/client/asset-upload.js';
 
 	let app_el = $state();
 	let svedit_ref = $state();
@@ -68,6 +76,25 @@
 		async execute() {
 			const doc_json = session.to_json();
 			try {
+				const blob_urls = collect_blob_urls(doc_json.nodes);
+
+				if (blob_urls.length > 0) {
+					// Wait for any images still being processed in the background
+					if (has_pending_processing()) {
+						console.log('Waiting for image processing to finish...');
+						await wait_for_processing();
+					}
+
+					// Upload pending assets referenced in the document
+					const mapping = await upload_pending(blob_urls);
+
+					// Replace blob URLs with asset ids in the document
+					replace_blob_urls(doc_json.nodes, mapping);
+
+					// Clean up the pending map
+					cleanup_pending(mapping);
+				}
+
 				await save_document(doc_json);
 				console.log('Document saved');
 				session.selection = null;

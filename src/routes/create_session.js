@@ -49,6 +49,7 @@ import Highlight from './components/Highlight.svelte';
 import Link from './components/Link.svelte';
 
 import { document_schema } from '$lib/document_schema.js';
+import { start_processing } from '$lib/client/asset-upload.js';
 
 // App-specific config object, always available via session.config for introspection
 const session_config = {
@@ -84,21 +85,21 @@ const session_config = {
 		Link
 	},
 	handle_image_paste: async (session, pasted_images) => {
-		// ATTENTION: In a real-world-app, you may want to upload `pasted_images` here,
-		// before referencing them from the document.
 		if (session.selection.type === 'property') {
 			const node = session.get(session.selection.path);
 			if (node.type === 'image') {
+				const blob_url = pasted_images[0].data_url;
 				const tr = session.tr;
-				tr.set([...session.selection.path, 'src'], pasted_images[0].data_url);
+				tr.set([...session.selection.path, 'src'], blob_url);
 				session.apply(tr);
+				// Start background processing (hash + resize/encode)
+				start_processing(blob_url, pasted_images[0].blob);
 			}
 			return null;
 		} else {
 			const pasted_json = { main_nodes: [], nodes: {} };
-			// When cursor inside an image grid we want to insert an image_grid_item
-			// otherwise we want to insert a story, as that is the only body node,
-			// that can carry an image.
+			// When cursor inside an image grid we want to insert a gallery_item,
+			// otherwise insert a figure.
 			let target_node_type;
 			if (session.can_insert('gallery_item')) {
 				target_node_type = 'gallery_item';
@@ -107,14 +108,15 @@ const session_config = {
 			}
 			for (let i = 0; i < pasted_images.length; i++) {
 				const pasted_image = pasted_images[i];
+				const blob_url = pasted_image.data_url;
 
 				pasted_json.nodes['node_image_' + i] = {
 					id: 'node_image_' + i,
 					type: 'image',
-					src: pasted_image.data_url,
+					src: blob_url,
 					width: 800,
 					height: 600,
-					alt: 'Sample image',
+					alt: '',
 					scale: 1.0,
 					focal_point_x: 0.5,
 					focal_point_y: 0.5,
@@ -126,6 +128,9 @@ const session_config = {
 					image: 'node_image_' + i
 				};
 				pasted_json.main_nodes.push('node_' + i);
+
+				// Start background processing (hash + resize/encode)
+				start_processing(blob_url, pasted_image.blob);
 			}
 			return pasted_json;
 		}
