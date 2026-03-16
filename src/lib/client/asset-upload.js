@@ -1,4 +1,5 @@
 import { process_asset } from './process-asset.js';
+import { MAX_IMAGE_WIDTH } from '$lib/asset-config.js';
 
 /**
  * @typedef {{
@@ -299,6 +300,40 @@ export function replace_blob_urls(nodes, mapping) {
 				node.width = entry.width;
 				node.height = entry.height;
 			}
+		}
+	}
+}
+
+/**
+ * Ensure all blob URLs have pending asset entries. For any blob URL
+ * that's missing from the map (e.g. after undo brought back blob URLs
+ * that were cleaned up after a previous save), re-fetch the blob and
+ * restart processing.
+ *
+ * @param {string[]} blob_urls - blob URLs currently in the document's image nodes
+ * @returns {Promise<void>}
+ */
+export async function ensure_processing(blob_urls) {
+	for (const blob_url of blob_urls) {
+		if (pending_assets.has(blob_url)) continue;
+
+		// Re-fetch the blob from the still-valid blob URL
+		try {
+			const response = await fetch(blob_url);
+			const blob = await response.blob();
+			const file = new File([blob], 'pasted-image', { type: blob.type || 'image/png' });
+			start_processing(blob_url, file);
+		} catch (err) {
+			console.error(`Failed to re-process asset for ${blob_url}:`, err);
+			// Create a failed entry so upload_pending will report the error
+			pending_assets.set(blob_url, {
+				hash: '',
+				asset_id: '',
+				original: { blob: new Blob(), width: 0, height: 0 },
+				variants: [],
+				status: 'error',
+				error: `Failed to re-fetch blob URL: ${err instanceof Error ? err.message : err}`
+			});
 		}
 	}
 }

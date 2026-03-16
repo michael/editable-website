@@ -8,6 +8,7 @@
 		collect_blob_urls,
 		wait_for_processing,
 		has_pending_processing,
+		ensure_processing,
 		upload_pending,
 		replace_blob_urls,
 		cleanup_pending
@@ -74,11 +75,18 @@
 		}
 
 		async execute() {
-			const doc_json = session.to_json();
 			try {
-				const blob_urls = collect_blob_urls(doc_json.nodes);
+				let mapping = null;
+
+				// 1. Upload assets (before serializing the document)
+				const pre_check = session.to_json();
+				const blob_urls = collect_blob_urls(pre_check.nodes);
 
 				if (blob_urls.length > 0) {
+					// Re-start processing for any blob URLs missing from the pending map
+					// (e.g. after undo brought back blob URLs cleaned up by a previous save)
+					await ensure_processing(blob_urls);
+
 					// Wait for any images still being processed in the background
 					if (has_pending_processing()) {
 						console.log('Waiting for image processing to finish...');
@@ -86,16 +94,33 @@
 					}
 
 					// Upload pending assets referenced in the document
-					const mapping = await upload_pending(blob_urls);
+					mapping = await upload_pending(blob_urls);
+				}
 
-					// Replace blob URLs with asset ids in the document
+				// 2. Replace blob URLs on the doc_json copy and save
+				const doc_json = session.to_json();
+				if (mapping) {
 					replace_blob_urls(doc_json.nodes, mapping);
-
-					// Clean up the pending map
-					cleanup_pending(mapping);
 				}
 
 				await save_document(doc_json);
+
+				// 3. Save succeeded — now update the live session and clean up
+				if (mapping) {
+					const tr = session.tr;
+					for (const [blob_url, entry] of mapping.entries()) {
+						for (const node of Object.values(pre_check.nodes)) {
+							if (node.type === 'image' && node.src === blob_url) {
+								tr.set([node.id, 'src'], entry.asset_id);
+								tr.set([node.id, 'width'], entry.width);
+								tr.set([node.id, 'height'], entry.height);
+							}
+						}
+					}
+					session.apply(tr);
+					cleanup_pending(mapping);
+				}
+
 				console.log('Document saved');
 				session.selection = null;
 				this.context.editable = false;
