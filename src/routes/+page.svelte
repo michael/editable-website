@@ -2,6 +2,7 @@
 	import { setContext } from 'svelte';
 	import { page } from '$app/stores';
 	import { Svedit, KeyMapper, Command, define_keymap } from 'svedit';
+	import Toolbar from './components/Toolbar.svelte';
 	import { create_session } from './create_session.js';
 	import { demo_doc } from '$lib/demo_doc.js';
 
@@ -124,7 +125,7 @@
 <!-- Workaround for #40: Note that page.url.pathname from $app/state does not work -->
 {#key $page.url.pathname}
 	<div class="demo-wrapper antialiased" bind:this={app_el}>
-		<!-- <Toolbar {session} {focus_canvas} bind:editable /> -->
+		<Toolbar {session} {app_commands} {editable} {focus_canvas} />
 		<Svedit {session} bind:editable bind:this={svedit_ref} path={[session.doc.document_id]} />
 
 		<!-- {#if editable}

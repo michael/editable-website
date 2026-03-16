@@ -53,14 +53,22 @@ export class CycleNodeTypeCommand extends Command {
 
 		if (!this.context.editable || !session.selection) return false;
 
-		// Need to check if we have a node selection or can select parent
-		let selection = session.selection;
-		if (selection.type !== 'node') {
-			// Would need to select parent first
-			return true; // Let execute handle this
+		let node_array_path;
+		if (session.selection.type === 'node') {
+			// Disabled for collapsed node selections (node caret)
+			if (session.selection.anchor_offset === session.selection.focus_offset) return false;
+			node_array_path = session.selection.path;
+		} else {
+			// For text/property selections, resolve the parent node array
+			// Path is like ['page_1', 'body', 0, 'content'] — go up two levels
+			if (session.selection.path.length > 3) {
+				node_array_path = session.selection.path.slice(0, -2);
+			} else {
+				return false;
+			}
 		}
 
-		const node_array_schema = session.inspect(selection.path);
+		const node_array_schema = session.inspect(node_array_path);
 		if (node_array_schema.type !== 'node_array') return false;
 
 		// Need at least 2 types to cycle
