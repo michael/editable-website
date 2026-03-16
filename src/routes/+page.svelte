@@ -14,6 +14,7 @@
 		cleanup_pending
 	} from '$lib/client/asset-upload.js';
 	import SaveProgressModal from './components/SaveProgressModal.svelte';
+	import Toolbar from './components/Toolbar.svelte';
 
 	let app_el = $state();
 	let svedit_ref = $state();
@@ -217,7 +218,7 @@
 <!-- Workaround for #40: Note that page.url.pathname from $app/state does not work -->
 {#key $page.url.pathname}
 	<div class="demo-wrapper antialiased" bind:this={app_el}>
-		<!-- <Toolbar {session} {focus_canvas} bind:editable /> -->
+		<Toolbar {session} {app_commands} {editable} {focus_canvas} />
 		<Svedit {session} bind:editable bind:this={svedit_ref} path={[session.doc.document_id]} />
 		<SaveProgressModal visible={save_progress_visible} message={save_progress_message} done={save_progress_done} />
 
