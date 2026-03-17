@@ -9,7 +9,7 @@
 
 	let { path } = $props();
 
-	let image = $derived(svedit.session.get(path));
+	let media_node = $derived(svedit.session.get(path));
 	let controls_ref = $state(null);
 
 	// Drag state
@@ -29,7 +29,7 @@
 		tr.set([...path, 'scale'], MIN_SCALE);
 		// tr.set([...path, 'focal_point_x'], 0.5);
 		// tr.set([...path, 'focal_point_y'], 0.5);
-		tr.set([...path, 'object_fit'], image.object_fit === 'cover' ? 'contain' : 'cover');
+		tr.set([...path, 'object_fit'], media_node.object_fit === 'cover' ? 'contain' : 'cover');
 		svedit.session.apply(tr, { batch: true });
 	}
 
@@ -40,8 +40,8 @@
 		const dx = ((e.clientX - last_x) / rect.width) * -1;
 		const dy = ((e.clientY - last_y) / rect.height) * -1;
 
-		const new_focal_point_x = Math.min(Math.max(image.focal_point_x - dx, 0), 1);
-		const new_focal_point_y = Math.min(Math.max(image.focal_point_y - dy, 0), 1);
+		const new_focal_point_x = Math.min(Math.max(media_node.focal_point_x - dx, 0), 1);
+		const new_focal_point_y = Math.min(Math.max(media_node.focal_point_y - dy, 0), 1);
 
 		const tr = svedit.session.tr;
 		tr.set([...path, 'focal_point_x'], new_focal_point_x);
@@ -68,7 +68,7 @@
 		const zoomFactor = e.deltaY < 0 ? 1.01 : 0.99;
 
 		const tr = svedit.session.tr;
-		tr.set([...path, 'scale'], Math.min(Math.max(image.scale * zoomFactor, MIN_SCALE), MAX_SCALE));
+		tr.set([...path, 'scale'], Math.min(Math.max(media_node.scale * zoomFactor, MIN_SCALE), MAX_SCALE));
 		svedit.session.apply(tr, { batch: true });
 	}
 </script>
@@ -77,7 +77,7 @@
 
 <div
 	bind:this={controls_ref}
-	class="image-controls"
+	class="media-controls"
 	ondblclick={handle_double_click}
 	onpointerdown={handle_pointer_down}
 	onwheel={handle_wheel}
@@ -87,12 +87,12 @@
 >
 	<div
 		class="marker"
-		style={`left: ${image.focal_point_x * 100}%; top: ${image.focal_point_y * 100}%;`}
+		style={`left: ${media_node.focal_point_x * 100}%; top: ${media_node.focal_point_y * 100}%;`}
 	></div>
 </div>
 
 <style>
-	.image-controls {
+	.media-controls {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -104,7 +104,7 @@
 		z-index: 10;
 	}
 
-	.image-controls.dragging {
+	.media-controls.dragging {
 		cursor: grabbing;
 	}
 

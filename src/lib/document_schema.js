@@ -29,7 +29,7 @@ export const document_schema = define_document_schema({
 		properties: {
 			logo: {
 				type: 'node',
-				node_types: ['image'],
+				node_types: ['image', 'video'],
 				default_node_type: 'image'
 			},
 			copyright: {
@@ -76,7 +76,7 @@ export const document_schema = define_document_schema({
 		properties: {
 			logo: {
 				type: 'node',
-				node_types: ['image'],
+				node_types: ['image', 'video'],
 				default_node_type: 'image'
 			},
 			nav_items: {
@@ -170,12 +170,25 @@ export const document_schema = define_document_schema({
 			object_fit: { type: 'string', default: 'cover' }
 		}
 	},
+	video: {
+		kind: 'block',
+		properties: {
+			src: { type: 'string' },
+			width: { type: 'integer' },
+			height: { type: 'integer' },
+			alt: { type: 'string' },
+			focal_point_x: { type: 'number', default: 0 },
+			focal_point_y: { type: 'number', default: 0 },
+			scale: { type: 'number', default: 1.0 },
+			object_fit: { type: 'string', default: 'cover' }
+		}
+	},
 	figure: {
 		kind: 'block',
 		properties: {
 			image: {
 				type: 'node',
-				node_types: ['image'],
+				node_types: ['image', 'video'],
 				default_node_type: 'image'
 			}
 		}
@@ -206,7 +219,7 @@ export const document_schema = define_document_schema({
 		properties: {
 			image: {
 				type: 'node',
-				node_types: ['image'],
+				node_types: ['image', 'video'],
 				default_node_type: 'image'
 			}
 		}
@@ -239,7 +252,7 @@ export const document_schema = define_document_schema({
 			target: { type: 'string', default: '_self' },
 			image: {
 				type: 'node',
-				node_types: ['image'],
+				node_types: ['image', 'video'],
 				default_node_type: 'image'
 			},
 			preline: {
@@ -266,7 +279,7 @@ export const document_schema = define_document_schema({
 			colorset: { type: 'integer', default: 0 },
 			image: {
 				type: 'node',
-				node_types: ['image'],
+				node_types: ['image', 'video'],
 				default_node_type: 'image'
 			},
 			body: {

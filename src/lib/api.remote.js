@@ -218,11 +218,11 @@ export const save_document = command(
  * @param {import('node:sqlite').StatementSync} insert_stmt
  */
 function update_asset_refs(document_id, node_ids, all_nodes, delete_stmt, insert_stmt) {
-	// Collect asset ids from image nodes
+	// Collect asset ids from media nodes
 	const asset_ids = new Set();
 	for (const node_id of node_ids) {
 		const node = all_nodes[node_id];
-		if (node && node.type === 'image' && typeof node.src === 'string' && node.src && !node.src.startsWith('blob:')) {
+		if (node && (node.type === 'image' || node.type === 'video') && typeof node.src === 'string' && node.src && !node.src.startsWith('blob:')) {
 			asset_ids.add(node.src);
 		}
 	}

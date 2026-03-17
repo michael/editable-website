@@ -17,7 +17,9 @@ const EXT_TO_MIME = /** @type {Record<string, string>} */ ({
 	'.svg': 'image/svg+xml',
 	'.png': 'image/png',
 	'.jpg': 'image/jpeg',
-	'.jpeg': 'image/jpeg'
+	'.jpeg': 'image/jpeg',
+	'.mp4': 'video/mp4',
+	'.webm': 'video/webm'
 });
 
 /**
@@ -98,12 +100,17 @@ export async function GET({ params }) {
 	const size = await asset_size(asset_id);
 	const stream = create_asset_read_stream(asset_id);
 
-	return new Response(to_web_stream(stream), {
-		headers: {
-			'Content-Type': mime_type,
-			'Content-Length': String(size),
-			'Cache-Control': 'public, max-age=31536000, immutable',
-			'Content-Disposition': `inline; filename="${short_filename(asset_id, ext)}"`
-		}
-	});
+	const headers = {
+		'Content-Type': mime_type,
+		'Content-Length': String(size),
+		'Cache-Control': 'public, max-age=31536000, immutable',
+		'Content-Disposition': `inline; filename="${short_filename(asset_id, ext)}"`
+	};
+
+	// Video files need range request support for seeking
+	if (mime_type.startsWith('video/')) {
+		headers['Accept-Ranges'] = 'bytes';
+	}
+
+	return new Response(to_web_stream(stream), { headers });
 }

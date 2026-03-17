@@ -42,6 +42,7 @@ import Feature from './components/Feature.svelte';
 import Hero from './components/Hero.svelte';
 import Button from './components/Button.svelte';
 import Image from './components/Image.svelte';
+import Video from './components/Video.svelte';
 
 import Strong from './components/Strong.svelte';
 import Emphasis from './components/Emphasis.svelte';
@@ -50,6 +51,38 @@ import Link from './components/Link.svelte';
 
 import { document_schema } from '$lib/document_schema.js';
 import { start_processing } from '$lib/client/asset-upload.js';
+
+/** @returns {'image' | 'video'} */
+function get_media_type(file) {
+	if (file.type.startsWith('video/')) return 'video';
+	return 'image';
+}
+
+/**
+ * Extract video dimensions using a temporary <video> element.
+ *
+ * @param {Blob} blob
+ * @returns {Promise<{ width: number, height: number }>}
+ */
+function get_video_dimensions(blob) {
+	return new Promise((resolve, reject) => {
+		const video = document.createElement('video');
+		video.preload = 'metadata';
+		const object_url = URL.createObjectURL(blob);
+
+		video.onloadedmetadata = () => {
+			URL.revokeObjectURL(object_url);
+			resolve({ width: video.videoWidth, height: video.videoHeight });
+		};
+
+		video.onerror = () => {
+			URL.revokeObjectURL(object_url);
+			reject(new Error('Failed to load video metadata'));
+		};
+
+		video.src = object_url;
+	});
+}
 
 // App-specific config object, always available via session.config for introspection
 const session_config = {
@@ -73,6 +106,7 @@ const session_config = {
 		Prose,
 		Text,
 		Image,
+		Video,
 		Figure,
 		Feature,
 		Gallery,
@@ -84,20 +118,53 @@ const session_config = {
 		Highlight,
 		Link
 	},
-	handle_image_paste: async (session, pasted_images) => {
+	handle_media_paste: async (session, pasted_media) => {
 		if (session.selection.type === 'property') {
 			const node = session.get(session.selection.path);
-			if (node.type === 'image') {
-				const blob_url = pasted_images[0].data_url;
-				const tr = session.tr;
-				tr.set([...session.selection.path, 'src'], blob_url);
-				session.apply(tr);
+			if (node.type === 'image' || node.type === 'video') {
+				const file = pasted_media[0].blob;
+				const media_type = get_media_type(file);
+				const blob_url = pasted_media[0].data_url;
+
+				if (media_type === node.type) {
+					// Same type — replace src on existing node
+					const tr = session.tr;
+					tr.set([...session.selection.path, 'src'], blob_url);
+					session.apply(tr);
+				} else {
+					// Different type — replace the entire node
+					const dims = media_type === 'video'
+						? await get_video_dimensions(file)
+						: { width: 800, height: 600 };
+					const new_node = {
+						id: nanoid(),
+						type: media_type,
+						src: blob_url,
+						width: dims.width,
+						height: dims.height,
+						alt: node.alt || '',
+						scale: 1.0,
+						focal_point_x: 0.5,
+						focal_point_y: 0.5,
+						object_fit: 'cover'
+					};
+					const tr = session.tr;
+					tr.create(new_node);
+					// The selection path points to the property that holds the node reference.
+					// We need to get the parent path and property name to update the reference.
+					const parent_path = session.selection.path.slice(0, -1);
+					const property_name = session.selection.path[session.selection.path.length - 1];
+					tr.set([...parent_path, property_name], new_node.id);
+					tr.delete(node.id);
+					session.apply(tr);
+				}
 				// Start background processing (hash + resize/encode)
-				start_processing(blob_url, pasted_images[0].blob);
+				start_processing(blob_url, pasted_media[0].blob);
 			}
 			return null;
 		} else {
 			const pasted_json = { main_nodes: [], nodes: {} };
+
 			// When cursor inside an image grid we want to insert a gallery_item,
 			// otherwise insert a figure.
 			let target_node_type;
@@ -106,16 +173,25 @@ const session_config = {
 			} else {
 				target_node_type = 'figure';
 			}
-			for (let i = 0; i < pasted_images.length; i++) {
-				const pasted_image = pasted_images[i];
-				const blob_url = pasted_image.data_url;
+			for (let i = 0; i < pasted_media.length; i++) {
+				const pasted_item = pasted_media[i];
+				const blob_url = pasted_item.data_url;
+				const media_type = get_media_type(pasted_item.blob);
 
-				pasted_json.nodes['node_image_' + i] = {
-					id: 'node_image_' + i,
-					type: 'image',
+				let width = 800;
+				let height = 600;
+				if (media_type === 'video') {
+					const dims = await get_video_dimensions(pasted_item.blob);
+					width = dims.width;
+					height = dims.height;
+				}
+
+				pasted_json.nodes['node_media_' + i] = {
+					id: 'node_media_' + i,
+					type: media_type,
 					src: blob_url,
-					width: 800,
-					height: 600,
+					width,
+					height,
 					alt: '',
 					scale: 1.0,
 					focal_point_x: 0.5,
@@ -125,12 +201,12 @@ const session_config = {
 				pasted_json.nodes['node_' + i] = {
 					id: 'node_' + i,
 					type: target_node_type,
-					image: 'node_image_' + i
+					image: 'node_media_' + i
 				};
 				pasted_json.main_nodes.push('node_' + i);
 
 				// Start background processing (hash + resize/encode)
-				start_processing(blob_url, pasted_image.blob);
+				start_processing(blob_url, pasted_item.blob);
 			}
 			return pasted_json;
 		}

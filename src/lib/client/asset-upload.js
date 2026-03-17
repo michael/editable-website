@@ -79,6 +79,32 @@ function get_image_dimensions(blob) {
 }
 
 /**
+ * Extract video dimensions using a temporary <video> element.
+ *
+ * @param {Blob} blob
+ * @returns {Promise<{ width: number, height: number }>}
+ */
+function get_video_dimensions(blob) {
+	return new Promise((resolve, reject) => {
+		const video = document.createElement('video');
+		video.preload = 'metadata';
+		const object_url = URL.createObjectURL(blob);
+
+		video.onloadedmetadata = () => {
+			URL.revokeObjectURL(object_url);
+			resolve({ width: video.videoWidth, height: video.videoHeight });
+		};
+
+		video.onerror = () => {
+			URL.revokeObjectURL(object_url);
+			reject(new Error('Failed to load video metadata'));
+		};
+
+		video.src = object_url;
+	});
+}
+
+/**
  * Determine the stored file extension for a given file.
  *
  * @param {File} file
@@ -93,8 +119,29 @@ function get_stored_extension(file, animated) {
 }
 
 /**
- * Start background processing for a pasted/dropped image file.
- * Call this from handle_image_paste. The blob_url is used as the key
+ * Check if a file is a video based on MIME type.
+ *
+ * @param {File} file
+ * @returns {boolean}
+ */
+function is_video(file) {
+	return file.type.startsWith('video/');
+}
+
+/**
+ * Get the stored file extension for a video file.
+ *
+ * @param {File} file
+ * @returns {string}
+ */
+function get_video_extension(file) {
+	if (file.type === 'video/webm') return 'webm';
+	return 'mp4';
+}
+
+/**
+ * Start background processing for a pasted/dropped media file.
+ * Call this from handle_media_paste. The blob_url is used as the key
  * to look up the processing result during the save flow.
  *
  * @param {string} blob_url - The blob: URL set as the image node's src
@@ -111,6 +158,26 @@ export async function start_processing(blob_url, file) {
 		error: null
 	};
 	pending_assets.set(blob_url, entry);
+
+	if (is_video(file)) {
+		try {
+			const [hash, dims] = await Promise.all([
+				hash_blob(file),
+				get_video_dimensions(file)
+			]);
+			const ext = get_video_extension(file);
+			entry.hash = hash;
+			entry.asset_id = `${hash}.${ext}`;
+			entry.original = { blob: file, width: dims.width, height: dims.height };
+			entry.variants = [];
+			entry.status = 'ready';
+		} catch (err) {
+			entry.status = 'error';
+			entry.error = err instanceof Error ? err.message : 'Video processing failed';
+			console.error(`Video processing failed for ${blob_url}:`, err);
+		}
+		return;
+	}
 
 	try {
 		// Hash and type detection run concurrently with processing
@@ -233,7 +300,11 @@ async function upload_asset(entry) {
 		? 'image/svg+xml'
 		: entry.asset_id.endsWith('.gif')
 			? 'image/gif'
-			: 'image/webp';
+			: entry.asset_id.endsWith('.mp4')
+				? 'video/mp4'
+				: entry.asset_id.endsWith('.webm')
+					? 'video/webm'
+					: 'image/webp';
 
 	// Upload original
 	const result = await upload_blob('/api/assets', entry.original.blob, {
@@ -320,7 +391,7 @@ export async function upload_pending(blob_urls, on_progress) {
  */
 export function replace_blob_urls(nodes, mapping) {
 	for (const node of Object.values(nodes)) {
-		if (node.type === 'image' && typeof node.src === 'string' && node.src.startsWith('blob:')) {
+		if ((node.type === 'image' || node.type === 'video') && typeof node.src === 'string' && node.src.startsWith('blob:')) {
 			const entry = mapping.get(node.src);
 			if (entry) {
 				node.src = entry.asset_id;
@@ -348,7 +419,9 @@ export async function ensure_processing(blob_urls) {
 		try {
 			const response = await fetch(blob_url);
 			const blob = await response.blob();
-			const file = new File([blob], 'pasted-image', { type: blob.type || 'image/png' });
+			const fallback_type = blob.type || 'image/png';
+			const fallback_name = fallback_type.startsWith('video/') ? 'pasted-video' : 'pasted-image';
+			const file = new File([blob], fallback_name, { type: fallback_type });
 			start_processing(blob_url, file);
 		} catch (err) {
 			console.error(`Failed to re-process asset for ${blob_url}:`, err);
@@ -374,7 +447,7 @@ export async function ensure_processing(blob_urls) {
 export function collect_blob_urls(nodes) {
 	const blob_urls = [];
 	for (const node of Object.values(nodes)) {
-		if (node.type === 'image' && typeof node.src === 'string' && node.src.startsWith('blob:')) {
+		if ((node.type === 'image' || node.type === 'video') && typeof node.src === 'string' && node.src.startsWith('blob:')) {
 			blob_urls.push(node.src);
 		}
 	}

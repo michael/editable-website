@@ -126,7 +126,7 @@ export class ResetImageCommand extends Command {
 	execute() {
 		const session = this.context.session;
 		const image_node = session.get(session.selection.path);
-		if (image_node?.type !== 'image') return;
+		if (image_node?.type !== 'image' && image_node?.type !== 'video') return;
 
 		const tr = session.tr;
 		tr.set([image_node.id, 'src'], '');
