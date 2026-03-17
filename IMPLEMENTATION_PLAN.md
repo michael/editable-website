@@ -493,6 +493,13 @@ No application logic changes in this step — purely deployment infrastructure.
 
 **Goal:** users can paste or drop `.mp4` files into the editor. Videos display inline (autoplay, muted, looping) and go through the same asset pipeline as images — passthrough (no client-side processing), upload on save, serve from disk. The existing `image` property on container nodes is widened to accept `['image', 'video']` but **not renamed yet** — the property rename (`image` → `media`) is a separate step (4b) to keep this step focused.
 
+**Reference implementation:** the `image-resize` project already has working video upload and display. Use it as a reference for:
+
+- **`src/lib/components/Video.svelte`** — autoplay with retry strategies (handles late hydration, multiple readiness events), click-to-fullscreen with unmute, iOS Safari fullscreen exit handling (`webkitbeginfullscreen`/`webkitendfullscreen`), and automatic resume to muted inline playback after exiting fullscreen. The `cursor: zoom-in` on inline-playing videos is a nice touch to adopt.
+- **`src/routes/+page.svelte`** — `getVideoDimensions(file)` using `<video>` element + `loadedmetadata` → `videoWidth`/`videoHeight`. Also `isVideo(file)` for MIME type detection (our `get_media_type`).
+- **`src/lib/config.js`** — `ACCEPTED_TYPES` array including `video/mp4` and `video/webm`.
+- **`src/lib/server/db.js`** and **`src/lib/server/storage.js`** — `MIME_TO_EXT` mapping for video content types.
+
 ### Schema changes
 
 In `document_schema.js`, add a `video` node type with the same properties as `image`:
@@ -529,11 +536,14 @@ The property names stay as `image` / `logo` for now. `default_node_type` stays `
 **`Video.svelte`** — new component, mirrors `Image.svelte` structure:
 - Receives `path` prop, reads node from session
 - Resolves `src` the same way (blob URL → direct, asset id → `ASSET_BASE` prefix)
-- Renders `<video autoplay muted loop playsinline contenteditable="false">` with:
+- Renders `<video autoplay muted loop playsinline contenteditable="false" disablepictureinpicture>` with:
   - `style` applying `object-fit`, `object-position`, `transform: scale(...)` identically to `Image.svelte`
   - `width` and `height` attributes from node properties
   - `aria-label` from `alt` property
 - No `srcset`, no variants
+- **Autoplay handling** (from `image-resize/src/lib/components/Video.svelte`): use `$effect` with multiple retry strategies — check `readyState >= 2`, listen for `canplay`/`loadeddata`, and a `setTimeout` fallback. This handles late hydration where readiness events may have already fired.
+- **Click-to-fullscreen** (from `image-resize`): clicking the video enters fullscreen with controls enabled and audio unmuted. On fullscreen exit (including iOS Safari's `webkitendfullscreen`), restore muted inline autoplay. iOS sometimes re-pauses ~400ms after play succeeds, so retry with a `setTimeout(500)`. Use `cursor: zoom-in` on inline-playing videos.
+- Note: in edit mode, click-to-fullscreen should be **disabled** — `MediaControls` overlay captures pointer events for zoom/pan instead. Click-to-fullscreen only applies when `editable` is false (published view).
 
 **Container components** (`GalleryItem.svelte`, `Figure.svelte`, `Feature.svelte`, `LinkCollectionItem.svelte`) — update to:
 1. Check the referenced node's `type` (still via the `image` property) to render either `<Image>` or `<Video>`

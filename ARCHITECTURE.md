@@ -271,13 +271,18 @@ Both media types fill their container the same way visually. Images and videos c
 
 `Video.svelte` receives the same `path` prop as `Image.svelte` and reads the same visual properties. It renders a `<video>` element with:
 
-- `autoplay`, `muted`, `loop`, `playsinline` — videos play silently and loop like background/ambient video. No play button, no controls.
+- `autoplay`, `muted`, `loop`, `playsinline`, `disablepictureinpicture` — videos play silently and loop like background/ambient video. No play button, no controls visible inline.
 - `src` resolved the same way as images: blob URLs used directly, saved asset ids prefixed with `ASSET_BASE`.
 - `object-fit`, `object-position`, and `transform: scale(...)` applied identically to how `Image.svelte` does it.
 - `width` and `height` attributes set from node properties.
 - `contenteditable="false"` to prevent the browser from trying to edit the video element.
 - No `srcset` or variants — videos are served as-is.
 - The `alt` property is rendered as `aria-label` on the `<video>` element.
+- **Autoplay handling:** uses `$effect` with multiple retry strategies — checks `readyState >= 2`, listens for `canplay`/`loadeddata`, and falls back to `setTimeout`. This handles late hydration where readiness events may have already fired.
+- **Click-to-fullscreen (published view only):** clicking the video enters native fullscreen with controls enabled and audio unmuted. On fullscreen exit (including iOS Safari's `webkitendfullscreen`), the video restores to muted inline autoplay. iOS sometimes re-pauses ~400ms after play succeeds, so a `setTimeout(500)` retry is needed. Inline-playing videos show `cursor: zoom-in`.
+- **Edit mode:** click-to-fullscreen is disabled — `MediaControls` overlay captures pointer events for zoom/pan instead.
+
+The `image-resize` project's `src/lib/components/Video.svelte` is the reference implementation for autoplay, fullscreen, and iOS handling.
 
 ### Video metadata extraction
 
