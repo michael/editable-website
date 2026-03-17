@@ -1,11 +1,10 @@
 /**
- * Get the nearest ancestor node that lives in a node_array with multiple node_types.
- * Walks up the tree from the current selection to find a node whose type can be switched.
+ * Find the closest ancestor node whose type can be switched (lives in a node_array with multiple node_types).
  *
  * @param {import('svedit').Session} session - The session instance
  * @returns {{ node: object, node_array_path: (string|number)[], node_index: string|number } | null} The switchable node and its containing node_array path, or null
  */
-export function get_switchable_type_node(session) {
+export function get_closest_switchable_type(session) {
 	if (!session.selection) return null;
 
 	// Build a full path that includes the selected node index, so we can
@@ -95,16 +94,13 @@ export function get_colorset_node(session) {
 }
 
 /**
- * Get the layout node for the current selection.
- * A layout node is a node that has a `layout` property.
- * Walks up the tree to find the nearest ancestor with a layout property.
- * Returns the node along with its containing node_array path and index,
- * so callers can build a node selection.
+ * Find the closest ancestor node whose layout can be switched (has a layout property and `node_layouts[type] > 1`).
  *
  * @param {import('svedit').Session} session - The session instance
+ * @param {object} session_config - The session config (session.config), used to check node_layouts
  * @returns {{ node: object, node_array_path: (string|number)[], node_index: number } | null}
  */
-export function get_layout_node(session) {
+export function get_closest_switchable_layout(session, session_config) {
 	if (!session.selection || !session.selected_node) return null;
 
 	// Build a full path that includes the selected node index
@@ -129,7 +125,7 @@ export function get_layout_node(session) {
 		if (full_path.length > path.length) {
 			const node_index = parseInt(String(full_path[path.length]));
 			const node = session.get([...path, node_index]);
-			if (node?.layout) {
+			if (node?.layout && session_config.node_layouts?.[node.type] > 1) {
 				return { node, node_array_path: path, node_index };
 			}
 		}

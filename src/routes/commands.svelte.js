@@ -1,12 +1,12 @@
 import { Command, is_selection_collapsed } from 'svedit';
-import { get_layout_node, get_colorset_node, get_switchable_type_node } from './app_utils.js';
+import { get_closest_switchable_layout, get_colorset_node, get_closest_switchable_type } from './app_utils.js';
 
 /**
  * Command that cycles through available layouts for a node.
  * Direction can be 'next' or 'previous'.
  */
 export class CycleLayoutCommand extends Command {
-	layout_result = $derived(get_layout_node(this.context.session));
+	closest_switchable_layout = $derived(get_closest_switchable_layout(this.context.session, this.context.session.config));
 
 	constructor(direction, context) {
 		super(context);
@@ -14,15 +14,12 @@ export class CycleLayoutCommand extends Command {
 	}
 
 	is_enabled() {
-		if (!this.context.editable || !this.layout_result) return false;
-
-		const layout_count = this.context.session.config.node_layouts?.[this.layout_result.node.type];
-		return layout_count > 1 && this.layout_result.node?.layout;
+		return this.context.editable && this.closest_switchable_layout !== null;
 	}
 
 	execute() {
 		const session = this.context.session;
-		const { node, node_array_path, node_index } = this.layout_result;
+		const { node, node_array_path, node_index } = this.closest_switchable_layout;
 		const layout_count = session.config.node_layouts[node.type];
 
 		let new_layout;
@@ -50,7 +47,7 @@ export class CycleLayoutCommand extends Command {
  * Direction can be 'next' or 'previous'.
  */
 export class CycleNodeTypeCommand extends Command {
-	switchable = $derived(get_switchable_type_node(this.context.session));
+	closest_switchable_type = $derived(get_closest_switchable_type(this.context.session));
 
 	constructor(direction, context) {
 		super(context);
@@ -58,12 +55,12 @@ export class CycleNodeTypeCommand extends Command {
 	}
 
 	is_enabled() {
-		return this.context.editable && this.switchable !== null;
+		return this.context.editable && this.closest_switchable_type !== null;
 	}
 
 	execute() {
 		const session = this.context.session;
-		const { node, node_array_path, node_index } = this.switchable;
+		const { node, node_array_path, node_index } = this.closest_switchable_type;
 		const numeric_index = parseInt(String(node_index));
 		const node_array_schema = session.inspect(node_array_path);
 		const node_types = node_array_schema.node_types;
