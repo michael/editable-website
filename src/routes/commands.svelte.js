@@ -61,7 +61,6 @@ export class CycleNodeTypeCommand extends Command {
 	execute() {
 		const session = this.context.session;
 		const { node, node_array_path, node_index } = this.closest_switchable_type;
-		const numeric_index = parseInt(String(node_index));
 		const node_array_schema = session.inspect(node_array_path);
 		const node_types = node_array_schema.node_types;
 
@@ -80,8 +79,8 @@ export class CycleNodeTypeCommand extends Command {
 		tr.set_selection({
 			type: 'node',
 			path: node_array_path,
-			anchor_offset: numeric_index,
-			focus_offset: numeric_index + 1
+			anchor_offset: node_index,
+			focus_offset: node_index + 1
 		});
 		session.config.inserters[new_type](tr);
 		session.apply(tr);
