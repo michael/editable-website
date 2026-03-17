@@ -55,13 +55,14 @@ export function get_layout_node(session) {
 	// We resolve the parent node if available, and return it if it's a layout node.
 	// NOTE: We only support one level atm, we may want to implement this recursively
 	if (session.selection.type === 'node') {
+		if (session.selection.path.length < 2) return null;
 		const parent_node = session.get(session.selection.path.slice(0, -1));
-		return parent_node.layout ? parent_node : null;
+		return parent_node?.layout ? parent_node : null;
 	} else {
 		// We are either in a text or property (=custom) selection
-		const parent_node_path = session.selection?.path?.slice(0, -3);
-		if (!parent_node_path) return null;
+		if (session.selection.path.length < 4) return null;
+		const parent_node_path = session.selection.path.slice(0, -3);
 		const parent_node = session.get(parent_node_path);
-		return parent_node.layout ? parent_node : null;
+		return parent_node?.layout ? parent_node : null;
 	}
 }
