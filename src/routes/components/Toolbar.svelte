@@ -1,17 +1,14 @@
 <script>
 	let { session, app_commands, editable, focus_canvas } = $props();
 
-	function prevent_focus_steal(event) {
+	function handle_btn_mousedown(event, command) {
 		event.preventDefault();
-	}
-
-	function handle_click(command) {
+		if (command?.disabled) return;
 		command.execute();
 	}
 </script>
 
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="fixed bottom-4 right-4 z-50 flex items-center gap-3" onmousedown={prevent_focus_steal}>
+<div class="toolbar fixed bottom-4 right-4 z-50 flex items-center gap-3">
 	{#if !editable}
 		<!-- Read mode: Edit button -->
 		{#if !app_commands.edit_document.disabled}
@@ -33,8 +30,8 @@
 				<button
 					class="toolbar-btn"
 					class:active={session.commands.toggle_strong?.active}
-					onclick={() => handle_click(session.commands.toggle_strong)}
-					disabled={session.commands.toggle_strong?.disabled}
+					class:is-disabled={session.commands.toggle_strong?.disabled}
+					onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_strong)}
 					title="Bold (⌘B)"
 				>
 					<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
@@ -46,8 +43,8 @@
 				<button
 					class="toolbar-btn"
 					class:active={session.commands.toggle_emphasis?.active}
-					onclick={() => handle_click(session.commands.toggle_emphasis)}
-					disabled={session.commands.toggle_emphasis?.disabled}
+					class:is-disabled={session.commands.toggle_emphasis?.disabled}
+					onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_emphasis)}
 					title="Italic (⌘I)"
 				>
 					<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -61,8 +58,8 @@
 				<button
 					class="toolbar-btn"
 					class:active={session.commands.toggle_highlight?.active}
-					onclick={() => handle_click(session.commands.toggle_highlight)}
-					disabled={session.commands.toggle_highlight?.disabled}
+					class:is-disabled={session.commands.toggle_highlight?.disabled}
+					onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_highlight)}
 					title="Highlight (⌘U)"
 				>
 					<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -75,8 +72,8 @@
 				<button
 					class="toolbar-btn"
 					class:active={session.commands.toggle_link?.active}
-					onclick={() => handle_click(session.commands.toggle_link)}
-					disabled={session.commands.toggle_link?.disabled}
+					class:is-disabled={session.commands.toggle_link?.disabled}
+					onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_link)}
 					title="Link (⌘K)"
 				>
 					<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -92,8 +89,8 @@
 			<!-- Type: cycle to next node type -->
 			<button
 				class="toolbar-btn"
-				onclick={() => handle_click(session.commands.cycle_node_type_next)}
-				disabled={session.commands.cycle_node_type_next?.disabled}
+				class:is-disabled={session.commands.cycle_node_type_next?.disabled}
+				onmousedown={(e) => handle_btn_mousedown(e, session.commands.cycle_node_type_next)}
 				title="Cycle type (⌃⇧↓)"
 			>
 				<!-- T with small arrows icon -->
@@ -108,8 +105,8 @@
 			<!-- Layout: cycle to next layout -->
 			<button
 				class="toolbar-btn"
-				onclick={() => handle_click(session.commands.cycle_layout_next)}
-				disabled={session.commands.cycle_layout_next?.disabled}
+				class:is-disabled={session.commands.cycle_layout_next?.disabled}
+				onmousedown={(e) => handle_btn_mousedown(e, session.commands.cycle_layout_next)}
 				title="Cycle layout (⌃⇧→)"
 			>
 				<!-- T with right arrow icon -->
@@ -126,8 +123,8 @@
 		<div class="btn-group">
 			<button
 				class="toolbar-btn"
-				onclick={() => handle_click(session.commands.undo)}
-				disabled={session.commands.undo?.disabled}
+				class:is-disabled={session.commands.undo?.disabled}
+				onmousedown={(e) => handle_btn_mousedown(e, session.commands.undo)}
 				title="Undo (⌘Z)"
 			>
 				<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -137,8 +134,8 @@
 			</button>
 			<button
 				class="toolbar-btn"
-				onclick={() => handle_click(session.commands.redo)}
-				disabled={session.commands.redo?.disabled}
+				class:is-disabled={session.commands.redo?.disabled}
+				onmousedown={(e) => handle_btn_mousedown(e, session.commands.redo)}
 				title="Redo (⌘⇧Z)"
 			>
 				<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -161,6 +158,11 @@
 </div>
 
 <style>
+	.toolbar {
+		user-select: none;
+		pointer-events: none;
+	}
+
 	.btn-group {
 		display: flex;
 		align-items: center;
@@ -177,15 +179,16 @@
 		color: var(--foreground);
 		background: white;
 		cursor: pointer;
+		pointer-events: auto;
 		box-shadow: 0 1px 3px oklch(0 0 0 / 0.12), 0 1px 2px oklch(0 0 0 / 0.06);
 		transition: background-color 0.15s, color 0.15s;
 
-		&:hover:not(:disabled) {
+		&:hover:not(.is-disabled) {
 			background-color: oklch(from var(--svedit-brand) 0.95 0.02 h);
 			color: var(--svedit-editing-stroke);
 		}
 
-		&:disabled {
+		&.is-disabled {
 			color: oklch(0 0 0 / 0.2);
 			cursor: not-allowed;
 		}
@@ -200,6 +203,7 @@
 		font-size: 0.875rem;
 		font-weight: 600;
 		cursor: pointer;
+		pointer-events: auto;
 		border-radius: 9999px;
 		color: white;
 		background-color: var(--svedit-brand);
