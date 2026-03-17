@@ -1,12 +1,12 @@
 import { Command, is_selection_collapsed } from 'svedit';
-import { get_layout_node, get_colorset_node } from './app_utils.js';
+import { get_layout_node, get_colorset_node, get_switchable_type_node } from './app_utils.js';
 
 /**
  * Command that cycles through available layouts for a node.
  * Direction can be 'next' or 'previous'.
  */
 export class CycleLayoutCommand extends Command {
-	layout_node = $derived(get_layout_node(this.context.session));
+	layout_result = $derived(get_layout_node(this.context.session));
 
 	constructor(direction, context) {
 		super(context);
@@ -14,15 +14,15 @@ export class CycleLayoutCommand extends Command {
 	}
 
 	is_enabled() {
-		if (!this.context.editable || !this.layout_node) return false;
+		if (!this.context.editable || !this.layout_result) return false;
 
-		const layout_count = this.context.session.config.node_layouts?.[this.layout_node.type];
-		return layout_count > 1 && this.layout_node?.layout;
+		const layout_count = this.context.session.config.node_layouts?.[this.layout_result.node.type];
+		return layout_count > 1 && this.layout_result.node?.layout;
 	}
 
 	execute() {
 		const session = this.context.session;
-		const node = this.layout_node;
+		const { node, node_array_path, node_index } = this.layout_result;
 		const layout_count = session.config.node_layouts[node.type];
 
 		let new_layout;
@@ -33,6 +33,13 @@ export class CycleLayoutCommand extends Command {
 		}
 
 		const tr = session.tr;
+		// Set node selection so it's clear which node's layout changed
+		tr.set_selection({
+			type: 'node',
+			path: node_array_path,
+			anchor_offset: node_index,
+			focus_offset: node_index + 1
+		});
 		tr.set([node.id, 'layout'], new_layout);
 		session.apply(tr);
 	}
@@ -43,71 +50,43 @@ export class CycleLayoutCommand extends Command {
  * Direction can be 'next' or 'previous'.
  */
 export class CycleNodeTypeCommand extends Command {
+	switchable = $derived(get_switchable_type_node(this.context.session));
+
 	constructor(direction, context) {
 		super(context);
 		this.direction = direction;
 	}
 
 	is_enabled() {
-		const session = this.context.session;
-
-		if (!this.context.editable || !session.selection) return false;
-
-		let node_array_path;
-		if (session.selection.type === 'node') {
-			// Disabled for collapsed node selections (node caret)
-			if (session.selection.anchor_offset === session.selection.focus_offset) return false;
-			node_array_path = session.selection.path;
-		} else {
-			// For text/property selections, resolve the parent node array
-			// Path is like ['page_1', 'body', 0, 'content'] — go up two levels
-			if (session.selection.path.length > 3) {
-				node_array_path = session.selection.path.slice(0, -2);
-			} else {
-				return false;
-			}
-		}
-
-		const node_array_schema = session.inspect(node_array_path);
-		if (node_array_schema.type !== 'node_array') return false;
-
-		// Need at least 2 types to cycle
-		return node_array_schema.node_types?.length > 1;
+		return this.context.editable && this.switchable !== null;
 	}
 
 	execute() {
 		const session = this.context.session;
+		const { node, node_array_path, node_index } = this.switchable;
+		const numeric_index = parseInt(String(node_index));
+		const node_array_schema = session.inspect(node_array_path);
+		const node_types = node_array_schema.node_types;
 
-		// Ensure we have a node selection
-		if (session.selection.type !== 'node') {
-			session.select_parent();
-		}
-
-		const node = session.selected_node;
-		const old_selection = structuredClone(session.selection);
-		const node_array_schema = session.inspect(session.selection.path);
-
-		// If we are not dealing with a node selection in a container, return
-		if (node_array_schema.type !== 'node_array') return;
-
-		// Do nothing if there's only one type to switch to
-		if (node_array_schema.node_types?.length <= 1) return;
-
-		const current_type_index = node_array_schema.node_types.indexOf(node.type);
+		const current_type_index = node_types.indexOf(node.type);
 		let new_type_index;
 
 		if (this.direction === 'next') {
-			new_type_index = (current_type_index + 1) % node_array_schema.node_types.length;
+			new_type_index = (current_type_index + 1) % node_types.length;
 		} else {
-			new_type_index =
-				(current_type_index - 1 + node_array_schema.node_types.length) %
-				node_array_schema.node_types.length;
+			new_type_index = (current_type_index - 1 + node_types.length) % node_types.length;
 		}
 
-		const new_type = node_array_schema.node_types[new_type_index];
+		const new_type = node_types[new_type_index];
 		const tr = session.tr;
+		// Set the selection inside the transaction so undo/redo replays correctly
+		tr.set_selection({
+			type: 'node',
+			path: node_array_path,
+			anchor_offset: numeric_index,
+			focus_offset: numeric_index + 1
+		});
 		session.config.inserters[new_type](tr);
-		tr.set_selection(old_selection);
 		session.apply(tr);
 	}
 }
