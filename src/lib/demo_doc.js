@@ -178,7 +178,7 @@ export const demo_doc = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Looking for the admin panel? Toolbars?\nThere aren’t any! It's just you, and your content.",
+                "text": "Looking for the admin panel? There isn't any! It's just you, and your content.",
                 "annotations": []
             }
         },
