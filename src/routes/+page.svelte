@@ -13,7 +13,7 @@
 		upload_pending,
 		replace_blob_urls,
 		cleanup_pending
-	} from '$lib/client/asset-upload.js';
+	} from '$lib/client/asset_upload.js';
 	import SaveProgressModal from './components/SaveProgressModal.svelte';
 
 	let app_el = $state();

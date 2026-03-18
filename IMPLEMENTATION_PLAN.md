@@ -488,3 +488,231 @@ Modified files:
 - `package.json` — add `@sveltejs/adapter-node`, remove `@sveltejs/adapter-auto`
 
 No application logic changes in this step — purely deployment infrastructure.
+
+## Step 4a: video node type
+
+**Goal:** users can paste or drop `.mp4` files into the editor. Videos display inline (autoplay, muted, looping) and go through the same asset pipeline as images — passthrough (no client-side processing), upload on save, serve from disk. The existing `image` property on container nodes is widened to accept `['image', 'video']` but **not renamed yet** — the property rename (`image` → `media`) is a separate step (4b) to keep this step focused.
+
+**Reference implementation:** the `image-resize` project already has working video upload and display. Use it as a reference for:
+
+- **`src/lib/components/Video.svelte`** — autoplay with retry strategies (handles late hydration, multiple readiness events), click-to-fullscreen with unmute, iOS Safari fullscreen exit handling (`webkitbeginfullscreen`/`webkitendfullscreen`), and automatic resume to muted inline playback after exiting fullscreen. The `cursor: zoom-in` on inline-playing videos is a nice touch to adopt.
+- **`src/routes/+page.svelte`** — `getVideoDimensions(file)` using `<video>` element + `loadedmetadata` → `videoWidth`/`videoHeight`. Also `isVideo(file)` for MIME type detection (our `get_media_type`).
+- **`src/lib/config.js`** — `ACCEPTED_TYPES` array including `video/mp4` and `video/webm`.
+- **`src/lib/server/db.js`** and **`src/lib/server/storage.js`** — `MIME_TO_EXT` mapping for video content types.
+
+### Schema changes
+
+In `document_schema.js`, add a `video` node type with the same properties as `image`:
+
+```js
+video: {
+    kind: 'block',
+    properties: {
+        src: { type: 'string' },
+        width: { type: 'integer' },
+        height: { type: 'integer' },
+        alt: { type: 'string' },
+        focal_point_x: { type: 'number', default: 0 },
+        focal_point_y: { type: 'number', default: 0 },
+        scale: { type: 'number', default: 1.0 },
+        object_fit: { type: 'string', default: 'cover' }
+    }
+}
+```
+
+Widen `node_types` on existing `image` properties to also accept `'video'`:
+
+- `gallery_item.image` → `node_types: ['image', 'video']`
+- `figure.image` → `node_types: ['image', 'video']`
+- `feature.image` → `node_types: ['image', 'video']`
+- `link_collection_item.image` → `node_types: ['image', 'video']`
+- `nav.logo` → `node_types: ['image', 'video']`
+- `footer.logo` → `node_types: ['image', 'video']`
+
+The property names stay as `image` / `logo` for now. `default_node_type` stays `'image'`.
+
+### Component changes
+
+**`Video.svelte`** — new component, mirrors `Image.svelte` structure:
+- Receives `path` prop, reads node from session
+- Resolves `src` the same way (blob URL → direct, asset id → `ASSET_BASE` prefix)
+- Renders `<video autoplay muted loop playsinline contenteditable="false" disablepictureinpicture>` with:
+  - `style` applying `object-fit`, `object-position`, `transform: scale(...)` identically to `Image.svelte`
+  - `width` and `height` attributes from node properties
+  - `aria-label` from `alt` property
+- No `srcset`, no variants
+- **Autoplay handling** (from `image-resize/src/lib/components/Video.svelte`): use `$effect` with multiple retry strategies — check `readyState >= 2`, listen for `canplay`/`loadeddata`, and a `setTimeout` fallback. This handles late hydration where readiness events may have already fired.
+- **Click-to-fullscreen** (from `image-resize`): clicking the video enters fullscreen with controls enabled and audio unmuted. On fullscreen exit (including iOS Safari's `webkitendfullscreen`), restore muted inline autoplay. iOS sometimes re-pauses ~400ms after play succeeds, so retry with a `setTimeout(500)`. Use `cursor: zoom-in` on inline-playing videos.
+- Note: in edit mode, click-to-fullscreen should be **disabled** — `MediaControls` overlay captures pointer events for zoom/pan instead. Click-to-fullscreen only applies when `editable` is false (published view).
+
+**Container components** (`GalleryItem.svelte`, `Figure.svelte`, `Feature.svelte`, `LinkCollectionItem.svelte`) — update to:
+1. Check the referenced node's `type` (still via the `image` property) to render either `<Image>` or `<Video>`
+
+Register `Video` in `node_components` in `create_session.js`.
+
+### Zoom/pan controls
+
+Zooming (scroll wheel) and panning (drag to move focal point) must work with videos the same way as with images. Both media types share the same visual properties (`scale`, `focal_point_x`, `focal_point_y`, `object_fit`), so the controls are identical.
+
+**Rename `ImageControls` → `MediaControls`:**
+- `src/routes/components/ImageControls.svelte` → `src/routes/components/MediaControls.svelte`
+- The internal variable `image` (used to read the node) becomes `media_node` or similar.
+- The component is already generic — it reads `scale`, `focal_point_x`, `focal_point_y`, and `object_fit` from the node at `path`. No image-specific logic.
+
+**Update `Overlays.svelte`:**
+- Import `MediaControls` instead of `ImageControls`.
+- Widen `is_image_selected` to `is_media_selected`: `selected_property?.type === 'image' || selected_property?.type === 'video'`.
+- Rename the CSS class `image-controls-overlay` → `media-controls-overlay`.
+
+### Svedit paste handler (upstream change)
+
+Svedit's `onpaste` in `Svedit.svelte` currently only captures `image/*` MIME types:
+
+```js
+if (item.type.startsWith('image/')) {
+```
+
+This must be widened to also capture `video/*`:
+
+```js
+if (item.type.startsWith('image/') || item.type.startsWith('video/')) {
+```
+
+The variable name `pasted_images` in svedit's paste logic should be renamed to `pasted_media` for clarity, along with the config callback `handle_image_paste` → `handle_media_paste`. This is a svedit-level change that must land before (or alongside) the editable-website changes.
+
+### Paste handler
+
+Rename `handle_image_paste` to `handle_media_paste` in `create_session.js`. The callback signature stays the same — after the svedit change above, it receives all pasted media files (images and videos).
+
+Add MIME type detection:
+
+```js
+/** @returns {'image' | 'video'} */
+function get_media_type(file) {
+    if (file.type.startsWith('video/')) return 'video';
+    return 'image';
+}
+```
+
+This returns the Svedit node type that corresponds to the file. Currently only `'image'` and `'video'` — `'audio'` can be added later.
+
+**When pasting over an existing media node** (property selection on an image/video node):
+- If `get_media_type(file)` matches the existing node's `type`: replace `src` on the existing node (current behavior).
+- If it differs (e.g. pasting a video over an image): create a new node of the correct type via transaction, delete the old node, and update the parent's `image` reference to point to the new node. (The property is still named `image` in this step.)
+
+**When pasting into a container** (text selection / inserting new nodes):
+- Use `get_media_type(file)` to decide the child node type.
+- The wrapper node (`gallery_item` or `figure`) still uses `image` as the property name (renamed in step 4b).
+
+**Video metadata extraction** — before creating the video node, extract `width` and `height` from the file:
+
+```js
+async function get_video_dimensions(blob) {
+    return new Promise((resolve, reject) => {
+        const video = document.createElement('video');
+        video.preload = 'metadata';
+        const object_url = URL.createObjectURL(blob);
+        video.onloadedmetadata = () => {
+            URL.revokeObjectURL(object_url);
+            resolve({ width: video.videoWidth, height: video.videoHeight });
+        };
+        video.onerror = () => {
+            URL.revokeObjectURL(object_url);
+            reject(new Error('Failed to load video metadata'));
+        };
+        video.src = object_url;
+    });
+}
+```
+
+Since metadata extraction is async, `handle_media_paste` must await it before creating the node. For images this isn't needed (dimensions come from processing later), but for videos the dimensions are final at paste time since there's no client-side processing.
+
+### Asset pipeline changes
+
+**`asset-upload.js`:**
+
+1. **`start_processing`** — detect video MIME types. For videos: compute hash, set `asset_id` to `{hash}.mp4`, extract dimensions via `get_video_dimensions`, store the file blob as-is (no WASM processing, no variants), set `status: 'ready'` immediately.
+
+2. **`collect_blob_urls`** — also collect from `type === 'video'` nodes.
+
+3. **`replace_blob_urls`** — also replace on `type === 'video'` nodes.
+
+4. **`upload_asset`** — map asset extension to MIME type: `.mp4` → `video/mp4`, `.webm` → `video/webm` (in addition to existing image types).
+
+5. **`ensure_processing`** — when re-fetching a blob URL, detect video MIME type and use passthrough processing.
+
+### Asset serving
+
+The existing `GET /assets/:asset_id` endpoint already serves files from disk by filename — no changes needed for serving. The content type is derived from the file extension.
+
+Video files should be served with `Accept-Ranges: bytes` support for seeking. Node's `createReadStream` with range headers handles this. Check that the existing asset serving route supports range requests; if not, add support.
+
+### HTML exporters
+
+Add a `video` entry to `html_exporters` if needed (for any export/copy functionality). A simple `<video>` tag with `src`, `width`, `height`, and playback attributes.
+
+### File summary
+
+New files:
+- `src/routes/components/Video.svelte` — video rendering component
+
+Renamed files:
+- `src/routes/components/ImageControls.svelte` → `src/routes/components/MediaControls.svelte`
+
+Modified files:
+- `src/lib/document_schema.js` — add `video` node type, widen `node_types` to `['image', 'video']` on container properties
+- `src/routes/create_session.js` — rename `handle_image_paste` → `handle_media_paste`, add `get_media_type`, video MIME detection, video metadata extraction, video node creation, register `Video` component
+- `src/routes/components/Overlays.svelte` — import `MediaControls` instead of `ImageControls`, widen `is_image_selected` → `is_media_selected`
+- `src/lib/client/asset-upload.js` — handle video files in `start_processing`, `collect_blob_urls`, `replace_blob_urls`, `upload_asset`, `ensure_processing`
+- Container components (`GalleryItem.svelte`, `Figure.svelte`, `Feature.svelte`, `LinkCollectionItem.svelte`) — conditionally render `<Image>` or `<Video>` based on referenced node type
+
+Upstream (svedit) modified files:
+- `svedit/src/lib/Svedit.svelte` — widen MIME filter from `image/*` to `image/* || video/*`, rename `pasted_images` → `pasted_media`, rename config callback `handle_image_paste` → `handle_media_paste`
+- `svedit/src/routes/create_demo_session.js` — rename `handle_image_paste` → `handle_media_paste` to match
+
+## Step 4b: rename `image` property to `media` on container nodes
+
+**Goal:** rename the `image` property to `media` on container node types to accurately reflect that it can hold either an image or a video. This is a pure rename — no new functionality, no behavior changes.
+
+### Schema changes
+
+In `document_schema.js`, rename the property on each container type:
+
+- `gallery_item.image` → `gallery_item.media`
+- `figure.image` → `figure.media`
+- `feature.image` → `feature.media`
+- `link_collection_item.image` → `link_collection_item.media`
+
+`nav.logo` and `footer.logo` keep the name `logo` — it's already accurate.
+
+### Seed data migration
+
+Update the seed document data in `migrations.js` to use `media` instead of `image` for the affected node types. Existing on-disk databases need a migration step that renames the property on all affected nodes. This is a JSON-level migration: load each document, walk nodes of types `gallery_item`, `figure`, `feature`, `link_collection_item`, rename their `image` property to `media`, and save back.
+
+### Inserter changes
+
+Update all inserters that create child nodes to use the `media` property name:
+- `feature` inserter: `image: 'feature_image_id'` → `media: 'feature_image_id'`
+- `figure` inserter: `image: 'image_one'` → `media: 'image_one'`
+- `gallery` inserter: `image: 'gallery_item_image_id'` → `media: 'gallery_item_image_id'`
+- `gallery_item` inserter: same rename
+- `link_collection` inserter: same rename
+- `link_collection_item` inserter: same rename
+
+The child nodes themselves stay as `type: 'image'` or `type: 'video'` — only the property name on the parent changes.
+
+### Component changes
+
+Container components (`GalleryItem.svelte`, `Figure.svelte`, `Feature.svelte`, `LinkCollectionItem.svelte`) — read from `media` property instead of `image`.
+
+### Paste handler
+
+Update `handle_media_paste` in `create_session.js` to use `media` as the property name when creating wrapper nodes (`gallery_item`, `figure`).
+
+### File summary
+
+Modified files:
+- `src/lib/document_schema.js` — rename `image` → `media` on container node types
+- `src/routes/create_session.js` — update inserters and paste handler to use `media` property name
+- `src/lib/server/migrations.js` — add migration to rename `image` → `media` on existing documents, update seed data
+- Container components (`GalleryItem.svelte`, `Figure.svelte`, `Feature.svelte`, `LinkCollectionItem.svelte`) — read `media` instead of `image`

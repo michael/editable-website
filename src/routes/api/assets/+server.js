@@ -1,11 +1,13 @@
 import { json, error } from '@sveltejs/kit';
-import { asset_exists, write_asset, delete_asset } from '$lib/server/asset-storage.js';
+import { asset_exists, write_asset, delete_asset } from '$lib/server/asset_storage.js';
 
 /** Map content types to stored file extensions */
 const CONTENT_TYPE_TO_EXT = {
 	'image/webp': 'webp',
 	'image/gif': 'gif',
-	'image/svg+xml': 'svg'
+	'image/svg+xml': 'svg',
+	'video/mp4': 'mp4',
+	'video/webm': 'webm'
 };
 
 /** @type {import('./$types').RequestHandler} */
@@ -15,7 +17,7 @@ export async function POST({ request }) {
 
 	const ext = CONTENT_TYPE_TO_EXT[content_type];
 	if (!ext) {
-		error(400, `Unsupported content type: ${content_type}. Expected image/webp, image/gif, or image/svg+xml.`);
+		error(400, `Unsupported content type: ${content_type}. Expected image/webp, image/gif, image/svg+xml, video/mp4, or video/webm.`);
 	}
 
 	const hash = request.headers.get('x-content-hash');
