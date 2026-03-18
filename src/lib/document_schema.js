@@ -141,7 +141,7 @@ export const document_schema = define_document_schema({
 			colorset: { type: 'integer', default: 0 },
 			content: {
 				type: 'node_array',
-				node_types: ['text'],
+				node_types: ['text', 'decoration'],
 				default_node_type: 'text'
 			}
 		}
@@ -193,6 +193,16 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
+	decoration: {
+		kind: 'block',
+		properties: {
+			image: {
+				type: 'node',
+				node_types: ['image', 'video'],
+				default_node_type: 'image'
+			}
+		}
+	},
 	gallery: {
 		kind: 'block',
 		properties: {
@@ -200,7 +210,7 @@ export const document_schema = define_document_schema({
 			colorset: { type: 'integer', default: 0 },
 			intro: {
 				type: 'node_array',
-				node_types: ['text'],
+				node_types: ['text', 'decoration'],
 				default_node_type: 'text'
 			},
 			gallery_items: {
@@ -209,7 +219,7 @@ export const document_schema = define_document_schema({
 			},
 			outro: {
 				type: 'node_array',
-				node_types: ['text'],
+				node_types: ['text', 'decoration'],
 				default_node_type: 'text'
 			}
 		}
@@ -231,7 +241,7 @@ export const document_schema = define_document_schema({
 			colorset: { type: 'integer', default: 0 },
 			intro: {
 				type: 'node_array',
-				node_types: ['text'],
+				node_types: ['text', 'decoration'],
 				default_node_type: 'text'
 			},
 			link_collection_items: {
@@ -240,7 +250,7 @@ export const document_schema = define_document_schema({
 			},
 			outro: {
 				type: 'node_array',
-				node_types: ['text'],
+				node_types: ['text', 'decoration'],
 				default_node_type: 'text'
 			}
 		}
@@ -284,7 +294,7 @@ export const document_schema = define_document_schema({
 			},
 			body: {
 				type: 'node_array',
-				node_types: ['text'],
+				node_types: ['text', 'decoration'],
 				default_node_type: 'text'
 			}
 		}

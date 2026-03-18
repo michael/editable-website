@@ -38,6 +38,7 @@ import GalleryItem from './components/GalleryItem.svelte';
 import LinkCollection from './components/LinkCollection.svelte';
 import LinkCollectionItem from './components/LinkCollectionItem.svelte';
 import Figure from './components/Figure.svelte';
+import Decoration from './components/Decoration.svelte';
 import Feature from './components/Feature.svelte';
 import Hero from './components/Hero.svelte';
 import Button from './components/Button.svelte';
@@ -146,6 +147,7 @@ const session_config = {
 		Image,
 		Video,
 		Figure,
+		Decoration,
 		Feature,
 		Gallery,
 		GalleryItem,
@@ -269,6 +271,7 @@ const session_config = {
 		prose: 3,
 		text: 5,
 		figure: 1,
+		decoration: 1,
 		feature: 4,
 		gallery: 4,
 		nav_item: 2,
@@ -432,6 +435,22 @@ const session_config = {
 			//   anchor_offset: 0,
 			//   focus_offset: 0
 			// });
+		},
+		decoration: function (tr, content = { text: '', annotations: [] }, layout = 1) {
+			const new_decoration_id = tr.build('new_decoration', {
+				image_one: {
+					id: 'image_one',
+					type: 'image',
+					...MEDIA_DEFAULTS
+				},
+				new_decoration: {
+					id: 'new_decoration',
+					type: 'decoration',
+					image: 'image_one'
+				}
+			});
+
+			tr.insert_nodes([new_decoration_id]);
 		},
 		nav_item: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_nav_item_id = tr.build('new_nav_item', {
