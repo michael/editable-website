@@ -1,6 +1,6 @@
 import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync, rmSync } from 'node:fs';
-import { DATA_DIR, DB_PATH } from '$lib/config.js';
+import { DATA_DIR, DB_PATH } from '$lib/server_config.js';
 
 // If SEED=1, wipe the data directory before opening the database.
 // This must happen here (before the connection opens), not in init(),

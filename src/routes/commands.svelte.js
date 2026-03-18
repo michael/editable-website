@@ -1,7 +1,7 @@
 import { Command, is_selection_collapsed } from 'svedit';
 import { get_closest_switchable_layout, get_colorset_node, get_closest_switchable_type } from './app_utils.js';
 import { set_properties } from 'svedit';
-import { MEDIA_DEFAULTS } from '$lib/asset-config.js';
+import { MEDIA_DEFAULTS } from '$lib/config.js';
 
 /**
  * Command that cycles through available layouts for a node.

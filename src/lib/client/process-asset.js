@@ -1,4 +1,4 @@
-import { MAX_IMAGE_WIDTH, VARIANT_WIDTHS } from '$lib/asset-config.js';
+import { MAX_IMAGE_WIDTH, VARIANT_WIDTHS } from '$lib/config.js';
 
 /**
  * @typedef {{

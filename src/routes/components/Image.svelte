@@ -1,6 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
-	import { ASSET_BASE, VARIANT_WIDTHS } from '$lib/asset-config.js';
+	import { ASSET_BASE, VARIANT_WIDTHS } from '$lib/config.js';
 	const svedit = getContext('svedit');
 
 	/** @type {{ path: any[], mask?: boolean }} */

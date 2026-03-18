@@ -1,5 +1,5 @@
 import { error, json } from '@sveltejs/kit';
-import { VARIANT_WIDTHS_SET } from '$lib/asset-config.js';
+import { VARIANT_WIDTHS_SET } from '$lib/config.js';
 import { asset_exists, write_variant } from '$lib/server/asset-storage.js';
 
 /** @type {import('./$types').RequestHandler} */

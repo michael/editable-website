@@ -52,7 +52,7 @@ import Link from './components/Link.svelte';
 
 import { document_schema } from '$lib/document_schema.js';
 import { start_processing } from '$lib/client/asset-upload.js';
-import { MEDIA_DEFAULTS } from '$lib/asset-config.js';
+import { MEDIA_DEFAULTS } from '$lib/config.js';
 import { set_properties } from 'svedit';
 
 /** @returns {'image' | 'video'} */

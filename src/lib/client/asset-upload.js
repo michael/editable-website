@@ -1,5 +1,5 @@
 import { process_asset } from './process-asset.js';
-import { MAX_IMAGE_WIDTH } from '$lib/asset-config.js';
+import { MAX_IMAGE_WIDTH } from '$lib/config.js';
 
 /**
  * @typedef {{
