@@ -1,5 +1,5 @@
 import { json, error } from '@sveltejs/kit';
-import { delete_asset, asset_exists } from '$lib/server/asset-storage.js';
+import { delete_asset, asset_exists } from '$lib/server/asset_storage.js';
 
 /** @type {import('./$types').RequestHandler} */
 export async function DELETE({ params }) {
