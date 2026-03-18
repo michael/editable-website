@@ -177,19 +177,18 @@ const session_config = {
 				} else {
 					// Different type — replace the entire node
 					const new_node = {
+						...MEDIA_DEFAULTS,
 						id: nanoid(),
 						type: media_type,
 						src: blob_url,
 						width: dims.width,
 						height: dims.height,
-						alt: '',
-						...MEDIA_DEFAULTS
 					};
 					tr.create(new_node);
 					const parent_path = session.selection.path.slice(0, -1);
 					const property_name = session.selection.path[session.selection.path.length - 1];
+					// Setting the property to the new node id auto-deletes the old node
 					tr.set([...parent_path, property_name], new_node.id);
-					tr.delete(node.id);
 				}
 
 				session.apply(tr);
@@ -218,13 +217,13 @@ const session_config = {
 				const height = dims.height;
 
 				pasted_json.nodes['node_media_' + i] = {
+					...MEDIA_DEFAULTS,
 					id: 'node_media_' + i,
 					type: media_type,
 					src: blob_url,
 					width,
 					height,
-					alt: '',
-					...MEDIA_DEFAULTS
+					alt: ''
 				};
 				pasted_json.nodes['node_' + i] = {
 					id: 'node_' + i,
