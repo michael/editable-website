@@ -8,6 +8,11 @@
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
 	let image_node = $derived(svedit.session.get([...path, 'image']));
+	let aspect_ratio = $derived(
+		image_node.width && image_node.height
+			? `${image_node.width} / ${image_node.height}`
+			: '16 / 9'
+	);
 
 	let is_selected = $derived(is_image_selected());
 
@@ -25,8 +30,8 @@
 				<div
 					contenteditable="false"
 					class="overflow-hidden"
+					style:aspect-ratio={aspect_ratio}
 					class:ew-bg-checkerboard={is_selected || !image_node.src}
-					class:aspect-video={!image_node.src}
 				>
 					{#if image_node.type === 'video'}
 						<Video path={[...path, 'image']} />

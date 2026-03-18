@@ -51,11 +51,38 @@ import Link from './components/Link.svelte';
 
 import { document_schema } from '$lib/document_schema.js';
 import { start_processing } from '$lib/client/asset-upload.js';
+import { MEDIA_DEFAULTS } from '$lib/asset-config.js';
+import { set_properties } from 'svedit';
 
 /** @returns {'image' | 'video'} */
 function get_media_type(file) {
 	if (file.type.startsWith('video/')) return 'video';
 	return 'image';
+}
+
+/**
+ * Extract image dimensions using a temporary <img> element.
+ *
+ * @param {Blob} blob
+ * @returns {Promise<{ width: number, height: number }>}
+ */
+function get_image_dimensions(blob) {
+	return new Promise((resolve, reject) => {
+		const img = new window.Image();
+		const object_url = URL.createObjectURL(blob);
+
+		img.onload = () => {
+			URL.revokeObjectURL(object_url);
+			resolve({ width: img.naturalWidth || img.width, height: img.naturalHeight || img.height });
+		};
+
+		img.onerror = () => {
+			URL.revokeObjectURL(object_url);
+			reject(new Error('Failed to load image'));
+		};
+
+		img.src = object_url;
+	});
 }
 
 /**
@@ -82,6 +109,17 @@ function get_video_dimensions(blob) {
 
 		video.src = object_url;
 	});
+}
+
+/**
+ * Extract dimensions from a media file (image or video).
+ *
+ * @param {File} file
+ * @returns {Promise<{ width: number, height: number }>}
+ */
+function get_media_dimensions(file) {
+	if (file.type.startsWith('video/')) return get_video_dimensions(file);
+	return get_image_dimensions(file);
 }
 
 // App-specific config object, always available via session.config for introspection
@@ -125,39 +163,36 @@ const session_config = {
 				const file = pasted_media[0].blob;
 				const media_type = get_media_type(file);
 				const blob_url = pasted_media[0].data_url;
+				const dims = await get_media_dimensions(file);
+				const tr = session.tr;
 
 				if (media_type === node.type) {
-					// Same type — replace src on existing node
-					const tr = session.tr;
-					tr.set([...session.selection.path, 'src'], blob_url);
-					session.apply(tr);
+					// Same type — replace src and dimensions, reset crop
+					set_properties(tr, session.selection.path, {
+						...MEDIA_DEFAULTS,
+						src: blob_url,
+						width: dims.width,
+						height: dims.height
+					});
 				} else {
 					// Different type — replace the entire node
-					const dims = media_type === 'video'
-						? await get_video_dimensions(file)
-						: { width: 800, height: 600 };
 					const new_node = {
 						id: nanoid(),
 						type: media_type,
 						src: blob_url,
 						width: dims.width,
 						height: dims.height,
-						alt: node.alt || '',
-						scale: 1.0,
-						focal_point_x: 0.5,
-						focal_point_y: 0.5,
-						object_fit: 'cover'
+						alt: '',
+						...MEDIA_DEFAULTS
 					};
-					const tr = session.tr;
 					tr.create(new_node);
-					// The selection path points to the property that holds the node reference.
-					// We need to get the parent path and property name to update the reference.
 					const parent_path = session.selection.path.slice(0, -1);
 					const property_name = session.selection.path[session.selection.path.length - 1];
 					tr.set([...parent_path, property_name], new_node.id);
 					tr.delete(node.id);
-					session.apply(tr);
 				}
+
+				session.apply(tr);
 				// Start background processing (hash + resize/encode)
 				start_processing(blob_url, pasted_media[0].blob);
 			}
@@ -178,13 +213,9 @@ const session_config = {
 				const blob_url = pasted_item.data_url;
 				const media_type = get_media_type(pasted_item.blob);
 
-				let width = 800;
-				let height = 600;
-				if (media_type === 'video') {
-					const dims = await get_video_dimensions(pasted_item.blob);
-					width = dims.width;
-					height = dims.height;
-				}
+				const dims = await get_media_dimensions(pasted_item.blob);
+				const width = dims.width;
+				const height = dims.height;
 
 				pasted_json.nodes['node_media_' + i] = {
 					id: 'node_media_' + i,
@@ -193,10 +224,7 @@ const session_config = {
 					width,
 					height,
 					alt: '',
-					scale: 1.0,
-					focal_point_x: 0.5,
-					focal_point_y: 0.5,
-					object_fit: 'cover'
+					...MEDIA_DEFAULTS
 				};
 				pasted_json.nodes['node_' + i] = {
 					id: 'node_' + i,
@@ -363,14 +391,7 @@ const session_config = {
 				feature_image: {
 					id: 'feature_image',
 					type: 'image',
-					src: '',
-					width: 800,
-					height: 600,
-					alt: 'Feature image',
-					scale: 1.0,
-					focal_point_x: 0.5,
-					focal_point_y: 0.5,
-					object_fit: 'cover'
+					...MEDIA_DEFAULTS
 				},
 				body_text: {
 					id: 'body_text',
@@ -395,10 +416,7 @@ const session_config = {
 				image_one: {
 					id: 'image_one',
 					type: 'image',
-					src: '',
-					width: 800,
-					height: 600,
-					alt: 'Image One'
+					...MEDIA_DEFAULTS
 				},
 				new_figure: {
 					id: 'new_figure',
@@ -513,14 +531,7 @@ const session_config = {
 				const gallery_item_image = {
 					id: nanoid(),
 					type: 'image',
-					src: '',
-					width: 800,
-					height: 600,
-					alt: 'Sample image',
-					scale: 1.0,
-					focal_point_x: 0.5,
-					focal_point_y: 0.5,
-					object_fit: 'cover'
+					...MEDIA_DEFAULTS
 				};
 				tr.create(gallery_item_image);
 				const gallery_item = {
@@ -561,10 +572,7 @@ const session_config = {
 				width: 800,
 				height: 600,
 				alt: 'Sample image',
-				scale: 1.0,
-				focal_point_x: 0.5,
-				focal_point_y: 0.5,
-				object_fit: 'cover'
+				...MEDIA_DEFAULTS
 			};
 			tr.create(gallery_item_image);
 			const new_gallery_item = {
@@ -599,14 +607,7 @@ const session_config = {
 				const image = {
 					id: image_id,
 					type: 'image',
-					src: '',
-					width: 800,
-					height: 600,
-					alt: '',
-					scale: 1.0,
-					focal_point_x: 0.5,
-					focal_point_y: 0.5,
-					object_fit: 'cover'
+					...MEDIA_DEFAULTS
 				};
 				tr.create(image);
 				const link_collection_item = {
@@ -650,14 +651,7 @@ const session_config = {
 			const image = {
 				id: image_id,
 				type: 'image',
-				src: '',
-				width: 800,
-				height: 600,
-				alt: '',
-				scale: 1.0,
-				focal_point_x: 0.5,
-				focal_point_y: 0.5,
-				object_fit: 'cover'
+				...MEDIA_DEFAULTS
 			};
 			tr.create(image);
 			const new_link_collection_item = {
