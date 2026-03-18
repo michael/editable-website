@@ -2,6 +2,7 @@
 	import { getContext } from 'svelte';
 	import { Node, AnnotatedTextProperty, CustomProperty } from 'svedit';
 	import Image from './Image.svelte';
+	import Video from './Video.svelte';
 	import { reveal } from '../reveal.js';
 
 	const svedit = getContext('svedit');
@@ -33,7 +34,11 @@
 			class="image-wrapper h-full w-full overflow-hidden select-none"
 			class:ew-bg-checkerboard={is_selected || !image_node.src}
 		>
-			<Image path={[...path, 'image']} />
+			{#if image_node.type === 'video'}
+				<Video path={[...path, 'image']} />
+			{:else}
+				<Image path={[...path, 'image']} />
+			{/if}
 		</div>
 	</CustomProperty>
   </div>

@@ -1,12 +1,19 @@
 <script>
 	import { getContext } from 'svelte';
 	import { Node, CustomProperty } from 'svedit';
+	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 	import Image from './Image.svelte';
+	import Video from './Video.svelte';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
 	let image_node = $derived(svedit.session.get([...path, 'image']));
+	let aspect_ratio = $derived(
+		image_node.width && image_node.height
+			? `${image_node.width} / ${image_node.height}`
+			: '16 / 9'
+	);
 
 	let is_selected = $derived(is_image_selected());
 
@@ -18,16 +25,21 @@
 </script>
 
 <Node {path}>
-	<div>
-		<div class="figure mx-auto w-full max-w-5xl py-16">
+	<div class="{TW_LIMITER}">
+		<div class="figure {TW_PAGE_PADDING_X} py-16">
 			<CustomProperty path={[...path, 'image']}>
 				<div
 					contenteditable="false"
+					style:border-radius="var(--image-border-radius)"
+					style:aspect-ratio={aspect_ratio}
 					class="overflow-hidden"
 					class:ew-bg-checkerboard={is_selected || !image_node.src}
-					class:aspect-video={!image_node.src}
 				>
-					<Image path={[...path, 'image']} />
+					{#if image_node.type === 'video'}
+						<Video path={[...path, 'image']} />
+					{:else}
+						<Image path={[...path, 'image']} />
+					{/if}
 				</div>
 			</CustomProperty>
 		</div>

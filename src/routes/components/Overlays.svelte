@@ -1,6 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
-	import ImageControls from './ImageControls.svelte';
+	import MediaControls from './MediaControls.svelte';
 	import CreateLink from './CreateLink.svelte';
 	import EditLink from './EditLink.svelte';
 	import LinkPreview from './LinkPreview.svelte';
@@ -22,7 +22,7 @@
 			? svedit.session.get(svedit.session.selection.path)
 			: null
 	);
-	let is_image_selected = $derived(selected_property?.type === 'image');
+	let is_media_selected = $derived(selected_property?.type === 'image' || selected_property?.type === 'video');
 	let link_preview = $derived(get_link_preview());
 
 	function get_link_preview() {
@@ -68,13 +68,13 @@
 
 <div bind:this={overlays_ref}>
 	{#if svedit.session.selection?.type === 'property'}
-		{#if is_image_selected}
+		{#if is_media_selected}
 			<div
-				class="image-controls-overlay property-selection-overlay"
+				class="media-controls-overlay property-selection-overlay"
 				style="position-anchor: --{svedit.session.selection.path.join('-')};"
 			>
 				{#if selected_property.src}
-					<ImageControls path={svedit.session.selection.path} />
+					<MediaControls path={svedit.session.selection.path} />
 				{/if}
 			</div>
 		{:else}
@@ -102,7 +102,7 @@
 
 <style>
 
-	.image-controls-overlay {
+	.media-controls-overlay {
 		position: absolute;
 		top: anchor(top);
 		left: anchor(left);

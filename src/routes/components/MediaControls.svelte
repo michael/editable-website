@@ -1,5 +1,5 @@
 <script>
-	import { getContext } from 'svelte';
+	import { getContext, tick } from 'svelte';
 
 	const svedit = getContext('svedit');
 
@@ -9,7 +9,7 @@
 
 	let { path } = $props();
 
-	let image = $derived(svedit.session.get(path));
+	let media_node = $derived(svedit.session.get(path));
 	let controls_ref = $state(null);
 
 	// Drag state
@@ -17,7 +17,54 @@
 	let last_x = $state();
 	let last_y = $state();
 
+	// Panning control — disable only when the media exactly fills the container
+	// with no room to move: cover at scale 1.0 with matching aspect ratios.
+	// All other cases (contain, scale > 1, mismatched ratios) allow panning.
+	// Uses $effect + tick() so the DOM has updated before we measure.
+	let can_pan = $state(false);
+
+	$effect(() => {
+		// Track reactive dependencies
+		const _path = path;
+		const _scale = media_node.scale;
+		const _object_fit = media_node.object_fit;
+		const _width = media_node.width;
+		const _height = media_node.height;
+		const _ref = controls_ref;
+
+		tick().then(() => {
+			if (!_ref || !_width || !_height) {
+				can_pan = false;
+				return;
+			}
+
+			if (_scale > 1.0) {
+				can_pan = true;
+				return;
+			}
+
+			if (_object_fit !== 'cover') {
+				can_pan = true;
+				return;
+			}
+
+			// cover at scale 1.0 — panning only useful if aspect ratios differ
+			const rect = _ref.getBoundingClientRect();
+			if (rect.width === 0 || rect.height === 0) {
+				can_pan = false;
+				return;
+			}
+			const container_ratio = rect.width / rect.height;
+			const media_ratio = _width / _height;
+			can_pan = Math.abs(media_ratio - container_ratio) > 0.01;
+		});
+	});
+
 	function handle_pointer_down(e) {
+		if (!can_pan) {
+			e.preventDefault();
+			return;
+		}
 		is_dragging = true;
 		last_x = e.clientX;
 		last_y = e.clientY;
@@ -29,7 +76,7 @@
 		tr.set([...path, 'scale'], MIN_SCALE);
 		// tr.set([...path, 'focal_point_x'], 0.5);
 		// tr.set([...path, 'focal_point_y'], 0.5);
-		tr.set([...path, 'object_fit'], image.object_fit === 'cover' ? 'contain' : 'cover');
+		tr.set([...path, 'object_fit'], media_node.object_fit === 'cover' ? 'contain' : 'cover');
 		svedit.session.apply(tr, { batch: true });
 	}
 
@@ -40,8 +87,8 @@
 		const dx = ((e.clientX - last_x) / rect.width) * -1;
 		const dy = ((e.clientY - last_y) / rect.height) * -1;
 
-		const new_focal_point_x = Math.min(Math.max(image.focal_point_x - dx, 0), 1);
-		const new_focal_point_y = Math.min(Math.max(image.focal_point_y - dy, 0), 1);
+		const new_focal_point_x = Math.min(Math.max(media_node.focal_point_x - dx, 0), 1);
+		const new_focal_point_y = Math.min(Math.max(media_node.focal_point_y - dy, 0), 1);
 
 		const tr = svedit.session.tr;
 		tr.set([...path, 'focal_point_x'], new_focal_point_x);
@@ -58,17 +105,13 @@
 	}
 
 	function handle_wheel(e) {
-		const rect = controls_ref.getBoundingClientRect();
-
-		// screen x, y of zoom center (e.g. mouse/touch point)
-		const viewport_zoom_center_x = (e.clientX - rect.left) / rect.width;
-		const viewport_zoom_center_y = (e.clientY - rect.top) / rect.height;
-
+		// Only zoom when meta (Cmd) or ctrl key is held, otherwise let the page scroll
+		if (!e.metaKey && !e.ctrlKey) return;
 		e.preventDefault();
 		const zoomFactor = e.deltaY < 0 ? 1.01 : 0.99;
 
 		const tr = svedit.session.tr;
-		tr.set([...path, 'scale'], Math.min(Math.max(image.scale * zoomFactor, MIN_SCALE), MAX_SCALE));
+		tr.set([...path, 'scale'], Math.min(Math.max(media_node.scale * zoomFactor, MIN_SCALE), MAX_SCALE));
 		svedit.session.apply(tr, { batch: true });
 	}
 </script>
@@ -77,22 +120,25 @@
 
 <div
 	bind:this={controls_ref}
-	class="image-controls"
+	class="media-controls"
 	ondblclick={handle_double_click}
 	onpointerdown={handle_pointer_down}
 	onwheel={handle_wheel}
 	role="button"
 	class:dragging={is_dragging}
+	class:no-pan={!can_pan}
 	tabindex="0"
 >
-	<div
-		class="marker"
-		style={`left: ${image.focal_point_x * 100}%; top: ${image.focal_point_y * 100}%;`}
-	></div>
+	{#if can_pan}
+		<div
+			class="marker"
+			style={`left: ${media_node.focal_point_x * 100}%; top: ${media_node.focal_point_y * 100}%;`}
+		></div>
+	{/if}
 </div>
 
 <style>
-	.image-controls {
+	.media-controls {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -104,7 +150,11 @@
 		z-index: 10;
 	}
 
-	.image-controls.dragging {
+	.media-controls.no-pan {
+		cursor: default;
+	}
+
+	.media-controls.dragging {
 		cursor: grabbing;
 	}
 
