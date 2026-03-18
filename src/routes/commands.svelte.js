@@ -1,5 +1,7 @@
 import { Command, is_selection_collapsed } from 'svedit';
 import { get_closest_switchable_layout, get_colorset_node, get_closest_switchable_type } from './app_utils.js';
+import { set_properties } from 'svedit';
+import { MEDIA_DEFAULTS } from '$lib/config.js';
 
 /**
  * Command that cycles through available layouts for a node.
@@ -126,10 +128,10 @@ export class ResetImageCommand extends Command {
 	execute() {
 		const session = this.context.session;
 		const image_node = session.get(session.selection.path);
-		if (image_node?.type !== 'image') return;
+		if (image_node?.type !== 'image' && image_node?.type !== 'video') return;
 
 		const tr = session.tr;
-		tr.set([image_node.id, 'src'], '');
+		set_properties(tr, [image_node.id], MEDIA_DEFAULTS);
 		session.apply(tr);
 	}
 }

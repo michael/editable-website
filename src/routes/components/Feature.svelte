@@ -2,6 +2,7 @@
 	import { getContext } from 'svelte';
 	import { Node, CustomProperty, NodeArrayProperty } from 'svedit';
 	import Image from './Image.svelte';
+	import Video from './Video.svelte';
 	import { TW_PAGE_PADDING, TW_MOBILE_LEFT_INSET, TW_LIMITER } from '../tailwind_theme.js';
 	import { reveal } from '../reveal.js';
 
@@ -29,7 +30,11 @@
 			class="ew-image-wrapper h-full w-full overflow-hidden select-none"
 			class:ew-bg-checkerboard={is_selected || !image_node.src}
 		>
-			<Image path={[...path, 'image']} />
+			{#if image_node.type === 'video'}
+				<Video path={[...path, 'image']} />
+			{:else}
+				<Image path={[...path, 'image']} />
+			{/if}
 		</div>
 	</CustomProperty>
 {/snippet}
