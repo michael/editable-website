@@ -1,5 +1,5 @@
 <script>
-	import { getContext } from 'svelte';
+	import { getContext, tick } from 'svelte';
 
 	const svedit = getContext('svedit');
 
@@ -20,21 +20,45 @@
 	// Panning control — disable only when the media exactly fills the container
 	// with no room to move: cover at scale 1.0 with matching aspect ratios.
 	// All other cases (contain, scale > 1, mismatched ratios) allow panning.
-	let can_pan = $derived(compute_can_pan());
+	// Uses $effect + tick() so the DOM has updated before we measure.
+	let can_pan = $state(false);
 
-	function compute_can_pan() {
-		if (!controls_ref || !media_node.width || !media_node.height) return false;
+	$effect(() => {
+		// Track reactive dependencies
+		const _path = path;
+		const _scale = media_node.scale;
+		const _object_fit = media_node.object_fit;
+		const _width = media_node.width;
+		const _height = media_node.height;
+		const _ref = controls_ref;
 
-		if (media_node.scale > 1.0) return true;
-		if (media_node.object_fit !== 'cover') return true;
+		tick().then(() => {
+			if (!_ref || !_width || !_height) {
+				can_pan = false;
+				return;
+			}
 
-		// cover at scale 1.0 — panning only useful if aspect ratios differ
-		const rect = controls_ref.getBoundingClientRect();
-		if (rect.width === 0 || rect.height === 0) return false;
-		const container_ratio = rect.width / rect.height;
-		const media_ratio = media_node.width / media_node.height;
-		return Math.abs(media_ratio - container_ratio) > 0.01;
-	}
+			if (_scale > 1.0) {
+				can_pan = true;
+				return;
+			}
+
+			if (_object_fit !== 'cover') {
+				can_pan = true;
+				return;
+			}
+
+			// cover at scale 1.0 — panning only useful if aspect ratios differ
+			const rect = _ref.getBoundingClientRect();
+			if (rect.width === 0 || rect.height === 0) {
+				can_pan = false;
+				return;
+			}
+			const container_ratio = rect.width / rect.height;
+			const media_ratio = _width / _height;
+			can_pan = Math.abs(media_ratio - container_ratio) > 0.01;
+		});
+	});
 
 	function handle_pointer_down(e) {
 		if (!can_pan) {
