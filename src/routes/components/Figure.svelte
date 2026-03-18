@@ -1,6 +1,7 @@
 <script>
 	import { getContext } from 'svelte';
 	import { Node, CustomProperty } from 'svedit';
+	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 	import Image from './Image.svelte';
 	import Video from './Video.svelte';
 
@@ -24,13 +25,14 @@
 </script>
 
 <Node {path}>
-	<div>
-		<div class="figure mx-auto w-full max-w-5xl py-16">
+	<div class="{TW_LIMITER}">
+		<div class="figure {TW_PAGE_PADDING_X} py-16">
 			<CustomProperty path={[...path, 'image']}>
 				<div
 					contenteditable="false"
-					class="overflow-hidden"
+					style:border-radius="var(--image-border-radius)"
 					style:aspect-ratio={aspect_ratio}
+					class="overflow-hidden"
 					class:ew-bg-checkerboard={is_selected || !image_node.src}
 				>
 					{#if image_node.type === 'video'}
