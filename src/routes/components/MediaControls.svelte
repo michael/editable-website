@@ -81,6 +81,8 @@
 	}
 
 	function handle_wheel(e) {
+		// Only zoom when meta (Cmd) or ctrl key is held, otherwise let the page scroll
+		if (!e.metaKey && !e.ctrlKey) return;
 		e.preventDefault();
 		const zoomFactor = e.deltaY < 0 ? 1.01 : 0.99;
 
