@@ -17,7 +17,30 @@
 	let last_x = $state();
 	let last_y = $state();
 
+	// Panning control — disable only when the media exactly fills the container
+	// with no room to move: cover at scale 1.0 with matching aspect ratios.
+	// All other cases (contain, scale > 1, mismatched ratios) allow panning.
+	let can_pan = $derived(compute_can_pan());
+
+	function compute_can_pan() {
+		if (!controls_ref || !media_node.width || !media_node.height) return false;
+
+		if (media_node.scale > 1.0) return true;
+		if (media_node.object_fit !== 'cover') return true;
+
+		// cover at scale 1.0 — panning only useful if aspect ratios differ
+		const rect = controls_ref.getBoundingClientRect();
+		if (rect.width === 0 || rect.height === 0) return false;
+		const container_ratio = rect.width / rect.height;
+		const media_ratio = media_node.width / media_node.height;
+		return Math.abs(media_ratio - container_ratio) > 0.01;
+	}
+
 	function handle_pointer_down(e) {
+		if (!can_pan) {
+			e.preventDefault();
+			return;
+		}
 		is_dragging = true;
 		last_x = e.clientX;
 		last_y = e.clientY;
@@ -58,12 +81,6 @@
 	}
 
 	function handle_wheel(e) {
-		const rect = controls_ref.getBoundingClientRect();
-
-		// screen x, y of zoom center (e.g. mouse/touch point)
-		const viewport_zoom_center_x = (e.clientX - rect.left) / rect.width;
-		const viewport_zoom_center_y = (e.clientY - rect.top) / rect.height;
-
 		e.preventDefault();
 		const zoomFactor = e.deltaY < 0 ? 1.01 : 0.99;
 
@@ -83,12 +100,15 @@
 	onwheel={handle_wheel}
 	role="button"
 	class:dragging={is_dragging}
+	class:no-pan={!can_pan}
 	tabindex="0"
 >
-	<div
-		class="marker"
-		style={`left: ${media_node.focal_point_x * 100}%; top: ${media_node.focal_point_y * 100}%;`}
-	></div>
+	{#if can_pan}
+		<div
+			class="marker"
+			style={`left: ${media_node.focal_point_x * 100}%; top: ${media_node.focal_point_y * 100}%;`}
+		></div>
+	{/if}
 </div>
 
 <style>
@@ -102,6 +122,10 @@
 		pointer-events: auto;
 		cursor: grab;
 		z-index: 10;
+	}
+
+	.media-controls.no-pan {
+		cursor: default;
 	}
 
 	.media-controls.dragging {
