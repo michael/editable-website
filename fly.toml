@@ -1,0 +1,24 @@
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  DATA_DIR = "/data"
+
+[deploy]
+  strategy = "immediate"
+
+[mounts]
+  source = "data"
+  destination = "/data"
+  auto_extend_size_threshold = 80
+  auto_extend_size_increment = "1GB"
+  auto_extend_size_limit = "5GB"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_start_machines = true
+  auto_stop_machines = "suspend"
+  min_machines_running = 0
+  max_machines_running = 1
+  processes = ["app"]

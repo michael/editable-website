@@ -10,9 +10,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run preview` - Preview production build
 
 **Implementation Guidelines:**
-- Before implementing any feature, read `ARCHITECTURE.md` to understand the relevant design decisions and constraints
-- New features must be specified in `ARCHITECTURE.md` before implementation begins — the spec should be concise but sufficient to derive the implementation from
-- If a gap in `ARCHITECTURE.md` is discovered during implementation, update the doc with a minimal but concise change before proceeding with the code
+- Before implementing any feature, read `ARCHITECTURE.md` for design decisions and `IMPLEMENTATION_PLAN.md` for the step-by-step implementation spec
+- Design decisions go in `ARCHITECTURE.md`, implementation steps go in `IMPLEMENTATION_PLAN.md`
+- New features must be specified before implementation begins — the spec should be concise but sufficient to derive the implementation from
+- If a gap in either doc is discovered during implementation, update it with a minimal but concise change before proceeding with the code
 - Do exactly what the user asks for — one step at a time
 - Do NOT think 4 steps ahead or add extra features/improvements
 - Only implement the specific change requested
