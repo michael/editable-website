@@ -187,7 +187,7 @@ export const demo_doc = {
             "type": "feature",
             "layout": 1,
             "colorset": 0,
-            "image": "VbNcMxZaQwErTyUiOpLkJh",
+            "media": "VbNcMxZaQwErTyUiOpLkJh",
             "body": [
                 "uqZnrCRbzCkBWmYNQYkFePY",
                 "WsXcDfVgBhNjMkLqAzPeRt",
@@ -420,7 +420,7 @@ export const demo_doc = {
         "wtvHDBrCzJVgacTaJqAwNJk": {
             "id": "wtvHDBrCzJVgacTaJqAwNJk",
             "type": "gallery_item",
-            "image": "jEhPHUyzqvpNeSHYfKCkYgS"
+            "media": "jEhPHUyzqvpNeSHYfKCkYgS"
         },
         "ZjdBYZdXQedwuTdVFGHdDEj": {
             "id": "ZjdBYZdXQedwuTdVFGHdDEj",
@@ -437,7 +437,7 @@ export const demo_doc = {
         "TQRANBXMrzXXZTtzxAYhhZf": {
             "id": "TQRANBXMrzXXZTtzxAYhhZf",
             "type": "gallery_item",
-            "image": "ZjdBYZdXQedwuTdVFGHdDEj"
+            "media": "ZjdBYZdXQedwuTdVFGHdDEj"
         },
         "UGfbRKEMbGwgcUjhpgXausS": {
             "id": "UGfbRKEMbGwgcUjhpgXausS",
@@ -454,7 +454,7 @@ export const demo_doc = {
         "HtSTZfjTcDSkttVaTUKMYAj": {
             "id": "HtSTZfjTcDSkttVaTUKMYAj",
             "type": "gallery_item",
-            "image": "UGfbRKEMbGwgcUjhpgXausS"
+            "media": "UGfbRKEMbGwgcUjhpgXausS"
         },
         "cMtzexVuqMWFgEpxhYjRQFq": {
             "id": "cMtzexVuqMWFgEpxhYjRQFq",
@@ -557,7 +557,7 @@ export const demo_doc = {
             "type": "link_collection_item",
             "href": "https://gluecksmaurer.de",
             "target": "_blank",
-            "image": "nprCMwYvJvUEmRaHBsxfgUd",
+            "media": "nprCMwYvJvUEmRaHBsxfgUd",
             "preline": {
                 "text": "Real estate",
                 "annotations": []
@@ -588,7 +588,7 @@ export const demo_doc = {
             "type": "link_collection_item",
             "href": "https://colbourns.com",
             "target": "_blank",
-            "image": "link_collection_item_2_image",
+            "media": "link_collection_item_2_image",
             "preline": {
                 "text": "Flooring design",
                 "annotations": []
@@ -619,7 +619,7 @@ export const demo_doc = {
             "type": "link_collection_item",
             "href": "https://tomorrow.vc",
             "target": "_blank",
-            "image": "ReRqxYxMdAUVaMuudfJhzsS",
+            "media": "ReRqxYxMdAUVaMuudfJhzsS",
             "preline": {
                 "text": "Venture capital",
                 "annotations": []
@@ -843,7 +843,7 @@ export const demo_doc = {
             "type": "feature",
             "layout": 2,
             "colorset": 0,
-            "image": "hqrrTdEbTPaqzEcYMczhBZb",
+            "media": "hqrrTdEbTPaqzEcYMczhBZb",
             "body": [
                 "pCjecUjAFDGgGpgquwGrCdp",
                 "qDAyeabdhVEXjBWXyyqfUPb",

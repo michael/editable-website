@@ -7,7 +7,7 @@
 	const svedit = getContext('svedit');
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
-	let image_node = $derived(svedit.session.get([...path, 'image']));
+	let media_node = $derived(svedit.session.get([...path, 'media']));
 
 	// Read the parent Prose node's layout to determine alignment
 	// path is like ['body', index, 'content', index] — the Prose node is at path[0..2]
@@ -19,12 +19,12 @@
 	// Default to 200px when no image is set yet, to hint that this is for small decorative elements.
 	const DEFAULT_WIDTH = 200;
 	let css_width = $derived(
-		image_node.width ? Math.round(image_node.width / 2) : DEFAULT_WIDTH
+		media_node.width ? Math.round(media_node.width / 2) : DEFAULT_WIDTH
 	);
 
 	let aspect_ratio = $derived(
-		image_node.width && image_node.height
-			? `${image_node.width} / ${image_node.height}`
+		media_node.width && media_node.height
+			? `${media_node.width} / ${media_node.height}`
 			: '16 / 9'
 	);
 
@@ -37,28 +37,28 @@
 		return parts.length > 0 ? parts.join('; ') : undefined;
 	}
 
-	let is_selected = $derived(is_image_selected());
+	let is_selected = $derived(is_media_selected());
 
-	function is_image_selected() {
+	function is_media_selected() {
 		const path_of_selection = svedit?.session?.selection?.path?.join('.');
-		const _image_path = [...path, 'image'].join('.');
-		return path_of_selection == _image_path;
+		const _media_path = [...path, 'media'].join('.');
+		return path_of_selection == _media_path;
 	}
 </script>
 
 <Node {path}>
-	<CustomProperty path={[...path, 'image']} style={custom_property_style}>
+	<CustomProperty path={[...path, 'media']} style={custom_property_style}>
 		<div
 			contenteditable="false"
 			style:border-radius="var(--image-border-radius)"
 			style:aspect-ratio={aspect_ratio}
 			class="overflow-hidden"
-			class:ew-bg-checkerboard={is_selected || !image_node.src}
+			class:ew-bg-checkerboard={is_selected || !media_node.src}
 		>
-			{#if image_node.type === 'video'}
-				<Video path={[...path, 'image']} />
+			{#if media_node.type === 'video'}
+				<Video path={[...path, 'media']} />
 			{:else}
-				<Image path={[...path, 'image']} />
+				<Image path={[...path, 'media']} />
 			{/if}
 		</div>
 	</CustomProperty>

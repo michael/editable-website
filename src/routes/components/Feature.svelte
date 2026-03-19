@@ -10,30 +10,30 @@
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
 	let colorset_class = $derived(node.colorset ? `ew-colorset-${node.colorset}` : '');
-	let image_node = $derived(svedit.session.get([...path, 'image']));
-	let is_selected = $derived(is_image_selected());
+	let media_node = $derived(svedit.session.get([...path, 'media']));
+	let is_selected = $derived(is_media_selected());
 
-	function is_image_selected() {
+	function is_media_selected() {
 		const path_of_selection = svedit?.session?.selection?.path?.join('.');
-		const _image_path = [...path, 'image'].join('.');
-		return path_of_selection == _image_path;
+		const _media_path = [...path, 'media'].join('.');
+		return path_of_selection == _media_path;
 	}
 </script>
 
 <!-- Primitives -->
 {#snippet image(aspect_ratio, border_radius = false)}
-	<CustomProperty class="ew-image-property" path={[...path, 'image']}>
+	<CustomProperty class="ew-image-property" path={[...path, 'media']}>
 		<div
 			contenteditable="false"
 			style:aspect-ratio={aspect_ratio}
 			style:border-radius={border_radius ? 'var(--image-border-radius)' : undefined}
 			class="ew-image-wrapper h-full w-full overflow-hidden select-none"
-			class:ew-bg-checkerboard={is_selected || !image_node.src}
+			class:ew-bg-checkerboard={is_selected || !media_node.src}
 		>
-			{#if image_node.type === 'video'}
-				<Video path={[...path, 'image']} />
+			{#if media_node.type === 'video'}
+				<Video path={[...path, 'media']} />
 			{:else}
-				<Image path={[...path, 'image']} />
+				<Image path={[...path, 'media']} />
 			{/if}
 		</div>
 	</CustomProperty>

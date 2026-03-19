@@ -9,19 +9,19 @@
 	let { path } = $props();
 	let item_index = $derived(typeof path[path.length - 1] === 'number' ? path[path.length - 1] : 0);
 	let node = $derived(svedit.session.get(path));
-	let image_node = $derived(svedit.session.get([...path, 'image']));
-	let is_selected = $derived(is_image_selected());
+	let media_node = $derived(svedit.session.get([...path, 'media']));
+	let is_selected = $derived(is_media_selected());
 
-	function is_image_selected() {
+	function is_media_selected() {
 		const path_of_selection = svedit?.session?.selection?.path?.join('.');
-		const _image_path = [...path, 'image'].join('.');
-		return path_of_selection == _image_path;
+		const _media_path = [...path, 'media'].join('.');
+		return path_of_selection == _media_path;
 	}
 </script>
 
 <Node class="gallery-item" {path}>
   <div use:reveal={{ delay: item_index * 150 }}>
-	<CustomProperty class="image-property" path={[...path, 'image']}>
+	<CustomProperty class="image-property" path={[...path, 'media']}>
 		<!--
 			We need a div with contenteditable="false" to wrap the image,
 		  otherwise we get two additional cursor positions (before and after the image).
@@ -32,12 +32,12 @@
 			contenteditable="false"
 			style:border-radius="var(--image-border-radius)"
 			class="image-wrapper h-full w-full overflow-hidden select-none"
-			class:ew-bg-checkerboard={is_selected || !image_node.src}
+			class:ew-bg-checkerboard={is_selected || !media_node.src}
 		>
-			{#if image_node.type === 'video'}
-				<Video path={[...path, 'image']} />
+			{#if media_node.type === 'video'}
+				<Video path={[...path, 'media']} />
 			{:else}
-				<Image path={[...path, 'image']} />
+				<Image path={[...path, 'media']} />
 			{/if}
 		</div>
 	</CustomProperty>

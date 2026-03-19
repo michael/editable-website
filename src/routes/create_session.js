@@ -231,7 +231,7 @@ const session_config = {
 				pasted_json.nodes['node_' + i] = {
 					id: 'node_' + i,
 					type: target_node_type,
-					image: 'node_media_' + i
+					media: 'node_media_' + i
 				};
 				pasted_json.main_nodes.push('node_' + i);
 
@@ -407,7 +407,7 @@ const session_config = {
 						type: 'feature',
 						layout: 1,
 						colorset: 0,
-						image: 'feature_image',
+						media: 'feature_image',
 						body: ['body_text']
 					}
 			});
@@ -424,7 +424,7 @@ const session_config = {
 				new_figure: {
 					id: 'new_figure',
 					type: 'figure',
-					image: 'image_one'
+					media: 'image_one'
 				}
 			});
 
@@ -447,7 +447,7 @@ const session_config = {
 				new_decoration: {
 					id: 'new_decoration',
 					type: 'decoration',
-					image: 'image_one'
+					media: 'image_one'
 				}
 			});
 
@@ -556,7 +556,7 @@ const session_config = {
 				const gallery_item = {
 					id: nanoid(),
 					type: 'gallery_item',
-					image: gallery_item_image.id
+					media: gallery_item_image.id
 				};
 				tr.create(gallery_item);
 				new_gallery_items.push(gallery_item.id);
@@ -597,7 +597,7 @@ const session_config = {
 			const new_gallery_item = {
 				id: nanoid(),
 				type: 'gallery_item',
-				image: gallery_item_image.id
+				media: gallery_item_image.id
 			};
 			tr.create(new_gallery_item);
 			tr.insert_nodes([new_gallery_item.id]);
@@ -634,7 +634,7 @@ const session_config = {
 						type: 'link_collection_item',
 						href: '',
 						target: '_self',
-						image: image_id,
+						media: image_id,
 						preline: { text: '', annotations: [] },
 						title: { text: '', annotations: [] },
 						description: { text: '', annotations: [] }
@@ -678,7 +678,7 @@ const session_config = {
 				type: 'link_collection_item',
 				href: '',
 				target: '_self',
-				image: image_id,
+				media: image_id,
 				preline: { text: '', annotations: [] },
 				title: { text: '', annotations: [] },
 				description: { text: '', annotations: [] }
