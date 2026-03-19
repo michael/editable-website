@@ -58,7 +58,6 @@
 					<div
 						contenteditable={svedit.editable ? 'false' : undefined}
 						style:aspect-ratio={logo_aspect_ratio}
-						style:height="100%"
 						class="overflow-hidden h-full"
 						class:ew-bg-checkerboard={is_logo_selected || !logo_node.src}
 					>
