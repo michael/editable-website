@@ -186,7 +186,7 @@ export const document_schema = define_document_schema({
 	figure: {
 		kind: 'block',
 		properties: {
-			image: {
+			media: {
 				type: 'node',
 				node_types: ['image', 'video'],
 				default_node_type: 'image'
@@ -196,7 +196,7 @@ export const document_schema = define_document_schema({
 	decoration: {
 		kind: 'block',
 		properties: {
-			image: {
+			media: {
 				type: 'node',
 				node_types: ['image', 'video'],
 				default_node_type: 'image'
@@ -227,7 +227,7 @@ export const document_schema = define_document_schema({
 	gallery_item: {
 		kind: 'block',
 		properties: {
-			image: {
+			media: {
 				type: 'node',
 				node_types: ['image', 'video'],
 				default_node_type: 'image'
@@ -260,7 +260,7 @@ export const document_schema = define_document_schema({
 		properties: {
 			href: { type: 'string' },
 			target: { type: 'string', default: '_self' },
-			image: {
+			media: {
 				type: 'node',
 				node_types: ['image', 'video'],
 				default_node_type: 'image'
@@ -287,7 +287,7 @@ export const document_schema = define_document_schema({
 		properties: {
 			layout: { type: 'integer', default: 1 },
 			colorset: { type: 'integer', default: 0 },
-			image: {
+			media: {
 				type: 'node',
 				node_types: ['image', 'video'],
 				default_node_type: 'image'
