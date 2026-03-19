@@ -4,12 +4,27 @@
 	import { slide } from 'svelte/transition';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 	import Image from './Image.svelte';
+	import Video from './Video.svelte';
 
 	let { path } = $props();
 
 	const svedit = getContext('svedit');
 	let node = $derived(svedit.session.get(path));
 	let nav_items = $derived(node.nav_items || []);
+	let logo_node = $derived(svedit.session.get([...path, 'logo']));
+	let logo_aspect_ratio = $derived(
+		logo_node.width && logo_node.height
+			? `${logo_node.width} / ${logo_node.height}`
+			: '1 / 1'
+	);
+
+	let is_logo_selected = $derived(is_logo_selected_fn());
+
+	function is_logo_selected_fn() {
+		const path_of_selection = svedit?.session?.selection?.path?.join('.');
+		const _logo_path = [...path, 'logo'].join('.');
+		return path_of_selection == _logo_path;
+	}
 
 	let mobile_menu_open = $state(false);
 
@@ -34,29 +49,40 @@
 	}
 </script>
 
-<Node {path}>
+<Node class="mb-2" {path}>
 	<div class="{TW_LIMITER}">
 		<div class="flex items-stretch lg:text-lg">
 			<!-- Logo -->
-			<div class="flex items-center flex-1 {TW_PAGE_PADDING_X} py-4">
-				<CustomProperty path={[...path, 'logo']}>
-					<svelte:element
-						this={svedit.editable ? 'div' : 'a'}
-						href={svedit.editable ? undefined : '/'}
-						class="w-10 h-10 overflow-hidden block"
+			<div class="flex items-center flex-1 {TW_PAGE_PADDING_X} py-3">
+				<CustomProperty class="h-10" path={[...path, 'logo']}>
+					<div
 						contenteditable={svedit.editable ? 'false' : undefined}
+						style:aspect-ratio={logo_aspect_ratio}
+						style:height="100%"
+						class="overflow-hidden h-full"
+						class:ew-bg-checkerboard={is_logo_selected || !logo_node.src}
 					>
-						<Image path={[...path, 'logo']} mask={true} />
-					</svelte:element>
+						<svelte:element
+							this={svedit.editable ? 'div' : 'a'}
+							href={svedit.editable ? undefined : '/'}
+							class="block w-full h-full"
+						>
+							{#if logo_node.type === 'video'}
+								<Video path={[...path, 'logo']} />
+							{:else}
+								<Image path={[...path, 'logo']} mask={true} />
+							{/if}
+						</svelte:element>
+					</div>
 				</CustomProperty>
 			</div>
 
 			<!-- Desktop menu (hidden on mobile) -->
-			<NodeArrayProperty class="nav-items hidden md:flex items-stretch gap-x-2 sm:gap-x-4 py-4 {TW_PAGE_PADDING_X}" path={[...path, 'nav_items']} />
+			<NodeArrayProperty class="nav-items hidden md:flex items-stretch gap-x-2 sm:gap-x-4 py-3 {TW_PAGE_PADDING_X}" path={[...path, 'nav_items']} />
 
 			<!-- Hamburger button (visible on mobile only) -->
 			<button
-				class="cursor-pointer flex md:hidden items-center justify-center {TW_PAGE_PADDING_X} py-4"
+				class="cursor-pointer flex md:hidden items-center justify-center {TW_PAGE_PADDING_X} py-3"
 				onclick={toggle_mobile_menu}
 				aria-label="Toggle menu"
 				aria-expanded={mobile_menu_open}
