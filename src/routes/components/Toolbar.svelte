@@ -1,5 +1,5 @@
 <script>
-	let { session, app_commands, editable } = $props();
+	let { session, app_commands, editable, focus_canvas } = $props();
 
 	const TW_TOOLBAR_POSITION = 'bottom-5 right-5 sm:right-7 md:right-10 lg:right-14';
 	// On mobile also pin to left edge so the toolbar can scroll horizontally
