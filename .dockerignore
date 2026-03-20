@@ -1,0 +1,11 @@
+/.git
+/.svelte-kit
+/build
+/node_modules
+/data
+.dockerignore
+.DS_Store
+.env*
+Dockerfile
+fly.toml
+vite.config.js.timestamp-*

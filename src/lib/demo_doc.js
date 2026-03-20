@@ -34,7 +34,7 @@ export const demo_doc = {
         "VbNcMxZaQwErTyUiOpLkJh": {
             "id": "VbNcMxZaQwErTyUiOpLkJh",
             "type": "image",
-            "src": "/sample-images/cmde.webp",
+            "src": "cmde.webp",
             "width": 800,
             "height": 600,
             "alt": "Feature image",
@@ -408,7 +408,7 @@ export const demo_doc = {
         "jEhPHUyzqvpNeSHYfKCkYgS": {
             "id": "jEhPHUyzqvpNeSHYfKCkYgS",
             "type": "image",
-            "src": "/sample-images/user1-desktop.webp",
+            "src": "user1-desktop.webp",
             "width": 800,
             "height": 600,
             "alt": "Sample image",
@@ -425,7 +425,7 @@ export const demo_doc = {
         "ZjdBYZdXQedwuTdVFGHdDEj": {
             "id": "ZjdBYZdXQedwuTdVFGHdDEj",
             "type": "image",
-            "src": "/sample-images/user1-notebook.webp",
+            "src": "user1-notebook.webp",
             "width": 800,
             "height": 600,
             "alt": "Sample image",
@@ -543,7 +543,7 @@ export const demo_doc = {
         "nprCMwYvJvUEmRaHBsxfgUd": {
             "id": "nprCMwYvJvUEmRaHBsxfgUd",
             "type": "image",
-            "src": "/sample-images/gluecksmaurer.webp",
+            "src": "gluecksmaurer.webp",
             "width": 800,
             "height": 600,
             "alt": "Getting started",
@@ -574,7 +574,7 @@ export const demo_doc = {
         "link_collection_item_2_image": {
             "id": "link_collection_item_2_image",
             "type": "image",
-            "src": "/sample-images/colbourns.webp",
+            "src": "colbourns.webp",
             "width": 800,
             "height": 600,
             "alt": "Customization",
@@ -605,7 +605,7 @@ export const demo_doc = {
         "ReRqxYxMdAUVaMuudfJhzsS": {
             "id": "ReRqxYxMdAUVaMuudfJhzsS",
             "type": "image",
-            "src": "/sample-images/tomorrow-vc.webp",
+            "src": "tomorrow-vc.webp",
             "width": 800,
             "height": 600,
             "alt": "Svedit documentation",
@@ -781,7 +781,7 @@ export const demo_doc = {
         "hqrrTdEbTPaqzEcYMczhBZb": {
             "id": "hqrrTdEbTPaqzEcYMczhBZb",
             "type": "image",
-            "src": "/sample-images/michael.webp",
+            "src": "michael.webp",
             "width": 682,
             "height": 1024,
             "alt": "Feature image",
@@ -967,7 +967,7 @@ export const demo_doc = {
         "nav_logo": {
             "id": "nav_logo",
             "type": "image",
-            "src": "/sample-images/logo.svg",
+            "src": "logo.svg",
             "width": 100,
             "height": 100,
             "alt": "Logo",
@@ -1022,7 +1022,7 @@ export const demo_doc = {
         "footer_logo": {
             "id": "footer_logo",
             "type": "image",
-            "src": "/sample-images/logo.svg",
+            "src": "logo.svg",
             "width": 100,
             "height": 100,
             "alt": "Logo",

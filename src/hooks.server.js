@@ -1,4 +1,4 @@
-// import migrate from './sqlite/migrate.js';
+// import migrate from '$lib/server/migrate.js';
 
 /** @type {import('@sveltejs/kit').ServerInit} */
 export async function init() {
