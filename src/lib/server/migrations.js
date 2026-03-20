@@ -283,7 +283,7 @@ const page_1 = {
 			type: 'feature',
 			layout: 1,
 			colorset: 0,
-			image: 'VbNcMxZaQwErTyUiOpLkJh',
+			media: 'VbNcMxZaQwErTyUiOpLkJh',
 			body: [
 				'uqZnrCRbzCkBWmYNQYkFePY',
 				'WsXcDfVgBhNjMkLqAzPeRt',
@@ -431,7 +431,7 @@ const page_1 = {
 		wtvHDBrCzJVgacTaJqAwNJk: {
 			id: 'wtvHDBrCzJVgacTaJqAwNJk',
 			type: 'gallery_item',
-			image: 'jEhPHUyzqvpNeSHYfKCkYgS'
+			media: 'jEhPHUyzqvpNeSHYfKCkYgS'
 		},
 		ZjdBYZdXQedwuTdVFGHdDEj: {
 			id: 'ZjdBYZdXQedwuTdVFGHdDEj',
@@ -448,7 +448,7 @@ const page_1 = {
 		TQRANBXMrzXXZTtzxAYhhZf: {
 			id: 'TQRANBXMrzXXZTtzxAYhhZf',
 			type: 'gallery_item',
-			image: 'ZjdBYZdXQedwuTdVFGHdDEj'
+			media: 'ZjdBYZdXQedwuTdVFGHdDEj'
 		},
 		UGfbRKEMbGwgcUjhpgXausS: {
 			id: 'UGfbRKEMbGwgcUjhpgXausS',
@@ -465,7 +465,7 @@ const page_1 = {
 		HtSTZfjTcDSkttVaTUKMYAj: {
 			id: 'HtSTZfjTcDSkttVaTUKMYAj',
 			type: 'gallery_item',
-			image: 'UGfbRKEMbGwgcUjhpgXausS'
+			media: 'UGfbRKEMbGwgcUjhpgXausS'
 		},
 		cMtzexVuqMWFgEpxhYjRQFq: { id: 'cMtzexVuqMWFgEpxhYjRQFq', type: 'strong' },
 		BKVAhVQRTzRGhGGqpfrQnsu: { id: 'BKVAhVQRTzRGhGGqpfrQnsu', type: 'strong' },
@@ -537,7 +537,7 @@ const page_1 = {
 			type: 'link_collection_item',
 			href: 'https://gluecksmaurer.de',
 			target: '_blank',
-			image: 'nprCMwYvJvUEmRaHBsxfgUd',
+			media: 'nprCMwYvJvUEmRaHBsxfgUd',
 			preline: { text: 'Real estate', annotations: [] },
 			title: { text: 'Glücksmaurer', annotations: [] },
 			description: { text: 'Innovative real estate agent in Worms, Germany.', annotations: [] }
@@ -559,7 +559,7 @@ const page_1 = {
 			type: 'link_collection_item',
 			href: 'https://colbourns.com',
 			target: '_blank',
-			image: 'link_collection_item_2_image',
+			media: 'link_collection_item_2_image',
 			preline: { text: 'Flooring design', annotations: [] },
 			title: { text: 'Colbourns', annotations: [] },
 			description: {
@@ -584,7 +584,7 @@ const page_1 = {
 			type: 'link_collection_item',
 			href: 'https://tomorrow.vc',
 			target: '_blank',
-			image: 'ReRqxYxMdAUVaMuudfJhzsS',
+			media: 'ReRqxYxMdAUVaMuudfJhzsS',
 			preline: { text: 'Venture capital', annotations: [] },
 			title: { text: 'Visionaries Tomorrow', annotations: [] },
 			description: { text: 'An early-stage industrial deep tech fund.', annotations: [] }
@@ -764,7 +764,7 @@ const page_1 = {
 			type: 'feature',
 			layout: 2,
 			colorset: 0,
-			image: 'hqrrTdEbTPaqzEcYMczhBZb',
+			media: 'hqrrTdEbTPaqzEcYMczhBZb',
 			body: [
 				'pCjecUjAFDGgGpgquwGrCdp',
 				'qDAyeabdhVEXjBWXyyqfUPb',
