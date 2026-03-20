@@ -33,6 +33,12 @@ And run the development server:
 npm run dev
 ```
 
+To re-seed the database with the initial demo content, use:
+
+```sh
+npm run dev:seed
+```
+
 Next, you probably want to adjust the colors and fonts in [app.css](./src/app.css) to match your style.
 
 ```css
