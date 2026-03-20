@@ -1,0 +1,5 @@
+.headers ON
+.mode box
+.width 0
+.nullvalue NULL
+.timer ON

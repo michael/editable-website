@@ -4,14 +4,26 @@
 	import { Svedit, KeyMapper, Command, define_keymap } from 'svedit';
 	import Toolbar from './components/Toolbar.svelte';
 	import { create_session } from './create_session.js';
-	import { demo_doc } from '$lib/demo_doc.js';
-
-	let { data } = $props();
-	let session = $derived(create_session(demo_doc));
+	import { get_document, save_document } from '$lib/api.remote.js';
+	import {
+		collect_blob_urls,
+		wait_for_processing,
+		has_pending_processing,
+		ensure_processing,
+		upload_pending,
+		replace_blob_urls,
+		cleanup_pending
+	} from '$lib/client/asset_upload.js';
+	import SaveProgressModal from './components/SaveProgressModal.svelte';
 
 	let app_el = $state();
 	let svedit_ref = $state();
 	let editable = $state(false);
+
+	// Save progress modal state
+	let save_progress_visible = $state(false);
+	let save_progress_message = $state('');
+	let save_progress_done = $state(false);
 
 	$effect(() => {
 		document.documentElement.style.scrollBehavior = editable ? 'auto' : 'smooth';
@@ -70,13 +82,94 @@
 		}
 
 		async execute() {
-			// TODO: persist changes to database
-			// await save_document(this.context.session);
-			console.log('Document saved', session.to_json());
-			session.selection = null;
-			this.context.editable = false;
+			const save_start = Date.now();
+
+			// Start progress tracking (modal appears after 1s delay)
+			save_progress_visible = true;
+			save_progress_done = false;
+			save_progress_message = 'Saving…';
+
+			try {
+				let mapping = null;
+
+				// 1. Upload assets (before serializing the document)
+				const pre_check = session.to_json();
+				const blob_urls = collect_blob_urls(pre_check.nodes);
+
+				if (blob_urls.length > 0) {
+					const total = blob_urls.length;
+
+					// Re-start processing for any blob URLs missing from the pending map
+					// (e.g. after undo brought back blob URLs cleaned up by a previous save)
+					await ensure_processing(blob_urls);
+
+					// Wait for any images still being processed in the background
+					if (has_pending_processing()) {
+						save_progress_message = total === 1
+							? 'Processing image…'
+							: `Processing ${total} images…`;
+						await wait_for_processing(({ done, total: t }) => {
+							if (t > 1) {
+								save_progress_message = `Processing image ${done + 1}/${t}…`;
+							}
+						});
+					}
+
+					// Upload pending assets referenced in the document
+					mapping = await upload_pending(blob_urls, ({ phase, index, total: t }) => {
+						if (phase === 'uploading') {
+							save_progress_message = `Uploading image ${index}/${t}…`;
+						}
+					});
+				}
+
+				// 2. Replace blob URLs on the doc_json copy and save
+				save_progress_message = 'Saving…';
+				const doc_json = session.to_json();
+				if (mapping) {
+					replace_blob_urls(doc_json.nodes, mapping);
+				}
+
+				await save_document(doc_json);
+
+				// 3. Save succeeded — now update the live session and clean up
+				if (mapping) {
+					const tr = session.tr;
+					for (const [blob_url, entry] of mapping.entries()) {
+						for (const node of Object.values(pre_check.nodes)) {
+							if (node.type === 'image' && node.src === blob_url) {
+								tr.set([node.id, 'src'], entry.asset_id);
+								tr.set([node.id, 'width'], entry.width);
+								tr.set([node.id, 'height'], entry.height);
+							}
+						}
+					}
+					session.apply(tr);
+					cleanup_pending(mapping);
+				}
+
+				console.log('Document saved');
+				session.selection = null;
+				this.context.editable = false;
+
+				// Flash success message only if save took more than 3s
+				if (Date.now() - save_start > 3000) {
+					save_progress_message = 'Successfully saved';
+					save_progress_done = true;
+					await new Promise((resolve) => setTimeout(resolve, 1500));
+				}
+				save_progress_visible = false;
+			} catch (err) {
+				console.error('Save failed:', err);
+				save_progress_visible = false;
+				alert('Save failed. Your changes have not been lost — please try again.');
+			}
 		}
 	}
+
+	// Create KeyMapper and provide via context (must happen synchronously before any await)
+	const key_mapper = new KeyMapper();
+	setContext('key_mapper', key_mapper);
 
 	const app_command_context = {
 		get editable() {
@@ -98,16 +191,16 @@
 		save_document: new SaveCommand(app_command_context)
 	};
 
-	// Create KeyMapper and provide via context
-	const key_mapper = new KeyMapper();
-	setContext('key_mapper', key_mapper);
-
 	// Push app-level keymap scope
 	const app_key_map = define_keymap({
 		'meta+e,ctrl+e': [app_commands.edit_document],
 		'meta+s,ctrl+s': [app_commands.save_document]
 	});
 	key_mapper.push_scope(app_key_map);
+
+	// Load document from database (must be after all synchronous init)
+	const doc = await get_document('page_1');
+	let session = $derived(create_session(doc));
 </script>
 
 <svelte:window onkeydown={key_mapper.handle_keydown.bind(key_mapper)} />
@@ -127,6 +220,7 @@
 	<div class="demo-wrapper antialiased" bind:this={app_el}>
 		<Toolbar {session} {app_commands} {editable} {focus_canvas} />
 		<Svedit {session} bind:editable bind:this={svedit_ref} path={[session.doc.document_id]} />
+		<SaveProgressModal visible={save_progress_visible} message={save_progress_message} done={save_progress_done} />
 
 		<!-- {#if editable}
 			<div class="flex-column mx-auto my-10 w-full max-w-5xl gap-y-2">
