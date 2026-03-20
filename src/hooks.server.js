@@ -1,8 +1,9 @@
-// import migrate from '$lib/server/migrate.js';
-
 /** @type {import('@sveltejs/kit').ServerInit} */
 export async function init() {
-	// migrate();
+	if (!process.env.VERCEL) {
+		const { default: migrate } = await import('$lib/server/migrate.js');
+		migrate();
+	}
 }
 
 /** @type {import('@sveltejs/kit').Handle} */
