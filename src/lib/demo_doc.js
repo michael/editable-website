@@ -1,6 +1,219 @@
-// Hardcoded demo_doc for static deployment
-// This replaces the database seed for demo purposes
-export const demo_doc = {
+// Seed data for the demo website
+// Split into separate documents: NAV_1, FOOTER_1, PAGE_1
+// demo_doc merges all three for the static Vercel preview
+
+export const NAV_1 = {
+    "document_id": "nav_1",
+    "nodes": {
+        "nav_logo": {
+            "id": "nav_logo",
+            "type": "image",
+            "src": "logo.svg",
+            "width": 100,
+            "height": 100,
+            "alt": "Logo",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "DDmmrQzcAxWJfdhatTbkRTh": {
+            "id": "DDmmrQzcAxWJfdhatTbkRTh",
+            "type": "nav_item",
+            "layout": 1,
+            "href": "/#RtYpQwXsZvNmKjHgFdSaLe",
+            "target": "_self",
+            "label": {
+                "text": "Try it",
+                "annotations": []
+            }
+        },
+        "GyKyQvRAvkgnywmxTVgvrnF": {
+            "id": "GyKyQvRAvkgnywmxTVgvrnF",
+            "type": "nav_item",
+            "layout": 1,
+            "href": "/#XVJGXtwnQMvcrcuByAtcWNa",
+            "target": "_self",
+            "label": {
+                "text": "About",
+                "annotations": []
+            }
+        },
+        "FKgjxHCeSbVZrdnPuxYkMYp": {
+            "id": "FKgjxHCeSbVZrdnPuxYkMYp",
+            "type": "nav_item",
+            "layout": 2,
+            "href": "https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform",
+            "target": "_blank",
+            "label": {
+                "text": "Join the Technical Preview",
+                "annotations": []
+            }
+        },
+        "nav_1": {
+            "id": "nav_1",
+            "type": "nav",
+            "logo": "nav_logo",
+            "nav_items": [
+                "DDmmrQzcAxWJfdhatTbkRTh",
+                "GyKyQvRAvkgnywmxTVgvrnF",
+                "FKgjxHCeSbVZrdnPuxYkMYp"
+            ]
+        }
+    }
+};
+
+export const FOOTER_1 = {
+    "document_id": "footer_1",
+    "nodes": {
+        "footer_logo": {
+            "id": "footer_logo",
+            "type": "image",
+            "src": "logo.svg",
+            "width": 100,
+            "height": 100,
+            "alt": "Logo",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "EtcfbabRCtPSvSpfFfjPeza": {
+            "id": "EtcfbabRCtPSvSpfFfjPeza",
+            "type": "footer_link",
+            "href": "/#RtYpQwXsZvNmKjHgFdSaLe",
+            "target": "_self",
+            "label": {
+                "text": "Editing",
+                "annotations": []
+            }
+        },
+        "WVvBSREFCThNYcpgvfUnWkF": {
+            "id": "WVvBSREFCThNYcpgvfUnWkF",
+            "type": "footer_link",
+            "href": "/#xKmNqPrStVwYzAbCdEfGh",
+            "target": "_self",
+            "label": {
+                "text": "Blocks",
+                "annotations": []
+            }
+        },
+        "eDAnnFjNdZpzYMtpSqReBxf": {
+            "id": "eDAnnFjNdZpzYMtpSqReBxf",
+            "type": "footer_link",
+            "href": "/#BPdekRaDEUcQZqtEwPwBvyu",
+            "target": "_self",
+            "label": {
+                "text": "Images",
+                "annotations": []
+            }
+        },
+        "GwPeRFYtAyrcCMfpuyzdWZp": {
+            "id": "GwPeRFYtAyrcCMfpuyzdWZp",
+            "type": "footer_link",
+            "href": "/#jLnPqRsTuVwXyZaBcDeFg",
+            "target": "_self",
+            "label": {
+                "text": "Links",
+                "annotations": []
+            }
+        },
+        "fcSSWQUTYajjknPChgGsPZz": {
+            "id": "fcSSWQUTYajjknPChgGsPZz",
+            "type": "footer_link_column",
+            "footer_links": [
+                "EtcfbabRCtPSvSpfFfjPeza",
+                "WVvBSREFCThNYcpgvfUnWkF",
+                "eDAnnFjNdZpzYMtpSqReBxf",
+                "GwPeRFYtAyrcCMfpuyzdWZp"
+            ],
+            "label": {
+                "text": "On this page",
+                "annotations": []
+            }
+        },
+        "uavzfSnSpTRrHSfJpbfvpsh": {
+            "id": "uavzfSnSpTRrHSfJpbfvpsh",
+            "type": "footer_link",
+            "href": "https://github.com/michael/editable-website",
+            "target": "_blank",
+            "label": {
+                "text": "Editable Website",
+                "annotations": []
+            }
+        },
+        "footer_link_2_1": {
+            "id": "footer_link_2_1",
+            "type": "footer_link",
+            "href": "https://svedit.dev",
+            "label": {
+                "text": "Svedit",
+                "annotations": []
+            },
+            "target": "_blank"
+        },
+        "footer_column_2": {
+            "id": "footer_column_2",
+            "type": "footer_link_column",
+            "label": {
+                "text": "GitHub",
+                "annotations": []
+            },
+            "footer_links": [
+                "uavzfSnSpTRrHSfJpbfvpsh",
+                "footer_link_2_1"
+            ]
+        },
+        "ewuBYPxRqFsJXffTuwqssXg": {
+            "id": "ewuBYPxRqFsJXffTuwqssXg",
+            "type": "footer_link",
+            "href": "https://www.youtube.com/watch?v=T2RMYj_1g9E",
+            "label": {
+                "text": "Introduction",
+                "annotations": []
+            },
+            "target": "_blank"
+        },
+        "cCMbgzNjRjVjrvWuHJCvJkx": {
+            "id": "cCMbgzNjRjVjrvWuHJCvJkx",
+            "type": "footer_link",
+            "href": "https://youtu.be/o4kcABS-XH4?t=3226",
+            "target": "_blank",
+            "label": {
+                "text": "Update 2025-10",
+                "annotations": []
+            }
+        },
+        "footer_column_3": {
+            "id": "footer_column_3",
+            "type": "footer_link_column",
+            "label": {
+                "text": "Videos",
+                "annotations": []
+            },
+            "footer_links": [
+                "ewuBYPxRqFsJXffTuwqssXg",
+                "cCMbgzNjRjVjrvWuHJCvJkx"
+            ]
+        },
+        "footer_1": {
+            "id": "footer_1",
+            "type": "footer",
+            "logo": "footer_logo",
+            "copyright": {
+                "text": "© Editable Website",
+                "annotations": []
+            },
+            "footer_link_columns": [
+                "fcSSWQUTYajjknPChgGsPZz",
+                "footer_column_2",
+                "footer_column_3"
+            ]
+        }
+    }
+};
+
+export const PAGE_1 = {
     "document_id": "page_1",
     "nodes": {
         "ccHVKDeyhrRVfKZCpXvxhac": {
@@ -964,205 +1177,6 @@ export const demo_doc = {
                 "PjwvEAbrZCxZFcqJqayVyhR"
             ]
         },
-        "nav_logo": {
-            "id": "nav_logo",
-            "type": "image",
-            "src": "logo.svg",
-            "width": 100,
-            "height": 100,
-            "alt": "Logo",
-            "scale": 1,
-            "focal_point_x": 0.5,
-            "focal_point_y": 0.5,
-            "object_fit": "cover"
-        },
-        "DDmmrQzcAxWJfdhatTbkRTh": {
-            "id": "DDmmrQzcAxWJfdhatTbkRTh",
-            "type": "nav_item",
-            "layout": 1,
-            "href": "/#RtYpQwXsZvNmKjHgFdSaLe",
-            "target": "_self",
-            "label": {
-                "text": "Try it",
-                "annotations": []
-            }
-        },
-        "GyKyQvRAvkgnywmxTVgvrnF": {
-            "id": "GyKyQvRAvkgnywmxTVgvrnF",
-            "type": "nav_item",
-            "layout": 1,
-            "href": "/#XVJGXtwnQMvcrcuByAtcWNa",
-            "target": "_self",
-            "label": {
-                "text": "About",
-                "annotations": []
-            }
-        },
-        "FKgjxHCeSbVZrdnPuxYkMYp": {
-            "id": "FKgjxHCeSbVZrdnPuxYkMYp",
-            "type": "nav_item",
-            "layout": 2,
-            "href": "https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform",
-            "target": "_blank",
-            "label": {
-                "text": "Join the Technical Preview",
-                "annotations": []
-            }
-        },
-        "nav_1": {
-            "id": "nav_1",
-            "type": "nav",
-            "logo": "nav_logo",
-            "nav_items": [
-                "DDmmrQzcAxWJfdhatTbkRTh",
-                "GyKyQvRAvkgnywmxTVgvrnF",
-                "FKgjxHCeSbVZrdnPuxYkMYp"
-            ]
-        },
-        "footer_logo": {
-            "id": "footer_logo",
-            "type": "image",
-            "src": "logo.svg",
-            "width": 100,
-            "height": 100,
-            "alt": "Logo",
-            "scale": 1,
-            "focal_point_x": 0.5,
-            "focal_point_y": 0.5,
-            "object_fit": "cover"
-        },
-        "EtcfbabRCtPSvSpfFfjPeza": {
-            "id": "EtcfbabRCtPSvSpfFfjPeza",
-            "type": "footer_link",
-            "href": "/#RtYpQwXsZvNmKjHgFdSaLe",
-            "target": "_self",
-            "label": {
-                "text": "Editing",
-                "annotations": []
-            }
-        },
-        "WVvBSREFCThNYcpgvfUnWkF": {
-            "id": "WVvBSREFCThNYcpgvfUnWkF",
-            "type": "footer_link",
-            "href": "/#xKmNqPrStVwYzAbCdEfGh",
-            "target": "_self",
-            "label": {
-                "text": "Blocks",
-                "annotations": []
-            }
-        },
-        "eDAnnFjNdZpzYMtpSqReBxf": {
-            "id": "eDAnnFjNdZpzYMtpSqReBxf",
-            "type": "footer_link",
-            "href": "/#BPdekRaDEUcQZqtEwPwBvyu",
-            "target": "_self",
-            "label": {
-                "text": "Images",
-                "annotations": []
-            }
-        },
-        "GwPeRFYtAyrcCMfpuyzdWZp": {
-            "id": "GwPeRFYtAyrcCMfpuyzdWZp",
-            "type": "footer_link",
-            "href": "/#jLnPqRsTuVwXyZaBcDeFg",
-            "target": "_self",
-            "label": {
-                "text": "Links",
-                "annotations": []
-            }
-        },
-        "fcSSWQUTYajjknPChgGsPZz": {
-            "id": "fcSSWQUTYajjknPChgGsPZz",
-            "type": "footer_link_column",
-            "footer_links": [
-                "EtcfbabRCtPSvSpfFfjPeza",
-                "WVvBSREFCThNYcpgvfUnWkF",
-                "eDAnnFjNdZpzYMtpSqReBxf",
-                "GwPeRFYtAyrcCMfpuyzdWZp"
-            ],
-            "label": {
-                "text": "On this page",
-                "annotations": []
-            }
-        },
-        "uavzfSnSpTRrHSfJpbfvpsh": {
-            "id": "uavzfSnSpTRrHSfJpbfvpsh",
-            "type": "footer_link",
-            "href": "https://github.com/michael/editable-website",
-            "target": "_blank",
-            "label": {
-                "text": "Editable Website",
-                "annotations": []
-            }
-        },
-        "footer_link_2_1": {
-            "id": "footer_link_2_1",
-            "type": "footer_link",
-            "href": "https://svedit.dev",
-            "label": {
-                "text": "Svedit",
-                "annotations": []
-            },
-            "target": "_blank"
-        },
-        "footer_column_2": {
-            "id": "footer_column_2",
-            "type": "footer_link_column",
-            "label": {
-                "text": "GitHub",
-                "annotations": []
-            },
-            "footer_links": [
-                "uavzfSnSpTRrHSfJpbfvpsh",
-                "footer_link_2_1"
-            ]
-        },
-        "ewuBYPxRqFsJXffTuwqssXg": {
-            "id": "ewuBYPxRqFsJXffTuwqssXg",
-            "type": "footer_link",
-            "href": "https://www.youtube.com/watch?v=T2RMYj_1g9E",
-            "label": {
-                "text": "Introduction",
-                "annotations": []
-            },
-            "target": "_blank"
-        },
-        "cCMbgzNjRjVjrvWuHJCvJkx": {
-            "id": "cCMbgzNjRjVjrvWuHJCvJkx",
-            "type": "footer_link",
-            "href": "https://youtu.be/o4kcABS-XH4?t=3226",
-            "target": "_blank",
-            "label": {
-                "text": "Update 2025-10",
-                "annotations": []
-            }
-        },
-        "footer_column_3": {
-            "id": "footer_column_3",
-            "type": "footer_link_column",
-            "label": {
-                "text": "Videos",
-                "annotations": []
-            },
-            "footer_links": [
-                "ewuBYPxRqFsJXffTuwqssXg",
-                "cCMbgzNjRjVjrvWuHJCvJkx"
-            ]
-        },
-        "footer_1": {
-            "id": "footer_1",
-            "type": "footer",
-            "logo": "footer_logo",
-            "copyright": {
-                "text": "© Editable Website",
-                "annotations": []
-            },
-            "footer_link_columns": [
-                "fcSSWQUTYajjknPChgGsPZz",
-                "footer_column_2",
-                "footer_column_3"
-            ]
-        },
         "page_1": {
             "id": "page_1",
             "type": "page",
@@ -1181,4 +1195,10 @@ export const demo_doc = {
             "footer": "footer_1"
         }
     }
+};
+
+// Merged document for static deployment (Vercel demo)
+export const demo_doc = {
+    document_id: PAGE_1.document_id,
+    nodes: { ...PAGE_1.nodes, ...NAV_1.nodes, ...FOOTER_1.nodes }
 };
