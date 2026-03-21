@@ -84,7 +84,7 @@ The editing infrastructure (Svedit) becomes an integral part of your website (at
 
 ### Is mobile editing supported?
 
-Editable Website is desktop-only, simply because keyboard shortcuts don't work on mobile. This might change in the future. Mobile editing is supported in Svedit. The experience doesn't match my high standards for an editing interface. However, I'll work towards gradually supporting mobile editing. Maybe a good compromise is allowing text changes on mobile (like fixing a typo) while structural editing remains desktop-only.
+There is experimental support for mobile editing — it works in principle. The current focus is on desktop UX, but mobile editing will improve over time.
 
 ### Where is the data stored?
 
