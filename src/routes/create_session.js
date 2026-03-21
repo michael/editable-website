@@ -1,6 +1,5 @@
 import {
 	Session,
-	define_document_schema,
 	define_keymap,
 	SelectAllCommand,
 	InsertDefaultNodeCommand,

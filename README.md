@@ -33,6 +33,12 @@ And run the development server:
 npm run dev
 ```
 
+To re-seed the database with the initial demo content, use:
+
+```sh
+npm run dev:seed
+```
+
 Next, you probably want to adjust the colors and fonts in [app.css](./src/app.css) to match your style.
 
 ```css
@@ -54,6 +60,22 @@ However, likely you'll want to customize more than that. E.g. edit [Button.svelt
 
 <!--**Note:** After `git pull`, delete `data/site.sqlite3` to pick up schema changes.-->
 
+## Deploy
+
+```
+fly apps create my-editable-website
+```
+
+```
+fly secrets set -a my-editable-website \
+  ORIGIN='https://my-editable-website.fly.dev' \
+  BODY_SIZE_LIMIT='30000000'
+```
+
+```
+fly deploy -a my-editable-website --primary-region fra --vm-size shared-cpu-1x --vm-memory 256 --volume-initial-size 1
+```
+
 ## FAQs
 
 ### How is this different to using a CMS?
@@ -62,11 +84,11 @@ The editing infrastructure (Svedit) becomes an integral part of your website (at
 
 ### Is mobile editing supported?
 
-Editable Website is desktop-only, simply because keyboard shortcuts don't work on mobile. This might change in the future. Mobile editing is supported in Svedit. The experience doesn't match my high standards for an editing interface. However, I'll work towards gradually supporting mobile editing. Maybe a good compromise is allowing text changes on mobile (like fixing a typo) while structural editing remains desktop-only.
+There is experimental support for mobile editing — it works in principle. The current focus is on desktop UX, but mobile editing will improve over time.
 
 ### Where is the data stored?
 
-Editable Website stores all content in an SQLite database and assets (images, videos) on the file system. To backup your site, make regular copies of your `data/` directory, which contains both the `site.sqlite3` file and the `images/` folder.
+All content lives in a single `data/` directory — an SQLite database (`db.sqlite3`) and uploaded assets (`assets/`). Locally this defaults to `./data`. On Fly.io it's a persistent volume at `/data`. To back up your site, copy this directory.
 
 ### How about AI?
 
@@ -78,7 +100,7 @@ Editable Website is modular and you can and should reuse code across projects. H
 
 ### Hosting?
 
-Editable Website runs on any VPS. All you need is Node.js and SQLite. I'm personally using [Fly.io](https://fly.io) for hosting. A Dockerfile will be provided that can be used with Fly.io and other platforms that support Docker.
+Editable Website runs on any VPS. All you need is Node.js and SQLite. The repository includes a `Dockerfile` and `fly.toml` for one-command deployment to [Fly.io](https://fly.io) — see [Deploying to Fly.io](#deploying-to-flyio) above. The same Dockerfile works with any platform that supports Docker.
 
 ### Static builds?
 

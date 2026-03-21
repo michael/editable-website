@@ -197,7 +197,9 @@ This means changes to the nav or footer made on any page are persisted to the sh
 
 ### Media node types
 
-There are three media node types: `image`, `video`, and `audio`. Each has only the properties that apply to it.
+There are two media node types: `image` and `video`. Each has the same visual properties (they fill containers identically), plus type-specific extras.
+
+> **Future:** a third type `audio` may be added later.
 
 **`image`** — static images (stored as WebP), animated GIFs, SVGs:
 
@@ -216,7 +218,7 @@ There are three media node types: `image`, `video`, and `audio`. Each has only t
 }
 ```
 
-**`video`** — MP4, WebM:
+**`video`** — MP4 (WebM may be added later):
 
 ```json
 {
@@ -229,38 +231,96 @@ There are three media node types: `image`, `video`, and `audio`. Each has only t
     "scale": 1.0,
     "focal_point_x": 0.5,
     "focal_point_y": 0.5,
-    "object_fit": "cover",
-    "duration": 42.5
+    "object_fit": "cover"
 }
 ```
 
-**`audio`** — MP3:
-
-```json
-{
-    "id": "podcast_clip",
-    "type": "audio",
-    "src": "f9c2d4ae...cdef.mp3",
-    "alt": "Interview excerpt",
-    "duration": 187.3
-}
-```
-
-Audio nodes have no `width`, `height`, `scale`, `focal_point_x/y`, or `object_fit` — those concepts don't apply. `Audio.svelte` renders a waveform visualization that fills whatever space the container gives it.
+Video has the same properties as image. No `duration` — the browser reads it from the file on playback. This keeps video and image nodes structurally identical except for `type`, which simplifies the schema and paste logic.
 
 ### Media property
 
-Container nodes like `gallery_item` reference media via a `node` property that allows all three types:
+Container nodes that currently have an `image` property referencing only `["image"]` need to be widened to also accept `"video"`. The property is **renamed from `image` to `media`** to reflect that it can hold either type. This affects:
+
+- `gallery_item.image` → `gallery_item.media`
+- `figure.image` → `figure.media`
+- `feature.image` → `feature.media`
+- `link_collection_item.image` → `link_collection_item.media`
+- `nav.logo` and `footer.logo` — **stay as `logo`**, but widen to `["image", "video"]`
+
+Each of these becomes:
 
 ```
-gallery_item.media → node property, allowed types: ["image", "video", "audio"]
+type: 'node', node_types: ['image', 'video'], default_node_type: 'image'
 ```
 
-When the user pastes a file over an existing media node, the paste handler checks the file's MIME type, creates the correct node type, deletes the old node, and updates the reference. The schema's allowed types on the `media` property ensure only valid media nodes can be placed there.
+The `default_node_type` stays `image` — when inserting a new empty container, it starts with a placeholder image node.
+
+**Migration:** existing documents have the old property name `image`. On document load, the server (or a one-time migration) renames `image` → `media` on affected node types. Existing `image` nodes inside those properties are valid — their `type` is still `"image"`, only the property name on the parent changes.
 
 ### Visual treatment
 
-All media types fill their container the same way visually. In a gallery with fixed aspect ratios, images and videos crop via `focal_point_x/y` and `object_fit`. Audio renders a waveform that fills the available space using the container's aspect ratio. There is no separate "audio player" layout — audio is a visual element like any other media.
+Both media types fill their container the same way visually. Images and videos crop via `focal_point_x/y` and `object_fit`. Zooming (scroll wheel to adjust `scale`) and panning (drag to move `focal_point_x/y`) work identically for both media types.
+
+### MediaControls
+
+`MediaControls.svelte` (renamed from `ImageControls.svelte`) provides the zoom/pan overlay for both images and videos. It reads `scale`, `focal_point_x`, `focal_point_y`, and `object_fit` from the node at `path` — no type-specific logic. The same crosshair marker, drag-to-pan, scroll-to-zoom, and double-click-to-toggle-object-fit behavior applies to both media types.
+
+`Overlays.svelte` shows `MediaControls` whenever a media node (image or video) is selected as a property. The selection check is `is_media_selected`: `selected_property?.type === 'image' || selected_property?.type === 'video'`.
+
+### Video.svelte component
+
+`Video.svelte` receives the same `path` prop as `Image.svelte` and reads the same visual properties. It renders a `<video>` element with:
+
+- `autoplay`, `muted`, `loop`, `playsinline`, `disablepictureinpicture` — videos play silently and loop like background/ambient video. No play button, no controls visible inline.
+- `src` resolved the same way as images: blob URLs used directly, saved asset ids prefixed with `ASSET_BASE`.
+- `object-fit`, `object-position`, and `transform: scale(...)` applied identically to how `Image.svelte` does it.
+- `width` and `height` attributes set from node properties.
+- `contenteditable="false"` to prevent the browser from trying to edit the video element.
+- No `srcset` or variants — videos are served as-is.
+- The `alt` property is rendered as `aria-label` on the `<video>` element.
+- **Autoplay handling:** uses `$effect` with multiple retry strategies — checks `readyState >= 2`, listens for `canplay`/`loadeddata`, and falls back to `setTimeout`. This handles late hydration where readiness events may have already fired.
+- **Click-to-fullscreen (published view only):** clicking the video enters native fullscreen with controls enabled and audio unmuted. On fullscreen exit (including iOS Safari's `webkitendfullscreen`), the video restores to muted inline autoplay. iOS sometimes re-pauses ~400ms after play succeeds, so a `setTimeout(500)` retry is needed. Inline-playing videos show `cursor: zoom-in`.
+- **Edit mode:** click-to-fullscreen is disabled — `MediaControls` overlay captures pointer events for zoom/pan instead.
+
+The `image-resize` project's `src/lib/components/Video.svelte` is the reference implementation for autoplay, fullscreen, and iOS handling.
+
+### Video metadata extraction
+
+When a video file is pasted/dropped, the client needs `width` and `height` for the node. This is extracted by creating a temporary `<video>` element, setting its `src` to the blob URL, and reading `videoWidth` / `videoHeight` after the `loadedmetadata` event fires. This runs as part of the paste handler before creating the node.
+
+### Handle media paste
+
+The current `handle_image_paste` callback is renamed to `handle_media_paste` to reflect that it handles both images and videos. Svedit's paste system already filters for image and video MIME types — the callback receives all pasted media files.
+
+The paste handler uses `get_media_type(file)` to map each file's MIME type to a node type:
+
+```js
+/** @returns {'image' | 'video'} */
+function get_media_type(file) {
+    if (file.type.startsWith('video/')) return 'video';
+    return 'image';
+}
+```
+
+This returns the Svedit node type that corresponds to the file. Currently only `'image'` and `'video'` — `'audio'` can be added later.
+
+**When pasting over an existing media node** (property selection on an image or video node): if `get_media_type(file)` matches the existing node's `type`, replace `src` on the existing node (current behavior). If it differs (e.g. pasting a video over an image), **replace the entire node** — create a new node of the correct type, delete the old node, and update the parent's `media` reference. This works because the parent's `media` property allows both `["image", "video"]`.
+
+**When pasting into a container** (text selection / inserting new nodes): use `get_media_type(file)` to decide the child node type. The wrapper node (`gallery_item` or `figure`) uses `media` as the property name.
+
+### Video in the asset pipeline
+
+Videos are **passthrough** assets — no client-side processing, no variants.
+
+**`start_processing`** (in `asset-upload.js`): detects video MIME types (`video/mp4`, `video/webm`) and creates a pending asset entry with the file as-is. The hash is computed from the source file. The stored extension matches the source (`.mp4` or `.webm`). No WASM processing, no variants. The entry goes straight to `status: 'ready'`.
+
+**`collect_blob_urls`**: currently only collects from `type === 'image'` nodes. Must also collect from `type === 'video'` nodes.
+
+**`replace_blob_urls`**: currently only replaces on `type === 'image'` nodes. Must also replace on `type === 'video'` nodes.
+
+**`upload_asset`**: currently assumes image content types. Must map the asset extension to the correct MIME type: `.mp4` → `video/mp4`, `.webm` → `video/webm`.
+
+**`ensure_processing`**: when re-fetching a blob URL for a video, must detect the MIME type and skip WASM processing (same passthrough as initial paste).
 
 ### No asset table
 
@@ -268,12 +328,14 @@ Assets are **not** tracked as separate entities in the database. There is no `as
 
 ### The `src` field
 
-The `src` field has two modes:
+The `src` field has exactly two modes — no other values are valid:
 
 - **During editing (unsaved):** a blob URL (e.g. `blob:http://localhost:5173/a1b2c3d4`). The media displays immediately using the browser's in-memory blob. This is a temporary reference that only lives for the duration of the editing session.
-- **After save (persisted):** an asset id (e.g. `c4b519da...fabdb.webp`). The blob URLs are replaced with asset ids during the save flow, after all assets have been successfully uploaded.
+- **After save (persisted):** a bare asset id (e.g. `c4b519da...fabdb.webp`). The blob URLs are replaced with asset ids during the save flow, after all assets have been successfully uploaded.
 
-Each media component (`Image.svelte`, `Video.svelte`, `Audio.svelte`) checks the `src` value: if it starts with `blob:`, use it directly. Otherwise, prefix it with `/assets` to construct the full URL. The `/assets` route serves files from `ASSET_PATH` on disk.
+Absolute URLs, external URLs, and relative paths are never valid `src` values. All media must be uploaded through the asset pipeline — this ensures the site is fully self-contained and portable. The UI does not allow setting `src` manually.
+
+Each media component (`Image.svelte`, `Video.svelte`, `Audio.svelte`) checks the `src` value: if it starts with `blob:`, use it directly. Otherwise, prefix it with `ASSET_BASE` (defaults to `/assets`) to construct the full URL. The `ASSET_BASE` route serves files from `ASSET_PATH` on disk.
 
 The asset id includes the file extension (e.g. `.webp`, `.mp4`, `.mp3`), so the serving layer can resolve the file directly without a database lookup.
 
@@ -345,8 +407,7 @@ The asset id always includes the file extension. The stem (id without extension)
 | Static images (JPEG, PNG, WebP, HEIC) | `image` | Resize to `MAX_IMAGE_WIDTH`, convert to WebP via WASM | `c4b519da...fabdb.webp` | Yes (`c4b519da...fabdb/w320.webp`, etc.) |
 | Animated GIFs | `image` | Passthrough | `c4b519da...fabdb.gif` | No |
 | SVGs | `image` | Passthrough | `c4b519da...fabdb.svg` | No |
-| Videos (MP4, WebM) | `video` | Passthrough | `c4b519da...fabdb.mp4` / `.webm` | No |
-| Audio (MP3) | `audio` | Passthrough | `c4b519da...fabdb.mp3` | No |
+| Videos (MP4) | `video` | Passthrough | `c4b519da...fabdb.mp4` | No |
 
 ### Image size constraints
 
@@ -391,11 +452,12 @@ See [Image size constraints](#image-size-constraints). The variant widths are fi
 
 When the user pastes or drops files into a Svedit document:
 
-1. `handle_image_paste` creates image nodes immediately, with `src` set to a blob URL of the unprocessed source file. Images display instantly — no waiting for processing.
-2. The client computes the SHA-256 hash of the source file. This hash (plus extension) will become the asset id on save.
-3. Background processing starts: decode → resize → encode original as WebP → generate all width variants. Processing is keyed by the blob URL that sits in `image.src`.
-4. The user can continue editing, paste more images, or rearrange content. Background processing does not block the editor.
-5. Videos, animated GIFs, and SVGs skip client-side processing — they'll be used and stored as-is'.
+1. `handle_media_paste` creates image or video nodes immediately (based on MIME type), with `src` set to a blob URL of the source file. Media displays instantly — no waiting for processing.
+2. For video files, width and height are extracted via a temporary `<video>` element (`loadedmetadata` → `videoWidth`/`videoHeight`) and set on the node.
+3. The client computes the SHA-256 hash of the source file. This hash (plus extension) will become the asset id on save.
+4. Background processing starts. For images: decode → resize → encode original as WebP → generate all width variants. For videos: passthrough (hash only, no processing). Processing is keyed by the blob URL that sits in the node's `src`.
+5. The user can continue editing, paste more files, or rearrange content. Background processing does not block the editor.
+6. Videos, animated GIFs, and SVGs skip client-side processing — they're stored as-is.
 
 ### Save flow
 
@@ -425,7 +487,7 @@ When the user saves, an all-or-nothing upload+save operation runs:
 
 The `asset_refs` table is updated on every document save as part of the same save operation:
 
-1. Walk the document's nodes, collect all `src` values from media nodes (image, video, audio) → the current set of asset ids
+1. Walk the document's nodes, collect all `src` values from media nodes (image, video) → the current set of asset ids
 2. Delete all existing `asset_refs` rows for that `document_id`
 3. Insert the new set of `(asset_id, document_id)` pairs
 
@@ -456,21 +518,21 @@ This can also run on save if a document previously referenced assets it no longe
 ### Assets
 
 - `HEAD /api/assets/:asset_id` — check if an asset exists (original + all expected variants). Returns `200` if complete, `404` if not. Used by the client to skip uploading duplicates.
-- `POST /api/assets` — upload an original. Headers: `X-Content-Hash` (SHA-256 hex), `Content-Type`. Returns `{ id, width, height }`.
-- `POST /api/assets/:asset_id/variants` — upload a pre-generated width variant. Headers: `X-Variant-Width`. Body: WebP blob.
+- `POST /api/assets` — upload an original. Headers: `X-Content-Hash` (SHA-256 hex), `Content-Type`. Returns `{ id, width, height }`. Content-Type must match the file type: `image/webp`, `image/gif`, `image/svg+xml`, `video/mp4`, etc.
+- `POST /api/assets/:asset_id/variants` — upload a pre-generated width variant. Headers: `X-Variant-Width`. Body: WebP blob. (Images only — videos have no variants.)
 - `DELETE /api/assets/:asset_id` — delete an asset and all its variants from disk. Used by the client to clean up after a failed variant upload.
 - `GET /assets/:asset_id` — serve the original (from `ASSET_PATH` on disk)
 - `GET /assets/:stem/w:width.webp` — serve a width variant
 
 Asset serving endpoints return `Cache-Control: public, max-age=31536000, immutable` — asset ids are content-addressed, so they can be cached forever.
 
-Video and audio originals support HTTP Range requests for seeking.
+Video originals support HTTP Range requests for seeking.
 
 ## No asset manager
 
-There is no asset manager UI and no "pick from existing assets" panel. Adding images always means selecting files from your computer and pasting them into the document — similar to how Google Docs works.
+There is no asset manager UI and no "pick from existing assets" panel. Adding media always means selecting files from your computer and pasting them into the document — similar to how Google Docs works.
 
-To reuse an image that's already on the site, navigate to the page that has it, copy the node (e.g. a gallery item or figure), and paste it into the target page. The pasted image node points to the same shared asset on disk — no re-upload needed. This keeps the interface simple and avoids building a separate media library.
+To reuse media that's already on the site, navigate to the page that has it, copy the node (e.g. a gallery item or figure), and paste it into the target page. The pasted media node points to the same shared asset on disk — no re-upload needed. This keeps the interface simple and avoids building a separate media library.
 
 ## Admin interface
 
@@ -571,26 +633,4 @@ If large storage requirements arise (e.g. video-heavy sites with many gigabytes 
 
 The document data model wouldn't need to change — `src` fields still store content-addressed asset ids, and URL construction just swaps the `/assets` prefix for `ASSET_BASE`. This is a deployment concern, not a data migration.
 
-## Implementation — next steps
-
-This section tracks what to implement next. One step at a time.
-
-### Step 1: database, seed data, and page rendering
-
-**Goal:** the home page (`page_1`) renders at `/` and saving changes persists them to the database. No assets, no authentication — those come in later steps.
-
-- **`src/lib/server/db.js`** — database connection using `node:sqlite`, exports the db instance. Uses `DATA_DIR` for the database path.
-- **`src/lib/server/migrations.js`** — exports an array of migration steps. For now, a single `initial_schema` step that creates the `documents`, `site_settings`, and `document_refs` tables, and seeds:
-  - `page_1` (type `page`) — the home page, resembling the current demo document
-  - `nav_1` (type `nav`) — the navigation document
-  - `footer_1` (type `footer`) — the footer document
-  - `home_page_id` setting → `page_1`
-- **`src/lib/server/migrate.js`** — runs pending migrations from `migrations.js` against the database
-- **`src/hooks.server.js`** — uncomment the `migrate()` call in `init()` so migrations run on server startup
-- **`svelte.config.js`** — uncomment experimental async and remote functions
-- **`src/lib/api.remote.js`** — uncomment/wire up `get_document` (query) and `save_document` (action) to read from and write to the database
-- **Page rendering** — `/` loads `page_1` via `get_document`, stitches in `nav_1` and `footer_1`, and renders with Svedit. Saving calls `save_document` which persists changes back to SQLite.
-
-For now, everything stays in the `initial_schema` migration step. While iterating on the schema, it's fine to wipe the database and re-run — real incremental migrations will be added later.
-
-No authentication for now — it slows down development. Auth will be added as a later step. No asset handling yet — media uploads and serving come in a later step.
+Implementation steps are tracked in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
