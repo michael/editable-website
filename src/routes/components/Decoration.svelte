@@ -1,11 +1,10 @@
 <script>
 	import { getContext } from 'svelte';
-	import { Node, CustomProperty } from 'svedit';
-	import Media from './Media.svelte';
+	import { Node } from 'svedit';
+	import MediaProperty from './MediaProperty.svelte';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
-	let node = $derived(svedit.session.get(path));
 	let media_node = $derived(svedit.session.get([...path, 'media']));
 
 	// Read the parent Prose node's layout to determine alignment
@@ -21,40 +20,17 @@
 		media_node.width ? Math.round(media_node.width / 2) : DEFAULT_WIDTH
 	);
 
-	let aspect_ratio = $derived(
-		media_node.width && media_node.height
-			? `${media_node.width} / ${media_node.height}`
-			: '16 / 9'
-	);
+	let wrapper_style = $derived(build_wrapper_style());
 
-	let custom_property_style = $derived(build_style());
-
-	function build_style() {
-		let parts = [];
-		parts.push(`max-width: ${css_width}px`);
+	function build_wrapper_style() {
+		let parts = [`max-width: ${css_width}px`];
 		if (is_centered) parts.push('margin: 0 auto');
-		return parts.length > 0 ? parts.join('; ') : undefined;
-	}
-
-	let is_selected = $derived(is_media_selected());
-
-	function is_media_selected() {
-		const path_of_selection = svedit?.session?.selection?.path?.join('.');
-		const _media_path = [...path, 'media'].join('.');
-		return path_of_selection == _media_path;
+		return parts.join('; ');
 	}
 </script>
 
 <Node {path}>
-	<CustomProperty path={[...path, 'media']} style={custom_property_style}>
-		<div
-			contenteditable="false"
-			style:border-radius="var(--image-border-radius)"
-			style:aspect-ratio={aspect_ratio}
-			class="overflow-hidden"
-			class:ew-bg-checkerboard={is_selected || !media_node.src}
-		>
-			<Media path={[...path, 'media']} />
-		</div>
-	</CustomProperty>
+	<div class="overflow-hidden" style="{wrapper_style}; border-radius: var(--image-border-radius)">
+		<MediaProperty path={[...path, 'media']} aspect_ratio="intrinsic" fallback_aspect_ratio="16 / 9" />
+	</div>
 </Node>
