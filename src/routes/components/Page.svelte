@@ -21,10 +21,9 @@
   	<div class="bg-(--background) text-(--foreground) {nav_colorset_class}">
   		<Nav path={[...path, 'nav']}/>
   	</div>
-   	<div class="grow">
+   	<div class="grow" style="anchor-name: --page-body; --node-caret-boundary: --page-body;">
     	<NodeArrayProperty class="body-node-array" path={[...path, 'body']} />
     </div>
-
     <div class="bg-(--background) text-(--foreground) {footer_colorset_class}">
     	<Footer path={[...path, 'footer']}/>
     </div>
