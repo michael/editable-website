@@ -2,12 +2,10 @@
 	import { getContext } from 'svelte';
 	import { Node, CustomProperty } from 'svedit';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
-	import Image from './Image.svelte';
-	import Video from './Video.svelte';
+	import Media from './Media.svelte';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
-	let node = $derived(svedit.session.get(path));
 	let media_node = $derived(svedit.session.get([...path, 'media']));
 	let aspect_ratio = $derived(
 		media_node.width && media_node.height
@@ -35,11 +33,7 @@
 					class="overflow-hidden"
 					class:ew-bg-checkerboard={is_selected || !media_node.src}
 				>
-					{#if media_node.type === 'video'}
-						<Video path={[...path, 'media']} />
-					{:else}
-						<Image path={[...path, 'media']} />
-					{/if}
+					<Media path={[...path, 'media']} />
 				</div>
 			</CustomProperty>
 		</div>

@@ -3,8 +3,7 @@
 	import { NodeArrayProperty, Node, CustomProperty } from 'svedit';
 	import { slide } from 'svelte/transition';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
-	import Image from './Image.svelte';
-	import Video from './Video.svelte';
+	import Media from './Media.svelte';
 
 	let { path } = $props();
 
@@ -66,11 +65,7 @@
 							href={svedit.editable ? undefined : '/'}
 							class="block w-full h-full"
 						>
-							{#if logo_node.type === 'video'}
-								<Video path={[...path, 'logo']} />
-							{:else}
-								<Image path={[...path, 'logo']} mask={true} />
-							{/if}
+							<Media path={[...path, 'logo']} mask={true} />
 						</svelte:element>
 					</div>
 				</CustomProperty>

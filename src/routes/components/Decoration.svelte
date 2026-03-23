@@ -1,8 +1,7 @@
 <script>
 	import { getContext } from 'svelte';
 	import { Node, CustomProperty } from 'svedit';
-	import Image from './Image.svelte';
-	import Video from './Video.svelte';
+	import Media from './Media.svelte';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
@@ -55,11 +54,7 @@
 			class="overflow-hidden"
 			class:ew-bg-checkerboard={is_selected || !media_node.src}
 		>
-			{#if media_node.type === 'video'}
-				<Video path={[...path, 'media']} />
-			{:else}
-				<Image path={[...path, 'media']} />
-			{/if}
+			<Media path={[...path, 'media']} />
 		</div>
 	</CustomProperty>
 </Node>

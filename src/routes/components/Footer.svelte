@@ -2,8 +2,7 @@
 	import { getContext } from 'svelte';
 	import { AnnotatedTextProperty, NodeArrayProperty, Node, CustomProperty } from 'svedit';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
-	import Image from './Image.svelte';
-	import Video from './Video.svelte';
+	import Media from './Media.svelte';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
@@ -47,11 +46,7 @@
 							href={svedit.editable ? undefined : '/'}
 							class="block w-full h-full"
 						>
-							{#if logo_node.type === 'video'}
-								<Video path={[...path, 'logo']} />
-							{:else}
-								<Image path={[...path, 'logo']} mask={true} />
-							{/if}
+							<Media path={[...path, 'logo']} mask={true} />
 						</svelte:element>
 					</div>
 				</CustomProperty>
