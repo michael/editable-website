@@ -11,8 +11,7 @@
 	 *   aspect_ratio?: 'intrinsic' | 'container',
 	 *   fallback_aspect_ratio?: string | number,
 	 *   mask?: boolean,
-	 *   class?: string,
-	 *   inner_class?: string
+	 *   class?: string
 	 * }}
 	 */
 	let {
@@ -20,8 +19,7 @@
 		aspect_ratio = 'container',
 		fallback_aspect_ratio = '16 / 9',
 		mask = false,
-		class: css_class,
-		inner_class
+		class: css_class
 	} = $props();
 	let node = $derived(svedit.session.get(path));
 
@@ -46,7 +44,7 @@
 	<div
 		contenteditable="false"
 		style:aspect-ratio={resolved_aspect_ratio}
-		class="overflow-hidden h-full {inner_class || ''}"
+		class="overflow-hidden h-full"
 		class:ew-bg-checkerboard={is_selected || !node.src}
 	>
 		<Media {path} {mask} />
