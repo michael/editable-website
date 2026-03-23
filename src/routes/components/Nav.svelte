@@ -43,7 +43,7 @@
 					this={svedit.editable ? 'div' : 'a'}
 					href={svedit.editable ? undefined : '/'}
 				>
-					<MediaProperty class="h-10" path={[...path, 'logo']} />
+					<MediaProperty class="h-10" path={[...path, 'logo']} fallback_aspect_ratio="1 / 1" />
 				</svelte:element>
 			</div>
 
