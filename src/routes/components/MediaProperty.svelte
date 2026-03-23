@@ -30,14 +30,6 @@
 			? (node.width && node.height ? `${node.width} / ${node.height}` : fallback_aspect_ratio)
 			: undefined
 	);
-
-	let is_selected = $derived(is_property_selected());
-
-	function is_property_selected() {
-		const path_of_selection = svedit?.session?.selection?.path?.join('.');
-		const this_path = path.join('.');
-		return path_of_selection === this_path;
-	}
 </script>
 
 <CustomProperty class={css_class} path={path}>
@@ -45,7 +37,7 @@
 		contenteditable="false"
 		style:aspect-ratio={resolved_aspect_ratio}
 		class="overflow-hidden h-full"
-		class:ew-bg-checkerboard={is_selected || !node.src}
+		class:ew-bg-checkerboard={!node.src}
 	>
 		<Media {path} {mask} />
 	</div>
