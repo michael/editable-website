@@ -24,7 +24,7 @@
 					this={svedit.editable ? 'div' : 'a'}
 					href={svedit.editable ? undefined : '/'}
 				>
-					<MediaProperty class="h-18" path={[...path, 'logo']} aspect_ratio="intrinsic" fallback_aspect_ratio="1 / 1" mask={true} />
+					<MediaProperty class="h-18" path={[...path, 'logo']} aspect_ratio="intrinsic" fallback_aspect_ratio="1 / 1" />
 				</svelte:element>
 				<AnnotatedTextProperty
 					class="mt-6 mb-0 lg:mb-0"
