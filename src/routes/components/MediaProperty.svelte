@@ -9,16 +9,19 @@
 	 * @type {{
 	 *   path: any[],
 	 *   aspect_ratio?: string | number,
+	 *   fallback_aspect_ratio?: string | number,
 	 *   mask?: boolean,
 	 *   class?: string
 	 * }}
 	 */
-	let { path, aspect_ratio, mask = false, class: css_class } = $props();
+	let { path, aspect_ratio, fallback_aspect_ratio, mask = false, class: css_class } = $props();
 	let node = $derived(svedit.session.get(path));
 
-	// Derive aspect ratio from node dimensions if not explicitly provided
+	// Resolution order: explicit aspect_ratio > node dimensions > fallback_aspect_ratio
 	let resolved_aspect_ratio = $derived(
-		aspect_ratio ?? (node.width && node.height ? `${node.width} / ${node.height}` : undefined)
+		aspect_ratio
+		?? (node.width && node.height ? `${node.width} / ${node.height}` : undefined)
+		?? fallback_aspect_ratio
 	);
 
 	let is_selected = $derived(is_property_selected());
