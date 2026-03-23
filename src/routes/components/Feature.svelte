@@ -1,7 +1,7 @@
 <script>
 	import { getContext } from 'svelte';
-	import { Node, CustomProperty, NodeArrayProperty } from 'svedit';
-	import Media from './Media.svelte';
+	import { Node, NodeArrayProperty } from 'svedit';
+	import MediaProperty from './MediaProperty.svelte';
 	import { TW_PAGE_PADDING, TW_MOBILE_LEFT_INSET, TW_LIMITER } from '../tailwind_theme.js';
 	import { reveal } from '../reveal.js';
 
@@ -9,29 +9,17 @@
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
 	let colorset_class = $derived(node.colorset ? `ew-colorset-${node.colorset}` : '');
-	let media_node = $derived(svedit.session.get([...path, 'media']));
-	let is_selected = $derived(is_media_selected());
-
-	function is_media_selected() {
-		const path_of_selection = svedit?.session?.selection?.path?.join('.');
-		const _media_path = [...path, 'media'].join('.');
-		return path_of_selection == _media_path;
-	}
 </script>
 
 <!-- Primitives -->
-{#snippet image(aspect_ratio, border_radius = false)}
-	<CustomProperty class="ew-image-property" path={[...path, 'media']}>
-		<div
-			contenteditable="false"
-			style:aspect-ratio={aspect_ratio}
-			style:border-radius={border_radius ? 'var(--image-border-radius)' : undefined}
-			class="ew-image-wrapper h-full w-full overflow-hidden select-none"
-			class:ew-bg-checkerboard={is_selected || !media_node.src}
-		>
-			<Media path={[...path, 'media']} />
-		</div>
-	</CustomProperty>
+{#snippet image(forced_aspect_ratio, border_radius = false)}
+	<div
+		class="overflow-hidden h-full w-full"
+		style:aspect-ratio={forced_aspect_ratio}
+		style:border-radius={border_radius ? 'var(--image-border-radius)' : undefined}
+	>
+		<MediaProperty class="h-full" path={[...path, 'media']} aspect_ratio="container" />
+	</div>
 {/snippet}
 
 {#snippet body()}
