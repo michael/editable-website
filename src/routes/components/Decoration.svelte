@@ -14,10 +14,14 @@
 	let is_centered = $derived(prose_node?.type === 'prose' && prose_node?.layout === 2);
 
 	// Intrinsic CSS-pixel width: divide the raw pixel width by 2 for retina.
+	// SVGs use their viewBox dimensions directly (no retina scaling).
 	// Default to 200px when no image is set yet, to hint that this is for small decorative elements.
 	const DEFAULT_WIDTH = 200;
+	let is_svg = $derived(media_node.mime_type === 'image/svg+xml');
 	let css_width = $derived(
-		media_node.width ? Math.round(media_node.width / 2) : DEFAULT_WIDTH
+		media_node.width
+			? (is_svg ? media_node.width : Math.round(media_node.width / 2))
+			: DEFAULT_WIDTH
 	);
 
 	let wrapper_style = $derived(build_wrapper_style());
