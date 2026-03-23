@@ -1,29 +1,15 @@
 <script>
 	import { getContext } from 'svelte';
-	import { NodeArrayProperty, Node, CustomProperty } from 'svedit';
+	import { NodeArrayProperty, Node } from 'svedit';
 	import { slide } from 'svelte/transition';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
-	import Media from './Media.svelte';
+	import MediaProperty from './MediaProperty.svelte';
 
 	let { path } = $props();
 
 	const svedit = getContext('svedit');
 	let node = $derived(svedit.session.get(path));
 	let nav_items = $derived(node.nav_items || []);
-	let logo_node = $derived(svedit.session.get([...path, 'logo']));
-	let logo_aspect_ratio = $derived(
-		logo_node.width && logo_node.height
-			? `${logo_node.width} / ${logo_node.height}`
-			: '1 / 1'
-	);
-
-	let is_logo_selected = $derived(is_logo_selected_fn());
-
-	function is_logo_selected_fn() {
-		const path_of_selection = svedit?.session?.selection?.path?.join('.');
-		const _logo_path = [...path, 'logo'].join('.');
-		return path_of_selection == _logo_path;
-	}
 
 	let mobile_menu_open = $state(false);
 
@@ -53,22 +39,12 @@
 		<div class="flex items-stretch lg:text-lg">
 			<!-- Logo -->
 			<div class="flex items-center flex-1 {TW_PAGE_PADDING_X} py-3">
-				<CustomProperty class="h-10" path={[...path, 'logo']}>
-					<div
-						contenteditable={svedit.editable ? 'false' : undefined}
-						style:aspect-ratio={logo_aspect_ratio}
-						class="overflow-hidden h-full"
-						class:ew-bg-checkerboard={is_logo_selected || !logo_node.src}
-					>
-						<svelte:element
-							this={svedit.editable ? 'div' : 'a'}
-							href={svedit.editable ? undefined : '/'}
-							class="block w-full h-full"
-						>
-							<Media path={[...path, 'logo']} mask={false} />
-						</svelte:element>
-					</div>
-				</CustomProperty>
+				<svelte:element
+					this={svedit.editable ? 'div' : 'a'}
+					href={svedit.editable ? undefined : '/'}
+				>
+					<MediaProperty class="h-10" path={[...path, 'logo']} />
+				</svelte:element>
 			</div>
 
 			<!-- Desktop menu (hidden on mobile) -->
