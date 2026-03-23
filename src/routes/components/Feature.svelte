@@ -12,13 +12,14 @@
 </script>
 
 <!-- Primitives -->
-{#snippet image(forced_aspect_ratio, border_radius = false)}
-	<div
-		class="overflow-hidden h-full w-full"
-		style:aspect-ratio={forced_aspect_ratio}
-		style:border-radius={border_radius ? 'var(--image-border-radius)' : undefined}
-	>
-		<MediaProperty class="h-full" path={[...path, 'media']} aspect_ratio="container" />
+{#snippet image(fallback_aspect_ratio = '3 / 4', border_radius = false)}
+	<div class="flex items-center h-full w-full">
+		<div
+			class="overflow-hidden w-full"
+			style:border-radius={border_radius ? 'var(--image-border-radius)' : undefined}
+		>
+			<MediaProperty path={[...path, 'media']} aspect_ratio="intrinsic" {fallback_aspect_ratio} />
+		</div>
 	</div>
 {/snippet}
 
@@ -37,7 +38,7 @@
 				<div class="max-w-2xl">{@render body()}</div>
 			</div>
 			<div class="{TW_PAGE_PADDING}" use:reveal={{ delay: 200 }}>
-				{@render image(3 / 4, true)}
+				{@render image('3 / 4', true)}
 			</div>
 		</div>
 	</div>
@@ -48,7 +49,7 @@
 	<div class="{TW_LIMITER}">
 		<div class="grid grid-cols-1 md:grid-cols-2 pt-5 sm:pt-7 md:pt-0">
 			<div class="{TW_PAGE_PADDING} max-md:order-2" use:reveal={{ delay: 200 }}>
-				{@render image(3 / 4, true)}
+				{@render image('3 / 4', true)}
 			</div>
 			<div class="flex flex-col justify-center {TW_PAGE_PADDING} pb-0 max-md:order-1" use:reveal>
 				<div class="max-w-2xl">{@render body()}</div>
@@ -65,7 +66,7 @@
 				<div class="max-w-2xl">{@render body()}</div>
 			</div>
 			<div use:reveal={{ delay: 200 }}>
-				{@render image(3 / 4)}
+				{@render image()}
 			</div>
 		</div>
 	</div>
@@ -76,7 +77,7 @@
 	<div class="{TW_LIMITER}">
 		<div class="grid grid-cols-1 md:grid-cols-2 pt-5 sm:pt-7 md:pt-0">
 			<div class="max-md:order-2" use:reveal={{ delay: 200 }}>
-				{@render image(3 / 4)}
+				{@render image()}
 			</div>
 			<div class="flex flex-col justify-center {TW_PAGE_PADDING} max-md:order-1" use:reveal>
 				<div class="max-w-2xl">{@render body()}</div>
