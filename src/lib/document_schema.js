@@ -161,6 +161,7 @@ export const document_schema = define_document_schema({
 		kind: 'block',
 		properties: {
 			src: { type: 'string' },
+			mime_type: { type: 'string' },
 			width: { type: 'integer' },
 			height: { type: 'integer' },
 			alt: { type: 'string' },
@@ -174,6 +175,7 @@ export const document_schema = define_document_schema({
 		kind: 'block',
 		properties: {
 			src: { type: 'string' },
+			mime_type: { type: 'string' },
 			width: { type: 'integer' },
 			height: { type: 'integer' },
 			alt: { type: 'string' },

@@ -1,5 +1,6 @@
 import { process_asset } from './process_asset.js';
 import { MAX_IMAGE_WIDTH } from '$lib/config.js';
+import { get_video_dimensions, get_media_dimensions } from './media_dimensions.js';
 
 /**
  * @typedef {{
@@ -51,57 +52,6 @@ async function is_animated_gif(file) {
 		}
 	}
 	return false;
-}
-
-/**
- * Extract image dimensions using an <img> element.
- *
- * @param {Blob} blob
- * @returns {Promise<{ width: number, height: number }>}
- */
-function get_image_dimensions(blob) {
-	return new Promise((resolve, reject) => {
-		const img = new Image();
-		const object_url = URL.createObjectURL(blob);
-
-		img.onload = () => {
-			URL.revokeObjectURL(object_url);
-			resolve({ width: img.naturalWidth || img.width, height: img.naturalHeight || img.height });
-		};
-
-		img.onerror = () => {
-			URL.revokeObjectURL(object_url);
-			reject(new Error('Failed to load image'));
-		};
-
-		img.src = object_url;
-	});
-}
-
-/**
- * Extract video dimensions using a temporary <video> element.
- *
- * @param {Blob} blob
- * @returns {Promise<{ width: number, height: number }>}
- */
-function get_video_dimensions(blob) {
-	return new Promise((resolve, reject) => {
-		const video = document.createElement('video');
-		video.preload = 'metadata';
-		const object_url = URL.createObjectURL(blob);
-
-		video.onloadedmetadata = () => {
-			URL.revokeObjectURL(object_url);
-			resolve({ width: video.videoWidth, height: video.videoHeight });
-		};
-
-		video.onerror = () => {
-			URL.revokeObjectURL(object_url);
-			reject(new Error('Failed to load video metadata'));
-		};
-
-		video.src = object_url;
-	});
 }
 
 /**
@@ -191,7 +141,7 @@ export async function start_processing(blob_url, file) {
 
 		if (is_svg || animated) {
 			// Passthrough — no WASM processing
-			const dims = await get_image_dimensions(file);
+			const dims = await get_media_dimensions(file);
 			entry.original = { blob: file, width: dims.width, height: dims.height };
 			entry.variants = [];
 		} else {

@@ -18,6 +18,7 @@ export const ASSET_BASE = '/assets';
 /** Default values for media node properties (image and video). */
 export const MEDIA_DEFAULTS = {
 	src: '',
+	mime_type: '',
 	width: 0,
 	height: 0,
 	alt: '',

@@ -54,6 +54,7 @@ import { document_schema } from '$lib/document_schema.js';
 import { start_processing } from '$lib/client/asset_upload.js';
 import { MEDIA_DEFAULTS } from '$lib/config.js';
 import { set_properties } from 'svedit';
+import { get_media_dimensions } from '$lib/client/media_dimensions.js';
 
 /** @returns {'image' | 'video'} */
 function get_media_type(file) {
@@ -61,67 +62,6 @@ function get_media_type(file) {
 	return 'image';
 }
 
-/**
- * Extract image dimensions using a temporary <img> element.
- *
- * @param {Blob} blob
- * @returns {Promise<{ width: number, height: number }>}
- */
-function get_image_dimensions(blob) {
-	return new Promise((resolve, reject) => {
-		const img = new window.Image();
-		const object_url = URL.createObjectURL(blob);
-
-		img.onload = () => {
-			URL.revokeObjectURL(object_url);
-			resolve({ width: img.naturalWidth || img.width, height: img.naturalHeight || img.height });
-		};
-
-		img.onerror = () => {
-			URL.revokeObjectURL(object_url);
-			reject(new Error('Failed to load image'));
-		};
-
-		img.src = object_url;
-	});
-}
-
-/**
- * Extract video dimensions using a temporary <video> element.
- *
- * @param {Blob} blob
- * @returns {Promise<{ width: number, height: number }>}
- */
-function get_video_dimensions(blob) {
-	return new Promise((resolve, reject) => {
-		const video = document.createElement('video');
-		video.preload = 'metadata';
-		const object_url = URL.createObjectURL(blob);
-
-		video.onloadedmetadata = () => {
-			URL.revokeObjectURL(object_url);
-			resolve({ width: video.videoWidth, height: video.videoHeight });
-		};
-
-		video.onerror = () => {
-			URL.revokeObjectURL(object_url);
-			reject(new Error('Failed to load video metadata'));
-		};
-
-		video.src = object_url;
-	});
-}
-
-/**
- * Extract dimensions from a media file (image or video).
- *
- * @param {File} file
- * @returns {Promise<{ width: number, height: number }>}
- */
-function get_media_dimensions(file) {
-	if (file.type.startsWith('video/')) return get_video_dimensions(file);
-	return get_image_dimensions(file);
-}
 
 // App-specific config object, always available via session.config for introspection
 const session_config = {
@@ -173,6 +113,7 @@ const session_config = {
 					set_properties(tr, session.selection.path, {
 						...MEDIA_DEFAULTS,
 						src: blob_url,
+						mime_type: file.type,
 						width: dims.width,
 						height: dims.height
 					});
@@ -183,6 +124,7 @@ const session_config = {
 						id: nanoid(),
 						type: media_type,
 						src: blob_url,
+						mime_type: file.type,
 						width: dims.width,
 						height: dims.height,
 					};
@@ -223,6 +165,7 @@ const session_config = {
 					id: 'node_media_' + i,
 					type: media_type,
 					src: blob_url,
+					mime_type: pasted_item.blob.type,
 					width,
 					height,
 					alt: ''

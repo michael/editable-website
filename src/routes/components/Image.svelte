@@ -18,8 +18,13 @@
 		''
 	);
 
-	let is_svg = $derived(node.src?.endsWith('.svg'));
-	let is_gif = $derived(node.src?.endsWith('.gif'));
+	// Use mime_type with fallback to file extension for legacy data
+	let is_svg = $derived(
+		node.mime_type ? node.mime_type === 'image/svg+xml' : node.src?.endsWith('.svg')
+	);
+	let is_gif = $derived(
+		node.mime_type ? node.mime_type === 'image/gif' : node.src?.endsWith('.gif')
+	);
 	let use_mask = $derived(mask && is_svg && display_src);
 
 	// Build srcset for saved raster images (not SVGs, not GIFs, not blobs)

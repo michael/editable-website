@@ -65,7 +65,7 @@
 							href={svedit.editable ? undefined : '/'}
 							class="block w-full h-full"
 						>
-							<Media path={[...path, 'logo']} mask={true} />
+							<Media path={[...path, 'logo']} mask={false} />
 						</svelte:element>
 					</div>
 				</CustomProperty>
