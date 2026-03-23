@@ -1,22 +1,14 @@
 <script>
 	import { getContext } from 'svelte';
-	import { Node, CustomProperty, AnnotatedTextProperty } from 'svedit';
-	import Media from './Media.svelte';
+	import { Node, AnnotatedTextProperty } from 'svedit';
+	import MediaProperty from './MediaProperty.svelte';
 	import { reveal } from '../reveal.js';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
 	let item_index = $derived(typeof path[path.length - 1] === 'number' ? path[path.length - 1] : 0);
 	let node = $derived(svedit.session.get(path));
-	let media_node = $derived(svedit.session.get([...path, 'media']));
-	let is_selected = $derived(is_media_selected());
 	let render_as_link = $derived(!svedit.editable && node.href);
-
-	function is_media_selected() {
-		const path_of_selection = svedit?.session?.selection?.path?.join('.');
-		const _media_path = [...path, 'media'].join('.');
-		return path_of_selection == _media_path;
-	}
 </script>
 
 <Node class="link-collection-item group" {path}>
@@ -27,17 +19,9 @@
 		class="block"
 		use:reveal={{ delay: item_index * 150 }}
 	>
-		<CustomProperty path={[...path, 'media']}>
-			<div
-				contenteditable="false"
-				style:aspect-ratio={4 / 3}
-				style:border-radius="var(--image-border-radius)"
-				class="w-full overflow-hidden select-none"
-				class:ew-bg-checkerboard={is_selected || !media_node.src}
-			>
-				<Media path={[...path, 'media']} />
-			</div>
-		</CustomProperty>
+		<div class="overflow-hidden" style:border-radius="var(--image-border-radius)">
+			<MediaProperty path={[...path, 'media']} aspect_ratio="intrinsic" fallback_aspect_ratio="4 / 3" />
+		</div>
 		<div class="pt-4">
 			<AnnotatedTextProperty class="text-xs md:text-sm uppercase tracking-widest text-(--foreground) opacity-60 mb-2" path={[...path, 'preline']} placeholder="Preline" />
 			<AnnotatedTextProperty class="{!svedit.editable ? 'title-underline' : ''} font-serif text-(--foreground) text-2xl lg:text-3xl text-balance pt-1" path={[...path, 'title']} placeholder="Title" />
