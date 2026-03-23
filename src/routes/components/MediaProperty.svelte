@@ -14,7 +14,7 @@
 	 *   class?: string
 	 * }}
 	 */
-	let { path, aspect_ratio, fallback_aspect_ratio, mask = false, class: css_class } = $props();
+	let { path, aspect_ratio, fallback_aspect_ratio = '16 / 9', mask = false, class: css_class } = $props();
 	let node = $derived(svedit.session.get(path));
 
 	// Resolution order: explicit aspect_ratio > node dimensions > fallback_aspect_ratio
