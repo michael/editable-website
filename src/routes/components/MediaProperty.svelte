@@ -8,20 +8,29 @@
 	/**
 	 * @type {{
 	 *   path: any[],
-	 *   aspect_ratio?: string | number,
+	 *   aspect_ratio?: 'intrinsic' | 'container',
 	 *   fallback_aspect_ratio?: string | number,
 	 *   mask?: boolean,
-	 *   class?: string
+	 *   class?: string,
+	 *   inner_class?: string
 	 * }}
 	 */
-	let { path, aspect_ratio, fallback_aspect_ratio = '16 / 9', mask = false, class: css_class } = $props();
+	let {
+		path,
+		aspect_ratio = 'container',
+		fallback_aspect_ratio = '16 / 9',
+		mask = false,
+		class: css_class,
+		inner_class
+	} = $props();
 	let node = $derived(svedit.session.get(path));
 
-	// Resolution order: explicit aspect_ratio > node dimensions > fallback_aspect_ratio
+	// 'intrinsic': use image's natural dimensions, fall back to fallback_aspect_ratio when empty.
+	// 'container': no inline aspect-ratio, parent controls the size.
 	let resolved_aspect_ratio = $derived(
-		aspect_ratio
-		?? (node.width && node.height ? `${node.width} / ${node.height}` : undefined)
-		?? fallback_aspect_ratio
+		aspect_ratio === 'intrinsic'
+			? (node.width && node.height ? `${node.width} / ${node.height}` : fallback_aspect_ratio)
+			: undefined
 	);
 
 	let is_selected = $derived(is_property_selected());
@@ -37,7 +46,7 @@
 	<div
 		contenteditable="false"
 		style:aspect-ratio={resolved_aspect_ratio}
-		class="overflow-hidden h-full"
+		class="overflow-hidden h-full {inner_class || ''}"
 		class:ew-bg-checkerboard={is_selected || !node.src}
 	>
 		<Media {path} {mask} />
