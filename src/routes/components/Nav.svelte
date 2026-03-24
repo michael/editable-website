@@ -34,7 +34,7 @@
 	}
 </script>
 
-<Node class="mb-2" {path}>
+<Node {path}>
 	<div class="{TW_LIMITER}">
 		<div class="flex items-stretch lg:text-lg">
 			<!-- Logo -->
