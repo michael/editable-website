@@ -49,6 +49,14 @@
 			? (node.src ? `max-width: ${css_pixel_width}px` : `width: ${css_pixel_width}px`)
 			: undefined
 	);
+
+	let is_selected = $derived(is_property_selected());
+
+	function is_property_selected() {
+		const path_of_selection = svedit?.session?.selection?.path?.join('.');
+		const this_path = path.join('.');
+		return path_of_selection === this_path;
+	}
 </script>
 
 <CustomProperty class="{sizing === 'fill' ? 'h-full ' : ''}{css_class}" style={native_style} path={path}>
@@ -56,7 +64,7 @@
 		contenteditable="false"
 		style:aspect-ratio={resolved_aspect_ratio}
 		class="overflow-hidden h-full"
-		class:ew-bg-checkerboard={!node.src}
+		class:ew-bg-checkerboard={is_selected || !node.src}
 	>
 		<Media {path} />
 	</div>
