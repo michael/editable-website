@@ -18,7 +18,7 @@
 			class="overflow-hidden w-full"
 			style:border-radius={border_radius ? 'var(--image-border-radius)' : undefined}
 		>
-			<MediaProperty path={[...path, 'media']} aspect_ratio="intrinsic" {fallback_aspect_ratio} />
+			<MediaProperty path={[...path, 'media']} sizing="fit" {fallback_aspect_ratio} />
 		</div>
 	</div>
 {/snippet}
