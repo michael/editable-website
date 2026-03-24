@@ -1,3 +1,7 @@
+<script module>
+	export const LAYOUT_COUNT = 2;
+</script>
+
 <script>
 	import { getContext } from 'svelte';
 	import { Node, AnnotatedTextProperty } from 'svedit';

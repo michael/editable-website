@@ -1,3 +1,7 @@
+<script module>
+	export const LAYOUT_COUNT = 3;
+</script>
+
 <script>
 	import { getContext } from 'svelte';
 	import { Node, NodeArrayProperty } from 'svedit';
