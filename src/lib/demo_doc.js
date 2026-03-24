@@ -439,7 +439,7 @@ export const PAGE_1 = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "In edit mode the purple dashed areas let you add blocks.",
+                "text": "In edit mode the dashed gaps let you add blocks.",
                 "annotations": [
                     {
                         "start_offset": 17,
@@ -466,7 +466,7 @@ export const PAGE_1 = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Select the dashed area below this paragraph to see a flashing purple cursor.\nPress Enter to add a block.\nChange text styles (paragraph > heading etc) with Ctrl + Shift + Right.",
+                "text": "Select the dashed gap below this paragraph to see a flashing purple cursor.\nPress Enter to add a block.\nChange text styles (paragraph > heading etc) with Ctrl + Shift + Right.",
                 "annotations": [
                     {
                         "start_offset": 155,
@@ -507,7 +507,7 @@ export const PAGE_1 = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Select one of the full width dashed areas to see a flashing purple cursor.\nPress Enter to create a new top-level block.\nCtrl + Shift + Down cycles through block types.\nAgain Ctrl + Shift + Right lets you flip through available layouts.",
+                "text": "Select one of the full width dashed gap to see a flashing purple cursor.\nPress Enter to create a new top-level block.\nCtrl + Shift + Down cycles through block types.\nAgain Ctrl + Shift + Right lets you flip through available layouts.",
                 "annotations": [
                     {
                         "start_offset": 81,
@@ -541,7 +541,7 @@ export const PAGE_1 = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "To move blocks, drag from a dashed area to select multiple, then cut and paste like usual.",
+                "text": "To move blocks, drag from a dashed gap to select multiple, then cut and paste like usual.",
                 "annotations": [
                     {
                         "start_offset": 16,
