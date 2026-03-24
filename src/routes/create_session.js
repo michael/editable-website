@@ -210,6 +210,18 @@ const session_config = {
 			return `<${tag_name}>${node.content.text}</${tag_name}>\n`;
 		}
 	},
+	node_layouts: {
+		prose: 3,
+		text: 5,
+		figure: 1,
+		decoration: 1,
+		feature: 4,
+		gallery: 4,
+		nav_item: 2,
+		button: 2,
+		hero: 4
+	},
+
 	/**
 	 * Factory function to create Svedit commands and keymap.
 	 * Called by Svedit component with the svedit context.
