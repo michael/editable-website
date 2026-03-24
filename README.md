@@ -60,6 +60,10 @@ However, likely you'll want to customize more than that. E.g. edit [Button.svelt
 
 <!--**Note:** After `git pull`, delete `data/site.sqlite3` to pick up schema changes.-->
 
+## Manual
+
+For detailed documentation on building with Editable Website — including reusable primitives like `MediaProperty` with self-contained examples — see [MANUAL.md](./MANUAL.md).
+
 ## Deploy
 
 ```
