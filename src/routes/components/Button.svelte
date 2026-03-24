@@ -9,20 +9,15 @@
 	let layout = $derived(node.layout || 1);
 </script>
 
-
-
 {#snippet layout_1()}
 	<svelte:element
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="ew-button font-medium flex items-center justify-center px-4 py-3 min-w-[calc(1lh+24px)] bg-(--accent) text-(--accent-foreground) rounded-(--button-border-radius)"
+		class="ew-button flex min-w-[calc(1lh+24px)] items-center justify-center rounded-(--button-border-radius) bg-(--accent) px-4 py-3 font-medium text-(--accent-foreground)"
 		class:hover:opacity-80={render_as_link}
 	>
-		<AnnotatedTextProperty
-			path={[...path, 'label']}
-			placeholder="Label"
-		/>
+		<AnnotatedTextProperty path={[...path, 'label']} placeholder="Label" />
 	</svelte:element>
 {/snippet}
 
@@ -31,12 +26,11 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="ew-button font-medium flex items-center justify-center px-4 py-3 -outline-offset-2 outline-2 outline-(--foreground) text-(--foreground) rounded-(--button-border-radius) {render_as_link ? 'hover:bg-(--foreground)/10' : ''}"
+		class="ew-button flex items-center justify-center rounded-(--button-border-radius) px-4 py-3 font-medium text-(--foreground) outline-2 -outline-offset-2 outline-(--foreground) {render_as_link
+			? 'hover:bg-(--foreground)/10'
+			: ''}"
 	>
-		<AnnotatedTextProperty
-			path={[...path, 'label']}
-			placeholder="Label"
-		/>
+		<AnnotatedTextProperty path={[...path, 'label']} placeholder="Label" />
 	</svelte:element>
 {/snippet}
 

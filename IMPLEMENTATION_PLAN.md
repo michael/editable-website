@@ -70,6 +70,7 @@ export const ASSET_BASE = '/assets';
 `src/lib/config.js` (which imports from `node:path`) remains server-only and unchanged. The Web Worker and client code import from `asset-config.js`.
 
 `ASSET_BASE` is the URL prefix used to construct asset URLs on the client. All `src` values in saved documents are bare asset ids (e.g. `c4b519da...fabdb.webp`). Components prefix them with `ASSET_BASE` at render time to build the full URL. This is the only valid source for saved images — no absolute URLs, no external URLs, no relative paths. A `src` value is either:
+
 - `blob:...` — unsaved, only valid during the current editing session
 - A bare asset id — saved, rendered as `{ASSET_BASE}/{asset_id}`
 
@@ -96,10 +97,10 @@ The client computes the SHA-256 hex hash of the **source file** (before any proc
 
 ```js
 async function hash_blob(blob) {
-  const buffer = await blob.arrayBuffer();
-  const hash_buffer = await crypto.subtle.digest('SHA-256', buffer);
-  const hash_array = Array.from(new Uint8Array(hash_buffer));
-  return hash_array.map(b => b.toString(16).padStart(2, '0')).join('');
+	const buffer = await blob.arrayBuffer();
+	const hash_buffer = await crypto.subtle.digest('SHA-256', buffer);
+	const hash_array = Array.from(new Uint8Array(hash_buffer));
+	return hash_array.map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 ```
 
@@ -166,6 +167,7 @@ ASSET_PATH/
 ```
 
 Functions:
+
 - `asset_path(asset_id)` — full path for an original: `join(ASSET_PATH, asset_id)`
 - `variant_dir(asset_id)` — directory for variants: strip extension from asset_id, `join(ASSET_PATH, stem)`
 - `variant_path(asset_id, width)` — full path for a variant: `join(variant_dir(asset_id), 'w' + width + '.webp')`
@@ -187,10 +189,10 @@ Svedit already has a `handle_image_paste` callback in `create_session.js` that f
 2. Start background processing for the pasted file (runs concurrently, does not block the editor):
    a. Compute the SHA-256 hash of the source file.
    b. Determine the asset type:
-      - **SVG** (`image/svg+xml`): passthrough — no WASM processing. Extract dimensions via `<img>` element. The blob is the original file. Extension: `.svg`.
-      - **Animated GIF** (`image/gif` with multiple frames): passthrough — no WASM processing. Extract dimensions via `<img>` element. The blob is the original file. Extension: `.gif`.
-      - **Static raster image** (JPEG, PNG, WebP, HEIC, HEIF, still GIF): process via WASM worker — decode, resize if > `MAX_IMAGE_WIDTH`, encode as WebP, generate all applicable width variants. Extension: `.webp`.
-   c. Store the processing result (hash, original blob, variants, dimensions) keyed by the blob URL in a `Map`. This map is consulted during the save flow.
+   - **SVG** (`image/svg+xml`): passthrough — no WASM processing. Extract dimensions via `<img>` element. The blob is the original file. Extension: `.svg`.
+   - **Animated GIF** (`image/gif` with multiple frames): passthrough — no WASM processing. Extract dimensions via `<img>` element. The blob is the original file. Extension: `.gif`.
+   - **Static raster image** (JPEG, PNG, WebP, HEIC, HEIF, still GIF): process via WASM worker — decode, resize if > `MAX_IMAGE_WIDTH`, encode as WebP, generate all applicable width variants. Extension: `.webp`.
+     c. Store the processing result (hash, original blob, variants, dimensions) keyed by the blob URL in a `Map`. This map is consulted during the save flow.
 3. The user can continue editing. Processing happens in the background.
 
 The processing/upload map and its logic should live in a dedicated module (e.g. `src/lib/client/asset-upload.js`), not inline in `create_session.js` or `+page.svelte`.
@@ -224,6 +226,7 @@ Use XHR (not `fetch`) for uploads so we get `upload.onprogress` events for progr
 Update `save_document` in `api.remote.js` to track asset references as part of the save transaction:
 
 1. Add the `asset_refs` table in a new migration step (`add_asset_refs`):
+
    ```sql
    CREATE TABLE asset_refs (
        asset_id TEXT NOT NULL,
@@ -248,9 +251,9 @@ The Svedit image component needs to handle two `src` modes:
 
 ```html
 <img
-  src="{ASSET_BASE}/{src}"
-  srcset="{applicable_variants.map(w => `${ASSET_BASE}/${stem}/w${w}.webp ${w}w`).join(', ')}, {ASSET_BASE}/{src} {width}w"
-  sizes="50vw"
+	src="{ASSET_BASE}/{src}"
+	srcset="{applicable_variants.map(w => `${ASSET_BASE}/${stem}/w${w}.webp ${w}w`).join(', ')}, {ASSET_BASE}/{src} {width}w"
+	sizes="50vw"
 />
 ```
 
@@ -259,6 +262,7 @@ Only include variants for widths strictly smaller than the image's `width`. The 
 ### File summary
 
 New files:
+
 - `src/lib/client/asset-processor.js` — Web Worker for WASM image processing
 - `src/lib/client/process-asset.js` — main-thread wrapper for the worker
 - `src/lib/server/asset-storage.js` — filesystem operations for assets
@@ -270,6 +274,7 @@ New files:
 - `src/routes/assets/[...path]/+server.js` — GET serve assets from disk
 
 Modified files:
+
 - `vite.config.js` — add `optimizeDeps.exclude` and `worker.format`
 - `package.json` — add `@jsquash/webp` and `@jsquash/resize` dependencies
 - `src/lib/server/migrations.js` — add `add_asset_refs` migration step
@@ -363,8 +368,8 @@ CMD ["node", "/app/scripts/start-app.js"]
 import { server as app } from '/app/build/index.js';
 
 function shutdownServer() {
-  console.log('Server doing graceful shutdown');
-  app.server.close();
+	console.log('Server doing graceful shutdown');
+	app.server.close();
 }
 
 process.on('SIGINT', shutdownServer);
@@ -477,6 +482,7 @@ ls /data/assets/                # inspect uploaded assets (from SSH)
 ### File summary
 
 New files:
+
 - `Dockerfile` — multi-stage Docker build
 - `fly.toml` — Fly.io configuration
 - `.dockerignore` — Docker build context exclusions
@@ -484,6 +490,7 @@ New files:
 - `scripts/start-app.js` — Node.js entry point with graceful shutdown
 
 Modified files:
+
 - `svelte.config.js` — switch to `@sveltejs/adapter-node`
 - `package.json` — add `@sveltejs/adapter-node`, remove `@sveltejs/adapter-auto`
 
@@ -534,6 +541,7 @@ The property names stay as `image` / `logo` for now. `default_node_type` stays `
 ### Component changes
 
 **`Video.svelte`** — new component, mirrors `Image.svelte` structure:
+
 - Receives `path` prop, reads node from session
 - Resolves `src` the same way (blob URL → direct, asset id → `ASSET_BASE` prefix)
 - Renders `<video autoplay muted loop playsinline contenteditable="false" disablepictureinpicture>` with:
@@ -546,6 +554,7 @@ The property names stay as `image` / `logo` for now. `default_node_type` stays `
 - Note: in edit mode, click-to-fullscreen should be **disabled** — `MediaControls` overlay captures pointer events for zoom/pan instead. Click-to-fullscreen only applies when `editable` is false (published view).
 
 **Container components** (`GalleryItem.svelte`, `Figure.svelte`, `Feature.svelte`, `LinkCollectionItem.svelte`) — update to:
+
 1. Check the referenced node's `type` (still via the `image` property) to render either `<Image>` or `<Video>`
 
 Register `Video` in `node_components` in `create_session.js`.
@@ -555,11 +564,13 @@ Register `Video` in `node_components` in `create_session.js`.
 Zooming (scroll wheel) and panning (drag to move focal point) must work with videos the same way as with images. Both media types share the same visual properties (`scale`, `focal_point_x`, `focal_point_y`, `object_fit`), so the controls are identical.
 
 **Rename `ImageControls` → `MediaControls`:**
+
 - `src/routes/components/ImageControls.svelte` → `src/routes/components/MediaControls.svelte`
 - The internal variable `image` (used to read the node) becomes `media_node` or similar.
 - The component is already generic — it reads `scale`, `focal_point_x`, `focal_point_y`, and `object_fit` from the node at `path`. No image-specific logic.
 
 **Update `Overlays.svelte`:**
+
 - Import `MediaControls` instead of `ImageControls`.
 - Widen `is_image_selected` to `is_media_selected`: `selected_property?.type === 'image' || selected_property?.type === 'video'`.
 - Rename the CSS class `image-controls-overlay` → `media-controls-overlay`.
@@ -589,18 +600,20 @@ Add MIME type detection:
 ```js
 /** @returns {'image' | 'video'} */
 function get_media_type(file) {
-    if (file.type.startsWith('video/')) return 'video';
-    return 'image';
+	if (file.type.startsWith('video/')) return 'video';
+	return 'image';
 }
 ```
 
 This returns the Svedit node type that corresponds to the file. Currently only `'image'` and `'video'` — `'audio'` can be added later.
 
 **When pasting over an existing media node** (property selection on an image/video node):
+
 - If `get_media_type(file)` matches the existing node's `type`: replace `src` on the existing node (current behavior).
 - If it differs (e.g. pasting a video over an image): create a new node of the correct type via transaction, delete the old node, and update the parent's `image` reference to point to the new node. (The property is still named `image` in this step.)
 
 **When pasting into a container** (text selection / inserting new nodes):
+
 - Use `get_media_type(file)` to decide the child node type.
 - The wrapper node (`gallery_item` or `figure`) still uses `image` as the property name (renamed in step 4b).
 
@@ -608,20 +621,20 @@ This returns the Svedit node type that corresponds to the file. Currently only `
 
 ```js
 async function get_video_dimensions(blob) {
-    return new Promise((resolve, reject) => {
-        const video = document.createElement('video');
-        video.preload = 'metadata';
-        const object_url = URL.createObjectURL(blob);
-        video.onloadedmetadata = () => {
-            URL.revokeObjectURL(object_url);
-            resolve({ width: video.videoWidth, height: video.videoHeight });
-        };
-        video.onerror = () => {
-            URL.revokeObjectURL(object_url);
-            reject(new Error('Failed to load video metadata'));
-        };
-        video.src = object_url;
-    });
+	return new Promise((resolve, reject) => {
+		const video = document.createElement('video');
+		video.preload = 'metadata';
+		const object_url = URL.createObjectURL(blob);
+		video.onloadedmetadata = () => {
+			URL.revokeObjectURL(object_url);
+			resolve({ width: video.videoWidth, height: video.videoHeight });
+		};
+		video.onerror = () => {
+			URL.revokeObjectURL(object_url);
+			reject(new Error('Failed to load video metadata'));
+		};
+		video.src = object_url;
+	});
 }
 ```
 
@@ -654,12 +667,15 @@ Add a `video` entry to `html_exporters` if needed (for any export/copy functiona
 ### File summary
 
 New files:
+
 - `src/routes/components/Video.svelte` — video rendering component
 
 Renamed files:
+
 - `src/routes/components/ImageControls.svelte` → `src/routes/components/MediaControls.svelte`
 
 Modified files:
+
 - `src/lib/document_schema.js` — add `video` node type, widen `node_types` to `['image', 'video']` on container properties
 - `src/routes/create_session.js` — rename `handle_image_paste` → `handle_media_paste`, add `get_media_type`, video MIME detection, video metadata extraction, video node creation, register `Video` component
 - `src/routes/components/Overlays.svelte` — import `MediaControls` instead of `ImageControls`, widen `is_image_selected` → `is_media_selected`
@@ -667,6 +683,7 @@ Modified files:
 - Container components (`GalleryItem.svelte`, `Figure.svelte`, `Feature.svelte`, `LinkCollectionItem.svelte`) — conditionally render `<Image>` or `<Video>` based on referenced node type
 
 Upstream (svedit) modified files:
+
 - `svedit/src/lib/Svedit.svelte` — widen MIME filter from `image/*` to `image/* || video/*`, rename `pasted_images` → `pasted_media`, rename config callback `handle_image_paste` → `handle_media_paste`
 - `svedit/src/routes/create_demo_session.js` — rename `handle_image_paste` → `handle_media_paste` to match
 
@@ -692,6 +709,7 @@ Update the seed document data in `migrations.js` to use `media` instead of `imag
 ### Inserter changes
 
 Update all inserters that create child nodes to use the `media` property name:
+
 - `feature` inserter: `image: 'feature_image_id'` → `media: 'feature_image_id'`
 - `figure` inserter: `image: 'image_one'` → `media: 'image_one'`
 - `gallery` inserter: `image: 'gallery_item_image_id'` → `media: 'gallery_item_image_id'`
@@ -712,6 +730,7 @@ Update `handle_media_paste` in `create_session.js` to use `media` as the propert
 ### File summary
 
 Modified files:
+
 - `src/lib/document_schema.js` — rename `image` → `media` on container node types
 - `src/routes/create_session.js` — update inserters and paste handler to use `media` property name
 - `src/lib/server/migrations.js` — add migration to rename `image` → `media` on existing documents, update seed data

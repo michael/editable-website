@@ -52,7 +52,9 @@ Next, you probably want to adjust the colors and fonts in [app.css](./src/app.cs
 @theme {
 	--font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
 	--font-serif: 'Libertinos Serif Display', ui-serif, Georgia, serif;
-	--font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+	--font-mono:
+		ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+		monospace;
 }
 ```
 

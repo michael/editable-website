@@ -9,6 +9,5 @@
 	id={node.id}
 	data-node-id={node.id}
 	class="bg-(--accent) text-(--accent-foreground) no-underline"
-	style="anchor-name: --{path.join('-')};">{content}</span>
-
-
+	style="anchor-name: --{path.join('-')};">{content}</span
+>

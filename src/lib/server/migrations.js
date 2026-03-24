@@ -54,10 +54,7 @@ export default [
 		insert_doc.run('footer_1', 'footer', JSON.stringify(footer_1));
 		insert_doc.run('page_1', 'page', JSON.stringify(page_1));
 
-		db.prepare('INSERT INTO site_settings (key, value) VALUES(?, ?)').run(
-			'home_page_id',
-			'page_1'
-		);
+		db.prepare('INSERT INTO site_settings (key, value) VALUES(?, ?)').run('home_page_id', 'page_1');
 	},
 	function add_asset_refs({ db }) {
 		db.exec(`

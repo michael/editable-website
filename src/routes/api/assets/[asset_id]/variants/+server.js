@@ -12,7 +12,10 @@ export async function POST({ params, request }) {
 	}
 
 	// Validate content type
-	const content_type = (request.headers.get('content-type') ?? '').split(';')[0].trim().toLowerCase();
+	const content_type = (request.headers.get('content-type') ?? '')
+		.split(';')[0]
+		.trim()
+		.toLowerCase();
 	if (content_type !== 'image/webp') {
 		error(400, 'Variant must be image/webp');
 	}

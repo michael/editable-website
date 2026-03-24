@@ -111,7 +111,10 @@
 		const zoomFactor = e.deltaY < 0 ? 1.01 : 0.99;
 
 		const tr = svedit.session.tr;
-		tr.set([...path, 'scale'], Math.min(Math.max(media_node.scale * zoomFactor, MIN_SCALE), MAX_SCALE));
+		tr.set(
+			[...path, 'scale'],
+			Math.min(Math.max(media_node.scale * zoomFactor, MIN_SCALE), MAX_SCALE)
+		);
 		svedit.session.apply(tr, { batch: true });
 	}
 </script>

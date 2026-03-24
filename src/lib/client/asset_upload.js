@@ -111,10 +111,7 @@ export async function start_processing(blob_url, file) {
 
 	if (is_video(file)) {
 		try {
-			const [hash, dims] = await Promise.all([
-				hash_blob(file),
-				get_video_dimensions(file)
-			]);
+			const [hash, dims] = await Promise.all([hash_blob(file), get_video_dimensions(file)]);
 			const ext = get_video_extension(file);
 			entry.hash = hash;
 			entry.asset_id = `${hash}.${ext}`;
@@ -224,7 +221,9 @@ function upload_blob(url, blob, headers, on_progress) {
 				try {
 					const body = JSON.parse(xhr.responseText);
 					if (body.message) message = body.message;
-				} catch { /* ignore */ }
+				} catch {
+					/* ignore */
+				}
 				reject(new Error(message));
 			}
 		});
@@ -266,7 +265,11 @@ async function upload_asset(entry) {
 
 	// If deduplicated, skip variant uploads
 	if (result.deduplicated) {
-		return { asset_id: result.asset_id, width: entry.original.width, height: entry.original.height };
+		return {
+			asset_id: result.asset_id,
+			width: entry.original.width,
+			height: entry.original.height
+		};
 	}
 
 	// Upload variants sequentially
@@ -281,8 +284,12 @@ async function upload_asset(entry) {
 			// Clean up the partially uploaded asset
 			try {
 				await fetch(`/api/assets/${result.asset_id}`, { method: 'DELETE' });
-			} catch { /* best effort cleanup */ }
-			throw new Error(`Variant upload failed (w${variant.width}): ${err instanceof Error ? err.message : err}`);
+			} catch {
+				/* best effort cleanup */
+			}
+			throw new Error(
+				`Variant upload failed (w${variant.width}): ${err instanceof Error ? err.message : err}`
+			);
 		}
 	}
 
@@ -341,7 +348,11 @@ export async function upload_pending(blob_urls, on_progress) {
  */
 export function replace_blob_urls(nodes, mapping) {
 	for (const node of Object.values(nodes)) {
-		if ((node.type === 'image' || node.type === 'video') && typeof node.src === 'string' && node.src.startsWith('blob:')) {
+		if (
+			(node.type === 'image' || node.type === 'video') &&
+			typeof node.src === 'string' &&
+			node.src.startsWith('blob:')
+		) {
 			const entry = mapping.get(node.src);
 			if (entry) {
 				node.src = entry.asset_id;
@@ -397,7 +408,11 @@ export async function ensure_processing(blob_urls) {
 export function collect_blob_urls(nodes) {
 	const blob_urls = [];
 	for (const node of Object.values(nodes)) {
-		if ((node.type === 'image' || node.type === 'video') && typeof node.src === 'string' && node.src.startsWith('blob:')) {
+		if (
+			(node.type === 'image' || node.type === 'video') &&
+			typeof node.src === 'string' &&
+			node.src.startsWith('blob:')
+		) {
 			blob_urls.push(node.src);
 		}
 	}

@@ -23,9 +23,23 @@
 			<MediaProperty path={[...path, 'media']} sizing="fit" fallback_aspect_ratio="4 / 3" />
 		</div>
 		<div class="pt-4">
-			<AnnotatedTextProperty class="text-xs md:text-sm uppercase tracking-widest text-(--foreground) opacity-60 mb-2" path={[...path, 'preline']} placeholder="Preline" />
-			<AnnotatedTextProperty class="{!svedit.editable ? 'title-underline' : ''} font-serif text-(--foreground) text-2xl lg:text-3xl text-balance pt-1" path={[...path, 'title']} placeholder="Title" />
-			<AnnotatedTextProperty class="text-balance pt-2" path={[...path, 'description']} placeholder="Description" />
+			<AnnotatedTextProperty
+				class="mb-2 text-xs tracking-widest text-(--foreground) uppercase opacity-60 md:text-sm"
+				path={[...path, 'preline']}
+				placeholder="Preline"
+			/>
+			<AnnotatedTextProperty
+				class="{!svedit.editable
+					? 'title-underline'
+					: ''} pt-1 font-serif text-2xl text-balance text-(--foreground) lg:text-3xl"
+				path={[...path, 'title']}
+				placeholder="Title"
+			/>
+			<AnnotatedTextProperty
+				class="pt-2 text-balance"
+				path={[...path, 'description']}
+				placeholder="Description"
+			/>
 		</div>
 	</svelte:element>
 </Node>
@@ -35,7 +49,9 @@
 		display: inline;
 		background: linear-gradient(to left, var(--accent), var(--accent));
 		background-size: 0 2px;
-		background-position: 0 100%, 100% 100%;
+		background-position:
+			0 100%,
+			100% 100%;
 		background-repeat: no-repeat;
 		transition: background-size cubic-bezier(0.8, 0, 0.2, 1) 0.4s;
 	}

@@ -5,11 +5,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 **Development:**
+
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build
 
 **Implementation Guidelines:**
+
 - Before implementing any feature, read `ARCHITECTURE.md` for design decisions and `IMPLEMENTATION_PLAN.md` for the step-by-step implementation spec
 - Design decisions go in `ARCHITECTURE.md`, implementation steps go in `IMPLEMENTATION_PLAN.md`
 - New features must be specified before implementation begins — the spec should be concise but sufficient to derive the implementation from
@@ -20,22 +22,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - You can suggest what the next step could be, but don't implement it
 
 **Refactoring Guidelines:**
+
 - During refactors, make ONLY the minimal changes needed (e.g., renaming APIs)
 - Do NOT "improve" or restructure logic while refactoring
 - If you see something that could be improved, note it separately for a future task
 - Refactoring and improving are two separate activities - never combine them
 
 **Code Style:**
+
 - Use snake_case for all variable names, function names, and identifiers
 - This applies to JavaScript/TypeScript code, test files, and any new code written
 
 **Styling:**
+
 - Use Tailwind CSS classes whenever possible
 - Minimize custom CSS - only use it for things Tailwind can't handle (e.g., CSS custom properties like `var(--svedit-editing-stroke)`)
 - Use Tailwind's arbitrary value syntax for custom properties: `text-(--svedit-editing-stroke)`, `border-(--svedit-editing-stroke)`
 - Do not use rounded corners (keep elements rectangular)
 
 **What to NOT change (keep camelCase):**
+
 - `window.getSelection()` - native API
 - `document.activeElement` - native API
 - `navigator.clipboard` - native API
@@ -49,9 +55,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Pattern**: If it's a web platform API or Svelte API, keep camelCase. If it's our custom variable/function name, use snake_case.
 
 **File Extensions:**
+
 - Files using Svelte runes (`$state`, `$derived`, `$effect`, etc.) must use `.svelte.js` or `.svelte.ts` extension
 
 **Documentation Style:**
+
 - Use sentence case for all headings in documentation (README.md, etc.)
 - Use sentence case for code comments
 - Sentence case means: capitalize only the first word and proper nouns
@@ -72,16 +80,19 @@ Svedit is a rich content editor template built with Svelte 5 that uses a graph-b
 ### Core Components
 
 **Document Model:**
+
 - `Document` - Central document class with state management, transactions, and history
 - `Tras` - Handles atomic operations on the document
 - Documents are represented as graphs of nodes with properties and references
 
 **Selection:**
+
 - Supports text, node, and property selections
 - Maps between internal selection model and DOM selection
 - Handles complex selection scenarios like backwards selections and multi-node selections
 
 **Key Components:**
+
 - `Svedit.svelte` - Main editor component with event handling and selection management
 - `NodeArrayProperty.svelte` - Renders containers that hold sequences of nodes
 - `AnnotatedTextProperty.svelte` - Handles annotated text rendering and editing
@@ -90,6 +101,7 @@ Svedit is a rich content editor template built with Svelte 5 that uses a graph-b
 ### Schema
 
 Content is defined through schemas that specify:
+
 - Node types and their properties
 - Property types: `string`, `integer`, `boolean`, `string_array`, `annotated_text`, `node`, `node_array`
 - Reference relationships between nodes
@@ -105,6 +117,7 @@ Content is defined through schemas that specify:
 ## Schema and Inserter
 
 When adding new properties to a node type:
+
 1. Add to schema in `create_session.js` (`document_schema`)
 2. Add to inserter in `create_session.js` (`inserters`)
 

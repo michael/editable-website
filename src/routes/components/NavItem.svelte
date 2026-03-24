@@ -14,12 +14,9 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="nav-item-link flex items-center justify-center w-full mx-3 sm:mx-4"
+		class="nav-item-link mx-3 flex w-full items-center justify-center sm:mx-4"
 	>
-		<AnnotatedTextProperty
-			path={[...path, 'label']}
-			placeholder="Label"
-		/>
+		<AnnotatedTextProperty path={[...path, 'label']} placeholder="Label" />
 	</svelte:element>
 {/snippet}
 
@@ -28,14 +25,10 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="font-medium ml-3 sm:ml-4 flex items-center justify-center w-full h-full bg-(--accent) text-(--accent-foreground) rounded-(--button-border-radius)"
+		class="ml-3 flex h-full w-full items-center justify-center rounded-(--button-border-radius) bg-(--accent) font-medium text-(--accent-foreground) sm:ml-4"
 		class:hover:opacity-80={render_as_link}
 	>
-		<AnnotatedTextProperty
-			class="px-3 sm:px-4"
-			path={[...path, 'label']}
-			placeholder="Label"
-		/>
+		<AnnotatedTextProperty class="px-3 sm:px-4" path={[...path, 'label']} placeholder="Label" />
 	</svelte:element>
 {/snippet}
 
@@ -51,7 +44,9 @@
 	.nav-item-link {
 		background: linear-gradient(to left, var(--accent), var(--accent));
 		background-size: 0 2px;
-		background-position: 0 100%, 100% 100%;
+		background-position:
+			0 100%,
+			100% 100%;
 		background-repeat: no-repeat;
 		transition: background-size cubic-bezier(0.8, 0, 0.2, 1) 0.4s;
 	}

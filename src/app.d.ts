@@ -4,8 +4,8 @@ declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
-			db: DatabaseSync,
-			user: string,
+			db: DatabaseSync;
+			user: string;
 		}
 		// interface PageData {}
 		// interface PageState {}

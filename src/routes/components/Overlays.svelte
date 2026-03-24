@@ -22,7 +22,9 @@
 			? svedit.session.get(svedit.session.selection.path)
 			: null
 	);
-	let is_media_selected = $derived(selected_property?.type === 'image' || selected_property?.type === 'video');
+	let is_media_selected = $derived(
+		selected_property?.type === 'image' || selected_property?.type === 'video'
+	);
 	let link_preview = $derived(get_link_preview());
 
 	function get_link_preview() {
@@ -100,8 +102,9 @@
 	{/if}
 </div>
 
-<style>
+<svelte:document onmousemove={handle_mousemove} onmouseup={() => (is_dragging = false)} />
 
+<style>
 	.media-controls-overlay {
 		position: absolute;
 		top: anchor(top);
@@ -111,5 +114,3 @@
 		pointer-events: auto;
 	}
 </style>
-
-<svelte:document onmousemove={handle_mousemove} onmouseup={() => is_dragging = false} />

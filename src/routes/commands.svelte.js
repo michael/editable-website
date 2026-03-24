@@ -1,5 +1,9 @@
 import { Command, is_selection_collapsed } from 'svedit';
-import { get_closest_switchable_layout, get_colorset_node, get_closest_switchable_type } from './app_utils.js';
+import {
+	get_closest_switchable_layout,
+	get_colorset_node,
+	get_closest_switchable_type
+} from './app_utils.js';
 import { set_properties } from 'svedit';
 import { MEDIA_DEFAULTS } from '$lib/config.js';
 
@@ -8,7 +12,9 @@ import { MEDIA_DEFAULTS } from '$lib/config.js';
  * Direction can be 'next' or 'previous'.
  */
 export class CycleLayoutCommand extends Command {
-	closest_switchable_layout = $derived(get_closest_switchable_layout(this.context.session, this.context.session.config));
+	closest_switchable_layout = $derived(
+		get_closest_switchable_layout(this.context.session, this.context.session.config)
+	);
 
 	constructor(direction, context) {
 		super(context);
@@ -221,7 +227,10 @@ export class EditLinkCommand extends Command {
 			const { session } = this.context;
 			// Select the parent node if a property is selected (but not for annotation links)
 			const active_link = session.active_annotation('link');
-			if (!active_link && (session.selection?.type === 'text' || session.selection?.type === 'property')) {
+			if (
+				!active_link &&
+				(session.selection?.type === 'text' || session.selection?.type === 'property')
+			) {
 				session.select_parent();
 			}
 			// Wait for selection change to settle before showing prompt

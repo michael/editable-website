@@ -12,11 +12,7 @@
 	let is_saved = $derived(node.src && !is_blob);
 
 	// Resolve the display URL
-	let display_src = $derived(
-		is_blob ? node.src :
-		is_saved ? `${ASSET_BASE}/${node.src}` :
-		''
-	);
+	let display_src = $derived(is_blob ? node.src : is_saved ? `${ASSET_BASE}/${node.src}` : '');
 
 	// Apply scale to video (same as Image.svelte)
 	let video_style = $derived(`
@@ -109,8 +105,8 @@
 		// Standard Fullscreen API (Chrome, Firefox, Safari desktop)
 		function handle_fullscreen_change() {
 			if (!v) return;
-			const fs = document.fullscreenElement
-				|| /** @type {any} */ (document).webkitFullscreenElement;
+			const fs =
+				document.fullscreenElement || /** @type {any} */ (document).webkitFullscreenElement;
 			if (fs === v) {
 				is_fullscreen = true;
 			} else if (!fs) {

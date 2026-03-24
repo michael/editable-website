@@ -64,7 +64,7 @@
 
 <dialog
 	bind:this={dialog_ref}
-	class="create-link-dialog absolute z-40 mt-1 m-0 bg-white p-0 shadow-xl overflow-visible max-h-90 border border-(--svedit-editing-stroke)"
+	class="create-link-dialog absolute z-40 m-0 mt-1 max-h-90 overflow-visible border border-(--svedit-editing-stroke) bg-white p-0 shadow-xl"
 	style="position-anchor: --selection-highlight; position-area: block-end span-all; justify-self: anchor-center;"
 	onclick={handle_backdrop_click}
 >
@@ -74,21 +74,21 @@
 			type="url"
 			bind:value={href_input_value}
 			placeholder="https://example.com"
-			class="w-72 px-3 py-2 text-sm text-gray-700 border-b border-gray-200 focus:border-(--svedit-editing-stroke) focus:ring-(--svedit-editing-stroke)"
+			class="w-72 border-b border-gray-200 px-3 py-2 text-sm text-gray-700 focus:border-(--svedit-editing-stroke) focus:ring-(--svedit-editing-stroke)"
 			onkeydown={handle_keydown}
 		/>
 		<div class="flex items-center justify-between px-3 py-2">
-			<label class="flex items-center gap-2 cursor-pointer">
+			<label class="flex cursor-pointer items-center gap-2">
 				<input
 					type="checkbox"
 					bind:checked={open_in_new_tab}
-					class="w-4 h-4 cursor-pointer text-(--svedit-editing-stroke) focus:ring-(--svedit-editing-stroke)"
+					class="h-4 w-4 cursor-pointer text-(--svedit-editing-stroke) focus:ring-(--svedit-editing-stroke)"
 				/>
 				<span class="text-sm text-gray-600">Open in new tab</span>
 			</label>
 			<button
 				type="button"
-				class="text-sm text-(--svedit-editing-stroke) cursor-pointer shrink-0 hover:opacity-80"
+				class="shrink-0 cursor-pointer text-sm text-(--svedit-editing-stroke) hover:opacity-80"
 				onclick={create_link}
 			>
 				CREATE

@@ -62,7 +62,6 @@ function get_media_type(file) {
 	return 'image';
 }
 
-
 // App-specific config object, always available via session.config for introspection
 const session_config = {
 	// Custom ID generator function
@@ -126,7 +125,7 @@ const session_config = {
 						src: blob_url,
 						mime_type: file.type,
 						width: dims.width,
-						height: dims.height,
+						height: dims.height
 					};
 					tr.create(new_node);
 					const parent_path = session.selection.path.slice(0, -1);
@@ -345,13 +344,13 @@ const session_config = {
 					content: { text: '', annotations: [] }
 				},
 				new_feature: {
-						id: 'new_feature',
-						type: 'feature',
-						layout: 1,
-						colorset: 0,
-						media: 'feature_image',
-						body: ['body_text']
-					}
+					id: 'new_feature',
+					type: 'feature',
+					layout: 1,
+					colorset: 0,
+					media: 'feature_image',
+					body: ['body_text']
+				}
 			});
 
 			tr.insert_nodes([new_feature_id]);
@@ -572,15 +571,15 @@ const session_config = {
 				};
 				tr.create(image);
 				const link_collection_item = {
-						id: nanoid(),
-						type: 'link_collection_item',
-						href: '',
-						target: '_self',
-						media: image_id,
-						preline: { text: '', annotations: [] },
-						title: { text: '', annotations: [] },
-						description: { text: '', annotations: [] }
-					};
+					id: nanoid(),
+					type: 'link_collection_item',
+					href: '',
+					target: '_self',
+					media: image_id,
+					preline: { text: '', annotations: [] },
+					title: { text: '', annotations: [] },
+					description: { text: '', annotations: [] }
+				};
 				tr.create(link_collection_item);
 				new_link_collection_items.push(link_collection_item.id);
 			}

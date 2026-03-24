@@ -2,6 +2,7 @@ import { getRequestEvent, query, command } from '$app/server';
 import * as v from 'valibot';
 import db from '$lib/server/db.js';
 import { document_schema } from '$lib/document_schema.js';
+import { stitch_document } from '$lib/server/documents.js';
 
 /**
  * @typedef {Object} DocumentRow
@@ -83,47 +84,10 @@ function extract_document(document_id, node_ids, all_nodes) {
 }
 
 /**
- * Get a single document row from the database.
- *
- * @param {string} document_id
- * @returns {DocumentData}
- */
-function get_doc_from_db(document_id) {
-	const doc_row = /** @type {DocumentRow | undefined} */ (
-		db.prepare('SELECT * FROM documents WHERE document_id = ?').get(document_id)
-	);
-	if (!doc_row) {
-		throw new Error(`Document not found: ${document_id}`);
-	}
-	return JSON.parse(doc_row.data);
-}
-
-/**
  * Get a document from the database, stitching in shared documents (nav, footer).
  */
 export const get_document = query(v.string(), async (document_id) => {
-	const page_doc = get_doc_from_db(document_id);
-	const page_node = page_doc.nodes[page_doc.document_id];
-
-	// Start with the page nodes
-	const merged_nodes = { ...page_doc.nodes };
-
-	// Stitch in nav if referenced
-	if (page_node.nav) {
-		const nav_doc = get_doc_from_db(page_node.nav);
-		Object.assign(merged_nodes, nav_doc.nodes);
-	}
-
-	// Stitch in footer if referenced
-	if (page_node.footer) {
-		const footer_doc = get_doc_from_db(page_node.footer);
-		Object.assign(merged_nodes, footer_doc.nodes);
-	}
-
-	return {
-		document_id: page_doc.document_id,
-		nodes: merged_nodes
-	};
+	return stitch_document(document_id);
 });
 
 /**
@@ -153,9 +117,7 @@ export const save_document = command(
 		const footer_root_id = page_node.footer;
 
 		// Collect nav and footer subtrees
-		const nav_node_ids = nav_root_id
-			? collect_node_ids(nav_root_id, all_nodes)
-			: new Set();
+		const nav_node_ids = nav_root_id ? collect_node_ids(nav_root_id, all_nodes) : new Set();
 		const footer_node_ids = footer_root_id
 			? collect_node_ids(footer_root_id, all_nodes)
 			: new Set();
@@ -174,20 +136,41 @@ export const save_document = command(
 		);
 
 		const delete_refs = db.prepare('DELETE FROM asset_refs WHERE document_id = ?');
-		const insert_ref = db.prepare('INSERT OR IGNORE INTO asset_refs (asset_id, document_id) VALUES (?, ?)');
+		const insert_ref = db.prepare(
+			'INSERT OR IGNORE INTO asset_refs (asset_id, document_id) VALUES (?, ?)'
+		);
+
+		const delete_doc_refs = db.prepare('DELETE FROM document_refs WHERE source_document_id = ?');
+		const insert_doc_ref = db.prepare(
+			'INSERT OR IGNORE INTO document_refs (target_document_id, source_document_id) VALUES (?, ?)'
+		);
 
 		// Wrap all upserts in a transaction so either all succeed or none
 		db.exec('BEGIN');
 		try {
 			// Save page
 			upsert.run(combined_doc.document_id, 'page', JSON.stringify(page_doc));
-			update_asset_refs(combined_doc.document_id, page_node_ids, all_nodes, delete_refs, insert_ref);
+			update_asset_refs(
+				combined_doc.document_id,
+				page_node_ids,
+				all_nodes,
+				delete_refs,
+				insert_ref
+			);
+			update_document_refs(
+				combined_doc.document_id,
+				page_node_ids,
+				all_nodes,
+				delete_doc_refs,
+				insert_doc_ref
+			);
 
 			// Save nav if present
 			if (nav_root_id && nav_node_ids.size > 0) {
 				const nav_doc = extract_document(nav_root_id, nav_node_ids, all_nodes);
 				upsert.run(nav_root_id, 'nav', JSON.stringify(nav_doc));
 				update_asset_refs(nav_root_id, nav_node_ids, all_nodes, delete_refs, insert_ref);
+				update_document_refs(nav_root_id, nav_node_ids, all_nodes, delete_doc_refs, insert_doc_ref);
 			}
 
 			// Save footer if present
@@ -195,6 +178,13 @@ export const save_document = command(
 				const footer_doc = extract_document(footer_root_id, footer_node_ids, all_nodes);
 				upsert.run(footer_root_id, 'footer', JSON.stringify(footer_doc));
 				update_asset_refs(footer_root_id, footer_node_ids, all_nodes, delete_refs, insert_ref);
+				update_document_refs(
+					footer_root_id,
+					footer_node_ids,
+					all_nodes,
+					delete_doc_refs,
+					insert_doc_ref
+				);
 			}
 
 			db.exec('COMMIT');
@@ -222,7 +212,13 @@ function update_asset_refs(document_id, node_ids, all_nodes, delete_stmt, insert
 	const asset_ids = new Set();
 	for (const node_id of node_ids) {
 		const node = all_nodes[node_id];
-		if (node && (node.type === 'image' || node.type === 'video') && typeof node.src === 'string' && node.src && !node.src.startsWith('blob:')) {
+		if (
+			node &&
+			(node.type === 'image' || node.type === 'video') &&
+			typeof node.src === 'string' &&
+			node.src &&
+			!node.src.startsWith('blob:')
+		) {
 			asset_ids.add(node.src);
 		}
 	}
@@ -231,5 +227,50 @@ function update_asset_refs(document_id, node_ids, all_nodes, delete_stmt, insert
 	delete_stmt.run(document_id);
 	for (const asset_id of asset_ids) {
 		insert_stmt.run(asset_id, document_id);
+	}
+}
+
+/**
+ * Update document_refs for a sub-document: full replace of all refs for the given document_id.
+ * Collects target_document_id values from href properties and link annotations.
+ *
+ * @param {string} document_id
+ * @param {Set<string>} node_ids
+ * @param {Record<string, any>} all_nodes
+ * @param {import('node:sqlite').StatementSync} delete_stmt
+ * @param {import('node:sqlite').StatementSync} insert_stmt
+ */
+function update_document_refs(document_id, node_ids, all_nodes, delete_stmt, insert_stmt) {
+	const targets = new Set();
+
+	for (const node_id of node_ids) {
+		const node = all_nodes[node_id];
+		if (!node) continue;
+
+		// 1. Direct node hrefs (e.g. button, nav_item, link_collection_item)
+		if (node.href && typeof node.href === 'string' && node.href.startsWith('/')) {
+			const target_id = node.href.substring(1).split('#')[0].split('?')[0];
+			if (target_id) targets.add(target_id);
+		}
+
+		// 2. Text node annotations
+		if (node.type === 'text' && node.content && Array.isArray(node.content.annotations)) {
+			for (const ann of node.content.annotations) {
+				if (
+					ann.type === 'link' &&
+					ann.href &&
+					typeof ann.href === 'string' &&
+					ann.href.startsWith('/')
+				) {
+					const target_id = ann.href.substring(1).split('#')[0].split('?')[0];
+					if (target_id) targets.add(target_id);
+				}
+			}
+		}
+	}
+
+	delete_stmt.run(document_id);
+	for (const target_id of targets) {
+		insert_stmt.run(target_id, document_id);
 	}
 }

@@ -65,11 +65,6 @@
 
 <Node {path}>
 	<div use:reveal>
-		<AnnotatedTextProperty
-			{tag}
-			class={text_style}
-			path={[...path, 'content']}
-			{placeholder}
-		/>
+		<AnnotatedTextProperty {tag} class={text_style} path={[...path, 'content']} {placeholder} />
 	</div>
 </Node>

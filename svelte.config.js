@@ -9,7 +9,7 @@ const config = {
 		adapter: adapter(),
 		experimental: {
 			remoteFunctions: true
-		},
+		}
 		// alias: {
 		// 	'svedit': '../svedit/src/lib/index.js',
 		// }

@@ -34,12 +34,12 @@
 
 	/* Editor colors */
 	--svedit-brand: oklch(60% 0.22 283);
-  --svedit-editing-stroke: var(--svedit-brand);
-  --svedit-editing-fill: oklch(from var(--svedit-brand) l c h / 0.1);
-  --svedit-canvas-stroke: color-mix(in oklch, currentColor 25%, transparent);
+	--svedit-editing-stroke: var(--svedit-brand);
+	--svedit-editing-fill: oklch(from var(--svedit-brand) l c h / 0.1);
+	--svedit-canvas-stroke: color-mix(in oklch, currentColor 25%, transparent);
 
-  /* Rounded corners */
-  --button-border-radius: 3rem; /* rounded corners for buttons, nav items */
+	/* Rounded corners */
+	--button-border-radius: 3rem; /* rounded corners for buttons, nav items */
 	--image-border-radius: 0.5rem; /* rounded corners for images */
 }
 
@@ -47,7 +47,9 @@
 @theme {
 	--font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
 	--font-serif: 'Libertinos Serif Display', ui-serif, Georgia, serif;
-	--font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+	--font-mono:
+		ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+		monospace;
 }
 
 @layer utilities {
@@ -69,13 +71,15 @@
 
 /* Scroll-triggered reveal animations
    Comment out the block below to disable */
-.svedit-canvas[contenteditable="false"] .reveal-hidden {
-  opacity: 0;
+.svedit-canvas[contenteditable='false'] .reveal-hidden {
+	opacity: 0;
 	transform: translateY(30px);
 }
 
-.svedit-canvas[contenteditable="false"] .revealed {
-  opacity: 1;
+.svedit-canvas[contenteditable='false'] .revealed {
+	opacity: 1;
 	transform: translateY(0);
-	transition: opacity 0.8s cubic-bezier(0, 0, 0.2, 1), transform 0.8s cubic-bezier(0, 0, 0.2, 1);
+	transition:
+		opacity 0.8s cubic-bezier(0, 0, 0.2, 1),
+		transform 0.8s cubic-bezier(0, 0, 0.2, 1);
 }

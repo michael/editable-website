@@ -14,17 +14,17 @@ The app uses Svelte's experimental async features and SvelteKit's remote functio
 
 ```js
 const config = {
-  kit: {
-    adapter: adapter(),
-    experimental: {
-      remoteFunctions: true
-    }
-  },
-  compilerOptions: {
-    experimental: {
-      async: true
-    }
-  }
+	kit: {
+		adapter: adapter(),
+		experimental: {
+			remoteFunctions: true
+		}
+	},
+	compilerOptions: {
+		experimental: {
+			async: true
+		}
+	}
 };
 ```
 
@@ -40,7 +40,7 @@ const config = {
 import migrate from '$lib/server/migrate.js';
 
 export async function init() {
-  migrate();
+	migrate();
 }
 ```
 
@@ -205,16 +205,16 @@ There are two media node types: `image` and `video`. Each has the same visual pr
 
 ```json
 {
-    "id": "feature_1_image",
-    "type": "image",
-    "src": "c4b519da4c0a6512b5d9519aac0d9df7fab9152a6df109515456ada4702fabdb.webp",
-    "width": 1600,
-    "height": 900,
-    "alt": "Feature image",
-    "scale": 1.0,
-    "focal_point_x": 0.5,
-    "focal_point_y": 0.5,
-    "object_fit": "cover"
+	"id": "feature_1_image",
+	"type": "image",
+	"src": "c4b519da4c0a6512b5d9519aac0d9df7fab9152a6df109515456ada4702fabdb.webp",
+	"width": 1600,
+	"height": 900,
+	"alt": "Feature image",
+	"scale": 1.0,
+	"focal_point_x": 0.5,
+	"focal_point_y": 0.5,
+	"object_fit": "cover"
 }
 ```
 
@@ -222,16 +222,16 @@ There are two media node types: `image` and `video`. Each has the same visual pr
 
 ```json
 {
-    "id": "hero_video",
-    "type": "video",
-    "src": "e7a3f1bc...abcd.mp4",
-    "width": 1920,
-    "height": 1080,
-    "alt": "Product demo",
-    "scale": 1.0,
-    "focal_point_x": 0.5,
-    "focal_point_y": 0.5,
-    "object_fit": "cover"
+	"id": "hero_video",
+	"type": "video",
+	"src": "e7a3f1bc...abcd.mp4",
+	"width": 1920,
+	"height": 1080,
+	"alt": "Product demo",
+	"scale": 1.0,
+	"focal_point_x": 0.5,
+	"focal_point_y": 0.5,
+	"object_fit": "cover"
 }
 ```
 
@@ -297,8 +297,8 @@ The paste handler uses `get_media_type(file)` to map each file's MIME type to a 
 ```js
 /** @returns {'image' | 'video'} */
 function get_media_type(file) {
-    if (file.type.startsWith('video/')) return 'video';
-    return 'image';
+	if (file.type.startsWith('video/')) return 'video';
+	return 'image';
 }
 ```
 
@@ -384,13 +384,13 @@ variant URL  = /assets/{stem}/w320.webp
 
 ```html
 <img
-    src="/assets/c4b519da...fabdb.webp"
-    srcset="
-        /assets/c4b519da...fabdb/w320.webp 320w,
-        /assets/c4b519da...fabdb/w640.webp 640w,
-        /assets/c4b519da...fabdb/w1024.webp 1024w,
-        /assets/c4b519da...fabdb.webp 1600w
-    "
+	src="/assets/c4b519da...fabdb.webp"
+	srcset="
+		/assets/c4b519da...fabdb/w320.webp   320w,
+		/assets/c4b519da...fabdb/w640.webp   640w,
+		/assets/c4b519da...fabdb/w1024.webp 1024w,
+		/assets/c4b519da...fabdb.webp       1600w
+	"
 />
 ```
 
@@ -402,12 +402,12 @@ Different media types are handled differently:
 
 The asset id always includes the file extension. The stem (id without extension) is used to derive the variant directory.
 
-| Type | Node type | Client processing | Asset id example | Variants |
-|---|---|---|---|---|
-| Static images (JPEG, PNG, WebP, HEIC) | `image` | Resize to `MAX_IMAGE_WIDTH`, convert to WebP via WASM | `c4b519da...fabdb.webp` | Yes (`c4b519da...fabdb/w320.webp`, etc.) |
-| Animated GIFs | `image` | Passthrough | `c4b519da...fabdb.gif` | No |
-| SVGs | `image` | Passthrough | `c4b519da...fabdb.svg` | No |
-| Videos (MP4) | `video` | Passthrough | `c4b519da...fabdb.mp4` | No |
+| Type                                  | Node type | Client processing                                     | Asset id example        | Variants                                 |
+| ------------------------------------- | --------- | ----------------------------------------------------- | ----------------------- | ---------------------------------------- |
+| Static images (JPEG, PNG, WebP, HEIC) | `image`   | Resize to `MAX_IMAGE_WIDTH`, convert to WebP via WASM | `c4b519da...fabdb.webp` | Yes (`c4b519da...fabdb/w320.webp`, etc.) |
+| Animated GIFs                         | `image`   | Passthrough                                           | `c4b519da...fabdb.gif`  | No                                       |
+| SVGs                                  | `image`   | Passthrough                                           | `c4b519da...fabdb.svg`  | No                                       |
+| Videos (MP4)                          | `video`   | Passthrough                                           | `c4b519da...fabdb.mp4`  | No                                       |
 
 ### Image size constraints
 

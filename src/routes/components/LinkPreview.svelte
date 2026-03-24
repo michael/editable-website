@@ -26,29 +26,33 @@
 </script>
 
 <div
-	class="link-preview absolute z-30 mt-1 pointer-events-auto"
-	style="position-anchor: --{path.join('-')}; position-area: block-end span-all; justify-self: anchor-center;"
+	class="link-preview pointer-events-auto absolute z-30 mt-1"
+	style="position-anchor: --{path.join(
+		'-'
+	)}; position-area: block-end span-all; justify-self: anchor-center;"
 >
 	{#if node.href}
-		<div class="flex items-center gap-3 bg-white border-1 border-(--svedit-editing-stroke) px-3 py-2">
+		<div
+			class="flex items-center gap-3 border-1 border-(--svedit-editing-stroke) bg-white px-3 py-2"
+		>
 			<a
 				href={node.href}
 				target="_blank"
 				rel="noopener noreferrer"
-				class="text-sm text-gray-700 max-w-70 truncate hover:underline"
+				class="max-w-70 truncate text-sm text-gray-700 hover:underline"
 			>
 				{node.href}
 			</a>
 			<button
 				type="button"
-				class="text-sm text-(--svedit-editing-stroke) cursor-pointer shrink-0 hover:opacity-80"
+				class="shrink-0 cursor-pointer text-sm text-(--svedit-editing-stroke) hover:opacity-80"
 				onclick={handle_edit}
 			>
 				EDIT
 			</button>
 			<button
 				type="button"
-				class="text-sm text-(--svedit-editing-stroke) cursor-pointer shrink-0 hover:opacity-80"
+				class="shrink-0 cursor-pointer text-sm text-(--svedit-editing-stroke) hover:opacity-80"
 				onclick={handle_remove}
 			>
 				REMOVE
@@ -57,7 +61,7 @@
 	{:else}
 		<button
 			type="button"
-			class="bg-white border-1 border-(--svedit-editing-stroke) text-(--svedit-editing-stroke) text-sm px-12 py-2 cursor-pointer hover:bg-gray-50"
+			class="cursor-pointer border-1 border-(--svedit-editing-stroke) bg-white px-12 py-2 text-sm text-(--svedit-editing-stroke) hover:bg-gray-50"
 			onclick={handle_edit}
 		>
 			CREATE LINK

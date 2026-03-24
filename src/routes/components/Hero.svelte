@@ -13,23 +13,25 @@
 </script>
 
 {#snippet layout_1()}
-	<div class="{TW_LIMITER}">
-		<div class="min-h-screen flex items-center py-20 md:py-28 lg:py-36">
-			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-5xl text-center w-full" use:reveal>
+	<div class={TW_LIMITER}>
+		<div class="flex min-h-screen items-center py-20 md:py-28 lg:py-36">
+			<div class="{TW_PAGE_PADDING_X} mx-auto w-full max-w-5xl text-center" use:reveal>
 				<AnnotatedTextProperty
 					tag="h1"
-					class="ew-h1 leading-tight font-serif text-5xl md:text-6xl lg:text-7xl text-balance text-(--foreground)"
+					class="ew-h1 font-serif text-5xl leading-tight text-balance text-(--foreground) md:text-6xl lg:text-7xl"
 					path={[...path, 'title']}
 					placeholder="Your bold statement goes here"
 				/>
 				<AnnotatedTextProperty
 					tag="p"
-					class="mt-6 md:mt-8 text-lg md:text-xl text-balance"
+					class="mt-6 text-lg text-balance md:mt-8 md:text-xl"
 					path={[...path, 'description']}
 					placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
 				/>
 				<NodeArrayProperty
-					class="[--row:1] hero-buttons flex flex-wrap items-center justify-center gap-4 mt-10{!has_buttons ? ' empty' : ''}"
+					class="hero-buttons flex flex-wrap items-center justify-center gap-4 [--row:1] mt-10{!has_buttons
+						? ' empty'
+						: ''}"
 					path={[...path, 'buttons']}
 				/>
 			</div>
@@ -38,12 +40,12 @@
 {/snippet}
 
 {#snippet layout_2()}
-	<div class="{TW_LIMITER}">
+	<div class={TW_LIMITER}>
 		<div class="py-20 md:py-28 lg:py-36">
 			<div class="{TW_PAGE_PADDING_X} max-w-4xl" use:reveal>
 				<AnnotatedTextProperty
 					tag="h1"
-					class="ew-h1 font-serif text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground)"
+					class="ew-h1 font-serif text-3xl text-balance text-(--foreground) md:text-4xl lg:text-5xl"
 					path={[...path, 'title']}
 					placeholder="Your bold statement goes here"
 				/>
@@ -54,7 +56,9 @@
 					placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
 				/>
 				<NodeArrayProperty
-					class="[--row:1] hero-buttons flex flex-wrap items-center gap-4 mt-10{!has_buttons ? ' empty' : ''}"
+					class="hero-buttons flex flex-wrap items-center gap-4 [--row:1] mt-10{!has_buttons
+						? ' empty'
+						: ''}"
 					path={[...path, 'buttons']}
 				/>
 			</div>
@@ -63,12 +67,12 @@
 {/snippet}
 
 {#snippet layout_3()}
-	<div class="{TW_LIMITER}">
+	<div class={TW_LIMITER}>
 		<div class="py-20 md:py-28 lg:py-36">
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-4xl text-center" use:reveal>
 				<AnnotatedTextProperty
 					tag="h1"
-					class="ew-h1 font-serif text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground)"
+					class="ew-h1 font-serif text-3xl text-balance text-(--foreground) md:text-4xl lg:text-5xl"
 					path={[...path, 'title']}
 					placeholder="Your bold statement goes here"
 				/>
@@ -79,7 +83,9 @@
 					placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
 				/>
 				<NodeArrayProperty
-					class="[--row:1] hero-buttons flex flex-wrap items-center justify-center gap-4 mt-10{!has_buttons ? ' empty' : ''}"
+					class="hero-buttons flex flex-wrap items-center justify-center gap-4 [--row:1] mt-10{!has_buttons
+						? ' empty'
+						: ''}"
 					path={[...path, 'buttons']}
 				/>
 			</div>
@@ -88,14 +94,16 @@
 {/snippet}
 
 {#snippet layout_4()}
-	<div class="{TW_LIMITER}">
+	<div class={TW_LIMITER}>
 		<div class="grid grid-cols-3 py-20 md:py-28 lg:py-36">
 			<!-- IMPORTANT: Keep in sync with TW_PAGE_PADDING_X -->
-			<div class="max-sm:pl-5 max-md:pl-7 pr-5 sm:pr-7 md:pr-10 lg:pr-14 col-span-3 md:col-span-2 md:col-start-2">
-				<div class="{TW_MOBILE_LEFT_INSET}" use:reveal>
+			<div
+				class="col-span-3 pr-5 max-md:pl-7 max-sm:pl-5 sm:pr-7 md:col-span-2 md:col-start-2 md:pr-10 lg:pr-14"
+			>
+				<div class={TW_MOBILE_LEFT_INSET} use:reveal>
 					<AnnotatedTextProperty
 						tag="h1"
-						class="ew-h1 font-serif text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground)"
+						class="ew-h1 font-serif text-3xl text-balance text-(--foreground) md:text-4xl lg:text-5xl"
 						path={[...path, 'title']}
 						placeholder="Your bold statement goes here"
 					/>
@@ -106,7 +114,9 @@
 						placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
 					/>
 					<NodeArrayProperty
-						class="[--row:1] hero-buttons flex flex-wrap items-center gap-4 mt-10{!has_buttons ? ' empty' : ''}"
+						class="hero-buttons flex flex-wrap items-center gap-4 [--row:1] mt-10{!has_buttons
+							? ' empty'
+							: ''}"
 						path={[...path, 'buttons']}
 					/>
 				</div>
@@ -115,7 +125,7 @@
 	</div>
 {/snippet}
 
-<Node class="ew-hero lg:text-lg bg-(--background) text-(--foreground) {colorset_class}" {path}>
+<Node class="ew-hero bg-(--background) text-(--foreground) lg:text-lg {colorset_class}" {path}>
 	{@const layouts = [layout_1, layout_2, layout_3, layout_4]}
 	{@render layouts[layout - 1]()}
 </Node>

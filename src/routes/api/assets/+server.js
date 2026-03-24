@@ -17,7 +17,10 @@ export async function POST({ request }) {
 
 	const ext = CONTENT_TYPE_TO_EXT[content_type];
 	if (!ext) {
-		error(400, `Unsupported content type: ${content_type}. Expected image/webp, image/gif, image/svg+xml, video/mp4, or video/webm.`);
+		error(
+			400,
+			`Unsupported content type: ${content_type}. Expected image/webp, image/gif, image/svg+xml, video/mp4, or video/webm.`
+		);
 	}
 
 	const hash = request.headers.get('x-content-hash');
@@ -38,7 +41,9 @@ export async function POST({ request }) {
 		// Drain the request body without buffering
 		if (request.body) {
 			const reader = request.body.getReader();
-			while (!(await reader.read()).done) { /* drain */ }
+			while (!(await reader.read()).done) {
+				/* drain */
+			}
 		}
 
 		return json({ asset_id, width, height, deduplicated: true });
