@@ -62,7 +62,7 @@ However, likely you'll want to customize more than that. E.g. edit [Button.svelt
 
 ## Manual
 
-For detailed documentation on building with Editable Website — including reusable primitives like `MediaProperty` with self-contained examples — see [MANUAL.md](./MANUAL.md).
+For detailed documentation on building with Editable Website see [MANUAL.md](./MANUAL.md).
 
 ## Deploy
 
