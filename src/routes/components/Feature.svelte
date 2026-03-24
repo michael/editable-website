@@ -1,12 +1,8 @@
-<script module>
-	export const LAYOUT_COUNT = 4;
-</script>
-
 <script>
 	import { getContext } from 'svelte';
 	import { Node, NodeArrayProperty } from 'svedit';
 	import MediaProperty from './MediaProperty.svelte';
-	import { TW_PAGE_PADDING, TW_LIMITER } from '../tailwind_theme.js';
+	import { TW_PAGE_PADDING, TW_MOBILE_LEFT_INSET, TW_LIMITER } from '../tailwind_theme.js';
 	import { reveal } from '../reveal.js';
 
 	const svedit = getContext('svedit');

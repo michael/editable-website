@@ -1,5 +1,5 @@
 import { Command, is_selection_collapsed } from 'svedit';
-import { get_closest_switchable_layout, get_colorset_node, get_closest_switchable_type, get_layout_count } from './app_utils.js';
+import { get_closest_switchable_layout, get_colorset_node, get_closest_switchable_type } from './app_utils.js';
 import { set_properties } from 'svedit';
 import { MEDIA_DEFAULTS } from '$lib/config.js';
 
@@ -22,7 +22,7 @@ export class CycleLayoutCommand extends Command {
 	execute() {
 		const session = this.context.session;
 		const { node, node_array_path, node_index } = this.closest_switchable_layout;
-		const layout_count = get_layout_count(session.config, node.type);
+		const layout_count = session.config.node_layouts[node.type];
 
 		let new_layout;
 		if (this.direction === 'next') {

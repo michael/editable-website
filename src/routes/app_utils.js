@@ -1,5 +1,3 @@
-import { snake_to_pascal } from 'svedit';
-
 /**
  * Build the full path (including selected node index) and the starting
  * node_array path for walking up the tree from the current selection.
@@ -124,24 +122,11 @@ export function get_colorset_node(session) {
 }
 
 /**
- * Get the layout count for a node type by looking up LAYOUT_COUNT
- * on the corresponding component in node_components.
- *
- * @param {object} session_config
- * @param {string} node_type - e.g. 'prose', 'feature'
- * @returns {number}
- */
-export function get_layout_count(session_config, node_type) {
-	const component = session_config.node_components?.[snake_to_pascal(node_type)];
-	return component?.LAYOUT_COUNT ?? 1;
-}
-
-/**
  * Find the closest ancestor node whose layout can be switched
- * (has a layout property and the component's LAYOUT_COUNT > 1).
+ * (has a layout property and `node_layouts[type] > 1`).
  *
  * @param {import('svedit').Session} session - The session instance
- * @param {object} session_config - The session config (session.config)
+ * @param {object} session_config - The session config (session.config), used to check node_layouts
  * @returns {{ node: object, node_array_path: (string|number)[], node_index: number } | null}
  */
 export function get_closest_switchable_layout(session, session_config) {
@@ -156,7 +141,7 @@ export function get_closest_switchable_layout(session, session_config) {
 		const node_index = get_node_index_at(full_path, path);
 		if (node_index !== null) {
 			const node = session.get([...path, node_index]);
-			if (node?.layout && get_layout_count(session_config, node.type) > 1) {
+			if (node?.layout && session_config.node_layouts?.[node.type] > 1) {
 				return { node, node_array_path: path, node_index };
 			}
 		}
