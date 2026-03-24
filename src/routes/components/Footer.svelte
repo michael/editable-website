@@ -7,6 +7,27 @@
 	const svedit = getContext('svedit');
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
+
+	let logo_node = $derived(svedit.session.get([...path, 'logo']));
+	// Intrinsic CSS-pixel width: divide the raw pixel width by 2 for retina.
+	// SVGs use their viewBox dimensions directly (no retina scaling).
+	// Default to 72px when no image is set yet, to hint that this is for small decorative elements.
+	const DEFAULT_WIDTH = 72;
+	let is_svg = $derived(logo_node.mime_type === 'image/svg+xml');
+	let css_width = $derived(
+		logo_node.width
+			? (is_svg ? logo_node.width : Math.round(logo_node.width / 2))
+			: DEFAULT_WIDTH
+	);
+
+	$inspect(css_width);
+
+	let wrapper_style = $derived(
+		logo_node.src
+			? `max-width: ${css_width}px`
+			: `width: ${css_width}px`
+	);
+
 	let column_count = $derived(node.footer_link_columns?.length || 0);
 	let grid_cols_class = $derived(
 		column_count <= 1 ? 'lg:grid-cols-1' :
@@ -24,7 +45,9 @@
 					this={svedit.editable ? 'div' : 'a'}
 					href={svedit.editable ? undefined : '/'}
 				>
-					<MediaProperty class="h-18" path={[...path, 'logo']} aspect_ratio="intrinsic" fallback_aspect_ratio="1 / 1" />
+					<div class="overflow-hidden" style="{wrapper_style}; border-radius: var(--image-border-radius);">
+						<MediaProperty path={[...path, 'logo']} aspect_ratio="intrinsic" fallback_aspect_ratio="1 / 1" />
+					</div>
 				</svelte:element>
 				<AnnotatedTextProperty
 					class="mt-6 mb-0 lg:mb-0"
