@@ -19,7 +19,7 @@
 		sizing = 'fill',
 		fallback_aspect_ratio = '16 / 9',
 		fallback_width = 200,
-		class: css_class
+		class: css_class = ''
 	} = $props();
 	let node = $derived(svedit.session.get(path));
 
@@ -51,7 +51,7 @@
 	);
 </script>
 
-<CustomProperty class="h-full {css_class}" style={native_style} path={path}>
+<CustomProperty class="{sizing === 'fill' ? 'h-full ' : ''}{css_class}" style={native_style} path={path}>
 	<div
 		contenteditable="false"
 		style:aspect-ratio={resolved_aspect_ratio}
