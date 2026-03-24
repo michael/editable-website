@@ -1,25 +1,26 @@
 import { NAV_1, FOOTER_1, PAGE_1 } from '$lib/demo_doc.js';
+import { MEDIA_DEFAULTS } from '$lib/config.js';
 
 // No-op tag for SQL syntax highlighting with the SQL Tagged Template Literals VSCode extension
 const sql = (strings) => strings.join('');
 
 /**
- * Deep clone a document and clear all image/video src values,
+ * Deep clone a document and reset all image/video nodes to MEDIA_DEFAULTS,
  * since a fresh database has no uploaded assets yet.
  */
-function clear_asset_srcs(doc) {
+function reset_media_nodes(doc) {
 	const cloned = JSON.parse(JSON.stringify(doc));
 	for (const node of Object.values(cloned.nodes)) {
 		if ('src' in node) {
-			node.src = '';
+			Object.assign(node, MEDIA_DEFAULTS);
 		}
 	}
 	return cloned;
 }
 
-const nav_1 = clear_asset_srcs(NAV_1);
-const footer_1 = clear_asset_srcs(FOOTER_1);
-const page_1 = clear_asset_srcs(PAGE_1);
+const nav_1 = reset_media_nodes(NAV_1);
+const footer_1 = reset_media_nodes(FOOTER_1);
+const page_1 = reset_media_nodes(PAGE_1);
 
 export default [
 	function initial_schema({ db }) {
