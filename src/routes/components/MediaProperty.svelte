@@ -36,7 +36,7 @@
 	let css_pixel_width = $derived(compute_css_pixel_width());
 
 	function compute_css_pixel_width() {
-		if (!node.width) return fallback_width;
+		if (!node.src || !node.width) return fallback_width;
 		if (node.mime_type === 'image/svg+xml') return node.width;
 		const dpr = typeof window !== 'undefined' ? window.devicePixelRatio : 2;
 		return Math.round(node.width / dpr);
