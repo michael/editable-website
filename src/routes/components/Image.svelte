@@ -3,8 +3,8 @@
 	import { ASSET_BASE, VARIANT_WIDTHS } from '$lib/config.js';
 	const svedit = getContext('svedit');
 
-	/** @type {{ path: any[], mask?: boolean }} */
-	let { path, mask = false } = $props();
+	/** @type {{ path: any[] }} */
+	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
 
 	// Determine if src is a blob URL (unsaved), a saved asset id, or empty
@@ -25,7 +25,7 @@
 	let is_gif = $derived(
 		node.mime_type ? node.mime_type === 'image/gif' : node.src?.endsWith('.gif')
 	);
-	let use_mask = $derived(mask && is_svg && display_src);
+
 
 	// Build srcset for saved raster images (not SVGs, not GIFs, not blobs)
 	let srcset = $derived(build_srcset());
@@ -58,30 +58,10 @@
 		object-fit: ${node.object_fit};
 	`);
 
-	// Mask style for SVGs that need to inherit color
-	let mask_style = $derived(`
-		mask-image: url('${display_src}');
-		mask-size: contain;
-		mask-repeat: no-repeat;
-		mask-position: ${node.focal_point_x * 100}% ${node.focal_point_y * 100}%;
-		-webkit-mask-image: url('${display_src}');
-		-webkit-mask-size: contain;
-		-webkit-mask-repeat: no-repeat;
-		-webkit-mask-position: ${node.focal_point_x * 100}% ${node.focal_point_y * 100}%;
-		transform: scale(${node.scale});
-		transform-origin: ${node.focal_point_x * 100}% ${node.focal_point_y * 100}%;
-	`);
+
 </script>
 
-{#if use_mask}
-	<div
-		contenteditable="false"
-		class="mask-image"
-		style={mask_style}
-		role="img"
-		aria-label={node.alt}
-	></div>
-{:else if display_src}
+{#if display_src}
 	<img
 		contenteditable="false"
 		src={display_src}
@@ -101,10 +81,5 @@
 		transform-origin: center center;
 	}
 
-	/* Mask mode for SVGs - uses currentColor via background */
-	.mask-image {
-		width: 100%;
-		height: 100%;
-		background-color: var(--foreground);
-	}
+
 </style>

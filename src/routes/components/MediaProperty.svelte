@@ -11,7 +11,6 @@
 	 *   sizing?: 'fill' | 'fit' | 'native',
 	 *   fallback_aspect_ratio?: string | number,
 	 *   fallback_width?: number,
-	 *   mask?: boolean,
 	 *   class?: string
 	 * }}
 	 */
@@ -20,7 +19,6 @@
 		sizing = 'fill',
 		fallback_aspect_ratio = '16 / 9',
 		fallback_width = 200,
-		mask = false,
 		class: css_class
 	} = $props();
 	let node = $derived(svedit.session.get(path));
@@ -60,6 +58,6 @@
 		class="overflow-hidden h-full"
 		class:ew-bg-checkerboard={!node.src}
 	>
-		<Media {path} {mask} />
+		<Media {path} />
 	</div>
 </CustomProperty>
