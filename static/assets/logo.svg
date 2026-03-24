@@ -1,16 +1,16 @@
-<svg class="pb-8 w-14 sm:w-24 mx-auto" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg class="pb-8 w-14 sm:w-24 mx-auto" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!-- Bottom bar with rounded corners -->
-  <path d="M162 112 Q164 111 165 113 L165 145 Q164 147 162 148 L66 200 Q64 201 63 199 L63 167 Q64 165 66 164 L162 112 Z"
+  <path d="M58.32 40.32 Q59.04 39.96 59.4 40.68 L59.4 52.2 Q59.04 52.92 58.32 53.28 L23.76 72 Q23.04 72.36 22.68 71.64 L22.68 60.12 Q23.04 59.4 23.76 59.04 L58.32 40.32 Z"
         fill="currentColor"
         stroke="none"/>
 
   <!-- Middle bar with rounded corners -->
-  <path d="M134 68 Q136 67 137 69 L137 101 Q136 103 134 104 L38 156 Q36 157 35 155 L35 123 Q36 121 38 120 L134 68 Z"
+  <path d="M48.24 24.48 Q48.96 24.12 49.32 24.84 L49.32 36.36 Q48.96 37.08 48.24 37.44 L13.68 56.16 Q12.96 56.52 12.6 55.8 L12.6 44.28 Q12.96 43.56 13.68 43.2 L48.24 24.48 Z"
         fill="currentColor"
         stroke="none"/>
 
   <!-- Top bar with rounded corners -->
-  <path d="M162 2 Q164 1 165 3 L165 35 Q164 37 162 38 L66 90 Q64 91 63 89 L63 57 Q64 55 66 54 L162 2 Z"
+  <path d="M58.32 0.72 Q59.04 0.36 59.4 1.08 L59.4 12.6 Q59.04 13.32 58.32 13.68 L23.76 32.4 Q23.04 32.76 22.68 32.04 L22.68 20.52 Q23.04 19.8 23.76 19.44 L58.32 0.72 Z"
         fill="currentColor"
         stroke="none"/>
 </svg>
