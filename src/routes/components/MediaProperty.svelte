@@ -51,7 +51,7 @@
 	);
 </script>
 
-<CustomProperty class={css_class} style={native_style} path={path}>
+<CustomProperty class="h-full {css_class}" style={native_style} path={path}>
 	<div
 		contenteditable="false"
 		style:aspect-ratio={resolved_aspect_ratio}
