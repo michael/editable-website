@@ -19,8 +19,8 @@
 				grid grid-cols-6
 
 				*:col-span-6 *:**:[.image-wrapper]:aspect-[2/1]
-				*:nth-[6n+2]:col-span-3 *:nth-[6n+2]:**:[.image-wrapper]:aspect-square *:nth-[6n+3]:col-span-3
-				*:nth-[6n+3]:**:[.image-wrapper]:aspect-square *:nth-[6n+4]:col-span-2 *:nth-[6n+4]:**:[.image-wrapper]:aspect-[4/6] *:nth-[6n+5]:col-span-2 *:nth-[6n+5]:**:[.image-wrapper]:aspect-[4/6] *:nth-[6n+6]:col-span-2 *:nth-[6n+6]:**:[.image-wrapper]:aspect-[4/6]
+				[&>:nth-child(6n+2_of_[data-type=node])]:col-span-3 [&>:nth-child(6n+2_of_[data-type=node])]:**:[.image-wrapper]:aspect-square [&>:nth-child(6n+3_of_[data-type=node])]:col-span-3
+				[&>:nth-child(6n+3_of_[data-type=node])]:**:[.image-wrapper]:aspect-square [&>:nth-child(6n+4_of_[data-type=node])]:col-span-2 [&>:nth-child(6n+4_of_[data-type=node])]:**:[.image-wrapper]:aspect-[4/6] [&>:nth-child(6n+5_of_[data-type=node])]:col-span-2 [&>:nth-child(6n+5_of_[data-type=node])]:**:[.image-wrapper]:aspect-[4/6] [&>:nth-child(6n+6_of_[data-type=node])]:col-span-2 [&>:nth-child(6n+6_of_[data-type=node])]:**:[.image-wrapper]:aspect-[4/6]
    		`,
 			2: `
 	     	[--row:1]
