@@ -6,6 +6,7 @@
 	import { getContext } from 'svelte';
 	import { Node } from 'svedit';
 	import MediaProperty from './MediaProperty.svelte';
+	import SizableViewbox from './SizableViewbox.svelte';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
@@ -18,7 +19,14 @@
 </script>
 
 <Node {path}>
-	<div class="overflow-hidden" style:margin={is_centered ? '0 auto' : undefined} style:border-radius="var(--image-border-radius)">
-		<MediaProperty path={[...path, 'media']} sizing="native" fallback_width={200} fallback_aspect_ratio="16 / 9" />
+	<div style:margin={is_centered ? '0 auto' : undefined}>
+		<SizableViewbox {path} --border-radius="var(--image-border-radius)">
+			<MediaProperty
+				class="decoration-media"
+				path={[...path, 'media']}
+				sizing="fill"
+				fallback_aspect_ratio="16 / 9"
+			/>
+		</SizableViewbox>
 	</div>
 </Node>
