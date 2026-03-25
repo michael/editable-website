@@ -64,5 +64,129 @@ export default [
 				PRIMARY KEY (asset_id, document_id)
 			)
 		`);
+	},
+	function add_footer_fields({ db }) {
+		const footer_docs = db.prepare('SELECT document_id, data FROM documents WHERE type = ?').all('footer');
+		const update_doc = db.prepare('UPDATE documents SET data = ? WHERE document_id = ?');
+
+		for (const { document_id, data } of footer_docs) {
+			if (!data) continue;
+			let parsed;
+			try {
+				parsed = JSON.parse(data);
+			} catch {
+				continue;
+			}
+			if (!parsed?.nodes) continue;
+			const footer_node = parsed.nodes[document_id];
+			if (!footer_node) continue;
+
+			if (!footer_node.team_thumb) {
+				if (footer_node.logo) {
+					footer_node.team_thumb = footer_node.logo;
+				} else {
+					const team_thumb_id = `${document_id}_team_thumb`;
+					parsed.nodes[team_thumb_id] = {
+						id: team_thumb_id,
+						type: 'image',
+						...MEDIA_DEFAULTS
+					};
+					footer_node.team_thumb = team_thumb_id;
+				}
+			}
+
+			if (!footer_node.company_name) {
+				footer_node.company_name = { text: 'Company name', annotations: [] };
+			}
+			if (!footer_node.company_description) {
+				footer_node.company_description = { text: 'Short description goes here.', annotations: [] };
+			}
+			if (!footer_node.company_address) {
+				footer_node.company_address = { text: '123 Main St, City', annotations: [] };
+			}
+			if (!footer_node.company_phone) {
+				footer_node.company_phone = { text: '(555) 555-5555', annotations: [] };
+			}
+			if (!footer_node.team_label) {
+				footer_node.team_label = { text: 'Team', annotations: [] };
+			}
+			if (!footer_node.team_name) {
+				footer_node.team_name = { text: 'Agent name', annotations: [] };
+			}
+			if (!footer_node.team_description) {
+				footer_node.team_description = { text: 'Role, short bio, or contact blurb.', annotations: [] };
+			}
+
+			update_doc.run(JSON.stringify(parsed), document_id);
+		}
+	},
+	function separate_footer_team_thumb({ db }) {
+		const footer_docs = db.prepare('SELECT document_id, data FROM documents WHERE type = ?').all('footer');
+		const update_doc = db.prepare('UPDATE documents SET data = ? WHERE document_id = ?');
+
+		for (const { document_id, data } of footer_docs) {
+			if (!data) continue;
+			let parsed;
+			try {
+				parsed = JSON.parse(data);
+			} catch {
+				continue;
+			}
+			if (!parsed?.nodes) continue;
+			const footer_node = parsed.nodes[document_id];
+			if (!footer_node) continue;
+
+			const logo_id = footer_node.logo;
+			const team_thumb_id = footer_node.team_thumb;
+
+			if (!logo_id) {
+				continue;
+			}
+
+			const logo_node = parsed.nodes[logo_id];
+			if (!logo_node) {
+				continue;
+			}
+
+			if (!team_thumb_id || team_thumb_id === logo_id) {
+				const base_id = `${document_id}_team_thumb`;
+				let new_team_thumb_id = base_id;
+				let suffix = 1;
+				while (parsed.nodes[new_team_thumb_id]) {
+					new_team_thumb_id = `${base_id}_${suffix}`;
+					suffix += 1;
+				}
+
+				parsed.nodes[new_team_thumb_id] = {
+					...logo_node,
+					id: new_team_thumb_id
+				};
+				footer_node.team_thumb = new_team_thumb_id;
+			}
+
+			update_doc.run(JSON.stringify(parsed), document_id);
+		}
+	},
+	function add_nav_company_name({ db }) {
+		const nav_docs = db.prepare('SELECT document_id, data FROM documents WHERE type = ?').all('nav');
+		const update_doc = db.prepare('UPDATE documents SET data = ? WHERE document_id = ?');
+
+		for (const { document_id, data } of nav_docs) {
+			if (!data) continue;
+			let parsed;
+			try {
+				parsed = JSON.parse(data);
+			} catch {
+				continue;
+			}
+			if (!parsed?.nodes) continue;
+			const nav_node = parsed.nodes[document_id];
+			if (!nav_node) continue;
+
+			if (!nav_node.company_name) {
+				nav_node.company_name = { text: 'Company name', annotations: [] };
+				update_doc.run(JSON.stringify(parsed), document_id);
+			}
+		}
 	}
 ];

@@ -35,6 +35,10 @@ import Prose from './components/Prose.svelte';
 import Text from './components/Text.svelte';
 import Gallery from './components/Gallery.svelte';
 import GalleryItem from './components/GalleryItem.svelte';
+import Columns from './components/Columns.svelte';
+import Column from './components/Column.svelte';
+import Highlights from './components/Highlights.svelte';
+import HighlightItem from './components/HighlightItem.svelte';
 import LinkCollection from './components/LinkCollection.svelte';
 import LinkCollectionItem from './components/LinkCollectionItem.svelte';
 import Figure from './components/Figure.svelte';
@@ -87,9 +91,13 @@ const session_config = {
 		Text,
 		Image,
 		Video,
+		Columns,
+		Column,
 		Figure,
 		Decoration,
 		Feature,
+		Highlights,
+		HighlightItem,
 		Gallery,
 		GalleryItem,
 		LinkCollection,
@@ -218,6 +226,7 @@ const session_config = {
 		decoration: 1,
 		feature: 4,
 		gallery: 4,
+		columns: 2,
 		nav_item: 2,
 		button: 2,
 		hero: 4,
@@ -332,6 +341,73 @@ const session_config = {
 				anchor_offset: 0,
 				focus_offset: 0
 			});
+		},
+		highlights: function (tr) {
+			const new_item_ids = [];
+			for (let item_index = 0; item_index < 3; item_index++) {
+				const new_item_id = nanoid();
+				const new_item_node = {
+					id: new_item_id,
+					type: 'highlight_item',
+					label: { text: '', annotations: [] },
+					value: { text: '', annotations: [] }
+				};
+				tr.create(new_item_node);
+				new_item_ids.push(new_item_id);
+			}
+
+			const new_highlights_id = nanoid();
+			const new_highlights_node = {
+				id: new_highlights_id,
+				type: 'highlights',
+				items: new_item_ids
+			};
+			tr.create(new_highlights_node);
+			tr.insert_nodes([new_highlights_id]);
+		},
+		columns: function (tr) {
+			const column_ids = [];
+			for (let column_index = 0; column_index < 2; column_index++) {
+				const new_column_id = nanoid();
+				const new_column_node = {
+					id: new_column_id,
+					type: 'column',
+					content: []
+				};
+				tr.create(new_column_node);
+				column_ids.push(new_column_id);
+			}
+
+			const new_columns_id = nanoid();
+			const new_columns_node = {
+				id: new_columns_id,
+				type: 'columns',
+				layout: 1,
+				columns: column_ids
+			};
+			tr.create(new_columns_node);
+			tr.insert_nodes([new_columns_id]);
+		},
+		column: function (tr) {
+			const new_column_id = nanoid();
+			const new_column_node = {
+				id: new_column_id,
+				type: 'column',
+				content: []
+			};
+			tr.create(new_column_node);
+			tr.insert_nodes([new_column_id]);
+		},
+		highlight_item: function (tr) {
+			const new_item_id = nanoid();
+			const new_item_node = {
+				id: new_item_id,
+				type: 'highlight_item',
+				label: { text: '', annotations: [] },
+				value: { text: '', annotations: [] }
+			};
+			tr.create(new_item_node);
+			tr.insert_nodes([new_item_id]);
 		},
 		feature: function (tr) {
 			const new_feature_id = tr.build('new_feature', {

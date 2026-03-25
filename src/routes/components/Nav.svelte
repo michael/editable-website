@@ -1,9 +1,8 @@
 <script>
 	import { getContext } from 'svelte';
-	import { NodeArrayProperty, Node } from 'svedit';
+	import { NodeArrayProperty, Node, AnnotatedTextProperty } from 'svedit';
 	import { slide } from 'svelte/transition';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
-	import MediaProperty from './MediaProperty.svelte';
 
 	let { path } = $props();
 
@@ -35,76 +34,115 @@
 </script>
 
 <Node {path}>
-	<div class="{TW_LIMITER}">
+	<div class={TW_LIMITER}>
 		<div class="flex items-stretch lg:text-lg">
 			<!-- Logo -->
-			<div class="flex items-center flex-1 {TW_PAGE_PADDING_X} py-3">
-				<svelte:element
+			<div class="flex flex-1 items-center {TW_PAGE_PADDING_X} py-5 lg:py-10">
+				<!-- <svelte:element
 					this={svedit.editable ? 'div' : 'a'}
 					href={svedit.editable ? undefined : '/'}
 				>
 					<MediaProperty class="h-10" path={[...path, 'logo']} sizing="fit" fallback_aspect_ratio="1 / 1" />
-				</svelte:element>
+				</svelte:element> -->
+				<AnnotatedTextProperty
+					tag="h2"
+					class="text-2xl font-semibold tracking-tight"
+					path={[...path, 'company_name']}
+					placeholder="Company name"
+				/>
 			</div>
 
 			<!-- Desktop menu (hidden on mobile) -->
-			<NodeArrayProperty class="nav-items hidden md:flex items-stretch gap-x-2 sm:gap-x-4 py-3 {TW_PAGE_PADDING_X}" path={[...path, 'nav_items']} />
+			<NodeArrayProperty
+				class="nav-items hidden items-stretch gap-x-2 py-5 sm:gap-x-4 md:flex lg:py-10 {TW_PAGE_PADDING_X}"
+				path={[...path, 'nav_items']}
+			/>
 
 			<!-- Hamburger button (visible on mobile only) -->
 			<button
-				class="cursor-pointer flex md:hidden items-center justify-center {TW_PAGE_PADDING_X} py-3"
+				class="flex cursor-pointer items-center justify-center md:hidden {TW_PAGE_PADDING_X} py-3"
 				onclick={toggle_mobile_menu}
 				aria-label="Toggle menu"
 				aria-expanded={mobile_menu_open}
 			>
 				{#if mobile_menu_open}
 					<!-- Close icon -->
-					<svg class="w-6 h-6 stroke-(--foreground)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="square" stroke-linejoin="miter" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
+					<svg
+						class="h-6 w-6 stroke-(--foreground)"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path
+							stroke-linecap="square"
+							stroke-linejoin="miter"
+							stroke-width="1.5"
+							d="M6 18L18 6M6 6l12 12"
+						/>
 					</svg>
 				{:else}
 					<!-- Hamburger icon (2 lines) -->
-					<svg class="w-6 h-6 stroke-(--foreground)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="square" stroke-linejoin="miter" stroke-width="1.5" d="M4 8h16M4 16h16" />
+					<svg
+						class="h-6 w-6 stroke-(--foreground)"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path
+							stroke-linecap="square"
+							stroke-linejoin="miter"
+							stroke-width="1.5"
+							d="M4 8h16M4 16h16"
+						/>
 					</svg>
 				{/if}
 			</button>
 		</div>
 
-	<!-- Mobile menu overlay (read-only, visible when open, hidden on desktop) -->
-	{#if mobile_menu_open}
-		<div
-			class="md:hidden fixed inset-0 bg-(--background)/80 backdrop-blur-sm z-50"
-			contenteditable="false"
-			transition:slide={{ duration: 200 }}
-		>
-			<!-- Close button in top right -->
-			<button
-				class="cursor-pointer absolute top-4 right-4 p-2"
-				onclick={close_mobile_menu}
-				aria-label="Close menu"
+		<!-- Mobile menu overlay (read-only, visible when open, hidden on desktop) -->
+		{#if mobile_menu_open}
+			<div
+				class="fixed inset-0 z-50 bg-(--background)/80 backdrop-blur-sm md:hidden"
+				contenteditable="false"
+				transition:slide={{ duration: 200 }}
 			>
-				<svg class="w-6 h-6 stroke-(--foreground)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="square" stroke-linejoin="miter" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
-				</svg>
-			</button>
-
-			<!-- Menu items -->
-			<nav class="flex flex-col pt-16 pb-5 px-3">
-				{#each nav_items as _node_id, index (index)}
-					{@const item = svedit.session.get([...path, 'nav_items', index])}
-					<a
-						href={item.href || '#'}
-						target={item.target}
-						class="text-3xl font-serif text-(--foreground) py-2 px-3 sm:px-5"
-						onclick={close_mobile_menu}
+				<!-- Close button in top right -->
+				<button
+					class="absolute top-4 right-4 cursor-pointer p-2"
+					onclick={close_mobile_menu}
+					aria-label="Close menu"
+				>
+					<svg
+						class="h-6 w-6 stroke-(--foreground)"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
 					>
-						{item.label?.text || ''}
-					</a>
-				{/each}
-			</nav>
-		</div>
-	{/if}
+						<path
+							stroke-linecap="square"
+							stroke-linejoin="miter"
+							stroke-width="1.5"
+							d="M6 18L18 6M6 6l12 12"
+						/>
+					</svg>
+				</button>
+
+				<!-- Menu items -->
+				<nav class="flex flex-col px-3 pt-16 pb-5">
+					{#each nav_items as _node_id, index (index)}
+						{@const item = svedit.session.get([...path, 'nav_items', index])}
+						<a
+							href={item.href || '#'}
+							target={item.target}
+							class="px-3 py-2 font-serif text-3xl text-(--foreground) sm:px-5"
+							onclick={close_mobile_menu}
+						>
+							{item.label?.text || ''}
+						</a>
+					{/each}
+				</nav>
+			</div>
+		{/if}
 	</div>
 </Node>
 

@@ -618,6 +618,41 @@ In `hooks.server.js`, on every request:
 - `POST /api/login` — authenticate with `{ password }`, sets session cookie
 - `POST /api/logout` — clears session cookie, deletes session row
 
+## Highlights block
+
+The highlights block is a compact list for property-style metadata (e.g. "Units: 8"). It renders as a flex list with `justify-between`, and each row has a bottom border underline.
+
+Schema:
+
+- `highlights` (block)
+  - `items` — `node_array` of `highlight_item`
+- `highlight_item` (block)
+  - `label` — `annotated_text`, single line
+  - `value` — `annotated_text`, single line
+
+Editing:
+
+- A visible "add row" handle appears below the list in edit mode.
+
+## Columns block
+
+The columns block is a parent layout container that holds multiple column node arrays. Each column can contain any standard page body block (prose, hero, gallery, etc.), enabling multi-column sections without changing the page body structure.
+
+Schema:
+
+- `columns` (block)
+  - `layout` — integer layout selector
+  - `columns` — `node_array` of `column`
+- `column` (block)
+  - `content` — `node_array` of page body block types
+
+Layouts:
+
+- Layout 1: two equal columns (`md:grid-cols-2`)
+- Layout 2: three equal columns (`md:grid-cols-3`)
+
+Mobile behavior: columns stack into a single column (`grid-cols-1`).
+
 ## Future: optional S3 storage
 
 Assets are stored on the local filesystem (`ASSET_PATH`) by default. This keeps the app fully self-contained — a single deployment with no external dependencies beyond the server itself. For most sites this is sufficient.

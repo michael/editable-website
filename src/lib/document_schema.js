@@ -2,6 +2,17 @@ import { define_document_schema } from 'svedit';
 
 const ALL_ANNOTATIONS = ['strong', 'emphasis', 'highlight', 'link'];
 const MINIMAL_ANNOTATIONS = ['emphasis', 'highlight'];
+const body_node_types = [
+	'prose',
+	'highlights',
+	'columns',
+	'figure',
+	'gallery',
+	'feature',
+	'link_collection',
+	'hero',
+	'image_hero'
+];
 
 export const document_schema = define_document_schema({
 	page: {
@@ -9,7 +20,7 @@ export const document_schema = define_document_schema({
 		properties: {
 			body: {
 				type: 'node_array',
-				node_types: ['prose', 'figure', 'gallery', 'feature', 'link_collection', 'hero', 'image_hero'],
+				node_types: body_node_types,
 				default_node_type: 'prose'
 			},
 			nav: {
@@ -24,6 +35,52 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
+	highlights: {
+		kind: 'block',
+		properties: {
+			items: {
+				type: 'node_array',
+				node_types: ['highlight_item'],
+				default_node_type: 'highlight_item'
+			}
+		}
+	},
+	highlight_item: {
+		kind: 'block',
+		properties: {
+			label: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: false
+			},
+			value: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: false
+			}
+		}
+	},
+	columns: {
+		kind: 'block',
+		properties: {
+			layout: { type: 'integer', default: 1 },
+			columns: {
+				type: 'node_array',
+				node_types: ['column'],
+				default_node_type: 'column'
+			}
+		}
+	},
+	column: {
+		kind: 'block',
+		properties: {
+			content: {
+				type: 'node_array',
+				node_types: body_node_types,
+				default_node_type: 'prose'
+			}
+		}
+	},
 	footer: {
 		kind: 'block',
 		properties: {
@@ -31,6 +88,46 @@ export const document_schema = define_document_schema({
 				type: 'node',
 				node_types: ['image', 'video'],
 				default_node_type: 'image'
+			},
+			team_thumb: {
+				type: 'node',
+				node_types: ['image', 'video'],
+				default_node_type: 'image'
+			},
+			company_name: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: false
+			},
+			company_description: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: true
+			},
+			company_address: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: false
+			},
+			company_phone: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: false
+			},
+			team_label: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: false
+			},
+			team_name: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: false
+			},
+			team_description: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: true
 			},
 			copyright: {
 				type: 'annotated_text',
@@ -83,7 +180,12 @@ export const document_schema = define_document_schema({
 				type: 'node_array',
 				node_types: ['nav_item'],
 				default_node_type: 'nav_item'
-			}
+			},
+			company_name: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: false
+			},
 		}
 	},
 	nav_item: {

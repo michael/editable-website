@@ -55,6 +55,10 @@ export const NAV_1 = {
             "id": "nav_1",
             "type": "nav",
             "logo": "nav_logo",
+            "company_name": {
+                "text": "Company name",
+                "annotations": []
+            },
             "nav_items": [
                 "DDmmrQzcAxWJfdhatTbkRTh",
                 "GyKyQvRAvkgnywmxTVgvrnF",
@@ -75,6 +79,19 @@ export const FOOTER_1 = {
             "width": 100,
             "height": 100,
             "alt": "Logo",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "footer_team_thumb": {
+            "id": "footer_team_thumb",
+            "type": "image",
+            "src": "team-thumb.jpg",
+            "mime_type": "image/jpeg",
+            "width": 300,
+            "height": 300,
+            "alt": "Team member",
             "scale": 1,
             "focal_point_x": 0.5,
             "focal_point_y": 0.5,
@@ -202,6 +219,35 @@ export const FOOTER_1 = {
             "id": "footer_1",
             "type": "footer",
             "logo": "footer_logo",
+            "team_thumb": "footer_team_thumb",
+            "company_name": {
+                "text": "Company name",
+                "annotations": []
+            },
+            "company_description": {
+                "text": "Short description goes here.",
+                "annotations": []
+            },
+            "company_address": {
+                "text": "123 Main St, City",
+                "annotations": []
+            },
+            "company_phone": {
+                "text": "(555) 555-5555",
+                "annotations": []
+            },
+            "team_label": {
+                "text": "Team",
+                "annotations": []
+            },
+            "team_name": {
+                "text": "Agent name",
+                "annotations": []
+            },
+            "team_description": {
+                "text": "Role, short bio, or contact blurb.",
+                "annotations": []
+            },
             "copyright": {
                 "text": "© Editable Website",
                 "annotations": []

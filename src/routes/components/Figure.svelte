@@ -9,8 +9,8 @@
 </script>
 
 <Node {path}>
-	<div class="{TW_LIMITER}">
-		<div class="figure {TW_PAGE_PADDING_X} py-16">
+	<div class={TW_LIMITER}>
+		<div class="figure {TW_PAGE_PADDING_X} py-4">
 			<div class="overflow-hidden" style:border-radius="var(--image-border-radius)">
 				<MediaProperty path={[...path, 'media']} sizing="fit" fallback_aspect_ratio="16 / 9" />
 			</div>

@@ -735,3 +735,45 @@ Modified files:
 - `src/routes/create_session.js` — update inserters and paste handler to use `media` property name
 - `src/lib/server/migrations.js` — add migration to rename `image` → `media` on existing documents, update seed data
 - Container components (`GalleryItem.svelte`, `Figure.svelte`, `Feature.svelte`, `LinkCollectionItem.svelte`) — read `media` instead of `image`
+
+## Step 5: footer editable content
+
+**Goal:** make the footer's company info and team panel editable using existing Svedit conventions (`AnnotatedTextProperty` + `MediaProperty`).
+
+### Schema and seed data
+
+- Add annotated text properties to the `footer` node: `company_name`, `company_description`, `company_address`, `company_phone`, `team_label`, `team_name`, `team_description`.
+- Add a `team_thumb` media node property on the `footer` node (same node types as `logo`).
+- Update `FOOTER_1` seed data with initial text for the new properties and a `team_thumb` image node.
+
+### Component changes
+
+- Replace hardcoded footer copy with `AnnotatedTextProperty` bindings.
+- Update the team thumbnail `MediaProperty` to read from `team_thumb`.
+
+## Step 6: nav company name
+
+**Goal:** allow the nav title to be an editable annotated text property on the nav node.
+
+### Schema and seed data
+
+- Add `company_name` annotated text property to the `nav` node schema.
+- Seed `company_name` on `nav_1` and backfill existing nav documents with a migration.
+
+## Step 7: highlights block
+
+**Goal:** add a highlights block that renders a flex list with underlined rows and an explicit add-row handle in edit mode.
+
+- Add `highlights` and `highlight_item` node types to `document_schema.js`
+- Add `highlights` to the page body `node_types`
+- Create `Highlights.svelte` and `HighlightItem.svelte` components
+- Register new node components and inserters in `create_session.js`
+
+## Step 8: columns block
+
+**Goal:** add a parent columns block with 2- and 3-column layouts, where each column contains a node array of standard page blocks.
+
+- Add `columns` and `column` node types to `document_schema.js`
+- Add `columns` to the page body `node_types`
+- Create `Columns.svelte` and `Column.svelte` components
+- Register new node components, inserters, and layout options in `create_session.js`
