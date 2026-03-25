@@ -618,6 +618,92 @@ In `hooks.server.js`, on every request:
 - `POST /api/login` — authenticate with `{ password }`, sets session cookie
 - `POST /api/logout` — clears session cookie, deletes session row
 
+## SizableViewbox (Decoration media sizing)
+
+Decorations are inline media elements inside prose content. Unlike figures or gallery items — which fill a layout-defined container — decorations need **user-controlled sizing**. The user should be able to set both the width and aspect ratio of the media, with the constraint that it never overflows its parent container.
+
+### Design
+
+Instead of using `MediaProperty`'s `native` sizing mode (which derives size from the image's intrinsic pixel dimensions), decorations use the default `fill` mode wrapped in a **`SizableViewbox`** component. The viewbox is a plain `<div>` whose `max-width` and `aspect-ratio` are controlled by the user via drag gestures. `MediaProperty` with `sizing="fill"` then fills whatever box the viewbox provides.
+
+`SizableViewbox` is strictly a sizing primitive — it controls dimensions and provides drag handles, nothing else. Layout concerns like centering or margins are the caller's responsibility. The caller wraps the viewbox in whatever layout container they need:
+
+```
+┌─── parent container (prose column) ──────────────────────────┐
+│                                                              │
+│  ┌─── caller's wrapper div (e.g. margin: 0 auto) ─────────┐ │
+│  │                                                         │ │
+│  │  ┌─── SizableViewbox ───────────┐                       │ │
+│  │  │  max-width + aspect-ratio    │                       │ │
+│  │  │                              │                       │ │
+│  │  │  ┌─ MediaProperty (fill) ──┐ │                       │ │
+│  │  │  │  object-fit: cover      │ │                       │ │
+│  │  │  │  zoom / pan / focal pt  │ │                       │ │
+│  │  │  └─────────────────────────┘ │                       │ │
+│  │  └──────────────────────────────┘                       │ │
+│  └─────────────────────────────────────────────────────────┘ │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
+```
+
+For example, `Decoration.svelte` handles centering itself based on the parent prose layout:
+
+```svelte
+<div style:margin={is_centered ? '0 auto' : undefined}>
+    <SizableViewbox {path}>
+        <MediaProperty path={[...path, 'media']} sizing="fill" />
+    </SizableViewbox>
+</div>
+```
+
+### Data model
+
+Two new properties on the `decoration` node:
+
+```
+decoration: {
+    kind: 'block',
+    properties: {
+        viewbox_max_width: { type: 'integer', default: 0 },      // CSS pixels, 0 = full width
+        viewbox_aspect_ratio: { type: 'number', default: 0 },    // width / height, 0 = use media's natural ratio
+        media: { type: 'node', node_types: ['image', 'video'], default_node_type: 'image' }
+    }
+}
+```
+
+- **`viewbox_max_width`** — the maximum width of the viewbox in CSS pixels. `0` means "fill the available width" (same as no constraint). The viewbox renders with `max-width: Npx` so it never exceeds this value but also never overflows its parent (the parent's width is the natural upper bound via CSS — no JS measurement needed).
+- **`viewbox_aspect_ratio`** — stored as a `width / height` float (e.g. `1.333` for 4:3). `0` means "use the media's natural aspect ratio" (read from `node.width` / `node.height` on the media child). The viewbox renders with `aspect-ratio: N` in CSS.
+
+### SizableViewbox component
+
+`SizableViewbox.svelte` wraps its children (a `MediaProperty`) in a `<div>` styled with `max-width` and `aspect-ratio` from the node's properties. It accepts a `path` prop pointing to the node that holds `viewbox_max_width` and `viewbox_aspect_ratio`, and uses a slot/children snippet for the inner content. It provides drag handles for resizing, visible only in edit mode. It has no opinion about layout, alignment, or margins.
+
+**CSS sizing (no JS measurement for overflow prevention):**
+
+```css
+.sizable-viewbox {
+    max-width: var(--viewbox-max-width);  /* e.g. 400px, or 100% when 0 */
+    aspect-ratio: var(--viewbox-aspect-ratio);  /* e.g. 1.333, or auto when 0 */
+    width: 100%;  /* fill up to max-width, naturally capped by parent */
+}
+```
+
+Because `max-width` combined with `width: 100%` means the element takes the minimum of its max-width and the parent's content width, overflow is prevented purely by CSS — no ResizeObserver or JS clamping needed. If the window shrinks below `max-width`, the viewbox shrinks with it.
+
+### Drag interactions (edit mode only)
+
+Two resize gestures, both operating on the viewbox's border/corner:
+
+1. **Width handle (left and right edges):** horizontal drag sets `viewbox_max_width`. The value is clamped to a minimum (e.g. 40px) and needs no explicit maximum — CSS `max-width` + `width: 100%` handles overflow naturally. On pointer-up, the final pixel value is written to the document.
+
+2. **Aspect ratio handle (bottom edge):** vertical drag changes the viewbox height, which is stored as `viewbox_aspect_ratio = current_rendered_width / new_height`. This means the aspect ratio is always relative to whatever width the viewbox currently renders at. Minimum height is clamped (e.g. 20px).
+
+Both gestures write to the svedit session via transactions (`svedit.session.tr` + `apply`), using `{ batch: true }` during drag for coalesced undo, with a final non-batched apply on pointer-up.
+
+### Interaction with MediaControls
+
+`MediaControls` (zoom, pan, focal point, double-click to cycle object-fit) still works inside the viewbox. The viewbox only controls the *container* dimensions; `MediaProperty` with `sizing="fill"` and `MediaControls` handle everything inside it as usual.
+
 ## Future: optional S3 storage
 
 Assets are stored on the local filesystem (`ASSET_PATH`) by default. This keeps the app fully self-contained — a single deployment with no external dependencies beyond the server itself. For most sites this is sufficient.
