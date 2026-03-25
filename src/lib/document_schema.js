@@ -9,7 +9,7 @@ export const document_schema = define_document_schema({
 		properties: {
 			body: {
 				type: 'node_array',
-				node_types: ['prose', 'figure', 'gallery', 'feature', 'link_collection', 'hero'],
+				node_types: ['prose', 'figure', 'gallery', 'feature', 'link_collection', 'hero', 'image_hero'],
 				default_node_type: 'prose'
 			},
 			nav: {
@@ -298,6 +298,33 @@ export const document_schema = define_document_schema({
 				type: 'node_array',
 				node_types: ['text', 'decoration'],
 				default_node_type: 'text'
+			}
+		}
+	},
+	image_hero: {
+		kind: 'block',
+		properties: {
+			layout: { type: 'integer', default: 1 },
+			colorset: { type: 'integer', default: 0 },
+			background: {
+				type: 'node',
+				node_types: ['image'],
+				default_node_type: 'image'
+			},
+			title: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: false
+			},
+			description: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: false
+			},
+			buttons: {
+				type: 'node_array',
+				node_types: ['button'],
+				default_node_type: 'button'
 			}
 		}
 	},

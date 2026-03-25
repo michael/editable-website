@@ -41,6 +41,7 @@ import Figure from './components/Figure.svelte';
 import Decoration from './components/Decoration.svelte';
 import Feature from './components/Feature.svelte';
 import Hero from './components/Hero.svelte';
+import ImageHero from './components/ImageHero.svelte';
 import Button from './components/Button.svelte';
 import Image from './components/Image.svelte';
 import Video from './components/Video.svelte';
@@ -80,6 +81,7 @@ const session_config = {
 		FooterLinkColumn,
 		FooterLink,
 		Hero,
+		ImageHero,
 		Button,
 		Prose,
 		Text,
@@ -218,7 +220,8 @@ const session_config = {
 		gallery: 4,
 		nav_item: 2,
 		button: 2,
-		hero: 4
+		hero: 4,
+		image_hero: 2
 	},
 
 	/**
@@ -424,6 +427,26 @@ const session_config = {
 			});
 
 			tr.insert_nodes([new_hero_id]);
+		},
+		image_hero: function (tr) {
+			const new_node_id = tr.build('new_image_hero', {
+				hero_bg_image: {
+					id: 'hero_bg_image',
+					type: 'image',
+					...MEDIA_DEFAULTS
+				},
+				new_image_hero: {
+					id: 'new_image_hero',
+					type: 'image_hero',
+					layout: 1,
+					colorset: 0,
+					background: 'hero_bg_image',
+					title: { text: '', annotations: [] },
+					description: { text: '', annotations: [] },
+					buttons: []
+				}
+			});
+			tr.insert_nodes([new_node_id]);
 		},
 		button: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_button_id = tr.build('new_button', {
