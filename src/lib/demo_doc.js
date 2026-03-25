@@ -268,6 +268,26 @@ export const PAGE_1 = {
                 "annotations": []
             }
         },
+        "demo_decoration_1_image": {
+            "id": "demo_decoration_1_image",
+            "type": "image",
+            "src": "",
+            "mime_type": "",
+            "width": 0,
+            "height": 0,
+            "alt": "",
+            "scale": 1.0,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "demo_decoration_1": {
+            "id": "demo_decoration_1",
+            "type": "decoration",
+            "viewbox_max_width": 0,
+            "viewbox_aspect_ratio": 0,
+            "media": "demo_decoration_1_image"
+        },
         "WsXcDfVgBhNjMkLqAzPeRt": {
             "id": "WsXcDfVgBhNjMkLqAzPeRt",
             "type": "text",
@@ -407,6 +427,7 @@ export const PAGE_1 = {
             "body": [
                 "uqZnrCRbzCkBWmYNQYkFePY",
                 "WsXcDfVgBhNjMkLqAzPeRt",
+                "demo_decoration_1",
                 "ywTQktXzgyRqzsUNXjZztQw",
                 "WjasMkTrmjdrXTsDgeUHQap",
                 "DxBvNYzBgktMyKjKkKyYcAN"
