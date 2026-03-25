@@ -50,15 +50,59 @@
 		return variant_entries.join(', ');
 	}
 
+	let is_scale_down = $derived(node.object_fit === 'scale-down');
+
+	// For scale-down: cap the img element to its DPR-corrected natural size
+	// and position it within the parent using the focal point.
+	// SVGs don't need DPR correction since they scale cleanly.
+	let dpr = $derived(typeof window !== 'undefined' ? window.devicePixelRatio : 2);
+
+	let css_natural_width = $derived(
+		is_scale_down && node.width && !is_svg
+			? Math.round(node.width / dpr)
+			: undefined
+	);
+
+	let css_natural_height = $derived(
+		is_scale_down && node.height && !is_svg
+			? Math.round(node.height / dpr)
+			: undefined
+	);
+
 	// Apply scale to image
-	let image_style = $derived(`
-		object-position: ${node.focal_point_x * 100}% ${node.focal_point_y * 100}%;
-		transform: scale(${node.scale});
-		transform-origin: ${node.focal_point_x * 100}% ${node.focal_point_y * 100}%;
-		object-fit: ${node.object_fit};
-	`);
+	let image_style = $derived.by(() => {
+		if (is_scale_down) {
+			// Position the img absolutely within the overflow-hidden parent.
+			// left/top set by focal point %, translate pulls it back so the
+			// focal point itself lands at that position — same trick as
+			// background-position semantics.
+			let parts = [
+				`position: absolute`,
+				`left: ${node.focal_point_x * 100}%`,
+				`top: ${node.focal_point_y * 100}%`,
+				`translate: ${-node.focal_point_x * 100}% ${-node.focal_point_y * 100}%`,
+				`transform: scale(${node.scale})`,
+				`transform-origin: ${node.focal_point_x * 100}% ${node.focal_point_y * 100}%`,
+				`object-fit: contain`
+			];
 
+			if (css_natural_width !== undefined) {
+				parts.push(`max-width: ${css_natural_width}px`);
+			}
+			if (css_natural_height !== undefined) {
+				parts.push(`max-height: ${css_natural_height}px`);
+			}
 
+			return parts.join('; ') + ';';
+		}
+
+		return [
+			`object-position: ${node.focal_point_x * 100}% ${node.focal_point_y * 100}%`,
+			`transform: scale(${node.scale})`,
+			`transform-origin: ${node.focal_point_x * 100}% ${node.focal_point_y * 100}%`,
+			`object-fit: ${node.object_fit}`
+		].join('; ') + ';';
+	});
 </script>
 
 {#if display_src}
@@ -70,6 +114,7 @@
 		alt={node.alt}
 		width={node.width}
 		height={node.height}
+		class:scale-down-mode={is_scale_down}
 		style={image_style}
 	/>
 {/if}
@@ -81,5 +126,8 @@
 		transform-origin: center center;
 	}
 
-
+	img.scale-down-mode {
+		width: auto;
+		height: auto;
+	}
 </style>
