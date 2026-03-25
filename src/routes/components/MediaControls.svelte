@@ -71,12 +71,14 @@
 		e.preventDefault();
 	}
 
+	const OBJECT_FIT_MODES = ['cover', 'contain', 'scale-down'];
+
 	function handle_double_click(e) {
+		const current_index = OBJECT_FIT_MODES.indexOf(media_node.object_fit);
+		const next_index = (current_index + 1) % OBJECT_FIT_MODES.length;
 		const tr = svedit.session.tr;
 		tr.set([...path, 'scale'], MIN_SCALE);
-		// tr.set([...path, 'focal_point_x'], 0.5);
-		// tr.set([...path, 'focal_point_y'], 0.5);
-		tr.set([...path, 'object_fit'], media_node.object_fit === 'cover' ? 'contain' : 'cover');
+		tr.set([...path, 'object_fit'], OBJECT_FIT_MODES[next_index]);
 		svedit.session.apply(tr, { batch: true });
 	}
 
