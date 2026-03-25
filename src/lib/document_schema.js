@@ -198,6 +198,8 @@ export const document_schema = define_document_schema({
 	decoration: {
 		kind: 'block',
 		properties: {
+			viewbox_max_width: { type: 'integer', default: 0 },
+			viewbox_aspect_ratio: { type: 'number', default: 0 },
 			media: {
 				type: 'node',
 				node_types: ['image', 'video'],
