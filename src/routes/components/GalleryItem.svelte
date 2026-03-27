@@ -12,6 +12,6 @@
 		style:border-radius="var(--image-border-radius)"
 		use:reveal={{ delay: item_index * 150 }}
 	>
-		<MediaProperty class="image-property" path={[...path, 'media']} sizing="fill" />
+		<MediaProperty class="image-property" path={[...path, 'media']} />
 	</div>
 </Node>

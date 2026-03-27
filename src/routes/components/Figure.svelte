@@ -6,13 +6,18 @@
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
+	let media_node = $derived(svedit.session.get([...path, 'media']));
 </script>
 
 <Node {path}>
 	<div class="{TW_LIMITER}">
 		<div class="figure {TW_PAGE_PADDING_X} py-16">
-			<div class="overflow-hidden" style:border-radius="var(--image-border-radius)">
-				<MediaProperty path={[...path, 'media']} sizing="fit" placeholder_aspect_ratio="16 / 9" />
+			<div
+				class="overflow-hidden"
+				style:border-radius="var(--image-border-radius)"
+				style:aspect-ratio={media_node.width && media_node.height ? `${media_node.width} / ${media_node.height}` : '16 / 9'}
+			>
+				<MediaProperty path={[...path, 'media']} sizing="fill" />
 			</div>
 		</div>
 	</div>

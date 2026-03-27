@@ -20,11 +20,6 @@
 
 <Node {path}>
 	<SizableViewbox {path} class={is_centered ? 'mx-auto' : ''}>
-		<MediaProperty
-			class="decoration-media"
-			path={[...path, 'media']}
-			sizing="fill"
-			placeholder_aspect_ratio="16 / 9"
-		/>
+		<MediaProperty class="decoration-media" path={[...path, 'media']} />
 	</SizableViewbox>
 </Node>

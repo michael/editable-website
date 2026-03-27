@@ -651,7 +651,7 @@ For example, `Decoration.svelte` handles centering itself based on the parent pr
 ```svelte
 <div style:margin={is_centered ? '0 auto' : undefined}>
     <SizableViewbox {path}>
-        <MediaProperty path={[...path, 'media']} sizing="fill" />
+        <MediaProperty path={[...path, 'media']} />
     </SizableViewbox>
 </div>
 ```
@@ -660,7 +660,7 @@ And `Footer.svelte` uses it for the logo with a different media property name:
 
 ```svelte
 <SizableViewbox {path} media_property="logo" placeholder_aspect_ratio={1}>
-    <MediaProperty path={[...path, 'logo']} sizing="fill" />
+    <MediaProperty path={[...path, 'logo']} />
 </SizableViewbox>
 ```
 
