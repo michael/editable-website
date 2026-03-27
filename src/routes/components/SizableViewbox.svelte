@@ -164,7 +164,7 @@
 		position: relative;
 		width: 100%;
 		overflow: hidden;
-		border-radius: var(--border-radius, 0);
+		border-radius: var(--image-border-radius, 0);
 	}
 
 	.sizable-viewbox.dragging {
