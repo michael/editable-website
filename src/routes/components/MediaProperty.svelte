@@ -9,16 +9,16 @@
 	 * @type {{
 	 *   path: any[],
 	 *   sizing?: 'fill' | 'fit' | 'native',
-	 *   fallback_aspect_ratio?: string | number,
-	 *   fallback_width?: number,
+	 *   placeholder_aspect_ratio?: string | number,
+	 *   placeholder_width?: number,
 	 *   class?: string
 	 * }}
 	 */
 	let {
 		path,
 		sizing = 'fill',
-		fallback_aspect_ratio = '16 / 9',
-		fallback_width = 200,
+		placeholder_aspect_ratio = '16 / 9',
+		placeholder_width = 200,
 		class: css_class = ''
 	} = $props();
 	let node = $derived(svedit.session.get(path));
@@ -27,7 +27,7 @@
 	let resolved_aspect_ratio = $derived(
 		sizing === 'fill'
 			? undefined
-			: (node.width && node.height ? `${node.width} / ${node.height}` : fallback_aspect_ratio)
+			: (node.width && node.height ? `${node.width} / ${node.height}` : placeholder_aspect_ratio)
 	);
 
 	// Compute CSS-pixel width for native mode.
@@ -36,7 +36,7 @@
 	let css_pixel_width = $derived(compute_css_pixel_width());
 
 	function compute_css_pixel_width() {
-		if (!node.src || !node.width) return fallback_width;
+		if (!node.src || !node.width) return placeholder_width;
 		if (node.mime_type === 'image/svg+xml') return node.width;
 		const dpr = typeof window !== 'undefined' ? window.devicePixelRatio : 2;
 		return Math.round(node.width / dpr);

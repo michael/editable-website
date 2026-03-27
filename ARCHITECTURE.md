@@ -659,7 +659,7 @@ For example, `Decoration.svelte` handles centering itself based on the parent pr
 And `Footer.svelte` uses it for the logo with a different media property name:
 
 ```svelte
-<SizableViewbox {path} media_property="logo" fallback_aspect_ratio={1}>
+<SizableViewbox {path} media_property="logo" placeholder_aspect_ratio={1}>
     <MediaProperty path={[...path, 'logo']} sizing="fill" />
 </SizableViewbox>
 ```
@@ -704,7 +704,7 @@ footer: {
 
 - **`path`** — the node path (e.g. the decoration or footer node)
 - **`media_property`** — the name of the media property on that node (default: `'media'`). The component derives field names as `{media_property}_max_width` and `{media_property}_aspect_ratio`, and reads the media node from `[...path, media_property]` to get intrinsic dimensions for the natural aspect ratio fallback.
-- **`fallback_aspect_ratio`** — used when `{prop}_aspect_ratio` is `0` and the media has no intrinsic dimensions (default: `16/9`)
+- **`placeholder_aspect_ratio`** — used when `{prop}_aspect_ratio` is `0` and the media has no intrinsic dimensions (default: `16/9`)
 
 It uses a children snippet for the inner content, provides drag handles for resizing visible only in edit mode, and has no opinion about layout, alignment, or margins.
 

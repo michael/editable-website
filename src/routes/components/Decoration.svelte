@@ -24,7 +24,7 @@
 			class="decoration-media"
 			path={[...path, 'media']}
 			sizing="fill"
-			fallback_aspect_ratio="16 / 9"
+			placeholder_aspect_ratio="16 / 9"
 		/>
 	</SizableViewbox>
 </Node>

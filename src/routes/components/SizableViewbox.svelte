@@ -12,7 +12,7 @@
 	 *   path: any[],
 	 *   media_property?: string,
 	 *   children: import('svelte').Snippet,
-	 *   fallback_aspect_ratio?: number,
+	 *   placeholder_aspect_ratio?: number,
 	 *   class?: string
 	 * }}
 	 */
@@ -20,7 +20,7 @@
 		path,
 		media_property = 'media',
 		children,
-		fallback_aspect_ratio = 16 / 9,
+		placeholder_aspect_ratio = 16 / 9,
 		class: css_class = ''
 	} = $props();
 
@@ -35,7 +35,7 @@
 	let natural_aspect_ratio = $derived(
 		media_node?.width && media_node?.height
 			? media_node.width / media_node.height
-			: fallback_aspect_ratio
+			: placeholder_aspect_ratio
 	);
 
 	// Resolve aspect ratio: 0 means use natural ratio

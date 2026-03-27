@@ -20,7 +20,7 @@
 		use:reveal={{ delay: item_index * 150 }}
 	>
 		<div class="overflow-hidden" style:aspect-ratio="4/3" style:border-radius="var(--image-border-radius)">
-			<MediaProperty path={[...path, 'media']} sizing="fill" fallback_aspect_ratio="4 / 3" />
+			<MediaProperty path={[...path, 'media']} sizing="fill" placeholder_aspect_ratio="4 / 3" />
 		</div>
 		<div class="pt-4">
 			<AnnotatedTextProperty class="text-xs md:text-sm uppercase tracking-widest text-(--foreground) opacity-60 mb-2" path={[...path, 'preline']} placeholder="Preline" />

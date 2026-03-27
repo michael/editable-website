@@ -21,13 +21,13 @@
 	<div class="{TW_LIMITER}">
 		<div class="flex flex-col items-center text-center lg:text-left lg:flex-row lg:items-start gap-8 lg:gap-12 py-10 lg:py-16 {TW_PAGE_PADDING_X}">
 			<div class="flex flex-col items-center lg:items-start lg:w-1/3">
-				<SizableViewbox {path} media_property="logo" fallback_aspect_ratio={1}>
+				<SizableViewbox {path} media_property="logo" placeholder_aspect_ratio={1}>
 					<svelte:element
 						class="block w-full h-full"
 						this={svedit.editable ? 'div' : 'a'}
 						href={svedit.editable ? undefined : '/'}
 					>
-						<MediaProperty path={[...path, 'logo']} sizing="fill" fallback_aspect_ratio="1 / 1" />
+						<MediaProperty path={[...path, 'logo']} sizing="fill" placeholder_aspect_ratio="1 / 1" />
 					</svelte:element>
 				</SizableViewbox>
 				<AnnotatedTextProperty
