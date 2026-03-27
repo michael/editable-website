@@ -20,7 +20,7 @@
 
 <Node {path}>
 	<div style:margin={is_centered ? '0 auto' : undefined}>
-		<SizableViewbox {path} --border-radius="var(--image-border-radius)">
+		<SizableViewbox {path}>
 			<MediaProperty
 				class="decoration-media"
 				path={[...path, 'media']}
