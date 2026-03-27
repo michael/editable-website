@@ -19,14 +19,12 @@
 </script>
 
 <Node {path}>
-	<div style:margin={is_centered ? '0 auto' : undefined}>
-		<SizableViewbox {path}>
-			<MediaProperty
-				class="decoration-media"
-				path={[...path, 'media']}
-				sizing="fill"
-				fallback_aspect_ratio="16 / 9"
-			/>
-		</SizableViewbox>
-	</div>
+	<SizableViewbox {path} class={is_centered ? 'mx-auto' : ''}>
+		<MediaProperty
+			class="decoration-media"
+			path={[...path, 'media']}
+			sizing="fill"
+			fallback_aspect_ratio="16 / 9"
+		/>
+	</SizableViewbox>
 </Node>
