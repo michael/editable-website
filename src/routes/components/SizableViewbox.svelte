@@ -23,7 +23,6 @@
 	} = $props();
 
 	// Derive field names from media_property: e.g. 'media' -> 'media_max_width', 'media_aspect_ratio'
-	// For 'logo' -> 'logo_max_width', 'logo_aspect_ratio'
 	let max_width_field = $derived(`${media_property}_max_width`);
 	let aspect_ratio_field = $derived(`${media_property}_aspect_ratio`);
 
@@ -64,16 +63,16 @@
 		if (!svedit.editable) return;
 		e.preventDefault();
 		e.stopPropagation();
-		drag_type = side; // 'width-left' or 'width-right'
+		drag_type = side;
 		drag_start_x = e.clientX;
 
-		// If max_width is 0 (full width), start from the current rendered width
 		const rect = viewbox_ref?.getBoundingClientRect();
 		drag_start_max_width = node[max_width_field] > 0
 			? node[max_width_field]
 			: (rect?.width ?? 400);
-		// Measure the parent container so we can snap to full-width when dragging beyond it
-		const parent_rect = viewbox_ref?.parentElement?.getBoundingClientRect();
+		// Measure the parent's parent (outer wrapper's parent) for snap-to-full-width
+		const container = viewbox_ref?.parentElement?.parentElement;
+		const parent_rect = container?.getBoundingClientRect();
 		drag_container_width = parent_rect?.width ?? drag_start_max_width;
 	}
 
@@ -85,7 +84,6 @@
 		drag_start_y = e.clientY;
 		drag_start_aspect_ratio = resolved_aspect_ratio;
 
-		// Need current rendered width to compute aspect ratio from height
 		const rect = viewbox_ref?.getBoundingClientRect();
 		drag_start_max_width = rect?.width ?? 400;
 	}
@@ -95,13 +93,9 @@
 
 		if (drag_type === 'width-left' || drag_type === 'width-right') {
 			const dx = e.clientX - drag_start_x;
-			// Left handle: dragging left increases width, dragging right decreases
-			// Right handle: dragging right increases width, dragging left decreases
-			// Both sides move symmetrically, so multiply by 2
 			const direction = drag_type === 'width-right' ? 1 : -1;
 			const new_width = Math.max(MIN_WIDTH, Math.round(drag_start_max_width + dx * direction * 2));
 
-			// Snap to full-width (0) when dragging at or beyond the container width
 			const tr = svedit.session.tr;
 			tr.set([...path, max_width_field], new_width >= drag_container_width ? 0 : new_width);
 			svedit.session.apply(tr, { batch: true });
@@ -112,7 +106,6 @@
 			const new_height = Math.max(MIN_HEIGHT, old_height + dy);
 			const new_ratio = current_width / new_height;
 
-			// Snap to natural ratio (0) when close enough
 			const snap = Math.abs(new_ratio - natural_aspect_ratio) / natural_aspect_ratio < SNAP_THRESHOLD;
 
 			const tr = svedit.session.tr;
@@ -141,17 +134,24 @@
 
 <svelte:window onpointermove={handle_pointer_move} onpointerup={handle_pointer_up} />
 
+<!-- Outer wrapper: not clipped, provides positioning context for handles -->
 <div
-	bind:this={viewbox_ref}
-	class="sizable-viewbox"
+	class="sizable-viewbox-wrapper"
 	class:dragging={drag_type !== null}
+	class:is-editing={svedit.editable}
 	style:max-width={max_width_style}
-	style:aspect-ratio={resolved_aspect_ratio}
 >
-	{@render children()}
+	<!-- Inner viewbox: clips content, holds aspect ratio -->
+	<div
+		bind:this={viewbox_ref}
+		class="sizable-viewbox"
+		style:aspect-ratio={resolved_aspect_ratio}
+	>
+		{@render children()}
+	</div>
 
 	{#if svedit.editable}
-		<!-- Left width handle -->
+		<!-- Left width handle — outside left edge -->
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
 			class="handle handle-left"
@@ -160,7 +160,7 @@
 			<div class="handle-line"></div>
 		</div>
 
-		<!-- Right width handle -->
+		<!-- Right width handle — outside right edge -->
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
 			class="handle handle-right"
@@ -169,7 +169,7 @@
 			<div class="handle-line"></div>
 		</div>
 
-		<!-- Bottom aspect ratio handle -->
+		<!-- Bottom aspect ratio handle — outside bottom edge -->
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
 			class="handle handle-bottom"
@@ -181,61 +181,70 @@
 </div>
 
 <style>
-	.sizable-viewbox {
+	/* Outer wrapper: positioning context, NOT clipped */
+	.sizable-viewbox-wrapper {
 		position: relative;
+		width: 100%;
+	}
+
+	.sizable-viewbox-wrapper.dragging {
+		user-select: none;
+	}
+
+	/* Inner viewbox: clips content */
+	.sizable-viewbox {
 		width: 100%;
 		overflow: hidden;
 		border-radius: var(--border-radius, 0);
 	}
 
-	.sizable-viewbox.dragging {
-		user-select: none;
-	}
-
 	/* --- Drag handles --- */
+	/* Positioned outside the viewbox bounds so they don't conflict
+	   with MediaControls / focal point and remain usable on small viewboxes */
 
 	.handle {
 		position: absolute;
 		z-index: 20;
+		pointer-events: auto;
 		opacity: 0;
 		transition: opacity 0.15s ease;
 	}
 
-	.sizable-viewbox:hover .handle,
-	.sizable-viewbox.dragging .handle {
+	.sizable-viewbox-wrapper.is-editing:hover .handle,
+	.sizable-viewbox-wrapper.dragging .handle {
 		opacity: 1;
 	}
 
-	/* Left handle */
+	/* Left handle — sits to the left of the viewbox */
 	.handle-left {
 		top: 0;
-		left: 0;
 		bottom: 0;
-		width: 12px;
+		left: -14px;
+		width: 14px;
 		cursor: ew-resize;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 	}
 
-	/* Right handle */
+	/* Right handle — sits to the right of the viewbox */
 	.handle-right {
 		top: 0;
-		right: 0;
 		bottom: 0;
-		width: 12px;
+		right: -14px;
+		width: 14px;
 		cursor: ew-resize;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 	}
 
-	/* Bottom handle */
+	/* Bottom handle — sits below the viewbox */
 	.handle-bottom {
 		left: 0;
 		right: 0;
-		bottom: 0;
-		height: 12px;
+		bottom: -14px;
+		height: 14px;
 		cursor: ns-resize;
 		display: flex;
 		align-items: center;
