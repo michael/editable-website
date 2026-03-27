@@ -12,14 +12,16 @@
 	 *   path: any[],
 	 *   media_property?: string,
 	 *   children: import('svelte').Snippet,
-	 *   fallback_aspect_ratio?: number
+	 *   fallback_aspect_ratio?: number,
+	 *   class?: string
 	 * }}
 	 */
 	let {
 		path,
 		media_property = 'media',
 		children,
-		fallback_aspect_ratio = 16 / 9
+		fallback_aspect_ratio = 16 / 9,
+		class: css_class = ''
 	} = $props();
 
 	// Derive field names from media_property: e.g. 'media' -> 'media_max_width', 'media_aspect_ratio'
@@ -137,7 +139,7 @@
 
 <!-- Outer wrapper: not clipped, provides positioning context for handles -->
 <div
-	class="sizable-viewbox-wrapper"
+	class="sizable-viewbox-wrapper {css_class}"
 	class:dragging={drag_type !== null}
 	class:is-editing={svedit.editable}
 	style:max-width={max_width_style}
