@@ -43,12 +43,7 @@
 				return;
 			}
 
-			if (_object_fit !== 'cover') {
-				can_pan = true;
-				return;
-			}
-
-			// cover at scale 1.0 — panning only useful if aspect ratios differ
+			// scale 1.0 — panning only useful if aspect ratios differ
 			const rect = _ref.getBoundingClientRect();
 			if (rect.width === 0 || rect.height === 0) {
 				can_pan = false;
