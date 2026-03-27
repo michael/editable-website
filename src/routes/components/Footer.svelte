@@ -27,7 +27,7 @@
 						this={svedit.editable ? 'div' : 'a'}
 						href={svedit.editable ? undefined : '/'}
 					>
-						<MediaProperty path={[...path, 'logo']} sizing="fill" placeholder_aspect_ratio="1 / 1" />
+						<MediaProperty path={[...path, 'logo']} />
 					</svelte:element>
 				</SizableViewbox>
 				<AnnotatedTextProperty
