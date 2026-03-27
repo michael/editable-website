@@ -94,7 +94,8 @@
 		if (drag_type === 'width-left' || drag_type === 'width-right') {
 			const dx = e.clientX - drag_start_x;
 			const direction = drag_type === 'width-right' ? 1 : -1;
-			const new_width = Math.max(MIN_WIDTH, Math.round(drag_start_max_width + dx * direction * 2));
+			const raw_width = Math.max(MIN_WIDTH, Math.round(drag_start_max_width + dx * direction * 2));
+			const new_width = Math.round(raw_width / 4) * 4;
 
 			const tr = svedit.session.tr;
 			tr.set([...path, max_width_field], new_width >= drag_container_width ? 0 : new_width);
