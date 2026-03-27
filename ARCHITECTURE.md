@@ -618,13 +618,13 @@ In `hooks.server.js`, on every request:
 - `POST /api/login` — authenticate with `{ password }`, sets session cookie
 - `POST /api/logout` — clears session cookie, deletes session row
 
-## SizableViewbox (Decoration media sizing)
+## SizableViewbox (user-controlled media sizing)
 
-Decorations are inline media elements inside prose content. Unlike figures or gallery items — which fill a layout-defined container — decorations need **user-controlled sizing**. The user should be able to set both the width and aspect ratio of the media, with the constraint that it never overflows its parent container.
+Some media placements need **user-controlled sizing** — the user should be able to set both the width and aspect ratio of the container, with the constraint that it never overflows its parent. This applies to inline decorations in prose content, footer logos, and potentially other contexts where the layout doesn't define the container dimensions.
 
 ### Design
 
-Instead of using `MediaProperty`'s `native` sizing mode (which derives size from the image's intrinsic pixel dimensions), decorations use the default `fill` mode wrapped in a **`SizableViewbox`** component. The viewbox is a plain `<div>` whose `max-width` and `aspect-ratio` are controlled by the user via drag gestures. `MediaProperty` with `sizing="fill"` then fills whatever box the viewbox provides.
+Instead of using `MediaProperty`'s `native` sizing mode (which derives size from the image's intrinsic pixel dimensions), these contexts use the default `fill` mode wrapped in a **`SizableViewbox`** component. The viewbox is a plain `<div>` whose `max-width` and `aspect-ratio` are controlled by the user via drag gestures. `MediaProperty` with `sizing="fill"` then fills whatever box the viewbox provides.
 
 `SizableViewbox` is strictly a sizing primitive — it controls dimensions and provides drag handles, nothing else. Layout concerns like centering or margins are the caller's responsibility. The caller wraps the viewbox in whatever layout container they need:
 
@@ -656,27 +656,57 @@ For example, `Decoration.svelte` handles centering itself based on the parent pr
 </div>
 ```
 
+And `Footer.svelte` uses it for the logo with a different media property name:
+
+```svelte
+<SizableViewbox {path} media_property="logo" fallback_aspect_ratio={1}>
+    <MediaProperty path={[...path, 'logo']} sizing="fill" />
+</SizableViewbox>
+```
+
 ### Data model
 
-Two new properties on the `decoration` node:
+The sizing properties follow a naming convention based on the media property they control: `{media_property}_max_width` and `{media_property}_aspect_ratio`. This allows multiple sizable viewboxes on the same node type with different media properties.
+
+For `decoration` (media property is `media`):
 
 ```
 decoration: {
     kind: 'block',
     properties: {
-        viewbox_max_width: { type: 'integer', default: 0 },      // CSS pixels, 0 = full width
-        viewbox_aspect_ratio: { type: 'number', default: 0 },    // width / height, 0 = use media's natural ratio
-        media: { type: 'node', node_types: ['image', 'video'], default_node_type: 'image' }
+        media_max_width: { type: 'integer', default: 0 },
+        media_aspect_ratio: { type: 'number', default: 0 },
+        media: { type: 'node', ... }
     }
 }
 ```
 
-- **`viewbox_max_width`** — the maximum width of the viewbox in CSS pixels. `0` means "fill the available width" (same as no constraint). The viewbox renders with `max-width: Npx` so it never exceeds this value but also never overflows its parent (the parent's width is the natural upper bound via CSS — no JS measurement needed).
-- **`viewbox_aspect_ratio`** — stored as a `width / height` float (e.g. `1.333` for 4:3). `0` means "use the media's natural aspect ratio" (read from `node.width` / `node.height` on the media child). The viewbox renders with `aspect-ratio: N` in CSS.
+For `footer` (media property is `logo`):
+
+```
+footer: {
+    kind: 'block',
+    properties: {
+        logo_max_width: { type: 'integer', default: 0 },
+        logo_aspect_ratio: { type: 'number', default: 0 },
+        logo: { type: 'node', ... },
+        ...
+    }
+}
+```
+
+- **`{prop}_max_width`** — the maximum width of the viewbox in CSS pixels. `0` means "fill the available width" (no constraint). The viewbox renders with `max-width: Npx` so it never exceeds this value but also never overflows its parent (the parent's width is the natural upper bound via CSS — no JS measurement needed). Dragging the width handle beyond the container snaps back to `0` (full-width mode).
+- **`{prop}_aspect_ratio`** — stored as a `width / height` float (e.g. `1.333` for 4:3). `0` means "use the media's natural aspect ratio" (read from `node.width` / `node.height` on the media child). The viewbox renders with `aspect-ratio: N` in CSS. Dragging the aspect ratio handle close to the media's natural ratio snaps back to `0`.
 
 ### SizableViewbox component
 
-`SizableViewbox.svelte` wraps its children (a `MediaProperty`) in a `<div>` styled with `max-width` and `aspect-ratio` from the node's properties. It accepts a `path` prop pointing to the node that holds `viewbox_max_width` and `viewbox_aspect_ratio`, and uses a slot/children snippet for the inner content. It provides drag handles for resizing, visible only in edit mode. It has no opinion about layout, alignment, or margins.
+`SizableViewbox.svelte` wraps its children (a `MediaProperty`) in a `<div>` styled with `max-width` and `aspect-ratio` from the node's properties. It accepts:
+
+- **`path`** — the node path (e.g. the decoration or footer node)
+- **`media_property`** — the name of the media property on that node (default: `'media'`). The component derives field names as `{media_property}_max_width` and `{media_property}_aspect_ratio`, and reads the media node from `[...path, media_property]` to get intrinsic dimensions for the natural aspect ratio fallback.
+- **`fallback_aspect_ratio`** — used when `{prop}_aspect_ratio` is `0` and the media has no intrinsic dimensions (default: `16/9`)
+
+It uses a children snippet for the inner content, provides drag handles for resizing visible only in edit mode, and has no opinion about layout, alignment, or margins.
 
 **CSS sizing (no JS measurement for overflow prevention):**
 
@@ -694,9 +724,9 @@ Because `max-width` combined with `width: 100%` means the element takes the mini
 
 Two resize gestures, both operating on the viewbox's border/corner:
 
-1. **Width handle (left and right edges):** horizontal drag sets `viewbox_max_width`. The value is clamped to a minimum (e.g. 40px) and needs no explicit maximum — CSS `max-width` + `width: 100%` handles overflow naturally. On pointer-up, the final pixel value is written to the document.
+1. **Width handle (left and right edges):** horizontal drag sets `{prop}_max_width`. The value is clamped to a minimum (e.g. 40px) and needs no explicit maximum — CSS `max-width` + `width: 100%` handles overflow naturally. Dragging beyond the container width snaps to `0` (full-width mode). On pointer-up, the final pixel value is written to the document.
 
-2. **Aspect ratio handle (bottom edge):** vertical drag changes the viewbox height, which is stored as `viewbox_aspect_ratio = current_rendered_width / new_height`. This means the aspect ratio is always relative to whatever width the viewbox currently renders at. Minimum height is clamped (e.g. 20px).
+2. **Aspect ratio handle (bottom edge):** vertical drag changes the viewbox height, which is stored as `{prop}_aspect_ratio = current_rendered_width / new_height`. This means the aspect ratio is always relative to whatever width the viewbox currently renders at. Minimum height is clamped (e.g. 20px). When the dragged ratio is within 5% of the media's natural aspect ratio, it snaps to `0` (natural ratio mode).
 
 Both gestures write to the svedit session via transactions (`svedit.session.tr` + `apply`), using `{ batch: true }` during drag for coalesced undo, with a final non-batched apply on pointer-up.
 
