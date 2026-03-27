@@ -25,5 +25,5 @@ export const MEDIA_DEFAULTS = {
 	scale: 1.0,
 	focal_point_x: 0.5,
 	focal_point_y: 0.5,
-	object_fit: 'cover'
+	object_fit: 'contain'
 };
