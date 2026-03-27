@@ -7,23 +7,28 @@
 	const MIN_HEIGHT = 20;
 	const SNAP_THRESHOLD = 0.05; // snap to natural ratio when within 5%
 
-
-
 	/**
 	 * @type {{
 	 *   path: any[],
+	 *   media_property?: string,
 	 *   children: import('svelte').Snippet,
 	 *   fallback_aspect_ratio?: number
 	 * }}
 	 */
 	let {
 		path,
+		media_property = 'media',
 		children,
 		fallback_aspect_ratio = 16 / 9
 	} = $props();
 
+	// Derive field names from media_property: e.g. 'media' -> 'media_max_width', 'media_aspect_ratio'
+	// For 'logo' -> 'logo_max_width', 'logo_aspect_ratio'
+	let max_width_field = $derived(`${media_property}_max_width`);
+	let aspect_ratio_field = $derived(`${media_property}_aspect_ratio`);
+
 	let node = $derived(svedit.session.get(path));
-	let media_node = $derived(svedit.session.get([...path, 'media']));
+	let media_node = $derived(svedit.session.get([...path, media_property]));
 
 	// The media's natural aspect ratio (or fallback)
 	let natural_aspect_ratio = $derived(
@@ -34,15 +39,15 @@
 
 	// Resolve aspect ratio: 0 means use natural ratio
 	let resolved_aspect_ratio = $derived(
-		node.viewbox_aspect_ratio > 0
-			? node.viewbox_aspect_ratio
+		node[aspect_ratio_field] > 0
+			? node[aspect_ratio_field]
 			: natural_aspect_ratio
 	);
 
 	// Resolve max-width style: 0 means full width (no constraint)
 	let max_width_style = $derived(
-		node.viewbox_max_width > 0
-			? `${node.viewbox_max_width}px`
+		node[max_width_field] > 0
+			? `${node[max_width_field]}px`
 			: '100%'
 	);
 
@@ -64,8 +69,8 @@
 
 		// If max_width is 0 (full width), start from the current rendered width
 		const rect = viewbox_ref?.getBoundingClientRect();
-		drag_start_max_width = node.viewbox_max_width > 0
-			? node.viewbox_max_width
+		drag_start_max_width = node[max_width_field] > 0
+			? node[max_width_field]
 			: (rect?.width ?? 400);
 		// Measure the parent container so we can snap to full-width when dragging beyond it
 		const parent_rect = viewbox_ref?.parentElement?.getBoundingClientRect();
@@ -98,7 +103,7 @@
 
 			// Snap to full-width (0) when dragging at or beyond the container width
 			const tr = svedit.session.tr;
-			tr.set([...path, 'viewbox_max_width'], new_width >= drag_container_width ? 0 : new_width);
+			tr.set([...path, max_width_field], new_width >= drag_container_width ? 0 : new_width);
 			svedit.session.apply(tr, { batch: true });
 		} else if (drag_type === 'height') {
 			const dy = e.clientY - drag_start_y;
@@ -111,7 +116,7 @@
 			const snap = Math.abs(new_ratio - natural_aspect_ratio) / natural_aspect_ratio < SNAP_THRESHOLD;
 
 			const tr = svedit.session.tr;
-			tr.set([...path, 'viewbox_aspect_ratio'], snap ? 0 : Math.round(new_ratio * 1000) / 1000);
+			tr.set([...path, aspect_ratio_field], snap ? 0 : Math.round(new_ratio * 1000) / 1000);
 			svedit.session.apply(tr, { batch: true });
 		}
 	}
@@ -122,11 +127,11 @@
 		// Final non-batched apply for clean undo point
 		if (drag_type === 'width-left' || drag_type === 'width-right') {
 			const tr = svedit.session.tr;
-			tr.set([...path, 'viewbox_max_width'], node.viewbox_max_width);
+			tr.set([...path, max_width_field], node[max_width_field]);
 			svedit.session.apply(tr);
 		} else if (drag_type === 'height') {
 			const tr = svedit.session.tr;
-			tr.set([...path, 'viewbox_aspect_ratio'], node.viewbox_aspect_ratio);
+			tr.set([...path, aspect_ratio_field], node[aspect_ratio_field]);
 			svedit.session.apply(tr);
 		}
 
@@ -180,7 +185,7 @@
 		position: relative;
 		width: 100%;
 		overflow: hidden;
-		border-radius: var(--image-border-radius, 0);
+		border-radius: var(--border-radius, 0);
 	}
 
 	.sizable-viewbox.dragging {

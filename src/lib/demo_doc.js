@@ -284,8 +284,8 @@ export const PAGE_1 = {
         "demo_decoration_1": {
             "id": "demo_decoration_1",
             "type": "decoration",
-            "viewbox_max_width": 0,
-            "viewbox_aspect_ratio": 0,
+            "media_max_width": 0,
+            "media_aspect_ratio": 0,
             "media": "demo_decoration_1_image"
         },
         "WsXcDfVgBhNjMkLqAzPeRt": {
