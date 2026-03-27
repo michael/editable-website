@@ -5,6 +5,7 @@
 
 	const MIN_WIDTH = 40;
 	const MIN_HEIGHT = 20;
+	const SNAP_THRESHOLD = 0.05; // snap to natural ratio when within 5%
 
 
 
@@ -24,15 +25,18 @@
 	let node = $derived(svedit.session.get(path));
 	let media_node = $derived(svedit.session.get([...path, 'media']));
 
-	$inspect(node.viewbox_max_width);
+	// The media's natural aspect ratio (or fallback)
+	let natural_aspect_ratio = $derived(
+		media_node?.width && media_node?.height
+			? media_node.width / media_node.height
+			: fallback_aspect_ratio
+	);
 
-	// Resolve aspect ratio: 0 means use media's natural ratio or fallback
+	// Resolve aspect ratio: 0 means use natural ratio
 	let resolved_aspect_ratio = $derived(
 		node.viewbox_aspect_ratio > 0
 			? node.viewbox_aspect_ratio
-			: (media_node?.width && media_node?.height
-				? media_node.width / media_node.height
-				: fallback_aspect_ratio)
+			: natural_aspect_ratio
 	);
 
 	// Resolve max-width style: 0 means full width (no constraint)
@@ -103,8 +107,11 @@
 			const new_height = Math.max(MIN_HEIGHT, old_height + dy);
 			const new_ratio = current_width / new_height;
 
+			// Snap to natural ratio (0) when close enough
+			const snap = Math.abs(new_ratio - natural_aspect_ratio) / natural_aspect_ratio < SNAP_THRESHOLD;
+
 			const tr = svedit.session.tr;
-			tr.set([...path, 'viewbox_aspect_ratio'], Math.round(new_ratio * 1000) / 1000);
+			tr.set([...path, 'viewbox_aspect_ratio'], snap ? 0 : Math.round(new_ratio * 1000) / 1000);
 			svedit.session.apply(tr, { batch: true });
 		}
 	}
