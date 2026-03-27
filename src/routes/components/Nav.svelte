@@ -40,10 +40,11 @@
 			<!-- Logo -->
 			<div class="flex items-center flex-1 {TW_PAGE_PADDING_X} py-3">
 				<svelte:element
+					class="h-10 block w-full"
 					this={svedit.editable ? 'div' : 'a'}
 					href={svedit.editable ? undefined : '/'}
 				>
-					<MediaProperty class="h-10" path={[...path, 'logo']} sizing="fit" fallback_aspect_ratio="1 / 1" />
+					<MediaProperty path={[...path, 'logo']} />
 				</svelte:element>
 			</div>
 
