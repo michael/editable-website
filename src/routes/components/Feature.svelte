@@ -12,13 +12,13 @@
 </script>
 
 <!-- Primitives -->
-{#snippet image(fallback_aspect_ratio = '3 / 4', border_radius = false)}
+{#snippet image(placeholder_aspect_ratio = '3 / 4', border_radius = false)}
 	<div class="flex items-center h-full w-full">
 		<div
 			class="overflow-hidden w-full"
 			style:border-radius={border_radius ? 'var(--image-border-radius)' : undefined}
 		>
-			<MediaProperty path={[...path, 'media']} sizing="fit" {fallback_aspect_ratio} />
+			<MediaProperty path={[...path, 'media']} sizing="fit" {placeholder_aspect_ratio} />
 		</div>
 	</div>
 {/snippet}
