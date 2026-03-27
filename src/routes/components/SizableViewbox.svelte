@@ -6,6 +6,8 @@
 	const MIN_WIDTH = 40;
 	const MIN_HEIGHT = 20;
 
+
+
 	/**
 	 * @type {{
 	 *   path: any[],
@@ -21,6 +23,8 @@
 
 	let node = $derived(svedit.session.get(path));
 	let media_node = $derived(svedit.session.get([...path, 'media']));
+
+	$inspect(node.viewbox_max_width);
 
 	// Resolve aspect ratio: 0 means use media's natural ratio or fallback
 	let resolved_aspect_ratio = $derived(
@@ -44,6 +48,7 @@
 	let drag_start_y = $state(0);
 	let drag_start_max_width = $state(0);
 	let drag_start_aspect_ratio = $state(0);
+	let drag_container_width = $state(0);
 	let viewbox_ref = $state(null);
 
 	function handle_width_pointer_down(e, side) {
@@ -58,6 +63,9 @@
 		drag_start_max_width = node.viewbox_max_width > 0
 			? node.viewbox_max_width
 			: (rect?.width ?? 400);
+		// Measure the parent container so we can snap to full-width when dragging beyond it
+		const parent_rect = viewbox_ref?.parentElement?.getBoundingClientRect();
+		drag_container_width = parent_rect?.width ?? drag_start_max_width;
 	}
 
 	function handle_height_pointer_down(e) {
@@ -84,8 +92,9 @@
 			const direction = drag_type === 'width-right' ? 1 : -1;
 			const new_width = Math.max(MIN_WIDTH, Math.round(drag_start_max_width + dx * direction * 2));
 
+			// Snap to full-width (0) when dragging at or beyond the container width
 			const tr = svedit.session.tr;
-			tr.set([...path, 'viewbox_max_width'], new_width);
+			tr.set([...path, 'viewbox_max_width'], new_width >= drag_container_width ? 0 : new_width);
 			svedit.session.apply(tr, { batch: true });
 		} else if (drag_type === 'height') {
 			const dy = e.clientY - drag_start_y;
