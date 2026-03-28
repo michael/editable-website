@@ -1,221 +1,11 @@
 // Seed data for the demo website
-// Split into separate documents: NAV_1, FOOTER_1, PAGE_1
-// demo_doc merges all three for the static Vercel preview
+// Stored as a single merged document so you can paste console.logged JSON directly.
+// NAV_1, FOOTER_1, PAGE_1 are extracted automatically using svedit's traverse utility.
 
-export const NAV_1 = {
-    "document_id": "nav_1",
-    "nodes": {
-        "nav_logo": {
-            "id": "nav_logo",
-            "type": "image",
-            "src": "logo.svg",
-            "mime_type": "image/svg+xml",
-            "width": 100,
-            "height": 100,
-            "alt": "Logo",
-            "scale": 1,
-            "focal_point_x": 0.5,
-            "focal_point_y": 0.5,
-            "object_fit": "cover"
-        },
-        "DDmmrQzcAxWJfdhatTbkRTh": {
-            "id": "DDmmrQzcAxWJfdhatTbkRTh",
-            "type": "nav_item",
-            "layout": 1,
-            "href": "/#RtYpQwXsZvNmKjHgFdSaLe",
-            "target": "_self",
-            "label": {
-                "text": "Try it",
-                "annotations": []
-            }
-        },
-        "GyKyQvRAvkgnywmxTVgvrnF": {
-            "id": "GyKyQvRAvkgnywmxTVgvrnF",
-            "type": "nav_item",
-            "layout": 1,
-            "href": "/#XVJGXtwnQMvcrcuByAtcWNa",
-            "target": "_self",
-            "label": {
-                "text": "About",
-                "annotations": []
-            }
-        },
-        "FKgjxHCeSbVZrdnPuxYkMYp": {
-            "id": "FKgjxHCeSbVZrdnPuxYkMYp",
-            "type": "nav_item",
-            "layout": 2,
-            "href": "https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform",
-            "target": "_blank",
-            "label": {
-                "text": "Join the Technical Preview",
-                "annotations": []
-            }
-        },
-        "nav_1": {
-            "id": "nav_1",
-            "type": "nav",
-            "logo": "nav_logo",
-            "nav_items": [
-                "DDmmrQzcAxWJfdhatTbkRTh",
-                "GyKyQvRAvkgnywmxTVgvrnF",
-                "FKgjxHCeSbVZrdnPuxYkMYp"
-            ]
-        }
-    }
-};
+import { traverse } from 'svedit';
+import { document_schema } from '$lib/document_schema.js';
 
-export const FOOTER_1 = {
-    "document_id": "footer_1",
-    "nodes": {
-        "footer_logo": {
-            "id": "footer_logo",
-            "type": "image",
-            "src": "logo.svg",
-            "mime_type": "image/svg+xml",
-            "width": 100,
-            "height": 100,
-            "alt": "Logo",
-            "scale": 1,
-            "focal_point_x": 0.5,
-            "focal_point_y": 0.5,
-            "object_fit": "cover"
-        },
-        "EtcfbabRCtPSvSpfFfjPeza": {
-            "id": "EtcfbabRCtPSvSpfFfjPeza",
-            "type": "footer_link",
-            "href": "/#RtYpQwXsZvNmKjHgFdSaLe",
-            "target": "_self",
-            "label": {
-                "text": "Editing",
-                "annotations": []
-            }
-        },
-        "WVvBSREFCThNYcpgvfUnWkF": {
-            "id": "WVvBSREFCThNYcpgvfUnWkF",
-            "type": "footer_link",
-            "href": "/#xKmNqPrStVwYzAbCdEfGh",
-            "target": "_self",
-            "label": {
-                "text": "Blocks",
-                "annotations": []
-            }
-        },
-        "eDAnnFjNdZpzYMtpSqReBxf": {
-            "id": "eDAnnFjNdZpzYMtpSqReBxf",
-            "type": "footer_link",
-            "href": "/#BPdekRaDEUcQZqtEwPwBvyu",
-            "target": "_self",
-            "label": {
-                "text": "Images",
-                "annotations": []
-            }
-        },
-        "GwPeRFYtAyrcCMfpuyzdWZp": {
-            "id": "GwPeRFYtAyrcCMfpuyzdWZp",
-            "type": "footer_link",
-            "href": "/#jLnPqRsTuVwXyZaBcDeFg",
-            "target": "_self",
-            "label": {
-                "text": "Links",
-                "annotations": []
-            }
-        },
-        "fcSSWQUTYajjknPChgGsPZz": {
-            "id": "fcSSWQUTYajjknPChgGsPZz",
-            "type": "footer_link_column",
-            "footer_links": [
-                "EtcfbabRCtPSvSpfFfjPeza",
-                "WVvBSREFCThNYcpgvfUnWkF",
-                "eDAnnFjNdZpzYMtpSqReBxf",
-                "GwPeRFYtAyrcCMfpuyzdWZp"
-            ],
-            "label": {
-                "text": "On this page",
-                "annotations": []
-            }
-        },
-        "uavzfSnSpTRrHSfJpbfvpsh": {
-            "id": "uavzfSnSpTRrHSfJpbfvpsh",
-            "type": "footer_link",
-            "href": "https://github.com/michael/editable-website",
-            "target": "_blank",
-            "label": {
-                "text": "Editable Website",
-                "annotations": []
-            }
-        },
-        "footer_link_2_1": {
-            "id": "footer_link_2_1",
-            "type": "footer_link",
-            "href": "https://svedit.dev",
-            "label": {
-                "text": "Svedit",
-                "annotations": []
-            },
-            "target": "_blank"
-        },
-        "footer_column_2": {
-            "id": "footer_column_2",
-            "type": "footer_link_column",
-            "label": {
-                "text": "GitHub",
-                "annotations": []
-            },
-            "footer_links": [
-                "uavzfSnSpTRrHSfJpbfvpsh",
-                "footer_link_2_1"
-            ]
-        },
-        "ewuBYPxRqFsJXffTuwqssXg": {
-            "id": "ewuBYPxRqFsJXffTuwqssXg",
-            "type": "footer_link",
-            "href": "https://www.youtube.com/watch?v=T2RMYj_1g9E",
-            "label": {
-                "text": "Introduction",
-                "annotations": []
-            },
-            "target": "_blank"
-        },
-        "cCMbgzNjRjVjrvWuHJCvJkx": {
-            "id": "cCMbgzNjRjVjrvWuHJCvJkx",
-            "type": "footer_link",
-            "href": "https://youtu.be/o4kcABS-XH4?t=3226",
-            "target": "_blank",
-            "label": {
-                "text": "Update 2025-10",
-                "annotations": []
-            }
-        },
-        "footer_column_3": {
-            "id": "footer_column_3",
-            "type": "footer_link_column",
-            "label": {
-                "text": "Videos",
-                "annotations": []
-            },
-            "footer_links": [
-                "ewuBYPxRqFsJXffTuwqssXg",
-                "cCMbgzNjRjVjrvWuHJCvJkx"
-            ]
-        },
-        "footer_1": {
-            "id": "footer_1",
-            "type": "footer",
-            "logo": "footer_logo",
-            "copyright": {
-                "text": "© Editable Website",
-                "annotations": []
-            },
-            "footer_link_columns": [
-                "fcSSWQUTYajjknPChgGsPZz",
-                "footer_column_2",
-                "footer_column_3"
-            ]
-        }
-    }
-};
-
-export const PAGE_1 = {
+const FULL_DOC = {
     "document_id": "page_1",
     "nodes": {
         "ccHVKDeyhrRVfKZCpXvxhac": {
@@ -251,8 +41,8 @@ export const PAGE_1 = {
             "type": "image",
             "src": "cmde.webp",
             "mime_type": "image/webp",
-            "width": 768,
-            "height": 1024,
+            "width": 192,
+            "height": 256,
             "alt": "Feature image",
             "scale": 1,
             "focal_point_x": 0.5329817181174089,
@@ -268,6 +58,15 @@ export const PAGE_1 = {
                 "annotations": []
             }
         },
+        "WsXcDfVgBhNjMkLqAzPeRt": {
+            "id": "WsXcDfVgBhNjMkLqAzPeRt",
+            "type": "text",
+            "layout": 2,
+            "content": {
+                "text": "This is Editable Website",
+                "annotations": []
+            }
+        },
         "demo_decoration_1_image": {
             "id": "demo_decoration_1_image",
             "type": "image",
@@ -276,7 +75,7 @@ export const PAGE_1 = {
             "width": 0,
             "height": 0,
             "alt": "",
-            "scale": 1.0,
+            "scale": 1,
             "focal_point_x": 0.5,
             "focal_point_y": 0.5,
             "object_fit": "cover"
@@ -287,15 +86,6 @@ export const PAGE_1 = {
             "media_max_width": 0,
             "media_aspect_ratio": 0,
             "media": "demo_decoration_1_image"
-        },
-        "WsXcDfVgBhNjMkLqAzPeRt": {
-            "id": "WsXcDfVgBhNjMkLqAzPeRt",
-            "type": "text",
-            "layout": 2,
-            "content": {
-                "text": "This is Editable Website",
-                "annotations": []
-            }
         },
         "RezNUsxYmfpmFMezpgEbqYu": {
             "id": "RezNUsxYmfpmFMezpgEbqYu",
@@ -647,8 +437,8 @@ export const PAGE_1 = {
             "type": "image",
             "src": "user1-desktop.webp",
             "mime_type": "image/webp",
-            "width": 800,
-            "height": 600,
+            "width": 200,
+            "height": 150,
             "alt": "Sample image",
             "scale": 1,
             "focal_point_x": 0.5,
@@ -665,8 +455,8 @@ export const PAGE_1 = {
             "type": "image",
             "src": "user1-notebook.webp",
             "mime_type": "image/webp",
-            "width": 800,
-            "height": 600,
+            "width": 200,
+            "height": 150,
             "alt": "Sample image",
             "scale": 1,
             "focal_point_x": 0.6705601092896176,
@@ -770,7 +560,7 @@ export const PAGE_1 = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Click on one of the cards below.\nA link preview appears at the bottom.\nClick “EDIT” or press ⌘ / Ctrl + k to bring up the link editor.",
+                "text": "Click on one of the cards below.\nA link preview appears at the bottom.\nClick \u201CEDIT\u201D or press ⌘ / Ctrl + k to bring up the link editor.",
                 "annotations": [
                     {
                         "start_offset": 93,
@@ -784,13 +574,13 @@ export const PAGE_1 = {
             "id": "nprCMwYvJvUEmRaHBsxfgUd",
             "type": "image",
             "src": "gluecksmaurer.webp",
-            "mime_type": "image/webp",
-            "width": 800,
-            "height": 600,
-            "alt": "Getting started",
+            "mime_type": "image/png",
+            "width": 186,
+            "height": 120,
+            "alt": "",
             "scale": 1,
-            "focal_point_x": 0.43320363152669056,
-            "focal_point_y": 0.4116619557277606,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
             "object_fit": "cover"
         },
         "JUmgwJDKqdxVxJeBHkBdjVq": {
@@ -816,13 +606,13 @@ export const PAGE_1 = {
             "id": "link_collection_item_2_image",
             "type": "image",
             "src": "colbourns.webp",
-            "mime_type": "image/webp",
-            "width": 800,
-            "height": 600,
-            "alt": "Customization",
+            "mime_type": "image/png",
+            "width": 180,
+            "height": 112,
+            "alt": "",
             "scale": 1,
-            "focal_point_x": 0.3904038894325596,
-            "focal_point_y": 0.5509243899928726,
+            "focal_point_x": 0.5008655894886364,
+            "focal_point_y": 0.5,
             "object_fit": "cover"
         },
         "link_collection_item_2": {
@@ -848,13 +638,13 @@ export const PAGE_1 = {
             "id": "ReRqxYxMdAUVaMuudfJhzsS",
             "type": "image",
             "src": "tomorrow-vc.webp",
-            "mime_type": "image/webp",
-            "width": 800,
-            "height": 600,
-            "alt": "Svedit documentation",
+            "mime_type": "image/png",
+            "width": 218,
+            "height": 202,
+            "alt": "",
             "scale": 1,
-            "focal_point_x": 0.4449945007030935,
-            "focal_point_y": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
             "object_fit": "cover"
         },
         "YnBCBuemwpaUxQwHrFJNgMW": {
@@ -887,7 +677,7 @@ export const PAGE_1 = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "The cards above are links to examples of live in-place editable websites Johannes Mutter and I have already launched using this technology. You can see that any design is possible — it’s just HTML and CSS.",
+                "text": "The cards above are links to examples of live in-place editable websites Johannes Mutter and I have already launched using this technology. You can see that any design is possible \u2014 it\u2019s just HTML and CSS.",
                 "annotations": [
                     {
                         "start_offset": 73,
@@ -963,7 +753,7 @@ export const PAGE_1 = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "This site is powered by Svelte and Svedit — an open source rich text editor I've created. Editable Website builds on SvelteKit and SQLite to enable full websites with multiple pages and a persistent backend where only an admin can make changes.",
+                "text": "This site is powered by Svelte and Svedit \u2014 an open source rich text editor I\u2019ve created. Editable Website builds on SvelteKit and SQLite to enable full websites with multiple pages and a persistent backend where only an admin can make changes.",
                 "annotations": [
                     {
                         "start_offset": 117,
@@ -1026,8 +816,8 @@ export const PAGE_1 = {
             "type": "image",
             "src": "michael.webp",
             "mime_type": "image/webp",
-            "width": 768,
-            "height": 1024,
+            "width": 192,
+            "height": 256,
             "alt": "Feature image",
             "scale": 1,
             "focal_point_x": 0.5,
@@ -1039,7 +829,7 @@ export const PAGE_1 = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Hello, I'm Michael",
+                "text": "Hello, I\u2019m Michael",
                 "annotations": []
             }
         },
@@ -1054,7 +844,7 @@ export const PAGE_1 = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Since 2011 I’ve been taming web browsers to behave correctly and predictably when editing rich text.",
+                "text": "Since 2011 I\u2019ve been taming web browsers to behave correctly and predictably when editing rich text.",
                 "annotations": [
                     {
                         "start_offset": 21,
@@ -1069,7 +859,7 @@ export const PAGE_1 = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "I want you to be able to launch websites that anyone can edit. No more calls asking you to update someone's WordPress site! They'll be able to do it themselves.",
+                "text": "I want you to be able to launch websites that anyone can edit. No more calls asking you to update someone\u2019s WordPress site! They\u2019ll be able to do it themselves.",
                 "annotations": []
             }
         },
@@ -1115,7 +905,7 @@ export const PAGE_1 = {
                 "annotations": []
             },
             "description": {
-                "text": "This is an an initial preview of Editable Website. There's more to do before you can use it in production. Be the first to hear when it's ready:",
+                "text": "This is an an initial preview of Editable Website. There\u2019s more to do before you can use it in production. Be the first to hear when it\u2019s ready:",
                 "annotations": []
             },
             "buttons": [
@@ -1164,7 +954,7 @@ export const PAGE_1 = {
             "type": "text",
             "layout": 5,
             "content": {
-                "text": "Big thanks to Johannes Mutter for helping with concept, design, and engineering, Tom Atkins for support with positioning and copywriting, and Sonja Stojanovic for modelling and being the very first happy Editable Website user — followed by Trails, Postlmayr Design, Aufreiter Architektur, and many more.",
+                "text": "Big thanks to Johannes Mutter for helping with concept, design, and engineering, Tom Atkins for support with positioning and copywriting, and Sonja Stojanovic for modelling and being the very first happy Editable Website user \u2014 followed by Trails, Postlmayr Design, Aufreiter Architektur, and many more.",
                 "annotations": [
                     {
                         "start_offset": 14,
@@ -1208,6 +998,208 @@ export const PAGE_1 = {
                 "PjwvEAbrZCxZFcqJqayVyhR"
             ]
         },
+        "nav_logo": {
+            "id": "nav_logo",
+            "type": "image",
+            "src": "logo.svg",
+            "mime_type": "image/svg+xml",
+            "width": 100,
+            "height": 100,
+            "alt": "Logo",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "DDmmrQzcAxWJfdhatTbkRTh": {
+            "id": "DDmmrQzcAxWJfdhatTbkRTh",
+            "type": "nav_item",
+            "layout": 1,
+            "href": "/#RtYpQwXsZvNmKjHgFdSaLe",
+            "target": "_self",
+            "label": {
+                "text": "Try it",
+                "annotations": []
+            }
+        },
+        "GyKyQvRAvkgnywmxTVgvrnF": {
+            "id": "GyKyQvRAvkgnywmxTVgvrnF",
+            "type": "nav_item",
+            "layout": 1,
+            "href": "/#XVJGXtwnQMvcrcuByAtcWNa",
+            "target": "_self",
+            "label": {
+                "text": "About",
+                "annotations": []
+            }
+        },
+        "FKgjxHCeSbVZrdnPuxYkMYp": {
+            "id": "FKgjxHCeSbVZrdnPuxYkMYp",
+            "type": "nav_item",
+            "layout": 2,
+            "href": "https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform",
+            "target": "_blank",
+            "label": {
+                "text": "Join the Technical Preview",
+                "annotations": []
+            }
+        },
+        "nav_1": {
+            "id": "nav_1",
+            "type": "nav",
+            "logo": "nav_logo",
+            "nav_items": [
+                "DDmmrQzcAxWJfdhatTbkRTh",
+                "GyKyQvRAvkgnywmxTVgvrnF",
+                "FKgjxHCeSbVZrdnPuxYkMYp"
+            ]
+        },
+        "footer_logo": {
+            "id": "footer_logo",
+            "type": "image",
+            "src": "logo.svg",
+            "mime_type": "image/svg+xml",
+            "width": 100,
+            "height": 100,
+            "alt": "Logo",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "EtcfbabRCtPSvSpfFfjPeza": {
+            "id": "EtcfbabRCtPSvSpfFfjPeza",
+            "type": "footer_link",
+            "href": "/#RtYpQwXsZvNmKjHgFdSaLe",
+            "target": "_self",
+            "label": {
+                "text": "Editing",
+                "annotations": []
+            }
+        },
+        "WVvBSREFCThNYcpgvfUnWkF": {
+            "id": "WVvBSREFCThNYcpgvfUnWkF",
+            "type": "footer_link",
+            "href": "/#xKmNqPrStVwYzAbCdEfGh",
+            "target": "_self",
+            "label": {
+                "text": "Blocks",
+                "annotations": []
+            }
+        },
+        "eDAnnFjNdZpzYMtpSqReBxf": {
+            "id": "eDAnnFjNdZpzYMtpSqReBxf",
+            "type": "footer_link",
+            "href": "/#BPdekRaDEUcQZqtEwPwBvyu",
+            "target": "_self",
+            "label": {
+                "text": "Images",
+                "annotations": []
+            }
+        },
+        "GwPeRFYtAyrcCMfpuyzdWZp": {
+            "id": "GwPeRFYtAyrcCMfpuyzdWZp",
+            "type": "footer_link",
+            "href": "/#jLnPqRsTuVwXyZaBcDeFg",
+            "target": "_self",
+            "label": {
+                "text": "Links",
+                "annotations": []
+            }
+        },
+        "fcSSWQUTYajjknPChgGsPZz": {
+            "id": "fcSSWQUTYajjknPChgGsPZz",
+            "type": "footer_link_column",
+            "footer_links": [
+                "EtcfbabRCtPSvSpfFfjPeza",
+                "WVvBSREFCThNYcpgvfUnWkF",
+                "eDAnnFjNdZpzYMtpSqReBxf",
+                "GwPeRFYtAyrcCMfpuyzdWZp"
+            ],
+            "label": {
+                "text": "On this page",
+                "annotations": []
+            }
+        },
+        "uavzfSnSpTRrHSfJpbfvpsh": {
+            "id": "uavzfSnSpTRrHSfJpbfvpsh",
+            "type": "footer_link",
+            "href": "https://github.com/michael/editable-website",
+            "target": "_blank",
+            "label": {
+                "text": "Editable Website",
+                "annotations": []
+            }
+        },
+        "footer_link_2_1": {
+            "id": "footer_link_2_1",
+            "type": "footer_link",
+            "href": "https://svedit.dev",
+            "label": {
+                "text": "Svedit",
+                "annotations": []
+            },
+            "target": "_blank"
+        },
+        "footer_column_2": {
+            "id": "footer_column_2",
+            "type": "footer_link_column",
+            "label": {
+                "text": "GitHub",
+                "annotations": []
+            },
+            "footer_links": [
+                "uavzfSnSpTRrHSfJpbfvpsh",
+                "footer_link_2_1"
+            ]
+        },
+        "ewuBYPxRqFsJXffTuwqssXg": {
+            "id": "ewuBYPxRqFsJXffTuwqssXg",
+            "type": "footer_link",
+            "href": "https://www.youtube.com/watch?v=T2RMYj_1g9E",
+            "label": {
+                "text": "Introduction",
+                "annotations": []
+            },
+            "target": "_blank"
+        },
+        "cCMbgzNjRjVjrvWuHJCvJkx": {
+            "id": "cCMbgzNjRjVjrvWuHJCvJkx",
+            "type": "footer_link",
+            "href": "https://youtu.be/o4kcABS-XH4?t=3226",
+            "target": "_blank",
+            "label": {
+                "text": "Update 2025-10",
+                "annotations": []
+            }
+        },
+        "footer_column_3": {
+            "id": "footer_column_3",
+            "type": "footer_link_column",
+            "label": {
+                "text": "Videos",
+                "annotations": []
+            },
+            "footer_links": [
+                "ewuBYPxRqFsJXffTuwqssXg",
+                "cCMbgzNjRjVjrvWuHJCvJkx"
+            ]
+        },
+        "footer_1": {
+            "id": "footer_1",
+            "type": "footer",
+            "logo": "footer_logo",
+            "copyright": {
+                "text": "\u00A9 Editable Website",
+                "annotations": []
+            },
+            "footer_link_columns": [
+                "fcSSWQUTYajjknPChgGsPZz",
+                "footer_column_2",
+                "footer_column_3"
+            ],
+            "logo_max_width": 88
+        },
         "page_1": {
             "id": "page_1",
             "type": "page",
@@ -1227,6 +1219,42 @@ export const PAGE_1 = {
         }
     }
 };
+
+// ---------------------------------------------------------------------------
+// Extract sub-documents using svedit's traverse utility
+// ---------------------------------------------------------------------------
+
+/**
+ * Extract a sub-document: traverse from root_id collecting all reachable nodes.
+ */
+function extract_document(nodes, root_id) {
+    const node_list = traverse(root_id, document_schema, nodes);
+    const sub_nodes = {};
+    for (const node of node_list) {
+        sub_nodes[node.id] = node;
+    }
+    return { document_id: root_id, nodes: sub_nodes };
+}
+
+const page_node = FULL_DOC.nodes['page_1'];
+const nav_root_id = page_node.nav;       // "nav_1"
+const footer_root_id = page_node.footer; // "footer_1"
+
+export const NAV_1 = extract_document(FULL_DOC.nodes, nav_root_id);
+export const FOOTER_1 = extract_document(FULL_DOC.nodes, footer_root_id);
+
+// PAGE_1 gets everything reachable from page_1, minus nav/footer subtrees
+const nav_ids = new Set(Object.keys(NAV_1.nodes));
+const footer_ids = new Set(Object.keys(FOOTER_1.nodes));
+const exclude = new Set([...nav_ids, ...footer_ids]);
+const page_nodes_list = traverse('page_1', document_schema, FULL_DOC.nodes);
+const page_nodes = {};
+for (const node of page_nodes_list) {
+    if (!exclude.has(node.id)) {
+        page_nodes[node.id] = node;
+    }
+}
+export const PAGE_1 = { document_id: 'page_1', nodes: page_nodes };
 
 // Merged document for static deployment (Vercel demo)
 export const demo_doc = {
