@@ -1,5 +1,5 @@
 <script>
-	import { getContext, tick } from 'svelte';
+	import { getContext } from 'svelte';
 
 	const svedit = getContext('svedit');
 
@@ -20,19 +20,18 @@
 	// Panning control — disable only when the media exactly fills the container
 	// with no room to move: cover at scale 1.0 with matching aspect ratios.
 	// All other cases (contain, scale > 1, mismatched ratios) allow panning.
-	// Uses $effect + tick() so the DOM has updated before we measure.
+	// Uses $effect + rAF so CSS anchor positioning has resolved before we measure.
 	let can_pan = $state(false);
 
 	$effect(() => {
 		// Track reactive dependencies
-		const _path = path;
 		const _scale = media_node.scale;
-		const _object_fit = media_node.object_fit;
 		const _width = media_node.width;
 		const _height = media_node.height;
 		const _ref = controls_ref;
 
-		tick().then(() => {
+		// Use rAF to ensure CSS anchor positioning has resolved before measuring
+		requestAnimationFrame(() => {
 			if (!_ref || !_width || !_height) {
 				can_pan = false;
 				return;
@@ -43,7 +42,9 @@
 				return;
 			}
 
-			// scale 1.0 — panning only useful if aspect ratios differ
+			// At scale 1.0, panning is only useful if aspect ratios differ:
+			// - cover: image overflows on one axis, focal point picks visible area
+			// - contain: image has empty space, focal point positions it in the frame
 			const rect = _ref.getBoundingClientRect();
 			if (rect.width === 0 || rect.height === 0) {
 				can_pan = false;
