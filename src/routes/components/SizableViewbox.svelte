@@ -117,6 +117,22 @@
 		}
 	}
 
+	function handle_width_dblclick(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		const tr = svedit.session.tr;
+		tr.set([...path, max_width_field], 0);
+		svedit.session.apply(tr);
+	}
+
+	function handle_height_dblclick(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		const tr = svedit.session.tr;
+		tr.set([...path, aspect_ratio_field], 0);
+		svedit.session.apply(tr);
+	}
+
 	function handle_pointer_up() {
 		if (!drag_type) return;
 
@@ -159,6 +175,7 @@
 		<div
 			class="handle handle-left"
 			onpointerdown={(e) => handle_width_pointer_down(e, 'width-left')}
+			ondblclick={handle_width_dblclick}
 		>
 			<div class="handle-line"></div>
 		</div>
@@ -168,6 +185,7 @@
 		<div
 			class="handle handle-right"
 			onpointerdown={(e) => handle_width_pointer_down(e, 'width-right')}
+			ondblclick={handle_width_dblclick}
 		>
 			<div class="handle-line"></div>
 		</div>
@@ -177,6 +195,7 @@
 		<div
 			class="handle handle-bottom"
 			onpointerdown={handle_height_pointer_down}
+			ondblclick={handle_height_dblclick}
 		>
 			<div class="handle-line"></div>
 		</div>
