@@ -20,40 +20,51 @@
 	// Panning control — disable only when the media exactly fills the container
 	// with no room to move: cover at scale 1.0 with matching aspect ratios.
 	// All other cases (contain, scale > 1, mismatched ratios) allow panning.
-	// Uses $effect + rAF so CSS anchor positioning has resolved before we measure.
+	// A ResizeObserver re-checks whenever the container changes shape.
 	let can_pan = $state(false);
+	let container_width = $state(0);
+	let container_height = $state(0);
 
+	// ResizeObserver tracks actual container dimensions (covers aspect ratio
+	// changes, max-width changes, window resizes, etc.)
 	$effect(() => {
-		// Track reactive dependencies
+		const el = controls_ref;
+		if (!el) return;
+
+		const ro = new ResizeObserver((entries) => {
+			for (const entry of entries) {
+				container_width = entry.contentRect.width;
+				container_height = entry.contentRect.height;
+			}
+		});
+		ro.observe(el);
+		return () => ro.disconnect();
+	});
+
+	// Derive can_pan from media props + observed container dimensions
+	$effect(() => {
 		const _scale = media_node.scale;
 		const _width = media_node.width;
 		const _height = media_node.height;
-		const _ref = controls_ref;
+		const cw = container_width;
+		const ch = container_height;
 
-		// Use rAF to ensure CSS anchor positioning has resolved before measuring
-		requestAnimationFrame(() => {
-			if (!_ref || !_width || !_height) {
-				can_pan = false;
-				return;
-			}
+		if (!controls_ref || !_width || !_height || cw === 0 || ch === 0) {
+			can_pan = false;
+			return;
+		}
 
-			if (_scale > 1.0) {
-				can_pan = true;
-				return;
-			}
+		if (_scale > 1.0) {
+			can_pan = true;
+			return;
+		}
 
-			// At scale 1.0, panning is only useful if aspect ratios differ:
-			// - cover: image overflows on one axis, focal point picks visible area
-			// - contain: image has empty space, focal point positions it in the frame
-			const rect = _ref.getBoundingClientRect();
-			if (rect.width === 0 || rect.height === 0) {
-				can_pan = false;
-				return;
-			}
-			const container_ratio = rect.width / rect.height;
-			const media_ratio = _width / _height;
-			can_pan = Math.abs(media_ratio - container_ratio) > 0.01;
-		});
+		// At scale 1.0, panning is only useful if aspect ratios differ:
+		// - cover: image overflows on one axis, focal point picks visible area
+		// - contain: image has empty space, focal point positions it in the frame
+		const container_ratio = cw / ch;
+		const media_ratio = _width / _height;
+		can_pan = Math.abs(media_ratio - container_ratio) > 0.01;
 	});
 
 	function handle_pointer_down(e) {
