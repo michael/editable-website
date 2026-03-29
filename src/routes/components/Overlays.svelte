@@ -1,6 +1,7 @@
 <script>
 	import { getContext } from 'svelte';
 	import MediaControls from './MediaControls.svelte';
+	import SizableViewboxControls from './SizableViewboxControls.svelte';
 	import CreateLink from './CreateLink.svelte';
 	import EditLink from './EditLink.svelte';
 	import LinkPreview from './LinkPreview.svelte';
@@ -23,6 +24,22 @@
 			: null
 	);
 	let is_media_selected = $derived(selected_property?.type === 'image' || selected_property?.type === 'video');
+	// Detect if the selected media lives inside a SizableViewbox
+	// (i.e. its parent node has {media_property}_max_width)
+	let viewbox_context = $derived.by(() => {
+		if (!is_media_selected) return null;
+		const sel = svedit.session.selection;
+		if (!sel) return null;
+		const media_path = sel.path;
+		const parent_path = media_path.slice(0, -1);
+		const media_property = /** @type {string} */ (media_path.at(-1));
+		const anchor_name = `--viewbox-${parent_path.join('-')}-${media_property}`;
+		if (document.querySelector(`[data-viewbox-anchor="${anchor_name}"]`)) {
+			return { parent_path, media_property };
+		}
+		return null;
+	});
+
 	let link_preview = $derived(get_link_preview());
 
 	function get_link_preview() {
@@ -86,6 +103,13 @@
 	{/if}
 	<!-- Here we render  and other stuff that should lay atop of the canvas -->
 	<!-- NOTE: we are using CSS Anchor Positioning, which currently only works in the latest Chrome browser -->
+
+	{#if viewbox_context}
+		<SizableViewboxControls
+			path={viewbox_context.parent_path}
+			media_property={viewbox_context.media_property}
+		/>
+	{/if}
 
 	{#if link_preview && !svedit.session.commands?.edit_link?.show_prompt && !is_dragging}
 		<LinkPreview node={link_preview.node} path={link_preview.path} />
