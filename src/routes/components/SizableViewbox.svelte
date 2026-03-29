@@ -24,6 +24,10 @@
 		class: css_class = ''
 	} = $props();
 
+	let is_media_selected = $derived(
+		svedit.session?.selection?.path?.join('.') === [...path, media_property].join('.')
+	);
+
 	// Derive field names from media_property: e.g. 'media' -> 'media_max_width', 'media_aspect_ratio'
 	let max_width_field = $derived(`${media_property}_max_width`);
 	let aspect_ratio_field = $derived(`${media_property}_aspect_ratio`);
@@ -158,6 +162,7 @@
 	class="sizable-viewbox-wrapper {css_class}"
 	class:dragging={drag_type !== null}
 	class:is-editing={svedit.editable}
+	class:media-selected={is_media_selected}
 	style:max-width={max_width_style}
 >
 	<!-- Inner viewbox: clips content, holds aspect ratio -->
@@ -169,7 +174,7 @@
 		{@render children()}
 	</div>
 
-	{#if svedit.editable}
+	{#if svedit.editable && is_media_selected}
 		<!-- Left width handle — outside left edge -->
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
@@ -232,7 +237,7 @@
 		transition: opacity 0.15s ease;
 	}
 
-	.sizable-viewbox-wrapper.is-editing:hover .handle,
+	.sizable-viewbox-wrapper.media-selected .handle,
 	.sizable-viewbox-wrapper.dragging .handle {
 		opacity: 1;
 	}
