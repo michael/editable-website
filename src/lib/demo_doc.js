@@ -398,7 +398,7 @@ const FULL_DOC = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Add images and videos to a gallery",
+                "text": "Add images and videos",
                 "annotations": []
             }
         },
@@ -513,13 +513,23 @@ const FULL_DOC = {
             "media_max_width": 392,
             "media_aspect_ratio": 2.469
         },
+        "tKWjTpQsZhnpjYxjkbxwfpf": {
+            "id": "tKWjTpQsZhnpjYxjkbxwfpf",
+            "type": "strong"
+        },
         "UaGyncAczdzPgxVgFTWTKQq": {
             "id": "UaGyncAczdzPgxVgFTWTKQq",
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "When you add images in the text flow, like the one above, you'll be able to change its size using the handles that appear at the edges of the image.",
-                "annotations": []
+                "text": "When you add images in the text flow, like the one above, you'll be able to change its size using the handles at the edges of the image.",
+                "annotations": [
+                    {
+                        "start_offset": 102,
+                        "end_offset": 122,
+                        "node_id": "tKWjTpQsZhnpjYxjkbxwfpf"
+                    }
+                ]
             }
         },
         "yhaJyxTtEjzBeNfSTrSVMuV": {
