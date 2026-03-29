@@ -259,7 +259,7 @@ The `default_node_type` stays `image` — when inserting a new empty container, 
 
 ### Visual treatment
 
-Both media types fill their container the same way visually. Images and videos crop via `focal_point_x/y` and `object_fit`. Zooming (scroll wheel to adjust `scale`) and panning (drag to move `focal_point_x/y`) work identically for both media types.
+Both media types fill their container the same way visually. Images and videos use `object-fit` (toggled between `cover` and `contain` via double-click) and position via `focal_point_x/y`. Zooming (scroll wheel to adjust `scale`) and panning (drag to move `focal_point_x/y`) work identically for both media types.
 
 ### MediaControls
 
@@ -624,7 +624,7 @@ Some media placements need **user-controlled sizing** — the user should be abl
 
 ### Design
 
-Instead of using `MediaProperty`'s `native` sizing mode (which derives size from the image's intrinsic pixel dimensions), these contexts use the default `fill` mode wrapped in a **`SizableViewbox`** component. The viewbox is a plain `<div>` whose `max-width` and `aspect-ratio` are controlled by the user via drag gestures. `MediaProperty` with `sizing="fill"` then fills whatever box the viewbox provides.
+These contexts use `MediaProperty` wrapped in a **`SizableViewbox`** component. The viewbox is a plain `<div>` whose `max-width` and `aspect-ratio` are controlled by the user via drag gestures. `MediaProperty` then fills whatever box the viewbox provides.
 
 `SizableViewbox` is strictly a sizing primitive — it controls dimensions and provides drag handles, nothing else. Layout concerns like centering or margins are the caller's responsibility. The caller wraps the viewbox in whatever layout container they need:
 
@@ -636,9 +636,9 @@ Instead of using `MediaProperty`'s `native` sizing mode (which derives size from
 │  │  ┌─── SizableViewbox ───────────┐                       │ │
 │  │  │  max-width + aspect-ratio    │                       │ │
 │  │  │                              │                       │ │
-│  │  │  ┌─ MediaProperty (fill) ──┐ │                       │ │
-│  │  │  │  object-fit: cover      │ │                       │ │
-│  │  │  │  zoom / pan / focal pt  │ │                       │ │
+│  │  │  ┌─ MediaProperty ─────────┐ │                       │ │
+│  │  │  │  object-fit: cover/     │ │                       │ │
+│  │  │  │  contain + focal point  │ │                       │ │
 │  │  │  └─────────────────────────┘ │                       │ │
 │  │  └──────────────────────────────┘                       │ │
 │  └─────────────────────────────────────────────────────────┘ │
@@ -732,7 +732,7 @@ Both gestures write to the svedit session via transactions (`svedit.session.tr` 
 
 ### Interaction with MediaControls
 
-`MediaControls` (zoom, pan, focal point, double-click to cycle object-fit) still works inside the viewbox. The viewbox only controls the *container* dimensions; `MediaProperty` with `sizing="fill"` and `MediaControls` handle everything inside it as usual.
+`MediaControls` (zoom, pan, focal point, double-click to reset scale) still works inside the viewbox. The viewbox only controls the *container* dimensions; `MediaProperty` and `MediaControls` handle everything inside it as usual.
 
 ## Future: optional S3 storage
 

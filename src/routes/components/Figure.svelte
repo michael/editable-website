@@ -17,7 +17,7 @@
 				style:border-radius="var(--image-border-radius)"
 				style:aspect-ratio={media_node.width && media_node.height ? `${media_node.width} / ${media_node.height}` : '16 / 9'}
 			>
-				<MediaProperty path={[...path, 'media']} sizing="fill" />
+				<MediaProperty path={[...path, 'media']} />
 			</div>
 		</div>
 	</div>
