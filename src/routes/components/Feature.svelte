@@ -23,7 +23,7 @@
 			style:border-radius={border_radius ? 'var(--image-border-radius)' : undefined}
 			style:aspect-ratio={media_node.width && media_node.height ? media_aspect_ratio : fallback_ratio}
 		>
-			<MediaProperty path={[...path, 'media']} sizing="fill" />
+			<MediaProperty path={[...path, 'media']} />
 		</div>
 	</div>
 {/snippet}
