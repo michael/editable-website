@@ -67,26 +67,6 @@ const FULL_DOC = {
                 "annotations": []
             }
         },
-        "demo_decoration_1_image": {
-            "id": "demo_decoration_1_image",
-            "type": "image",
-            "src": "",
-            "mime_type": "",
-            "width": 0,
-            "height": 0,
-            "alt": "",
-            "scale": 1,
-            "focal_point_x": 0.5,
-            "focal_point_y": 0.5,
-            "object_fit": "cover"
-        },
-        "demo_decoration_1": {
-            "id": "demo_decoration_1",
-            "type": "decoration",
-            "media_max_width": 0,
-            "media_aspect_ratio": 0,
-            "media": "demo_decoration_1_image"
-        },
         "RezNUsxYmfpmFMezpgEbqYu": {
             "id": "RezNUsxYmfpmFMezpgEbqYu",
             "type": "strong"
@@ -217,7 +197,6 @@ const FULL_DOC = {
             "body": [
                 "uqZnrCRbzCkBWmYNQYkFePY",
                 "WsXcDfVgBhNjMkLqAzPeRt",
-                "demo_decoration_1",
                 "ywTQktXzgyRqzsUNXjZztQw",
                 "WjasMkTrmjdrXTsDgeUHQap",
                 "DxBvNYzBgktMyKjKkKyYcAN"
@@ -241,8 +220,8 @@ const FULL_DOC = {
                 "annotations": []
             }
         },
-        "pRPkWyTzrgwfHhbnUgvHPph": {
-            "id": "pRPkWyTzrgwfHhbnUgvHPph",
+        "AmRQEvmJZPdcXuSgwRNsSzk": {
+            "id": "AmRQEvmJZPdcXuSgwRNsSzk",
             "type": "strong"
         },
         "fuxtxNCceDRcdbcHhtqsYwJ": {
@@ -254,22 +233,22 @@ const FULL_DOC = {
                 "annotations": [
                     {
                         "start_offset": 17,
-                        "end_offset": 36,
-                        "node_id": "pRPkWyTzrgwfHhbnUgvHPph"
+                        "end_offset": 28,
+                        "node_id": "AmRQEvmJZPdcXuSgwRNsSzk"
                     }
                 ]
             }
         },
-        "szexETNtKsPwJPPECvSbMbn": {
-            "id": "szexETNtKsPwJPPECvSbMbn",
-            "type": "strong"
-        },
-        "uDAGgETYUPFDYHKSvDBwmPw": {
-            "id": "uDAGgETYUPFDYHKSvDBwmPw",
-            "type": "strong"
-        },
         "MheDsAwTmfQDGqdkpMWgXUH": {
             "id": "MheDsAwTmfQDGqdkpMWgXUH",
+            "type": "strong"
+        },
+        "XFwXMKjgMyyYRSemxHhemYh": {
+            "id": "XFwXMKjgMyyYRSemxHhemYh",
+            "type": "strong"
+        },
+        "wqkSZVmFDECjqksNpcRTVyz": {
+            "id": "wqkSZVmFDECjqksNpcRTVyz",
             "type": "strong"
         },
         "dAEBKADbvfeaBMhNWgTjKNC": {
@@ -280,37 +259,37 @@ const FULL_DOC = {
                 "text": "Select the dashed gap below this paragraph to see a flashing purple cursor.\nPress Enter to add a block.\nChange text styles (paragraph > heading etc) with Ctrl + Shift + Right.",
                 "annotations": [
                     {
-                        "start_offset": 155,
-                        "end_offset": 175,
-                        "node_id": "szexETNtKsPwJPPECvSbMbn"
-                    },
-                    {
-                        "start_offset": 83,
-                        "end_offset": 88,
-                        "node_id": "uDAGgETYUPFDYHKSvDBwmPw"
-                    },
-                    {
                         "start_offset": 11,
                         "end_offset": 22,
                         "node_id": "MheDsAwTmfQDGqdkpMWgXUH"
+                    },
+                    {
+                        "start_offset": 154,
+                        "end_offset": 174,
+                        "node_id": "XFwXMKjgMyyYRSemxHhemYh"
+                    },
+                    {
+                        "start_offset": 82,
+                        "end_offset": 87,
+                        "node_id": "wqkSZVmFDECjqksNpcRTVyz"
                     }
                 ]
             }
         },
-        "GZGpvNSHNjPJtHVfmGbRBNf": {
-            "id": "GZGpvNSHNjPJtHVfmGbRBNf",
+        "kRSnDfvEsJkQjdrMZGSFQzt": {
+            "id": "kRSnDfvEsJkQjdrMZGSFQzt",
             "type": "strong"
         },
-        "TfUCWjmVMpUWSNWhBkBjTgB": {
-            "id": "TfUCWjmVMpUWSNWhBkBjTgB",
+        "PkjDmTSvXRPdtwcYmSUScYs": {
+            "id": "PkjDmTSvXRPdtwcYmSUScYs",
             "type": "strong"
         },
-        "ryUPAdHaGfFcHAqdHPSdUMR": {
-            "id": "ryUPAdHaGfFcHAqdHPSdUMR",
+        "zAmCJVJvxsvPMaqHkBgyaNx": {
+            "id": "zAmCJVJvxsvPMaqHkBgyaNx",
             "type": "strong"
         },
-        "wrMTxwEDPezkagDwymXFFuq": {
-            "id": "wrMTxwEDPezkagDwymXFFuq",
+        "tFBaRUUJkEmftcgEyEqTAVB": {
+            "id": "tFBaRUUJkEmftcgEyEqTAVB",
             "type": "strong"
         },
         "dKDJFxDKresxkjMUZYKNuKn": {
@@ -321,30 +300,30 @@ const FULL_DOC = {
                 "text": "Select one of the full width dashed gap to see a flashing purple cursor.\nPress Enter to create a new top-level block.\nCtrl + Shift + Down cycles through block types.\nAgain Ctrl + Shift + Right lets you flip through available layouts.",
                 "annotations": [
                     {
-                        "start_offset": 81,
-                        "end_offset": 86,
-                        "node_id": "GZGpvNSHNjPJtHVfmGbRBNf"
-                    },
-                    {
-                        "start_offset": 120,
-                        "end_offset": 139,
-                        "node_id": "TfUCWjmVMpUWSNWhBkBjTgB"
-                    },
-                    {
                         "start_offset": 18,
-                        "end_offset": 41,
-                        "node_id": "ryUPAdHaGfFcHAqdHPSdUMR"
+                        "end_offset": 39,
+                        "node_id": "kRSnDfvEsJkQjdrMZGSFQzt"
                     },
                     {
-                        "start_offset": 174,
-                        "end_offset": 194,
-                        "node_id": "wrMTxwEDPezkagDwymXFFuq"
+                        "start_offset": 79,
+                        "end_offset": 84,
+                        "node_id": "PkjDmTSvXRPdtwcYmSUScYs"
+                    },
+                    {
+                        "start_offset": 118,
+                        "end_offset": 137,
+                        "node_id": "zAmCJVJvxsvPMaqHkBgyaNx"
+                    },
+                    {
+                        "start_offset": 172,
+                        "end_offset": 192,
+                        "node_id": "tFBaRUUJkEmftcgEyEqTAVB"
                     }
                 ]
             }
         },
-        "fwXyaDrZNGRyMhZMbascTYb": {
-            "id": "fwXyaDrZNGRyMhZMbascTYb",
+        "rNjwbAzwSBeezHceJNjSdbq": {
+            "id": "rNjwbAzwSBeezHceJNjSdbq",
             "type": "strong"
         },
         "dwMqDGUwHVvVkdzahPEWDuR": {
@@ -356,8 +335,8 @@ const FULL_DOC = {
                 "annotations": [
                     {
                         "start_offset": 16,
-                        "end_offset": 35,
-                        "node_id": "fwXyaDrZNGRyMhZMbascTYb"
+                        "end_offset": 38,
+                        "node_id": "rNjwbAzwSBeezHceJNjSdbq"
                     }
                 ]
             }
@@ -410,7 +389,7 @@ const FULL_DOC = {
             "type": "text",
             "layout": 5,
             "content": {
-                "text": "Images",
+                "text": "Media",
                 "annotations": []
             }
         },
@@ -419,7 +398,7 @@ const FULL_DOC = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Add images to a gallery",
+                "text": "Add images and videos to a gallery",
                 "annotations": []
             }
         },
@@ -514,6 +493,92 @@ const FULL_DOC = {
                 ]
             }
         },
+        "taTfSsusdNrNtvEEbwvvCPt": {
+            "id": "taTfSsusdNrNtvEEbwvvCPt",
+            "type": "image",
+            "src": "pattern.svg",
+            "mime_type": "image/svg+xml",
+            "width": 1750,
+            "height": 1000,
+            "alt": "",
+            "scale": 1,
+            "focal_point_x": 0.5,
+            "focal_point_y": 0.5,
+            "object_fit": "cover"
+        },
+        "vZpNjBJDjzQsgEDxbnjZqZn": {
+            "id": "vZpNjBJDjzQsgEDxbnjZqZn",
+            "type": "decoration",
+            "media": "taTfSsusdNrNtvEEbwvvCPt",
+            "media_max_width": 392,
+            "media_aspect_ratio": 2.469
+        },
+        "UaGyncAczdzPgxVgFTWTKQq": {
+            "id": "UaGyncAczdzPgxVgFTWTKQq",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "When you add images in the text flow, like the one above, you'll be able to change its size using the handles that appear at the edges of the image.",
+                "annotations": []
+            }
+        },
+        "yhaJyxTtEjzBeNfSTrSVMuV": {
+            "src": "jellyfish.mp4",
+            "mime_type": "video/mp4",
+            "width": 1280,
+            "height": 720,
+            "alt": "",
+            "scale": 1,
+            "focal_point_x": 0.46228175811044075,
+            "focal_point_y": 0.2649100629740638,
+            "object_fit": "cover",
+            "id": "yhaJyxTtEjzBeNfSTrSVMuV",
+            "type": "video"
+        },
+        "VtypQSvWYZvrYAkuREkGeuS": {
+            "id": "VtypQSvWYZvrYAkuREkGeuS",
+            "type": "decoration",
+            "media": "yhaJyxTtEjzBeNfSTrSVMuV",
+            "media_max_width": 0,
+            "media_aspect_ratio": 4.801
+        },
+        "HmvyYasKrgHfxrxJwJmMTWG": {
+            "id": "HmvyYasKrgHfxrxJwJmMTWG",
+            "type": "strong"
+        },
+        "QBraqQRMdNCQwQDjeSRDfwh": {
+            "id": "QBraqQRMdNCQwQDjeSRDfwh",
+            "type": "strong"
+        },
+        "xbVnQmJVjKxWrrybpMvCqEM": {
+            "id": "xbVnQmJVjKxWrrybpMvCqEM",
+            "type": "strong"
+        },
+        "RfqVZncyRmeDMUcnkdVvTJX": {
+            "id": "RfqVZncyRmeDMUcnkdVvTJX",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "You can even paste short video clips onto any media placeholder. Currently .mp4 , .webm, and of course .gif are supported.",
+                "annotations": [
+                    {
+                        "start_offset": 75,
+                        "end_offset": 79,
+                        "node_id": "HmvyYasKrgHfxrxJwJmMTWG"
+                    },
+                    {
+                        "start_offset": 82,
+                        "end_offset": 87,
+                        "node_id": "QBraqQRMdNCQwQDjeSRDfwh"
+                    },
+                    {
+                        "start_offset": 103,
+                        "end_offset": 107,
+                        "node_id": "xbVnQmJVjKxWrrybpMvCqEM"
+                    }
+                ]
+            }
+        },
         "BPdekRaDEUcQZqtEwPwBvyu": {
             "id": "BPdekRaDEUcQZqtEwPwBvyu",
             "type": "gallery",
@@ -530,7 +595,11 @@ const FULL_DOC = {
                 "HtSTZfjTcDSkttVaTUKMYAj"
             ],
             "outro": [
-                "NKtUpjrVYCGaJWYKGACXprb"
+                "NKtUpjrVYCGaJWYKGACXprb",
+                "vZpNjBJDjzQsgEDxbnjZqZn",
+                "UaGyncAczdzPgxVgFTWTKQq",
+                "VtypQSvWYZvrYAkuREkGeuS",
+                "RfqVZncyRmeDMUcnkdVvTJX"
             ]
         },
         "FMmrrRxdfRzhujVmergnVxA": {
@@ -560,7 +629,7 @@ const FULL_DOC = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Click on one of the cards below.\nA link preview appears at the bottom.\nClick \u201CEDIT\u201D or press ⌘ / Ctrl + k to bring up the link editor.",
+                "text": "Click on one of the cards below.\nA link preview appears at the bottom.\nClick “EDIT” or press ⌘ / Ctrl + k to bring up the link editor.",
                 "annotations": [
                     {
                         "start_offset": 93,
@@ -677,7 +746,7 @@ const FULL_DOC = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "The cards above are links to examples of live in-place editable websites Johannes Mutter and I have already launched using this technology. You can see that any design is possible \u2014 it\u2019s just HTML and CSS.",
+                "text": "The cards above are links to examples of live in-place editable websites Johannes Mutter and I have already launched using this technology. You can see that any design is possible — it’s just HTML and CSS.",
                 "annotations": [
                     {
                         "start_offset": 73,
@@ -753,7 +822,7 @@ const FULL_DOC = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "This site is powered by Svelte and Svedit \u2014 an open source rich text editor I\u2019ve created. Editable Website builds on SvelteKit and SQLite to enable full websites with multiple pages and a persistent backend where only an admin can make changes.",
+                "text": "This site is powered by Svelte and Svedit — an open source rich text editor I’ve created. Editable Website builds on SvelteKit and SQLite to enable full websites with multiple pages and a persistent backend where only an admin can make changes.",
                 "annotations": [
                     {
                         "start_offset": 117,
@@ -829,7 +898,7 @@ const FULL_DOC = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Hello, I\u2019m Michael",
+                "text": "Hello, I’m Michael",
                 "annotations": []
             }
         },
@@ -844,7 +913,7 @@ const FULL_DOC = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Since 2011 I\u2019ve been taming web browsers to behave correctly and predictably when editing rich text.",
+                "text": "Since 2011 I’ve been taming web browsers to behave correctly and predictably when editing rich text.",
                 "annotations": [
                     {
                         "start_offset": 21,
@@ -859,7 +928,7 @@ const FULL_DOC = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "I want you to be able to launch websites that anyone can edit. No more calls asking you to update someone\u2019s WordPress site! They\u2019ll be able to do it themselves.",
+                "text": "I want you to be able to launch websites that anyone can edit. No more calls asking you to update someone’s WordPress site! They’ll be able to do it themselves.",
                 "annotations": []
             }
         },
@@ -905,7 +974,7 @@ const FULL_DOC = {
                 "annotations": []
             },
             "description": {
-                "text": "This is an an initial preview of Editable Website. There\u2019s more to do before you can use it in production. Be the first to hear when it\u2019s ready:",
+                "text": "This is an an initial preview of Editable Website. There’s more to do before you can use it in production. Be the first to hear when it’s ready:",
                 "annotations": []
             },
             "buttons": [
@@ -954,7 +1023,7 @@ const FULL_DOC = {
             "type": "text",
             "layout": 5,
             "content": {
-                "text": "Big thanks to Johannes Mutter for helping with concept, design, and engineering, Tom Atkins for support with positioning and copywriting, and Sonja Stojanovic for modelling and being the very first happy Editable Website user \u2014 followed by Trails, Postlmayr Design, Aufreiter Architektur, and many more.",
+                "text": "Big thanks to Johannes Mutter for helping with concept, design, and engineering, Tom Atkins for support with positioning and copywriting, and Sonja Stojanovic for modelling and being the very first happy Editable Website user — followed by Trails, Postlmayr Design, Aufreiter Architektur, and many more.",
                 "annotations": [
                     {
                         "start_offset": 14,
@@ -1093,7 +1162,7 @@ const FULL_DOC = {
             "href": "/#BPdekRaDEUcQZqtEwPwBvyu",
             "target": "_self",
             "label": {
-                "text": "Images",
+                "text": "Media",
                 "annotations": []
             }
         },
@@ -1190,7 +1259,7 @@ const FULL_DOC = {
             "type": "footer",
             "logo": "footer_logo",
             "copyright": {
-                "text": "\u00A9 Editable Website",
+                "text": "© Editable Website",
                 "annotations": []
             },
             "footer_link_columns": [
