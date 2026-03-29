@@ -706,7 +706,7 @@ footer: {
 - **`media_property`** — the name of the media property on that node (default: `'media'`). The component derives field names as `{media_property}_max_width` and `{media_property}_aspect_ratio`, and reads the media node from `[...path, media_property]` to get intrinsic dimensions for the natural aspect ratio fallback.
 - **`placeholder_aspect_ratio`** — used when `{prop}_aspect_ratio` is `0` and the media has no intrinsic dimensions (default: `16/9`)
 
-It uses a children snippet for the inner content, provides drag handles for resizing visible only in edit mode, and has no opinion about layout, alignment, or margins.
+It uses a children snippet for the inner content, provides drag handles for resizing that appear when the media inside is selected, and has no opinion about layout, alignment, or margins.
 
 **CSS sizing (no JS measurement for overflow prevention):**
 

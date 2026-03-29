@@ -68,4 +68,4 @@ Layout is the caller's responsibility — pass a class for centering, etc:
 <SizableViewbox {path} class="mx-auto">
 ```
 
-In edit mode, three handles appear on hover: left/right edges for width (snapped to 4px grid), bottom edge for aspect ratio. Dragging beyond the container snaps width back to `0`; dragging close to the media's natural ratio snaps aspect ratio back to `0`. The viewbox uses `max-width` + `width: 100%` so it never overflows its parent.
+In edit mode, three handles appear when the media inside is selected: left/right edges for width (snapped to 4px grid), bottom edge for aspect ratio. Dragging beyond the container snaps width back to `0`; dragging close to the media's natural ratio snaps aspect ratio back to `0`. The viewbox uses `max-width` + `width: 100%` so it never overflows its parent.
