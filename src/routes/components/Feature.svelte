@@ -2,7 +2,7 @@
 	import { getContext } from 'svelte';
 	import { Node, NodeArrayProperty } from 'svedit';
 	import MediaProperty from './MediaProperty.svelte';
-	import { TW_PAGE_PADDING, TW_MOBILE_LEFT_INSET, TW_LIMITER } from '../tailwind_theme.js';
+	import { TW_PAGE_PADDING, TW_LIMITER } from '../tailwind_theme.js';
 	import { reveal } from '../reveal.js';
 
 	const svedit = getContext('svedit');
@@ -10,18 +10,18 @@
 	let node = $derived(svedit.session.get(path));
 	let media_node = $derived(svedit.session.get([...path, 'media']));
 	let media_aspect_ratio = $derived(
-		media_node.width && media_node.height ? `${media_node.width} / ${media_node.height}` : '3 / 4'
+		media_node.width && media_node.height ? `${media_node.width} / ${media_node.height}` : undefined
 	);
 	let colorset_class = $derived(node.colorset ? `ew-colorset-${node.colorset}` : '');
 </script>
 
 <!-- Primitives -->
-{#snippet image(fallback_ratio = '3 / 4', border_radius = false)}
+{#snippet image(placeholder_aspect_ratio = '3 / 4', border_radius = false)}
 	<div class="flex items-center h-full w-full">
 		<div
 			class="overflow-hidden w-full"
 			style:border-radius={border_radius ? 'var(--image-border-radius)' : undefined}
-			style:aspect-ratio={media_node.width && media_node.height ? media_aspect_ratio : fallback_ratio}
+			style:aspect-ratio={media_aspect_ratio ?? placeholder_aspect_ratio}
 		>
 			<MediaProperty path={[...path, 'media']} />
 		</div>
