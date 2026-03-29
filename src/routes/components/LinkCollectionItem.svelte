@@ -24,7 +24,9 @@
 		</div>
 		<div class="pt-4">
 			<AnnotatedTextProperty class="text-xs md:text-sm uppercase tracking-widest text-(--foreground) opacity-60 mb-2" path={[...path, 'preline']} placeholder="Preline" />
-			<AnnotatedTextProperty class="{!svedit.editable ? 'title-underline' : ''} font-serif text-(--foreground) text-2xl lg:text-3xl text-balance pt-1" path={[...path, 'title']} placeholder="Title" />
+			<div class="pt-1">
+				<AnnotatedTextProperty class="{!svedit.editable ? 'title-underline' : ''} inline font-serif text-(--foreground) text-2xl lg:text-3xl text-balance" path={[...path, 'title']} placeholder="Title" />
+			</div>
 			<AnnotatedTextProperty class="text-balance pt-2" path={[...path, 'description']} placeholder="Description" />
 		</div>
 	</svelte:element>
@@ -43,4 +45,6 @@
 	:global(.group:hover .title-underline) {
 		background-size: 100% 2px;
 	}
+
+
 </style>
