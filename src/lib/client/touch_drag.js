@@ -1,0 +1,134 @@
+/**
+ * Touch-aware drag attachment.
+ *
+ * Mouse/pen: drag starts immediately on pointerdown.
+ * Touch: user must hold still for 300ms before drag activates
+ * (disambiguates from page scroll).
+ *
+ * Toggles CSS classes on the element automatically:
+ *   .dragging     — while actively dragging (mouse or touch)
+ *   .touch-locked — once the touch hold threshold passes
+ *
+ * Usage:
+ *
+ *   <div {@attach touch_drag({ on_move, on_down, on_up })}>
+ *
+ * @param {{
+ *   should_start?: () => boolean,
+ *   on_down?: (client_x: number, client_y: number) => void,
+ *   on_move: (client_x: number, client_y: number) => void,
+ *   on_up?: () => void,
+ * }} callbacks
+ * @returns {import('svelte/attachments').Attachment}
+ */
+export function touch_drag(callbacks) {
+	const HOLD_MS = 300;
+	const MOVE_TOL = 8;
+
+	return (node) => {
+		let dragging = false;
+		let locked = false;
+		let timer = null;
+		let start_x = 0;
+		let start_y = 0;
+
+		function set_dragging(v) {
+			dragging = v;
+			node.classList.toggle('dragging', v);
+		}
+
+		function set_locked(v) {
+			locked = v;
+			node.classList.toggle('touch-locked', v);
+		}
+
+		function can_start() {
+			return !callbacks.should_start || callbacks.should_start();
+		}
+
+		function end_drag() {
+			const was = dragging;
+			clear_timer();
+			set_locked(false);
+			set_dragging(false);
+			if (was) callbacks.on_up?.();
+		}
+
+		function clear_timer() {
+			if (timer) { clearTimeout(timer); timer = null; }
+		}
+
+		// --- Pointer (mouse / pen — immediate) ---
+
+		function on_pointer_down(e) {
+			if (e.pointerType === 'touch' || !can_start()) return;
+			e.preventDefault();
+			e.stopPropagation();
+			set_dragging(true);
+			callbacks.on_down?.(e.clientX, e.clientY);
+		}
+
+		function on_pointer_move(e) {
+			if (e.pointerType === 'touch' || !dragging) return;
+			callbacks.on_move(e.clientX, e.clientY);
+		}
+
+		function on_pointer_up(e) {
+			if (e?.pointerType === 'touch' || !dragging) return;
+			set_dragging(false);
+			callbacks.on_up?.();
+		}
+
+		// --- Touch (hold-then-drag) ---
+
+		function on_touch_start(e) {
+			if (e.touches.length !== 1 || !can_start()) return;
+			const t = e.touches[0];
+			start_x = t.clientX;
+			start_y = t.clientY;
+			clear_timer();
+			timer = setTimeout(() => {
+				timer = null;
+				set_locked(true);
+				set_dragging(true);
+				callbacks.on_down?.(start_x, start_y);
+			}, HOLD_MS);
+		}
+
+		function on_touch_move(e) {
+			if (e.touches.length !== 1) { end_drag(); return; }
+			const t = e.touches[0];
+			if (!locked) {
+				if (timer
+					&& (Math.abs(t.clientX - start_x) > MOVE_TOL
+						|| Math.abs(t.clientY - start_y) > MOVE_TOL)) {
+					clear_timer();
+				}
+				return;
+			}
+			e.preventDefault();
+			callbacks.on_move(t.clientX, t.clientY);
+		}
+
+		// --- Bind ---
+
+		node.addEventListener('pointerdown', on_pointer_down);
+		node.addEventListener('touchstart', on_touch_start, { passive: true });
+		node.addEventListener('touchmove', on_touch_move, { passive: false });
+		node.addEventListener('touchend', end_drag);
+		node.addEventListener('touchcancel', end_drag);
+		window.addEventListener('pointermove', on_pointer_move);
+		window.addEventListener('pointerup', on_pointer_up);
+
+		return () => {
+			end_drag();
+			node.removeEventListener('pointerdown', on_pointer_down);
+			node.removeEventListener('touchstart', on_touch_start);
+			node.removeEventListener('touchmove', on_touch_move);
+			node.removeEventListener('touchend', end_drag);
+			node.removeEventListener('touchcancel', end_drag);
+			window.removeEventListener('pointermove', on_pointer_move);
+			window.removeEventListener('pointerup', on_pointer_up);
+		};
+	};
+}

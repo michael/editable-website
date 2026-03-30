@@ -1,6 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
-	import { create_touch_drag } from '$lib/client/touch_drag.svelte.js';
+	import { touch_drag } from '$lib/client/touch_drag.js';
 
 	const svedit = getContext('svedit');
 
@@ -21,23 +21,8 @@
 	let container_height = $state(0);
 
 	// Track last pointer position for delta computation
-	let last_x = $state(0);
-	let last_y = $state(0);
-
-	const drag = create_touch_drag({
-		should_start: () => can_pan,
-		on_down(client_x, client_y) {
-			last_x = client_x;
-			last_y = client_y;
-		},
-		on_move(client_x, client_y) {
-			if (!controls_ref) return;
-			apply_pan_delta(client_x, client_y);
-		},
-		on_up() {
-			// Nothing special needed on up
-		},
-	});
+	let last_x = 0;
+	let last_y = 0;
 
 	// ResizeObserver tracks actual container dimensions (covers aspect ratio
 	// changes, max-width changes, window resizes, etc.)
@@ -54,10 +39,6 @@
 		ro.observe(el);
 		return () => ro.disconnect();
 	});
-
-	// Attach touch listeners with { passive: false } so we can call
-	// preventDefault on touchmove once the hold-to-pan gesture is confirmed.
-	$effect(() => drag.attach(controls_ref));
 
 	// Derive can_pan from media props + observed container dimensions
 	$effect(() => {
@@ -121,22 +102,26 @@
 		tr.set([...path, 'scale'], Math.min(Math.max(media_node.scale * zoomFactor, MIN_SCALE), MAX_SCALE));
 		svedit.session.apply(tr, { batch: true });
 	}
-</script>
 
-<!-- Mouse/pen: global move/up so dragging works outside the element -->
-<svelte:window onpointermove={drag.pointer_move} onpointerup={drag.pointer_up} />
+	const pan_drag = touch_drag({
+		should_start: () => can_pan,
+		on_down(client_x, client_y) {
+			last_x = client_x;
+			last_y = client_y;
+		},
+		on_move: apply_pan_delta,
+	});
+</script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
 	bind:this={controls_ref}
 	class="media-controls"
-	ondblclick={handle_double_click}
-	onpointerdown={drag.pointer_down}
-	onwheel={handle_wheel}
-	role="button"
-	class:dragging={drag.dragging}
-	class:touch-locked={drag.touch_locked}
 	class:no-pan={!can_pan}
+	ondblclick={handle_double_click}
+	onwheel={handle_wheel}
+	{@attach pan_drag}
+	role="button"
 	tabindex="0"
 >
 	{#if can_pan}
@@ -164,12 +149,11 @@
 		cursor: default;
 	}
 
-	.media-controls.dragging {
+	.media-controls:global(.dragging) {
 		cursor: grabbing;
 	}
 
-	/* Visual feedback while touch-hold is active */
-	.media-controls.touch-locked {
+	.media-controls:global(.touch-locked) {
 		outline: 2px solid var(--svedit-editing-stroke, oklch(60% 0.22 283));
 		outline-offset: -2px;
 	}

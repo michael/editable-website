@@ -1,6 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
-	import { create_touch_drag } from '$lib/client/touch_drag.svelte.js';
+	import { touch_drag } from '$lib/client/touch_drag.js';
 
 	const svedit = getContext('svedit');
 
@@ -46,18 +46,13 @@
 	let anchor_name = $derived(`--viewbox-${path.join('-')}-${media_property}`);
 
 	// --- Drag state (shared across all handles) ---
-	let drag_type = $state(null); // 'width-left' | 'width-right' | 'height'
-	let drag_start_x = $state(0);
-	let drag_start_y = $state(0);
-	let drag_start_max_width = $state(0);
-	let drag_start_aspect_ratio = $state(0);
-	let drag_container_width = $state(0);
-	let drag_width_multiplier = $state(1); // 2 for centered (mx-auto), 1 for edge-aligned
-
-	// Element refs for the three handles
-	let handle_left_ref = $state(null);
-	let handle_right_ref = $state(null);
-	let handle_bottom_ref = $state(null);
+	let drag_type = null;
+	let drag_start_x = 0;
+	let drag_start_y = 0;
+	let drag_start_max_width = 0;
+	let drag_start_aspect_ratio = 0;
+	let drag_container_width = 0;
+	let drag_width_multiplier = 1;
 
 	/** Find the viewbox element via its anchor name data attribute */
 	function get_viewbox_el() {
@@ -72,12 +67,10 @@
 		drag_start_max_width = node[max_width_field] > 0
 			? node[max_width_field]
 			: (rect?.width ?? 400);
-		// Measure the viewbox's parent for snap-to-full-width
 		const parent_rect = viewbox_el?.parentElement?.getBoundingClientRect();
 		drag_container_width = parent_rect?.width ?? drag_start_max_width;
 
-		// Detect centering to choose the right multiplier:
-		// Compare element's horizontal gaps to its parent.
+		// Detect centering by comparing horizontal gaps to parent.
 		// Works for both margin:auto and flex centering.
 		if (viewbox_el && rect && parent_rect) {
 			const gap_left = rect.left - parent_rect.left;
@@ -144,29 +137,24 @@
 		drag_type = null;
 	}
 
-	// --- One drag instance per handle, sharing the move/up logic ---
+	// --- One attachment per handle ---
 
-	const drag_left = create_touch_drag({
-		on_down(client_x, client_y) {
-			drag_start_x = client_x;
-			drag_start_y = client_y;
-			capture_width_state('width-left');
-		},
-		on_move: handle_move,
-		on_up: handle_up,
-	});
+	function width_drag(side) {
+		return touch_drag({
+			on_down(client_x, client_y) {
+				drag_start_x = client_x;
+				drag_start_y = client_y;
+				capture_width_state(side);
+			},
+			on_move: handle_move,
+			on_up: handle_up,
+		});
+	}
 
-	const drag_right = create_touch_drag({
-		on_down(client_x, client_y) {
-			drag_start_x = client_x;
-			drag_start_y = client_y;
-			capture_width_state('width-right');
-		},
-		on_move: handle_move,
-		on_up: handle_up,
-	});
+	const drag_left = width_drag('width-left');
+	const drag_right = width_drag('width-right');
 
-	const drag_bottom = create_touch_drag({
+	const drag_bottom = touch_drag({
 		on_down(client_x, client_y) {
 			drag_start_x = client_x;
 			drag_start_y = client_y;
@@ -175,26 +163,6 @@
 		on_move: handle_move,
 		on_up: handle_up,
 	});
-
-	let any_dragging = $derived(drag_left.dragging || drag_right.dragging || drag_bottom.dragging);
-
-	// Attach touch listeners to each handle
-	$effect(() => drag_left.attach(handle_left_ref));
-	$effect(() => drag_right.attach(handle_right_ref));
-	$effect(() => drag_bottom.attach(handle_bottom_ref));
-
-	// Combine pointer_move/pointer_up from all three drags into single window handlers
-	function handle_global_pointer_move(e) {
-		drag_left.pointer_move(e);
-		drag_right.pointer_move(e);
-		drag_bottom.pointer_move(e);
-	}
-
-	function handle_global_pointer_up(e) {
-		drag_left.pointer_up(e);
-		drag_right.pointer_up(e);
-		drag_bottom.pointer_up(e);
-	}
 
 	function handle_width_dblclick(e) {
 		e.preventDefault();
@@ -213,20 +181,16 @@
 	}
 </script>
 
-<svelte:window onpointermove={handle_global_pointer_move} onpointerup={handle_global_pointer_up} />
-
 <div
 	class="viewbox-handles"
-	class:dragging={any_dragging}
 	style="position-anchor: {anchor_name};"
 >
 	<!-- Left width handle -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
-		bind:this={handle_left_ref}
 		class="handle handle-left"
-		onpointerdown={drag_left.pointer_down}
 		ondblclick={handle_width_dblclick}
+		{@attach drag_left}
 	>
 		<div class="handle-line"></div>
 	</div>
@@ -234,10 +198,9 @@
 	<!-- Right width handle -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
-		bind:this={handle_right_ref}
 		class="handle handle-right"
-		onpointerdown={drag_right.pointer_down}
 		ondblclick={handle_width_dblclick}
+		{@attach drag_right}
 	>
 		<div class="handle-line"></div>
 	</div>
@@ -245,10 +208,9 @@
 	<!-- Bottom aspect ratio handle -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
-		bind:this={handle_bottom_ref}
 		class="handle handle-bottom"
-		onpointerdown={drag_bottom.pointer_down}
 		ondblclick={handle_height_dblclick}
+		{@attach drag_bottom}
 	>
 		<div class="handle-line"></div>
 	</div>
@@ -264,10 +226,6 @@
 		pointer-events: none;
 	}
 
-	.viewbox-handles.dragging {
-		user-select: none;
-	}
-
 	/* --- Drag handles --- */
 
 	.handle {
@@ -275,6 +233,11 @@
 		z-index: 20;
 		pointer-events: auto;
 		opacity: 1;
+	}
+
+	/* Toggled by the touch_drag attachment via classList */
+	.handle:global(.dragging) {
+		user-select: none;
 	}
 
 	/* Left handle — sits to the left of the viewbox */
