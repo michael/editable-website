@@ -62,6 +62,54 @@ function get_media_type(file) {
 	return 'image';
 }
 
+/**
+ * Replace a media node at the given path with a new file.
+ * Reused by handle_media_paste and the toolbar's replace-image button.
+ *
+ * @param {import('svedit').Session} session
+ * @param {any[]} path - path to the media node (image/video)
+ * @param {File} file
+ * @param {string} blob_url - a blob: or data: URL for immediate display
+ */
+async function replace_media(session, path, file, blob_url) {
+	const node = session.get(path);
+	if (node.type !== 'image' && node.type !== 'video') return;
+
+	const media_type = get_media_type(file);
+	const dims = await get_media_dimensions(file);
+	const tr = session.tr;
+
+	if (media_type === node.type) {
+		// Same type — replace src and dimensions, reset crop
+		set_properties(tr, path, {
+			...MEDIA_DEFAULTS,
+			src: blob_url,
+			mime_type: file.type,
+			width: dims.width,
+			height: dims.height
+		});
+	} else {
+		// Different type — replace the entire node
+		const new_node = {
+			...MEDIA_DEFAULTS,
+			id: nanoid(),
+			type: media_type,
+			src: blob_url,
+			mime_type: file.type,
+			width: dims.width,
+			height: dims.height,
+		};
+		tr.create(new_node);
+		const parent_path = path.slice(0, -1);
+		const property_name = path[path.length - 1];
+		tr.set([...parent_path, property_name], new_node.id);
+	}
+
+	session.apply(tr);
+	// Re-select the media property so it stays selected after replacement
+	session.selection = { type: 'property', path };
+	start_processing(blob_url, file);
+}
 
 // App-specific config object, always available via session.config for introspection
 const session_config = {
@@ -98,46 +146,12 @@ const session_config = {
 		Highlight,
 		Link
 	},
+	replace_media,
 	handle_media_paste: async (session, pasted_media) => {
 		if (session.selection.type === 'property') {
 			const node = session.get(session.selection.path);
 			if (node.type === 'image' || node.type === 'video') {
-				const file = pasted_media[0].blob;
-				const media_type = get_media_type(file);
-				const blob_url = pasted_media[0].data_url;
-				const dims = await get_media_dimensions(file);
-				const tr = session.tr;
-
-				if (media_type === node.type) {
-					// Same type — replace src and dimensions, reset crop
-					set_properties(tr, session.selection.path, {
-						...MEDIA_DEFAULTS,
-						src: blob_url,
-						mime_type: file.type,
-						width: dims.width,
-						height: dims.height
-					});
-				} else {
-					// Different type — replace the entire node
-					const new_node = {
-						...MEDIA_DEFAULTS,
-						id: nanoid(),
-						type: media_type,
-						src: blob_url,
-						mime_type: file.type,
-						width: dims.width,
-						height: dims.height,
-					};
-					tr.create(new_node);
-					const parent_path = session.selection.path.slice(0, -1);
-					const property_name = session.selection.path[session.selection.path.length - 1];
-					// Setting the property to the new node id auto-deletes the old node
-					tr.set([...parent_path, property_name], new_node.id);
-				}
-
-				session.apply(tr);
-				// Start background processing (hash + resize/encode)
-				start_processing(blob_url, pasted_media[0].blob);
+				await replace_media(session, session.selection.path, pasted_media[0].blob, pasted_media[0].data_url);
 			}
 			return null;
 		} else {
