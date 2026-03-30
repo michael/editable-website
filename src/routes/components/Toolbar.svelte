@@ -1,6 +1,35 @@
 <script>
 	let { session, app_commands, editable, focus_canvas } = $props();
 
+	let selected_property = $derived(
+		session.selection?.type === 'property'
+			? session.get(session.selection.path)
+			: null
+	);
+	let is_media_selected = $derived(
+		selected_property?.type === 'image' || selected_property?.type === 'video'
+	);
+
+	let file_input_ref = $state(null);
+	// Captured at click time so it survives the file picker stealing focus
+	let replace_media_path = null;
+
+	function handle_replace_image_click(e) {
+		e.preventDefault();
+		replace_media_path = session.selection?.path ?? null;
+		file_input_ref?.click();
+	}
+
+	async function handle_file_selected(e) {
+		const file = e.target.files?.[0];
+		if (!file || !replace_media_path) return;
+		const blob_url = URL.createObjectURL(file);
+		await session.config.replace_media(session, replace_media_path, file, blob_url);
+		replace_media_path = null;
+		// Reset so the same file can be re-selected
+		e.target.value = '';
+	}
+
 	const TW_TOOLBAR_POSITION = 'bottom-5 right-5 sm:right-7 md:right-10 lg:right-14';
 	// On mobile also pin to left edge so the toolbar can scroll horizontally
 	const TW_TOOLBAR_LEFT = 'left-5 sm:left-7 md:left-auto';
@@ -88,6 +117,21 @@
 					</div>
 				{/if}
 
+				<!-- Replace image (visible when media is selected) -->
+				{#if is_media_selected}
+					<button
+						class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
+						onmousedown={handle_replace_image_click}
+						title="Replace image"
+					>
+						<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+							<circle cx="8.5" cy="8.5" r="1.5" />
+							<polyline points="21 15 16 10 5 21" />
+						</svg>
+					</button>
+				{/if}
+
 				<!-- Type / Layout group (always visible, disabled when not applicable) -->
 				<div class="flex items-center gap-1">
 					<!-- Type: cycle to next node type -->
@@ -120,6 +164,15 @@
 						</svg>
 					</button>
 				</div>
+
+				<!-- Hidden file input for replace-image -->
+				<input
+					bind:this={file_input_ref}
+					type="file"
+					accept="image/*,video/*"
+					class="hidden"
+					onchange={handle_file_selected}
+				/>
 
 				<!-- Stable right group: Undo / Redo / Save -->
 				<div class="flex items-center gap-1">
