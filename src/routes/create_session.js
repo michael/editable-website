@@ -105,9 +105,9 @@ async function replace_media(session, path, file, blob_url) {
 		tr.set([...parent_path, property_name], new_node.id);
 	}
 
+	// Set selection on the transaction so undo/redo restores it correctly
+	tr.selection = { type: 'property', path };
 	session.apply(tr);
-	// Re-select the media property so it stays selected after replacement
-	session.selection = { type: 'property', path };
 	start_processing(blob_url, file);
 }
 
