@@ -11,6 +11,97 @@
 	let is_dragging = $state(false);
 	let overlays_ref = $state();
 
+	// --- File drag-and-drop onto media properties ---
+	// Tracks the data-path of the media property currently under the drag cursor.
+	// Uses capture-phase document listeners to intercept before contenteditable
+	// retargets drag events to the canvas host element.
+	let drop_target_path = $state(null);
+	let file_drag_active = $state(false);
+
+	$effect(() => {
+		if (!svedit.editable) return;
+
+		document.addEventListener('dragover', on_dragover, true);
+		document.addEventListener('dragleave', on_dragleave, true);
+		document.addEventListener('drop', on_drop, true);
+
+		return () => {
+			document.removeEventListener('dragover', on_dragover, true);
+			document.removeEventListener('dragleave', on_dragleave, true);
+			document.removeEventListener('drop', on_drop, true);
+		};
+	});
+
+	/**
+	 * Find the media property path under the cursor during a file drag.
+	 * Returns the path array or null.
+	 */
+	function get_media_path_at(e) {
+		const el = document.elementFromPoint(e.clientX, e.clientY);
+		if (!el) return null;
+		const prop_el = el.closest('[data-type="property"]');
+		if (!prop_el) return null;
+		const path_str = prop_el.getAttribute('data-path');
+		if (!path_str) return null;
+		const path = path_str.split('.');
+		const node = svedit.session.get(path);
+		if (node?.type !== 'image' && node?.type !== 'video') return null;
+		return path;
+	}
+
+	function on_dragover(e) {
+		if (!svedit.editable) return;
+		if (!e.dataTransfer?.types?.includes('Files')) return;
+		file_drag_active = true;
+		const path = get_media_path_at(e);
+		if (!path) {
+			if (drop_target_path) drop_target_path = null;
+			return;
+		}
+		e.preventDefault();
+		e.stopPropagation();
+		e.dataTransfer.dropEffect = 'copy';
+		const path_str = path.join('.');
+		if (drop_target_path?.join('.') !== path_str) {
+			drop_target_path = path;
+		}
+	}
+
+	function on_dragleave(e) {
+		// If the drag left the document entirely, clear everything
+		if (!e.relatedTarget && !document.elementFromPoint(e.clientX, e.clientY)) {
+			file_drag_active = false;
+			drop_target_path = null;
+			return;
+		}
+		if (!drop_target_path) return;
+		if (!get_media_path_at(e)) {
+			drop_target_path = null;
+		}
+	}
+
+	async function on_drop(e) {
+		const path = drop_target_path ? [...drop_target_path] : null;
+		drop_target_path = null;
+		file_drag_active = false;
+
+		// Always prevent default in edit mode so dropping a file outside
+		// a media property doesn't navigate away (losing unsaved edits).
+		if (svedit.editable && e.dataTransfer?.types?.includes('Files')) {
+			e.preventDefault();
+			e.stopPropagation();
+		}
+
+		if (!path) return;
+
+		const file = e.dataTransfer?.files?.[0];
+		if (!file) return;
+		if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) return;
+
+		const blob_url = URL.createObjectURL(file);
+		await svedit.session.config.replace_media(svedit.session, path, file, blob_url);
+	}
+
 	function handle_mousemove(e) {
 		if (e.buttons !== 1) return;
 		// Only set is_dragging if drag started outside overlays
@@ -84,31 +175,41 @@
 </script>
 
 <div bind:this={overlays_ref}>
-	{#if svedit.session.selection?.type === 'property'}
-		{#if is_media_selected}
-			<div
-				class="media-controls-overlay property-selection-overlay"
-				style="position-anchor: --{svedit.session.selection.path.join('-')};"
-			>
-				{#if selected_property.src}
-					<MediaControls path={svedit.session.selection.path} />
-				{/if}
-			</div>
-		{:else}
-			<div
-				class="property-selection-overlay"
-				style="position-anchor: --{svedit.session.selection.path.join('-')};"
-			></div>
-		{/if}
+	<!-- Drop target overlay for file drag-and-drop onto media properties -->
+	{#if drop_target_path}
+		<div
+			class="drop-target-overlay"
+			style="position-anchor: --{drop_target_path.join('-')};"
+		></div>
 	{/if}
-	<!-- Here we render  and other stuff that should lay atop of the canvas -->
-	<!-- NOTE: we are using CSS Anchor Positioning, which currently only works in the latest Chrome browser -->
 
-	{#if viewbox_context}
-		<SizableViewboxControls
-			path={viewbox_context.parent_path}
-			media_property={viewbox_context.media_property}
-		/>
+	{#if !file_drag_active}
+		{#if svedit.session.selection?.type === 'property'}
+			{#if is_media_selected}
+				<div
+					class="media-controls-overlay property-selection-overlay"
+					style="position-anchor: --{svedit.session.selection.path.join('-')};"
+				>
+					{#if selected_property.src}
+						<MediaControls path={svedit.session.selection.path} />
+					{/if}
+				</div>
+			{:else}
+				<div
+					class="property-selection-overlay"
+					style="position-anchor: --{svedit.session.selection.path.join('-')};"
+				></div>
+			{/if}
+		{/if}
+		<!-- Here we render  and other stuff that should lay atop of the canvas -->
+		<!-- NOTE: we are using CSS Anchor Positioning, which currently only works in the latest Chrome browser -->
+
+		{#if viewbox_context}
+			<SizableViewboxControls
+				path={viewbox_context.parent_path}
+				media_property={viewbox_context.media_property}
+			/>
+		{/if}
 	{/if}
 
 	{#if link_preview && !svedit.session.commands?.edit_link?.show_prompt && !is_dragging}
@@ -125,6 +226,17 @@
 </div>
 
 <style>
+	.drop-target-overlay {
+		position: absolute;
+		top: anchor(top);
+		left: anchor(left);
+		bottom: anchor(bottom);
+		right: anchor(right);
+		outline: 3px solid var(--svedit-editing-stroke, oklch(60% 0.22 283));
+		outline-offset: -3px;
+		pointer-events: none;
+		z-index: 30;
+	}
 
 	.media-controls-overlay {
 		position: absolute;
