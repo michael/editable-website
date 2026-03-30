@@ -1,5 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
+	import { create_touch_drag } from '$lib/client/touch_drag.svelte.js';
 
 	const svedit = getContext('svedit');
 
@@ -44,7 +45,7 @@
 	// Anchor name must match what SizableViewbox sets
 	let anchor_name = $derived(`--viewbox-${path.join('-')}-${media_property}`);
 
-	// --- Drag state ---
+	// --- Drag state (shared across all handles) ---
 	let drag_type = $state(null); // 'width-left' | 'width-right' | 'height'
 	let drag_start_x = $state(0);
 	let drag_start_y = $state(0);
@@ -53,16 +54,18 @@
 	let drag_container_width = $state(0);
 	let drag_width_multiplier = $state(1); // 2 for centered (mx-auto), 1 for edge-aligned
 
+	// Element refs for the three handles
+	let handle_left_ref = $state(null);
+	let handle_right_ref = $state(null);
+	let handle_bottom_ref = $state(null);
+
 	/** Find the viewbox element via its anchor name data attribute */
 	function get_viewbox_el() {
 		return document.querySelector(`[data-viewbox-anchor="${anchor_name}"]`);
 	}
 
-	function handle_width_pointer_down(e, side) {
-		e.preventDefault();
-		e.stopPropagation();
+	function capture_width_state(side) {
 		drag_type = side;
-		drag_start_x = e.clientX;
 
 		const viewbox_el = get_viewbox_el();
 		const rect = viewbox_el?.getBoundingClientRect();
@@ -74,18 +77,12 @@
 		drag_container_width = parent_rect?.width ?? drag_start_max_width;
 
 		// Detect centering to choose the right multiplier:
-		// - Centered element (mx-auto or flex items-center): dragging one handle
-		//   grows width by 2x (both sides expand equally), so we need * 2 for the
-		//   handle to track the mouse 1:1.
-		// - Edge-aligned element: the near edge is pinned, so width change = edge
-		//   movement, and we need * 1.
-		// We detect centering by comparing the element's horizontal gaps to its parent.
-		// This works for both margin:auto and flex centering.
+		// Compare element's horizontal gaps to its parent.
+		// Works for both margin:auto and flex centering.
 		if (viewbox_el && rect && parent_rect) {
 			const gap_left = rect.left - parent_rect.left;
 			const gap_right = parent_rect.right - rect.right;
 			const total_gap = gap_left + gap_right;
-			// If gaps are roughly equal (within 5px or 10% of total), it's centered
 			const is_centered = total_gap > 0
 				&& Math.abs(gap_left - gap_right) < Math.max(5, total_gap * 0.1);
 			drag_width_multiplier = is_centered ? 2 : 1;
@@ -94,11 +91,8 @@
 		}
 	}
 
-	function handle_height_pointer_down(e) {
-		e.preventDefault();
-		e.stopPropagation();
+	function capture_height_state() {
 		drag_type = 'height';
-		drag_start_y = e.clientY;
 		drag_start_aspect_ratio = resolved_aspect_ratio;
 
 		const viewbox_el = get_viewbox_el();
@@ -106,11 +100,11 @@
 		drag_start_max_width = rect?.width ?? 400;
 	}
 
-	function handle_pointer_move(e) {
+	function handle_move(client_x, client_y) {
 		if (!drag_type) return;
 
 		if (drag_type === 'width-left' || drag_type === 'width-right') {
-			const dx = e.clientX - drag_start_x;
+			const dx = client_x - drag_start_x;
 			const direction = drag_type === 'width-right' ? 1 : -1;
 			const raw_width = Math.max(MIN_WIDTH, Math.round(drag_start_max_width + dx * direction * drag_width_multiplier));
 			const new_width = Math.round(raw_width / 4) * 4;
@@ -119,7 +113,7 @@
 			tr.set([...path, max_width_field], new_width >= drag_container_width ? 0 : new_width);
 			svedit.session.apply(tr, { batch: true });
 		} else if (drag_type === 'height') {
-			const dy = e.clientY - drag_start_y;
+			const dy = client_y - drag_start_y;
 			const current_width = drag_start_max_width;
 			const old_height = current_width / drag_start_aspect_ratio;
 			const new_height = Math.max(MIN_HEIGHT, old_height + dy);
@@ -131,6 +125,75 @@
 			tr.set([...path, aspect_ratio_field], snap ? 0 : Math.round(new_ratio * 1000) / 1000);
 			svedit.session.apply(tr, { batch: true });
 		}
+	}
+
+	function handle_up() {
+		if (!drag_type) return;
+
+		// Final non-batched apply for clean undo point
+		if (drag_type === 'width-left' || drag_type === 'width-right') {
+			const tr = svedit.session.tr;
+			tr.set([...path, max_width_field], node[max_width_field]);
+			svedit.session.apply(tr);
+		} else if (drag_type === 'height') {
+			const tr = svedit.session.tr;
+			tr.set([...path, aspect_ratio_field], node[aspect_ratio_field]);
+			svedit.session.apply(tr);
+		}
+
+		drag_type = null;
+	}
+
+	// --- One drag instance per handle, sharing the move/up logic ---
+
+	const drag_left = create_touch_drag({
+		on_down(client_x, client_y) {
+			drag_start_x = client_x;
+			drag_start_y = client_y;
+			capture_width_state('width-left');
+		},
+		on_move: handle_move,
+		on_up: handle_up,
+	});
+
+	const drag_right = create_touch_drag({
+		on_down(client_x, client_y) {
+			drag_start_x = client_x;
+			drag_start_y = client_y;
+			capture_width_state('width-right');
+		},
+		on_move: handle_move,
+		on_up: handle_up,
+	});
+
+	const drag_bottom = create_touch_drag({
+		on_down(client_x, client_y) {
+			drag_start_x = client_x;
+			drag_start_y = client_y;
+			capture_height_state();
+		},
+		on_move: handle_move,
+		on_up: handle_up,
+	});
+
+	let any_dragging = $derived(drag_left.dragging || drag_right.dragging || drag_bottom.dragging);
+
+	// Attach touch listeners to each handle
+	$effect(() => drag_left.attach(handle_left_ref));
+	$effect(() => drag_right.attach(handle_right_ref));
+	$effect(() => drag_bottom.attach(handle_bottom_ref));
+
+	// Combine pointer_move/pointer_up from all three drags into single window handlers
+	function handle_global_pointer_move(e) {
+		drag_left.pointer_move(e);
+		drag_right.pointer_move(e);
+		drag_bottom.pointer_move(e);
+	}
+
+	function handle_global_pointer_up(e) {
+		drag_left.pointer_up(e);
+		drag_right.pointer_up(e);
+		drag_bottom.pointer_up(e);
 	}
 
 	function handle_width_dblclick(e) {
@@ -148,37 +211,21 @@
 		tr.set([...path, aspect_ratio_field], 0);
 		svedit.session.apply(tr);
 	}
-
-	function handle_pointer_up() {
-		if (!drag_type) return;
-
-		// Final non-batched apply for clean undo point
-		if (drag_type === 'width-left' || drag_type === 'width-right') {
-			const tr = svedit.session.tr;
-			tr.set([...path, max_width_field], node[max_width_field]);
-			svedit.session.apply(tr);
-		} else if (drag_type === 'height') {
-			const tr = svedit.session.tr;
-			tr.set([...path, aspect_ratio_field], node[aspect_ratio_field]);
-			svedit.session.apply(tr);
-		}
-
-		drag_type = null;
-	}
 </script>
 
-<svelte:window onpointermove={handle_pointer_move} onpointerup={handle_pointer_up} />
+<svelte:window onpointermove={handle_global_pointer_move} onpointerup={handle_global_pointer_up} />
 
 <div
 	class="viewbox-handles"
-	class:dragging={drag_type !== null}
+	class:dragging={any_dragging}
 	style="position-anchor: {anchor_name};"
 >
 	<!-- Left width handle -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
+		bind:this={handle_left_ref}
 		class="handle handle-left"
-		onpointerdown={(e) => handle_width_pointer_down(e, 'width-left')}
+		onpointerdown={drag_left.pointer_down}
 		ondblclick={handle_width_dblclick}
 	>
 		<div class="handle-line"></div>
@@ -187,8 +234,9 @@
 	<!-- Right width handle -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
+		bind:this={handle_right_ref}
 		class="handle handle-right"
-		onpointerdown={(e) => handle_width_pointer_down(e, 'width-right')}
+		onpointerdown={drag_right.pointer_down}
 		ondblclick={handle_width_dblclick}
 	>
 		<div class="handle-line"></div>
@@ -197,8 +245,9 @@
 	<!-- Bottom aspect ratio handle -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
+		bind:this={handle_bottom_ref}
 		class="handle handle-bottom"
-		onpointerdown={handle_height_pointer_down}
+		onpointerdown={drag_bottom.pointer_down}
 		ondblclick={handle_height_dblclick}
 	>
 		<div class="handle-line"></div>
