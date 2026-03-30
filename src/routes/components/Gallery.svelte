@@ -11,6 +11,22 @@
 	let has_outro = $derived(node.outro && node.outro.length > 0);
 	let grid_layout = $derived.by(get_grid_layout);
 
+	$effect(() => {
+		if (svedit.editable || typeof Fancybox === 'undefined') return;
+
+		Fancybox.bind('[data-fancybox="gallery"]', {
+			// Custom options
+			Hash: false,
+			Thumbs: {
+				autoStart: false
+			}
+		});
+
+		return () => {
+			Fancybox.destroy();
+		};
+	});
+
 	function get_grid_layout() {
 		const layouts = {
 			1: `
@@ -46,6 +62,14 @@
 		[&>div:has(h3)~div>h3]:pt-4
 	`;
 </script>
+
+<svelte:head>
+	<link
+		rel="stylesheet"
+		href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"
+	/>
+	<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+</svelte:head>
 
 {#snippet intro()}
 	{@const intro_padding = has_intro

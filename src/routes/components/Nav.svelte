@@ -37,7 +37,7 @@
 	<div class={TW_LIMITER}>
 		<div class="flex items-stretch lg:text-lg">
 			<!-- Logo -->
-			<div class="flex flex-1 items-center {TW_PAGE_PADDING_X} py-5 lg:py-10">
+			<div class="flex flex-1 items-center {TW_PAGE_PADDING_X} py-7">
 				<!-- <svelte:element
 					this={svedit.editable ? 'div' : 'a'}
 					href={svedit.editable ? undefined : '/'}
@@ -48,13 +48,13 @@
 					tag="h2"
 					class="text-2xl font-semibold tracking-tight"
 					path={[...path, 'company_name']}
-					placeholder="Company name"
+					placeholder={svedit.editable ? 'Company name' : undefined}
 				/>
 			</div>
 
 			<!-- Desktop menu (hidden on mobile) -->
 			<NodeArrayProperty
-				class="nav-items hidden items-stretch gap-x-2 py-5 sm:gap-x-4 md:flex lg:py-10 {TW_PAGE_PADDING_X}"
+				class="nav-items hidden items-stretch gap-x-2 py-5 py-7 sm:gap-x-4 md:flex {TW_PAGE_PADDING_X}"
 				path={[...path, 'nav_items']}
 			/>
 
@@ -134,7 +134,7 @@
 						<a
 							href={item.href || '#'}
 							target={item.target}
-							class="px-3 py-2 font-serif text-3xl text-(--foreground) sm:px-5"
+							class="px-3 py-2 font-sans text-3xl text-(--foreground) sm:px-5"
 							onclick={close_mobile_menu}
 						>
 							{item.label?.text || ''}

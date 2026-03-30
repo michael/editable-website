@@ -19,7 +19,7 @@
 			class:hover:decoration-(--accent)={render_as_link}
 			class:hover:underline-offset-2={render_as_link}
 		>
-			<AnnotatedTextProperty class="inline" path={[...path, 'label']} placeholder="Label" />
+			<AnnotatedTextProperty class="inline" path={[...path, 'label']} placeholder={svedit.editable ? 'Label' : undefined} />
 		</svelte:element>
 	</div>
 </Node>

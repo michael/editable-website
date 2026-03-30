@@ -49,6 +49,8 @@ import ImageHero from './components/ImageHero.svelte';
 import Button from './components/Button.svelte';
 import Image from './components/Image.svelte';
 import Video from './components/Video.svelte';
+import Swiper from './components/Swiper.svelte';
+import SwiperSlide from './components/SwiperSlide.svelte';
 
 import Strong from './components/Strong.svelte';
 import Emphasis from './components/Emphasis.svelte';
@@ -102,6 +104,8 @@ const session_config = {
 		GalleryItem,
 		LinkCollection,
 		LinkCollectionItem,
+		Swiper,
+		SwiperSlide,
 		Strong,
 		Emphasis,
 		Highlight,
@@ -230,7 +234,8 @@ const session_config = {
 		nav_item: 2,
 		button: 2,
 		hero: 4,
-		image_hero: 2
+		image_hero: 3,
+		swiper: 3
 	},
 
 	/**
@@ -731,6 +736,48 @@ const session_config = {
 				anchor_offset: tr.selection.focus_offset,
 				focus_offset: tr.selection.focus_offset
 			});
+		},
+
+		swiper: function (tr) {
+			const slide_ids = [];
+			for (let i = 0; i < 3; i++) {
+				const media_id = nanoid();
+				tr.create({
+					id: media_id,
+					type: 'image',
+					...MEDIA_DEFAULTS
+				});
+				const slide_id = nanoid();
+				tr.create({
+					id: slide_id,
+					type: 'swiper_slide',
+					media: media_id
+				});
+				slide_ids.push(slide_id);
+			}
+			const new_swiper_id = nanoid();
+			tr.create({
+				id: new_swiper_id,
+				type: 'swiper',
+				layout: 1,
+				slides: slide_ids
+			});
+			tr.insert_nodes([new_swiper_id]);
+		},
+		swiper_slide: function (tr) {
+			const media_id = nanoid();
+			tr.create({
+				id: media_id,
+				type: 'image',
+				...MEDIA_DEFAULTS
+			});
+			const new_slide_id = nanoid();
+			tr.create({
+				id: new_slide_id,
+				type: 'swiper_slide',
+				media: media_id
+			});
+			tr.insert_nodes([new_slide_id]);
 		}
 	}
 };

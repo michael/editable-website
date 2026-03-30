@@ -26,19 +26,19 @@
 			<AnnotatedTextProperty
 				class="mb-2 text-xs tracking-widest text-(--foreground) uppercase opacity-60 md:text-sm"
 				path={[...path, 'preline']}
-				placeholder="Preline"
+				placeholder={svedit.editable ? 'Preline' : undefined}
 			/>
 			<AnnotatedTextProperty
 				class="{!svedit.editable
 					? 'title-underline'
-					: ''} pt-1 font-serif text-2xl text-balance text-(--foreground) lg:text-3xl"
+					: ''} pt-1 font-sans text-2xl text-balance text-(--foreground) lg:text-3xl"
 				path={[...path, 'title']}
-				placeholder="Title"
+				placeholder={svedit.editable ? 'Title' : undefined}
 			/>
 			<AnnotatedTextProperty
 				class="pt-2 text-balance"
 				path={[...path, 'description']}
-				placeholder="Description"
+				placeholder={svedit.editable ? 'Description' : undefined}
 			/>
 		</div>
 	</svelte:element>

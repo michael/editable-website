@@ -16,7 +16,7 @@
 		target={render_as_link ? node.target : undefined}
 		class="nav-item-link mx-3 flex w-full items-center justify-center sm:mx-4"
 	>
-		<AnnotatedTextProperty path={[...path, 'label']} placeholder="Label" />
+		<AnnotatedTextProperty path={[...path, 'label']} placeholder={svedit.editable ? 'Label' : undefined} />
 	</svelte:element>
 {/snippet}
 
@@ -28,7 +28,7 @@
 		class="ml-3 flex h-full w-full items-center justify-center rounded-(--button-border-radius) bg-(--accent) font-medium text-(--accent-foreground) sm:ml-4"
 		class:hover:opacity-80={render_as_link}
 	>
-		<AnnotatedTextProperty class="px-3 sm:px-4" path={[...path, 'label']} placeholder="Label" />
+		<AnnotatedTextProperty class="px-3 sm:px-4" path={[...path, 'label']} placeholder={svedit.editable ? 'Label' : undefined} />
 	</svelte:element>
 {/snippet}
 

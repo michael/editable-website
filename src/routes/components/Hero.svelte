@@ -18,15 +18,17 @@
 			<div class="{TW_PAGE_PADDING_X} mx-auto w-full max-w-5xl text-center" use:reveal>
 				<AnnotatedTextProperty
 					tag="h1"
-					class="ew-h1 font-serif text-5xl leading-tight text-balance text-(--foreground) md:text-6xl lg:text-7xl"
+					class="ew-h1 text-5xl leading-tight text-balance text-(--foreground) md:text-6xl lg:text-7xl"
 					path={[...path, 'title']}
-					placeholder="Your bold statement goes here"
+					placeholder={svedit.editable ? 'Your bold statement goes here' : undefined}
 				/>
 				<AnnotatedTextProperty
 					tag="p"
 					class="mt-6 text-lg text-balance md:mt-8 md:text-xl"
 					path={[...path, 'description']}
-					placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
+					placeholder={svedit.editable
+						? 'A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling.'
+						: undefined}
 				/>
 				<NodeArrayProperty
 					class="hero-buttons flex flex-wrap items-center justify-center gap-4 [--row:1] mt-10{!has_buttons
@@ -45,15 +47,17 @@
 			<div class="{TW_PAGE_PADDING_X} max-w-4xl" use:reveal>
 				<AnnotatedTextProperty
 					tag="h1"
-					class="ew-h1 font-serif text-3xl text-balance text-(--foreground) md:text-4xl lg:text-5xl"
+					class="ew-h1 font-sans text-3xl text-balance text-(--foreground) md:text-4xl lg:text-5xl"
 					path={[...path, 'title']}
-					placeholder="Your bold statement goes here"
+					placeholder={svedit.editable ? 'Your bold statement goes here' : undefined}
 				/>
 				<AnnotatedTextProperty
 					tag="p"
 					class="mt-6 text-balance"
 					path={[...path, 'description']}
-					placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
+					placeholder={svedit.editable
+						? 'A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling.'
+						: undefined}
 				/>
 				<NodeArrayProperty
 					class="hero-buttons flex flex-wrap items-center gap-4 [--row:1] mt-10{!has_buttons
@@ -72,15 +76,17 @@
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-4xl text-center" use:reveal>
 				<AnnotatedTextProperty
 					tag="h1"
-					class="ew-h1 font-serif text-3xl text-balance text-(--foreground) md:text-4xl lg:text-5xl"
+					class="ew-h1 font-sans text-3xl text-balance text-(--foreground) md:text-4xl lg:text-5xl"
 					path={[...path, 'title']}
-					placeholder="Your bold statement goes here"
+					placeholder={svedit.editable ? 'Your bold statement goes here' : undefined}
 				/>
 				<AnnotatedTextProperty
 					tag="p"
 					class="mt-6 text-balance"
 					path={[...path, 'description']}
-					placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
+					placeholder={svedit.editable
+						? 'A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling.'
+						: undefined}
 				/>
 				<NodeArrayProperty
 					class="hero-buttons flex flex-wrap items-center justify-center gap-4 [--row:1] mt-10{!has_buttons
@@ -103,15 +109,17 @@
 				<div class={TW_MOBILE_LEFT_INSET} use:reveal>
 					<AnnotatedTextProperty
 						tag="h1"
-						class="ew-h1 font-serif text-3xl text-balance text-(--foreground) md:text-4xl lg:text-5xl"
+						class="ew-h1 font-sans text-3xl text-balance text-(--foreground) md:text-4xl lg:text-5xl"
 						path={[...path, 'title']}
-						placeholder="Your bold statement goes here"
+						placeholder={svedit.editable ? 'Your bold statement goes here' : undefined}
 					/>
 					<AnnotatedTextProperty
 						tag="p"
 						class="mt-6 text-balance"
 						path={[...path, 'description']}
-						placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
+						placeholder={svedit.editable
+							? 'A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling.'
+							: undefined}
 					/>
 					<NodeArrayProperty
 						class="hero-buttons flex flex-wrap items-center gap-4 [--row:1] mt-10{!has_buttons

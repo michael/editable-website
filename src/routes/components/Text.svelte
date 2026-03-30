@@ -9,7 +9,7 @@
 	let layout = $derived(node.layout || 1);
 	let tag = $derived(get_tag(layout));
 	let text_style = $derived(get_text_style(layout));
-	let placeholder = $derived(get_placeholder(layout));
+	let placeholder = $derived(svedit.editable ? get_placeholder(layout) : undefined);
 
 	function get_tag(layout) {
 		switch (layout) {
@@ -33,11 +33,11 @@
 			case 1:
 				return '';
 			case 2:
-				return 'ew-h1 font-serif text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground) [text-box:trim-both_cap_alphabetic]';
+				return 'ew-h1 font-sans text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground) [text-box:trim-both_cap_alphabetic]';
 			case 3:
-				return 'ew-h2 font-serif text-2xl md:text-3xl lg:text-4xl text-balance text-(--foreground) [text-box:trim-both_cap_alphabetic]';
+				return 'ew-h2 font-sans text-2xl md:text-3xl lg:text-4xl text-balance text-(--foreground) [text-box:trim-both_cap_alphabetic]';
 			case 4:
-				return 'ew-h3 font-serif text-xl md:text-2xl lg:text-3xl text-balance text-(--foreground)';
+				return 'ew-h3 font-sans text-xl md:text-2xl lg:text-3xl text-balance text-(--foreground)';
 			case 5:
 				return 'ew-eyebrow leading-loose block text-xs md:text-sm uppercase tracking-widest text-(--foreground) opacity-60';
 			default:

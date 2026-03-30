@@ -17,7 +17,7 @@
 		class="ew-button flex min-w-[calc(1lh+24px)] items-center justify-center rounded-(--button-border-radius) bg-(--accent) px-4 py-3 font-medium text-(--accent-foreground)"
 		class:hover:opacity-80={render_as_link}
 	>
-		<AnnotatedTextProperty path={[...path, 'label']} placeholder="Label" />
+		<AnnotatedTextProperty path={[...path, 'label']} placeholder={svedit.editable ? 'Label' : undefined} />
 	</svelte:element>
 {/snippet}
 
@@ -30,7 +30,7 @@
 			? 'hover:bg-(--foreground)/10'
 			: ''}"
 	>
-		<AnnotatedTextProperty path={[...path, 'label']} placeholder="Label" />
+		<AnnotatedTextProperty path={[...path, 'label']} placeholder={svedit.editable ? 'Label' : undefined} />
 	</svelte:element>
 {/snippet}
 

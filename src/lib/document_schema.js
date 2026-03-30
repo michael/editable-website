@@ -11,7 +11,8 @@ const body_node_types = [
 	'feature',
 	'link_collection',
 	'hero',
-	'image_hero'
+	'image_hero',
+	'swiper'
 ];
 
 export const document_schema = define_document_schema({
@@ -185,7 +186,7 @@ export const document_schema = define_document_schema({
 				type: 'annotated_text',
 				node_types: ALL_ANNOTATIONS,
 				allow_newlines: false
-			},
+			}
 		}
 	},
 	nav_item: {
@@ -427,6 +428,26 @@ export const document_schema = define_document_schema({
 				type: 'node_array',
 				node_types: ['button'],
 				default_node_type: 'button'
+			}
+		}
+	},
+	swiper: {
+		kind: 'block',
+		properties: {
+			layout: { type: 'integer', default: 1 },
+			slides: {
+				type: 'node_array',
+				node_types: ['swiper_slide']
+			}
+		}
+	},
+	swiper_slide: {
+		kind: 'block',
+		properties: {
+			media: {
+				type: 'node',
+				node_types: ['image', 'video'],
+				default_node_type: 'image'
 			}
 		}
 	},

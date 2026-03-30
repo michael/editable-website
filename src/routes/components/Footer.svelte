@@ -32,13 +32,13 @@
 							tag="h2"
 							class="mb-3 text-2xl font-semibold tracking-tight"
 							path={[...path, 'company_name']}
-							placeholder="Company name"
+							placeholder={svedit.editable ? 'Company name' : undefined}
 						/>
 						<AnnotatedTextProperty
 							tag="p"
 							class="opacity-80"
 							path={[...path, 'company_description']}
-							placeholder="Short description"
+							placeholder={svedit.editable ? 'Short description' : undefined}
 						/>
 						<ul class="mt-4 space-y-2">
 							<li>
@@ -46,7 +46,7 @@
 									tag="span"
 									class="inline"
 									path={[...path, 'company_address']}
-									placeholder="Address"
+									placeholder={svedit.editable ? 'Address' : undefined}
 								/>
 							</li>
 							<li>
@@ -54,7 +54,7 @@
 									tag="span"
 									class="inline"
 									path={[...path, 'company_phone']}
-									placeholder="Phone"
+									placeholder={svedit.editable ? 'Phone' : undefined}
 								/>
 							</li>
 						</ul>
@@ -68,13 +68,13 @@
 									tag="h4"
 									class="mb-3 text-xl font-semibold"
 									path={[...path, 'team_name']}
-									placeholder="Name"
+									placeholder={svedit.editable ? 'Name' : undefined}
 								/>
 								<AnnotatedTextProperty
 									tag="p"
 									class="opacity-80"
 									path={[...path, 'team_description']}
-									placeholder="Role or bio"
+									placeholder={svedit.editable ? 'Role or bio' : undefined}
 								/>
 							</div>
 						</div>
@@ -109,7 +109,7 @@
 				<AnnotatedTextProperty
 					class="text-sm opacity-80"
 					path={[...path, 'copyright']}
-					placeholder="Company name"
+					placeholder={svedit.editable ? 'Company name' : undefined}
 				/>
 			</div>
 		</div>

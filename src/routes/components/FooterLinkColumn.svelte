@@ -12,7 +12,7 @@
 		<AnnotatedTextProperty
 			class="text-xs tracking-widest text-(--foreground) uppercase opacity-60 md:text-sm"
 			path={[...path, 'label']}
-			placeholder="Column Label"
+			placeholder={svedit.editable ? 'Column Label' : undefined}
 		/>
 		<NodeArrayProperty
 			class="footer-links flex w-full flex-col items-center lg:items-stretch"

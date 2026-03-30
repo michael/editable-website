@@ -28,9 +28,10 @@
 :root {
 	/* Website colors */
 	--background: oklch(0.98 0 0);
-	--foreground: oklch(0 0 0);
+	--foreground: oklch(0.41 0 0);
 	--accent: oklch(0.21 0.034 264);
 	--accent-foreground: oklch(0.98 0 0);
+	--border-color: oklch(0 0 0 / 0.1);
 
 	/* Editor colors */
 	--svedit-brand: oklch(60% 0.22 283);
@@ -39,8 +40,8 @@
 	--svedit-canvas-stroke: color-mix(in oklch, currentColor 25%, transparent);
 
 	/* Rounded corners */
-	--button-border-radius: 3rem; /* rounded corners for buttons, nav items */
-	--image-border-radius: 0.5rem; /* rounded corners for images */
+	--button-border-radius: 0.3rem; /* rounded corners for buttons, nav items */
+	--image-border-radius: 0rem; /* rounded corners for images */
 }
 
 /* Website fonts */
