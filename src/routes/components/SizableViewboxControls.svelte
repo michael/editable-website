@@ -51,6 +51,7 @@
 	let drag_start_max_width = $state(0);
 	let drag_start_aspect_ratio = $state(0);
 	let drag_container_width = $state(0);
+	let drag_width_multiplier = $state(1); // 2 for centered (mx-auto), 1 for edge-aligned
 
 	/** Find the viewbox element via its anchor name data attribute */
 	function get_viewbox_el() {
@@ -71,6 +72,26 @@
 		// Measure the viewbox's parent for snap-to-full-width
 		const parent_rect = viewbox_el?.parentElement?.getBoundingClientRect();
 		drag_container_width = parent_rect?.width ?? drag_start_max_width;
+
+		// Detect centering to choose the right multiplier:
+		// - Centered element (mx-auto or flex items-center): dragging one handle
+		//   grows width by 2x (both sides expand equally), so we need * 2 for the
+		//   handle to track the mouse 1:1.
+		// - Edge-aligned element: the near edge is pinned, so width change = edge
+		//   movement, and we need * 1.
+		// We detect centering by comparing the element's horizontal gaps to its parent.
+		// This works for both margin:auto and flex centering.
+		if (viewbox_el && rect && parent_rect) {
+			const gap_left = rect.left - parent_rect.left;
+			const gap_right = parent_rect.right - rect.right;
+			const total_gap = gap_left + gap_right;
+			// If gaps are roughly equal (within 5px or 10% of total), it's centered
+			const is_centered = total_gap > 0
+				&& Math.abs(gap_left - gap_right) < Math.max(5, total_gap * 0.1);
+			drag_width_multiplier = is_centered ? 2 : 1;
+		} else {
+			drag_width_multiplier = 2;
+		}
 	}
 
 	function handle_height_pointer_down(e) {
@@ -91,7 +112,7 @@
 		if (drag_type === 'width-left' || drag_type === 'width-right') {
 			const dx = e.clientX - drag_start_x;
 			const direction = drag_type === 'width-right' ? 1 : -1;
-			const raw_width = Math.max(MIN_WIDTH, Math.round(drag_start_max_width + dx * direction * 2));
+			const raw_width = Math.max(MIN_WIDTH, Math.round(drag_start_max_width + dx * direction * drag_width_multiplier));
 			const new_width = Math.round(raw_width / 4) * 4;
 
 			const tr = svedit.session.tr;
