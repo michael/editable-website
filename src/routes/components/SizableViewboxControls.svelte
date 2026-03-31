@@ -557,7 +557,7 @@
 	/* Snap label */
 	.snap-label {
 		position: absolute;
-		bottom: -32px;
+		top: -24px;
 		left: 50%;
 		transform: translateX(-50%);
 		background: var(--svedit-editing-stroke, oklch(60% 0.22 283));
