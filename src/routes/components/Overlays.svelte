@@ -8,7 +8,11 @@
 
 	const svedit = getContext('svedit');
 
+	// True for the whole period the mouse button is down
+	let is_pointer_down = $state(false);
+	// Only becomes true when the mouse actually moves (=drag)
 	let is_dragging = $state(false);
+
 	let overlays_ref = $state();
 
 	// --- File drag-and-drop onto media properties ---
@@ -191,7 +195,7 @@
 					style="position-anchor: --{svedit.session.selection.path.join('-')};"
 				>
 					{#if selected_property.src}
-						<MediaControls path={svedit.session.selection.path} />
+						<MediaControls path={svedit.session.selection.path} {is_pointer_down} />
 					{/if}
 				</div>
 			{:else}
@@ -248,4 +252,8 @@
 	}
 </style>
 
-<svelte:document onmousemove={handle_mousemove} onmouseup={() => is_dragging = false} />
+<svelte:document
+	onmousemove={handle_mousemove}
+	onpointerdown={() => { is_pointer_down = true; }}
+	onpointerup={() => { is_dragging = false; is_pointer_down = false; }}
+/>

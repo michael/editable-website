@@ -8,7 +8,7 @@
 	const MIN_SCALE = 1.0;
 	const MAX_SCALE = 5.0;
 
-	let { path } = $props();
+	let { path, is_pointer_down } = $props();
 
 	let media_node = $derived(svedit.session.get(path));
 	let controls_ref = $state(null);
@@ -28,29 +28,6 @@
 	// 1) Initial click/drag should be pure DOM selection (no panning).
 	// 2) After pointerup with stable property selection, arm panning for next drag.
 	let pan_mode_armed = $state(false);
-
-	function is_same_path(a, b) {
-		if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return false;
-		for (let i = 0; i < a.length; i++) {
-			if (a[i] !== b[i]) return false;
-		}
-		return true;
-	}
-
-	function is_selected_media_path() {
-		const selection = svedit.session.selection;
-		return selection?.type === 'property' && is_same_path(selection.path, path);
-	}
-
-	let pan_ready = $derived.by(() => can_pan && is_selected_media_path());
-	let pan_enabled = $derived.by(() => pan_ready && pan_mode_armed);
-
-	// Clear arm whenever selection is no longer this media property
-	$effect(() => {
-		if (!is_selected_media_path()) {
-			pan_mode_armed = false;
-		}
-	});
 
 	// ResizeObserver tracks actual container dimensions (covers aspect ratio
 	// changes, max-width changes, window resizes, etc.)
@@ -129,27 +106,21 @@
 		svedit.session.apply(tr, { batch: true });
 	}
 
-	function handle_pointer_up() {
-		// Arm panning only after release when selection is stable on this property.
-		pan_mode_armed = true;
-	}
-
 	const pan_drag = touch_drag({
-		should_start: () => pan_enabled,
+		should_start: () => can_pan,
 		on_down(client_x, client_y) {
 			last_x = client_x;
 			last_y = client_y;
 		},
 		on_move(client_x, client_y) {
-			if (!pan_enabled) return;
+			if (!can_pan) return;
 			apply_pan_delta(client_x, client_y);
 		}
 	});
 </script>
 
-<svelte:window onpointerup={handle_pointer_up} />
-
-{#if pan_mode_armed}
+<!-- Either the pan mode is armed (after a pointer selection) or there's no pointer involved -->
+{#if pan_mode_armed || !is_pointer_down}
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		bind:this={controls_ref}
@@ -181,8 +152,6 @@
 		cursor: grab;
 		z-index: 10;
 	}
-
-
 
 	.media-controls:global(.dragging) {
 		cursor: grabbing;
