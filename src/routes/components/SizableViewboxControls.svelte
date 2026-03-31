@@ -452,9 +452,7 @@
 		ondblclick={handle_corner_dblclick}
 		{@attach drag_corner}
 	>
-		<svg class="corner-arc" viewBox="0 0 14 14" width="14" height="14">
-			<path d="M 12 0 A 12 12 0 0 1 0 12" fill="none" />
-		</svg>
+		
 	</div>
 
 	<!-- Snap label tooltip -->
@@ -542,17 +540,7 @@
 		opacity: 0.8;
 	}
 
-	/* Corner arc indicator */
-	.corner-arc {
-		overflow: visible;
-	}
-
-	.corner-arc path {
-		stroke: var(--svedit-editing-stroke, oklch(60% 0.22 283));
-		stroke-width: 3;
-		stroke-linecap: round;
-		opacity: 0.8;
-	}
+	
 
 	/* Snap label */
 	.snap-label {
