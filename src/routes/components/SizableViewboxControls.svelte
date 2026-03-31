@@ -110,6 +110,41 @@
 	}
 
 	/**
+	 * For corner drags: find the snap ratio whose diagonal is closest to the raw diagonal.
+	 * The "diagonal" here is the angle (atan2) — we compare the angle of the raw w/h
+	 * to the angle each candidate ratio would produce at the same diagonal distance.
+	 *
+	 * @param {number} raw_width
+	 * @param {number} raw_height
+	 * @returns {{ ratio: number, label: string } | null}
+	 */
+	function snap_corner_ratio(raw_width, raw_height) {
+		const candidates = get_snap_candidates();
+		let best = null;
+		let best_distance = Infinity;
+
+		// For corner: compute the diagonal length, then for each candidate ratio
+		// find the w/h that has the same diagonal but matches the candidate ratio.
+		// Compare pixel distance between raw point and snapped point.
+		const diag = Math.sqrt(raw_width * raw_width + raw_height * raw_height);
+
+		for (const c of candidates) {
+			// w = diag * cos(atan(1/ratio)) = diag * ratio / sqrt(1 + ratio^2)
+			const snap_w = diag * c.ratio / Math.sqrt(1 + c.ratio * c.ratio);
+			const snap_h = snap_w / c.ratio;
+			const dx = raw_width - snap_w;
+			const dy = raw_height - snap_h;
+			const distance = Math.sqrt(dx * dx + dy * dy);
+			if (distance < SNAP_PX && distance < best_distance) {
+				best = { ratio: c.ratio, label: c.label };
+				best_distance = distance;
+			}
+		}
+
+		return best;
+	}
+
+	/**
 	 * Convert a snap ratio result into the stored aspect_ratio value.
 	 * 'original' maps to 0 (convention); otherwise store the exact ratio.
 	 *
@@ -127,6 +162,7 @@
 	let drag_start_max_width = 0;
 	let drag_start_aspect_ratio = 0;
 	let drag_start_visual_height = 0;
+	let drag_start_visual_width = 0;
 	let drag_container_width = 0;
 	let drag_width_multiplier = 1;
 
@@ -176,14 +212,42 @@
 		snap_label = null;
 	}
 
+	function capture_corner_state() {
+		drag_type = 'corner';
+
+		const viewbox_el = get_viewbox_el();
+		const rect = viewbox_el?.getBoundingClientRect();
+		drag_start_max_width = node[max_width_field] > 0
+			? node[max_width_field]
+			: (rect?.width ?? 400);
+		drag_start_aspect_ratio = resolved_aspect_ratio;
+		drag_start_visual_width = rect?.width ?? drag_start_max_width;
+		drag_start_visual_height = rect?.height ?? (drag_start_max_width / resolved_aspect_ratio);
+		const parent_rect = viewbox_el?.parentElement?.getBoundingClientRect();
+		drag_container_width = parent_rect?.width ?? drag_start_max_width;
+
+		// Detect centering — same logic as width handle
+		if (viewbox_el && rect && parent_rect) {
+			const gap_left = rect.left - parent_rect.left;
+			const gap_right = parent_rect.right - rect.right;
+			const total_gap = gap_left + gap_right;
+			const is_centered = total_gap > 0
+				&& Math.abs(gap_left - gap_right) < Math.max(5, total_gap * 0.1);
+			drag_width_multiplier = is_centered ? 2 : 1;
+		} else {
+			drag_width_multiplier = 1;
+		}
+
+		snap_label = null;
+	}
+
 	function handle_move(client_x, client_y) {
 		if (!drag_type) return;
 
-		if (drag_type === 'width-left' || drag_type === 'width-right') {
+		if (drag_type === 'width-right') {
 			const dx = client_x - drag_start_x;
-			const direction = drag_type === 'width-right' ? 1 : -1;
 			// Clamp to container width — once you hit the edge, everything stops
-			const raw_width = Math.min(drag_container_width, Math.max(MIN_WIDTH, Math.round(drag_start_max_width + dx * direction * drag_width_multiplier)));
+			const raw_width = Math.min(drag_container_width, Math.max(MIN_WIDTH, Math.round(drag_start_max_width + dx * drag_width_multiplier)));
 
 			// Try to snap the width to a value that produces a common aspect ratio
 			// at the fixed visual height
@@ -232,6 +296,39 @@
 			const tr = svedit.session.tr;
 			tr.set([...path, aspect_ratio_field], final_ratio);
 			svedit.session.apply(tr, { batch: true });
+		} else if (drag_type === 'corner') {
+			const dx = client_x - drag_start_x;
+			const dy = client_y - drag_start_y;
+
+			// Both axes move freely; horizontal uses multiplier for centered images
+			const raw_width = Math.min(drag_container_width, Math.max(MIN_WIDTH, Math.round(drag_start_visual_width + dx * drag_width_multiplier)));
+			const raw_height = Math.max(MIN_HEIGHT, Math.round(drag_start_visual_height + dy));
+
+			// Try to snap to a common aspect ratio
+			const snapped = snap_corner_ratio(raw_width, raw_height);
+
+			let final_width;
+			let final_ratio;
+
+			if (snapped) {
+				// When snapped, lock to the ratio. Use the diagonal midpoint to
+				// decide the size — project the raw rectangle onto the snap ratio.
+				// We anchor to the raw width (horizontal feel dominates).
+				final_width = Math.round(raw_width / 4) * 4;
+				final_ratio = stored_ratio(snapped);
+				snap_label = snapped.label;
+			} else {
+				final_width = Math.round(raw_width / 4) * 4;
+				final_ratio = Math.round((raw_width / raw_height) * 1000) / 1000;
+				snap_label = null;
+			}
+
+			const is_full_width = final_width >= drag_container_width;
+
+			const tr = svedit.session.tr;
+			tr.set([...path, max_width_field], is_full_width ? 0 : final_width);
+			tr.set([...path, aspect_ratio_field], final_ratio);
+			svedit.session.apply(tr, { batch: true });
 		}
 	}
 
@@ -239,7 +336,7 @@
 		if (!drag_type) return;
 
 		// Final non-batched apply for clean undo point
-		if (drag_type === 'width-left' || drag_type === 'width-right') {
+		if (drag_type === 'width-right' || drag_type === 'corner') {
 			const tr = svedit.session.tr;
 			tr.set([...path, max_width_field], node[max_width_field]);
 			tr.set([...path, aspect_ratio_field], node[aspect_ratio_field]);
@@ -256,26 +353,31 @@
 
 	// --- One attachment per handle ---
 
-	function width_drag(side) {
-		return touch_drag({
-			on_down(client_x, client_y) {
-				drag_start_x = client_x;
-				drag_start_y = client_y;
-				capture_width_state(side);
-			},
-			on_move: handle_move,
-			on_up: handle_up,
-		});
-	}
-
-	const drag_left = width_drag('width-left');
-	const drag_right = width_drag('width-right');
+	const drag_right = touch_drag({
+		on_down(client_x, client_y) {
+			drag_start_x = client_x;
+			drag_start_y = client_y;
+			capture_width_state('width-right');
+		},
+		on_move: handle_move,
+		on_up: handle_up,
+	});
 
 	const drag_bottom = touch_drag({
 		on_down(client_x, client_y) {
 			drag_start_x = client_x;
 			drag_start_y = client_y;
 			capture_height_state();
+		},
+		on_move: handle_move,
+		on_up: handle_up,
+	});
+
+	const drag_corner = touch_drag({
+		on_down(client_x, client_y) {
+			drag_start_x = client_x;
+			drag_start_y = client_y;
+			capture_corner_state();
 		},
 		on_move: handle_move,
 		on_up: handle_up,
@@ -297,22 +399,21 @@
 		tr.set([...path, aspect_ratio_field], 0);
 		svedit.session.apply(tr);
 	}
+
+	function handle_corner_dblclick(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		const tr = svedit.session.tr;
+		tr.set([...path, max_width_field], 0);
+		tr.set([...path, aspect_ratio_field], 0);
+		svedit.session.apply(tr);
+	}
 </script>
 
 <div
 	class="viewbox-handles"
 	style="position-anchor: {anchor_name};"
 >
-	<!-- Left width handle -->
-	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<div
-		class="handle handle-left"
-		ondblclick={handle_width_dblclick}
-		{@attach drag_left}
-	>
-		<div class="handle-line"></div>
-	</div>
-
 	<!-- Right width handle -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
@@ -331,6 +432,18 @@
 		{@attach drag_bottom}
 	>
 		<div class="handle-line"></div>
+	</div>
+
+	<!-- Bottom-right corner handle (both axes) -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div
+		class="handle handle-corner"
+		ondblclick={handle_corner_dblclick}
+		{@attach drag_corner}
+	>
+		<svg class="corner-arc" viewBox="0 0 14 14" width="14" height="14">
+			<path d="M 12 0 A 12 12 0 0 1 0 12" fill="none" />
+		</svg>
 	</div>
 
 	<!-- Snap label tooltip -->
@@ -363,18 +476,6 @@
 		user-select: none;
 	}
 
-	/* Left handle — sits to the left of the viewbox */
-	.handle-left {
-		top: 0;
-		bottom: 0;
-		left: -14px;
-		width: 14px;
-		cursor: ew-resize;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
 	/* Right handle — sits to the right of the viewbox */
 	.handle-right {
 		top: 0;
@@ -399,8 +500,19 @@
 		justify-content: center;
 	}
 
+	/* Corner handle — bottom-right intersection */
+	.handle-corner {
+		right: -16px;
+		bottom: -16px;
+		width: 22px;
+		height: 22px;
+		cursor: nwse-resize;
+		display: flex;
+		align-items: flex-start;
+		justify-content: flex-start;
+	}
+
 	/* Visual indicator lines */
-	.handle-left .handle-line,
 	.handle-right .handle-line {
 		width: 3px;
 		height: 32px;
@@ -416,6 +528,18 @@
 		max-width: 50%;
 		border-radius: 2px;
 		background: var(--svedit-editing-stroke, oklch(60% 0.22 283));
+		opacity: 0.8;
+	}
+
+	/* Corner arc indicator */
+	.corner-arc {
+		overflow: visible;
+	}
+
+	.corner-arc path {
+		stroke: var(--svedit-editing-stroke, oklch(60% 0.22 283));
+		stroke-width: 3;
+		stroke-linecap: round;
 		opacity: 0.8;
 	}
 
