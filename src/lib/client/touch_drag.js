@@ -1,3 +1,30 @@
+// --- Global cursor lock ---
+// Injects a single shared <style> into <head> that forces a cursor on every
+// element via `!important`.  Used by drag handles and pan controls so the
+// cursor stays locked even when the pointer leaves the drag zone.
+
+let _cursor_style = null;
+
+/**
+ * Lock the cursor globally to the given CSS cursor value.
+ * @param {string} cursor - e.g. 'ew-resize', 'grabbing'
+ */
+export function lock_cursor(cursor) {
+	if (!_cursor_style) {
+		_cursor_style = document.createElement('style');
+		document.head.appendChild(_cursor_style);
+	}
+	_cursor_style.textContent = `* { cursor: ${cursor} !important; }`;
+}
+
+/** Remove the global cursor lock. */
+export function unlock_cursor() {
+	if (_cursor_style) {
+		_cursor_style.remove();
+		_cursor_style = null;
+	}
+}
+
 /**
  * Touch-aware drag attachment.
  *

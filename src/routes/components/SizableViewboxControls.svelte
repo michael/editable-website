@@ -1,6 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
-	import { touch_drag } from '$lib/client/touch_drag.js';
+	import { touch_drag, lock_cursor, unlock_cursor } from '$lib/client/touch_drag.js';
 	import { SNAP_ASPECT_RATIOS } from '$lib/config.js';
 
 	const svedit = getContext('svedit');
@@ -155,6 +155,13 @@
 		return snapped.label === 'original' ? 0 : snapped.ratio;
 	}
 
+	// --- Cursor lock during drag ---
+	const CURSOR_FOR_TYPE = {
+		'width-right': 'ew-resize',
+		'height': 'ns-resize',
+		'corner': 'nwse-resize',
+	};
+
 	// --- Drag state (shared across all handles) ---
 	let drag_type = null;
 	let drag_start_x = 0;
@@ -199,6 +206,7 @@
 		}
 
 		snap_label = null;
+		lock_cursor(CURSOR_FOR_TYPE[drag_type]);
 	}
 
 	function capture_height_state() {
@@ -210,6 +218,7 @@
 		drag_start_max_width = rect?.width ?? 400;
 
 		snap_label = null;
+		lock_cursor(CURSOR_FOR_TYPE[drag_type]);
 	}
 
 	function capture_corner_state() {
@@ -239,6 +248,7 @@
 		}
 
 		snap_label = null;
+		lock_cursor(CURSOR_FOR_TYPE[drag_type]);
 	}
 
 	function handle_move(client_x, client_y) {
@@ -349,6 +359,7 @@
 
 		drag_type = null;
 		snap_label = null;
+		unlock_cursor();
 	}
 
 	// --- One attachment per handle ---
