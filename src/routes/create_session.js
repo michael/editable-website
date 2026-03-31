@@ -15,7 +15,6 @@ import {
 	CycleLayoutCommand,
 	CycleNodeTypeCommand,
 	CycleColorsetCommand,
-	ResetImageCommand,
 	ToggleLinkCommand,
 	EditLinkCommand
 } from './commands.svelte.js';
@@ -147,6 +146,17 @@ const session_config = {
 		Link
 	},
 	replace_media,
+	handle_property_deletion: (session, path) => {
+		const property_definition = session.inspect(path);
+		if (property_definition?.type !== 'node') return;
+
+		const target_node = session.get(path);
+		if (target_node?.type !== 'image' && target_node?.type !== 'video') return;
+
+		const tr = session.tr;
+		set_properties(tr, [target_node.id], MEDIA_DEFAULTS);
+		session.apply(tr);
+	},
 	handle_media_paste: async (session, pasted_media) => {
 		if (session.selection.type === 'property') {
 			const node = session.get(session.selection.path);
@@ -260,7 +270,6 @@ const session_config = {
 			cycle_layout_previous: new CycleLayoutCommand('previous', context),
 			cycle_node_type_next: new CycleNodeTypeCommand('next', context),
 			cycle_node_type_previous: new CycleNodeTypeCommand('previous', context),
-			reset_image: new ResetImageCommand(context),
 			toggle_link: new ToggleLinkCommand(context),
 			edit_link: new EditLinkCommand(context),
 			cycle_colorset: new CycleColorsetCommand(context)
@@ -283,9 +292,6 @@ const session_config = {
 			'ctrl+shift+arrowleft': [commands.cycle_layout_previous],
 			'ctrl+shift+arrowdown': [commands.cycle_node_type_next],
 			'ctrl+shift+arrowup': [commands.cycle_node_type_previous],
-			backspace: [commands.reset_image],
-			// Fallback for iOS, as property selection triggers auto capitalization (shift pressed)
-			'shift+backspace': [commands.reset_image],
 			'meta+k,ctrl+k': [commands.edit_link, commands.toggle_link],
 			'ctrl+shift+c': [commands.cycle_colorset]
 		});
