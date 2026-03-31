@@ -1,6 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
-	import { touch_drag, lock_cursor, unlock_cursor } from '$lib/client/touch_drag.js';
+	import { touch_drag } from '$lib/client/touch_drag.js';
 
 	const svedit = getContext('svedit');
 
@@ -23,6 +23,34 @@
 	// Track last pointer position for delta computation
 	let last_x = 0;
 	let last_y = 0;
+
+	// Two-step arm mode:
+	// 1) Initial click/drag should be pure DOM selection (no panning).
+	// 2) After pointerup with stable property selection, arm panning for next drag.
+	let pan_mode_armed = $state(false);
+
+	function is_same_path(a, b) {
+		if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return false;
+		for (let i = 0; i < a.length; i++) {
+			if (a[i] !== b[i]) return false;
+		}
+		return true;
+	}
+
+	function is_selected_media_path() {
+		const selection = svedit.session.selection;
+		return selection?.type === 'property' && is_same_path(selection.path, path);
+	}
+
+	let pan_ready = $derived.by(() => can_pan && is_selected_media_path());
+	let pan_enabled = $derived.by(() => pan_ready && pan_mode_armed);
+
+	// Clear arm whenever selection is no longer this media property
+	$effect(() => {
+		if (!is_selected_media_path()) {
+			pan_mode_armed = false;
+		}
+	});
 
 	// ResizeObserver tracks actual container dimensions (covers aspect ratio
 	// changes, max-width changes, window resizes, etc.)
@@ -83,11 +111,9 @@
 		last_y = client_y;
 	}
 
-	function handle_double_click(e) {
+	function handle_double_click() {
 		const tr = svedit.session.tr;
 		tr.set([...path, 'scale'], MIN_SCALE);
-		// tr.set([...path, 'focal_point_x'], 0.5);
-		// tr.set([...path, 'focal_point_y'], 0.5);
 		tr.set([...path, 'object_fit'], media_node.object_fit === 'cover' ? 'contain' : 'cover');
 		svedit.session.apply(tr, { batch: true });
 	}
@@ -96,45 +122,52 @@
 		// Only zoom when meta (Cmd) or ctrl key is held, otherwise let the page scroll
 		if (!e.metaKey && !e.ctrlKey) return;
 		e.preventDefault();
-		const zoomFactor = e.deltaY < 0 ? 1.01 : 0.99;
+		const zoom_factor = e.deltaY < 0 ? 1.01 : 0.99;
 
 		const tr = svedit.session.tr;
-		tr.set([...path, 'scale'], Math.min(Math.max(media_node.scale * zoomFactor, MIN_SCALE), MAX_SCALE));
+		tr.set([...path, 'scale'], Math.min(Math.max(media_node.scale * zoom_factor, MIN_SCALE), MAX_SCALE));
 		svedit.session.apply(tr, { batch: true });
 	}
 
+	function handle_pointer_up() {
+		// Arm panning only after release when selection is stable on this property.
+		pan_mode_armed = true;
+	}
+
 	const pan_drag = touch_drag({
-		should_start: () => can_pan,
+		should_start: () => pan_enabled,
 		on_down(client_x, client_y) {
 			last_x = client_x;
 			last_y = client_y;
-			lock_cursor('grabbing');
 		},
-		on_move: apply_pan_delta,
-		on_up() {
-			unlock_cursor();
-		},
+		on_move(client_x, client_y) {
+			if (!pan_enabled) return;
+			apply_pan_delta(client_x, client_y);
+		}
 	});
 </script>
 
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<div
-	bind:this={controls_ref}
-	class="media-controls"
-	class:no-pan={!can_pan}
-	ondblclick={handle_double_click}
-	onwheel={handle_wheel}
-	{@attach pan_drag}
-	role="button"
-	tabindex="0"
->
-	{#if can_pan}
-		<div
-			class="marker"
-			style={`left: ${media_node.focal_point_x * 100}%; top: ${media_node.focal_point_y * 100}%;`}
-		></div>
-	{/if}
-</div>
+<svelte:window onpointerup={handle_pointer_up} />
+
+{#if pan_mode_armed}
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div
+		bind:this={controls_ref}
+		class="media-controls"
+		ondblclick={handle_double_click}
+		onwheel={handle_wheel}
+		{@attach pan_drag}
+		role="button"
+		tabindex="0"
+	>
+		{#if can_pan}
+			<div
+				class="marker"
+				style={`left: ${media_node.focal_point_x * 100}%; top: ${media_node.focal_point_y * 100}%;`}
+			></div>
+		{/if}
+	</div>
+{/if}
 
 <style>
 	.media-controls {
@@ -149,9 +182,7 @@
 		z-index: 10;
 	}
 
-	.media-controls.no-pan {
-		cursor: default;
-	}
+
 
 	.media-controls:global(.dragging) {
 		cursor: grabbing;
