@@ -27,3 +27,24 @@ export const MEDIA_DEFAULTS = {
 	focal_point_y: 0.5,
 	object_fit: 'contain'
 };
+
+/**
+ * Common aspect ratios to snap to when dragging resize handles.
+ * Landscape ratios are listed first; portrait inversions are auto-generated.
+ * The natural (original) ratio is always included at snap time, so it doesn't need to be here.
+ */
+ const LANDSCAPE_RATIOS = [
+	{ ratio: 1 / 1, label: '1:1' },
+	{ ratio: 4 / 3, label: '4:3' },
+	{ ratio: 16 / 9, label: '16:9' },
+	{ ratio: 21 / 9, label: '21:9' },
+ ];
+
+/** @type {{ ratio: number, label: string }[]} */
+export const SNAP_ASPECT_RATIOS = [
+	...LANDSCAPE_RATIOS,
+	// Add portrait inversions (skip 1:1 — its inverse is itself)
+	...LANDSCAPE_RATIOS
+		.filter(r => r.ratio !== 1)
+		.map(r => ({ ratio: 1 / r.ratio, label: r.label.split(':').reverse().join(':') })),
+];
