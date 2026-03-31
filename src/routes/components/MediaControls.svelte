@@ -1,6 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
-	import { touch_drag } from '$lib/client/touch_drag.js';
+	import { touch_drag, lock_cursor, unlock_cursor } from '$lib/client/touch_drag.js';
 
 	const svedit = getContext('svedit');
 
@@ -108,8 +108,12 @@
 		on_down(client_x, client_y) {
 			last_x = client_x;
 			last_y = client_y;
+			lock_cursor('grabbing');
 		},
 		on_move: apply_pan_delta,
+		on_up() {
+			unlock_cursor();
+		},
 	});
 </script>
 
