@@ -16,8 +16,10 @@ import {
 	CycleNodeTypeCommand,
 	CycleColorsetCommand,
 	ToggleLinkCommand,
-	EditLinkCommand
+	EditLinkCommand,
+	ReplaceMediaCommand
 } from './commands.svelte.js';
+// Command imported from 'svedit' above
 
 // System components
 import Overlays from './components/Overlays.svelte';
@@ -76,6 +78,10 @@ async function replace_media(session, path, file, blob_url) {
 
 	const media_type = get_media_type(file);
 	const dims = await get_media_dimensions(file);
+
+	// HACK: Make sure we have a proper before selection
+	// Needed because of the focus steal in Toolbar.
+	session.selection = { type: 'property', path };
 	const tr = session.tr;
 
 	if (media_type === node.type) {
@@ -272,13 +278,14 @@ const session_config = {
 			cycle_node_type_previous: new CycleNodeTypeCommand('previous', context),
 			toggle_link: new ToggleLinkCommand(context),
 			edit_link: new EditLinkCommand(context),
-			cycle_colorset: new CycleColorsetCommand(context)
+			cycle_colorset: new CycleColorsetCommand(context),
+			replace_media: new ReplaceMediaCommand(context)
 		};
 
 		// Define keymap binding keys to commands
 		const keymap = define_keymap({
 			'meta+a,ctrl+a': [commands.select_all],
-			enter: [commands.break_text_node, commands.insert_default_node],
+			enter: [commands.replace_media, commands.break_text_node, commands.insert_default_node],
 			// In case of a node cursor, fall back to inserting a default node. This is needed
 			// because on iOS selecting a node cursor triggers auto capitalization (shift pressed)
 			'shift+enter': [commands.add_new_line, commands.insert_default_node],
@@ -292,6 +299,7 @@ const session_config = {
 			'ctrl+shift+arrowleft': [commands.cycle_layout_previous],
 			'ctrl+shift+arrowdown': [commands.cycle_node_type_next],
 			'ctrl+shift+arrowup': [commands.cycle_node_type_previous],
+
 			'meta+k,ctrl+k': [commands.edit_link, commands.toggle_link],
 			'ctrl+shift+c': [commands.cycle_colorset]
 		});

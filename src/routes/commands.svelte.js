@@ -113,6 +113,28 @@ export class CycleColorsetCommand extends Command {
 	}
 }
 
+export class ReplaceMediaCommand extends Command {
+	is_enabled() {
+		const session = this.context.session;
+		if (!this.context.editable || session.selection?.type !== 'property') return false;
+		const selected_property = session.get(session.selection.path);
+		return selected_property?.type === 'image' || selected_property?.type === 'video';
+	}
+
+	execute() {
+		if (!this.is_enabled()) return;
+
+		const selection_path = this.context.session.selection?.path;
+		if (!selection_path) return;
+
+		document.documentElement.dataset.replaceMediaPath = JSON.stringify(selection_path);
+		const replace_media_input = /** @type {HTMLInputElement | null} */ (
+			document.getElementById('replace-media-input')
+		);
+		replace_media_input?.click();
+	}
+}
+
 /**
  * Command that toggles link annotations on text selections.
  * Shows a custom prompt for URL when creating a link.
