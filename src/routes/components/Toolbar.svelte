@@ -11,21 +11,26 @@
 	);
 
 	let file_input_ref = $state(null);
-	// Captured at click time so it survives the file picker stealing focus
-	let replace_media_path = null;
+
+	function cache_replace_media_path(path) {
+		document.documentElement.dataset.replaceMediaPath = JSON.stringify(path);
+	}
 
 	function handle_replace_image_click(e) {
 		e.preventDefault();
-		replace_media_path = session.selection?.path ?? null;
+		if (session.selection?.type !== 'property') return;
+		cache_replace_media_path(session.selection.path);
 		file_input_ref?.click();
 	}
 
 	async function handle_file_selected(e) {
 		const file = e.target.files?.[0];
-		if (!file || !replace_media_path) return;
+		const cached_path = document.documentElement.dataset.replaceMediaPath;
+		const path = cached_path ? JSON.parse(cached_path) : null;
+		if (!file || !path) return;
 		const blob_url = URL.createObjectURL(file);
-		await session.config.replace_media(session, replace_media_path, file, blob_url);
-		replace_media_path = null;
+		await session.config.replace_media(session, path, file, blob_url);
+		delete document.documentElement.dataset.replaceMediaPath;
 		// Reset so the same file can be re-selected
 		e.target.value = '';
 	}
@@ -120,9 +125,10 @@
 				<!-- Replace image (visible when media is selected) -->
 				{#if is_media_selected}
 					<button
+						id="replace-media-btn"
 						class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
 						onmousedown={handle_replace_image_click}
-						title="Replace image"
+						title="Replace image (⏎)"
 					>
 						<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 							<rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
@@ -167,6 +173,7 @@
 
 				<!-- Hidden file input for replace-image -->
 				<input
+					id="replace-media-input"
 					bind:this={file_input_ref}
 					type="file"
 					accept="image/*,video/*"
