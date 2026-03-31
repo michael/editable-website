@@ -288,7 +288,7 @@ const session_config = {
 			enter: [commands.replace_media, commands.break_text_node, commands.insert_default_node],
 			// In case of a node cursor, fall back to inserting a default node. This is needed
 			// because on iOS selecting a node cursor triggers auto capitalization (shift pressed)
-			'shift+enter': [commands.add_new_line, commands.insert_default_node],
+			'shift+enter': [commands.replace_media, commands.add_new_line, commands.insert_default_node],
 			'meta+b,ctrl+b': [commands.toggle_strong],
 			'meta+i,ctrl+i': [commands.toggle_emphasis],
 			'meta+u,ctrl+u': [commands.toggle_highlight],
