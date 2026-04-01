@@ -42,7 +42,6 @@ export function unlock_cursor() {
  *
  * @param {{
  *   should_start?: () => boolean,
- *   suppress_touchstart?: boolean,
  *   on_down?: (client_x: number, client_y: number) => void,
  *   on_move: (client_x: number, client_y: number) => void,
  *   on_up?: () => void,
@@ -111,10 +110,6 @@ export function touch_drag(callbacks) {
 
 		function on_touch_start(e) {
 			if (e.touches.length !== 1 || !can_start()) return;
-			if (callbacks.suppress_touchstart) {
-				e.preventDefault();
-				e.stopPropagation();
-			}
 			const t = e.touches[0];
 			start_x = t.clientX;
 			start_y = t.clientY;
@@ -145,7 +140,7 @@ export function touch_drag(callbacks) {
 		// --- Bind ---
 
 		node.addEventListener('pointerdown', on_pointer_down);
-		node.addEventListener('touchstart', on_touch_start, { passive: !callbacks.suppress_touchstart });
+		node.addEventListener('touchstart', on_touch_start, { passive: true });
 		node.addEventListener('touchmove', on_touch_move, { passive: false });
 		node.addEventListener('touchend', end_drag);
 		node.addEventListener('touchcancel', end_drag);

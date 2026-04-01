@@ -108,7 +108,6 @@
 
 	const pan_drag = touch_drag({
 		should_start: () => can_pan,
-		suppress_touchstart: true,
 		on_down(client_x, client_y) {
 			last_x = client_x;
 			last_y = client_y;

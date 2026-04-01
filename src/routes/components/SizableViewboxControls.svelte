@@ -365,7 +365,6 @@
 	// --- One attachment per handle ---
 
 	const drag_right = touch_drag({
-		suppress_touchstart: true,
 		on_down(client_x, client_y) {
 			drag_start_x = client_x;
 			drag_start_y = client_y;
@@ -376,7 +375,6 @@
 	});
 
 	const drag_bottom = touch_drag({
-		suppress_touchstart: true,
 		on_down(client_x, client_y) {
 			drag_start_x = client_x;
 			drag_start_y = client_y;
@@ -387,7 +385,6 @@
 	});
 
 	const drag_corner = touch_drag({
-		suppress_touchstart: true,
 		on_down(client_x, client_y) {
 			drag_start_x = client_x;
 			drag_start_y = client_y;
