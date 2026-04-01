@@ -13,6 +13,8 @@
 		is_new = false
 	} = $props();
 
+	let initial_doc_json = $derived(JSON.stringify(initial_doc));
+
 	let app_el = $state();
 	let svedit_ref = $state();
 	let editable = $state(false);
@@ -86,6 +88,24 @@
 		}
 	}
 
+	class CancelCommand extends Command {
+		is_enabled() {
+			return this.context.editable;
+		}
+
+		async execute() {
+			session.selection = null;
+
+			if (current_is_new) {
+				await goto('/');
+				return;
+			}
+
+			session = create_session(JSON.parse(initial_doc_json));
+			this.context.editable = false;
+		}
+	}
+
 	class SaveCommand extends Command {
 		is_enabled() {
 			return this.context.editable;
@@ -111,6 +131,8 @@
 
 			/** @type {any} */
 			const persist_document = api_module.save_document;
+			/** @type {any} */
+			const get_document = api_module.get_document;
 			const {
 				collect_blob_urls,
 				wait_for_processing,
@@ -185,8 +207,6 @@
 				this.context.editable = false;
 
 				if (result?.created && result.document_id) {
-					const { get_document } = await import('$lib/api.remote.js');
-
 					try {
 						await get_document(result.document_id);
 						current_is_new = false;
@@ -236,10 +256,12 @@
 
 	const app_commands = {
 		edit_document: new EditCommand(app_command_context),
+		cancel_editing: new CancelCommand(app_command_context),
 		save_document: new SaveCommand(app_command_context)
 	};
 
 	const app_key_map = define_keymap({
+		'meta+escape,ctrl+escape': [app_commands.cancel_editing],
 		'meta+e,ctrl+e': [app_commands.edit_document],
 		'meta+s,ctrl+s': [app_commands.save_document]
 	});
@@ -252,7 +274,12 @@
 		invalidate: invalidate_page_browser_data
 	});
 
-	let session = $derived(create_session(initial_doc));
+	let session = $state(create_session(initial_doc));
+
+	$effect(() => {
+		if (!current_is_new) return;
+		session = create_session(initial_doc);
+	});
 </script>
 
 <svelte:window onkeydown={key_mapper.handle_keydown.bind(key_mapper)} />

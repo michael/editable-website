@@ -228,7 +228,13 @@ The `/new` route uses an **ephemeral client-created document**. When the user op
 
 This id is stable from the beginning, even before the document is persisted. The page remains ephemeral only in the sense that it is not stored in the database until the first save.
 
+The transient `/new` document must be composed from the **current shared nav and footer documents in the database**, not from the static demo document. This ensures that if shared nav or footer content has been edited elsewhere, the new page starts from that latest shared state.
+
 On first save, the client sends that already-generated id to the server with `create: true`. The server persists the page under that id if it does not already exist. No server-side id allocation or root-id rewrite is needed.
+
+The `/new` route starts in edit mode immediately.
+
+If editing is cancelled on `/new`, the ephemeral document is discarded and the app returns to `/`.
 
 ## Assets
 

@@ -514,8 +514,11 @@ Implemented:
 Current behavior:
 - `/new` creates a transient page document locally via `create_empty_doc()`
 - the page id is generated on the client up front
+- the transient page is composed from the current shared nav/footer documents loaded from the database
+- `/new` starts in edit mode immediately
 - first save calls `save_document(..., create: true)` with that same id
 - after first save, the app navigates to `/${document_id}`
+- cancelling edit mode on `/new` discards the transient page and returns to `/`
 
 ## Phase 3 — reference tracking and sitemap data
 
@@ -685,11 +688,15 @@ Completed:
 - shared editor extraction
 - `/`, `/new`, and `/:page_id` route wiring
 - client-generated-id create-on-first-save flow
+- `/new` composition from current database-backed shared nav/footer docs
+- `/new` starts in edit mode immediately
 - proper SvelteKit 404 for unknown pages
 - async real pages drawer with loading and empty states
 - “New page” navigation from the drawer
 - page navigation from draft and sitemap items
+- drawer closes before page navigation
 - save-time drawer invalidation
+- cancel button behavior, including returning from `/new` to `/`
 
 Still to verify / finish:
 - confirm `document_refs` and reachability behavior matches the canonical tree rules exactly across real edited content

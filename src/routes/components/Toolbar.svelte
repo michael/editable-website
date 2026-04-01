@@ -1,6 +1,9 @@
 <script>
 	let { session, app_commands, editable, focus_canvas } = $props();
 
+	let cancel_command = $derived(app_commands.cancel_editing ?? null);
+	let cancel_button_label = $derived(cancel_command?.label || 'Cancel');
+
 	let selected_property = $derived(
 		session.selection?.type === 'property'
 			? session.get(session.selection.path)
@@ -187,7 +190,17 @@
 					onchange={handle_file_selected}
 				/>
 
-				<!-- Stable right group: Undo / Redo / Save -->
+				<!-- Stable right group: Cancel / Undo / Redo / Save -->
+				{#if cancel_command && !cancel_command.disabled}
+					<button
+						class="px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto text-(--foreground) bg-white shadow-md transition-colors duration-150 hover:brightness-95"
+						onclick={() => cancel_command.execute()}
+						title="Cancel (⌘⎋ / Ctrl+Esc)"
+					>
+						{cancel_button_label}
+					</button>
+				{/if}
+
 				<div class="flex items-center gap-1">
 					<button
 						class="{TW_TOOLBAR_BTN} {session.commands.undo?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
