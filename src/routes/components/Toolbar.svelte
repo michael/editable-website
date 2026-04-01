@@ -44,7 +44,7 @@
 		e.target.value = '';
 	}
 
-	const TW_TOOLBAR_POSITION = 'bottom-5 right-5 sm:right-7 md:right-10 lg:right-14';
+	const TW_TOOLBAR_POSITION = 'bottom-16 right-5 sm:right-7 md:right-10 lg:right-14';
 	// On mobile also pin to left edge so the toolbar can scroll horizontally
 	const TW_TOOLBAR_LEFT = 'left-5 sm:left-7 md:left-auto';
 
@@ -61,7 +61,7 @@
 
 <div class="fixed {TW_TOOLBAR_POSITION} {TW_TOOLBAR_LEFT} z-50 select-none pointer-events-none">
 	<div class="overflow-x-auto -mb-3 pb-3 -ml-3 pl-3">
-		<div class="flex items-center gap-1.5 sm:gap-3 w-max ml-auto">
+		<div class="flex items-center gap-1.5 sm:gap-3 w-max ml-auto pointer-events-none">
 			{#if !editable}
 				<!-- Read mode: Edit button -->
 				{#if !app_commands.edit_document.disabled}
@@ -78,7 +78,7 @@
 
 				<!-- Text formatting group (visible during text selection) -->
 				{#if session.selection?.type === 'text'}
-					<div class="flex items-center gap-1">
+					<div class="flex items-center gap-1 pointer-events-none">
 						<!-- Bold -->
 						<button
 							class="{TW_TOOLBAR_BTN} {session.commands.toggle_strong?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
@@ -148,7 +148,7 @@
 				{/if}
 
 				<!-- Type / Layout group (always visible, disabled when not applicable) -->
-				<div class="flex items-center gap-1">
+				<div class="flex items-center gap-1 pointer-events-none">
 					<!-- Type: cycle to next node type -->
 					<button
 						class="{TW_TOOLBAR_BTN} {session.commands.cycle_node_type_next?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
@@ -190,18 +190,8 @@
 					onchange={handle_file_selected}
 				/>
 
-				<!-- Stable right group: Cancel / Undo / Redo / Save -->
-				{#if cancel_command && !cancel_command.disabled}
-					<button
-						class="px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto text-(--foreground) bg-white shadow-md transition-colors duration-150 hover:brightness-95"
-						onclick={() => cancel_command.execute()}
-						title="Cancel (⌘⎋ / Ctrl+Esc)"
-					>
-						{cancel_button_label}
-					</button>
-				{/if}
-
-				<div class="flex items-center gap-1">
+				<!-- Stable right group: Undo / Redo -->
+				<div class="flex items-center gap-1 pointer-events-none">
 					<button
 						class="{TW_TOOLBAR_BTN} {session.commands.undo?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
 						onmousedown={(e) => handle_btn_mousedown(e, session.commands.undo)}
@@ -224,15 +214,27 @@
 					</button>
 				</div>
 
-				{#if !app_commands.save_document.disabled}
-					<button
-						class="px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-white bg-(--svedit-brand) shadow-md transition-colors duration-150 hover:brightness-90"
-						onclick={() => app_commands.save_document.execute()}
-						title="Save (⌘S)"
-					>
-						Save
-					</button>
-				{/if}
+				<div class="flex items-center gap-1 pointer-events-none">
+					{#if cancel_command && !cancel_command.disabled}
+						<button
+							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--foreground) bg-white shadow-md transition-colors duration-150 hover:brightness-95"
+							onclick={() => cancel_command.execute()}
+							title="Cancel (⌘⎋ / Ctrl+Esc)"
+						>
+							{cancel_button_label}
+						</button>
+					{/if}
+
+					{#if !app_commands.save_document.disabled}
+						<button
+							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-white bg-(--svedit-brand) shadow-md transition-colors duration-150 hover:brightness-90"
+							onclick={() => app_commands.save_document.execute()}
+							title="Save (⌘S)"
+						>
+							Save
+						</button>
+					{/if}
+				</div>
 			{/if}
 		</div>
 	</div>

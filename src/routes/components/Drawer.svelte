@@ -78,7 +78,7 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
-		pointer-events: auto;
+		pointer-events: none;
 		transform: translateY(calc(100% - 2rem));
 		transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
 		will-change: transform;
@@ -86,6 +86,7 @@
 
 	.drawer-layer.open .drawer {
 		transform: translateY(0);
+		pointer-events: auto;
 	}
 
 	.drawer-handle {
@@ -105,6 +106,7 @@
 		color: var(--foreground, black);
 		cursor: pointer;
 		touch-action: manipulation;
+		pointer-events: auto;
 	}
 
 	.drawer-pill {
