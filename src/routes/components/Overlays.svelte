@@ -5,6 +5,8 @@
 	import CreateLink from './CreateLink.svelte';
 	import EditLink from './EditLink.svelte';
 	import LinkPreview from './LinkPreview.svelte';
+	import Drawer from './Drawer.svelte';
+	import PagesDrawer from './PagesDrawer.svelte';
 
 	const svedit = getContext('svedit');
 
@@ -15,10 +17,10 @@
 
 	let overlays_ref = $state();
 
+	// Browse drawer state
+	let browse_drawer_open = $state(false);
+
 	// --- File drag-and-drop onto media properties ---
-	// Tracks the data-path of the media property currently under the drag cursor.
-	// Uses capture-phase document listeners to intercept before contenteditable
-	// retargets drag events to the canvas host element.
 	let drop_target_path = $state(null);
 	let file_drag_active = $state(false);
 
@@ -36,10 +38,6 @@
 		};
 	});
 
-	/**
-	 * Find the media property path under the cursor during a file drag.
-	 * Returns the path array or null.
-	 */
 	function get_media_path_at(e) {
 		const el = document.elementFromPoint(e.clientX, e.clientY);
 		if (!el) return null;
@@ -72,7 +70,6 @@
 	}
 
 	function on_dragleave(e) {
-		// If the drag left the document entirely, clear everything
 		if (!e.relatedTarget && !document.elementFromPoint(e.clientX, e.clientY)) {
 			file_drag_active = false;
 			drop_target_path = null;
@@ -89,8 +86,6 @@
 		drop_target_path = null;
 		file_drag_active = false;
 
-		// Always prevent default in edit mode so dropping a file outside
-		// a media property doesn't navigate away (losing unsaved edits).
 		if (svedit.editable && e.dataTransfer?.types?.includes('Files')) {
 			e.preventDefault();
 			e.stopPropagation();
@@ -108,7 +103,6 @@
 
 	function handle_mousemove(e) {
 		if (e.buttons !== 1) return;
-		// Only set is_dragging if drag started outside overlays
 		if (overlays_ref?.contains(e.target)) return;
 		is_dragging = true;
 	}
@@ -118,9 +112,11 @@
 			? svedit.session.get(svedit.session.selection.path)
 			: null
 	);
-	let is_media_selected = $derived(selected_property?.type === 'image' || selected_property?.type === 'video');
-	// Detect if the selected media lives inside a SizableViewbox
-	// (i.e. its parent node has {media_property}_max_width)
+
+	let is_media_selected = $derived(
+		selected_property?.type === 'image' || selected_property?.type === 'video'
+	);
+
 	let viewbox_context = $derived.by(() => {
 		if (!is_media_selected) return null;
 		const sel = svedit.session.selection;
@@ -141,10 +137,8 @@
 		const sel = svedit.session.selection;
 		if (!sel) return null;
 
-		// Check if selected_node has an href property (link-ish node)
 		const selected_node = svedit.session.selected_node;
 		if (selected_node && 'href' in selected_node) {
-			// For node selections, check if exactly one node is selected
 			if (sel.type === 'node') {
 				const start = Math.min(sel.anchor_offset, sel.focus_offset);
 				const end = Math.max(sel.anchor_offset, sel.focus_offset);
@@ -154,15 +148,12 @@
 				}
 			}
 
-			// For text/property selections inside a link-ish node
 			if (sel.type === 'text' || sel.type === 'property') {
-				// Path to the node is selection path minus the property name
 				const path = sel.path.slice(0, -1);
 				return { node: selected_node, path };
 			}
 		}
 
-		// Check for inline link annotation
 		if (sel.type === 'text') {
 			const active_annotation = svedit.session.active_annotation('link');
 			if (active_annotation) {
@@ -205,8 +196,6 @@
 				></div>
 			{/if}
 		{/if}
-		<!-- Here we render  and other stuff that should lay atop of the canvas -->
-		<!-- NOTE: we are using CSS Anchor Positioning, which currently only works in the latest Chrome browser -->
 
 		{#if viewbox_context}
 			<SizableViewboxControls
@@ -227,6 +216,10 @@
 	{#if svedit.session.commands?.toggle_link?.show_prompt}
 		<CreateLink />
 	{/if}
+
+	<Drawer bind:open={browse_drawer_open} label="Pages">
+		<PagesDrawer />
+	</Drawer>
 </div>
 
 <style>
@@ -250,6 +243,8 @@
 		right: anchor(right);
 		pointer-events: auto;
 	}
+
+
 </style>
 
 <svelte:document
