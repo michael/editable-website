@@ -604,6 +604,24 @@ This query is cheap — most sites have tens to low hundreds of pages. It runs o
 
 When the home page is changed via `site_settings`, pages that were only reachable through the old home page's link tree may become drafts. This is expected — they're still visible in the admin site map and can be re-linked or deleted.
 
+### Sitemap tree construction
+
+The admin page browser needs not just a reachable/unreachable split, but also a deterministic **tree projection** of the reachable page graph.
+
+The tree is built with these rules:
+
+- **No duplicates in the tree** — each reachable page appears at most once
+- **First occurrence wins** — if a page is referenced multiple times, its canonical position is the first position where it is encountered during traversal
+- **Top-level ordering:** traverse references from the home page in this order:
+  1. shared nav links
+  2. home page body links
+  3. shared footer links
+- **Recursive ordering:** once a child page has been placed in the tree, recurse into that page using **body links only**
+
+This means the sitemap is not a full graph visualization. It is a stable, editor-friendly tree derived from the reachable graph, where shared navigation and footer establish the top-level site structure, and deeper nesting comes from contextual links inside page content.
+
+If a page is linked from multiple places, later occurrences are ignored for tree placement. This keeps the page browser compact and avoids crowded duplicates. If needed in the future, secondary references can be surfaced separately (for example as “also linked from…” metadata), but they are not duplicated in the primary tree.
+
 ## Authentication
 
 Editable Website is a **single-user application**. There is one admin account. No user registration, no roles, no multi-tenancy.

@@ -439,10 +439,17 @@ For each saved subdocument (page/nav/footer):
 
 Need a clear convention for what counts as internal page reference:
 - likely hrefs beginning with `/page_id` or `/${page_id}`
-- possibly page-local anchors should be excluded
+- page-local anchors like `/#section` should be excluded
 - external URLs ignored
 
-This part must be carefully defined before implementation.
+This part must be carefully defined before implementation, because the sitemap tree depends on deterministic ordered refs.
+
+In addition to the raw `document_refs` graph, we will need ordered extraction helpers for tree building:
+
+- **root traversal buckets:** nav refs, home body refs, footer refs
+- **recursive traversal bucket:** body refs only
+
+These ordered buckets are what drive canonical tree placement.
 
 ### 3.2 Implement reachability
 Add a server helper that:
@@ -461,12 +468,17 @@ Add:
 
 It should:
 - list all page documents
-- compute drafts = all pages not reachable from home graph
+- compute drafts = all pages not reachable from the canonical home traversal
 - compute sitemap tree
 
-For the first version of sitemap tree:
-- it’s okay if the tree is driven primarily from nav structure plus page references
-- but the exact shape should be documented before coding if it differs from generic reachability graph traversal
+The sitemap tree must follow the documented rules exactly:
+
+- no duplicates
+- first occurrence wins
+- top-level ordering: nav → home body → footer
+- recursive ordering: body only
+
+So this query/helper layer should not just return a raw graph; it should return the already-projected canonical tree used by the drawer UI.
 
 ## Phase 4 — async drawer wiring
 
@@ -536,19 +548,33 @@ Possibilities:
 We should define this before implementing `document_refs`.
 
 ## 2. How should sitemap hierarchy be built?
-There are two plausible sources:
 
-### A. Nav-driven tree
-- nav defines primary structure
-- children inferred from nav nesting / page grouping
-- simple and UX-friendly
+The sitemap drawer should render a **tree projection** of the reachable page graph, not the full graph.
 
-### B. Reference graph-driven tree
-- generic graph traversal from home
-- but graph isn’t necessarily a tree
-- more complex and may produce odd UI
+### Final tree-building rule
 
-For the drawer UX you described, a **nav-driven or explicitly structured tree** is probably preferable, with reachability used only to determine drafts.
+- **No duplicates in the tree**
+- **First occurrence wins**
+- **Top-level ordering:** shared nav links → home page body links → shared footer links
+- **Recursive ordering for child pages:** body links only
+
+This means:
+
+- Start traversal at the configured home page.
+- At the root level, collect outgoing internal page references in this order:
+  1. shared nav
+  2. home page body
+  3. shared footer
+- When a referenced page is encountered for the first time, insert it into the tree at that position.
+- Then recurse into that page, but only inspect its **body-derived** page references.
+- If the same page is encountered again later from another path, ignore that later occurrence for tree placement.
+
+This produces a deterministic, editor-friendly sitemap:
+- global nav/footer define the top-level site structure
+- deeper nesting comes from contextual links inside page content
+- repeated references do not crowd the drawer with duplicates
+
+Reachability is still graph-based, but the drawer presents a clean canonical tree rather than a literal graph visualization.
 
 ## 3. Where should “page summary” extraction live?
 We need a clear place for:
