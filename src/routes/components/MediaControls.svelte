@@ -126,6 +126,7 @@
 	<div
 		bind:this={controls_ref}
 		class="media-controls"
+		oncontextmenu={(e) => e.preventDefault()}
 		ondblclick={handle_double_click}
 		onwheel={handle_wheel}
 		{@attach pan_drag}
