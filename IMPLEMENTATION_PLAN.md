@@ -304,16 +304,60 @@ This keeps the drawer UI simple and avoids doing graph analysis in the client.
 The drawer should not receive raw full documents.
 
 Instead, the server should summarize each page:
-- title:
-  - likely from first strong title-like content in body
-  - fallback to document id / “Untitled page”
-- preview image:
-  - first image/media found in the page subtree
-  - fallback to null
+- title
+- preview image
 
 This keeps the drawer payload small and purpose-built.
 
-## Decision 7: drafts are unreachable pages, not merely “unlinked by nav”
+## Decision 7: page summaries should be extracted on the fly first, not cached
+
+Use an on-the-fly extraction helper in `src/lib/server/`, used by `get_page_browser_data()`.
+
+### Initial approach: no cache
+For the first implementation, do **not** cache page summaries in the database. Extract them on demand when building the page browser data. This keeps the system simpler:
+
+- no extra columns or companion summary table
+- no extra migration work
+- no summary invalidation logic
+- no extra save-time bookkeeping
+
+If this later proves too costly, summaries can be cached on save (similar in spirit to `document_refs`), but that is a later optimization.
+
+### Extraction scope
+Summary extraction should be **page-local only**:
+- inspect the page document / page body subtree
+- do **not** use shared nav or footer content for page summaries
+
+This avoids cases where many pages inherit the same logo or shared text as their summary.
+
+### Title extraction strategy
+Use this fallback order:
+
+1. explicit `page.title` if present and non-empty
+2. first heading-like `text` node in page body
+3. first meaningful text node in page body
+4. fallback: `"Untitled page"`
+
+For now, “heading-like” means the heading-style `text` node layouts already used in the app (for example the larger heading layouts). The exact helper can stay implementation-specific as long as it follows this order.
+
+### Preview-image extraction strategy
+Use this fallback order:
+
+1. explicit page preview field if one exists in the future
+2. otherwise the first image/video found in page body traversal order
+3. fallback: `null`
+
+The drawer already has a good illustrated-page fallback, so `null` is acceptable.
+
+### Why this is the right start
+The likely cost of summary extraction is low enough for now:
+- page counts are expected to stay modest
+- extraction can stop early once title + preview are found
+- this avoids premature complexity while still giving good summaries
+
+If later needed, the same extraction helper can become the canonical generator for cached summaries.
+
+## Decision 8: drafts are unreachable pages, not merely “unlinked by nav”
 
 Drafts should be defined according to reachability from the live site graph:
 
@@ -327,7 +371,7 @@ Drafts should be defined according to reachability from the live site graph:
 
 This matches the architecture and avoids conflating “not in nav” with “draft”.
 
-## Decision 8: internal page reference rules are route-based and deterministic
+## Decision 9: internal page reference rules are route-based and deterministic
 
 Internal page references should follow these rules:
 
@@ -341,6 +385,35 @@ Internal page references should follow these rules:
 
 This means `document_refs` should track page-to-page relationships by normalized target page id, not by full href string. Fragments are only relevant for browser navigation, not for sitemap reachability.
 
+## Decision 10: sitemap hierarchy is a canonical tree projection, not a graph view
+
+The sitemap drawer should render a **tree projection** of the reachable page graph, not the full graph.
+
+### Final tree-building rule
+
+- **No duplicates in the tree**
+- **First occurrence wins**
+- **Top-level ordering:** shared nav links → home page body links → shared footer links
+- **Recursive ordering for child pages:** body links only
+
+This means:
+
+- Start traversal at the configured home page.
+- At the root level, collect outgoing internal page references in this order:
+  1. shared nav
+  2. home page body
+  3. shared footer
+- When a referenced page is encountered for the first time, insert it into the tree at that position.
+- Then recurse into that page, but only inspect its **body-derived** page references.
+- If the same page is encountered again later from another path, ignore that later occurrence for tree placement.
+
+This produces a deterministic, editor-friendly sitemap:
+- global nav/footer define the top-level site structure
+- deeper nesting comes from contextual links inside page content
+- repeated references do not crowd the drawer with duplicates
+
+Reachability is still graph-based, but the drawer presents a clean canonical tree rather than a literal graph visualization.
+
 ## Proposed phased implementation
 
 ## Phase 1 — backend support for multi-page documents
@@ -351,7 +424,6 @@ Introduce helpers in `src/lib/api.remote.js` or extracted server modules for:
 - `get_home_page_id()`
 - `list_page_documents()`
 - `get_page_document(document_id)`
-- `generate_page_id()`
 - maybe `upsert_split_documents(...)` extracted from current save logic
 
 ### 1.2 Extend save API for create-on-first-save
@@ -533,111 +605,6 @@ When a page is created or links change:
 Initial simple solution:
 - when save succeeds, clear cached browser-data promise/state
 - next drawer open refetches
-
-## Open questions to resolve before implementation
-
-## 1. How exactly should page links be represented and parsed?
-Need a precise rule for internal page references.
-
-Possibilities:
-- `href: '/about'` with route segment equal to document id
-- `href: '/page_id'`
-- `href: '/'` for home page
-- anchor links `/#section` should not count as page refs
-
-We should define this before implementing `document_refs`.
-
-## 2. How should sitemap hierarchy be built?
-
-The sitemap drawer should render a **tree projection** of the reachable page graph, not the full graph.
-
-### Final tree-building rule
-
-- **No duplicates in the tree**
-- **First occurrence wins**
-- **Top-level ordering:** shared nav links → home page body links → shared footer links
-- **Recursive ordering for child pages:** body links only
-
-This means:
-
-- Start traversal at the configured home page.
-- At the root level, collect outgoing internal page references in this order:
-  1. shared nav
-  2. home page body
-  3. shared footer
-- When a referenced page is encountered for the first time, insert it into the tree at that position.
-- Then recurse into that page, but only inspect its **body-derived** page references.
-- If the same page is encountered again later from another path, ignore that later occurrence for tree placement.
-
-This produces a deterministic, editor-friendly sitemap:
-- global nav/footer define the top-level site structure
-- deeper nesting comes from contextual links inside page content
-- repeated references do not crowd the drawer with duplicates
-
-Reachability is still graph-based, but the drawer presents a clean canonical tree rather than a literal graph visualization.
-
-## 3. Where should “page summary” extraction live?
-We need a clear place for:
-- title extraction
-- preview-image extraction
-
-Use an on-the-fly extraction helper in `src/lib/server/`, used by `get_page_browser_data()`.
-
-### Initial approach: no cache
-For the first implementation, do **not** cache page summaries in the database. Extract them on demand when building the page browser data. This keeps the system simpler:
-
-- no extra columns or companion summary table
-- no extra migration work
-- no summary invalidation logic
-- no extra save-time bookkeeping
-
-If this later proves too costly, summaries can be cached on save (similar in spirit to `document_refs`), but that is a later optimization.
-
-### Extraction scope
-Summary extraction should be **page-local only**:
-- inspect the page document / page body subtree
-- do **not** use shared nav or footer content for page summaries
-
-This avoids cases where many pages inherit the same logo or shared text as their summary.
-
-### Title extraction strategy
-Use this fallback order:
-
-1. explicit `page.title` if present and non-empty
-2. first heading-like `text` node in page body
-3. first meaningful text node in page body
-4. fallback: `"Untitled page"`
-
-For now, “heading-like” means the heading-style `text` node layouts already used in the app (for example the larger heading layouts). The exact helper can stay implementation-specific as long as it follows this order.
-
-### Preview-image extraction strategy
-Use this fallback order:
-
-1. explicit page preview field if one exists in the future
-2. otherwise the first image/video found in page body traversal order
-3. fallback: `null`
-
-The drawer already has a good illustrated-page fallback, so `null` is acceptable.
-
-### Why this is the right start
-The likely cost of summary extraction is low enough for now:
-- page counts are expected to stay modest
-- extraction can stop early once title + preview are found
-- this avoids premature complexity while still giving good summaries
-
-If later needed, the same extraction helper can become the canonical generator for cached summaries.
-
-## 4. How should `/new` root ids be handled?
-
-Use a client-generated nanoid from the start.
-
-- `create_empty_doc()` generates a fresh page id
-- `document_id` is set to that id immediately
-- the root page node id is the same id
-- the document remains ephemeral until first save, but its identity is already stable
-- the server persists that id on create instead of rewriting ids during save
-
-This keeps the flow simple and avoids an extra id-allocation roundtrip.
 
 ## Static/Vercel compatibility constraints for implementation
 
