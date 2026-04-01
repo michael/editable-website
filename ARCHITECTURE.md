@@ -8,6 +8,8 @@ This document describes the backend architecture for Editable Website v2.
 
 Editable Website is a SvelteKit application that lets site owners edit content directly in the browser. The editor (Svedit) works with a graph-based document model — a flat map of nodes with references between them. The backend stores these documents in SQLite and serves them to the frontend, stitching together shared content (nav, footer) with page-specific content into a single document that Svedit can edit locally.
 
+The production architecture is database-backed and supports multiple pages, but the project must also continue to support static preview/local development mode (for example `VERCEL=1`) where the app falls back to the demo document. In that mode, only the `/` route needs to work, multi-page features are disabled, authentication is disabled, and code paths must avoid hard dependencies on server-only runtime features that would break static deployments.
+
 ## SvelteKit configuration
 
 The app uses Svelte's experimental async features and SvelteKit's remote functions. Both are enabled in `svelte.config.js`:
@@ -45,6 +47,30 @@ export async function init() {
 ```
 
 The `handle` hook runs on every request and is where session validation and `event.locals.user` assignment will happen once authentication is implemented.
+
+## Static / Vercel compatibility mode
+
+Editable Website must preserve a lightweight static-compatible mode for preview deployments and single-page local development. This mode is currently used when the app runs in a Vercel-style environment (`VERCEL=1`) and should keep working even as the full multi-page setup is introduced.
+
+**Requirements:**
+
+- Only the `/` route must support static/Vercel mode.
+- In static/Vercel mode, `/` renders from the existing demo document instead of the database.
+- multi-page features are disabled in this mode at the **UI / integration** level:
+  - no pages drawer
+  - no links or flows that send the user to `/new`
+  - no links or flows that send the user to dynamic `/:page_id` pages
+- the multi-page routes may still exist in the codebase and may assume a full Node + database runtime; they just must not be linked to or otherwise used from the `VERCEL=1` branch.
+- authentication is disabled in this mode.
+- Client code must not hardwire imports or execution paths that force server-only database/remote-function behavior for the `/` route in static/Vercel mode.
+- Be especially careful with top-level async imports and route setup so the static adapter / preview deployment path remains viable.
+
+This means the app effectively has two operating modes:
+
+1. **Full runtime mode** — database-backed, multi-page, shared nav/footer, authentication-ready
+2. **Static/Vercel mode** — single-page demo-doc fallback on `/`, while multi-page routes may still exist but are not surfaced or used
+
+The static/Vercel mode is a compatibility constraint on all future multi-page work.
 
 ## Data storage
 
@@ -541,6 +567,8 @@ The only admin interface is a **site map** — a listing of all pages plus draft
 ### Page reachability
 
 A page is **reachable** (and appears in `sitemap.xml`) if it can be reached by following links starting from the home page, nav, or footer. This is a transitive check — a page linked only from a draft is still a draft, because the draft itself isn't reachable.
+
+This reachability logic only applies in the full database-backed multi-page runtime. In static/Vercel compatibility mode there is no live multi-page graph, no sitemap drawer, and no draft/public distinction — the app simply serves the demo document at `/`.
 
 The traversal starts from three roots:
 

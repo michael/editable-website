@@ -53,6 +53,20 @@ This step must preserve the current strengths of the app:
 - existing save flow including asset processing/upload/replacement
 - current document splitting and asset reference tracking
 - editable-in-place page editing with the same session and toolbar behavior
+- static/Vercel compatibility for the `/` route using the demo document fallback
+
+In addition, the multi-page work must preserve the current static preview / local single-page mode:
+
+- when running in static/Vercel-style mode (for example `VERCEL=1`), only `/` needs to work
+- `/` should continue to render from the demo document in that mode
+- multi-page features are disabled in that mode from the `/` route's point of view:
+  - no pages drawer
+  - no linking into `/new`
+  - no linking into dynamic `/:page_id`
+- the multi-page routes themselves may still exist and assume the full Node + database runtime; they just must not be used from the `VERCEL=1` branch
+- authentication is also disabled in that mode
+- implementation must avoid hardwiring server-only runtime assumptions into the `/` route that would break static deployments
+- be especially careful with top-level async imports and route setup, as already noted in the current `+page.svelte` flow
 
 ## Key observations from current codebase
 
@@ -169,10 +183,11 @@ This is a good use for Svelte async patterns and keeps the main editor lightweig
 
 ## Decision 1: keep `/` as a dedicated home-page route
 
-- `/` continues to resolve `home_page_id` from site settings
+- `/` continues to resolve `home_page_id` from site settings in the full runtime
 - it loads that page using the same dynamic page loader used by `/:page_id`
+- however, `/` must also retain a static/Vercel fallback mode that renders the demo document without requiring the database or multi-page runtime
 
-This avoids duplicating page rendering logic while preserving a clean homepage URL.
+This avoids duplicating page rendering logic while preserving a clean homepage URL and keeping preview/static deployments viable.
 
 ## Decision 2: introduce a dynamic `[page_id]` route
 
@@ -552,6 +567,18 @@ Likely:
 
 This is simple and explicit.
 
+## Static/Vercel compatibility constraints for implementation
+
+These constraints must be respected during implementation:
+
+- only the `/` route must support static/Vercel compatibility mode
+- `/new` and `/:page_id` may hardwire full runtime assumptions
+- the multi-page routes can remain present in static/Vercel deployments; they just must not be linked to or relied on from the `VERCEL=1` branch
+- the drawer/page-browser UI should not appear in static/Vercel mode
+- authentication should remain effectively off in static/Vercel mode
+- route/component structure should avoid forcing server-only imports for `/`
+- if needed, keep the current pattern where `/` conditionally loads the demo document in static mode and only uses the runtime database path in full mode
+
 ## Suggested file changes summary
 
 ### New or extracted files
@@ -571,15 +598,17 @@ This is simple and explicit.
 
 ## Recommended implementation order
 
-1. Extract page editor shell
-2. Add `/[page_id]`
-3. Add `/new` with transient document
-4. Extend save API for create-on-first-save
-5. Make create flow redirect after first save
-6. Implement `document_refs` maintenance
-7. Implement `get_page_browser_data()`
-8. Wire real async drawer data
-9. Add invalidation after save
+1. Define the runtime split clearly: full runtime vs static/Vercel `/` fallback
+2. Extract page editor shell in a way that does not break the static `/` route
+3. Add `/[page_id]`
+4. Add `/new` with transient document
+5. Extend save API for create-on-first-save
+6. Make create flow redirect after first save
+7. Implement `document_refs` maintenance
+8. Implement `get_page_browser_data()`
+9. Wire real async drawer data
+10. Disable drawer/multi-page UI in static/Vercel mode
+11. Add invalidation after save
 
 ## Notes from PR #86 reference
 
