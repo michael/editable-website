@@ -28,8 +28,14 @@
 		const cached_path = document.documentElement.dataset.replaceMediaPath;
 		const path = cached_path ? JSON.parse(cached_path) : null;
 		if (!file || !path) return;
-		const blob_url = URL.createObjectURL(file);
-		await session.config.replace_media(session, path, file, blob_url);
+
+		// HACK: Android produces broken blob urls on the original file object,
+		// turning it into a blob first, fixes this. On the downside, this will use
+		// up more memory temporarily.
+		const normalized_blob = new Blob([await file.arrayBuffer()], { type: file.type });
+		const blob_url = URL.createObjectURL(normalized_blob);
+
+		await session.config.replace_media(session, path, normalized_blob, blob_url);
 		delete document.documentElement.dataset.replaceMediaPath;
 		// Reset so the same file can be re-selected
 		e.target.value = '';
