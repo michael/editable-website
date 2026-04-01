@@ -4,20 +4,14 @@
 
 	const page_browser = getContext('page_browser');
 
-	let {
-		open = false
-	} = $props();
-
 	let browser_data = $state(null);
 	let loading = $state(false);
 	let load_error = $state('');
 	let loaded_version = $state(-1);
 
 	$effect(() => {
-		if (!open) return;
-		if (loading) return;
-
 		const current_version = page_browser?.version ?? 0;
+		if (loading) return;
 		if (browser_data && loaded_version === current_version) return;
 
 		void load_browser_data();

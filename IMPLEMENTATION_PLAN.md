@@ -464,13 +464,24 @@ This should be minimal but pleasant to edit immediately.
 ## Phase 2 — routing and shared page editor shell
 
 ### 2.1 Extract current page editor into a shared component
-Implemented:
-- extracted the editor shell into `src/routes/components/PageEditor.svelte`
-
-Current responsibilities:
-- instantiate session
+Current `src/routes/+page.svelte` mixes:
+- document loading
 - app command setup
 - save flow
+- toolbar
+- editor rendering
+
+Extract the reusable editor page shell into something like:
+- `src/routes/components/PageEditor.svelte`
+
+Inputs:
+- `initial_doc`
+- `is_new`
+- maybe `page_id`
+
+Responsibilities:
+- instantiate session
+- save command
 - toolbar
 - key mapping
 - edit mode

@@ -2,8 +2,8 @@
 	import { setContext } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { Svedit, KeyMapper, Command, define_keymap } from 'svedit';
-	import Toolbar from '../components/Toolbar.svelte';
-	import SaveProgressModal from '../components/SaveProgressModal.svelte';
+	import Toolbar from './Toolbar.svelte';
+	import SaveProgressModal from './SaveProgressModal.svelte';
 	import { create_session } from '../create_session.js';
 
 	/** @type {{ initial_doc: any, has_backend?: boolean, is_new?: boolean }} */
@@ -30,6 +30,9 @@
 
 	$effect(() => {
 		current_is_new = !!is_new;
+		if (current_is_new) {
+			editable = true;
+		}
 	});
 
 	function focus_canvas() {
@@ -99,20 +102,24 @@
 			const save_start = Date.now();
 
 			const [
-				{ save_document: persist_document },
-				{
-					collect_blob_urls,
-					wait_for_processing,
-					has_pending_processing,
-					ensure_processing,
-					upload_pending,
-					replace_blob_urls,
-					cleanup_pending
-				}
+				api_module,
+				asset_upload_module
 			] = await Promise.all([
 				import('$lib/api.remote.js'),
 				import('$lib/client/asset_upload.js')
 			]);
+
+			/** @type {any} */
+			const persist_document = api_module.save_document;
+			const {
+				collect_blob_urls,
+				wait_for_processing,
+				has_pending_processing,
+				ensure_processing,
+				upload_pending,
+				replace_blob_urls,
+				cleanup_pending
+			} = asset_upload_module;
 
 			save_progress_visible = true;
 			save_progress_done = false;
@@ -153,6 +160,7 @@
 					replace_blob_urls(doc_json.nodes, mapping);
 				}
 
+				/** @type {{ ok: boolean, document_id?: string, created?: boolean }} */
 				const result = await persist_document({
 					...doc_json,
 					create: current_is_new
@@ -176,7 +184,7 @@
 				session.selection = null;
 				this.context.editable = false;
 
-				if (result?.created) {
+				if (result?.created && result.document_id) {
 					current_is_new = false;
 					invalidate_page_browser_data();
 					await goto(`/${result.document_id}`, { replaceState: true });
@@ -190,6 +198,7 @@
 					save_progress_done = true;
 					await new Promise((resolve) => setTimeout(resolve, 1500));
 				}
+
 				save_progress_visible = false;
 			} catch (err) {
 				console.error('Save failed:', err);

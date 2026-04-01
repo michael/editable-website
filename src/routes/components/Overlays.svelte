@@ -218,7 +218,7 @@
 	{/if}
 
 	<Drawer bind:open={browse_drawer_open} label="Pages">
-		<PagesDrawer open={browse_drawer_open} />
+		<PagesDrawer />
 	</Drawer>
 </div>
 

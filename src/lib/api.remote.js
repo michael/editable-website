@@ -52,8 +52,9 @@ function collect_node_ids(root_id, nodes, exclude_roots) {
 
 	while (stack.length > 0) {
 		const id = stack.pop();
-		if (collected.has(id)) continue;
+		if (!id || collected.has(id)) continue;
 		if (exclude_roots && exclude_roots.has(id) && id !== root_id) continue;
+
 		collected.add(id);
 
 		const node = nodes[id];
@@ -109,9 +110,11 @@ function get_doc_from_db(document_id) {
 	const doc_row = /** @type {DocumentRow | undefined} */ (
 		db.prepare('SELECT * FROM documents WHERE document_id = ?').get(document_id)
 	);
+
 	if (!doc_row) {
 		throw new Error(`Document not found: ${document_id}`);
 	}
+
 	return JSON.parse(doc_row.data);
 }
 
@@ -123,6 +126,7 @@ function get_optional_doc_from_db(document_id) {
 	const doc_row = /** @type {DocumentRow | undefined} */ (
 		db.prepare('SELECT * FROM documents WHERE document_id = ?').get(document_id)
 	);
+
 	if (!doc_row) return null;
 	return JSON.parse(doc_row.data);
 }
@@ -131,28 +135,22 @@ function get_optional_doc_from_db(document_id) {
  * @returns {string | null}
  */
 function get_home_page_id_from_db() {
-	const row = /** @type {{ value: string } | undefined} */ (
+	const row = /** @type {{ value: string } | undefined } */ (
 		db.prepare('SELECT value FROM site_settings WHERE key = ?').get('home_page_id')
 	);
-	return row?.value ?? null;
-}
 
-/**
- * @returns {Array<{ document_id: string, type: string, data: string }>}
- */
-function list_page_rows() {
-	return /** @type {Array<{ document_id: string, type: string, data: string }>} */ (
-		db.prepare('SELECT document_id, type, data FROM documents WHERE type = ? ORDER BY document_id').all(
-			'page'
-		)
-	);
+	return row?.value ?? null;
 }
 
 /**
  * @returns {DocumentData[]}
  */
 function list_page_documents() {
-	return list_page_rows().map((row) => JSON.parse(row.data));
+	const rows = /** @type {DocumentRow[]} */ (
+		db.prepare('SELECT * FROM documents WHERE type = ? ORDER BY document_id').all('page')
+	);
+
+	return rows.map((row) => JSON.parse(row.data));
 }
 
 /**
@@ -166,22 +164,13 @@ function normalize_internal_page_href(href, source_document_id) {
 	if (href.startsWith('//')) return null;
 
 	const [path_part] = href.split('#');
-	if (!path_part) {
-		return null;
-	}
 
-	if (path_part === '/') {
-		return null;
-	}
-
-	if (!path_part.startsWith('/')) {
-		return null;
-	}
+	if (!path_part) return null;
+	if (path_part === '/') return null;
+	if (!path_part.startsWith('/')) return null;
 
 	const segments = path_part.split('/').filter(Boolean);
-	if (segments.length !== 1) {
-		return null;
-	}
+	if (segments.length !== 1) return null;
 
 	const target_document_id = segments[0];
 	if (!target_document_id) return null;
@@ -228,6 +217,7 @@ function collect_document_refs(nodes, node_ids, source_document_id) {
 					annotation_node.href,
 					source_document_id
 				);
+
 				if (target_document_id) {
 					refs.add(target_document_id);
 				}
@@ -286,6 +276,7 @@ function update_document_refs(source_document_id, target_document_ids, delete_st
  */
 function get_shared_root_ids(page_doc) {
 	const page_node = page_doc.nodes[page_doc.document_id];
+
 	return {
 		nav_root_id: typeof page_node?.nav === 'string' ? page_node.nav : null,
 		footer_root_id: typeof page_node?.footer === 'string' ? page_node.footer : null
@@ -323,17 +314,20 @@ function get_combined_document(document_id) {
  */
 function collect_page_body_node_ids(page_doc) {
 	const page_root = page_doc.nodes[page_doc.document_id];
+
 	if (!page_root?.body || !Array.isArray(page_root.body)) {
 		return new Set([page_doc.document_id]);
 	}
 
 	const body_node_ids = new Set([page_doc.document_id]);
+
 	for (const child_id of page_root.body) {
 		const subtree_ids = collect_node_ids(child_id, page_doc.nodes);
 		for (const subtree_id of subtree_ids) {
 			body_node_ids.add(subtree_id);
 		}
 	}
+
 	return body_node_ids;
 }
 
@@ -370,10 +364,6 @@ function summarize_page_document(page_doc) {
 			const text = extract_plain_text(node.content);
 			if (!text) continue;
 
-			if (!explicit_title) {
-				explicit_title = text;
-			}
-
 			if (!heading_title && (node.layout === 2 || node.layout === 3 || node.layout === 4)) {
 				heading_title = text;
 			}
@@ -396,13 +386,6 @@ function summarize_page_document(page_doc) {
 			const hero_description = extract_plain_text(node.description);
 			if (!fallback_title && hero_description) {
 				fallback_title = hero_description;
-			}
-		}
-
-		if (node.type === 'button' || node.type === 'nav_item' || node.type === 'footer_link') {
-			const label_text = extract_plain_text(node.label);
-			if (!fallback_title && label_text) {
-				fallback_title = label_text;
 			}
 		}
 
@@ -431,6 +414,7 @@ function get_outgoing_refs(source_document_id) {
 			'SELECT target_document_id FROM document_refs WHERE source_document_id = ? ORDER BY rowid'
 		).all(source_document_id)
 	);
+
 	return rows.map((row) => row.target_document_id);
 }
 
@@ -449,7 +433,6 @@ function get_reachable_page_ids(page_docs_by_id, home_page_id, nav_root_id, foot
 	}
 
 	const queue = [home_page_id];
-
 	if (nav_root_id) queue.push(nav_root_id);
 	if (footer_root_id) queue.push(footer_root_id);
 
@@ -547,9 +530,11 @@ function build_page_browser_data() {
 	const nav_refs = nav_root_id
 		? get_outgoing_refs(nav_root_id).filter((document_id) => reachable_page_ids.has(document_id))
 		: [];
+
 	const footer_refs = footer_root_id
 		? get_outgoing_refs(footer_root_id).filter((document_id) => reachable_page_ids.has(document_id))
 		: [];
+
 	const home_body_refs = home_page_id
 		? (body_refs_by_page_id.get(home_page_id) ?? []).filter((document_id) =>
 				reachable_page_ids.has(document_id)
@@ -566,6 +551,7 @@ function build_page_browser_data() {
 		};
 
 		const seen_page_ids = new Set([home_page_id]);
+
 		sitemap = {
 			document_id: home_summary.document_id,
 			title: home_summary.title,
@@ -602,10 +588,39 @@ export const get_document = query(v.string(), async (document_id) => {
  */
 export const get_home_document = query(v.void(), async () => {
 	const home_page_id = get_home_page_id_from_db();
+
 	if (!home_page_id) {
 		throw new Error('Home page is not configured');
 	}
+
 	return get_combined_document(home_page_id);
+});
+
+/**
+ * Return the current shared nav and footer documents used for composing new pages.
+ */
+export const get_shared_documents = query(v.void(), async () => {
+	const home_page_id = get_home_page_id_from_db();
+
+	if (!home_page_id) {
+		throw new Error('Home page is not configured');
+	}
+
+	const home_page_doc = get_doc_from_db(home_page_id);
+	const { nav_root_id, footer_root_id } = get_shared_root_ids(home_page_doc);
+
+	if (!nav_root_id) {
+		throw new Error('Home page nav document is not configured');
+	}
+
+	if (!footer_root_id) {
+		throw new Error('Home page footer document is not configured');
+	}
+
+	return {
+		nav_document: get_doc_from_db(nav_root_id),
+		footer_document: get_doc_from_db(footer_root_id)
+	};
 });
 
 /**
@@ -651,7 +666,6 @@ export const save_document = command(save_document_input_schema, async (combined
 	if (footer_root_id) exclude_roots.add(footer_root_id);
 
 	const page_node_ids = collect_node_ids(combined_doc.document_id, all_nodes, exclude_roots);
-
 	const page_doc = extract_document(combined_doc.document_id, page_node_ids, all_nodes);
 
 	const upsert = db.prepare(
