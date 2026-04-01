@@ -8,7 +8,7 @@
 	const MIN_SCALE = 1.0;
 	const MAX_SCALE = 5.0;
 
-	let { path, is_pointer_down } = $props();
+	let { path, is_mouse_down } = $props();
 
 	let media_node = $derived(svedit.session.get(path));
 	let controls_ref = $state(null);
@@ -120,7 +120,7 @@
 </script>
 
 <!-- Either the pan mode is armed (after a pointer selection) or there's no pointer involved -->
-{#if pan_mode_armed || !is_pointer_down}
+{#if pan_mode_armed || !is_mouse_down}
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		bind:this={controls_ref}
