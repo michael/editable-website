@@ -2,129 +2,38 @@
 
 This document tracks what to implement next. One step at a time. All implementation must conform to the design decisions in [ARCHITECTURE.md](ARCHITECTURE.md) — if a conflict arises, update the architecture first, then implement.
 
-## Existing implementation steps
+## Existing implementation steps (compacted history)
 
-## Step 1: database, seed data, and page rendering
+These older steps are kept in compact form as historical context. The durable source of truth is still [ARCHITECTURE.md](ARCHITECTURE.md); this section only captures how the current system got here and which high-level implementation moves were already made.
 
-**Goal:** the home page (`page_1`) renders at `/` and saving changes persists them to the database. No assets, no authentication — those come in later steps.
+### Step 1 — database, seed data, and page rendering
+- Introduced SQLite-backed document persistence using `node:sqlite`
+- Added migrations + startup migration hook
+- Seeded:
+  - `page_1`
+  - `nav_1`
+  - `footer_1`
+  - `home_page_id`
+- Wired `get_document` / `save_document`
+- `/` renders `page_1` by loading the page document and stitching in shared nav/footer
 
-- **`src/lib/server/db.js`** — database connection using `node:sqlite`, exports the db instance. Uses `DATA_DIR` for the database path.
-- **`src/lib/server/migrations.js`** — exports an array of migration steps. For now, a single `initial_schema` step that creates the `documents`, `site_settings`, and `document_refs` tables, and seeds:
-  - `page_1` (type `page`) — the home page, resembling the current demo document
-  - `nav_1` (type `nav`) — the navigation document
-  - `footer_1` (type `footer`) — the footer document
-  - `home_page_id` setting → `page_1`
-- **`src/lib/server/migrate.js`** — runs pending migrations from `migrations.js` against the database
-- **`src/hooks.server.js`** — uncomment the `migrate()` call in `init()` so migrations run on server startup
-- **`svelte.config.js`** — uncomment experimental async and remote functions
-- **`src/lib/api.remote.js`** — uncomment/wire up `get_document` (query) and `save_document` (action) to read from and write to the database
-- **Page rendering** — `/` loads `page_1` via `get_document`, stitches in `nav_1` and `footer_1`, and renders with Svedit. Saving calls `save_document` which persists changes back to SQLite.
+### Step 2 — asset processing and upload
+- Added client-side image processing with WASM (`@jsquash/webp`, `@jsquash/resize`)
+- Added asset hashing, upload, variant generation, and asset serving
+- Established the `blob:` (unsaved) → asset id (saved) transition model
+- Added `asset_refs` tracking
+- Kept the save flow “upload assets first, then persist document”
+- Preserved the rule that all persisted media sources are local asset ids
 
-For now, everything stays in the `initial_schema` migration step. While iterating on the schema, it's fine to wipe the database and re-run — real incremental migrations will be added later.
+### Step 3 — deployment / operationalization
+- Deployment planning existed for Fly.io / Node adapter / persistent storage
+- This is now mostly archival context; architecture is the canonical reference for storage/runtime assumptions
 
-No authentication for now — it slows down development. Auth will be added as a later step. No asset handling yet — media uploads and serving come in a later step.
-
-## Step 2: asset processing and upload (images only)
-
-**Goal:** users can paste or drop images into the editor, images are processed client-side (resized, converted to WebP, variants generated), uploaded to the server, and served from disk. The save flow uploads all pending assets before saving the document. No videos, audio, or authentication yet — those come in later steps.
-
-This step covers static raster images (JPEG, PNG, WebP, HEIC/HEIF) which get client-side WASM processing, plus animated GIFs and SVGs which pass through unprocessed. The image-resize project serves as the reference implementation for the WASM processing pipeline and upload protocol.
-
-**Modularization principle:** asset processing and upload logic should be extracted into dedicated modules rather than inlined into existing files like `+page.svelte`. The save flow, paste/drop handling, and upload protocol each get their own module. Existing files should only import and call into the new modules — minimal changes to existing code, maximum isolation of new functionality.
-
-### Dependencies
-
-Install `@jsquash/webp` and `@jsquash/resize` for client-side WASM-based image processing:
-
-```text
-npm install @jsquash/webp @jsquash/resize
-```
-
-### Vite configuration
-
-Add `optimizeDeps.exclude` for the WASM packages and set worker format to ES modules:
-
-```js
-// vite.config.js
-optimizeDeps: {
-  exclude: ['@jsquash/webp', '@jsquash/resize']
-},
-worker: {
-  format: 'es'
-}
-```
-
-### Shared configuration
-
-**`src/lib/config.js`** — add asset-related constants alongside the existing `DATA_DIR`, `DB_PATH`, `ASSET_PATH`:
-
-The asset constants must be importable from both the server and the client (including Web Workers), so they go in a separate file with no Node.js imports:
-
-**`src/lib/asset-config.js`** — universal asset constants (no Node.js imports):
-
-```js
-export const VARIANT_WIDTHS = [320, 640, 1024, 1536, 2048, 3072, 4096];
-export const VARIANT_WIDTHS_SET = new Set(VARIANT_WIDTHS);
-export const MAX_IMAGE_WIDTH = VARIANT_WIDTHS[VARIANT_WIDTHS.length - 1];
-export const ASSET_BASE = '/assets';
-```
-
-`src/lib/config.js` (which imports from `node:path`) remains server-only and unchanged. The Web Worker and client code import from `asset-config.js`.
-
-`ASSET_BASE` is the URL prefix used to construct asset URLs on the client. All `src` values in saved documents are bare asset ids (e.g. `c4b519da...fabdb.webp`). Components prefix them with `ASSET_BASE` at render time to build the full URL. This is the only valid source for saved images — no absolute URLs, no external URLs, no relative paths. A `src` value is either:
-- `blob:...` — unsaved, only valid during the current editing session
-- A bare asset id — saved, rendered as `{ASSET_BASE}/{asset_id}`
-
-### Client-side image processing
-
-Adapted from the image-resize project's WASM pipeline. Two new files:
-
-**`src/lib/client/asset-processor.js`** — a Web Worker that handles image processing off the main thread. Receives a `File`, decodes it to `ImageData` via `createImageBitmap` + `OffscreenCanvas`, resizes if wider than `MAX_IMAGE_WIDTH` using `@jsquash/resize` (Lanczos3), encodes as WebP (quality 80) using `@jsquash/webp`, generates all applicable width variants, and transfers the resulting `ArrayBuffer`s back to the main thread. Posts `status` messages during processing for UI feedback.
-
-**`src/lib/client/process-asset.js`** — main-thread wrapper that spawns the worker, sends the file + config, and returns a `Promise<ProcessedAsset>`:
-
-```js
-/** @typedef {{
- *   original: { blob: Blob, width: number, height: number },
- *   variants: Array<{ width: number, blob: Blob }>
- * }} ProcessedAsset */
-```
-
-Takes an `onStatus` callback for progress reporting. Terminates the worker after completion.
-
-### SHA-256 content hashing
-
-The client computes the SHA-256 hex hash of the **source file** (before any processing) using `crypto.subtle.digest`. This hash plus the stored format's file extension becomes the asset id. For static images the extension is `.webp` (since they're converted). For animated GIFs it's `.gif`. For SVGs it's `.svg`.
-
-```js
-async function hash_blob(blob) {
-  const buffer = await blob.arrayBuffer();
-  const hash_buffer = await crypto.subtle.digest('SHA-256', buffer);
-  const hash_array = Array.from(new Uint8Array(hash_buffer));
-  return hash_array.map(b => b.toString(16).padStart(2, '0')).join('');
-}
-```
-
-The hash is always computed from the **original source file** the user provides, not from the processed WebP output. This ensures the same source file always produces the same asset id regardless of encoder version or settings.
-
-### Asset upload endpoints
-
-Three new SvelteKit API routes, adapted from image-resize but using the ARCHITECTURE's asset path conventions (content-addressed filenames in a flat `ASSET_PATH` directory, not `{id}/original.{ext}`):
-
-**`src/routes/api/assets/+server.js`** — `POST` upload an original asset.
-
-- Request headers: `X-Content-Hash` (SHA-256 hex), `Content-Type`, `X-Asset-Width`, `X-Asset-Height`
-- Request body: the processed blob (WebP for static images, original bytes for GIFs/SVGs)
-- Constructs the asset id: `{hash}.{ext}` where ext is determined by content type (`webp` for static images, `gif` for GIFs, `svg` for SVGs)
-- **Deduplication:** if a file already exists at `ASSET_PATH/{asset_id}`, skip the upload — drain the request body and return the existing metadata with `deduplicated: true`
-- Streams the body to `ASSET_PATH/{asset_id}` — no buffering the whole file in memory
-- On write failure, cleans up the partial file
-- Returns `{ asset_id, width, height, deduplicated }` on success
-
-(Existing implementation details for Step 2 remain unchanged.)
-
----
-
+### Step 4 — media evolution
+- Added video node support and unified media handling direction
+- Introduced / documented `MediaControls`
+- Moved toward the `media` abstraction instead of hard-coded image-only thinking
+- The architecture now captures the final intended media model more reliably than the old step-by-step notes
 # Multi-page implementation analysis
 
 ## Goal
