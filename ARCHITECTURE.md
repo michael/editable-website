@@ -553,6 +553,25 @@ This can also run on save if a document previously referenced assets it no longe
 - `PUT /api/documents/:id` — save a document (server splits shared nodes back out, updates `asset_refs`)
 - First save from `/new` uses the same save path, but with `create: true`. The page id is already client-generated via nanoid, so the server persists that exact id instead of allocating a new one.
 
+### Internal page href rules
+
+Internal page links use the dynamic `/:page_id` route shape.
+
+**Valid internal page hrefs:**
+
+- `/${page_id}` — a direct link to another page document
+- `/` — the configured home page
+- `/${page_id}#section` — counts as a link to `${page_id}` for reachability and `document_refs`; the fragment is ignored for graph purposes
+- `/#section` — counts as a link to the home page only if it is used from a different page; when used on the home page itself, it is just an intra-page anchor and does not create a document reference
+
+**Not internal page links:**
+
+- pure same-page anchors (for example `#section`, or `/#section` on the home page, or `/${current_page_id}#section` on that same page)
+- external URLs
+- any other href that does not resolve to `/` or `/:page_id`
+
+When extracting `document_refs`, fragments are stripped before evaluating the target page. The graph tracks document-to-document references only, never section-level anchors.
+
 ### Assets
 
 - `HEAD /api/assets/:asset_id` — check if an asset exists (original + all expected variants). Returns `200` if complete, `404` if not. Used by the client to skip uploading duplicates.
@@ -633,6 +652,8 @@ The tree is built with these rules:
 This means the sitemap is not a full graph visualization. It is a stable, editor-friendly tree derived from the reachable graph, where shared navigation and footer establish the top-level site structure, and deeper nesting comes from contextual links inside page content.
 
 If a page is linked from multiple places, later occurrences are ignored for tree placement. This keeps the page browser compact and avoids crowded duplicates. If needed in the future, secondary references can be surfaced separately (for example as “also linked from…” metadata), but they are not duplicated in the primary tree.
+
+
 
 ### Page summaries for the drawer
 

@@ -327,6 +327,20 @@ Drafts should be defined according to reachability from the live site graph:
 
 This matches the architecture and avoids conflating “not in nav” with “draft”.
 
+## Decision 8: internal page reference rules are route-based and deterministic
+
+Internal page references should follow these rules:
+
+- page routes are `/:page_id`
+- `/` is the home page
+- `/${page_id}` is an internal link to the page with that document id
+- `/${page_id}#section` is also an internal link to that page; the `#section` fragment is ignored for reachability / sitemap purposes
+- `/#section` is **not** a page reference when it points to the current home page; it is just an in-page anchor and must not create a `document_refs` edge
+- more generally, anchor links that resolve to the **same page** are ignored for `document_refs`
+- external URLs are ignored
+
+This means `document_refs` should track page-to-page relationships by normalized target page id, not by full href string. Fragments are only relevant for browser navigation, not for sitemap reachability.
+
 ## Proposed phased implementation
 
 ## Phase 1 — backend support for multi-page documents
@@ -437,25 +451,6 @@ On first save:
 
 ### 3.1 Actually maintain `document_refs`
 Implement server-side internal link extraction on save.
-
-For each saved subdocument (page/nav/footer):
-- scan nodes for internal page references
-- update `document_refs` by full replace or diff
-
-Need a clear convention for what counts as internal page reference:
-- likely hrefs beginning with `/page_id` or `/${page_id}`
-- page-local anchors like `/#section` should be excluded
-- external URLs ignored
-
-This part must be carefully defined before implementation, because the sitemap tree depends on deterministic ordered refs.
-
-In addition to the raw `document_refs` graph, we will need ordered extraction helpers for tree building:
-
-- **root traversal buckets:** nav refs, home body refs, footer refs
-- **recursive traversal bucket:** body refs only
-
-These ordered buckets are what drive canonical tree placement.
-
 ### 3.2 Implement reachability
 Add a server helper that:
 - reads `home_page_id`
