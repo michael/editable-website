@@ -219,6 +219,17 @@ page document          nav document          footer document
 
 This means changes to the nav or footer made on any page are persisted to the shared document and will be reflected on all pages.
 
+### New pages (`/new`)
+
+The `/new` route uses an **ephemeral client-created document**. When the user opens `/new`, the client creates a fresh page document locally using the existing nanoid generator. The generated id is used immediately for both:
+
+- the document's `document_id`
+- the root page node's `id`
+
+This id is stable from the beginning, even before the document is persisted. The page remains ephemeral only in the sense that it is not stored in the database until the first save.
+
+On first save, the client sends that already-generated id to the server with `create: true`. The server persists the page under that id if it does not already exist. No server-side id allocation or root-id rewrite is needed.
+
 ## Assets
 
 ### Media node types
@@ -540,6 +551,7 @@ This can also run on save if a document previously referenced assets it no longe
 
 - `GET /api/documents/:id` — load a document (with shared documents stitched in)
 - `PUT /api/documents/:id` — save a document (server splits shared nodes back out, updates `asset_refs`)
+- First save from `/new` uses the same save path, but with `create: true`. The page id is already client-generated via nanoid, so the server persists that exact id instead of allocating a new one.
 
 ### Assets
 

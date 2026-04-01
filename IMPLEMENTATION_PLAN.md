@@ -207,17 +207,21 @@ Best structure:
 
 This keeps the editor implementation single-sourced.
 
-## Decision 3: `/new` uses a transient page id sentinel locally
+## Decision 3: `/new` uses a client-generated page id from the start
 
-For `/new`, use a temporary client-side page document with a sentinel/root id, e.g.:
-- `new_page`
-or
-- a generated temporary id that is clearly not persisted
+For `/new`, create a fresh transient page document on the client via a `create_empty_doc()` helper (or equivalent) that generates a new `page_id` / `document_id` using the existing nanoid setup.
+
+This means:
+- the root page node id and the document id are the same from the beginning
+- the id is unique immediately, even before the document is persisted
+- there is no need for a server roundtrip just to allocate a page id
+- the page is still ephemeral in the sense that it is only stored once the user saves
 
 On first save:
-- server generates the real page id
-- server saves page under that new id
-- client navigates to `/${new_page_id}`
+- the client sends the already-generated document id
+- the server persists the document under that id
+- no root-id rewrite is needed during save
+- the client can navigate to `/${page_id}` after save (or continue there if already routed consistently)
 
 The transient document should still reference:
 - existing shared `nav`
@@ -242,11 +246,10 @@ Input:
 ```
 
 Behavior:
-- if `create` true:
-  - generate page id
-  - rewrite root page id / references as needed
-  - persist as new page
-  - return `{ ok: true, document_id: new_id, created: true }`
+- if `create === true`
+  - assert that the provided document id does not already exist
+  - persist as new page using that already-generated client id
+  - return `{ ok: true, document_id, created: true }`
 - else:
   - normal update
 
@@ -255,7 +258,7 @@ Behavior:
 - `save_document(combined_doc)`
 
 **Preferred:** Option A  
-Reason: the save flow in the app is already unified. “First save creates, later saves update” maps naturally to a single save entry point.
+Reason: the save flow in the app is already unified. “First save creates, later saves update” maps naturally to a single save entry point, and with a client-generated nanoid there is no need for a separate id-allocation roundtrip.
 
 ## Decision 5: page browser data should come from a dedicated query
 
@@ -363,9 +366,11 @@ Create a page factory for `/new`, likely in:
 - `src/lib/new_page.js`
 or nearby route helper
 
-It should create:
-- a fresh page document with:
-  - root page node
+It should expose a `create_empty_doc()` helper (or equivalent) that:
+- generates a fresh `page_id` using the existing nanoid utility
+- creates a fresh page document with:
+  - `document_id = page_id`
+  - root page node id = `page_id`
   - references to shared `nav_1` and `footer_1` (or current configured shared docs)
   - an initial editable body, likely one empty `prose` block
 
@@ -421,12 +426,12 @@ Create:
 - `src/routes/new/+page.svelte`
 
 It should:
-- build transient new page document locally
+- build a transient new page document locally via `create_empty_doc()`
 - render `PageEditor` with `is_new={true}`
 
 On first save:
-- call `save_document(..., create: true)`
-- navigate to `/${new_id}`
+- call `save_document(..., create: true)` using the already-generated client id
+- navigate to `/${document_id}`
 
 ## Phase 3 — reference tracking and sitemap data
 
@@ -585,13 +590,16 @@ Likely:
 - helper in `src/lib/server/` used by `get_page_browser_data()`
 
 ## 4. How should `/new` root ids be handled?
-Need a transient-id strategy.
 
-Likely:
-- root page id = `'new_page'`
-- save-create rewrites root id to generated real id server-side
+Use a client-generated nanoid from the start.
 
-This is simple and explicit.
+- `create_empty_doc()` generates a fresh page id
+- `document_id` is set to that id immediately
+- the root page node id is the same id
+- the document remains ephemeral until first save, but its identity is already stable
+- the server persists that id on create instead of rewriting ids during save
+
+This keeps the flow simple and avoids an extra id-allocation roundtrip.
 
 ## Static/Vercel compatibility constraints for implementation
 
