@@ -185,10 +185,18 @@
 				this.context.editable = false;
 
 				if (result?.created && result.document_id) {
-					current_is_new = false;
-					invalidate_page_browser_data();
-					await goto(`/${result.document_id}`, { replaceState: true });
-					return;
+					const { get_document } = await import('$lib/api.remote.js');
+
+					try {
+						await get_document(result.document_id);
+						current_is_new = false;
+						invalidate_page_browser_data();
+						await goto(`/${result.document_id}`, { replaceState: true });
+						return;
+					} catch (read_back_err) {
+						console.error('Created page could not be read back yet:', read_back_err);
+						alert('The page was saved, but it is not readable yet. Staying on /new so you do not get sent to a missing page.');
+					}
 				}
 
 				invalidate_page_browser_data();
