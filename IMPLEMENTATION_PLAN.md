@@ -129,8 +129,8 @@ This is preferable to eagerly inserting a draft page into the database.
 Today `save_document` just upserts the given document id.
 
 For `/new`, we need a server-side path that:
-- can generate a new page id
-- save the new page under that id
+- accepts the already-generated client page id
+- save the new page under that same id
 - preserve shared nav/footer references
 - return the final page id to the client
 
@@ -439,11 +439,10 @@ Update `save_document` to accept a creation mode, likely:
 
 Behavior:
 - if `create === true`
-  - generate new page id
-  - rewrite the root page id from transient id to new id
-  - rewrite any internal root self-references if needed
-  - save page under new id
-  - return new id
+  - assert that the provided document id does not already exist
+  - save the new page under that same client-generated id
+  - no root-id rewrite is needed
+  - return that document id
 - else
   - current update behavior
 
