@@ -634,6 +634,36 @@ This means the sitemap is not a full graph visualization. It is a stable, editor
 
 If a page is linked from multiple places, later occurrences are ignored for tree placement. This keeps the page browser compact and avoids crowded duplicates. If needed in the future, secondary references can be surfaced separately (for example as “also linked from…” metadata), but they are not duplicated in the primary tree.
 
+### Page summaries for the drawer
+
+The page drawer needs lightweight summaries for each page:
+
+- a display title
+- an optional preview image
+
+For the initial implementation, these summaries are extracted **on the fly** in a server-side helper used by the page-browser query. They are **not** cached in the database yet. This keeps the system simple and avoids introducing additional summary columns or synchronization logic before there is evidence that summary extraction is a performance problem.
+
+Summary extraction should only inspect the **page-local body content**. Shared `nav` and `footer` content must not influence a page's summary, because that would cause many pages to inherit the same logo, links, or other shared content as their title/preview.
+
+**Title extraction order:**
+
+1. explicit `page.title` if that field exists and is non-empty
+2. otherwise, the first heading-like `text` node found in body order
+3. otherwise, the first meaningful body text content
+4. fallback to `"Untitled page"`
+
+The exact heading-like layouts are defined by the page schema / text node semantics in the current implementation. The important part is that heading-like content is preferred over arbitrary text properties.
+
+**Preview image extraction order:**
+
+1. explicit page-level preview image field if one is added in the future
+2. otherwise, the first image or video found while traversing the page body in document order
+3. fallback to `null`
+
+Because the drawer already has a strong illustrated page fallback, `null` is perfectly acceptable and does not require a placeholder asset.
+
+If this on-the-fly extraction later proves too costly, the same extraction helper can become the canonical summary generator for a cached summary written on save. But caching is an optimization step for later, not part of the initial multi-page implementation.
+
 ## Authentication
 
 Editable Website is a **single-user application**. There is one admin account. No user registration, no roles, no multi-tenancy.

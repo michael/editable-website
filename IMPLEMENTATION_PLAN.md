@@ -586,8 +586,51 @@ We need a clear place for:
 - title extraction
 - preview-image extraction
 
-Likely:
-- helper in `src/lib/server/` used by `get_page_browser_data()`
+Use an on-the-fly extraction helper in `src/lib/server/`, used by `get_page_browser_data()`.
+
+### Initial approach: no cache
+For the first implementation, do **not** cache page summaries in the database. Extract them on demand when building the page browser data. This keeps the system simpler:
+
+- no extra columns or companion summary table
+- no extra migration work
+- no summary invalidation logic
+- no extra save-time bookkeeping
+
+If this later proves too costly, summaries can be cached on save (similar in spirit to `document_refs`), but that is a later optimization.
+
+### Extraction scope
+Summary extraction should be **page-local only**:
+- inspect the page document / page body subtree
+- do **not** use shared nav or footer content for page summaries
+
+This avoids cases where many pages inherit the same logo or shared text as their summary.
+
+### Title extraction strategy
+Use this fallback order:
+
+1. explicit `page.title` if present and non-empty
+2. first heading-like `text` node in page body
+3. first meaningful text node in page body
+4. fallback: `"Untitled page"`
+
+For now, “heading-like” means the heading-style `text` node layouts already used in the app (for example the larger heading layouts). The exact helper can stay implementation-specific as long as it follows this order.
+
+### Preview-image extraction strategy
+Use this fallback order:
+
+1. explicit page preview field if one exists in the future
+2. otherwise the first image/video found in page body traversal order
+3. fallback: `null`
+
+The drawer already has a good illustrated-page fallback, so `null` is acceptable.
+
+### Why this is the right start
+The likely cost of summary extraction is low enough for now:
+- page counts are expected to stay modest
+- extraction can stop early once title + preview are found
+- this avoids premature complexity while still giving good summaries
+
+If later needed, the same extraction helper can become the canonical generator for cached summaries.
 
 ## 4. How should `/new` root ids be handled?
 
