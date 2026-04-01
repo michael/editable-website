@@ -464,59 +464,47 @@ This should be minimal but pleasant to edit immediately.
 ## Phase 2 — routing and shared page editor shell
 
 ### 2.1 Extract current page editor into a shared component
-Current `src/routes/+page.svelte` mixes:
-- document loading
+Implemented:
+- extracted the editor shell into `src/routes/components/PageEditor.svelte`
+
+Current responsibilities:
+- instantiate session
 - app command setup
 - save flow
 - toolbar
-- editor rendering
-
-Extract the reusable editor page shell into something like:
-- `src/routes/components/PageEditor.svelte`
-
-Inputs:
-- `initial_doc`
-- `is_new`
-- maybe `page_id`
-
-Responsibilities:
-- instantiate session
-- save command
-- toolbar
 - key mapping
 - edit mode
+- page drawer cache invalidation after save
 
 ### 2.2 Add `/[page_id]`
-Create:
+Implemented:
 - `src/routes/[page_id]/+page.svelte`
+- `src/routes/[page_id]/+page.js`
 
-Load:
-- requested document via remote query
-- pass into `PageEditor`
-
-Behavior:
-- if document not found, show 404-ish handling
+Current behavior:
+- loads the requested document via remote query
+- renders the shared `PageEditor`
+- returns a proper SvelteKit 404 when the page is not found
 
 ### 2.3 Update `/`
-Keep:
-- `src/routes/+page.svelte`
+Implemented:
+- `src/routes/+page.svelte` now reuses `PageEditor`
+- `src/routes/+page.js` loads the configured home page in full runtime mode
 
-But make it:
-- fetch `home_page_id`
-- fetch that document
-- render same `PageEditor`
+Current behavior:
+- in full runtime mode, `/` loads the configured home page and renders it through the shared editor shell
+- in static/Vercel mode, `/` still falls back to `demo_doc`
 
 ### 2.4 Add `/new`
-Create:
+Implemented:
 - `src/routes/new/+page.svelte`
+- `src/lib/new_page.js`
 
-It should:
-- build a transient new page document locally via `create_empty_doc()`
-- render `PageEditor` with `is_new={true}`
-
-On first save:
-- call `save_document(..., create: true)` using the already-generated client id
-- navigate to `/${document_id}`
+Current behavior:
+- `/new` creates a transient page document locally via `create_empty_doc()`
+- the page id is generated on the client up front
+- first save calls `save_document(..., create: true)` with that same id
+- after first save, the app navigates to `/${document_id}`
 
 ## Phase 3 — reference tracking and sitemap data
 
@@ -554,27 +542,27 @@ So this query/helper layer should not just return a raw graph; it should return 
 ## Phase 4 — async drawer wiring
 
 ### 4.1 Turn `PagesDrawer.svelte` from mock to real async data
-Replace prototype hardcoded data with real query data.
-
-Because you want async-on-open:
-- fetch page browser data only once drawer opens
-- use Svelte async patterns inside the drawer or overlays
-- cache result until invalidation is needed
+Implemented:
+- `PagesDrawer.svelte` now loads real browser data from a dedicated query
+- loading is async-on-open
+- data is cached until invalidated by a save
 
 ### 4.2 Add loading and empty states
-The drawer should support:
+Implemented:
 - loading state when first opened
 - empty drafts state
-- empty sitemap state fallback if only home exists
+- basic sitemap empty/misconfigured state
 
 ### 4.3 Add “New page” action
-The plus tile in drafts should:
-- navigate to `/new`
+Implemented:
+- the plus tile in drafts navigates to `/new`
 
 ### 4.4 Add page navigation
-Draft and sitemap items should:
-- navigate to `/${document_id}`
-- likely close drawer on click
+Implemented:
+- draft and sitemap items navigate to `/${document_id}`
+
+Note:
+- drawer-close-on-click can be refined later if needed
 
 ## Phase 5 — save flow integration and navigation correctness
 
@@ -679,3 +667,19 @@ This step is complete when:
   - sitemap as tree
 - drafts are computed from reachability, not hardcoded
 - no authentication gates are required yet beyond current assumed-admin development mode
+
+### Current status
+
+Completed:
+- shared editor extraction
+- `/`, `/new`, and `/:page_id` route wiring
+- client-generated-id create-on-first-save flow
+- proper SvelteKit 404 for unknown pages
+- async real pages drawer with loading and empty states
+- “New page” navigation from the drawer
+- page navigation from draft and sitemap items
+- save-time drawer invalidation
+
+Still to verify / finish:
+- confirm `document_refs` and reachability behavior matches the canonical tree rules exactly across real edited content
+- keep `ARCHITECTURE.md` aligned with any behavior adjustments discovered during integration

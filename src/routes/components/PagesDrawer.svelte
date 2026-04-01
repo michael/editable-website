@@ -1,39 +1,71 @@
 <script>
-	/**
-	 * Prototype data for a future multi-page drawer.
-	 * Once authentication + real multi-page data exists, this can be replaced
-	 * by props / derived session data.
-	 */
+	import { getContext } from 'svelte';
+	import { goto } from '$app/navigation';
 
-	const drafts = [
-		{ id: 'new-page', title: 'New page', is_create: true },
-		{ id: 'draft-1', title: 'Unlinked page 1' },
-		{ id: 'draft-2', title: 'Unlinked page 2' },
-		{ id: 'draft-3', title: 'Unlinked page 3' },
-		{ id: 'draft-4', title: 'Landing draft' },
-		{ id: 'draft-5', title: 'Case study draft' }
-	];
+	const page_browser = getContext('page_browser');
 
-	const sitemap = {
-		id: 'home',
-		title: 'Home',
-		children: [
-			{
-				id: 'projects',
-				title: 'Projects',
-				children: [
-					{ id: 'project-1', title: 'Project 1', children: [] },
-					{ id: 'project-2', title: 'Project 2', children: [] },
-					{ id: 'project-3', title: 'Project 3', children: [] }
-				]
-			},
-			{
-				id: 'about',
-				title: 'About',
-				children: []
-			}
-		]
-	};
+	let {
+		open = false
+	} = $props();
+
+	let browser_data = $state(null);
+	let loading = $state(false);
+	let load_error = $state('');
+	let loaded_version = $state(-1);
+
+	$effect(() => {
+		if (!open) return;
+		if (loading) return;
+
+		const current_version = page_browser?.version ?? 0;
+		if (browser_data && loaded_version === current_version) return;
+
+		void load_browser_data();
+	});
+
+	async function load_browser_data() {
+		loading = true;
+		load_error = '';
+
+		try {
+			const { get_page_browser_data } = await import('$lib/api.remote.js');
+			browser_data = await get_page_browser_data();
+			loaded_version = page_browser?.version ?? 0;
+		} catch (err) {
+			console.error('Failed to load page browser data', err);
+			load_error = 'Failed to load pages.';
+		} finally {
+			loading = false;
+		}
+	}
+
+	function get_page_count(sitemap) {
+		if (!sitemap) return 0;
+
+		let count = 1;
+		for (const child of sitemap.children ?? []) {
+			count += get_page_count(child);
+		}
+		return count;
+	}
+
+	async function navigate_to(path) {
+		await goto(path);
+	}
+
+	function get_preview_src(preview_image_src) {
+		if (!preview_image_src) return null;
+		if (preview_image_src.startsWith('blob:')) return preview_image_src;
+		return `/assets/${preview_image_src}`;
+	}
+
+	function is_video_preview(preview_image_src) {
+		return !!preview_image_src && /\.(mp4|webm)$/i.test(preview_image_src);
+	}
+
+	const drafts = $derived(browser_data?.drafts ?? []);
+	const sitemap = $derived(browser_data?.sitemap ?? null);
+	const page_count = $derived(get_page_count(sitemap));
 </script>
 
 <div class="pages-drawer">
@@ -42,64 +74,123 @@
 			<h3>{drafts.length} drafts</h3>
 		</div>
 
-		<div class="drafts-strip" role="list" aria-label="Draft pages">
-			{#each drafts as draft}
+		{#if loading && !browser_data}
+			<div class="status-message" role="status">Loading pages…</div>
+		{:else if load_error}
+			<div class="status-message" role="alert">{load_error}</div>
+		{:else}
+			<div class="drafts-strip" role="list" aria-label="Draft pages">
 				<div role="listitem" class="draft-item">
-					<button class="draft-card" class:create-card={draft.is_create} type="button">
-						{#if draft.is_create}
-							<div class="page-illustration draft-illustration create-illustration" aria-hidden="true">
-								<div class="plus-glyph">+</div>
-							</div>
-						{:else}
-							<div class="page-illustration draft-illustration" aria-hidden="true">
-								<div class="page-sheet">
-									<div class="line long"></div>
-									<div class="line"></div>
-									<div class="line short"></div>
-								</div>
-							</div>
-						{/if}
-						<div class="draft-title">{draft.title}</div>
+					<button class="draft-card create-card" type="button" onclick={() => navigate_to('/new')}>
+						<div class="page-illustration draft-illustration create-illustration" aria-hidden="true">
+							<div class="plus-glyph">+</div>
+						</div>
+						<div class="draft-title">New page</div>
 					</button>
 				</div>
-			{/each}
-		</div>
+
+				{#if drafts.length === 0}
+					<div class="empty-state-card" role="listitem">
+						<div class="empty-state-text">No drafts yet</div>
+					</div>
+				{:else}
+					{#each drafts as draft}
+						<div role="listitem" class="draft-item">
+							<button class="draft-card" type="button" onclick={() => navigate_to(`/${draft.document_id}`)}>
+								<div class="page-illustration draft-illustration" aria-hidden="true">
+									{#if draft.preview_image_src}
+										{#if is_video_preview(draft.preview_image_src)}
+											<video
+												class="media-preview"
+												src={get_preview_src(draft.preview_image_src)}
+												muted
+												playsinline
+												disablepictureinpicture
+											></video>
+										{:else}
+											<img
+												class="media-preview"
+												src={get_preview_src(draft.preview_image_src)}
+												alt=""
+											/>
+										{/if}
+									{:else}
+										<div class="page-sheet">
+											<div class="line long"></div>
+											<div class="line"></div>
+											<div class="line short"></div>
+										</div>
+									{/if}
+								</div>
+								<div class="draft-title">{draft.title}</div>
+							</button>
+						</div>
+					{/each}
+				{/if}
+			</div>
+		{/if}
 	</section>
 
 	<section class="section">
 		<div class="section-header">
-			<h3>12 pages</h3>
+			<h3>{page_count} pages</h3>
 		</div>
 
-		<div class="tree">
-			{#snippet node_item(node, depth = 0)}
-				<div class="tree-node" style={`--depth:${depth};`}>
-					<button class="tree-row" type="button">
-						<div class="tree-indent" aria-hidden="true"></div>
+		{#if loading && !browser_data}
+			<div class="status-message" role="status">Loading sitemap…</div>
+		{:else if load_error}
+			<div class="status-message" role="alert">{load_error}</div>
+		{:else if !sitemap}
+			<div class="status-message">No home page configured.</div>
+		{:else}
+			<div class="tree">
+				{#snippet node_item(node, depth = 0)}
+					<div class="tree-node" style={`--depth:${depth};`}>
+						<button class="tree-row" type="button" onclick={() => navigate_to(`/${node.document_id}`)}>
+							<div class="tree-indent" aria-hidden="true"></div>
 
-						<div class="page-illustration tree-illustration" aria-hidden="true">
-							<div class="page-sheet compact">
-								<div class="line long"></div>
-								<div class="line"></div>
-								<div class="line short"></div>
+							<div class="page-illustration tree-illustration" aria-hidden="true">
+								{#if node.preview_image_src}
+									{#if is_video_preview(node.preview_image_src)}
+										<video
+											class="media-preview"
+											src={get_preview_src(node.preview_image_src)}
+											muted
+											playsinline
+											disablepictureinpicture
+										></video>
+									{:else}
+										<img
+											class="media-preview"
+											src={get_preview_src(node.preview_image_src)}
+											alt=""
+										/>
+									{/if}
+								{:else}
+									<div class="page-sheet compact">
+										<div class="line long"></div>
+										<div class="line"></div>
+										<div class="line short"></div>
+									</div>
+								{/if}
 							</div>
-						</div>
 
-						<div class="tree-label">{node.title}</div>
-					</button>
+							<div class="tree-label">{node.title}</div>
+						</button>
 
-					{#if node.children?.length}
-						<div class="tree-children">
-							{#each node.children as child}
-								{@render node_item(child, depth + 1)}
-							{/each}
-						</div>
-					{/if}
-				</div>
-			{/snippet}
+						{#if node.children?.length}
+							<div class="tree-children">
+								{#each node.children as child}
+									{@render node_item(child, depth + 1)}
+								{/each}
+							</div>
+						{/if}
+					</div>
+				{/snippet}
 
-			{@render node_item(sitemap)}
-		</div>
+				{@render node_item(sitemap)}
+			</div>
+		{/if}
 	</section>
 </div>
 
@@ -130,6 +221,12 @@
 		color: var(--foreground, black);
 	}
 
+	.status-message {
+		padding: 0.8rem 0;
+		font-size: 0.9rem;
+		color: oklch(45% 0 0);
+	}
+
 	.drafts-strip {
 		display: grid;
 		grid-auto-flow: column;
@@ -143,6 +240,22 @@
 
 	.draft-item {
 		display: block;
+	}
+
+	.empty-state-card {
+		display: grid;
+		place-items: center;
+		min-height: 10rem;
+		padding: 0.75rem;
+		border: 1px dashed oklch(85% 0 0);
+		background: oklch(99% 0 0);
+	}
+
+	.empty-state-text {
+		font-size: 0.84rem;
+		font-weight: 600;
+		color: oklch(45% 0 0);
+		text-align: center;
 	}
 
 	.draft-card,
@@ -162,7 +275,6 @@
 		gap: 0.65rem;
 		width: 100%;
 		padding: 0.45rem;
-		border-radius: 1rem;
 	}
 
 	.tree-row {
@@ -172,7 +284,6 @@
 		width: 100%;
 		min-height: 3.35rem;
 		padding: 0.45rem 0.6rem 0.45rem calc(0.6rem + var(--depth) * 1rem);
-		border-radius: 0.95rem;
 	}
 
 	.draft-card:hover,
@@ -190,8 +301,8 @@
 	.page-illustration {
 		display: grid;
 		place-items: center;
-		border-radius: 0.9rem;
 		background: transparent;
+		overflow: hidden;
 	}
 
 	.draft-illustration {
@@ -213,10 +324,17 @@
 		flex: 0 0 auto;
 	}
 
+	.media-preview {
+		width: 100%;
+		height: 100%;
+		display: block;
+		object-fit: cover;
+		background: oklch(97% 0 0);
+	}
+
 	.page-sheet {
 		width: 100%;
 		height: 100%;
-		border-radius: 0.72rem;
 		background:
 			linear-gradient(
 				180deg,
@@ -240,7 +358,6 @@
 
 	.line {
 		height: 0.16rem;
-		border-radius: 999px;
 		background: oklch(78% 0 0 / 0.75);
 		margin-left: 0.04rem;
 		margin-right: 0.04rem;
@@ -312,31 +429,10 @@
 		.draft-card {
 			padding: 0.4rem;
 			gap: 0.55rem;
-			border-radius: 0.9rem;
 		}
 
 		.draft-title {
 			font-size: 0.74rem;
-		}
-
-		.tree-row {
-			min-height: 3rem;
-			padding: 0.4rem 0.5rem 0.4rem calc(0.5rem + var(--depth) * 0.85rem);
-			gap: 0.65rem;
-			border-radius: 0.9rem;
-		}
-
-		.tree-illustration {
-			width: 2.3rem;
-		}
-
-		.page-sheet {
-			width: 74%;
-			height: 78%;
-		}
-
-		.tree-label {
-			font-size: 0.88rem;
 		}
 	}
 </style>
