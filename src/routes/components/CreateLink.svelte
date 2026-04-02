@@ -89,6 +89,7 @@
 					page_browser.open_select((document_id) => {
 						href_input_value = `/${document_id}`;
 						open_in_new_tab = false;
+						create_link();
 					});
 				}}
 			>

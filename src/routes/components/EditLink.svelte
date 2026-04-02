@@ -77,7 +77,7 @@
 
 <dialog
 	bind:this={dialog_ref}
-	class="edit-link-dialog absolute z-40 mt-1 m-0 bg-white p-0 shadow-xl overflow-visible max-h-90 border-1 border-(--svedit-editing-stroke)"
+	class="edit-link-dialog absolute z-40 mt-1 m-0 bg-white p-0 shadow-xl overflow-visible max-h-90 border border-(--svedit-editing-stroke)"
 	style="position-anchor: --{path.join('-')}; position-area: block-end span-all; justify-self: anchor-center;"
 	onclick={handle_backdrop_click}
 >
@@ -101,6 +101,7 @@
 					page_browser.open_select((document_id) => {
 						href_input_value = `/${document_id}`;
 						open_in_new_tab = false;
+						save();
 					});
 				}}
 			>
