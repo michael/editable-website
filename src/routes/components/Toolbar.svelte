@@ -44,7 +44,7 @@
 		e.target.value = '';
 	}
 
-	const TW_TOOLBAR_POSITION = 'bottom-16 right-5 sm:right-7 md:right-10 lg:right-14';
+	const TW_TOOLBAR_POSITION = 'bottom-5 right-5 sm:right-7 md:right-10 lg:right-14';
 	// On mobile also pin to left edge so the toolbar can scroll horizontally
 	const TW_TOOLBAR_LEFT = 'left-5 sm:left-7 md:left-auto';
 

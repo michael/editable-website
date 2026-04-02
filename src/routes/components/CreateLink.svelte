@@ -95,7 +95,12 @@
 						});
 					}}
 				>
-					↗
+					<svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+						<rect x="1.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+						<rect x="8.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+						<rect x="1.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+						<rect x="8.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+					</svg>
 				</button>
 			{/if}
 		</div>

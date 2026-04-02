@@ -74,13 +74,18 @@
 		<button
 			class="drawer-handle"
 			type="button"
+			aria-label={label}
 			aria-expanded={open}
 			aria-controls="drawer-panel"
 			onclick={toggle}
 		>
-			<div class="drawer-pill"></div>
-			<div class="drawer-title-row">
-				<span class="drawer-title">{label}</span>
+			<div class="drawer-title-row" aria-hidden="true">
+				<svg class="drawer-browse-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" fill="none">
+					<rect x="1.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+					<rect x="8.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+					<rect x="1.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+					<rect x="8.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+				</svg>
 			</div>
 		</button>
 	</div>
@@ -98,13 +103,18 @@
 			<button
 				class="drawer-handle"
 				type="button"
+				aria-label={label}
 				aria-expanded={open}
 				aria-controls="drawer-panel"
 				onclick={toggle}
 			>
-				<div class="drawer-pill"></div>
-				<div class="drawer-title-row">
-					<span class="drawer-title">{label}</span>
+				<div class="drawer-title-row" aria-hidden="true">
+					<svg class="drawer-browse-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" fill="none">
+						<rect x="1.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+						<rect x="8.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+						<rect x="1.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+						<rect x="8.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+					</svg>
 				</div>
 			</button>
 
@@ -161,7 +171,7 @@
 		right: 0;
 		bottom: 0;
 		pointer-events: none;
-		transform: translateY(calc(100% - 2rem));
+		transform: translateY(calc(100% - 1.5rem));
 		transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
 		will-change: transform;
 	}
@@ -174,12 +184,12 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 0.2rem;
-		width: min(18rem, calc(100vw - 1rem));
+		gap: 0;
+		width: min(3.5rem, calc(100vw - 1rem));
 		margin: 0 auto;
-		padding: 0.35rem 0.85rem 0.45rem;
+		padding: 0.5rem 0.35rem 0.6rem;
 		border: 0;
-		border-radius: 1rem 1rem 0 0;
+		border-radius: 0.75rem 0.75rem 0 0;
 		background: white;
 		box-shadow:
 			0 -8px 30px oklch(0% 0 0 / 0.12),
@@ -190,20 +200,17 @@
 		pointer-events: auto;
 	}
 
-	.drawer-pill {
-		width: 2rem;
-		height: 0.22rem;
-		border-radius: 999px;
-		background: oklch(85% 0 0);
-	}
-
 	.drawer-title-row {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 0.78rem;
-		font-weight: 600;
 		line-height: 1;
+	}
+
+	.drawer-browse-icon {
+		width: 0.95rem;
+		height: 0.95rem;
+		display: block;
 	}
 
 	.drawer-panel {
@@ -249,13 +256,13 @@
 
 	@media (max-width: 640px) {
 		.drawer {
-			transform: translateY(calc(100% - 2.15rem));
+			transform: translateY(calc(100% - 1.65rem));
 		}
 
 		.drawer-handle {
-			width: min(18rem, calc(100vw - 0.75rem));
-			border-radius: 1rem 1rem 0 0;
-			padding-top: 0.4rem;
+			width: min(3.5rem, calc(100vw - 0.75rem));
+			border-radius: 0.75rem 0.75rem 0 0;
+			padding-top: 0.45rem;
 			padding-bottom: 0.5rem;
 		}
 
