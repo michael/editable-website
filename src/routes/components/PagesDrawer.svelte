@@ -1,4 +1,5 @@
 <script>
+
 	import { get_page_browser } from './page_browser_context.svelte.js';
 
 	const page_browser = get_page_browser();
@@ -42,13 +43,18 @@
 		return count;
 	}
 
-	function handle_page_action(document_id) {
+	function handle_page_click(event, document_id) {
+		if (!is_picker_mode) return;
+		event.preventDefault();
 		page_browser.handle_page_selected(document_id);
 	}
 
-	function handle_new_page() {
-		page_browser.close();
-		window.location.href = '/new';
+	/**
+	 * @param {string} document_id
+	 * @returns {`/${string}`}
+	 */
+	function get_page_href(document_id) {
+		return `/${document_id}`;
 	}
 
 	function get_preview_src(preview_image_src) {
@@ -85,12 +91,12 @@
 			<div class="drafts-strip" role="list" aria-label="Draft pages">
 				{#if !is_picker_mode}
 					<div role="listitem" class="draft-item">
-						<button class="draft-card create-card" type="button" onclick={handle_new_page}>
+						<a class="draft-card create-card" href="/new">
 							<div class="page-illustration draft-illustration create-illustration" aria-hidden="true">
 								<div class="plus-glyph">+</div>
 							</div>
 							<div class="draft-title">New page</div>
-						</button>
+						</a>
 					</div>
 				{/if}
 
@@ -101,7 +107,11 @@
 				{:else}
 					{#each drafts as draft}
 						<div role="listitem" class="draft-item">
-							<button class="draft-card" type="button" onclick={() => handle_page_action(draft.document_id)}>
+							<a
+								class="draft-card"
+								href={get_page_href(draft.document_id)}
+								onclick={(event) => handle_page_click(event, draft.document_id)}
+							>
 								<div class="page-illustration draft-illustration" aria-hidden="true">
 									{#if draft.preview_image_src}
 										{#if is_video_preview(draft.preview_image_src)}
@@ -128,7 +138,7 @@
 									{/if}
 								</div>
 								<div class="draft-title">{draft.title}</div>
-							</button>
+							</a>
 						</div>
 					{/each}
 				{/if}
@@ -151,7 +161,11 @@
 			<div class="tree">
 				{#snippet node_item(node, depth = 0)}
 					<div class="tree-node" style={`--depth:${depth};`}>
-						<button class="tree-row" type="button" onclick={() => handle_page_action(node.document_id)}>
+						<a
+							class="tree-row"
+							href={get_page_href(node.document_id)}
+							onclick={(event) => handle_page_click(event, node.document_id)}
+						>
 							<div class="tree-indent" aria-hidden="true"></div>
 
 							<div class="page-illustration tree-illustration" aria-hidden="true">
@@ -181,7 +195,7 @@
 							</div>
 
 							<div class="tree-label">{node.title}</div>
-						</button>
+						</a>
 
 						{#if node.children?.length}
 							<div class="tree-children">
