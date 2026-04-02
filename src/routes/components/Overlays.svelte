@@ -216,9 +216,11 @@
 		<CreateLink />
 	{/if}
 
-	<Drawer bind:open={page_browser.state.open} label="Pages">
-		<PagesDrawer />
-	</Drawer>
+	{#if !svedit.editable || page_browser.state.open}
+		<Drawer bind:open={page_browser.state.open} label="Pages">
+			<PagesDrawer />
+		</Drawer>
+	{/if}
 </div>
 
 <style>
