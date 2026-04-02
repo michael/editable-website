@@ -25,6 +25,13 @@ import { document_schema } from '$lib/document_schema.js';
  */
 
 /**
+ * @typedef {Object} InternalLinkPreview
+ * @property {string} document_id
+ * @property {string} title
+ * @property {string | null} preview_image_src
+ */
+
+/**
  * @typedef {Object} PageTreeNode
  * @property {string} document_id
  * @property {string} title
@@ -694,6 +701,40 @@ export const get_shared_documents = query(v.void(), async () => {
  */
 export const get_page_browser_data = query(v.void(), async () => {
 	return build_page_browser_data();
+});
+
+/**
+ * Return a lightweight preview for a simple internal page href like `/some_id`.
+ */
+export const get_internal_link_preview = query(v.string(), async (href) => {
+	if (typeof href !== 'string' || !href.startsWith('/') || href === '/') {
+		return null;
+	}
+
+	if (href.includes('?') || href.includes('#')) {
+		return null;
+	}
+
+	const document_id = href.slice(1);
+	if (!document_id || document_id.includes('/')) {
+		return null;
+	}
+
+	const doc_row = /** @type {DocumentRow | undefined} */ (
+		db.prepare('SELECT type, data FROM documents WHERE document_id = ?').get(document_id)
+	);
+	if (!doc_row || doc_row.type !== 'page') {
+		return null;
+	}
+
+	const page_doc = /** @type {DocumentData} */ (JSON.parse(doc_row.data));
+	const summary = summarize_page_document(page_doc);
+
+	return /** @type {InternalLinkPreview} */ ({
+		document_id,
+		title: summary.title,
+		preview_image_src: summary.preview_image_src
+	});
 });
 
 /**
