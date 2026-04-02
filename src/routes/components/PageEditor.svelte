@@ -5,6 +5,7 @@
 	import Toolbar from './Toolbar.svelte';
 	import SaveProgressModal from './SaveProgressModal.svelte';
 	import { create_session } from '../create_session.js';
+	import { create_page_browser, set_page_browser } from './page_browser_context.svelte.js';
 
 	/** @type {{ initial_doc: any, has_backend?: boolean, is_new?: boolean }} */
 	let {
@@ -25,6 +26,18 @@
 	let save_progress_done = $state(false);
 
 	let browser_data_version = $state(0);
+
+	const page_browser = create_page_browser({ goto });
+
+	Object.defineProperty(page_browser, 'version', {
+		get() {
+			return browser_data_version;
+		}
+	});
+
+	page_browser.invalidate = invalidate_page_browser_data;
+
+	set_page_browser(page_browser);
 
 	$effect(() => {
 		document.documentElement.style.scrollBehavior = editable ? 'auto' : 'smooth';
@@ -266,13 +279,6 @@
 		'meta+s,ctrl+s': [app_commands.save_document]
 	});
 	key_mapper.push_scope(app_key_map);
-
-	setContext('page_browser', {
-		get version() {
-			return browser_data_version;
-		},
-		invalidate: invalidate_page_browser_data
-	});
 
 	let session = $state(create_session(initial_doc));
 

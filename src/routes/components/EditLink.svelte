@@ -1,7 +1,9 @@
 <script>
 	import { getContext } from 'svelte';
+	import { get_page_browser } from './page_browser_context.svelte.js';
 
 	const svedit = getContext('svedit');
+	const page_browser = get_page_browser();
 
 	let { path } = $props();
 
@@ -80,14 +82,31 @@
 	onclick={handle_backdrop_click}
 >
 	<div class="flex flex-col">
-		<input
-			bind:this={href_input_ref}
-			type="url"
-			bind:value={href_input_value}
-			placeholder="https://example.com"
-			class="w-72 px-3 py-2 text-sm text-gray-700 border-0 outline-none focus:ring-1 focus:ring-(--svedit-editing-stroke)"
-			onkeydown={handle_keydown}
-		/>
+		<div class="flex items-stretch border-b border-gray-200">
+			<input
+				id="edit-link-url-input"
+				bind:this={href_input_ref}
+				type="url"
+				bind:value={href_input_value}
+				placeholder="https://example.com"
+				class="w-72 min-w-0 flex-1 border-0 px-3 py-2 text-sm text-gray-700 outline-none focus:ring-1 focus:ring-(--svedit-editing-stroke)"
+				onkeydown={handle_keydown}
+			/>
+			<button
+				type="button"
+				class="shrink-0 cursor-pointer border-l border-gray-200 px-3 text-(--svedit-editing-stroke) hover:bg-[oklch(from_var(--svedit-brand)_0.97_0.015_h)]"
+				title="Select page"
+				aria-label="Select page"
+				onclick={() => {
+					page_browser.open_select((document_id) => {
+						href_input_value = `/${document_id}`;
+						open_in_new_tab = false;
+					});
+				}}
+			>
+				↗
+			</button>
+		</div>
 		<div class="flex items-center justify-between px-3 py-2">
 			<label class="flex items-center gap-2 cursor-pointer">
 				<input

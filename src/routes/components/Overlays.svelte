@@ -1,5 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
+	import { get_page_browser } from './page_browser_context.svelte.js';
 	import MediaControls from './MediaControls.svelte';
 	import SizableViewboxControls from './SizableViewboxControls.svelte';
 	import CreateLink from './CreateLink.svelte';
@@ -16,9 +17,7 @@
 	let is_dragging = $state(false);
 
 	let overlays_ref = $state();
-
-	// Browse drawer state
-	let browse_drawer_open = $state(false);
+	const page_browser = get_page_browser();
 
 	// --- File drag-and-drop onto media properties ---
 	let drop_target_path = $state(null);
@@ -217,7 +216,7 @@
 		<CreateLink />
 	{/if}
 
-	<Drawer bind:open={browse_drawer_open} label="Pages">
+	<Drawer bind:open={page_browser.state.open} label="Pages">
 		<PagesDrawer />
 	</Drawer>
 </div>

@@ -1,14 +1,7 @@
 <script>
-	import { getContext } from 'svelte';
-	import { goto } from '$app/navigation';
+	import { get_page_browser } from './page_browser_context.svelte.js';
 
-	const page_browser = getContext('page_browser');
-
-	let {
-		close_drawer = () => {},
-		mode = 'navigate',
-		on_select_page = null
-	} = $props();
+	const page_browser = get_page_browser();
 
 	let browser_data = $state(null);
 	let loading = $state(false);
@@ -49,23 +42,13 @@
 		return count;
 	}
 
-	async function handle_page_action(document_id) {
-		if (mode === 'select') {
-			close_drawer();
-			if (on_select_page) {
-				console.log('calling on_select_page...');
-				on_select_page(document_id);
-			}
-			return;
-		}
-
-		close_drawer();
-		await goto(`/${document_id}`);
+	function handle_page_action(document_id) {
+		page_browser.handle_page_selected(document_id);
 	}
 
-	async function handle_new_page() {
-		close_drawer();
-		await goto('/new');
+	function handle_new_page() {
+		page_browser.close();
+		window.location.href = '/new';
 	}
 
 	function get_preview_src(preview_image_src) {
@@ -81,7 +64,7 @@
 	const drafts = $derived(browser_data?.drafts ?? []);
 	const sitemap = $derived(browser_data?.sitemap ?? null);
 	const page_count = $derived(get_page_count(sitemap));
-	const is_picker_mode = $derived(mode === 'select');
+	const is_picker_mode = $derived(page_browser.state.mode === 'select');
 	const drawer_title = $derived(is_picker_mode ? 'Select page' : 'Pages');
 </script>
 
