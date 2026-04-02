@@ -90,6 +90,63 @@ function collect_node_ids(root_id, nodes, exclude_roots) {
 }
 
 /**
+ * Collect all node ids reachable from a root node by walking node/node_array
+ * properties and annotation references, preserving first-seen traversal order.
+ *
+ * @param {string} root_id
+ * @param {Record<string, any>} nodes
+ * @param {Set<string>} [exclude_roots]
+ * @returns {string[]}
+ */
+function collect_node_ids_in_order(root_id, nodes, exclude_roots) {
+	const collected = [];
+	const seen_ids = new Set();
+	const stack = [root_id];
+
+	while (stack.length > 0) {
+		const id = stack.pop();
+		if (!id || seen_ids.has(id)) continue;
+		if (exclude_roots && exclude_roots.has(id) && id !== root_id) continue;
+
+		seen_ids.add(id);
+		collected.push(id);
+
+		const node = nodes[id];
+		if (!node) continue;
+
+		const type_schema = document_schema[node.type];
+		if (!type_schema) continue;
+
+		const next_ids = [];
+
+		for (const [prop_name, prop_def] of Object.entries(type_schema.properties)) {
+			const value = node[prop_name];
+			if (value == null) continue;
+
+			if (prop_def.type === 'node' && typeof value === 'string') {
+				next_ids.push(value);
+			} else if (prop_def.type === 'node_array' && Array.isArray(value)) {
+				for (const child_id of value) {
+					next_ids.push(child_id);
+				}
+			} else if (prop_def.type === 'annotated_text' && value.annotations) {
+				for (const annotation of value.annotations) {
+					if (annotation.node_id) {
+						next_ids.push(annotation.node_id);
+					}
+				}
+			}
+		}
+
+		for (let i = next_ids.length - 1; i >= 0; i -= 1) {
+			stack.push(next_ids[i]);
+		}
+	}
+
+	return collected;
+}
+
+/**
  * @param {string} document_id
  * @param {Set<string>} node_ids
  * @param {Record<string, any>} all_nodes
@@ -184,12 +241,13 @@ function normalize_internal_page_href(href, source_document_id) {
 
 /**
  * @param {Record<string, any>} nodes
- * @param {Set<string>} node_ids
+ * @param {Iterable<string>} node_ids
  * @param {string} source_document_id
- * @returns {Set<string>}
+ * @returns {string[]}
  */
 function collect_document_refs(nodes, node_ids, source_document_id) {
-	const refs = new Set();
+	const refs = [];
+	const seen_refs = new Set();
 
 	for (const node_id of node_ids) {
 		const node = nodes[node_id];
@@ -197,8 +255,9 @@ function collect_document_refs(nodes, node_ids, source_document_id) {
 
 		if (typeof node.href === 'string') {
 			const target_document_id = normalize_internal_page_href(node.href, source_document_id);
-			if (target_document_id) {
-				refs.add(target_document_id);
+			if (target_document_id && !seen_refs.has(target_document_id)) {
+				seen_refs.add(target_document_id);
+				refs.push(target_document_id);
 			}
 		}
 
@@ -221,8 +280,9 @@ function collect_document_refs(nodes, node_ids, source_document_id) {
 					source_document_id
 				);
 
-				if (target_document_id) {
-					refs.add(target_document_id);
+				if (target_document_id && !seen_refs.has(target_document_id)) {
+					seen_refs.add(target_document_id);
+					refs.push(target_document_id);
 				}
 			}
 		}
@@ -233,7 +293,7 @@ function collect_document_refs(nodes, node_ids, source_document_id) {
 
 /**
  * @param {string} document_id
- * @param {Set<string>} node_ids
+ * @param {Iterable<string>} node_ids
  * @param {Record<string, any>} all_nodes
  * @param {import('node:sqlite').StatementSync} delete_stmt
  * @param {import('node:sqlite').StatementSync} insert_stmt
@@ -262,14 +322,14 @@ function update_asset_refs(document_id, node_ids, all_nodes, delete_stmt, insert
 
 /**
  * @param {string} source_document_id
- * @param {Set<string>} target_document_ids
+ * @param {string[]} target_document_ids
  * @param {import('node:sqlite').StatementSync} delete_stmt
  * @param {import('node:sqlite').StatementSync} insert_stmt
  */
 function update_document_refs(source_document_id, target_document_ids, delete_stmt, insert_stmt) {
 	delete_stmt.run(source_document_id);
-	for (const target_document_id of target_document_ids) {
-		insert_stmt.run(target_document_id, source_document_id);
+	for (const [ref_order, target_document_id] of target_document_ids.entries()) {
+		insert_stmt.run(target_document_id, source_document_id, ref_order);
 	}
 }
 
@@ -313,21 +373,24 @@ function get_combined_document(document_id) {
 
 /**
  * @param {DocumentData} page_doc
- * @returns {Set<string>}
+ * @returns {string[]}
  */
 function collect_page_body_node_ids(page_doc) {
 	const page_root = page_doc.nodes[page_doc.document_id];
 
 	if (!page_root?.body || !Array.isArray(page_root.body)) {
-		return new Set([page_doc.document_id]);
+		return [page_doc.document_id];
 	}
 
-	const body_node_ids = new Set([page_doc.document_id]);
+	const body_node_ids = [page_doc.document_id];
+	const seen_ids = new Set(body_node_ids);
 
 	for (const child_id of page_root.body) {
-		const subtree_ids = collect_node_ids(child_id, page_doc.nodes);
+		const subtree_ids = collect_node_ids_in_order(child_id, page_doc.nodes);
 		for (const subtree_id of subtree_ids) {
-			body_node_ids.add(subtree_id);
+			if (seen_ids.has(subtree_id)) continue;
+			seen_ids.add(subtree_id);
+			body_node_ids.push(subtree_id);
 		}
 	}
 
@@ -414,7 +477,7 @@ function summarize_page_document(page_doc) {
 function get_outgoing_refs(source_document_id) {
 	const rows = /** @type {Array<{ target_document_id: string }>} */ (
 		db.prepare(
-			'SELECT target_document_id FROM document_refs WHERE source_document_id = ? ORDER BY rowid'
+			'SELECT target_document_id FROM document_refs WHERE source_document_id = ? ORDER BY ref_order, rowid'
 		).all(source_document_id)
 	);
 
@@ -526,7 +589,7 @@ function build_page_browser_data() {
 		const body_node_ids = collect_page_body_node_ids(page_doc);
 		body_refs_by_page_id.set(
 			page_doc.document_id,
-			Array.from(collect_document_refs(page_doc.nodes, body_node_ids, page_doc.document_id))
+			collect_document_refs(page_doc.nodes, body_node_ids, page_doc.document_id)
 		);
 	}
 
@@ -677,8 +740,10 @@ export const save_document = command(save_document_input_schema, async (combined
 		footer_root_id
 	});
 
-	const nav_node_ids = nav_root_id ? collect_node_ids(nav_root_id, all_nodes) : new Set();
-	const footer_node_ids = footer_root_id ? collect_node_ids(footer_root_id, all_nodes) : new Set();
+	const nav_node_ids = nav_root_id ? new Set(collect_node_ids_in_order(nav_root_id, all_nodes)) : new Set();
+	const footer_node_ids = footer_root_id
+		? new Set(collect_node_ids_in_order(footer_root_id, all_nodes))
+		: new Set();
 
 	const exclude_roots = new Set();
 	if (nav_root_id) exclude_roots.add(nav_root_id);
@@ -704,7 +769,7 @@ export const save_document = command(save_document_input_schema, async (combined
 
 	const delete_document_refs = db.prepare('DELETE FROM document_refs WHERE source_document_id = ?');
 	const insert_document_ref = db.prepare(
-		'INSERT OR IGNORE INTO document_refs (target_document_id, source_document_id) VALUES (?, ?)'
+		'INSERT OR REPLACE INTO document_refs (target_document_id, source_document_id, ref_order) VALUES (?, ?, ?)'
 	);
 
 	console.log('[save_document] begin transaction', {

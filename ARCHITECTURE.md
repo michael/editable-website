@@ -151,9 +151,11 @@ A simple key-value table for site-wide configuration. Currently stores:
 
 **`document_refs`**
 
-Tracks which documents link to which other documents. Updated on save — the server scans the document's nodes for internal links (annotations on text nodes that point to other pages) and diffs against the existing rows. Same pattern as `asset_refs`.
+Tracks which documents link to which other documents. Updated on save — the server scans the document's nodes for internal links (annotations on text nodes that point to other pages) and rewrites the rows for that source document. Same pattern as `asset_refs`.
 
 This table tracks links from all document types — pages, nav, and footer. Since nav and footer are stitched into every page, their links are always live. This is the basis for determining page reachability (see "Page reachability" below).
+
+`document_refs` must also preserve the **first-seen link order** for each `source_document_id`, because the page browser sitemap uses that order when projecting the reachable graph into a tree. In other words, if a page body links to pages in the order A, then B, then C, the stored outgoing refs for that page must preserve A → B → C. Duplicate links to the same target are collapsed to the first occurrence only.
 
 **`asset_refs`**
 
@@ -654,6 +656,7 @@ The tree is built with these rules:
   2. home page body links
   3. shared footer links
 - **Recursive ordering:** once a child page has been placed in the tree, recurse into that page using **body links only**
+- **Within each source document, preserve author order:** outgoing refs are consumed in the same order they appear in the source document, with duplicates removed by first occurrence
 
 This means the sitemap is not a full graph visualization. It is a stable, editor-friendly tree derived from the reachable graph, where shared navigation and footer establish the top-level site structure, and deeper nesting comes from contextual links inside page content.
 
