@@ -9,16 +9,13 @@
 
 	let is_annotation = $derived(svedit.session.kind(node) === 'annotation');
 	let internal_page_id = $derived(get_internal_page_id(node?.href));
-	let page_preview_promises_by_id = new Map();
 
-	let page_preview_promise = $derived.by(() => {
+	let page_preview = $derived.by(async () => {
+		if (!has_backend) return null;
 		if (!internal_page_id) return null;
 
-		if (!page_preview_promises_by_id.has(internal_page_id)) {
-			page_preview_promises_by_id.set(internal_page_id, load_page_preview(node.href));
-		}
-
-		return page_preview_promises_by_id.get(internal_page_id);
+		const api_module = await import('$lib/api.remote.js');
+		return api_module.get_internal_link_preview(`/${internal_page_id}`);
 	});
 
 	function handle_edit() {
@@ -39,12 +36,13 @@
 	}
 
 	function get_internal_page_id(href) {
-		if (!has_backend || typeof href !== 'string') return null;
+		if (typeof href !== 'string') return null;
 		if (!href.startsWith('/')) return null;
-		if (href === '/') return null;
-		if (href.includes('?') || href.includes('#')) return null;
 
-		const page_id = href.slice(1);
+		const pathname = href.split(/[?#]/, 1)[0];
+		if (!pathname || pathname === '/') return null;
+
+		const page_id = pathname.slice(1);
 		if (!page_id) return null;
 		if (page_id.includes('/')) return null;
 
@@ -66,11 +64,6 @@
 
 		const stem = preview_image_src.slice(0, extension_index);
 		return `/assets/${stem}/w${VARIANT_WIDTHS[0]}.webp`;
-	}
-
-	async function load_page_preview(href) {
-		const api_module = await import('$lib/api.remote.js');
-		return api_module.get_internal_link_preview(href);
 	}
 </script>
 
@@ -105,22 +98,24 @@
 				</button>
 			</div>
 
-			{#if page_preview_promise}
+			{#if internal_page_id}
 				<div class="border-t border-gray-200 px-3 py-3">
-					{#await page_preview_promise}
+					{#await page_preview}
 						<div class="text-sm text-gray-500">Loading page preview…</div>
-					{:then page_preview}
-						{#if page_preview}
+					{:then resolved_page_preview}
+						{#if resolved_page_preview}
 							<div class="flex items-center gap-3">
-								{#if page_preview.preview_image_src && is_image_preview(page_preview.preview_image_src)}
+								{#if resolved_page_preview.preview_image_src && is_image_preview(resolved_page_preview.preview_image_src)}
 									<img
-										src={get_smallest_preview_image_src(page_preview.preview_image_src)}
+										src={get_smallest_preview_image_src(resolved_page_preview.preview_image_src)}
 										alt=""
 										class="h-12 w-12 shrink-0 border border-gray-200 object-cover"
 									/>
 								{/if}
 								<div class="min-w-0">
-									<div class="text-sm font-semibold text-gray-900 truncate">{page_preview.title}</div>
+									<div class="text-sm font-semibold text-gray-900 truncate">
+										{resolved_page_preview.title}
+									</div>
 								</div>
 							</div>
 						{:else}
