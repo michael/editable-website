@@ -27,6 +27,8 @@
 
 	let browser_data_version = $state(0);
 
+	setContext('has_backend', has_backend);
+
 	const page_browser = create_page_browser({ goto });
 
 	Object.defineProperty(page_browser, 'version', {

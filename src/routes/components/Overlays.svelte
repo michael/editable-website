@@ -10,6 +10,7 @@
 	import PagesDrawer from './PagesDrawer.svelte';
 
 	const svedit = getContext('svedit');
+	const has_backend = getContext('has_backend');
 
 	// True for the whole period the mouse button is down
 	let is_mouse_down = $state(false);
@@ -216,7 +217,7 @@
 		<CreateLink />
 	{/if}
 
-	{#if !svedit.editable || page_browser.state.open}
+	{#if has_backend && (!svedit.editable || page_browser.state.open)}
 		<Drawer bind:open={page_browser.state.open} label="Pages">
 			<PagesDrawer />
 		</Drawer>

@@ -3,6 +3,7 @@
 	import { get_page_browser } from './page_browser_context.svelte.js';
 
 	const svedit = getContext('svedit');
+	const has_backend = getContext('has_backend');
 	const page_browser = get_page_browser();
 
 	let toggle_link_command = $derived(svedit.session.commands?.toggle_link);
@@ -80,21 +81,23 @@
 				class="w-72 min-w-0 flex-1 border-0 px-3 py-2 text-sm text-gray-700 outline-none focus:ring-1 focus:ring-(--svedit-editing-stroke)"
 				onkeydown={handle_keydown}
 			/>
-			<button
-				type="button"
-				class="shrink-0 cursor-pointer border-l border-gray-200 px-3 text-(--svedit-editing-stroke) hover:bg-[oklch(from_var(--svedit-brand)_0.97_0.015_h)]"
-				title="Select page"
-				aria-label="Select page"
-				onclick={() => {
-					page_browser.open_select((document_id) => {
-						href_input_value = `/${document_id}`;
-						open_in_new_tab = false;
-						create_link();
-					});
-				}}
-			>
-				↗
-			</button>
+			{#if has_backend}
+				<button
+					type="button"
+					class="shrink-0 cursor-pointer border-l border-gray-200 px-3 text-(--svedit-editing-stroke) hover:bg-[oklch(from_var(--svedit-brand)_0.97_0.015_h)]"
+					title="Select page"
+					aria-label="Select page"
+					onclick={() => {
+						page_browser.open_select((document_id) => {
+							href_input_value = `/${document_id}`;
+							open_in_new_tab = false;
+							create_link();
+						});
+					}}
+				>
+					↗
+				</button>
+			{/if}
 		</div>
 		<div class="flex items-center justify-between px-3 py-2">
 			<label class="flex items-center gap-2 cursor-pointer">
