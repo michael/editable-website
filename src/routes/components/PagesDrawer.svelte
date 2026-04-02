@@ -4,6 +4,12 @@
 
 	const page_browser = getContext('page_browser');
 
+	let {
+		close_drawer = () => {},
+		mode = 'navigate',
+		on_select_page = null
+	} = $props();
+
 	let browser_data = $state(null);
 	let loading = $state(false);
 	let load_error = $state('');
@@ -22,8 +28,8 @@
 		load_error = '';
 
 		try {
-			const { get_page_browser_data } = await import('$lib/api.remote.js');
-			browser_data = await get_page_browser_data();
+			const api_module = await import('$lib/api.remote.js');
+			browser_data = await api_module.get_page_browser_data();
 			loaded_version = page_browser?.version ?? 0;
 		} catch (err) {
 			console.error('Failed to load page browser data', err);
@@ -43,8 +49,23 @@
 		return count;
 	}
 
-	async function navigate_to(path) {
-		await goto(path);
+	async function handle_page_action(document_id) {
+		if (mode === 'select') {
+			close_drawer();
+			if (on_select_page) {
+				console.log('calling on_select_page...');
+				on_select_page(document_id);
+			}
+			return;
+		}
+
+		close_drawer();
+		await goto(`/${document_id}`);
+	}
+
+	async function handle_new_page() {
+		close_drawer();
+		await goto('/new');
 	}
 
 	function get_preview_src(preview_image_src) {
@@ -60,12 +81,17 @@
 	const drafts = $derived(browser_data?.drafts ?? []);
 	const sitemap = $derived(browser_data?.sitemap ?? null);
 	const page_count = $derived(get_page_count(sitemap));
+	const is_picker_mode = $derived(mode === 'select');
+	const drawer_title = $derived(is_picker_mode ? 'Select page' : 'Pages');
 </script>
 
 <div class="pages-drawer">
 	<section class="section">
 		<div class="section-header">
 			<h3>{drafts.length} drafts</h3>
+			{#if is_picker_mode}
+				<span class="section-mode-label">{drawer_title}</span>
+			{/if}
 		</div>
 
 		{#if loading && !browser_data}
@@ -74,14 +100,16 @@
 			<div class="status-message" role="alert">{load_error}</div>
 		{:else}
 			<div class="drafts-strip" role="list" aria-label="Draft pages">
-				<div role="listitem" class="draft-item">
-					<button class="draft-card create-card" type="button" onclick={() => navigate_to('/new')}>
-						<div class="page-illustration draft-illustration create-illustration" aria-hidden="true">
-							<div class="plus-glyph">+</div>
-						</div>
-						<div class="draft-title">New page</div>
-					</button>
-				</div>
+				{#if !is_picker_mode}
+					<div role="listitem" class="draft-item">
+						<button class="draft-card create-card" type="button" onclick={handle_new_page}>
+							<div class="page-illustration draft-illustration create-illustration" aria-hidden="true">
+								<div class="plus-glyph">+</div>
+							</div>
+							<div class="draft-title">New page</div>
+						</button>
+					</div>
+				{/if}
 
 				{#if drafts.length === 0}
 					<div class="empty-state-card" role="listitem">
@@ -90,7 +118,7 @@
 				{:else}
 					{#each drafts as draft}
 						<div role="listitem" class="draft-item">
-							<button class="draft-card" type="button" onclick={() => navigate_to(`/${draft.document_id}`)}>
+							<button class="draft-card" type="button" onclick={() => handle_page_action(draft.document_id)}>
 								<div class="page-illustration draft-illustration" aria-hidden="true">
 									{#if draft.preview_image_src}
 										{#if is_video_preview(draft.preview_image_src)}
@@ -140,7 +168,7 @@
 			<div class="tree">
 				{#snippet node_item(node, depth = 0)}
 					<div class="tree-node" style={`--depth:${depth};`}>
-						<button class="tree-row" type="button" onclick={() => navigate_to(`/${node.document_id}`)}>
+						<button class="tree-row" type="button" onclick={() => handle_page_action(node.document_id)}>
 							<div class="tree-indent" aria-hidden="true"></div>
 
 							<div class="page-illustration tree-illustration" aria-hidden="true">
@@ -204,6 +232,7 @@
 	.section-header {
 		display: flex;
 		align-items: center;
+		justify-content: space-between;
 		gap: 0.75rem;
 	}
 
@@ -213,6 +242,12 @@
 		font-weight: 700;
 		letter-spacing: -0.01em;
 		color: var(--foreground, black);
+	}
+
+	.section-mode-label {
+		font-size: 0.78rem;
+		font-weight: 600;
+		color: oklch(45% 0 0);
 	}
 
 	.status-message {
@@ -284,11 +319,6 @@
 	.draft-card:focus-visible,
 	.tree-row:hover,
 	.tree-row:focus-visible {
-		background: var(--svedit-editing-fill);
-	}
-
-	.create-card:hover,
-	.create-card:focus-visible {
 		background: var(--svedit-editing-fill);
 	}
 

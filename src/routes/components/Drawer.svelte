@@ -1,6 +1,8 @@
 <script>
 	/**
-	 * Reusable bottom drawer / bottom sheet.
+	 * Reusable bottom drawer / bottom sheet backed by a dialog element so it
+	 * participates in the browser top layer when open, while the handle remains
+	 * visible and clickable even when the drawer is closed.
 	 *
 	 * Usage:
 	 * - Provide content via the `children` snippet
@@ -14,26 +16,61 @@
 		children
 	} = $props();
 
+	let dialog_ref = $state();
+	let is_visible = $state(open);
+	let is_animating_open = $state(false);
+
 	function toggle() {
-		open = !open;
+		if (open) {
+			close();
+		} else {
+			open = true;
+		}
 	}
 
 	function close() {
 		open = false;
 	}
+
+	function handle_dialog_cancel(event) {
+		event.preventDefault();
+		close();
+	}
+
+	function handle_backdrop_click(event) {
+		if (event.target === dialog_ref) {
+			close();
+		}
+	}
+
+	$effect(() => {
+		if (!dialog_ref) return;
+
+		if (open) {
+			is_visible = true;
+
+			if (!dialog_ref.open) {
+				dialog_ref.showModal();
+			}
+
+			requestAnimationFrame(() => {
+				is_animating_open = true;
+			});
+		} else if (dialog_ref.open) {
+			is_animating_open = false;
+		}
+	});
+
+	function handle_transition_end() {
+		if (!open && dialog_ref?.open) {
+			dialog_ref.close();
+			is_visible = false;
+		}
+	}
 </script>
 
-<div class="drawer-layer" class:open>
-	{#if open}
-		<button
-			class="drawer-backdrop"
-			type="button"
-			aria-label="Close drawer"
-			onclick={close}
-		></button>
-	{/if}
-
-	<div class="drawer" role="complementary" aria-label={label}>
+{#if !is_visible}
+	<div class="drawer-handle-layer">
 		<button
 			class="drawer-handle"
 			type="button"
@@ -46,31 +83,76 @@
 				<span class="drawer-title">{label}</span>
 			</div>
 		</button>
+	</div>
+{/if}
 
-		<div id="drawer-panel" class="drawer-panel">
-			<div class="drawer-content">
-				{@render children?.()}
+<dialog
+	bind:this={dialog_ref}
+	class="drawer-dialog"
+	class:animating-open={is_animating_open}
+	oncancel={handle_dialog_cancel}
+	onclick={handle_backdrop_click}
+>
+	<div class="drawer-shell" role="complementary" aria-label={label}>
+		<div class="drawer" ontransitionend={handle_transition_end}>
+			<button
+				class="drawer-handle"
+				type="button"
+				aria-expanded={open}
+				aria-controls="drawer-panel"
+				onclick={toggle}
+			>
+				<div class="drawer-pill"></div>
+				<div class="drawer-title-row">
+					<span class="drawer-title">{label}</span>
+				</div>
+			</button>
+
+			<div id="drawer-panel" class="drawer-panel">
+				<div class="drawer-content">
+					{@render children?.({ close })}
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+</dialog>
 
 <style>
-	.drawer-layer {
+	.drawer-handle-layer {
 		position: fixed;
-		inset: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
 		pointer-events: none;
 		z-index: 100;
 	}
 
-	.drawer-backdrop {
-		position: absolute;
-		inset: 0;
+	.drawer-dialog {
+		margin: 0;
+		padding: 0;
 		border: 0;
+		background: transparent;
+		max-width: none;
+		max-height: none;
+		width: 100vw;
+		height: 100vh;
+		overflow: visible;
+	}
+
+	.drawer-dialog::backdrop {
+		background: transparent;
+	}
+
+	.drawer-dialog[open]::backdrop {
 		background: oklch(0% 0 0 / 0.18);
 		backdrop-filter: blur(2px);
 		-webkit-backdrop-filter: blur(2px);
-		pointer-events: auto;
+	}
+
+	.drawer-shell {
+		position: fixed;
+		inset: 0;
+		pointer-events: none;
 	}
 
 	.drawer {
@@ -84,9 +166,8 @@
 		will-change: transform;
 	}
 
-	.drawer-layer.open .drawer {
+	.drawer-dialog.animating-open .drawer {
 		transform: translateY(0);
-		pointer-events: auto;
 	}
 
 	.drawer-handle {
@@ -134,6 +215,7 @@
 		padding-bottom: max(1rem, env(safe-area-inset-bottom));
 		overflow: auto;
 		overscroll-behavior: contain;
+		pointer-events: auto;
 	}
 
 	.drawer-content {
