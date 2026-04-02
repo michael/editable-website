@@ -119,10 +119,10 @@
 								</div>
 							</div>
 						{:else}
-							<div class="text-sm text-gray-500">Page not found.</div>
+							<div class="text-sm text-gray-500">No matching page.</div>
 						{/if}
 					{:catch}
-						<div class="text-sm text-gray-500">Page not found.</div>
+						<div class="text-sm text-gray-500">No matching page.</div>
 					{/await}
 				</div>
 			{/if}
