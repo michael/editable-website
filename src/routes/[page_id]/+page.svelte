@@ -8,4 +8,6 @@
 	<title>Editable Website</title>
 </svelte:head>
 
-<PageEditor initial_doc={/** @type {any} */ (data).document} has_backend={true} is_new={false} />
+{#key data.document.document_id}
+	<PageEditor initial_doc={data.document} has_backend={true} is_new={false} />
+{/key}
