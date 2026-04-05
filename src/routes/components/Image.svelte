@@ -71,13 +71,12 @@
 		width={node.width}
 		height={node.height}
 		style={image_style}
+		class="absolute inset-0 block"
 	/>
 {/if}
 
 <style>
 	img {
-		width: 100%;
-		height: 100%;
 		transform-origin: center center;
 	}
 

@@ -19,7 +19,7 @@
 {#snippet image(placeholder_aspect_ratio = '3 / 4', border_radius = false)}
 	<div class="flex items-center h-full w-full">
 		<div
-			class="overflow-hidden w-full"
+			class="overflow-hidden w-full relative"
 			style:border-radius={border_radius ? 'var(--image-border-radius)' : undefined}
 			style:aspect-ratio={media_aspect_ratio ?? placeholder_aspect_ratio}
 		>

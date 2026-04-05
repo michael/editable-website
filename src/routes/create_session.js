@@ -78,6 +78,7 @@ async function replace_media(session, path, file, blob_url) {
 
 	const media_type = get_media_type(file);
 	const dims = await get_media_dimensions(file);
+	console.log('dims', dims);
 
 	// HACK: Make sure we have a proper before selection
 	// Needed because of the focus steal in Toolbar.

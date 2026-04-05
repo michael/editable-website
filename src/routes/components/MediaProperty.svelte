@@ -26,10 +26,10 @@
 	}
 </script>
 
-<CustomProperty class="h-full {css_class}" path={path}>
+<CustomProperty class="block absolute! inset-0 {css_class}" path={path}>
 	<div
 		contenteditable="false"
-		class="overflow-hidden h-full"
+		class="overflow-hidden h-full w-full"
 		class:ew-bg-checkerboard={is_selected || !node.src}
 	>
 		<Media {path} />

@@ -13,7 +13,7 @@
 	<div class="{TW_LIMITER}">
 		<div class="figure {TW_PAGE_PADDING_X} py-16">
 			<div
-				class="overflow-hidden"
+				class="overflow-hidden relative"
 				style:border-radius="var(--image-border-radius)"
 				style:aspect-ratio={media_node.width && media_node.height ? `${media_node.width} / ${media_node.height}` : '16 / 9'}
 			>
