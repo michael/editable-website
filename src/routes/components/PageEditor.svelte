@@ -293,7 +293,12 @@
 <svelte:window onkeydown={key_mapper.handle_keydown.bind(key_mapper)} />
 
 <div class="demo-wrapper antialiased" bind:this={app_el}>
-	<Toolbar {session} {app_commands} {editable} {focus_canvas} />
+	<Toolbar
+		{session}
+		{app_commands}
+		{editable}
+		{focus_canvas}
+	/>
 	<Svedit {session} bind:editable bind:this={svedit_ref} path={[session.doc.document_id]} />
 	{#if has_backend}
 		<SaveProgressModal

@@ -1,13 +1,12 @@
 <script>
 	/**
 	 * Reusable bottom drawer / bottom sheet backed by a dialog element so it
-	 * participates in the browser top layer when open, while the handle remains
-	 * visible and clickable even when the drawer is closed.
+	 * participates in the browser top layer when open.
 	 *
 	 * Usage:
 	 * - Provide content via the `children` snippet
 	 * - Bind `open` from the parent
-	 * - Optional `label` customizes the handle title
+	 * - Optional `label` customizes the panel label
 	 */
 
 	let {
@@ -19,14 +18,6 @@
 	let dialog_ref = $state();
 	let is_visible = $state(open);
 	let is_animating_open = $state(false);
-
-	function toggle() {
-		if (open) {
-			close();
-		} else {
-			open = true;
-		}
-	}
 
 	function close() {
 		open = false;
@@ -69,28 +60,6 @@
 	}
 </script>
 
-{#if !is_visible}
-	<div class="drawer-handle-layer">
-		<button
-			class="drawer-handle"
-			type="button"
-			aria-label={label}
-			aria-expanded={open}
-			aria-controls="drawer-panel"
-			onclick={toggle}
-		>
-			<div class="drawer-title-row" aria-hidden="true">
-				<svg class="drawer-browse-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" fill="none">
-					<rect x="1.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-					<rect x="8.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-					<rect x="1.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-					<rect x="8.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-				</svg>
-			</div>
-		</button>
-	</div>
-{/if}
-
 <dialog
 	bind:this={dialog_ref}
 	class="drawer-dialog"
@@ -100,24 +69,6 @@
 >
 	<div class="drawer-shell" role="complementary" aria-label={label}>
 		<div class="drawer" ontransitionend={handle_transition_end}>
-			<button
-				class="drawer-handle"
-				type="button"
-				aria-label={label}
-				aria-expanded={open}
-				aria-controls="drawer-panel"
-				onclick={toggle}
-			>
-				<div class="drawer-title-row" aria-hidden="true">
-					<svg class="drawer-browse-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" fill="none">
-						<rect x="1.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-						<rect x="8.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-						<rect x="1.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-						<rect x="8.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-					</svg>
-				</div>
-			</button>
-
 			<div id="drawer-panel" class="drawer-panel">
 				<div class="drawer-content">
 					{@render children?.({ close })}
@@ -128,15 +79,6 @@
 </dialog>
 
 <style>
-	.drawer-handle-layer {
-		position: fixed;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		pointer-events: none;
-		z-index: 100;
-	}
-
 	.drawer-dialog {
 		margin: 0;
 		padding: 0;
@@ -178,39 +120,6 @@
 
 	.drawer-dialog.animating-open .drawer {
 		transform: translateY(0);
-	}
-
-	.drawer-handle {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 0;
-		width: min(3.5rem, calc(100vw - 1rem));
-		margin: 0 auto;
-		padding: 0.5rem 0.35rem 0.6rem;
-		border: 0;
-		border-radius: 0.75rem 0.75rem 0 0;
-		background: var(--foreground);
-		box-shadow:
-			0 -8px 30px oklch(0% 0 0 / 0.12),
-			0 -2px 10px oklch(0% 0 0 / 0.08);
-		color: var(--background, black);
-		cursor: pointer;
-		touch-action: manipulation;
-		pointer-events: auto;
-	}
-
-	.drawer-title-row {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		line-height: 1;
-	}
-
-	.drawer-browse-icon {
-		width: 0.95rem;
-		height: 0.95rem;
-		display: block;
 	}
 
 	.drawer-panel {
@@ -257,14 +166,7 @@
 
 	@media (max-width: 640px) {
 		.drawer {
-			transform: translateY(calc(100% - 1.65rem));
-		}
-
-		.drawer-handle {
-			width: min(3.5rem, calc(100vw - 0.75rem));
-			border-radius: 0.75rem 0.75rem 0 0;
-			padding-top: 0.45rem;
-			padding-bottom: 0.5rem;
+			transform: translateY(100%);
 		}
 
 		.drawer-panel {
