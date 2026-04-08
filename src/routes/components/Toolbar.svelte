@@ -1,5 +1,10 @@
 <script>
+	import { get_page_browser } from './page_browser_context.svelte.js';
+
 	let { session, app_commands, editable, focus_canvas } = $props();
+
+	const page_browser = get_page_browser();
+	const has_backend = $derived(!!page_browser);
 
 	let cancel_command = $derived(app_commands.cancel_editing ?? null);
 	let cancel_button_label = $derived(cancel_command?.label || 'Cancel');
@@ -48,9 +53,9 @@
 	// On mobile also pin to left edge so the toolbar can scroll horizontally
 	const TW_TOOLBAR_LEFT = 'left-5 sm:left-7 md:left-auto';
 
-	const TW_TOOLBAR_BTN = 'flex items-center justify-center size-9 rounded-full text-(--foreground) bg-(--background) border border-[color:color-mix(in_oklch,var(--foreground)_18%,transparent)] cursor-pointer pointer-events-auto shadow-md transition-all duration-150 active:scale-95 active:translate-y-px';
+	const TW_TOOLBAR_BTN = 'flex items-center justify-center size-9 rounded-full text-(--foreground) bg-(--background) border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] cursor-pointer pointer-events-auto shadow-md transition-all duration-150 active:scale-95 active:translate-y-px';
 	const TW_TOOLBAR_BTN_DISABLED = 'text-[oklch(from_var(--foreground)_0.8_0_0)] !cursor-not-allowed';
-	const TW_TOOLBAR_BTN_HOVER = 'hover:bg-[color:color-mix(in_oklch,var(--foreground)_10%,var(--background))] hover:border-[color:color-mix(in_oklch,var(--foreground)_28%,transparent)] active:bg-[color:color-mix(in_oklch,var(--foreground)_16%,var(--background))] active:border-[color:color-mix(in_oklch,var(--foreground)_36%,transparent)] active:scale-95 active:translate-y-px';
+	const TW_TOOLBAR_BTN_HOVER = 'hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))] hover:border-[color-mix(in_oklch,var(--foreground)_28%,transparent)] active:bg-[color-mix(in_oklch,var(--foreground)_16%,var(--background))] active:border-[color-mix(in_oklch,var(--foreground)_36%,transparent)] active:scale-95 active:translate-y-px';
 
 	function handle_btn_mousedown(event, command) {
 		event.preventDefault();
@@ -63,16 +68,38 @@
 	<div class="overflow-x-auto -mb-3 pb-3 -ml-3 pl-3">
 		<div class="flex items-center gap-1.5 sm:gap-3 w-max ml-auto pointer-events-none">
 			{#if !editable}
-				<!-- Read mode: Edit button -->
-				{#if !app_commands.edit_document.disabled}
-					<button
-						class="px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--background) bg-(--svedit-brand) shadow-md transition-colors duration-150 hover:brightness-90"
-						onclick={() => app_commands.edit_document.execute()}
-						title="Edit (⌘E)"
-					>
-						Edit
-					</button>
-				{/if}
+				<!-- Read mode: Pages + Edit buttons -->
+				<div class="flex items-center gap-1 pointer-events-none">
+					{#if has_backend}
+						<button
+							class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
+							onclick={() => page_browser?.open_navigate()}
+							title="Pages"
+							aria-label="Pages"
+						>
+							<svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+								<rect x="1.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+								<rect x="8.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+								<rect x="1.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+								<rect x="8.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+							</svg>
+						</button>
+					{/if}
+
+					{#if !app_commands.edit_document.disabled}
+						<button
+							class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
+							onclick={() => app_commands.edit_document.execute()}
+							title="Edit (⌘E)"
+							aria-label="Edit"
+						>
+							<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+								<path d="M12 20h9" />
+								<path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+							</svg>
+						</button>
+					{/if}
+				</div>
 			{:else}
 				<!-- Edit mode -->
 
@@ -221,7 +248,7 @@
 				<div class="flex items-center gap-1 pointer-events-none">
 					{#if cancel_command && !cancel_command.disabled}
 						<button
-							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--foreground) bg-(--background) border border-[color:color-mix(in_oklch,var(--foreground)_18%,transparent)] shadow-md transition-all duration-150 hover:bg-[color:color-mix(in_oklch,var(--foreground)_10%,var(--background))] hover:border-[color:color-mix(in_oklch,var(--foreground)_28%,transparent)] active:bg-[color:color-mix(in_oklch,var(--foreground)_16%,var(--background))] active:border-[color:color-mix(in_oklch,var(--foreground)_36%,transparent)] active:scale-95 active:translate-y-px"
+							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--foreground) bg-(--background) border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] shadow-md transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))] hover:border-[color-mix(in_oklch,var(--foreground)_28%,transparent)] active:bg-[color-mix(in_oklch,var(--foreground)_16%,var(--background))] active:border-[color-mix(in_oklch,var(--foreground)_36%,transparent)] active:scale-95 active:translate-y-px"
 							onclick={() => cancel_command.execute()}
 							title="Cancel (⌘⎋ / Ctrl+Esc)"
 						>
@@ -231,7 +258,7 @@
 
 					{#if !app_commands.save_document.disabled}
 						<button
-							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--svedit-editing-stroke) bg-(--background) border border-(--svedit-editing-stroke) shadow-md transition-all duration-150 hover:bg-[color:color-mix(in_oklch,var(--foreground)_10%,var(--background))] hover:border-(--svedit-editing-stroke) active:bg-[color:color-mix(in_oklch,var(--foreground)_16%,var(--background))] active:border-(--svedit-editing-stroke) active:scale-95 active:translate-y-px"
+							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--svedit-editing-stroke) bg-(--background) border border-(--svedit-editing-stroke) shadow-md transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))] hover:border-(--svedit-editing-stroke) active:bg-[color-mix(in_oklch,var(--foreground)_16%,var(--background))] active:border-(--svedit-editing-stroke) active:scale-95 active:translate-y-px"
 							onclick={() => app_commands.save_document.execute()}
 							title="Save (⌘S)"
 						>
