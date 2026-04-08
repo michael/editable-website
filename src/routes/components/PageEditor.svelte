@@ -38,8 +38,13 @@
 	});
 
 	page_browser.invalidate = invalidate_page_browser_data;
+	page_browser.set_current_page(initial_doc.document_id);
 
 	set_page_browser(page_browser);
+
+	$effect(() => {
+		page_browser.set_current_page(session?.doc?.document_id ?? initial_doc.document_id);
+	});
 
 	$effect(() => {
 		document.documentElement.style.scrollBehavior = editable ? 'auto' : 'smooth';
