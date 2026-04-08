@@ -138,6 +138,6 @@
 
 <style>
 	.edit-link-dialog::backdrop {
-		background: rgba(0, 0, 0, 0.15);
+		background: color-mix(in oklch, var(--foreground) 10%, transparent);
 	}
 </style>

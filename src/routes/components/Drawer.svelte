@@ -96,7 +96,7 @@
 	}
 
 	.drawer-dialog[open]::backdrop {
-		background: oklch(0% 0 0 / 0.18);
+		background: color-mix(in oklch, var(--foreground) 10%, transparent);
 		backdrop-filter: blur(2px);
 		-webkit-backdrop-filter: blur(2px);
 	}
@@ -124,11 +124,12 @@
 
 	.drawer-panel {
 		width: 100%;
-		max-height: min(70vh, 34rem);
-		background: var(--foreground);
+		height: 66.666vh;
+		max-height: 66.666vh;
+		background: var(--background);
 		box-shadow: 0 -12px 40px oklch(0% 0 0 / 0.12);
-		border-top: 1px solid color-mix(in oklch, var(--background) 14%, var(--foreground) 86%);
-		color: var(--background);
+		border-top: 0.5px solid color-mix(in oklch, var(--foreground) 18%, transparent);
+		color: var(--foreground);
 		padding-bottom: max(1rem, env(safe-area-inset-bottom));
 		overflow: auto;
 		overscroll-behavior: contain;
@@ -170,7 +171,8 @@
 		}
 
 		.drawer-panel {
-			max-height: min(78vh, 40rem);
+			height: 66.666vh;
+			max-height: 66.666vh;
 		}
 	}
 </style>
