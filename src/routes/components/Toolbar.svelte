@@ -231,7 +231,7 @@
 
 					{#if !app_commands.save_document.disabled}
 						<button
-							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--background) bg-(--svedit-brand) shadow-md transition-colors duration-150 hover:brightness-90"
+							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--svedit-editing-stroke) bg-(--background) border border-(--svedit-editing-stroke) shadow-md transition-all duration-150 hover:bg-[color:color-mix(in_oklch,var(--foreground)_10%,var(--background))] hover:border-(--svedit-editing-stroke) active:bg-[color:color-mix(in_oklch,var(--foreground)_16%,var(--background))] active:border-(--svedit-editing-stroke) active:scale-95 active:translate-y-px"
 							onclick={() => app_commands.save_document.execute()}
 							title="Save (⌘S)"
 						>
