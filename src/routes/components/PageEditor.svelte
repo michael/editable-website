@@ -1,6 +1,7 @@
 <script>
 	import { setContext } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { Svedit, KeyMapper, Command, define_keymap } from 'svedit';
 	import Toolbar from './Toolbar.svelte';
 	import SaveProgressModal from './SaveProgressModal.svelte';
@@ -8,13 +9,14 @@
 	import { create_page_browser, set_page_browser } from './page_browser_context.svelte.js';
 
 	/** @type {{ initial_doc: any, has_backend?: boolean, is_new?: boolean }} */
-	let {
-		initial_doc,
-		has_backend = true,
-		is_new = false
-	} = $props();
+	let props = $props();
+
+	let initial_doc = $derived(props.initial_doc);
+	let has_backend = $derived(props.has_backend ?? true);
+	let is_new = $derived(props.is_new ?? false);
 
 	let initial_doc_json = $derived(JSON.stringify(initial_doc));
+	let initial_document_id = $derived(initial_doc.document_id);
 
 	let app_el = $state();
 	let svedit_ref = $state();
@@ -38,12 +40,12 @@
 	});
 
 	page_browser.invalidate = invalidate_page_browser_data;
-	page_browser.set_current_page(initial_doc.document_id);
+	page_browser.set_current_page(initial_document_id);
 
 	set_page_browser(page_browser);
 
 	$effect(() => {
-		page_browser.set_current_page(session?.doc?.document_id ?? initial_doc.document_id);
+		page_browser.set_current_page(session?.doc?.document_id ?? initial_document_id);
 	});
 
 	$effect(() => {
@@ -117,7 +119,7 @@
 			session.selection = null;
 
 			if (current_is_new) {
-				await goto('/');
+				await goto(resolve('/'));
 				return;
 			}
 
@@ -231,7 +233,7 @@
 						await get_document(result.document_id);
 						current_is_new = false;
 						invalidate_page_browser_data();
-						await goto(`/${result.document_id}`, { replaceState: true });
+						await goto(resolve(`/${result.document_id}`), { replaceState: true });
 						return;
 					} catch (read_back_err) {
 						console.error('Created page could not be read back yet:', read_back_err);
@@ -288,10 +290,13 @@
 	key_mapper.push_scope(app_key_map);
 
 	let session = $state(create_session(initial_doc));
+	let loaded_document_id = $state(initial_document_id);
 
 	$effect(() => {
-		if (!current_is_new) return;
+		if (loaded_document_id === initial_document_id) return;
 		session = create_session(initial_doc);
+		loaded_document_id = initial_document_id;
+		editable = !!is_new;
 	});
 </script>
 
