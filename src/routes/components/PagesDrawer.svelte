@@ -238,19 +238,19 @@
 		font-size: 0.95rem;
 		font-weight: 700;
 		letter-spacing: -0.01em;
-		color: var(--foreground, black);
+		color: inherit;
 	}
 
 	.section-mode-label {
 		font-size: 0.78rem;
 		font-weight: 600;
-		color: oklch(45% 0 0);
+		color: color-mix(in oklch, currentColor 65%, transparent);
 	}
 
 	.status-message {
 		padding: 0.8rem 0;
 		font-size: 0.9rem;
-		color: oklch(45% 0 0);
+		color: color-mix(in oklch, currentColor 65%, transparent);
 	}
 
 	.drafts-strip {
@@ -280,7 +280,7 @@
 	.empty-state-text {
 		font-size: 0.84rem;
 		font-weight: 600;
-		color: oklch(45% 0 0);
+		color: color-mix(in oklch, currentColor 65%, transparent);
 		text-align: center;
 	}
 
@@ -407,7 +407,7 @@
 		font-size: 0.8rem;
 		font-weight: 600;
 		line-height: 1.2;
-		color: var(--foreground, black);
+		color: inherit;
 		text-align: center;
 	}
 
@@ -432,7 +432,7 @@
 		font-size: 0.92rem;
 		font-weight: 600;
 		line-height: 1.2;
-		color: var(--foreground, black);
+		color: inherit;
 	}
 
 	.tree-children {

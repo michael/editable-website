@@ -48,9 +48,9 @@
 	// On mobile also pin to left edge so the toolbar can scroll horizontally
 	const TW_TOOLBAR_LEFT = 'left-5 sm:left-7 md:left-auto';
 
-	const TW_TOOLBAR_BTN = 'flex items-center justify-center size-9 rounded-full text-(--foreground) bg-white cursor-pointer pointer-events-auto shadow-md transition-colors duration-150';
+	const TW_TOOLBAR_BTN = 'flex items-center justify-center size-9 rounded-full text-(--foreground) bg-(--background) border border-[color:color-mix(in_oklch,var(--foreground)_18%,transparent)] cursor-pointer pointer-events-auto shadow-md transition-all duration-150 active:scale-95 active:translate-y-px';
 	const TW_TOOLBAR_BTN_DISABLED = 'text-[oklch(from_var(--foreground)_0.8_0_0)] !cursor-not-allowed';
-	const TW_TOOLBAR_BTN_HOVER = 'hover:bg-[oklch(from_var(--svedit-brand)_0.95_0.02_h)] hover:text-(--svedit-editing-stroke)';
+	const TW_TOOLBAR_BTN_HOVER = 'hover:bg-[color:color-mix(in_oklch,var(--foreground)_10%,var(--background))] hover:border-[color:color-mix(in_oklch,var(--foreground)_28%,transparent)] active:bg-[color:color-mix(in_oklch,var(--foreground)_16%,var(--background))] active:border-[color:color-mix(in_oklch,var(--foreground)_36%,transparent)] active:scale-95 active:translate-y-px';
 
 	function handle_btn_mousedown(event, command) {
 		event.preventDefault();
@@ -66,7 +66,7 @@
 				<!-- Read mode: Edit button -->
 				{#if !app_commands.edit_document.disabled}
 					<button
-						class="px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-white bg-(--svedit-brand) shadow-md transition-colors duration-150 hover:brightness-90"
+						class="px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--background) bg-(--svedit-brand) shadow-md transition-colors duration-150 hover:brightness-90"
 						onclick={() => app_commands.edit_document.execute()}
 						title="Edit (⌘E)"
 					>
@@ -83,6 +83,7 @@
 						<button
 							class="{TW_TOOLBAR_BTN} {session.commands.toggle_strong?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
 							class:!text-(--svedit-editing-stroke)={session.commands.toggle_strong?.active}
+							class:!border-(--svedit-editing-stroke)={session.commands.toggle_strong?.active}
 							onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_strong)}
 							title="Bold (⌘B)"
 						>
@@ -95,6 +96,7 @@
 						<button
 							class="{TW_TOOLBAR_BTN} {session.commands.toggle_emphasis?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
 							class:!text-(--svedit-editing-stroke)={session.commands.toggle_emphasis?.active}
+							class:!border-(--svedit-editing-stroke)={session.commands.toggle_emphasis?.active}
 							onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_emphasis)}
 							title="Italic (⌘I)"
 						>
@@ -107,6 +109,7 @@
 						<button
 							class="{TW_TOOLBAR_BTN} {session.commands.toggle_highlight?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
 							class:!text-(--svedit-editing-stroke)={session.commands.toggle_highlight?.active}
+							class:!border-(--svedit-editing-stroke)={session.commands.toggle_highlight?.active}
 							onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_highlight)}
 							title="Highlight (⌘U)"
 						>
@@ -120,6 +123,7 @@
 						<button
 							class="{TW_TOOLBAR_BTN} {session.commands.toggle_link?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
 							class:!text-(--svedit-editing-stroke)={session.commands.toggle_link?.active}
+							class:!border-(--svedit-editing-stroke)={session.commands.toggle_link?.active}
 							onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_link)}
 							title="Link (⌘K)"
 						>
@@ -217,7 +221,7 @@
 				<div class="flex items-center gap-1 pointer-events-none">
 					{#if cancel_command && !cancel_command.disabled}
 						<button
-							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--foreground) bg-white shadow-md transition-colors duration-150 hover:brightness-95"
+							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--foreground) bg-(--background) border border-[color:color-mix(in_oklch,var(--foreground)_18%,transparent)] shadow-md transition-all duration-150 hover:bg-[color:color-mix(in_oklch,var(--foreground)_10%,var(--background))] hover:border-[color:color-mix(in_oklch,var(--foreground)_28%,transparent)] active:bg-[color:color-mix(in_oklch,var(--foreground)_16%,var(--background))] active:border-[color:color-mix(in_oklch,var(--foreground)_36%,transparent)] active:scale-95 active:translate-y-px"
 							onclick={() => cancel_command.execute()}
 							title="Cancel (⌘⎋ / Ctrl+Esc)"
 						>
@@ -227,7 +231,7 @@
 
 					{#if !app_commands.save_document.disabled}
 						<button
-							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-white bg-(--svedit-brand) shadow-md transition-colors duration-150 hover:brightness-90"
+							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--background) bg-(--svedit-brand) shadow-md transition-colors duration-150 hover:brightness-90"
 							onclick={() => app_commands.save_document.execute()}
 							title="Save (⌘S)"
 						>

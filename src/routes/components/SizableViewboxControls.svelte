@@ -549,7 +549,7 @@
 		left: 50%;
 		transform: translateX(-50%);
 		background: var(--svedit-editing-stroke, oklch(60% 0.22 283));
-		color: white;
+		color: var(--background);
 		font-size: 11px;
 		font-weight: 600;
 		line-height: 1;
