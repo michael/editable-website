@@ -694,6 +694,26 @@ Because the drawer already has a strong illustrated page fallback, `null` is per
 
 If this on-the-fly extraction later proves too costly, the same extraction helper can become the canonical summary generator for a cached summary written on save. But caching is an optimization step for later, not part of the initial multi-page implementation.
 
+### Page deletion from the drawer
+
+The page drawer supports per-page actions via an anchored ellipsis menu. For now the menu contains:
+
+- `Open in new tab`
+- `Delete`
+
+Deleting a page is intentionally simple and does **not** attempt to repair incoming links. If a reachable page is deleted, other pages may still contain internal links pointing to its old route. Those links become dead links until the author updates or removes them.
+
+Deletion requires confirmation, with copy depending on whether the page is a draft or a reachable page:
+
+1. Draft: `Are you sure you want to delete this draft?`
+2. Reachable page: `Are you sure you want to delete this page? You'll leave some dead links on the page.`
+
+The configured home page cannot be deleted. In the drawer UI this is the first page in the page listing and its delete action is unavailable.
+
+If the currently open page is deleted from the drawer, the client should navigate to the home page after the delete succeeds.
+
+The ellipsis menu is implemented as a dialog using anchor positioning. It can be dismissed with `Escape` or by clicking the backdrop, matching the interaction model used by other anchored dialogs in the editor.
+
 ## Authentication
 
 Editable Website is a **single-user application**. There is one admin account. No user registration, no roles, no multi-tenancy.

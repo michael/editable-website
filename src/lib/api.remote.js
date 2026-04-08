@@ -45,6 +45,10 @@ const save_document_input_schema = v.object({
 	create: v.optional(v.boolean())
 });
 
+const delete_page_input_schema = v.object({
+	document_id: v.string()
+});
+
 const sql = (strings) => strings.join('');
 
 /**
@@ -701,6 +705,60 @@ export const get_shared_documents = query(v.void(), async () => {
  */
 export const get_page_browser_data = query(v.void(), async () => {
 	return build_page_browser_data();
+});
+
+/**
+ * Delete a page document and its related refs.
+ */
+export const delete_page = command(delete_page_input_schema, async ({ document_id }) => {
+	const home_page_id = get_home_page_id_from_db();
+
+	if (!document_id) {
+		throw new Error('Document id is required');
+	}
+
+	if (document_id === home_page_id) {
+		throw new Error('The home page cannot be deleted');
+	}
+
+	const existing_doc = get_optional_doc_from_db(document_id);
+	if (!existing_doc) {
+		throw new Error(`Document not found: ${document_id}`);
+	}
+
+	const delete_document = db.prepare('DELETE FROM documents WHERE document_id = ? AND type = ?');
+	const delete_asset_refs = db.prepare('DELETE FROM asset_refs WHERE document_id = ?');
+	const delete_outgoing_document_refs = db.prepare(
+		'DELETE FROM document_refs WHERE source_document_id = ?'
+	);
+	const delete_incoming_document_refs = db.prepare(
+		'DELETE FROM document_refs WHERE target_document_id = ?'
+	);
+
+	db.exec(sql`
+		BEGIN IMMEDIATE
+	`);
+
+	try {
+		delete_asset_refs.run(document_id);
+		delete_outgoing_document_refs.run(document_id);
+		delete_incoming_document_refs.run(document_id);
+		delete_document.run(document_id, 'page');
+
+		db.exec(sql`
+			COMMIT
+		`);
+	} catch (err) {
+		db.exec(sql`
+			ROLLBACK
+		`);
+		throw err;
+	}
+
+	return {
+		ok: true,
+		document_id
+	};
 });
 
 /**

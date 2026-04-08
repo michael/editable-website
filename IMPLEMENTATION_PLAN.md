@@ -575,6 +575,22 @@ Implemented:
 Implemented:
 - draft and sitemap items navigate to `/${document_id}`
 
+### 4.5 Add per-page drawer actions
+Implemented:
+- each draft and page row gets an anchored ellipsis menu
+- the menu supports `Open in new tab`
+- the menu supports `Delete`
+- the menu is dismissible with `Escape` or backdrop click
+
+### 4.6 Add page deletion flow
+Implemented:
+- deleting a draft asks: `Are you sure you want to delete this draft?`
+- deleting a reachable page asks: `Are you sure you want to delete this page? You'll leave some dead links on the page.`
+- deleting a page removes the page document and its related `document_refs` / `asset_refs`
+- deleting a page does not repair incoming links; those become dead links until edited
+- the configured home page cannot be deleted
+- if the currently open page is deleted, navigate to `/`
+
 Note:
 - drawer-close-on-click can be refined later if needed
 
