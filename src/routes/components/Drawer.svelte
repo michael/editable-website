@@ -190,11 +190,11 @@
 		padding: 0.5rem 0.35rem 0.6rem;
 		border: 0;
 		border-radius: 0.75rem 0.75rem 0 0;
-		background: white;
+		background: var(--foreground);
 		box-shadow:
 			0 -8px 30px oklch(0% 0 0 / 0.12),
 			0 -2px 10px oklch(0% 0 0 / 0.08);
-		color: var(--foreground, black);
+		color: var(--background, black);
 		cursor: pointer;
 		touch-action: manipulation;
 		pointer-events: auto;
@@ -216,9 +216,10 @@
 	.drawer-panel {
 		width: 100%;
 		max-height: min(70vh, 34rem);
-		background: white;
+		background: var(--foreground);
 		box-shadow: 0 -12px 40px oklch(0% 0 0 / 0.12);
-		border-top: 1px solid oklch(92% 0 0);
+		border-top: 1px solid color-mix(in oklch, var(--background) 14%, var(--foreground) 86%);
+		color: var(--background);
 		padding-bottom: max(1rem, env(safe-area-inset-bottom));
 		overflow: auto;
 		overscroll-behavior: contain;

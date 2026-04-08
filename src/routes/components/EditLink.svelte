@@ -78,25 +78,25 @@
 
 <dialog
 	bind:this={dialog_ref}
-	class="edit-link-dialog absolute z-40 mt-1 m-0 bg-white p-0 shadow-xl overflow-visible max-h-90 border border-(--svedit-editing-stroke)"
+	class="edit-link-dialog absolute z-40 mt-1 m-0 bg-(--background) text-(--foreground) p-0 shadow-xl overflow-visible max-h-90 border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)]"
 	style="position-anchor: --{path.join('-')}; position-area: block-end span-all; justify-self: anchor-center;"
 	onclick={handle_backdrop_click}
 >
 	<div class="flex flex-col">
-		<div class="flex items-stretch border-b border-gray-200">
+		<div class="flex items-stretch border-b border-[color-mix(in_oklch,var(--foreground)_18%,transparent)]">
 			<input
 				id="edit-link-url-input"
 				bind:this={href_input_ref}
 				type="url"
 				bind:value={href_input_value}
 				placeholder="https://example.com"
-				class="w-72 min-w-0 flex-1 border-0 px-3 py-2 text-sm text-gray-700 outline-none focus:ring-1 focus:ring-(--svedit-editing-stroke)"
+				class="w-72 min-w-0 flex-1 border-0 bg-(--background) px-3 py-2 text-sm text-(--foreground) outline-none focus:ring-1 focus:ring-(--svedit-editing-stroke)"
 				onkeydown={handle_keydown}
 			/>
 			{#if has_backend}
 				<button
 					type="button"
-					class="shrink-0 cursor-pointer border-l border-gray-200 px-3 text-(--svedit-editing-stroke) hover:bg-[oklch(from_var(--svedit-brand)_0.97_0.015_h)]"
+					class="shrink-0 cursor-pointer border-l border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] px-3 text-(--svedit-editing-stroke) hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))]"
 					title="Select page"
 					aria-label="Select page"
 					onclick={() => {
@@ -121,9 +121,9 @@
 				<input
 					type="checkbox"
 					bind:checked={open_in_new_tab}
-					class="w-4 h-4 cursor-pointer text-(--svedit-editing-stroke) focus:ring-(--svedit-editing-stroke)"
+					class="w-4 h-4 cursor-pointer text-(--background) focus:ring-(--svedit-editing-stroke)"
 				/>
-				<span class="text-sm text-gray-600">Open in new tab</span>
+				<span class="text-sm text-(--foreground)">Open in new tab</span>
 			</label>
 			<button
 				type="button"
