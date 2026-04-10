@@ -8,6 +8,8 @@ This document describes the backend architecture for Editable Website v2.
 
 Editable Website is a SvelteKit application that lets site owners edit content directly in the browser. The editor (Svedit) works with a graph-based document model — a flat map of nodes with references between them. The backend stores these documents in SQLite and serves them to the frontend, stitching together shared content (nav, footer) with page-specific content into a single document that Svedit can edit locally.
 
+The production architecture is database-backed and supports multiple pages, but the project must also continue to support static preview/local development mode (for example `VERCEL=1`) where the app falls back to the demo document. In that mode, only the `/` route needs to work, multi-page features are disabled, authentication is disabled, and code paths must avoid hard dependencies on server-only runtime features that would break static deployments.
+
 ## SvelteKit configuration
 
 The app uses Svelte's experimental async features and SvelteKit's remote functions. Both are enabled in `svelte.config.js`:
@@ -45,6 +47,30 @@ export async function init() {
 ```
 
 The `handle` hook runs on every request and is where session validation and `event.locals.user` assignment will happen once authentication is implemented.
+
+## Static / Vercel compatibility mode
+
+Editable Website must preserve a lightweight static-compatible mode for preview deployments and single-page local development. This mode is currently used when the app runs in a Vercel-style environment (`VERCEL=1`) and should keep working even as the full multi-page setup is introduced.
+
+**Requirements:**
+
+- Only the `/` route must support static/Vercel mode.
+- In static/Vercel mode, `/` renders from the existing demo document instead of the database.
+- multi-page features are disabled in this mode at the **UI / integration** level:
+  - no pages drawer
+  - no links or flows that send the user to `/new`
+  - no links or flows that send the user to dynamic `/:page_id` pages
+- the multi-page routes may still exist in the codebase and may assume a full Node + database runtime; they just must not be linked to or otherwise used from the `VERCEL=1` branch.
+- authentication is disabled in this mode.
+- Client code must not hardwire imports or execution paths that force server-only database/remote-function behavior for the `/` route in static/Vercel mode.
+- Be especially careful with top-level async imports and route setup so the static adapter / preview deployment path remains viable.
+
+This means the app effectively has two operating modes:
+
+1. **Full runtime mode** — database-backed, multi-page, shared nav/footer, authentication-ready
+2. **Static/Vercel mode** — single-page demo-doc fallback on `/`, while multi-page routes may still exist but are not surfaced or used
+
+The static/Vercel mode is a compatibility constraint on all future multi-page work.
 
 ## Data storage
 
@@ -125,9 +151,11 @@ A simple key-value table for site-wide configuration. Currently stores:
 
 **`document_refs`**
 
-Tracks which documents link to which other documents. Updated on save — the server scans the document's nodes for internal links (annotations on text nodes that point to other pages) and diffs against the existing rows. Same pattern as `asset_refs`.
+Tracks which documents link to which other documents. Updated on save — the server scans the document's nodes for internal links (annotations on text nodes that point to other pages) and rewrites the rows for that source document. Same pattern as `asset_refs`.
 
 This table tracks links from all document types — pages, nav, and footer. Since nav and footer are stitched into every page, their links are always live. This is the basis for determining page reachability (see "Page reachability" below).
+
+`document_refs` must also preserve the **first-seen link order** for each `source_document_id`, because the page browser sitemap uses that order when projecting the reachable graph into a tree. In other words, if a page body links to pages in the order A, then B, then C, the stored outgoing refs for that page must preserve A → B → C. Duplicate links to the same target are collapsed to the first occurrence only.
 
 **`asset_refs`**
 
@@ -192,6 +220,23 @@ page document          nav document          footer document
 3. Write each document back to its own row in the database
 
 This means changes to the nav or footer made on any page are persisted to the shared document and will be reflected on all pages.
+
+### New pages (`/new`)
+
+The `/new` route uses an **ephemeral client-created document**. When the user opens `/new`, the client creates a fresh page document locally using the existing nanoid generator. The generated id is used immediately for both:
+
+- the document's `document_id`
+- the root page node's `id`
+
+This id is stable from the beginning, even before the document is persisted. The page remains ephemeral only in the sense that it is not stored in the database until the first save.
+
+The transient `/new` document must be composed from the **current shared nav and footer documents in the database**, not from the static demo document. This ensures that if shared nav or footer content has been edited elsewhere, the new page starts from that latest shared state.
+
+On first save, the client sends that already-generated id to the server with `create: true`. The server persists the page under that id if it does not already exist. No server-side id allocation or root-id rewrite is needed.
+
+The `/new` route starts in edit mode immediately.
+
+If editing is cancelled on `/new`, the ephemeral document is discarded and the app returns to `/`.
 
 ## Assets
 
@@ -514,6 +559,26 @@ This can also run on save if a document previously referenced assets it no longe
 
 - `GET /api/documents/:id` — load a document (with shared documents stitched in)
 - `PUT /api/documents/:id` — save a document (server splits shared nodes back out, updates `asset_refs`)
+- First save from `/new` uses the same save path, but with `create: true`. The page id is already client-generated via nanoid, so the server persists that exact id instead of allocating a new one.
+
+### Internal page href rules
+
+Internal page links use the dynamic `/:page_id` route shape.
+
+**Valid internal page hrefs:**
+
+- `/${page_id}` — a direct link to another page document
+- `/` — the configured home page
+- `/${page_id}#section` — counts as a link to `${page_id}` for reachability and `document_refs`; the fragment is ignored for graph purposes
+- `/#section` — counts as a link to the home page only if it is used from a different page; when used on the home page itself, it is just an intra-page anchor and does not create a document reference
+
+**Not internal page links:**
+
+- pure same-page anchors (for example `#section`, or `/#section` on the home page, or `/${current_page_id}#section` on that same page)
+- external URLs
+- any other href that does not resolve to `/` or `/:page_id`
+
+When extracting `document_refs`, fragments are stripped before evaluating the target page. The graph tracks document-to-document references only, never section-level anchors.
 
 ### Assets
 
@@ -541,6 +606,8 @@ The only admin interface is a **site map** — a listing of all pages plus draft
 ### Page reachability
 
 A page is **reachable** (and appears in `sitemap.xml`) if it can be reached by following links starting from the home page, nav, or footer. This is a transitive check — a page linked only from a draft is still a draft, because the draft itself isn't reachable.
+
+This reachability logic only applies in the full database-backed multi-page runtime. In static/Vercel compatibility mode there is no live multi-page graph, no sitemap drawer, and no draft/public distinction — the app simply serves the demo document at `/`.
 
 The traversal starts from three roots:
 
@@ -575,6 +642,77 @@ This query is cheap — most sites have tens to low hundreds of pages. It runs o
 `document_refs` is updated on save for all documents, including drafts. A draft's outgoing links are already tracked, so when it becomes linked from a live page, its targets are immediately reachable without re-saving.
 
 When the home page is changed via `site_settings`, pages that were only reachable through the old home page's link tree may become drafts. This is expected — they're still visible in the admin site map and can be re-linked or deleted.
+
+### Sitemap tree construction
+
+The admin page browser needs not just a reachable/unreachable split, but also a deterministic **tree projection** of the reachable page graph.
+
+The tree is built with these rules:
+
+- **No duplicates in the tree** — each reachable page appears at most once
+- **First occurrence wins** — if a page is referenced multiple times, its canonical position is the first position where it is encountered during traversal
+- **Top-level ordering:** traverse references from the home page in this order:
+  1. shared nav links
+  2. home page body links
+  3. shared footer links
+- **Recursive ordering:** once a child page has been placed in the tree, recurse into that page using **body links only**
+- **Within each source document, preserve author order:** outgoing refs are consumed in the same order they appear in the source document, with duplicates removed by first occurrence
+
+This means the sitemap is not a full graph visualization. It is a stable, editor-friendly tree derived from the reachable graph, where shared navigation and footer establish the top-level site structure, and deeper nesting comes from contextual links inside page content.
+
+If a page is linked from multiple places, later occurrences are ignored for tree placement. This keeps the page browser compact and avoids crowded duplicates. If needed in the future, secondary references can be surfaced separately (for example as “also linked from…” metadata), but they are not duplicated in the primary tree.
+
+
+
+### Page summaries for the drawer
+
+The page drawer needs lightweight summaries for each page:
+
+- a display title
+- an optional preview image
+
+For the initial implementation, these summaries are extracted **on the fly** in a server-side helper used by the page-browser query. They are **not** cached in the database yet. This keeps the system simple and avoids introducing additional summary columns or synchronization logic before there is evidence that summary extraction is a performance problem.
+
+Summary extraction should only inspect the **page-local body content**. Shared `nav` and `footer` content must not influence a page's summary, because that would cause many pages to inherit the same logo, links, or other shared content as their title/preview.
+
+**Title extraction order:**
+
+1. explicit `page.title` if that field exists and is non-empty
+2. otherwise, the first heading-like `text` node found in body order
+3. otherwise, the first meaningful body text content
+4. fallback to `"Untitled page"`
+
+The exact heading-like layouts are defined by the page schema / text node semantics in the current implementation. The important part is that heading-like content is preferred over arbitrary text properties.
+
+**Preview image extraction order:**
+
+1. explicit page-level preview image field if one is added in the future
+2. otherwise, the first image or video found while traversing the page body in document order
+3. fallback to `null`
+
+Because the drawer already has a strong illustrated page fallback, `null` is perfectly acceptable and does not require a placeholder asset.
+
+If this on-the-fly extraction later proves too costly, the same extraction helper can become the canonical summary generator for a cached summary written on save. But caching is an optimization step for later, not part of the initial multi-page implementation.
+
+### Page deletion from the drawer
+
+The page drawer supports per-page actions via an anchored ellipsis menu. For now the menu contains:
+
+- `Open in new tab`
+- `Delete`
+
+Deleting a page is intentionally simple and does **not** attempt to repair incoming links. If a reachable page is deleted, other pages may still contain internal links pointing to its old route. Those links become dead links until the author updates or removes them.
+
+Deletion requires confirmation, with copy depending on whether the page is a draft or a reachable page:
+
+1. Draft: `Are you sure you want to delete this draft?`
+2. Reachable page: `Are you sure you want to delete this page? You'll leave some dead links on the page.`
+
+The configured home page cannot be deleted. In the drawer UI this is the first page in the page listing and its delete action is unavailable.
+
+If the currently open page is deleted from the drawer, the client should navigate to the home page after the delete succeeds.
+
+The ellipsis menu is implemented as a dialog using anchor positioning. It can be dismissed with `Escape` or by clicking the backdrop, matching the interaction model used by other anchored dialogs in the editor.
 
 ## Authentication
 

@@ -2,717 +2,718 @@
 
 This document tracks what to implement next. One step at a time. All implementation must conform to the design decisions in [ARCHITECTURE.md](ARCHITECTURE.md) — if a conflict arises, update the architecture first, then implement.
 
-## Step 1: database, seed data, and page rendering
+## Existing implementation steps (compacted history)
 
-**Goal:** the home page (`page_1`) renders at `/` and saving changes persists them to the database. No assets, no authentication — those come in later steps.
+These older steps are kept in compact form as historical context. The durable source of truth is still [ARCHITECTURE.md](ARCHITECTURE.md); this section only captures how the current system got here and which high-level implementation moves were already made.
 
-- **`src/lib/server/db.js`** — database connection using `node:sqlite`, exports the db instance. Uses `DATA_DIR` for the database path.
-- **`src/lib/server/migrations.js`** — exports an array of migration steps. For now, a single `initial_schema` step that creates the `documents`, `site_settings`, and `document_refs` tables, and seeds:
-  - `page_1` (type `page`) — the home page, resembling the current demo document
-  - `nav_1` (type `nav`) — the navigation document
-  - `footer_1` (type `footer`) — the footer document
-  - `home_page_id` setting → `page_1`
-- **`src/lib/server/migrate.js`** — runs pending migrations from `migrations.js` against the database
-- **`src/hooks.server.js`** — uncomment the `migrate()` call in `init()` so migrations run on server startup
-- **`svelte.config.js`** — uncomment experimental async and remote functions
-- **`src/lib/api.remote.js`** — uncomment/wire up `get_document` (query) and `save_document` (action) to read from and write to the database
-- **Page rendering** — `/` loads `page_1` via `get_document`, stitches in `nav_1` and `footer_1`, and renders with Svedit. Saving calls `save_document` which persists changes back to SQLite.
+### Step 1 — database, seed data, and page rendering
+- Introduced SQLite-backed document persistence using `node:sqlite`
+- Added migrations + startup migration hook
+- Seeded:
+  - `page_1`
+  - `nav_1`
+  - `footer_1`
+  - `home_page_id`
+- Wired `get_document` / `save_document`
+- `/` renders `page_1` by loading the page document and stitching in shared nav/footer
 
-For now, everything stays in the `initial_schema` migration step. While iterating on the schema, it's fine to wipe the database and re-run — real incremental migrations will be added later.
+### Step 2 — asset processing and upload
+- Added client-side image processing with WASM (`@jsquash/webp`, `@jsquash/resize`)
+- Added asset hashing, upload, variant generation, and asset serving
+- Established the `blob:` (unsaved) → asset id (saved) transition model
+- Added `asset_refs` tracking
+- Kept the save flow “upload assets first, then persist document”
+- Preserved the rule that all persisted media sources are local asset ids
 
-No authentication for now — it slows down development. Auth will be added as a later step. No asset handling yet — media uploads and serving come in a later step.
+### Step 3 — deployment / operationalization
+- Deployment planning existed for Fly.io / Node adapter / persistent storage
+- This is now mostly archival context; architecture is the canonical reference for storage/runtime assumptions
 
-## Step 2: asset processing and upload (images only)
+### Step 4 — media evolution
+- Added video node support and unified media handling direction
+- Introduced / documented `MediaControls`
+- Moved toward the `media` abstraction instead of hard-coded image-only thinking
+- The architecture now captures the final intended media model more reliably than the old step-by-step notes
+# Multi-page implementation analysis
 
-**Goal:** users can paste or drop images into the editor, images are processed client-side (resized, converted to WebP, variants generated), uploaded to the server, and served from disk. The save flow uploads all pending assets before saving the document. No videos, audio, or authentication yet — those come in later steps.
+## Goal
 
-This step covers static raster images (JPEG, PNG, WebP, HEIC/HEIF) which get client-side WASM processing, plus animated GIFs and SVGs which pass through unprocessed. The image-resize project serves as the reference implementation for the WASM processing pipeline and upload protocol.
+Turn the current single-page editable site into a true multi-page setup with:
 
-**Modularization principle:** asset processing and upload logic should be extracted into dedicated modules rather than inlined into existing files like `+page.svelte`. The save flow, paste/drop handling, and upload protocol each get their own module. Existing files should only import and call into the new modules — minimal changes to existing code, maximum isolation of new functionality.
+- `/new` — an ephemeral unsaved page editor that becomes a real page on first save
+- `/:page_id` — dynamic page loading and editing
+- `/` — still renders the configured home page
+- a real pages drawer populated asynchronously when opened
+- drafts and linked pages derived from persistent site data
+- no authentication checks yet beyond assuming the current user is effectively an admin
 
-### Dependencies
+This step must preserve the current strengths of the app:
 
-Install `@jsquash/webp` and `@jsquash/resize` for client-side WASM-based image processing:
+- shared `nav` and `footer` composition
+- existing save flow including asset processing/upload/replacement
+- current document splitting and asset reference tracking
+- editable-in-place page editing with the same session and toolbar behavior
+- static/Vercel compatibility for the `/` route using the demo document fallback
 
+In addition, the multi-page work must preserve the current static preview / local single-page mode:
+
+- when running in static/Vercel-style mode (for example `VERCEL=1`), only `/` needs to work
+- `/` should continue to render from the demo document in that mode
+- multi-page features are disabled in that mode from the `/` route's point of view:
+  - no pages drawer
+  - no linking into `/new`
+  - no linking into dynamic `/:page_id`
+- the multi-page routes themselves may still exist and assume the full Node + database runtime; they just must not be used from the `VERCEL=1` branch
+- authentication is also disabled in that mode
+- implementation must avoid hardwiring server-only runtime assumptions into the `/` route that would break static deployments
+- be especially careful with top-level async imports and route setup, as already noted in the current `+page.svelte` flow
+
+## Key observations from current codebase
+
+### 1. The database model is already close to supporting multi-page
+
+Current `documents` table:
+
+```sql
+CREATE TABLE documents (
+    document_id TEXT NOT NULL PRIMARY KEY,
+    type TEXT NOT NULL,
+    data TEXT
+);
 ```
-npm install @jsquash/webp @jsquash/resize
-```
 
-### Vite configuration
+This already allows storing many documents of type `page`. No schema change is required just to store multiple pages.
 
-Add `optimizeDeps.exclude` for the WASM packages and set worker format to ES modules:
+Current `site_settings` table:
 
+- already stores `home_page_id`
+- can remain the source of truth for `/`
+
+### 2. `get_document(document_id)` and `save_document(combined_doc)` are already page-id driven
+
+In `src/lib/api.remote.js`, `get_document` already accepts a `document_id`.  
+This is a strong foundation for `/:page_id`.
+
+Current limitations:
+- no route yet passes arbitrary page ids
+- no helper exists to list page documents
+- no helper exists to create a brand-new page document id on first save
+- `save_document` always upserts the provided page id, but assumes the page already conceptually exists
+
+### 3. Shared-document splitting is already the right design
+
+`save_document` currently:
+
+- treats the root document as the page
+- splits out `nav` subtree and `footer` subtree
+- writes each document separately
+
+This aligns with the architecture and should remain unchanged.
+
+The multi-page work should **not** move away from:
+- page document + shared nav + shared footer composition
+
+### 4. `/new` should be ephemeral and not create junk rows
+
+Per product direction, `/new` should not immediately insert a page row.  
+Instead:
+
+- the client creates a transient in-memory document
+- first save persists it as a real page document
+- then navigation should transition from `/new` to `/:page_id`
+
+This is preferable to eagerly inserting a draft page into the database.
+
+### 5. The current save API needs a create-vs-update distinction
+
+Today `save_document` just upserts the given document id.
+
+For `/new`, we need a server-side path that:
+- accepts the already-generated client page id
+- save the new page under that same id
+- preserve shared nav/footer references
+- return the final page id to the client
+
+So save needs to support:
+- **update existing page**
+- **create new page from transient draft**
+
+### 6. The drawer needs two derived datasets, not one
+
+The page browser is not just “all pages”.
+
+It needs:
+
+1. **Drafts**  
+   Flat list of page documents that are not reachable from the live site structure
+
+2. **Site structure / sitemap**  
+   Tree rooted at the current home page
+
+That means we need:
+- page listing
+- document reference analysis
+- reachability traversal
+
+This matches the architecture section on page reachability.
+
+### 7. Existing `document_refs` table is currently unused for page browser logic
+
+The architecture describes `document_refs`, but the current `save_document` implementation shown in the code excerpt does not yet update it.
+
+This is a major gap.
+
+For a real sitemap/drafts implementation, we need:
+- internal page links extracted on save
+- `document_refs` updated on save for pages/nav/footer
+- a reachability algorithm that starts from:
+  - `home_page_id`
+  - plus links coming from shared documents like nav/footer because those are part of every page render
+
+### 8. The drawer should load async-on-open, not up front
+
+That means:
+- do not fetch page browser data during normal page load
+- fetch only once the drawer is opened
+- probably cache while open / until page changes
+
+This is a good use for Svelte async patterns and keeps the main editor lightweight.
+
+## Design decisions for this step
+
+## Decision 1: keep `/` as a dedicated home-page route
+
+- `/` continues to resolve `home_page_id` from site settings in the full runtime
+- it loads that page using the same dynamic page loader used by `/:page_id`
+- however, `/` must also retain a static/Vercel fallback mode that renders the demo document without requiring the database or multi-page runtime
+
+This avoids duplicating page rendering logic while preserving a clean homepage URL and keeping preview/static deployments viable.
+
+## Decision 2: introduce a dynamic `[page_id]` route
+
+- `src/routes/[page_id]/+page.svelte` becomes the canonical page renderer/editor
+- `/` should reuse the same page shell/component internally rather than duplicating editor logic
+
+Best structure:
+
+- create a shared `PageEditor.svelte` or similar component that accepts:
+  - loaded document
+  - route mode (`new` vs existing)
+  - maybe initial page id state
+- use it from:
+  - `/+page.svelte`
+  - `/[page_id]/+page.svelte`
+  - `/new/+page.svelte`
+
+This keeps the editor implementation single-sourced.
+
+## Decision 3: `/new` uses a client-generated page id from the start
+
+For `/new`, create a fresh transient page document on the client via a `create_empty_doc()` helper (or equivalent) that generates a new `page_id` / `document_id` using the existing nanoid setup.
+
+This means:
+- the root page node id and the document id are the same from the beginning
+- the id is unique immediately, even before the document is persisted
+- there is no need for a server roundtrip just to allocate a page id
+- the page is still ephemeral in the sense that it is only stored once the user saves
+
+On first save:
+- the client sends the already-generated document id
+- the server persists the document under that id
+- no root-id rewrite is needed during save
+- the client can navigate to `/${page_id}` after save (or continue there if already routed consistently)
+
+The transient document should still reference:
+- existing shared `nav`
+- existing shared `footer`
+
+so the editing experience matches real pages immediately.
+
+## Decision 4: add a dedicated “save page” remote command that can create pages
+
+Instead of overloading current `save_document` too implicitly, define the API around page saving clearly.
+
+Two possible shapes:
+
+### Option A — extend `save_document`
+Input:
 ```js
-// vite.config.js
-optimizeDeps: {
-  exclude: ['@jsquash/webp', '@jsquash/resize']
-},
-worker: {
-  format: 'es'
+{
+  document_id,
+  nodes,
+  create: boolean
 }
 ```
 
-### Shared configuration
+Behavior:
+- if `create === true`
+  - assert that the provided document id does not already exist
+  - persist as new page using that already-generated client id
+  - return `{ ok: true, document_id, created: true }`
+- else:
+  - normal update
 
-**`src/lib/config.js`** — add asset-related constants alongside the existing `DATA_DIR`, `DB_PATH`, `ASSET_PATH`:
+### Option B — add `create_document` and keep `save_document`
+- `create_document(combined_doc)`
+- `save_document(combined_doc)`
 
-The asset constants must be importable from both the server and the client (including Web Workers), so they go in a separate file with no Node.js imports:
+**Preferred:** Option A  
+Reason: the save flow in the app is already unified. “First save creates, later saves update” maps naturally to a single save entry point, and with a client-generated nanoid there is no need for a separate id-allocation roundtrip.
 
-**`src/lib/asset-config.js`** — universal asset constants (no Node.js imports):
+## Decision 5: page browser data should come from a dedicated query
 
-```js
-export const VARIANT_WIDTHS = [320, 640, 1024, 1536, 2048, 3072, 4096];
-export const VARIANT_WIDTHS_SET = new Set(VARIANT_WIDTHS);
-export const MAX_IMAGE_WIDTH = VARIANT_WIDTHS[VARIANT_WIDTHS.length - 1];
-export const ASSET_BASE = '/assets';
-```
+Add a new remote query, something like:
 
-`src/lib/config.js` (which imports from `node:path`) remains server-only and unchanged. The Web Worker and client code import from `asset-config.js`.
+- `get_page_browser_data()`
 
-`ASSET_BASE` is the URL prefix used to construct asset URLs on the client. All `src` values in saved documents are bare asset ids (e.g. `c4b519da...fabdb.webp`). Components prefix them with `ASSET_BASE` at render time to build the full URL. This is the only valid source for saved images — no absolute URLs, no external URLs, no relative paths. A `src` value is either:
-- `blob:...` — unsaved, only valid during the current editing session
-- A bare asset id — saved, rendered as `{ASSET_BASE}/{asset_id}`
-
-### Client-side image processing
-
-Adapted from the image-resize project's WASM pipeline. Two new files:
-
-**`src/lib/client/asset-processor.js`** — a Web Worker that handles image processing off the main thread. Receives a `File`, decodes it to `ImageData` via `createImageBitmap` + `OffscreenCanvas`, resizes if wider than `MAX_IMAGE_WIDTH` using `@jsquash/resize` (Lanczos3), encodes as WebP (quality 80) using `@jsquash/webp`, generates all applicable width variants, and transfers the resulting `ArrayBuffer`s back to the main thread. Posts `status` messages during processing for UI feedback.
-
-**`src/lib/client/process-asset.js`** — main-thread wrapper that spawns the worker, sends the file + config, and returns a `Promise<ProcessedAsset>`:
+Return shape:
 
 ```js
-/** @typedef {{
- *   original: { blob: Blob, width: number, height: number },
- *   variants: Array<{ width: number, blob: Blob }>
- * }} ProcessedAsset */
-```
-
-Takes an `onStatus` callback for progress reporting. Terminates the worker after completion.
-
-### SHA-256 content hashing
-
-The client computes the SHA-256 hex hash of the **source file** (before any processing) using `crypto.subtle.digest`. This hash plus the stored format's file extension becomes the asset id. For static images the extension is `.webp` (since they're converted). For animated GIFs it's `.gif`. For SVGs it's `.svg`.
-
-```js
-async function hash_blob(blob) {
-  const buffer = await blob.arrayBuffer();
-  const hash_buffer = await crypto.subtle.digest('SHA-256', buffer);
-  const hash_array = Array.from(new Uint8Array(hash_buffer));
-  return hash_array.map(b => b.toString(16).padStart(2, '0')).join('');
+{
+  home_page_id: string,
+  drafts: Array<PageSummary>,
+  sitemap: PageTreeNode | null
 }
 ```
 
-The hash is always computed from the **original source file** the user provides, not from the processed WebP output. This ensures the same source file always produces the same asset id regardless of encoder version or settings.
-
-### Asset upload endpoints
-
-Three new SvelteKit API routes, adapted from image-resize but using the ARCHITECTURE's asset path conventions (content-addressed filenames in a flat `ASSET_PATH` directory, not `{id}/original.{ext}`):
-
-**`src/routes/api/assets/+server.js`** — `POST` upload an original asset.
-
-- Request headers: `X-Content-Hash` (SHA-256 hex), `Content-Type`, `X-Asset-Width`, `X-Asset-Height`
-- Request body: the processed blob (WebP for static images, original bytes for GIFs/SVGs)
-- Constructs the asset id: `{hash}.{ext}` where ext is determined by content type (`webp` for static images, `gif` for GIFs, `svg` for SVGs)
-- **Deduplication:** if a file already exists at `ASSET_PATH/{asset_id}`, skip the upload — drain the request body and return the existing metadata with `deduplicated: true`
-- Streams the body to `ASSET_PATH/{asset_id}` — no buffering the whole file in memory
-- On write failure, cleans up the partial file
-- Returns `{ asset_id, width, height, deduplicated }` on success
-- No database writes — assets are files on disk, not database rows. The `asset_refs` table is updated during document save, not during upload.
-
-**`src/routes/api/assets/[asset_id]/variants/+server.js`** — `POST` upload a width variant.
-
-- Request headers: `X-Variant-Width`, `Content-Type: image/webp`
-- Request body: WebP blob
-- Validates the asset id exists on disk (the original must have been uploaded first)
-- Validates the width is in `VARIANT_WIDTHS_SET`
-- The server trusts the client to only upload variants that are smaller than the original — the client already has the original dimensions and only generates applicable variants
-- Extracts the stem from the asset id (strip the extension), writes to `ASSET_PATH/{stem}/w{width}.webp`
-- Creates the variant directory if needed
-- On failure: the caller (client save flow) sends `DELETE /api/assets/{asset_id}` to clean up
-- Returns `{ ok: true, variant: "w{width}.webp" }` on success
-
-**`src/routes/api/assets/[asset_id]/+server.js`** — `DELETE` remove an asset and its variants.
-
-- `DELETE`: remove the original file and the variant directory (`ASSET_PATH/{stem}/`). Used by the client to clean up after a failed variant upload. Returns `{ ok: true }`.
-
-### Asset serving
-
-**`src/routes/assets/[...path]/+server.js`** — serves asset files from `ASSET_PATH`.
-
-- Matches two patterns:
-  - `GET /assets/{asset_id}` — serve the original (e.g. `/assets/c4b519da...fabdb.webp`)
-  - `GET /assets/{stem}/w{width}.webp` — serve a width variant (e.g. `/assets/c4b519da...fabdb/w320.webp`)
-- Reads the file from `ASSET_PATH` and streams it as the response
-- Sets `Cache-Control: public, max-age=31536000, immutable` (content-addressed = cacheable forever)
-- Sets `Content-Type` based on file extension (`.webp` → `image/webp`, `.gif` → `image/gif`, `.svg` → `image/svg+xml`)
-- Sets `Content-Disposition: inline; filename="{first_8_hex}.{ext}"` using the first 8 hex characters of the hash
-- Returns `404` if the file doesn't exist
-- No database lookups — purely filesystem-based serving
-
-### Server-side storage helpers
-
-**`src/lib/server/asset-storage.js`** — filesystem operations for assets, adapted from image-resize's `storage.js` but using the ARCHITECTURE's flat file layout:
-
-```
-ASSET_PATH/
-├── {hash}.webp              # original (static image)
-├── {hash}/                   # variant directory (same name as original without extension)
-│   ├── w320.webp
-│   ├── w640.webp
-│   └── ...
-├── {hash}.gif                # animated GIF (no variants)
-├── {hash}.svg                # SVG (no variants)
-```
-
-Functions:
-- `asset_path(asset_id)` — full path for an original: `join(ASSET_PATH, asset_id)`
-- `variant_dir(asset_id)` — directory for variants: strip extension from asset_id, `join(ASSET_PATH, stem)`
-- `variant_path(asset_id, width)` — full path for a variant: `join(variant_dir(asset_id), 'w' + width + '.webp')`
-- `write_asset(asset_id, data)` — stream data to `asset_path(asset_id)`, returns bytes written
-- `write_variant(asset_id, width, data)` — create variant dir, stream data to `variant_path(asset_id, width)`
-- `asset_exists(asset_id)` — check if original exists on disk
-- `delete_asset(asset_id)` — remove original file + variant directory
-- `create_asset_read_stream(asset_id)` — returns a Node.js ReadStream for the original
-- `create_variant_read_stream(asset_id, width)` — returns a ReadStream for a variant
-- `asset_size(asset_id)` — returns file size in bytes
-
-Ensure `ASSET_PATH` directory exists (create on module load, same pattern as `db.js` creating `DATA_DIR`).
-
-### Paste/drop handling
-
-Svedit already has a `handle_image_paste` callback in `create_session.js` that fires when the user pastes or drops image files. Currently it creates image nodes with `src` set to a `data_url`. We extend this to:
-
-1. Create image nodes with `src` set to a `blob:` URL (via `URL.createObjectURL`) of the **source file** instead of the data URL. The image displays instantly.
-2. Start background processing for the pasted file (runs concurrently, does not block the editor):
-   a. Compute the SHA-256 hash of the source file.
-   b. Determine the asset type:
-      - **SVG** (`image/svg+xml`): passthrough — no WASM processing. Extract dimensions via `<img>` element. The blob is the original file. Extension: `.svg`.
-      - **Animated GIF** (`image/gif` with multiple frames): passthrough — no WASM processing. Extract dimensions via `<img>` element. The blob is the original file. Extension: `.gif`.
-      - **Static raster image** (JPEG, PNG, WebP, HEIC, HEIF, still GIF): process via WASM worker — decode, resize if > `MAX_IMAGE_WIDTH`, encode as WebP, generate all applicable width variants. Extension: `.webp`.
-   c. Store the processing result (hash, original blob, variants, dimensions) keyed by the blob URL in a `Map`. This map is consulted during the save flow.
-3. The user can continue editing. Processing happens in the background.
-
-The processing/upload map and its logic should live in a dedicated module (e.g. `src/lib/client/asset-upload.js`), not inline in `create_session.js` or `+page.svelte`.
-
-For animated GIF detection, scan the binary for multiple Graphic Control Extension blocks (`0x21 0xF9`), same approach as image-resize.
-
-### Save flow changes
-
-Extend the existing `SaveCommand` in `+page.svelte` to handle asset uploads before saving the document:
-
-1. **Collect pending assets.** Walk the document nodes, find all image nodes whose `src` starts with `blob:`. These are unsaved assets.
-
-2. **Wait for processing.** If any of these assets are still being processed in the background, wait for them to finish. Show a status indication (e.g. in the save button or via a simple message).
-
-3. **Upload assets sequentially.** For each pending asset:
-   a. Construct the asset id: `{sha256_hash}.{ext}`
-   b. Upload the original: `POST /api/assets` with the processed blob, `X-Content-Hash`, `Content-Type`, `X-Asset-Width`, `X-Asset-Height`. If the server returns `deduplicated: true`, skip variant uploads.
-   c. Upload variants sequentially: `POST /api/assets/{asset_id}/variants` with each variant blob + `X-Variant-Width`. If any variant upload fails, `DELETE /api/assets/{asset_id}` to clean up, then abort the save with an error.
-   d. Record the mapping: `blob_url → { asset_id, width, height }`
-
-4. **Replace blob URLs.** Walk all image nodes. For every `src` that is a blob URL, replace it with the asset id. Update `width` and `height` to the processed dimensions (which may differ from the source if the image was resized down to `MAX_IMAGE_WIDTH`).
-
-5. **Save the document.** Call `save_document()` as before. The document now contains only asset ids, no blob URLs.
-
-6. **Error handling.** If any asset upload fails entirely (and cleanup succeeds), abort the save with an alert. The user stays in edit mode with their changes intact — blob URLs are not replaced until all assets are uploaded. Successfully uploaded assets from earlier in the sequence are left on the server (they're complete and valid; deduplication will skip them on retry).
-
-Use XHR (not `fetch`) for uploads so we get `upload.onprogress` events for progress tracking.
-
-### `asset_refs` tracking
-
-Update `save_document` in `api.remote.js` to track asset references as part of the save transaction:
-
-1. Add the `asset_refs` table in a new migration step (`add_asset_refs`):
-   ```sql
-   CREATE TABLE asset_refs (
-       asset_id TEXT NOT NULL,
-       document_id TEXT NOT NULL,
-       PRIMARY KEY (asset_id, document_id)
-   );
-   ```
-
-2. During `save_document`, after splitting the combined document into page/nav/footer, for each sub-document:
-   a. Walk its nodes, collect all `src` values from image nodes → the current set of asset ids
-   b. Delete all existing `asset_refs` rows for that `document_id`
-   c. Insert the new `(asset_id, document_id)` pairs
-
-3. This happens inside the existing transaction, so it's atomic with the document save.
-
-### `Image.svelte` rendering
-
-The Svedit image component needs to handle two `src` modes:
-
-- If `src` starts with `blob:` — use it directly as the `<img>` src (editing session, not yet saved)
-- Otherwise — prefix with `ASSET_BASE` to construct the URL, and build a `srcset` from the variant widths:
-
-```html
-<img
-  src="{ASSET_BASE}/{src}"
-  srcset="{applicable_variants.map(w => `${ASSET_BASE}/${stem}/w${w}.webp ${w}w`).join(', ')}, {ASSET_BASE}/{src} {width}w"
-  sizes="50vw"
-/>
-```
-
-Only include variants for widths strictly smaller than the image's `width`. The original always serves as the largest entry in `srcset`. SVGs and animated GIFs get no `srcset` (original only). The default `sizes` is `50vw` — individual components can override this if they know their layout constraints.
-
-### File summary
-
-New files:
-- `src/lib/client/asset-processor.js` — Web Worker for WASM image processing
-- `src/lib/client/process-asset.js` — main-thread wrapper for the worker
-- `src/lib/server/asset-storage.js` — filesystem operations for assets
-- `src/routes/api/assets/+server.js` — POST upload original
-- `src/lib/client/asset-upload.js` — pending asset map, upload orchestration
-- `src/lib/asset-config.js` — universal asset constants (VARIANT_WIDTHS, ASSET_BASE, etc.)
-- `src/routes/api/assets/[asset_id]/+server.js` — DELETE cleanup
-- `src/routes/api/assets/[asset_id]/variants/+server.js` — POST upload variant
-- `src/routes/assets/[...path]/+server.js` — GET serve assets from disk
-
-Modified files:
-- `vite.config.js` — add `optimizeDeps.exclude` and `worker.format`
-- `package.json` — add `@jsquash/webp` and `@jsquash/resize` dependencies
-- `src/lib/server/migrations.js` — add `add_asset_refs` migration step
-- `src/lib/api.remote.js` — update `save_document` to track `asset_refs`
-- `src/routes/create_session.js` — update `handle_image_paste` to use blob URLs and trigger background processing
-- `src/routes/+page.svelte` — extend save flow with asset upload (delegates to `asset-upload.js`)
-- `src/routes/components/Image.svelte` — handle `blob:` vs asset id `src`, build `srcset`
-
-No video, audio, or authentication in this step.
-
-## Step 3: Fly.io deployment
-
-**Goal:** deploy the app to Fly.io as a Docker-based Node.js service with persistent storage for the SQLite database and uploaded assets. Adapted from the image-resize project's deployment infrastructure.
-
-### SvelteKit adapter
-
-Switch from `@sveltejs/adapter-auto` to `@sveltejs/adapter-node` so the build produces a standalone Node.js server:
+Where a `PageSummary` could be:
 
 ```js
-// svelte.config.js
-import adapter from '@sveltejs/adapter-node';
-```
-
-Install as a dependency (not devDependency — needed at build time in Docker):
-
-```
-npm install @sveltejs/adapter-node
-```
-
-Remove `@sveltejs/adapter-auto` from devDependencies.
-
-### Dockerfile
-
-Adapted from image-resize. Multi-stage build:
-
-1. **Base stage** — `node:24-slim`, sets `NODE_ENV=production`, working directory `/app`.
-2. **Build stage** — installs all dependencies (`npm ci --include=dev`), copies source, runs `npm run build`, then prunes dev dependencies (`npm prune --omit=dev`).
-3. **Final stage** — installs runtime packages (`sqlite3`, `procps`, `curl`, `nano`, `less`, `ca-certificates`). No Litestream for now — backup strategy comes later. Copies the built app from the build stage. Creates `/data` volume mount point. Exposes port 3000.
-
-Entry point: `node /app/scripts/start-app.js` (no shell wrapper needed — the image-resize shell script's only active responsibility is copying `.sqliterc` and launching the Node process; we simplify by running Node directly and copying `.sqliterc` in the Dockerfile).
-
-```dockerfile
-# syntax = docker/dockerfile:1
-
-ARG NODE_VERSION=24.14.0
-FROM node:${NODE_VERSION}-slim as base
-
-LABEL fly_launch_runtime="Node.js"
-
-WORKDIR /app
-
-ENV NODE_ENV="production"
-
-# Build stage
-FROM base as build
-
-COPY --link .npmrc package-lock.json package.json ./
-RUN npm ci --include=dev
-
-COPY --link . .
-
-RUN mkdir /data && npm run build
-
-RUN npm prune --omit=dev
-
-# Final stage
-FROM base
-
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y sqlite3 procps curl nano less ca-certificates && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
-
-COPY --from=build /app /app
-
-# Copy .sqliterc for convenient sqlite3 CLI usage
-COPY --from=build /app/.sqliterc /root/.sqliterc
-
-RUN mkdir -p /data
-VOLUME /data
-
-EXPOSE 3000
-
-CMD ["node", "/app/scripts/start-app.js"]
-```
-
-### Graceful shutdown script
-
-**`scripts/start-app.js`** — starts the SvelteKit Node server and handles graceful shutdown signals from the Fly platform. Identical to the image-resize version:
-
-```js
-import { server as app } from '/app/build/index.js';
-
-function shutdownServer() {
-  console.log('Server doing graceful shutdown');
-  app.server.close();
-}
-
-process.on('SIGINT', shutdownServer);
-process.on('SIGTERM', shutdownServer);
-```
-
-This ensures in-flight requests complete and SQLite connections close cleanly on deploy or restart.
-
-### fly.toml
-
-Adapted from image-resize. Key settings:
-
-- `DATA_DIR=/data` environment variable — matches the app's `config.js` which reads `process.env.DATA_DIR || 'data'`
-- Persistent volume mounted at `/data` — stores both the SQLite database and uploaded assets
-- `deploy.strategy = "immediate"` — single-instance app, no rolling deploys needed
-- Port 3000, force HTTPS
-- Start with `auto_stop_machines = "suspend"` (scale-to-zero) since it's a low-traffic site
-
-```toml
-[build]
-  dockerfile = "Dockerfile"
-
-[env]
-  DATA_DIR = "/data"
-
-[deploy]
-  strategy = "immediate"
-
-[mounts]
-  source = "data"
-  destination = "/data"
-  auto_extend_size_threshold = 80
-  auto_extend_size_increment = "1GB"
-  auto_extend_size_limit = "5GB"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_start_machines = true
-  auto_stop_machines = "suspend"
-  min_machines_running = 0
-  processes = ["app"]
-```
-
-The volume auto-extends when it reaches 80% capacity, up to 5GB. This accommodates growing asset storage without manual intervention.
-
-### .dockerignore
-
-Prevents unnecessary files from being copied into the Docker build context:
-
-```
-/.git
-/.svelte-kit
-/build
-/node_modules
-/data
-.dockerignore
-.DS_Store
-.env*
-Dockerfile
-fly.toml
-vite.config.js.timestamp-*
-```
-
-### .sqliterc
-
-Convenience config for the `sqlite3` CLI when SSH-ing into the Fly machine for debugging:
-
-```
-.headers ON
-.mode box
-.width 0
-.nullvalue NULL
-.timer ON
-```
-
-### .npmrc
-
-Ensure the `.npmrc` file exists (it may already). The Dockerfile expects it in the `COPY` step. If it doesn't exist, create one with:
-
-```
-engine-strict=true
-```
-
-### Deployment commands
-
-First-time setup:
-
-```sh
-fly launch --no-deploy          # creates the app on Fly
-fly volumes create data --size 1  # creates a 1GB persistent volume
-fly deploy                      # builds and deploys
-```
-
-Subsequent deploys:
-
-```sh
-fly deploy
-```
-
-Useful operations:
-
-```sh
-fly ssh console                 # SSH into the running machine
-fly logs                        # tail logs
-sqlite3 /data/db.sqlite3       # access the database (from SSH)
-ls /data/assets/                # inspect uploaded assets (from SSH)
-```
-
-### File summary
-
-New files:
-- `Dockerfile` — multi-stage Docker build
-- `fly.toml` — Fly.io configuration
-- `.dockerignore` — Docker build context exclusions
-- `.sqliterc` — SQLite CLI convenience config
-- `scripts/start-app.js` — Node.js entry point with graceful shutdown
-
-Modified files:
-- `svelte.config.js` — switch to `@sveltejs/adapter-node`
-- `package.json` — add `@sveltejs/adapter-node`, remove `@sveltejs/adapter-auto`
-
-No application logic changes in this step — purely deployment infrastructure.
-
-## Step 4a: video node type
-
-**Goal:** users can paste or drop `.mp4` files into the editor. Videos display inline (autoplay, muted, looping) and go through the same asset pipeline as images — passthrough (no client-side processing), upload on save, serve from disk. The existing `image` property on container nodes is widened to accept `['image', 'video']` but **not renamed yet** — the property rename (`image` → `media`) is a separate step (4b) to keep this step focused.
-
-**Reference implementation:** the `image-resize` project already has working video upload and display. Use it as a reference for:
-
-- **`src/lib/components/Video.svelte`** — autoplay with retry strategies (handles late hydration, multiple readiness events), click-to-fullscreen with unmute, iOS Safari fullscreen exit handling (`webkitbeginfullscreen`/`webkitendfullscreen`), and automatic resume to muted inline playback after exiting fullscreen. The `cursor: zoom-in` on inline-playing videos is a nice touch to adopt.
-- **`src/routes/+page.svelte`** — `getVideoDimensions(file)` using `<video>` element + `loadedmetadata` → `videoWidth`/`videoHeight`. Also `isVideo(file)` for MIME type detection (our `get_media_type`).
-- **`src/lib/config.js`** — `ACCEPTED_TYPES` array including `video/mp4` and `video/webm`.
-- **`src/lib/server/db.js`** and **`src/lib/server/storage.js`** — `MIME_TO_EXT` mapping for video content types.
-
-### Schema changes
-
-In `document_schema.js`, add a `video` node type with the same properties as `image`:
-
-```js
-video: {
-    kind: 'block',
-    properties: {
-        src: { type: 'string' },
-        width: { type: 'integer' },
-        height: { type: 'integer' },
-        alt: { type: 'string' },
-        focal_point_x: { type: 'number', default: 0 },
-        focal_point_y: { type: 'number', default: 0 },
-        scale: { type: 'number', default: 1.0 },
-        object_fit: { type: 'string', default: 'cover' }
-    }
+{
+  document_id: string,
+  title: string,
+  preview_image_src: string | null
 }
 ```
 
-Widen `node_types` on existing `image` properties to also accept `'video'`:
-
-- `gallery_item.image` → `node_types: ['image', 'video']`
-- `figure.image` → `node_types: ['image', 'video']`
-- `feature.image` → `node_types: ['image', 'video']`
-- `link_collection_item.image` → `node_types: ['image', 'video']`
-- `nav.logo` → `node_types: ['image', 'video']`
-- `footer.logo` → `node_types: ['image', 'video']`
-
-The property names stay as `image` / `logo` for now. `default_node_type` stays `'image'`.
-
-### Component changes
-
-**`Video.svelte`** — new component, mirrors `Image.svelte` structure:
-- Receives `path` prop, reads node from session
-- Resolves `src` the same way (blob URL → direct, asset id → `ASSET_BASE` prefix)
-- Renders `<video autoplay muted loop playsinline contenteditable="false" disablepictureinpicture>` with:
-  - `style` applying `object-fit`, `object-position`, `transform: scale(...)` identically to `Image.svelte`
-  - `width` and `height` attributes from node properties
-  - `aria-label` from `alt` property
-- No `srcset`, no variants
-- **Autoplay handling** (from `image-resize/src/lib/components/Video.svelte`): use `$effect` with multiple retry strategies — check `readyState >= 2`, listen for `canplay`/`loadeddata`, and a `setTimeout` fallback. This handles late hydration where readiness events may have already fired.
-- **Click-to-fullscreen** (from `image-resize`): clicking the video enters fullscreen with controls enabled and audio unmuted. On fullscreen exit (including iOS Safari's `webkitendfullscreen`), restore muted inline autoplay. iOS sometimes re-pauses ~400ms after play succeeds, so retry with a `setTimeout(500)`. Use `cursor: zoom-in` on inline-playing videos.
-- Note: in edit mode, click-to-fullscreen should be **disabled** — `MediaControls` overlay captures pointer events for zoom/pan instead. Click-to-fullscreen only applies when `editable` is false (published view).
-
-**Container components** (`GalleryItem.svelte`, `Figure.svelte`, `Feature.svelte`, `LinkCollectionItem.svelte`) — update to:
-1. Check the referenced node's `type` (still via the `image` property) to render either `<Image>` or `<Video>`
-
-Register `Video` in `node_components` in `create_session.js`.
-
-### Zoom/pan controls
-
-Zooming (scroll wheel) and panning (drag to move focal point) must work with videos the same way as with images. Both media types share the same visual properties (`scale`, `focal_point_x`, `focal_point_y`, `object_fit`), so the controls are identical.
-
-**Rename `ImageControls` → `MediaControls`:**
-- `src/routes/components/ImageControls.svelte` → `src/routes/components/MediaControls.svelte`
-- The internal variable `image` (used to read the node) becomes `media_node` or similar.
-- The component is already generic — it reads `scale`, `focal_point_x`, `focal_point_y`, and `object_fit` from the node at `path`. No image-specific logic.
-
-**Update `Overlays.svelte`:**
-- Import `MediaControls` instead of `ImageControls`.
-- Widen `is_image_selected` to `is_media_selected`: `selected_property?.type === 'image' || selected_property?.type === 'video'`.
-- Rename the CSS class `image-controls-overlay` → `media-controls-overlay`.
-
-### Svedit paste handler (upstream change)
-
-Svedit's `onpaste` in `Svedit.svelte` currently only captures `image/*` MIME types:
+And `PageTreeNode`:
 
 ```js
-if (item.type.startsWith('image/')) {
-```
-
-This must be widened to also capture `video/*`:
-
-```js
-if (item.type.startsWith('image/') || item.type.startsWith('video/')) {
-```
-
-The variable name `pasted_images` in svedit's paste logic should be renamed to `pasted_media` for clarity, along with the config callback `handle_image_paste` → `handle_media_paste`. This is a svedit-level change that must land before (or alongside) the editable-website changes.
-
-### Paste handler
-
-Rename `handle_image_paste` to `handle_media_paste` in `create_session.js`. The callback signature stays the same — after the svedit change above, it receives all pasted media files (images and videos).
-
-Add MIME type detection:
-
-```js
-/** @returns {'image' | 'video'} */
-function get_media_type(file) {
-    if (file.type.startsWith('video/')) return 'video';
-    return 'image';
+{
+  document_id: string,
+  title: string,
+  preview_image_src: string | null,
+  children: PageTreeNode[]
 }
 ```
 
-This returns the Svedit node type that corresponds to the file. Currently only `'image'` and `'video'` — `'audio'` can be added later.
+This keeps the drawer UI simple and avoids doing graph analysis in the client.
 
-**When pasting over an existing media node** (property selection on an image/video node):
-- If `get_media_type(file)` matches the existing node's `type`: replace `src` on the existing node (current behavior).
-- If it differs (e.g. pasting a video over an image): create a new node of the correct type via transaction, delete the old node, and update the parent's `image` reference to point to the new node. (The property is still named `image` in this step.)
+## Decision 6: page titles and preview images should be server-derived summaries
 
-**When pasting into a container** (text selection / inserting new nodes):
-- Use `get_media_type(file)` to decide the child node type.
-- The wrapper node (`gallery_item` or `figure`) still uses `image` as the property name (renamed in step 4b).
+The drawer should not receive raw full documents.
 
-**Video metadata extraction** — before creating the video node, extract `width` and `height` from the file:
+Instead, the server should summarize each page:
+- title
+- preview image
+
+This keeps the drawer payload small and purpose-built.
+
+## Decision 7: page summaries should be extracted on the fly first, not cached
+
+Use an on-the-fly extraction helper in `src/lib/server/`, used by `get_page_browser_data()`.
+
+### Initial approach: no cache
+For the first implementation, do **not** cache page summaries in the database. Extract them on demand when building the page browser data. This keeps the system simpler:
+
+- no extra columns or companion summary table
+- no extra migration work
+- no summary invalidation logic
+- no extra save-time bookkeeping
+
+If this later proves too costly, summaries can be cached on save (similar in spirit to `document_refs`), but that is a later optimization.
+
+### Extraction scope
+Summary extraction should be **page-local only**:
+- inspect the page document / page body subtree
+- do **not** use shared nav or footer content for page summaries
+
+This avoids cases where many pages inherit the same logo or shared text as their summary.
+
+### Title extraction strategy
+Use this fallback order:
+
+1. explicit `page.title` if present and non-empty
+2. first heading-like `text` node in page body
+3. first meaningful text node in page body
+4. fallback: `"Untitled page"`
+
+For now, “heading-like” means the heading-style `text` node layouts already used in the app (for example the larger heading layouts). The exact helper can stay implementation-specific as long as it follows this order.
+
+### Preview-image extraction strategy
+Use this fallback order:
+
+1. explicit page preview field if one exists in the future
+2. otherwise the first image/video found in page body traversal order
+3. fallback: `null`
+
+The drawer already has a good illustrated-page fallback, so `null` is acceptable.
+
+### Why this is the right start
+The likely cost of summary extraction is low enough for now:
+- page counts are expected to stay modest
+- extraction can stop early once title + preview are found
+- this avoids premature complexity while still giving good summaries
+
+If later needed, the same extraction helper can become the canonical generator for cached summaries.
+
+## Decision 8: drafts are unreachable pages, not merely “unlinked by nav”
+
+Drafts should be defined according to reachability from the live site graph:
+
+- start at `home_page_id`
+- include internal links from:
+  - pages
+  - nav
+  - footer
+- all reachable page documents form the sitemap/reachable set
+- any page document not in that set becomes a draft
+
+This matches the architecture and avoids conflating “not in nav” with “draft”.
+
+## Decision 9: internal page reference rules are route-based and deterministic
+
+Internal page references should follow these rules:
+
+- page routes are `/:page_id`
+- `/` is the home page
+- `/${page_id}` is an internal link to the page with that document id
+- `/${page_id}#section` is also an internal link to that page; the `#section` fragment is ignored for reachability / sitemap purposes
+- `/#section` is **not** a page reference when it points to the current home page; it is just an in-page anchor and must not create a `document_refs` edge
+- more generally, anchor links that resolve to the **same page** are ignored for `document_refs`
+- external URLs are ignored
+
+This means `document_refs` should track page-to-page relationships by normalized target page id, not by full href string. Fragments are only relevant for browser navigation, not for sitemap reachability.
+
+## Decision 10: sitemap hierarchy is a canonical tree projection, not a graph view
+
+The sitemap drawer should render a **tree projection** of the reachable page graph, not the full graph.
+
+### Final tree-building rule
+
+- **No duplicates in the tree**
+- **First occurrence wins**
+- **Top-level ordering:** shared nav links → home page body links → shared footer links
+- **Recursive ordering for child pages:** body links only
+
+This means:
+
+- Start traversal at the configured home page.
+- At the root level, collect outgoing internal page references in this order:
+  1. shared nav
+  2. home page body
+  3. shared footer
+- When a referenced page is encountered for the first time, insert it into the tree at that position.
+- Then recurse into that page, but only inspect its **body-derived** page references.
+- If the same page is encountered again later from another path, ignore that later occurrence for tree placement.
+
+This produces a deterministic, editor-friendly sitemap:
+- global nav/footer define the top-level site structure
+- deeper nesting comes from contextual links inside page content
+- repeated references do not crowd the drawer with duplicates
+
+Reachability is still graph-based, but the drawer presents a clean canonical tree rather than a literal graph visualization.
+
+## Proposed phased implementation
+
+## Phase 1 — backend support for multi-page documents
+
+### 1.1 Add helper functions in server/data layer
+Introduce helpers in `src/lib/api.remote.js` or extracted server modules for:
+
+- `get_home_page_id()`
+- `list_page_documents()`
+- `get_page_document(document_id)`
+- maybe `upsert_split_documents(...)` extracted from current save logic
+
+### 1.2 Extend save API for create-on-first-save
+Update `save_document` to accept a creation mode, likely:
 
 ```js
-async function get_video_dimensions(blob) {
-    return new Promise((resolve, reject) => {
-        const video = document.createElement('video');
-        video.preload = 'metadata';
-        const object_url = URL.createObjectURL(blob);
-        video.onloadedmetadata = () => {
-            URL.revokeObjectURL(object_url);
-            resolve({ width: video.videoWidth, height: video.videoHeight });
-        };
-        video.onerror = () => {
-            URL.revokeObjectURL(object_url);
-            reject(new Error('Failed to load video metadata'));
-        };
-        video.src = object_url;
-    });
+{
+  document_id,
+  nodes,
+  create
 }
 ```
 
-Since metadata extraction is async, `handle_media_paste` must await it before creating the node. For images this isn't needed (dimensions come from processing later), but for videos the dimensions are final at paste time since there's no client-side processing.
+Behavior:
+- if `create === true`
+  - assert that the provided document id does not already exist
+  - save the new page under that same client-generated id
+  - no root-id rewrite is needed
+  - return that document id
+- else
+  - current update behavior
 
-### Asset pipeline changes
+### 1.3 Add page creation helpers
+Create a page factory for `/new`, likely in:
+- `src/lib/new_page.js`
+or nearby route helper
 
-**`asset-upload.js`:**
+It should expose a `create_empty_doc()` helper (or equivalent) that:
+- generates a fresh `page_id` using the existing nanoid utility
+- creates a fresh page document with:
+  - `document_id = page_id`
+  - root page node id = `page_id`
+  - references to shared `nav_1` and `footer_1` (or current configured shared docs)
+  - an initial editable body, likely one empty `prose` block
 
-1. **`start_processing`** — detect video MIME types. For videos: compute hash, set `asset_id` to `{hash}.mp4`, extract dimensions via `get_video_dimensions`, store the file blob as-is (no WASM processing, no variants), set `status: 'ready'` immediately.
+This should be minimal but pleasant to edit immediately.
 
-2. **`collect_blob_urls`** — also collect from `type === 'video'` nodes.
+## Phase 2 — routing and shared page editor shell
 
-3. **`replace_blob_urls`** — also replace on `type === 'video'` nodes.
+### 2.1 Extract current page editor into a shared component
+Current `src/routes/+page.svelte` mixes:
+- document loading
+- app command setup
+- save flow
+- toolbar
+- editor rendering
 
-4. **`upload_asset`** — map asset extension to MIME type: `.mp4` → `video/mp4`, `.webm` → `video/webm` (in addition to existing image types).
+Extract the reusable editor page shell into something like:
+- `src/routes/components/PageEditor.svelte`
 
-5. **`ensure_processing`** — when re-fetching a blob URL, detect video MIME type and use passthrough processing.
+Inputs:
+- `initial_doc`
+- `is_new`
+- maybe `page_id`
 
-### Asset serving
+Responsibilities:
+- instantiate session
+- save command
+- toolbar
+- key mapping
+- edit mode
+- page drawer cache invalidation after save
 
-The existing `GET /assets/:asset_id` endpoint already serves files from disk by filename — no changes needed for serving. The content type is derived from the file extension.
+### 2.2 Add `/[page_id]`
+Implemented:
+- `src/routes/[page_id]/+page.svelte`
+- `src/routes/[page_id]/+page.js`
 
-Video files should be served with `Accept-Ranges: bytes` support for seeking. Node's `createReadStream` with range headers handles this. Check that the existing asset serving route supports range requests; if not, add support.
+Current behavior:
+- loads the requested document via remote query
+- renders the shared `PageEditor`
+- returns a proper SvelteKit 404 when the page is not found
 
-### HTML exporters
+### 2.3 Update `/`
+Implemented:
+- `src/routes/+page.svelte` now reuses `PageEditor`
+- `src/routes/+page.js` loads the configured home page in full runtime mode
 
-Add a `video` entry to `html_exporters` if needed (for any export/copy functionality). A simple `<video>` tag with `src`, `width`, `height`, and playback attributes.
+Current behavior:
+- in full runtime mode, `/` loads the configured home page and renders it through the shared editor shell
+- in static/Vercel mode, `/` still falls back to `demo_doc`
 
-### File summary
+### 2.4 Add `/new`
+Implemented:
+- `src/routes/new/+page.svelte`
+- `src/lib/new_page.js`
 
-New files:
-- `src/routes/components/Video.svelte` — video rendering component
+Current behavior:
+- `/new` creates a transient page document locally via `create_empty_doc()`
+- the page id is generated on the client up front
+- the transient page is composed from the current shared nav/footer documents loaded from the database
+- `/new` starts in edit mode immediately
+- first save calls `save_document(..., create: true)` with that same id
+- after first save, the app navigates to `/${document_id}`
+- cancelling edit mode on `/new` discards the transient page and returns to `/`
 
-Renamed files:
-- `src/routes/components/ImageControls.svelte` → `src/routes/components/MediaControls.svelte`
+## Phase 3 — reference tracking and sitemap data
 
-Modified files:
-- `src/lib/document_schema.js` — add `video` node type, widen `node_types` to `['image', 'video']` on container properties
-- `src/routes/create_session.js` — rename `handle_image_paste` → `handle_media_paste`, add `get_media_type`, video MIME detection, video metadata extraction, video node creation, register `Video` component
-- `src/routes/components/Overlays.svelte` — import `MediaControls` instead of `ImageControls`, widen `is_image_selected` → `is_media_selected`
-- `src/lib/client/asset-upload.js` — handle video files in `start_processing`, `collect_blob_urls`, `replace_blob_urls`, `upload_asset`, `ensure_processing`
-- Container components (`GalleryItem.svelte`, `Figure.svelte`, `Feature.svelte`, `LinkCollectionItem.svelte`) — conditionally render `<Image>` or `<Video>` based on referenced node type
+### 3.1 Actually maintain `document_refs`
+Implement server-side internal link extraction on save.
+### 3.2 Implement reachability
+Add a server helper that:
+- reads `home_page_id`
+- traverses `document_refs`
+- treats page/nav/footer appropriately
+- builds reachable page set
 
-Upstream (svedit) modified files:
-- `svedit/src/lib/Svedit.svelte` — widen MIME filter from `image/*` to `image/* || video/*`, rename `pasted_images` → `pasted_media`, rename config callback `handle_image_paste` → `handle_media_paste`
-- `svedit/src/routes/create_demo_session.js` — rename `handle_image_paste` → `handle_media_paste` to match
+Important nuance:
+- nav/footer are shared documents and may contain links to pages
+- so the graph traversal should include links originating from them as well
 
-## Step 4b: rename `image` property to `media` on container nodes
+### 3.3 Build browser query
+Add:
+- `get_page_browser_data()`
 
-**Goal:** rename the `image` property to `media` on container node types to accurately reflect that it can hold either an image or a video. This is a pure rename — no new functionality, no behavior changes.
+It should:
+- list all page documents
+- compute drafts = all pages not reachable from the canonical home traversal
+- compute sitemap tree
 
-### Schema changes
+The sitemap tree must follow the documented rules exactly:
 
-In `document_schema.js`, rename the property on each container type:
+- no duplicates
+- first occurrence wins
+- top-level ordering: nav → home body → footer
+- recursive ordering: body only
 
-- `gallery_item.image` → `gallery_item.media`
-- `figure.image` → `figure.media`
-- `feature.image` → `feature.media`
-- `link_collection_item.image` → `link_collection_item.media`
+So this query/helper layer should not just return a raw graph; it should return the already-projected canonical tree used by the drawer UI.
 
-`nav.logo` and `footer.logo` keep the name `logo` — it's already accurate.
+## Phase 4 — async drawer wiring
 
-### Seed data migration
+### 4.1 Turn `PagesDrawer.svelte` from mock to real async data
+Implemented:
+- `PagesDrawer.svelte` now loads real browser data from a dedicated query
+- loading is async-on-open
+- data is cached until invalidated by a save
 
-Update the seed document data in `migrations.js` to use `media` instead of `image` for the affected node types. Existing on-disk databases need a migration step that renames the property on all affected nodes. This is a JSON-level migration: load each document, walk nodes of types `gallery_item`, `figure`, `feature`, `link_collection_item`, rename their `image` property to `media`, and save back.
+### 4.2 Add loading and empty states
+Implemented:
+- loading state when first opened
+- empty drafts state
+- basic sitemap empty/misconfigured state
 
-### Inserter changes
+### 4.3 Add “New page” action
+Implemented:
+- the plus tile in drafts navigates to `/new`
 
-Update all inserters that create child nodes to use the `media` property name:
-- `feature` inserter: `image: 'feature_image_id'` → `media: 'feature_image_id'`
-- `figure` inserter: `image: 'image_one'` → `media: 'image_one'`
-- `gallery` inserter: `image: 'gallery_item_image_id'` → `media: 'gallery_item_image_id'`
-- `gallery_item` inserter: same rename
-- `link_collection` inserter: same rename
-- `link_collection_item` inserter: same rename
+### 4.4 Add page navigation
+Implemented:
+- draft and sitemap items navigate to `/${document_id}`
 
-The child nodes themselves stay as `type: 'image'` or `type: 'video'` — only the property name on the parent changes.
+### 4.5 Add per-page drawer actions
+Implemented:
+- each draft and page row gets an anchored ellipsis menu
+- the menu supports `Open in new tab`
+- the menu supports `Delete`
+- the menu is dismissible with `Escape` or backdrop click
 
-### Component changes
+### 4.6 Add page deletion flow
+Implemented:
+- deleting a draft asks: `Are you sure you want to delete this draft?`
+- deleting a reachable page asks: `Are you sure you want to delete this page? You'll leave some dead links on the page.`
+- deleting a page removes the page document and its related `document_refs` / `asset_refs`
+- deleting a page does not repair incoming links; those become dead links until edited
+- the configured home page cannot be deleted
+- if the currently open page is deleted, navigate to `/`
 
-Container components (`GalleryItem.svelte`, `Figure.svelte`, `Feature.svelte`, `LinkCollectionItem.svelte`) — read from `media` property instead of `image`.
+Note:
+- drawer-close-on-click can be refined later if needed
 
-### Paste handler
+## Phase 5 — save flow integration and navigation correctness
 
-Update `handle_media_paste` in `create_session.js` to use `media` as the property name when creating wrapper nodes (`gallery_item`, `figure`).
+### 5.1 Update SaveCommand in editor shell
+Current save flow assumes one persistent page.
 
-### File summary
+It should now:
+- detect `is_new`
+- call save API with `create: true` on first save
+- update client route to new page id after successful create
+- then continue normal saves as update
 
-Modified files:
-- `src/lib/document_schema.js` — rename `image` → `media` on container node types
-- `src/routes/create_session.js` — update inserters and paste handler to use `media` property name
-- `src/lib/server/migrations.js` — add migration to rename `image` → `media` on existing documents, update seed data
-- Container components (`GalleryItem.svelte`, `Figure.svelte`, `Feature.svelte`, `LinkCollectionItem.svelte`) — read `media` instead of `image`
+### 5.2 Ensure asset pipeline works identically for new pages
+No changes in overall asset flow:
+- process pending assets
+- upload before save
+- replace blob URLs in document copy
+- persist resulting document
+
+Need to ensure first-save create path supports all of that.
+
+### 5.3 Invalidate browser drawer data after saves
+When a page is created or links change:
+- drawer data becomes stale
+- need a simple invalidation strategy
+
+Initial simple solution:
+- when save succeeds, clear cached browser-data promise/state
+- next drawer open refetches
+
+## Static/Vercel compatibility constraints for implementation
+
+These constraints must be respected during implementation:
+
+- only the `/` route must support static/Vercel compatibility mode
+- `/new` and `/:page_id` may hardwire full runtime assumptions
+- the multi-page routes can remain present in static/Vercel deployments; they just must not be linked to or relied on from the `VERCEL=1` branch
+- the drawer/page-browser UI should not appear in static/Vercel mode
+- authentication should remain effectively off in static/Vercel mode
+- route/component structure should avoid forcing server-only imports for `/`
+- if needed, keep the current pattern where `/` conditionally loads the demo document in static mode and only uses the runtime database path in full mode
+
+## Suggested file changes summary
+
+### New or extracted files
+- `src/routes/[page_id]/+page.svelte`
+- `src/routes/new/+page.svelte`
+- `src/routes/components/PageEditor.svelte`
+- maybe `src/lib/new_page.js`
+- maybe `src/lib/server/page_browser.js`
+- maybe `src/lib/server/page_summary.js`
+
+### Updated files
+- `src/routes/+page.svelte`
+- `src/lib/api.remote.js`
+- `src/routes/components/PagesDrawer.svelte`
+- `src/routes/components/Overlays.svelte`
+- possibly `src/lib/server/migrations.js` if additional seed/settings support is needed
+
+## Recommended implementation order
+
+1. Define the runtime split clearly: full runtime vs static/Vercel `/` fallback
+2. Extract page editor shell in a way that does not break the static `/` route
+3. Add `/[page_id]`
+4. Add `/new` with transient document
+5. Extend save API for create-on-first-save
+6. Make create flow redirect after first save
+7. Implement `document_refs` maintenance
+8. Implement `get_page_browser_data()`
+9. Wire real async drawer data
+10. Disable drawer/multi-page UI in static/Vercel mode
+11. Add invalidation after save
+
+## Notes from PR #86 reference
+
+The referenced PR indicates there is prior art for:
+- dynamic page rendering/editing
+- sitemap
+- multi-page setup
+
+We should treat it as:
+- a source of ideas for route/data responsibilities
+- not something to mirror structurally
+
+Priority remains:
+- consistency with `ARCHITECTURE.md`
+- maintainable code in the current codebase
+- minimal disruption to the proven current save/split/asset flow
+
+## Definition of done
+
+This step is complete when:
+
+- `/` renders the configured home page from DB
+- `/new` opens an unsaved editable page
+- first save on `/new` creates a new real page and navigates to `/:page_id`
+- `/:page_id` loads and edits existing pages
+- saving continues to work with shared nav/footer and assets
+- drawer loads async data on open
+- drawer shows:
+  - drafts as flat list
+  - sitemap as tree
+- drafts are computed from reachability, not hardcoded
+- no authentication gates are required yet beyond current assumed-admin development mode
+
+### Current status
+
+Completed:
+- shared editor extraction
+- `/`, `/new`, and `/:page_id` route wiring
+- client-generated-id create-on-first-save flow
+- `/new` composition from current database-backed shared nav/footer docs
+- `/new` starts in edit mode immediately
+- proper SvelteKit 404 for unknown pages
+- async real pages drawer with loading and empty states
+- “New page” navigation from the drawer
+- page navigation from draft and sitemap items
+- drawer closes before page navigation
+- save-time drawer invalidation
+- cancel button behavior, including returning from `/new` to `/`
+
+Still to verify / finish:
+- confirm `document_refs` and reachability behavior matches the canonical tree rules exactly across real edited content
+- keep `ARCHITECTURE.md` aligned with any behavior adjustments discovered during integration

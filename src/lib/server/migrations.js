@@ -67,5 +67,14 @@ export default [
 				PRIMARY KEY (asset_id, document_id)
 			)
 		`);
+	},
+	function add_document_ref_order({ db }) {
+		db.exec(`
+			ALTER TABLE document_refs ADD COLUMN ref_order INTEGER NOT NULL DEFAULT 0
+		`);
+
+		db.exec(`
+			DELETE FROM document_refs
+		`);
 	}
 ];
