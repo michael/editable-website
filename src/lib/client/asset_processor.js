@@ -1,5 +1,4 @@
 import { encode as encodeWebP } from '@jsquash/webp';
-import resize from '@jsquash/resize';
 
 const WEBP_QUALITY = 80;
 
@@ -21,6 +20,42 @@ async function decode_to_image_data(blob) {
 }
 
 /**
+ * Convert ImageData to a PNG blob using canvas.
+ *
+ * @param {ImageData} image_data
+ * @returns {Promise<Blob>}
+ */
+async function image_data_to_png_blob(image_data) {
+	const canvas = new OffscreenCanvas(image_data.width, image_data.height);
+	const ctx = canvas.getContext('2d');
+	if (!ctx) throw new Error('Could not get OffscreenCanvas 2d context');
+	ctx.putImageData(image_data, 0, 0);
+	return await canvas.convertToBlob({ type: 'image/png' });
+}
+
+/**
+ * Resize an image blob to a specific width using canvas, maintaining aspect ratio.
+ *
+ * @param {Blob} blob
+ * @param {number} target_width
+ * @returns {Promise<ImageData>}
+ */
+async function resize_blob_to_width(blob, target_width) {
+	const bitmap = await createImageBitmap(blob);
+	const scale = target_width / bitmap.width;
+	const target_height = Math.round(bitmap.height * scale);
+	const canvas = new OffscreenCanvas(target_width, target_height);
+	const ctx = canvas.getContext('2d');
+	if (!ctx) {
+		bitmap.close();
+		throw new Error('Could not get OffscreenCanvas 2d context');
+	}
+	ctx.drawImage(bitmap, 0, 0, target_width, target_height);
+	bitmap.close();
+	return ctx.getImageData(0, 0, target_width, target_height);
+}
+
+/**
  * Resize ImageData to fit within max_width, preserving aspect ratio.
  * Returns the original ImageData if it already fits.
  *
@@ -29,19 +64,11 @@ async function decode_to_image_data(blob) {
  * @returns {Promise<ImageData>}
  */
 async function resize_to_fit(image_data, max_width) {
-	const { width, height } = image_data;
+	const { width } = image_data;
 	if (width <= max_width) return image_data;
 
-	const new_width = max_width;
-	const new_height = Math.round((height * max_width) / width);
-
-	return resize(image_data, {
-		width: new_width,
-		height: new_height,
-		method: 'lanczos3',
-		premultiply: true,
-		linearRGB: true
-	});
+	const png_blob = await image_data_to_png_blob(image_data);
+	return await resize_blob_to_width(png_blob, max_width);
 }
 
 /**
@@ -52,16 +79,8 @@ async function resize_to_fit(image_data, max_width) {
  * @returns {Promise<ImageData>}
  */
 async function resize_to_width(image_data, target_width) {
-	const scale = target_width / image_data.width;
-	const target_height = Math.round(image_data.height * scale);
-
-	return resize(image_data, {
-		width: target_width,
-		height: target_height,
-		method: 'lanczos3',
-		premultiply: true,
-		linearRGB: true
-	});
+	const png_blob = await image_data_to_png_blob(image_data);
+	return await resize_blob_to_width(png_blob, target_width);
 }
 
 /**
