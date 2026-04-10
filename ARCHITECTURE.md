@@ -901,8 +901,7 @@ Historical aliases are still reserved. The UI must offer:
 If the user chooses `Enforce`:
 1. remove that historical alias from the page that currently owns it
 2. assign the slug as the new active slug of the target page
-3. rewrite internal links targeting the target page if its active slug changed
-4. do not change the other page's active slug, because that page did not lose its current slug
+3. rewrite internal links referencing the target page
 
 This avoids ambiguous resolution and keeps slug ownership explicit.
 
