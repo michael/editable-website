@@ -239,14 +239,15 @@ Conceptually, the mapping must support:
 
 #### Custom slugs
 
-Users can set a custom slug from the page browser ellipsis menu.
+Users can change a page's URL from the page browser ellipsis menu.
 
-When a user changes a page slug:
+When a user changes a page URL:
 - that slug becomes the page's active slug
 - the previously active slug becomes a historical alias unless that slug is explicitly reassigned to another page
 
 User-facing behavior should stay simple:
-- the UI shows only the page's current slug
+- the UI shows only the page's current URL
+- the UI can describe it as "the address/URL your page will be reachable at"
 - the UI does not expose an "auto mode" vs "custom mode" concept
 - the system auto-generates the first slug on first save
 - after that, the slug stays stable unless the user explicitly changes it
@@ -255,22 +256,24 @@ This keeps the mental model simple for users while preserving deterministic beha
 
 #### Slug collisions and reassignment
 
-If a user tries to assign a custom slug that is already used elsewhere, the UI must offer two choices:
-
-1. **Cancel** — keep everything unchanged
-2. **Enforce** — claim that slug for the current page
-
-There are two collision cases:
+If a user tries to assign a slug that is already used elsewhere, there are two collision cases:
 
 **Case A — the slug is the active slug of another page**
 
-If the user chooses **Enforce**:
-1. the target page receives the requested slug as its new active slug
-2. the page that previously owned that slug must first receive a new unique slug generated from its current extracted title, falling back to `document_id` if needed
-3. all internal links that pointed to the displaced page's old slug must be rewritten to the displaced page's new slug
-4. the old slug must no longer resolve to the displaced page, because it now belongs to the new page
+This is rejected.
+
+The UI should explain that:
+- this address is currently in use by another page
+- the user must first rename that other page if they want to free up this address
+- no automatic reassignment of another page's active slug is ever performed in the background
+
+This keeps active page URLs stable and avoids surprising background rewrites.
 
 **Case B — the slug is only a historical alias of another page**
+
+The UI must offer:
+1. **Cancel** — keep everything unchanged
+2. **Enforce** — claim that address for the current page
 
 If the user chooses **Enforce**:
 1. remove that historical alias from the page that currently owns it
@@ -856,14 +859,15 @@ The slug editing flow must cover these cases:
 
 #### User-facing slug editing model
 
-The page browser should present slug editing in a simple way:
-- show the current slug
+The page browser should present URL editing in a simple way:
+- show the current URL
 - allow the user to change it
+- describe it in user-facing copy as "the address/URL your page will be reachable at"
 - do not expose "auto mode" or "custom mode" terminology in the UI
 
 This gives users a simple mental model:
-- "the slug is whatever is currently shown"
-- "the system picks an initial slug for me"
+- "the URL is whatever is currently shown"
+- "the system picks an initial URL for me"
 - "if I change it manually, the system respects that"
 
 #### 1. Setting a slug that is unused
@@ -902,20 +906,14 @@ This avoids ambiguous resolution and keeps slug ownership explicit.
 
 #### 5. Setting a slug that is the active slug of another page
 
-The UI must explain that the slug is already in use and offer:
-- `Cancel`
-- `Enforce`
+This is rejected.
 
-In practice, most users should cancel and first free up the slug they want. The enforce flow exists for advanced cases, but it must still behave predictably.
+The UI must explain that:
+- the address is already in use by another page
+- the user must first rename that other page if they want to use this address here
+- no force-takeover flow exists for active page URLs
 
-If the user chooses `Enforce`:
-1. the requested slug becomes active on the new page
-2. the displaced page receives a new unique slug generated from its current extracted title, falling back to `document_id` if needed
-3. all internal links targeting the displaced page are rewritten to its new slug
-4. all internal links targeting the page receiving the enforced slug are rewritten if needed
-5. the reassigned slug no longer resolves to the displaced page
-
-This rule is intentionally simple: once a page loses its active slug to another page, it always falls back to a fresh generated slug rather than requiring the user to manually choose a replacement slug during the same flow.
+This keeps the behavior predictable and avoids automatically changing another page's live address in the background.
 
 ### Page deletion from the drawer
 
