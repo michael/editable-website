@@ -1,10 +1,11 @@
 <script>
+	import { getContext } from 'svelte';
 	import { get_page_browser } from './page_browser_context.svelte.js';
 
 	let { session, app_commands, editable, focus_canvas } = $props();
 
 	const page_browser = get_page_browser();
-	const has_backend = $derived(!!page_browser);
+	const has_backend = getContext('has_backend');
 
 	let cancel_command = $derived(app_commands.cancel_editing ?? null);
 	let cancel_button_label = $derived(cancel_command?.label || 'Cancel');
