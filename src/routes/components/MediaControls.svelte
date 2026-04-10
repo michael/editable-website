@@ -7,6 +7,7 @@
 	// Zoom constraints
 	const MIN_SCALE = 0.1;
 	const MAX_SCALE = 5.0;
+	const ZOOM_STEP = 0.05;
 
 	let { path, is_mouse_down } = $props();
 
@@ -99,10 +100,19 @@
 		// Only zoom when meta (Cmd) or ctrl key is held, otherwise let the page scroll
 		if (!e.metaKey && !e.ctrlKey) return;
 		e.preventDefault();
-		const zoom_delta = e.deltaY < 0 ? 0.05 : -0.05;
+		const zoom_delta = e.deltaY < 0 ? ZOOM_STEP : -ZOOM_STEP;
+
+		const current_scale = media_node.scale;
+		const next_scale = current_scale + zoom_delta;
+		const crosses_one =
+			(current_scale < 1.0 && next_scale > 1.0) ||
+			(current_scale > 1.0 && next_scale < 1.0);
+		const is_close_to_one = Math.abs(next_scale - 1.0) <= ZOOM_STEP;
+
+		const snapped_scale = crosses_one || is_close_to_one ? 1.0 : next_scale;
 
 		const tr = svedit.session.tr;
-		tr.set([...path, 'scale'], Math.min(Math.max(media_node.scale + zoom_delta, MIN_SCALE), MAX_SCALE));
+		tr.set([...path, 'scale'], Math.min(Math.max(snapped_scale, MIN_SCALE), MAX_SCALE));
 		svedit.session.apply(tr, { batch: true });
 	}
 
