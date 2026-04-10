@@ -50,7 +50,7 @@
 		e.target.value = '';
 	}
 
-	const TW_TOOLBAR_POSITION = 'bottom-5 right-5 sm:right-7 md:right-10 lg:right-14';
+	const TW_TOOLBAR_POSITION = 'bottom-0 sm:bottom-3 right-5 sm:right-7 md:right-10 lg:right-14';
 	// On mobile also pin to left edge so the toolbar can scroll horizontally
 	const TW_TOOLBAR_LEFT = 'left-5 sm:left-7 md:left-auto';
 
@@ -65,12 +65,12 @@
 	}
 </script>
 
-<div class="fixed {TW_TOOLBAR_POSITION} {TW_TOOLBAR_LEFT} z-50 select-none pointer-events-none">
-	<div class="overflow-x-auto -mb-3 pb-3 -ml-3 pl-3">
-		<div class="flex items-center gap-1.5 sm:gap-3 w-max ml-auto pointer-events-none">
+<div class="fixed {TW_TOOLBAR_POSITION} {TW_TOOLBAR_LEFT} z-50">
+	<div class="overflow-x-auto">
+		<div class="py-2 px-0.5 flex items-center gap-1.5 sm:gap-3 w-max ml-auto">
 			{#if !editable}
 				<!-- Read mode: Pages + Edit buttons -->
-				<div class="flex items-center gap-1 pointer-events-none">
+				<div class="flex items-center gap-1">
 					{#if has_backend}
 						<button
 							class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
@@ -91,12 +91,11 @@
 						<button
 							class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
 							onclick={() => app_commands.edit_document.execute()}
-							title="Edit (⌘E)"
+							title="Edit (⌘ E)"
 							aria-label="Edit"
 						>
-							<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-								<path d="M12 20h9" />
-								<path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+							<svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+								<path d="M12.6017 4.51322L10.4804 2.3919M12.6017 4.51322L3.76282 13.3521L1.77642 13.5C1.58297 13.5266 1.48259 13.4069 1.5 13.2107L1.6415 11.2308L10.4804 2.3919M12.6017 4.51322C12.9552 4.15965 12.9552 4.15969 12.9552 4.15969L13.3088 3.80612C13.6623 3.45255 13.4942 2.58389 12.9552 2.0384C12.4189 1.50211 11.541 1.33123 11.1875 1.6848L10.8339 2.03837C10.8339 2.03837 10.8339 2.03833 10.4804 2.3919" stroke="currentColor"/>
 							</svg>
 						</button>
 					{/if}
@@ -106,11 +105,10 @@
 
 				<!-- Text formatting group (visible during text selection) -->
 				{#if session.selection?.type === 'text'}
-					<div class="flex items-center gap-1 pointer-events-none">
+					<div class="flex items-center gap-1">
 						<!-- Bold -->
 						<button
 							class="{TW_TOOLBAR_BTN} {session.commands.toggle_strong?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
-
 							class:!text-(--svedit-editing-stroke)={session.commands.toggle_strong?.active}
 							class:!border-(--svedit-editing-stroke)={session.commands.toggle_strong?.active}
 							onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_strong)}
@@ -184,7 +182,7 @@
 				{/if}
 
 				<!-- Type / Layout group (always visible, disabled when not applicable) -->
-				<div class="flex items-center gap-1 pointer-events-none">
+				<div class="flex items-center gap-1">
 					<!-- Type: cycle to next node type -->
 					<button
 						class="{TW_TOOLBAR_BTN} {session.commands.cycle_node_type_next?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
@@ -229,7 +227,7 @@
 				/>
 
 				<!-- Stable right group: Undo / Redo -->
-				<div class="flex items-center gap-1 pointer-events-none">
+				<div class="flex items-center gap-1">
 					<button
 						class="{TW_TOOLBAR_BTN} {session.commands.undo?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
 
@@ -254,7 +252,7 @@
 					</button>
 				</div>
 
-				<div class="flex items-center gap-1 pointer-events-none">
+				<div class="flex items-center gap-1">
 					{#if cancel_command && !cancel_command.disabled}
 						<button
 							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--foreground) bg-(--background) border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] shadow-sm transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] active:scale-95 active:translate-y-px"
