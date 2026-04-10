@@ -121,7 +121,7 @@
 				<input
 					type="checkbox"
 					bind:checked={open_in_new_tab}
-					class="w-4 h-4 cursor-pointer text-(--background) focus:ring-(--svedit-editing-stroke)"
+					class="w-4 h-4 cursor-pointer text-(--svedit-editing-stroke) focus:ring-(--svedit-editing-stroke)"
 				/>
 				<span class="text-sm text-(--foreground)">Open in new tab</span>
 			</label>
