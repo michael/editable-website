@@ -5,7 +5,7 @@
 	const svedit = getContext('svedit');
 
 	// Zoom constraints
-	const MIN_SCALE = 1.0;
+	const MIN_SCALE = 0.1;
 	const MAX_SCALE = 5.0;
 
 	let { path, is_mouse_down } = $props();
@@ -58,7 +58,7 @@
 			return;
 		}
 
-		if (_scale > 1.0) {
+		if (_scale !== 1.0) {
 			can_pan = true;
 			return;
 		}
@@ -99,10 +99,10 @@
 		// Only zoom when meta (Cmd) or ctrl key is held, otherwise let the page scroll
 		if (!e.metaKey && !e.ctrlKey) return;
 		e.preventDefault();
-		const zoom_factor = e.deltaY < 0 ? 1.01 : 0.99;
+		const zoom_delta = e.deltaY < 0 ? 0.05 : -0.05;
 
 		const tr = svedit.session.tr;
-		tr.set([...path, 'scale'], Math.min(Math.max(media_node.scale * zoom_factor, MIN_SCALE), MAX_SCALE));
+		tr.set([...path, 'scale'], Math.min(Math.max(media_node.scale + zoom_delta, MIN_SCALE), MAX_SCALE));
 		svedit.session.apply(tr, { batch: true });
 	}
 
