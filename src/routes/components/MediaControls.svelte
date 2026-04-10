@@ -91,7 +91,7 @@
 
 	function handle_double_click() {
 		const tr = svedit.session.tr;
-		tr.set([...path, 'scale'], MIN_SCALE);
+		tr.set([...path, 'scale'], 1.0);
 		tr.set([...path, 'object_fit'], media_node.object_fit === 'cover' ? 'contain' : 'cover');
 		svedit.session.apply(tr, { batch: true });
 	}
@@ -175,7 +175,8 @@
 
 	.marker {
 		position: absolute;
-		width: 5%;
+		width: max(5%, 20px);
+		max-width: 20%;
 		aspect-ratio: 1/1;
 		transform: translate(-50%, -50%);
 		pointer-events: none;
