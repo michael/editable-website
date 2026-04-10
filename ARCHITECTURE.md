@@ -214,10 +214,12 @@ If the candidate slug collides with an existing active slug:
 - generate a unique slug deterministically by suffixing
 - examples: `survey`, `survey-2`, `survey-3`, ...
 
-Auto-generated slugs must be treated as **derived but persistent**:
+Auto-generated slugs are assigned once on first save and then remain stable until the user explicitly changes them:
 - they are created on first save
-- they update when the extracted title changes
+- they do **not** auto-update when the extracted title changes later
 - they must **not** overwrite a user-defined custom slug
+- they must **not** take over a slug that is currently active on another page
+- they must **not** take over a slug that is currently reserved as a historical alias of another page
 
 #### Slug ownership and history
 
@@ -227,36 +229,27 @@ A page therefore has:
 - one **current active slug**
 - zero or more **historical slugs**
 
-Historical slugs exist so that when an auto-generated slug changes because the title changed, old shared URLs do not break.
+Historical slugs exist so that when a page's active slug is changed later, old shared URLs do not break.
 
 This requires a slug mapping table in the database rather than storing only a single slug string on the page row.
 
 Conceptually, the mapping must support:
 - resolving a slug to a `document_id`
 - distinguishing the current active slug from historical aliases
-- tracking whether the current active slug is auto-generated or custom
 
 #### Custom slugs
 
 Users can set a custom slug from the page browser ellipsis menu.
 
-When a page has a custom slug:
+When a user changes a page slug:
 - that slug becomes the page's active slug
-- the page is marked as using a custom slug
-- future title changes must **not** auto-rewrite that slug
-
-If the user later clears the custom slug:
-- the page returns to auto-generated slug behavior internally
-- the current title is re-evaluated
-- a fresh unique auto slug is assigned
 - the previously active slug becomes a historical alias unless that slug is explicitly reassigned to another page
 
 User-facing behavior should stay simple:
 - the UI shows only the page's current slug
 - the UI does not expose an "auto mode" vs "custom mode" concept
-- internally, the system tracks whether the current active slug was last set by the user
-- if the current active slug was last set by the user, title changes do not auto-update it
-- if the current active slug was not last set by the user, title changes may auto-update it
+- the system auto-generates the first slug on first save
+- after that, the slug stays stable unless the user explicitly changes it
 
 This keeps the mental model simple for users while preserving deterministic behavior internally.
 
@@ -273,10 +266,9 @@ There are two collision cases:
 
 If the user chooses **Enforce**:
 1. the target page receives the requested slug as its new active slug
-2. the page that previously owned that slug must first receive a new unique **auto-generated** slug
-3. the displaced page is switched to internal auto-slug behavior, even if its previous slug had originally been user-set
-4. all internal links that pointed to the displaced page's old slug must be rewritten to the displaced page's new slug
-5. the old slug must no longer resolve to the displaced page, because it now belongs to the new page
+2. the page that previously owned that slug must first receive a new unique slug generated from its current extracted title, falling back to `document_id` if needed
+3. all internal links that pointed to the displaced page's old slug must be rewritten to the displaced page's new slug
+4. the old slug must no longer resolve to the displaced page, because it now belongs to the new page
 
 **Case B — the slug is only a historical alias of another page**
 
@@ -293,9 +285,7 @@ This is the one case where an old slug should **not** remain as a historical ali
 Internal page links are slug-based, so whenever a page's active slug changes, all internal links that target that page must be updated to the new slug.
 
 This applies to:
-- automatic slug changes caused by title changes
-- switching from auto slug to custom slug
-- clearing a custom slug and returning to auto mode
+- manually changing a page slug
 - forced slug reassignment from one page to another
 
 This is a deliberate tradeoff:
@@ -358,12 +348,10 @@ slug mapping           page document          nav document          footer docum
 
 1. Receive the combined document from the client
 2. Determine which nodes belong to the nav document, the footer document, and the page document (by walking the graph from each root node)
-3. Extract the page summary title
-4. Determine whether the page uses an auto slug or a custom slug
-5. If the page's current slug was not last set by the user, compute the desired slug from the extracted title using `slugify`, falling back to `document_id` if needed
-6. Only change the active slug if the newly generated slug candidate differs from the current active slug
-7. If the active slug changes, update slug mappings and rewrite all internal links that target that page
-8. Write each document back to its own row in the database
+3. On first save only, extract the page summary title and assign the page its first slug using `slugify`, falling back to `document_id` if needed
+4. On later saves, keep the existing active slug unchanged unless the user explicitly changed it through the slug editing flow
+5. If the active slug changes, update slug mappings and rewrite all internal links that target that page
+6. Write each document back to its own row in the database
 
 This means changes to the nav or footer made on any page are persisted to the shared document and will be reflected on all pages.
 
@@ -842,7 +830,7 @@ Summary extraction should only inspect the **page-local body content**. Shared `
 
 The exact heading-like layouts are defined by the page schema / text node semantics in the current implementation. The important part is that heading-like content is preferred over arbitrary text properties.
 
-This same extracted title is also the source for auto-generated slugs.
+This same extracted title is also the source for the initial auto-generated slug assigned on first save.
 
 **Preview image extraction order:**
 
@@ -873,19 +861,15 @@ The page browser should present slug editing in a simple way:
 - allow the user to change it
 - do not expose "auto mode" or "custom mode" terminology in the UI
 
-Internally, the system tracks whether the current active slug was last set by the user:
-- if yes, future title changes do not auto-update the slug
-- if no, future title changes may auto-update the slug
-
 This gives users a simple mental model:
 - "the slug is whatever is currently shown"
+- "the system picks an initial slug for me"
 - "if I change it manually, the system respects that"
 
 #### 1. Setting a slug that is unused
 
 If the requested slug is not currently used as either an active slug or a historical alias:
 - assign it to the page as the new active slug
-- mark internally that the current active slug was last set by the user
 - preserve the previous active slug as a historical alias
 
 #### 2. Setting a slug equal to the page's own current active slug
@@ -900,7 +884,6 @@ If the requested slug is already a historical alias of the same page:
 - promote that alias back to the page's active slug
 - remove the historical alias entry for that slug
 - move the previously active slug into historical aliases
-- mark internally that the current active slug was last set by the user
 - rewrite internal links targeting that page if the active slug changed
 
 #### 4. Setting a slug that is a historical alias of another page
@@ -912,9 +895,8 @@ Historical aliases are still reserved. The UI must offer:
 If the user chooses `Enforce`:
 1. remove that historical alias from the page that currently owns it
 2. assign the slug as the new active slug of the target page
-3. mark internally that the target page's current active slug was last set by the user
-4. rewrite internal links targeting the target page if its active slug changed
-5. do not change the other page's active slug, because that page did not lose its current slug
+3. rewrite internal links targeting the target page if its active slug changed
+4. do not change the other page's active slug, because that page did not lose its current slug
 
 This avoids ambiguous resolution and keeps slug ownership explicit.
 
@@ -928,22 +910,12 @@ In practice, most users should cancel and first free up the slug they want. The 
 
 If the user chooses `Enforce`:
 1. the requested slug becomes active on the new page
-2. mark internally that the new page's current active slug was last set by the user
-3. the displaced page receives a new unique auto-generated slug
-4. the displaced page is switched to internal auto-slug behavior, even if its previous slug had originally been user-set
-5. all internal links targeting the displaced page are rewritten to its new slug
-6. all internal links targeting the page receiving the enforced slug are rewritten if needed
-7. the reassigned slug no longer resolves to the displaced page
+2. the displaced page receives a new unique slug generated from its current extracted title, falling back to `document_id` if needed
+3. all internal links targeting the displaced page are rewritten to its new slug
+4. all internal links targeting the page receiving the enforced slug are rewritten if needed
+5. the reassigned slug no longer resolves to the displaced page
 
-This rule is intentionally simple: once a page loses its active slug to another page, it always falls back to a fresh auto-generated slug rather than requiring the user to manually choose a replacement slug during the same flow.
-
-#### 6. Clearing a user-set slug
-
-If the user clears a manually set slug:
-- the page returns to internal auto-slug behavior
-- a fresh auto-generated slug is computed from the current extracted title, falling back to `document_id` if needed
-- collisions are resolved by generating a unique slug
-- all internal links targeting that page are rewritten to the new active slug
+This rule is intentionally simple: once a page loses its active slug to another page, it always falls back to a fresh generated slug rather than requiring the user to manually choose a replacement slug during the same flow.
 
 ### Page deletion from the drawer
 
