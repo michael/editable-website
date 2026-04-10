@@ -35,7 +35,7 @@
 <style>
 	:global(.title-underline) {
 		display: inline;
-		background: linear-gradient(to left, var(--accent), var(--accent));
+		background: linear-gradient(to left, var(--foreground), var(--foreground));
 		background-size: 0 2px;
 		background-position: 0 100%, 100% 100%;
 		background-repeat: no-repeat;

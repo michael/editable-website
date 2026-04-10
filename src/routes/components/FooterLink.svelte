@@ -16,7 +16,7 @@
 			target={render_as_link ? node.target : undefined}
 			class:hover:underline={render_as_link}
 			class:hover:decoration-2={render_as_link}
-			class:hover:decoration-(--accent)={render_as_link}
+			class:hover:decoration-(--foreground)={render_as_link}
 			class:hover:underline-offset-2={render_as_link}
 		>
 			<AnnotatedTextProperty class="inline" path={[...path, 'label']} placeholder="Label" />
