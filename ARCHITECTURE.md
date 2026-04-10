@@ -182,42 +182,188 @@ Assets (images, videos) are stored as files in `ASSET_PATH`. Assets are referenc
 - **Nav document** — a single shared document containing the navigation structure (`nav` node + `nav_item` nodes). Referenced by page documents via the `nav` property on the `page` node.
 - **Footer document** — a single shared document containing the footer structure (`footer` node + `footer_link_column` + `footer_link` nodes). Referenced by page documents via the `footer` property on the `page` node.
 
+### Page ids, slugs, and routes
+
+Page documents continue to have a stable internal `document_id`, but public page URLs are **slug-based**, not id-based.
+
+**Key rule:**
+- `document_id` is the durable internal identity
+- `slug` is the human-readable public route segment
+
+Examples:
+- internal id: `WRfteHhfPvzJBJjvFxQCEpg`
+- public slug: `survey`
+- public URL: `/survey`
+
+This separation keeps internal references stable while allowing pretty URLs.
+
+#### Slug generation
+
+Auto-generated slugs are derived from the page summary title using the `slugify` package.
+
+Use:
+- `slugify(title, { lower: true, strict: true, trim: true })`
+
+If no title can be extracted on save:
+- fall back to the page's `document_id` as the slug source
+
+If the generated slug is empty after slugification:
+- fall back to the page's `document_id`
+
+If the candidate slug collides with an existing active slug:
+- generate a unique slug deterministically by suffixing
+- examples: `survey`, `survey-2`, `survey-3`, ...
+
+Auto-generated slugs must be treated as **derived but persistent**:
+- they are created on first save
+- they update when the extracted title changes
+- they must **not** overwrite a user-defined custom slug
+
+#### Slug ownership and history
+
+The system needs a durable mapping from slugs to page documents, including old slugs that should continue to resolve.
+
+A page therefore has:
+- one **current active slug**
+- zero or more **historical slugs**
+
+Historical slugs exist so that when an auto-generated slug changes because the title changed, old shared URLs do not break.
+
+This requires a slug mapping table in the database rather than storing only a single slug string on the page row.
+
+Conceptually, the mapping must support:
+- resolving a slug to a `document_id`
+- distinguishing the current active slug from historical aliases
+- tracking whether the current active slug is auto-generated or custom
+
+#### Custom slugs
+
+Users can set a custom slug from the page browser ellipsis menu.
+
+When a page has a custom slug:
+- that slug becomes the page's active slug
+- the page is marked as using a custom slug
+- future title changes must **not** auto-rewrite that slug
+
+If the user later clears the custom slug:
+- the page returns to auto-generated slug behavior internally
+- the current title is re-evaluated
+- a fresh unique auto slug is assigned
+- the previously active slug becomes a historical alias unless that slug is explicitly reassigned to another page
+
+User-facing behavior should stay simple:
+- the UI shows only the page's current slug
+- the UI does not expose an "auto mode" vs "custom mode" concept
+- internally, the system tracks whether the current active slug was last set by the user
+- if the current active slug was last set by the user, title changes do not auto-update it
+- if the current active slug was not last set by the user, title changes may auto-update it
+
+This keeps the mental model simple for users while preserving deterministic behavior internally.
+
+#### Slug collisions and reassignment
+
+If a user tries to assign a custom slug that is already used elsewhere, the UI must offer two choices:
+
+1. **Cancel** — keep everything unchanged
+2. **Enforce** — claim that slug for the current page
+
+There are two collision cases:
+
+**Case A — the slug is the active slug of another page**
+
+If the user chooses **Enforce**:
+1. the target page receives the requested slug as its new active slug
+2. the page that previously owned that slug must first receive a new unique **auto-generated** slug
+3. the displaced page is switched to internal auto-slug behavior, even if its previous slug had originally been user-set
+4. all internal links that pointed to the displaced page's old slug must be rewritten to the displaced page's new slug
+5. the old slug must no longer resolve to the displaced page, because it now belongs to the new page
+
+**Case B — the slug is only a historical alias of another page**
+
+If the user chooses **Enforce**:
+1. remove that historical alias from the page that currently owns it
+2. assign the slug as the new active slug of the target page
+3. if the target page's active slug changed, rewrite all internal links that target the target page
+4. do not change the other page's active slug, because it did not lose its current slug
+
+This is the one case where an old slug should **not** remain as a historical alias for the previous owner, because the slug has been intentionally reassigned.
+
+#### Link rewriting rule
+
+Internal page links are slug-based, so whenever a page's active slug changes, all internal links that target that page must be updated to the new slug.
+
+This applies to:
+- automatic slug changes caused by title changes
+- switching from auto slug to custom slug
+- clearing a custom slug and returning to auto mode
+- forced slug reassignment from one page to another
+
+This is a deliberate tradeoff:
+- stable ids would make link maintenance simpler
+- but pretty shareable URLs are more important for this product
+
+The system therefore treats slug changes as a graph rewrite operation, not just a local page metadata update.
+
+#### Resolution rules
+
+Slug resolution must behave as follows:
+
+- `/` still resolves to the configured home page
+- `/:slug` resolves by looking up the slug mapping table
+- if the slug is the current active slug of a page, load that page
+- if the slug is a historical alias of a page, also load that page
+- if the slug is unknown, return 404
+
+For canonicalization:
+- if a request comes in via a historical alias, the app should still resolve the page
+- the response must issue a `301` redirect to the page's current active slug
+- old slugs continue to work only as redirecting aliases unless that slug has been explicitly reassigned to another page
+- `/` is always the canonical URL for the home page
+- the home page itself is not user-switchable as a different page; users edit the home page's content rather than reassigning which page is home
+- slug editing is hidden entirely for the home page in the page browser UI
+
 ### Document composition
 
 Svedit operates on a single flat document — it has no concept of "shared" vs. "local" nodes. The server is responsible for stitching documents together on read and splitting them apart on write.
 
 **On read (loading a page):**
 
-1. Fetch the page document from the database
-2. Read the `nav` and `footer` references from the page's root node
-3. Fetch those shared documents from the database
-4. Merge all nodes into a single flat `nodes` map
-5. Return the combined document to the client
+1. Resolve the incoming slug to a page document
+2. Fetch the page document from the database
+3. Read the `nav` and `footer` references from the page's root node
+4. Fetch those shared documents from the database
+5. Merge all nodes into a single flat `nodes` map
+6. Return the combined document to the client
 
 ```
-page document          nav document          footer document
-┌──────────────┐      ┌──────────────┐      ┌──────────────┐
-│ page_1       │      │ nav_1        │      │ footer_1     │
-│   nav: nav_1 │─────▶│ nav_item_1   │      │ footer_col_1 │
-│   footer: …  │──┐   │ nav_item_2   │      │ footer_lnk_1 │
-│ prose_1      │  │   │ ...          │      │ ...          │
-│ feature_1    │  │   └──────────────┘      └──────────────┘
-│ ...          │  └────────────────────────────────▲
-└──────────────┘
+slug mapping           page document          nav document          footer document
+┌──────────────┐      ┌──────────────┐      ┌──────────────┐      ┌──────────────┐
+│ survey       │─────▶│ page_1       │      │ nav_1        │      │ footer_1     │
+│ about        │      │   nav: nav_1 │─────▶│ nav_item_1   │      │ footer_col_1 │
+│ old-survey   │──┐   │   footer: …  │──┐   │ nav_item_2   │      │ footer_lnk_1 │
+└──────────────┘  │   │ prose_1      │  │   │ ...          │      │ ...          │
+                  │   │ feature_1    │  │   └──────────────┘      └──────────────┘
+                  └──▶│ ...          │  └────────────────────────────────▲
+                      └──────────────┘
 
-                        combined document sent to client
-                    ┌────────────────────────────────────┐
-                    │ page_1, nav_1, nav_item_1, ...     │
-                    │ prose_1, feature_1, ...             │
-                    │ footer_1, footer_col_1, ...         │
-                    └────────────────────────────────────┘
+                           combined document sent to client
+                    ┌──────────────────────────────────────────┐
+                    │ page_1, nav_1, nav_item_1, ...           │
+                    │ prose_1, feature_1, ...                   │
+                    │ footer_1, footer_col_1, ...               │
+                    └──────────────────────────────────────────┘
 ```
 
 **On write (saving a page):**
 
 1. Receive the combined document from the client
 2. Determine which nodes belong to the nav document, the footer document, and the page document (by walking the graph from each root node)
-3. Write each document back to its own row in the database
+3. Extract the page summary title
+4. Determine whether the page uses an auto slug or a custom slug
+5. If the page's current slug was not last set by the user, compute the desired slug from the extracted title using `slugify`, falling back to `document_id` if needed
+6. Only change the active slug if the newly generated slug candidate differs from the current active slug
+7. If the active slug changes, update slug mappings and rewrite all internal links that target that page
+8. Write each document back to its own row in the database
 
 This means changes to the nav or footer made on any page are persisted to the shared document and will be reflected on all pages.
 
@@ -232,7 +378,13 @@ This id is stable from the beginning, even before the document is persisted. The
 
 The transient `/new` document must be composed from the **current shared nav and footer documents in the database**, not from the static demo document. This ensures that if shared nav or footer content has been edited elsewhere, the new page starts from that latest shared state.
 
-On first save, the client sends that already-generated id to the server with `create: true`. The server persists the page under that id if it does not already exist. No server-side id allocation or root-id rewrite is needed.
+On first save:
+- the client sends that already-generated id to the server with `create: true`
+- the server persists the page under that id if it does not already exist
+- the server also assigns the page its first active slug
+- that first slug is auto-generated from the extracted title, or falls back to the id if no title can be extracted
+
+No server-side id allocation or root-id rewrite is needed.
 
 The `/new` route starts in edit mode immediately.
 
@@ -557,28 +709,32 @@ This can also run on save if a document previously referenced assets it no longe
 
 ### Documents
 
-- `GET /api/documents/:id` — load a document (with shared documents stitched in)
-- `PUT /api/documents/:id` — save a document (server splits shared nodes back out, updates `asset_refs`)
-- First save from `/new` uses the same save path, but with `create: true`. The page id is already client-generated via nanoid, so the server persists that exact id instead of allocating a new one.
+- `GET /api/documents/:slug` — load a page document by slug (with shared documents stitched in)
+- `PUT /api/documents/:slug` — save a document addressed by its current slug; server resolves slug → document, splits shared nodes back out, updates `asset_refs`, updates slug mappings if needed, and rewrites internal links if the active slug changes
+- First save from `/new` still uses the same save path with `create: true`. The page id is already client-generated via nanoid, so the server persists that exact id and assigns the first active slug during save.
 
 ### Internal page href rules
 
-Internal page links use the dynamic `/:page_id` route shape.
+Internal page links use the dynamic `/:slug` route shape.
+
+All persisted internal page URLs are stored as href strings, so link rewriting should inspect every schema property named `href` and update any internal page URL found there.
 
 **Valid internal page hrefs:**
 
-- `/${page_id}` — a direct link to another page document
+- `/${slug}` — a direct link to another page document
 - `/` — the configured home page
-- `/${page_id}#section` — counts as a link to `${page_id}` for reachability and `document_refs`; the fragment is ignored for graph purposes
+- `/${slug}#section` — counts as a link to the page resolved by `${slug}` for reachability and `document_refs`; the fragment is ignored for graph purposes
 - `/#section` — counts as a link to the home page only if it is used from a different page; when used on the home page itself, it is just an intra-page anchor and does not create a document reference
 
 **Not internal page links:**
 
-- pure same-page anchors (for example `#section`, or `/#section` on the home page, or `/${current_page_id}#section` on that same page)
+- pure same-page anchors (for example `#section`, or `/#section` on the home page, or `/${current_page_slug}#section` on that same page)
 - external URLs
-- any other href that does not resolve to `/` or `/:page_id`
+- any other href that does not resolve to `/` or `/:slug`
 
 When extracting `document_refs`, fragments are stripped before evaluating the target page. The graph tracks document-to-document references only, never section-level anchors.
+
+For graph purposes, internal links should be normalized to the target page's `document_id` after slug resolution. This ensures that slug changes do not change the underlying reference graph identity.
 
 ### Assets
 
@@ -670,8 +826,10 @@ The page drawer needs lightweight summaries for each page:
 
 - a display title
 - an optional preview image
+- the current active slug
+- whether that slug is auto-generated or custom
 
-For the initial implementation, these summaries are extracted **on the fly** in a server-side helper used by the page-browser query. They are **not** cached in the database yet. This keeps the system simple and avoids introducing additional summary columns or synchronization logic before there is evidence that summary extraction is a performance problem.
+For the initial implementation, title and preview summaries are extracted **on the fly** in a server-side helper used by the page-browser query. They are **not** cached in the database yet. This keeps the system simple and avoids introducing additional summary columns or synchronization logic before there is evidence that summary extraction is a performance problem.
 
 Summary extraction should only inspect the **page-local body content**. Shared `nav` and `footer` content must not influence a page's summary, because that would cause many pages to inherit the same logo, links, or other shared content as their title/preview.
 
@@ -684,6 +842,8 @@ Summary extraction should only inspect the **page-local body content**. Shared `
 
 The exact heading-like layouts are defined by the page schema / text node semantics in the current implementation. The important part is that heading-like content is preferred over arbitrary text properties.
 
+This same extracted title is also the source for auto-generated slugs.
+
 **Preview image extraction order:**
 
 1. explicit page-level preview image field if one is added in the future
@@ -694,19 +854,114 @@ Because the drawer already has a strong illustrated page fallback, `null` is per
 
 If this on-the-fly extraction later proves too costly, the same extraction helper can become the canonical summary generator for a cached summary written on save. But caching is an optimization step for later, not part of the initial multi-page implementation.
 
-### Page deletion from the drawer
+### Page slug management from the drawer
 
-The page drawer supports per-page actions via an anchored ellipsis menu. For now the menu contains:
+The page drawer ellipsis menu must support slug management in addition to page actions.
+
+For this architecture step, the menu needs to support:
 
 - `Open in new tab`
+- `Set custom slug`
 - `Delete`
 
-Deleting a page is intentionally simple and does **not** attempt to repair incoming links. If a reachable page is deleted, other pages may still contain internal links pointing to its old route. Those links become dead links until the author updates or removes them.
+The slug editing flow must cover these cases:
 
-Deletion requires confirmation, with copy depending on whether the page is a draft or a reachable page:
+#### User-facing slug editing model
+
+The page browser should present slug editing in a simple way:
+- show the current slug
+- allow the user to change it
+- do not expose "auto mode" or "custom mode" terminology in the UI
+
+Internally, the system tracks whether the current active slug was last set by the user:
+- if yes, future title changes do not auto-update the slug
+- if no, future title changes may auto-update the slug
+
+This gives users a simple mental model:
+- "the slug is whatever is currently shown"
+- "if I change it manually, the system respects that"
+
+#### 1. Setting a slug that is unused
+
+If the requested slug is not currently used as either an active slug or a historical alias:
+- assign it to the page as the new active slug
+- mark internally that the current active slug was last set by the user
+- preserve the previous active slug as a historical alias
+
+#### 2. Setting a slug equal to the page's own current active slug
+
+This is forbidden as a no-op edit:
+- the UI should reject it
+- no database changes are made
+
+#### 3. Setting a slug equal to the page's own historical alias
+
+If the requested slug is already a historical alias of the same page:
+- promote that alias back to the page's active slug
+- remove the historical alias entry for that slug
+- move the previously active slug into historical aliases
+- mark internally that the current active slug was last set by the user
+- rewrite internal links targeting that page if the active slug changed
+
+#### 4. Setting a slug that is a historical alias of another page
+
+Historical aliases are still reserved. The UI must offer:
+- `Cancel`
+- `Enforce`
+
+If the user chooses `Enforce`:
+1. remove that historical alias from the page that currently owns it
+2. assign the slug as the new active slug of the target page
+3. mark internally that the target page's current active slug was last set by the user
+4. rewrite internal links targeting the target page if its active slug changed
+5. do not change the other page's active slug, because that page did not lose its current slug
+
+This avoids ambiguous resolution and keeps slug ownership explicit.
+
+#### 5. Setting a slug that is the active slug of another page
+
+The UI must explain that the slug is already in use and offer:
+- `Cancel`
+- `Enforce`
+
+In practice, most users should cancel and first free up the slug they want. The enforce flow exists for advanced cases, but it must still behave predictably.
+
+If the user chooses `Enforce`:
+1. the requested slug becomes active on the new page
+2. mark internally that the new page's current active slug was last set by the user
+3. the displaced page receives a new unique auto-generated slug
+4. the displaced page is switched to internal auto-slug behavior, even if its previous slug had originally been user-set
+5. all internal links targeting the displaced page are rewritten to its new slug
+6. all internal links targeting the page receiving the enforced slug are rewritten if needed
+7. the reassigned slug no longer resolves to the displaced page
+
+This rule is intentionally simple: once a page loses its active slug to another page, it always falls back to a fresh auto-generated slug rather than requiring the user to manually choose a replacement slug during the same flow.
+
+#### 6. Clearing a user-set slug
+
+If the user clears a manually set slug:
+- the page returns to internal auto-slug behavior
+- a fresh auto-generated slug is computed from the current extracted title, falling back to `document_id` if needed
+- collisions are resolved by generating a unique slug
+- all internal links targeting that page are rewritten to the new active slug
+
+### Page deletion from the drawer
+
+Deleting a page removes its active slug and all historical aliases.
+
+When a page is deleted:
+1. remove its active slug and all historical aliases from the slug mapping table
+2. delete the page document
+3. update `document_refs` accordingly
+
+Broken links are acceptable after deletion. The intended workflow is:
+- if a page is still linked, the user should first remove those references so the page becomes a draft again
+- then the user can delete it
+
+Deletion still requires confirmation, with copy depending on whether the page is a draft or a reachable page:
 
 1. Draft: `Are you sure you want to delete this draft?`
-2. Reachable page: `Are you sure you want to delete this page? You'll leave some dead links on the page.`
+2. Reachable page: `Are you sure you want to delete this page? It is still linked from other pages. Remove those links first if you want to avoid broken links.`
 
 The configured home page cannot be deleted. In the drawer UI this is the first page in the page listing and its delete action is unavailable.
 
