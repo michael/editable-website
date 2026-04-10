@@ -239,15 +239,16 @@ Conceptually, the mapping must support:
 
 #### Custom slugs
 
-Users can change a page's URL from the page browser ellipsis menu.
+Users can change a page's Page URL from the page browser ellipsis menu.
 
-When a user changes a page URL:
+When a user changes a page's slug:
 - that slug becomes the page's active slug
 - the previously active slug becomes a historical alias unless that slug is explicitly reassigned to another page
 
 User-facing behavior should stay simple:
-- the UI shows only the page's current URL
-- the UI can describe it as "the address/URL your page will be reachable at"
+- the UI shows the current Page URL
+- the UI can describe it in user-facing copy as "the Page URL your page will be reachable at"
+- the UI can present it as `example.com/[your-slug-here]`, with only the part after the slash editable
 - the UI does not expose an "auto mode" vs "custom mode" concept
 - the system auto-generates the first slug on first save
 - after that, the slug stays stable unless the user explicitly changes it
@@ -289,7 +290,7 @@ Internal page links are slug-based, so whenever a page's active slug changes, al
 
 This applies to:
 - manually changing a page slug
-- forced slug reassignment from one page to another
+- enforcing reassignment of a historical alias from one page to another
 
 This is a deliberate tradeoff:
 - stable ids would make link maintenance simpler
@@ -859,15 +860,16 @@ The slug editing flow must cover these cases:
 
 #### User-facing slug editing model
 
-The page browser should present URL editing in a simple way:
-- show the current URL
+The page browser should present Page URL editing in a simple way:
+- show the current Page URL
 - allow the user to change it
-- describe it in user-facing copy as "the address/URL your page will be reachable at"
+- describe it in user-facing copy as "the Page URL your page will be reachable at"
+- present it as `example.com/[your-slug-here]`, with only the part after the slash editable
 - do not expose "auto mode" or "custom mode" terminology in the UI
 
 This gives users a simple mental model:
-- "the URL is whatever is currently shown"
-- "the system picks an initial URL for me"
+- "the Page URL is whatever is currently shown"
+- "the system picks an initial Page URL for me"
 - "if I change it manually, the system respects that"
 
 #### 1. Setting a slug that is unused
