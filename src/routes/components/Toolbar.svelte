@@ -54,9 +54,9 @@
 	// On mobile also pin to left edge so the toolbar can scroll horizontally
 	const TW_TOOLBAR_LEFT = 'left-5 sm:left-7 md:left-auto';
 
-	const TW_TOOLBAR_BTN = 'flex items-center justify-center size-9 rounded-full text-(--foreground) bg-(--background) border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] cursor-pointer pointer-events-auto shadow-md transition-all duration-150 active:scale-95 active:translate-y-px';
+	const TW_TOOLBAR_BTN = 'flex items-center justify-center size-9 rounded-full text-(--foreground) bg-(--background) border border-[color-mix(in_oklch,var(--foreground)_10%,transparent)] cursor-pointer pointer-events-auto shadow-sm transition-all duration-150 active:scale-95 active:translate-y-px';
 	const TW_TOOLBAR_BTN_DISABLED = 'text-[oklch(from_var(--foreground)_0.8_0_0)] !cursor-not-allowed';
-	const TW_TOOLBAR_BTN_HOVER = 'hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))] hover:border-[color-mix(in_oklch,var(--foreground)_28%,transparent)] active:bg-[color-mix(in_oklch,var(--foreground)_16%,var(--background))] active:border-[color-mix(in_oklch,var(--foreground)_36%,transparent)] active:scale-95 active:translate-y-px';
+	const TW_TOOLBAR_BTN_HOVER = 'hover:bg-[color-mix(in_oklch,var(--foreground)_4%,var(--background))] hover:border-[color-mix(in_oklch,var(--foreground)_14%,transparent)] active:bg-[color-mix(in_oklch,var(--foreground)_8%,var(--background))] active:border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] active:scale-95 active:translate-y-px';
 
 	function handle_btn_mousedown(event, command) {
 		event.preventDefault();
@@ -113,7 +113,7 @@
 							class:!text-(--svedit-editing-stroke)={session.commands.toggle_strong?.active}
 							class:!border-(--svedit-editing-stroke)={session.commands.toggle_strong?.active}
 							onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_strong)}
-							title="Bold (⌘B)"
+							title="Bold (⌘ B)"
 						>
 							<svg class="size-4" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path d="M3.7124 13V1.13403H7.8774C10.1894 1.13403 11.4814 2.35803 11.4814 4.29603C11.4814 5.63903 10.7844 6.43803 9.5434 6.79503V6.89703C11.0054 7.25403 11.8554 8.13803 11.8554 9.73603C11.8554 11.725 10.5124 13 8.2684 13H3.7124ZM6.1944 11.215H7.4864C8.6934 11.215 9.2544 10.875 9.2544 9.78703V9.29403C9.2544 8.22303 8.6934 7.86603 7.4864 7.86603H6.1944V11.215ZM6.1944 6.16603H7.1634C8.3534 6.16603 8.8804 5.82603 8.8804 4.78903V4.27903C8.8804 3.24203 8.3534 2.91903 7.1634 2.91903H6.1944V6.16603Z" fill="currentColor"></path>
@@ -126,7 +126,7 @@
 							class:!text-(--svedit-editing-stroke)={session.commands.toggle_emphasis?.active}
 							class:!border-(--svedit-editing-stroke)={session.commands.toggle_emphasis?.active}
 							onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_emphasis)}
-							title="Italic (⌘I)"
+							title="Italic (⌘ I)"
 						>
 							<svg class="size-4" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path d="M10.4783 13H3.08325L3.28725 11.742H6.17725L7.74125 2.39203H4.85125L5.05525 1.13403H12.4503L12.2463 2.39203H9.35625L7.79225 11.742H10.6823L10.4783 13Z" fill="currentColor"></path>
@@ -139,7 +139,7 @@
 							class:!text-(--svedit-editing-stroke)={session.commands.toggle_highlight?.active}
 							class:!border-(--svedit-editing-stroke)={session.commands.toggle_highlight?.active}
 							onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_highlight)}
-							title="Highlight (⌘U)"
+							title="Highlight (⌘ U)"
 						>
 							<svg class="size-4" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path d="M0 13H4.63L4.5 8H0V13Z" fill="currentColor"></path>
@@ -153,7 +153,7 @@
 							class:!text-(--svedit-editing-stroke)={session.commands.toggle_link?.active}
 							class:!border-(--svedit-editing-stroke)={session.commands.toggle_link?.active}
 							onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_link)}
-							title="Link (⌘K)"
+							title="Link (⌘ K)"
 						>
 							<svg class="size-4" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path d="M8.88461 8.39935C8.51368 8.76122 8.01477 8.96185 7.49658 8.95753C6.97839 8.95321 6.4829 8.7443 6.11804 8.37629L4.68865 6.9469C4.32285 6.58087 4.11546 6.0858 4.11115 5.56833C4.10684 5.05087 4.30595 4.55241 4.6656 4.18033L7.73649 1.05411C8.1086 0.693964 8.60762 0.49492 9.12545 0.500099C9.64328 0.505277 10.1382 0.71426 10.5031 1.08178L11.9324 2.51117C12.2963 2.87966 12.5003 3.37663 12.5003 3.89445C12.5003 4.41228 12.2963 4.90925 11.9324 5.27774L10.5907 6.61952" stroke="currentColor" stroke-linejoin="round"></path>
@@ -185,7 +185,7 @@
 					<button
 						class="{TW_TOOLBAR_BTN} {session.commands.cycle_node_type_next?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
 						onmousedown={(e) => handle_btn_mousedown(e, session.commands.cycle_node_type_next)}
-						title="Cycle type (⌃⇧↓)"
+						title="Cycle type (⌃ ⇧ ↓)"
 					>
 						<!-- T with small arrows icon -->
 						<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -200,7 +200,7 @@
 					<button
 						class="{TW_TOOLBAR_BTN} {session.commands.cycle_layout_next?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
 						onmousedown={(e) => handle_btn_mousedown(e, session.commands.cycle_layout_next)}
-						title="Cycle layout (⌃⇧→)"
+						title="Cycle layout (⌃ ⇧ →)"
 					>
 						<!-- T with right arrow icon -->
 						<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -227,7 +227,7 @@
 					<button
 						class="{TW_TOOLBAR_BTN} {session.commands.undo?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
 						onmousedown={(e) => handle_btn_mousedown(e, session.commands.undo)}
-						title="Undo (⌘Z)"
+						title="Undo (⌘ Z)"
 					>
 						<svg class="size-4" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path d="M2.13794 12C3.42201 13.5285 5.34758 14.5 7.50005 14.5C11.366 14.5 14.5001 11.366 14.5001 7.5C14.5001 3.63401 11.366 0.5 7.50001 0.5C5.50001 0.5 3.75001 1.75 2.50001 3" stroke="currentColor" stroke-linecap="round"></path>
@@ -237,7 +237,7 @@
 					<button
 						class="{TW_TOOLBAR_BTN} {session.commands.redo?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
 						onmousedown={(e) => handle_btn_mousedown(e, session.commands.redo)}
-						title="Redo (⌘⇧Z)"
+						title="Redo (⌘ ⇧ Z)"
 					>
 						<svg class="size-4" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path d="M12.8621 12C11.578 13.5285 9.65242 14.5 7.49995 14.5C3.63395 14.5 0.499947 11.366 0.499947 7.5C0.499947 3.63401 3.634 0.5 7.49999 0.5C9.49999 0.5 11.25 1.75 12.5 3" stroke="currentColor" stroke-linecap="round"></path>
@@ -249,9 +249,9 @@
 				<div class="flex items-center gap-1 pointer-events-none">
 					{#if cancel_command && !cancel_command.disabled}
 						<button
-							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--foreground) bg-(--background) border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] shadow-md transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))] hover:border-[color-mix(in_oklch,var(--foreground)_28%,transparent)] active:bg-[color-mix(in_oklch,var(--foreground)_16%,var(--background))] active:border-[color-mix(in_oklch,var(--foreground)_36%,transparent)] active:scale-95 active:translate-y-px"
+							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--foreground) bg-(--background) border border-[color-mix(in_oklch,var(--foreground)_10%,transparent)] shadow-sm transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--foreground)_4%,var(--background))] hover:border-[color-mix(in_oklch,var(--foreground)_14%,transparent)] active:bg-[color-mix(in_oklch,var(--foreground)_8%,var(--background))] active:border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] active:scale-95 active:translate-y-px"
 							onclick={() => cancel_command.execute()}
-							title="Cancel (⌘⎋ / Ctrl+Esc)"
+							title="Cancel (⌘ ⎋)"
 						>
 							{cancel_button_label}
 						</button>
@@ -259,9 +259,9 @@
 
 					{#if !app_commands.save_document.disabled}
 						<button
-							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--svedit-editing-stroke) bg-(--background) border border-(--svedit-editing-stroke) shadow-md transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))] hover:border-(--svedit-editing-stroke) active:bg-[color-mix(in_oklch,var(--foreground)_16%,var(--background))] active:border-(--svedit-editing-stroke) active:scale-95 active:translate-y-px"
+							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--svedit-editing-stroke) bg-(--background) border border-[color-mix(in_oklch,var(--svedit-editing-stroke)_55%,transparent)] shadow-sm transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--foreground)_4%,var(--background))] hover:border-[color-mix(in_oklch,var(--svedit-editing-stroke)_70%,transparent)] active:bg-[color-mix(in_oklch,var(--foreground)_8%,var(--background))] active:border-[color-mix(in_oklch,var(--svedit-editing-stroke)_82%,transparent)] active:scale-95 active:translate-y-px"
 							onclick={() => app_commands.save_document.execute()}
-							title="Save (⌘S)"
+							title="Save (⌘ S)"
 						>
 							Save
 						</button>
