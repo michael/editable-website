@@ -12,11 +12,9 @@
 	let props = $props();
 
 	let initial_doc = $derived(props.initial_doc);
-	let initial_slug = $derived(props.initial_slug ?? null);
 	let is_new = $derived(props.is_new ?? false);
 
 	let initial_doc_json = $derived(JSON.stringify(props.initial_doc));
-	let initial_document_id = $derived(props.initial_doc.document_id);
 
 	let app_el = $state();
 	let svedit_ref = $state();
@@ -43,12 +41,7 @@
 
 	set_page_browser(page_browser);
 
-	$effect(() => {
-		page_browser.set_current_page({
-			document_id: session?.doc?.document_id ?? initial_document_id,
-			slug: page_browser.state.current_page_slug ?? initial_slug
-		});
-	});
+
 
 	$effect(() => {
 		document.documentElement.style.scrollBehavior = editable ? 'auto' : 'smooth';
@@ -234,10 +227,6 @@
 					try {
 						await get_document(result.slug);
 						current_is_new = false;
-						page_browser.set_current_page({
-							document_id: result.document_id,
-							slug: result.slug
-						});
 						invalidate_page_browser_data();
 						await goto(resolve(`/${result.slug}`), { replaceState: true });
 						return;

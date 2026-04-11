@@ -298,7 +298,11 @@
 			browser_data = null;
 			loaded_version = -1;
 			page_browser.invalidate?.();
-			await page_browser.handle_page_deleted?.(deleted_document_id, home_page_id);
+			await page_browser.handle_page_deleted?.(
+				deleted_document_id,
+				home_page_id,
+				page_url_dialog_item?.document_id ?? confirm_item.document_id
+			);
 			await load_browser_data();
 		} catch (err) {
 			console.error('Failed to delete page', err);

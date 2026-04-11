@@ -5,7 +5,7 @@
 	const props = $props();
 	const page_data = $derived(props.data);
 	const has_backend = $derived(page_data.has_backend);
-	const initial_doc = $derived(has_backend ? page_data.document : demo_doc);
+	const initial_doc = $derived(has_backend && page_data.document ? page_data.document : demo_doc);
 </script>
 
 <svelte:head>

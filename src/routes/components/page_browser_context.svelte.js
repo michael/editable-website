@@ -11,9 +11,7 @@ export function create_page_browser(options) {
 	const state = $state({
 		open: false,
 		mode: 'navigate',
-		on_select_page: null,
-		current_page_id: null,
-		current_page_slug: null
+		on_select_page: null
 	});
 
 	function reset() {
@@ -51,13 +49,8 @@ export function create_page_browser(options) {
 		}
 	}
 
-	function set_current_page(page) {
-		state.current_page_id = page?.document_id ?? null;
-		state.current_page_slug = page?.slug ?? null;
-	}
-
-	async function handle_page_deleted(document_id, home_page_id) {
-		if (state.current_page_id !== document_id) return;
+	async function handle_page_deleted(document_id, home_page_id, current_document_id) {
+		if (current_document_id !== document_id) return;
 
 		reset();
 		if (home_page_id) {
@@ -73,7 +66,6 @@ export function create_page_browser(options) {
 		open_select,
 		close,
 		handle_page_selected,
-		set_current_page,
 		handle_page_deleted
 	};
 }
