@@ -217,7 +217,7 @@
 		<CreateLink />
 	{/if}
 
-	{#if has_backend && (!svedit.editable || page_browser.state.open)}
+	{#if has_backend() && (!svedit.editable || page_browser.state.open)}
 		<Drawer bind:open={page_browser.state.open} label="Pages">
 			<PagesDrawer />
 		</Drawer>

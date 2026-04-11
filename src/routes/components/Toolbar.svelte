@@ -71,7 +71,7 @@
 			{#if !editable}
 				<!-- Read mode: Pages + Edit buttons -->
 				<div class="flex items-center gap-1">
-					{#if has_backend}
+					{#if has_backend()}
 						<button
 							class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
 							onclick={() => page_browser?.open_navigate()}
