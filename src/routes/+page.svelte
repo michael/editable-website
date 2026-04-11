@@ -18,5 +18,10 @@
 	See https://github.com/michael/editable-website/issues/40
 -->
 {#key initial_doc.document_id}
-	<PageEditor initial_doc={initial_doc} has_backend={has_backend} is_new={false} />
+	<PageEditor
+		initial_doc={initial_doc}
+		initial_slug={has_backend ? page_data.slug : null}
+		has_backend={has_backend}
+		is_new={false}
+	/>
 {/key}

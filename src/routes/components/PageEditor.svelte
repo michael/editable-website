@@ -8,15 +8,15 @@
 	import { create_session } from '../create_session.js';
 	import { create_page_browser, set_page_browser } from './page_browser_context.svelte.js';
 
-	/** @type {{ initial_doc: any, has_backend?: boolean, is_new?: boolean }} */
+	/** @type {{ initial_doc: any, initial_slug?: string | null, has_backend?: boolean, is_new?: boolean }} */
 	let props = $props();
 
 	let initial_doc = $derived(props.initial_doc);
-	let has_backend = $derived(props.has_backend ?? true);
+	let initial_slug = $derived(props.initial_slug ?? null);
 	let is_new = $derived(props.is_new ?? false);
 
-	let initial_doc_json = $derived(JSON.stringify(initial_doc));
-	let initial_document_id = $derived(initial_doc.document_id);
+	let initial_doc_json = $derived(JSON.stringify(props.initial_doc));
+	let initial_document_id = $derived(props.initial_doc.document_id);
 
 	let app_el = $state();
 	let svedit_ref = $state();
@@ -29,7 +29,7 @@
 
 	let browser_data_version = $state(0);
 
-	setContext('has_backend', has_backend);
+	setContext('has_backend', () => props.has_backend ?? true);
 
 	const page_browser = create_page_browser({ goto });
 
@@ -40,12 +40,14 @@
 	});
 
 	page_browser.invalidate = invalidate_page_browser_data;
-	page_browser.set_current_page(initial_document_id);
 
 	set_page_browser(page_browser);
 
 	$effect(() => {
-		page_browser.set_current_page(session?.doc?.document_id ?? initial_document_id);
+		page_browser.set_current_page({
+			document_id: session?.doc?.document_id ?? initial_document_id,
+			slug: page_browser.state.current_page_slug ?? initial_slug
+		});
 	});
 
 	$effect(() => {
@@ -134,7 +136,7 @@
 		}
 
 		async execute() {
-			if (!has_backend) {
+			if (!(props.has_backend ?? true)) {
 				console.log('Document saved', session.to_json());
 				session.selection = null;
 				this.context.editable = false;
@@ -204,7 +206,7 @@
 					replace_blob_urls(doc_json.nodes, mapping);
 				}
 
-				/** @type {{ ok: boolean, document_id?: string, created?: boolean }} */
+				/** @type {{ ok: boolean, document_id?: string, slug?: string, created?: boolean }} */
 				const result = await persist_document({
 					...doc_json,
 					create: current_is_new
@@ -228,12 +230,16 @@
 				session.selection = null;
 				this.context.editable = false;
 
-				if (result?.created && result.document_id) {
+				if (result?.created && result.document_id && result.slug) {
 					try {
-						await get_document(result.document_id);
+						await get_document(result.slug);
 						current_is_new = false;
+						page_browser.set_current_page({
+							document_id: result.document_id,
+							slug: result.slug
+						});
 						invalidate_page_browser_data();
-						await goto(resolve(`/${result.document_id}`), { replaceState: true });
+						await goto(resolve(`/${result.slug}`), { replaceState: true });
 						return;
 					} catch (read_back_err) {
 						console.error('Created page could not be read back yet:', read_back_err);
@@ -289,14 +295,12 @@
 	});
 	key_mapper.push_scope(app_key_map);
 
-	let session = $state(create_session(initial_doc));
-	let loaded_document_id = $state(initial_document_id);
+	let session = $derived.by(() => create_session(props.initial_doc));
+	let loaded_document_id = $derived(props.initial_doc.document_id);
 
 	$effect(() => {
-		if (loaded_document_id === initial_document_id) return;
-		session = create_session(initial_doc);
-		loaded_document_id = initial_document_id;
-		editable = !!is_new;
+		loaded_document_id;
+		editable = !!(props.is_new ?? false);
 	});
 </script>
 
@@ -310,7 +314,7 @@
 		{focus_canvas}
 	/>
 	<Svedit {session} bind:editable bind:this={svedit_ref} path={[session.doc.document_id]} />
-	{#if has_backend}
+	{#if props.has_backend ?? true}
 		<SaveProgressModal
 			visible={save_progress_visible}
 			message={save_progress_message}

@@ -12,7 +12,8 @@ export function create_page_browser(options) {
 		open: false,
 		mode: 'navigate',
 		on_select_page: null,
-		current_page_id: null
+		current_page_id: null,
+		current_page_slug: null
 	});
 
 	function reset() {
@@ -37,19 +38,22 @@ export function create_page_browser(options) {
 		reset();
 	}
 
-	function handle_page_selected(document_id) {
+	function handle_page_selected(page) {
 		if (state.mode === 'select' && state.on_select_page) {
-			state.on_select_page(document_id);
+			state.on_select_page(page);
 			reset();
 			return;
 		}
 
 		reset();
-		void goto(`/${document_id}`);
+		if (page?.slug) {
+			void goto(`/${page.slug}`);
+		}
 	}
 
-	function set_current_page(document_id) {
-		state.current_page_id = document_id ?? null;
+	function set_current_page(page) {
+		state.current_page_id = page?.document_id ?? null;
+		state.current_page_slug = page?.slug ?? null;
 	}
 
 	async function handle_page_deleted(document_id, home_page_id) {
