@@ -8,14 +8,14 @@
 	let { node, path } = $props();
 
 	let is_annotation = $derived(svedit.session.kind(node) === 'annotation');
-	let internal_page_id = $derived(get_internal_page_id(node?.href));
+	let internal_page_slug = $derived(get_internal_page_slug(node?.href));
 
 	let page_preview = $derived.by(async () => {
-		if (!has_backend) return null;
-		if (!internal_page_id) return null;
+		if (!has_backend()) return null;
+		if (!internal_page_slug) return null;
 
 		const api_module = await import('$lib/api.remote.js');
-		return api_module.get_internal_link_preview(`/${internal_page_id}`);
+		return api_module.get_internal_link_preview(`/${internal_page_slug}`);
 	});
 
 	function handle_edit() {
@@ -35,18 +35,18 @@
 		}
 	}
 
-	function get_internal_page_id(href) {
+	function get_internal_page_slug(href) {
 		if (typeof href !== 'string') return null;
 		if (!href.startsWith('/')) return null;
 
 		const pathname = href.split(/[?#]/, 1)[0];
 		if (!pathname || pathname === '/') return null;
 
-		const page_id = pathname.slice(1);
-		if (!page_id) return null;
-		if (page_id.includes('/')) return null;
+		const page_slug = pathname.slice(1);
+		if (!page_slug) return null;
+		if (page_slug.includes('/')) return null;
 
-		return page_id;
+		return page_slug;
 	}
 
 	function is_image_preview(preview_image_src) {
@@ -98,7 +98,7 @@
 				</button>
 			</div>
 
-			{#if internal_page_id}
+			{#if internal_page_slug}
 				<div class="border-t border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] px-3 py-3">
 					{#await page_preview}
 						<div class="text-sm text-[color-mix(in_oklch,var(--foreground)_72%,transparent)]">Loading page preview…</div>
