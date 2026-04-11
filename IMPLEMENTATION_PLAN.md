@@ -2,6 +2,353 @@
 
 This document tracks what to implement next. One step at a time. All implementation must conform to the design decisions in [ARCHITECTURE.md](ARCHITECTURE.md) — if a conflict arises, update the architecture first, then implement.
 
+## Next implementation draft — slug-based page URLs
+
+This step replaces id-based public page routes with slug-based page URLs while keeping `document_id` as the stable internal identity.
+
+### Goal
+
+Implement human-readable page URLs with these rules:
+
+- each page keeps a stable internal `document_id`
+- each page has one active slug used for its public route
+- old slugs remain as historical aliases and `301` redirect to the current active slug
+- the first slug is generated on first save from the extracted page title using `slugify`
+- after first save, the slug stays stable until the user explicitly changes it
+- active slugs cannot be force-taken from another page
+- historical aliases can be reclaimed with explicit confirmation
+- whenever an active slug changes, all internal persisted `href` links referencing that page are rewritten
+
+### Scope
+
+This step includes:
+
+- database schema for slug storage and lookup
+- slug generation and uniqueness rules
+- slug resolution in page loading routes and APIs
+- save flow updates so first save assigns the initial slug
+- page browser UI for viewing and editing the Page URL
+- historical alias reclaim flow
+- internal href rewrite logic for slug changes
+- canonical redirects from historical aliases to active slugs
+
+This step does not include:
+
+- changing the home page identity
+- exposing slug internals like “auto mode” or “custom mode” in the UI
+- automatic slug updates when titles change after first save
+- repairing broken links on page deletion
+
+### Data model changes
+
+Add a dedicated slug mapping table.
+
+Required fields:
+
+- `slug` — unique text key across all active and historical slugs
+- `document_id` — owning page document id
+- `is_active` — whether this is the page’s current active slug
+- `created_at` — timestamp for ordering/debugging
+
+Constraints and invariants:
+
+- every slug row belongs to exactly one page document
+- a page has exactly one active slug
+- a page may have zero or more inactive historical slugs
+- `slug` is globally unique across the table
+- only page documents participate in slug mapping
+- `documents.document_id` remains the primary internal identity
+
+Recommended schema shape:
+
+- new table `document_slugs`
+- unique index on `slug`
+- unique partial index on active slug per `document_id`
+
+### Slug generation rules
+
+Use the `slugify` package with:
+
+- `slugify(title, { lower: true, strict: true, trim: true })`
+
+Generation algorithm:
+
+1. extract the page summary title using the same title extraction rules already defined in the architecture
+2. slugify that title
+3. if the result is empty, use `document_id`
+4. if the candidate slug is already used by any active or historical slug row, generate a unique suffix form:
+   - `survey`
+   - `survey-2`
+   - `survey-3`
+   - etc.
+5. persist the chosen slug as the page’s first active slug
+
+Important rule:
+
+- slug generation happens on first save only
+- later title changes do not auto-update the slug
+
+### Route and API changes
+
+Public routing changes from `/:page_id` to `/:slug`.
+
+Required behavior:
+
+- `/` remains the canonical home page route
+- `/:slug` resolves through `document_slugs.slug`
+- if the slug row is active, load that page
+- if the slug row is historical, resolve the page and issue a `301` redirect to the current active slug
+- if no slug row exists, return `404`
+
+API/document loading changes:
+
+- all page-loading entry points that currently accept a page id in the URL must resolve by slug first
+- internal server logic should normalize back to `document_id` immediately after slug resolution
+- all graph/reference logic continues to use `document_id`, not slug strings
+
+### Save flow changes
+
+#### First save of `/new`
+
+On first save of a new page:
+
+1. persist the page document under the already client-generated `document_id`
+2. extract the page title
+3. generate the initial unique slug
+4. insert the active slug row
+5. return both:
+   - `document_id`
+   - active slug
+6. navigate the client from `/new` to `/:slug`
+
+#### Later saves of existing pages
+
+On later saves:
+
+- keep the current active slug unchanged
+- do not regenerate from title
+- continue updating `document_refs`, `asset_refs`, and split shared documents as before
+
+### Slug editing flow in the page browser
+
+The page browser ellipsis menu should expose Page URL editing.
+
+User-facing presentation:
+
+- label it as `Page URL`
+- present it visually as `example.com/[your-slug-here]`
+- only the part after the slash is editable
+
+The UI should not expose:
+
+- auto mode
+- custom mode
+- historical alias internals
+
+#### Validation rules
+
+When the user submits a new slug:
+
+- normalize it with the same slug rules used by generation
+- reject empty results
+- reject a slug equal to the page’s current active slug as a no-op
+- allow a slug equal to one of the page’s own historical aliases
+- allow an unused slug
+- reject an active slug owned by another page
+- offer `Cancel` / `Enforce` only when the slug is a historical alias owned by another page
+
+### Slug change cases
+
+#### Case 1 — unused slug
+
+If the requested slug is unused:
+
+1. insert the old active slug as historical if not already present
+2. make the requested slug the new active slug
+3. rewrite all internal persisted `href` links referencing that page
+4. keep all other slug rows unchanged
+
+#### Case 2 — page’s own historical alias
+
+If the requested slug is already a historical alias of the same page:
+
+1. demote the current active slug to historical
+2. promote the requested historical slug to active
+3. rewrite all internal persisted `href` links referencing that page
+
+#### Case 3 — historical alias owned by another page
+
+If the requested slug is a historical alias of another page:
+
+UI offers:
+
+- `Cancel`
+- `Enforce`
+
+If the user chooses `Enforce`:
+
+1. remove that historical alias row from the other page
+2. demote the current active slug of the target page to historical
+3. assign the requested slug as the target page’s new active slug
+4. rewrite all internal persisted `href` links referencing the target page
+
+The other page keeps its own active slug unchanged.
+
+#### Case 4 — active slug owned by another page
+
+If the requested slug is the active slug of another page:
+
+- reject the change
+- explain that the Page URL is already in use
+- instruct the user to rename the other page first if they want to free it up
+- do not offer force takeover
+- do not mutate the other page in the background
+
+### Internal href rewrite rules
+
+Whenever a page’s active slug changes, rewrite all persisted internal `href` properties referencing that page.
+
+Rewrite scope:
+
+- inspect the schema for every property named `href`
+- inspect all persisted documents that can contain such properties:
+  - page documents
+  - nav document
+  - footer document
+
+Rewrite targets:
+
+- `/${old_slug}`
+- `/${old_slug}#fragment`
+
+Do not rewrite:
+
+- external URLs
+- same-page anchors like `#section`
+- `/`
+- unrelated slugs
+
+Rewrite output:
+
+- `/${new_active_slug}`
+- preserve `#fragment` if present
+
+Implementation rule:
+
+- resolve hrefs to `document_id` before deciding whether they reference the changed page
+- this avoids ambiguity when aliases are involved
+
+### Save-time reference extraction
+
+`document_refs` extraction must continue to normalize internal links to `document_id`.
+
+That means:
+
+- slug changes do not change graph identity
+- only the stored href strings change
+- reachability logic remains document-id based
+
+### Page browser data requirements
+
+Extend the page browser query to return, for each page:
+
+- `document_id`
+- extracted title
+- preview image
+- current active slug
+
+The home page row must additionally be marked so the UI can:
+
+- hide Page URL editing
+- hide delete
+
+### Home page rules
+
+Keep these rules explicit in implementation:
+
+- `/` is always canonical for the home page
+- the home page is not reassigned to another page
+- Page URL editing is hidden for the home page
+- requests to historical aliases of the home page still resolve and `301` redirect to `/`
+
+### Deletion behavior
+
+When deleting a page:
+
+1. delete all slug rows for that `document_id`
+2. delete the page document
+3. update `document_refs`
+4. do not rewrite incoming links
+5. allow broken links to remain
+
+UI behavior:
+
+- if the page is still reachable/linked, warn the user
+- recommended workflow remains: unlink first, then delete
+
+### Required server helpers
+
+Add focused helpers for:
+
+- resolve slug → `{ document_id, is_active, active_slug }`
+- get active slug for `document_id`
+- generate initial unique slug for a page
+- promote/demote slug rows during slug changes
+- reclaim historical alias
+- rewrite internal hrefs referencing a page
+- list pages with active slug + summary data
+
+### Required transaction boundaries
+
+These operations must be atomic:
+
+#### First page save
+- create page row
+- create first active slug row
+
+#### Manual slug change
+- update slug rows
+- rewrite hrefs in all affected documents
+- update `document_refs` for rewritten documents
+
+#### Historical alias reclaim
+- remove alias from old owner
+- update target page active slug
+- rewrite hrefs in all affected documents
+- update `document_refs` for rewritten documents
+
+If any part fails, the whole slug change must roll back.
+
+### Suggested implementation order
+
+1. add database migration for `document_slugs`
+2. add slug resolution helpers and uniqueness helpers
+3. update page loading routes and APIs to resolve by slug
+4. update first-save flow to assign initial slug and navigate to `/:slug`
+5. add page browser query support for active slug
+6. add Page URL editing UI in the page browser
+7. implement manual slug change flow for unused slug and own historical alias
+8. implement historical alias reclaim flow with `Cancel` / `Enforce`
+9. implement href rewriting across all schema `href` properties
+10. wire canonical `301` redirects for historical aliases
+11. hide Page URL editing for the home page
+12. verify delete flow removes slug rows and keeps warning behavior
+
+### Definition of done
+
+This step is done when all of the following are true:
+
+- new pages get a human-readable slug on first save
+- public page routes use `/:slug`
+- old aliases `301` redirect to the current active slug
+- title changes no longer auto-change slugs
+- users can edit Page URL from the page browser
+- active slugs cannot be force-taken from another page
+- historical aliases can be reclaimed with confirmation
+- all internal persisted `href` links referencing a page are rewritten when that page’s active slug changes
+- home page Page URL editing is hidden
+- deleting a page removes all of its slug rows
+
 ## Existing implementation steps (compacted history)
 
 These older steps are kept in compact form as historical context. The durable source of truth is still [ARCHITECTURE.md](ARCHITECTURE.md); this section only captures how the current system got here and which high-level implementation moves were already made.
