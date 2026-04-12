@@ -16,7 +16,7 @@ export async function load({ parent }) {
 
 	return {
 		has_backend,
-		document: result?.document ?? null,
-		slug: result?.slug ?? null
+		document: result.document,
+		slug: result.slug
 	};
 }
