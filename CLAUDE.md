@@ -18,6 +18,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Do NOT think 4 steps ahead or add extra features/improvements
 - Only implement the specific change requested
 - You can suggest what the next step could be, but don't implement it
+- For anything that runs from the home route (`/`) in no-backend / Vercel mode, do NOT add top-level imports of backend-only modules like `$lib/api.remote.js` or anything that pulls in `$lib/server/db.js`
+- In home-route server files, import backend-only code lazily inside the `has_backend` guard so static/Vercel deployments do not evaluate database code at module load time
 
 **Refactoring Guidelines:**
 - During refactors, make ONLY the minimal changes needed (e.g., renaming APIs)
