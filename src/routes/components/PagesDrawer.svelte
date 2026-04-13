@@ -1,4 +1,5 @@
 <script>
+	import { invalidateAll } from '$app/navigation';
 	import { get_page_browser } from './page_browser_context.svelte.js';
 
 	const page_browser = get_page_browser();
@@ -227,6 +228,7 @@
 						page_href: updated_page_href
 					}
 				: null;
+			await invalidateAll();
 			await load_browser_data();
 		} catch (err) {
 			console.error('Failed to update page URL', err);
