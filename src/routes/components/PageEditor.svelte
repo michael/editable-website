@@ -30,6 +30,7 @@
 	let browser_data_version = $state(0);
 
 	let auth_dialog_open = $state(false);
+	let auth_dialog_ref = $state();
 	let auth_password = $state('');
 	let auth_error = $state('');
 	let auth_pending = $state(false);
@@ -38,7 +39,10 @@
 	setContext('is_admin', () => is_admin);
 	setContext('edit_mode', () => edit_mode);
 
-	const page_browser = create_page_browser({ goto });
+	const page_browser = create_page_browser({
+		goto,
+		is_admin: () => is_admin
+	});
 
 	Object.defineProperty(page_browser, 'version', {
 		get() {
@@ -114,11 +118,21 @@
 		auth_pending = false;
 	}
 
+	function handle_auth_dialog_click(event) {
+		if (event.target === auth_dialog_ref) {
+			close_auth_dialog();
+		}
+	}
+
+	function handle_auth_dialog_cancel(event) {
+		event.preventDefault();
+		close_auth_dialog();
+	}
+
 	function enter_edit_mode(next_edit_mode) {
 		editable = true;
 		edit_mode = next_edit_mode;
 		close_auth_dialog();
-		focus_canvas();
 	}
 
 	async function login_and_edit() {
@@ -400,6 +414,14 @@
 			edit_mode = 'admin';
 		}
 	});
+
+	$effect(() => {
+		if (auth_dialog_open && auth_dialog_ref && !auth_dialog_ref.open) {
+			auth_dialog_ref.showModal();
+		} else if (!auth_dialog_open && auth_dialog_ref?.open) {
+			auth_dialog_ref.close();
+		}
+	});
 </script>
 
 <svelte:window onkeydown={key_mapper.handle_keydown.bind(key_mapper)} />
@@ -413,8 +435,13 @@
 	/>
 	<Svedit {session} bind:editable bind:this={svedit_ref} path={[session.doc.document_id]} />
 
-	{#if auth_dialog_open}
-		<dialog class="fixed inset-0 m-auto border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] bg-(--background) p-0 text-(--foreground) shadow-xl" open>
+	<dialog
+		bind:this={auth_dialog_ref}
+		class="fixed inset-0 m-auto border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] bg-(--background) p-0 text-(--foreground) shadow-xl backdrop:bg-black/40"
+		oncancel={handle_auth_dialog_cancel}
+		onclick={handle_auth_dialog_click}
+	>
+		{#if auth_dialog_open}
 			<div class="flex w-[min(28rem,calc(100vw-2rem))] flex-col gap-4 p-5">
 				<div class="flex flex-col gap-1">
 					<h2 class="text-base font-medium">Edit this page</h2>
@@ -469,8 +496,8 @@
 					</div>
 				</div>
 			</div>
-		</dialog>
-	{/if}
+		{/if}
+	</dialog>
 
 	{#if props.has_backend ?? true}
 		<SaveProgressModal
