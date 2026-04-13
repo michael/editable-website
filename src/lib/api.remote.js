@@ -1371,6 +1371,6 @@ export const update_page_slug = command(update_page_slug_input_schema, async (in
 	return {
 		ok: true,
 		document_id: input.document_id,
-		slug: get_active_slug_for_document_id(input.document_id)
+		page_href: `/${get_active_slug_for_document_id(input.document_id)}`
 	};
 });

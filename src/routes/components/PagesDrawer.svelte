@@ -214,11 +214,9 @@
 			}
 
 			const updated_page_href =
-				result && 'slug' in result && typeof result.slug === 'string'
-					? `/${result.slug}`
+				result && 'page_href' in result && typeof result.page_href === 'string'
+					? result.page_href
 					: `/${page_url_value}`;
-			const updated_document_id = page_url_dialog_item.document_id;
-
 			close_page_url_dialog();
 			browser_data = null;
 			loaded_version = -1;
