@@ -938,18 +938,22 @@ export const get_internal_link_preview = query(v.string(), async (href) => {
 /**
  * Save a document to the database, splitting shared documents (nav, footer) back out.
  */
+function rewrite_internal_page_href(href, target_document_id, new_slug) {
+	const parsed = parse_internal_page_href(href);
+	if (!parsed) return href;
+
+	const resolved = resolve_slug(parsed.slug);
+	if (resolved?.document_id !== target_document_id) return href;
+
+	return `/${new_slug}${parsed.fragment}`;
+}
+
 function rewrite_internal_page_hrefs(nodes, target_document_id, new_slug) {
 	for (const node of Object.values(nodes)) {
 		if (!node || typeof node !== 'object') continue;
 
 		if (typeof node.href === 'string') {
-			const parsed = parse_internal_page_href(node.href);
-			if (parsed) {
-				const resolved = resolve_slug(parsed.slug);
-				if (resolved?.document_id === target_document_id) {
-					node.href = `/${new_slug}${parsed.fragment}`;
-				}
-			}
+			node.href = rewrite_internal_page_href(node.href, target_document_id, new_slug);
 		}
 
 		const type_schema = document_schema[node.type];
@@ -966,13 +970,11 @@ function rewrite_internal_page_hrefs(nodes, target_document_id, new_slug) {
 				if (!annotation_node || annotation_node.type !== 'link') continue;
 				if (typeof annotation_node.href !== 'string') continue;
 
-				const parsed = parse_internal_page_href(annotation_node.href);
-				if (!parsed) continue;
-
-				const resolved = resolve_slug(parsed.slug);
-				if (resolved?.document_id === target_document_id) {
-					annotation_node.href = `/${new_slug}${parsed.fragment}`;
-				}
+				annotation_node.href = rewrite_internal_page_href(
+					annotation_node.href,
+					target_document_id,
+					new_slug
+				);
 			}
 		}
 	}
