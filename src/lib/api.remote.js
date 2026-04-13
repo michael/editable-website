@@ -2,10 +2,9 @@ import { getRequestEvent, query, command } from '$app/server';
 import * as v from 'valibot';
 import slugify from 'slugify';
 import db from '$lib/server/db.js';
-import { DB_PATH } from '$lib/server_config.js';
 import { document_schema } from '$lib/document_schema.js';
 
-function create_page_url_result(code, message) {
+function create_page_url_error_result(code, message) {
 	return {
 		ok: false,
 		code,
@@ -275,35 +274,14 @@ function resolve_slug(slug) {
 }
 
 /**
- * @param {string} document_id
- * @returns {string[]}
- */
-function list_historical_slugs_for_document_id(document_id) {
-	const rows = /** @type {Array<{ slug: string }>} */ (
-		db.prepare(
-			'SELECT slug FROM document_slugs WHERE document_id = ? AND is_active = 0 ORDER BY created_at, slug'
-		).all(document_id)
-	);
-
-	return rows.map((row) => row.slug);
-}
-
-/**
- * @returns {Array<DocumentData & { active_slug: string | null, historical_slugs: string[] }>}
+ * @returns {DocumentData[]}
  */
 function list_page_documents() {
 	const rows = /** @type {DocumentRow[]} */ (
 		db.prepare('SELECT * FROM documents WHERE type = ? ORDER BY document_id').all('page')
 	);
 
-	return rows.map((row) => {
-		const page_doc = JSON.parse(row.data);
-		return {
-			...page_doc,
-			active_slug: get_active_slug_for_document_id(row.document_id),
-			historical_slugs: list_historical_slugs_for_document_id(row.document_id)
-		};
-	});
+	return rows.map((row) => JSON.parse(row.data));
 }
 
 /**
@@ -1028,12 +1006,6 @@ export const save_document = command(save_document_input_schema, async (combined
 	// 	throw new Error('Unauthorized');
 	// }
 
-	console.log('[save_document] start', {
-		document_id: combined_doc.document_id,
-		create: !!combined_doc.create,
-		db_path: DB_PATH
-	});
-
 	const all_nodes = structuredClone(combined_doc.nodes);
 	const page_node = all_nodes[combined_doc.document_id];
 
@@ -1043,10 +1015,6 @@ export const save_document = command(save_document_input_schema, async (combined
 
 	if (combined_doc.create) {
 		const existing_doc = get_optional_doc_from_db(combined_doc.document_id);
-		console.log('[save_document] create check', {
-			document_id: combined_doc.document_id,
-			already_exists: !!existing_doc
-		});
 		if (existing_doc) {
 			throw new Error(`Document already exists: ${combined_doc.document_id}`);
 		}
@@ -1054,12 +1022,6 @@ export const save_document = command(save_document_input_schema, async (combined
 
 	const nav_root_id = page_node.nav;
 	const footer_root_id = page_node.footer;
-
-	console.log('[save_document] roots', {
-		page_document_id: combined_doc.document_id,
-		nav_root_id,
-		footer_root_id
-	});
 
 	const nav_node_ids = nav_root_id ? new Set(collect_node_ids_in_order(nav_root_id, all_nodes)) : new Set();
 	const footer_node_ids = footer_root_id
@@ -1072,12 +1034,6 @@ export const save_document = command(save_document_input_schema, async (combined
 
 	const page_node_ids = collect_node_ids(combined_doc.document_id, all_nodes, exclude_roots);
 	const page_doc = extract_document(combined_doc.document_id, page_node_ids, all_nodes);
-
-	console.log('[save_document] split sizes', {
-		page_node_count: page_node_ids.size,
-		nav_node_count: nav_node_ids.size,
-		footer_node_count: footer_node_ids.size
-	});
 
 	const upsert = db.prepare(
 		'INSERT INTO documents (document_id, type, data) VALUES(?, ?, ?) ON CONFLICT(document_id) DO UPDATE SET data = excluded.data'
@@ -1101,19 +1057,12 @@ export const save_document = command(save_document_input_schema, async (combined
 		'INSERT INTO document_slugs (slug, document_id, is_active, created_at) VALUES (?, ?, ?, ?)'
 	);
 
-	console.log('[save_document] begin transaction', {
-		document_id: combined_doc.document_id
-	});
-
 	db.exec(sql`
 		BEGIN IMMEDIATE
 	`);
 
 	try {
 		upsert.run(combined_doc.document_id, 'page', JSON.stringify(page_doc));
-		console.log('[save_document] upserted page', {
-			document_id: combined_doc.document_id
-		});
 		update_asset_refs(
 			combined_doc.document_id,
 			page_node_ids,
@@ -1131,9 +1080,6 @@ export const save_document = command(save_document_input_schema, async (combined
 		if (nav_root_id && nav_node_ids.size > 0) {
 			const nav_doc = extract_document(nav_root_id, nav_node_ids, all_nodes);
 			upsert.run(nav_root_id, 'nav', JSON.stringify(nav_doc));
-			console.log('[save_document] upserted nav', {
-				document_id: nav_root_id
-			});
 			update_asset_refs(nav_root_id, nav_node_ids, all_nodes, delete_asset_refs, insert_asset_ref);
 			update_document_refs(
 				nav_root_id,
@@ -1146,9 +1092,6 @@ export const save_document = command(save_document_input_schema, async (combined
 		if (footer_root_id && footer_node_ids.size > 0) {
 			const footer_doc = extract_document(footer_root_id, footer_node_ids, all_nodes);
 			upsert.run(footer_root_id, 'footer', JSON.stringify(footer_doc));
-			console.log('[save_document] upserted footer', {
-				document_id: footer_root_id
-			});
 			update_asset_refs(
 				footer_root_id,
 				footer_node_ids,
@@ -1174,10 +1117,6 @@ export const save_document = command(save_document_input_schema, async (combined
 		}
 
 		const persisted_page = get_optional_doc_from_db(combined_doc.document_id);
-		console.log('[save_document] read back page before commit', {
-			document_id: combined_doc.document_id,
-			found: !!persisted_page
-		});
 		if (!persisted_page) {
 			throw new Error(`Failed to persist page document: ${combined_doc.document_id}`);
 		}
@@ -1185,17 +1124,7 @@ export const save_document = command(save_document_input_schema, async (combined
 		db.exec(sql`
 			COMMIT
 		`);
-		console.log('[save_document] committed', {
-			document_id: combined_doc.document_id,
-			created: !!combined_doc.create,
-			slug: active_slug
-		});
 	} catch (err) {
-		console.error('[save_document] failed', {
-			document_id: combined_doc.document_id,
-			create: !!combined_doc.create,
-			error: err instanceof Error ? err.message : String(err)
-		});
 		db.exec(sql`
 			ROLLBACK
 		`);
@@ -1216,29 +1145,29 @@ export const update_page_slug = command(update_page_slug_input_schema, async (in
 	const normalized_slug = slugify(input.slug, { lower: true, strict: true, trim: true });
 
 	if (!normalized_slug) {
-		return create_page_url_result('page_url_empty', 'Page URL cannot be empty');
+		return create_page_url_error_result('page_url_empty', 'Page URL cannot be empty');
 	}
 
 	const existing_doc = get_optional_doc_from_db(input.document_id);
 	if (!existing_doc) {
-		return create_page_url_result('page_not_found', `Document not found: ${input.document_id}`);
+		return create_page_url_error_result('page_not_found', `Document not found: ${input.document_id}`);
 	}
 
 	const home_page_id = get_home_page_id_from_db();
 	if (home_page_id === input.document_id) {
-		return create_page_url_result('home_page_url_locked', 'The home page URL cannot be changed');
+		return create_page_url_error_result('home_page_url_locked', 'The home page URL cannot be changed');
 	}
 
 	const current_active_slug = get_active_slug_for_document_id(input.document_id);
 	if (!current_active_slug) {
-		return create_page_url_result(
+		return create_page_url_error_result(
 			'active_slug_missing',
 			`Active slug not found for document: ${input.document_id}`
 		);
 	}
 
 	if (normalized_slug === current_active_slug) {
-		return create_page_url_result(
+		return create_page_url_error_result(
 			'page_url_same_as_current',
 			'That Page URL is already in use by this page'
 		);
@@ -1249,7 +1178,7 @@ export const update_page_slug = command(update_page_slug_input_schema, async (in
 	);
 
 	if (existing_slug && existing_slug.document_id !== input.document_id && existing_slug.is_active === 1) {
-		return create_page_url_result(
+		return create_page_url_error_result(
 			'page_url_used_by_other_page',
 			'That Page URL is already in use by another page. Rename that page first.'
 		);
@@ -1267,6 +1196,8 @@ export const update_page_slug = command(update_page_slug_input_schema, async (in
 		BEGIN IMMEDIATE
 	`);
 
+	let new_active_slug = null;
+
 	try {
 		move_active_slug_to_history(
 			input.document_id,
@@ -1282,7 +1213,7 @@ export const update_page_slug = command(update_page_slug_input_schema, async (in
 			delete_slug
 		);
 
-		const new_active_slug = get_active_slug_for_document_id(input.document_id);
+		new_active_slug = get_active_slug_for_document_id(input.document_id);
 		if (!new_active_slug) {
 			throw new Error('Failed to assign new active slug');
 		}
@@ -1331,6 +1262,6 @@ export const update_page_slug = command(update_page_slug_input_schema, async (in
 	return {
 		ok: true,
 		document_id: input.document_id,
-		page_href: `/${get_active_slug_for_document_id(input.document_id)}`
+		page_href: `/${new_active_slug}`
 	};
 });
