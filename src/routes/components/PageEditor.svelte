@@ -13,6 +13,7 @@
 
 	let initial_doc = $derived(props.initial_doc);
 	let is_new = $derived(props.is_new ?? false);
+	let server_is_admin = $derived(!!(props.is_admin ?? false));
 
 	let initial_doc_json = $derived(JSON.stringify(props.initial_doc));
 
@@ -20,7 +21,8 @@
 	let svedit_ref = $state();
 	let editable = $state(false);
 	let current_is_new = $state(false);
-	let is_admin = $state(false);
+	let is_admin_override = $state(/** @type {boolean | null} */ (null));
+	let is_admin = $derived(is_admin_override ?? server_is_admin);
 	let edit_mode = $state(/** @type {'admin' | 'fun' | null} */ (null));
 
 	let save_progress_visible = $state(false);
@@ -64,10 +66,6 @@
 			editable = true;
 			edit_mode = 'admin';
 		}
-	});
-
-	$effect(() => {
-		is_admin = !!(props.is_admin ?? false);
 	});
 
 	function focus_canvas() {
@@ -150,7 +148,7 @@
 				return;
 			}
 
-			is_admin = true;
+			is_admin_override = true;
 			await invalidateAll();
 			enter_edit_mode('admin');
 		} catch (err) {
@@ -350,7 +348,7 @@
 			try {
 				const api_module = await import('$lib/api.remote.js');
 				await api_module.logout_admin();
-				is_admin = false;
+				is_admin_override = false;
 				edit_mode = null;
 				page_browser.close?.();
 				await invalidateAll();
