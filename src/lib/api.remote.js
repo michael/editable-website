@@ -31,7 +31,6 @@ function create_page_url_result(code, message) {
  * @property {string} document_id
  * @property {string} title
  * @property {string | null} preview_image_src
- * @property {string | null} active_slug
  * @property {string} page_href
  */
 
@@ -616,16 +615,13 @@ function summarize_page_document(page_doc) {
 	const metadata = extract_page_metadata(page_doc);
 	const active_slug = get_active_slug_for_document_id(page_doc.document_id);
 
+	// By invariant, only the home page has no active slug row. All other pages
+	// must have an active slug, so a missing slug here implies `/`.
 	return {
 		document_id: page_doc.document_id,
 		title: metadata.title,
 		preview_image_src: metadata.preview_image_src,
-		active_slug,
-		page_href: is_home_page_document_id(page_doc.document_id)
-			? '/'
-			: active_slug
-				? `/${active_slug}`
-				: '/'
+		page_href: active_slug ? `/${active_slug}` : '/'
 	};
 }
 
@@ -774,7 +770,6 @@ function build_page_browser_data() {
 			document_id: home_page_id,
 			title: 'Untitled page',
 			preview_image_src: null,
-			active_slug: null,
 			page_href: '/'
 		};
 
