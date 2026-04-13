@@ -43,8 +43,32 @@ export default [
 			CREATE TABLE document_refs (
 				target_document_id TEXT NOT NULL,
 				source_document_id TEXT NOT NULL,
+				ref_order INTEGER NOT NULL DEFAULT 0,
 				PRIMARY KEY (target_document_id, source_document_id)
 			);
+		`);
+
+		db.exec(sql`
+			CREATE TABLE asset_refs (
+				asset_id TEXT NOT NULL,
+				document_id TEXT NOT NULL,
+				PRIMARY KEY (asset_id, document_id)
+			);
+		`);
+
+		db.exec(sql`
+			CREATE TABLE document_slugs (
+				slug TEXT NOT NULL PRIMARY KEY,
+				document_id TEXT NOT NULL,
+				is_active INTEGER NOT NULL DEFAULT 0,
+				created_at TEXT NOT NULL
+			);
+		`);
+
+		db.exec(sql`
+			CREATE UNIQUE INDEX document_slugs_active_document_id_idx
+			ON document_slugs (document_id)
+			WHERE is_active = 1
 		`);
 
 		const insert_doc = db.prepare(
@@ -58,23 +82,5 @@ export default [
 			'home_page_id',
 			'page_1'
 		);
-	},
-	function add_asset_refs({ db }) {
-		db.exec(`
-			CREATE TABLE asset_refs (
-				asset_id TEXT NOT NULL,
-				document_id TEXT NOT NULL,
-				PRIMARY KEY (asset_id, document_id)
-			)
-		`);
-	},
-	function add_document_ref_order({ db }) {
-		db.exec(`
-			ALTER TABLE document_refs ADD COLUMN ref_order INTEGER NOT NULL DEFAULT 0
-		`);
-
-		db.exec(`
-			DELETE FROM document_refs
-		`);
 	}
 ];

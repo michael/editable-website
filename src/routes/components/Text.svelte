@@ -33,9 +33,9 @@
 			case 1:
 				return '';
 			case 2:
-				return 'ew-h1 font-serif text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground) [text-box:trim-both_cap_alphabetic]';
+				return 'ew-h1 font-serif text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground)';
 			case 3:
-				return 'ew-h2 font-serif text-2xl md:text-3xl lg:text-4xl text-balance text-(--foreground) [text-box:trim-both_cap_alphabetic]';
+				return 'ew-h2 font-serif text-2xl md:text-3xl lg:text-4xl text-balance text-(--foreground)';
 			case 4:
 				return 'ew-h3 font-serif text-xl md:text-2xl lg:text-3xl text-balance text-(--foreground)';
 			case 5:

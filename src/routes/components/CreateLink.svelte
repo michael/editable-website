@@ -81,15 +81,15 @@
 				class="w-72 min-w-0 flex-1 border-0 bg-(--background) px-3 py-2 text-sm text-(--foreground) outline-none focus:ring-1 focus:ring-(--svedit-editing-stroke)"
 				onkeydown={handle_keydown}
 			/>
-			{#if has_backend}
+			{#if has_backend()}
 				<button
 					type="button"
 					class="shrink-0 cursor-pointer border-l border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] px-3 text-(--svedit-editing-stroke) hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))]"
 					title="Select page"
 					aria-label="Select page"
 					onclick={() => {
-						page_browser.open_select((document_id) => {
-							href_input_value = `/${document_id}`;
+						page_browser.open_select((page) => {
+							href_input_value = page.page_href || '/';
 							open_in_new_tab = false;
 							create_link();
 						});

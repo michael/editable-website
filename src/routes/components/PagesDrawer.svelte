@@ -1,5 +1,6 @@
 <script>
-	import { resolve } from '$app/paths';
+	import { invalidateAll } from '$app/navigation';
+	import { get_page_browser_data } from '$lib/api.remote.js';
 	import { get_page_browser } from './page_browser_context.svelte.js';
 
 	const page_browser = get_page_browser();
@@ -18,11 +19,24 @@
 	let deleting = $state(false);
 	let delete_error = $state('');
 
+	let page_url_dialog_item = $state(null);
+	let page_url_dialog_ref = $state(null);
+	let page_url_value = $state('');
+	let page_url_error = $state('');
+	let saving_page_url = $state(false);
+
+	const browser_data_query = $derived.by(() => {
+		page_browser?.version ?? 0;
+		return get_page_browser_data();
+	});
+
 	$effect(() => {
-		const current_version = page_browser?.version ?? 0;
-		if (loading) return;
-		if (browser_data && loaded_version === current_version) return;
-		void load_browser_data();
+		const query = browser_data_query;
+
+		loading = query.loading;
+		load_error = query.error ? 'Failed to load pages.' : '';
+		browser_data = query.current ?? null;
+		loaded_version = page_browser?.version ?? 0;
 	});
 
 	$effect(() => {
@@ -41,21 +55,15 @@
 		}
 	});
 
-	async function load_browser_data() {
-		loading = true;
-		load_error = '';
-
-		try {
-			const api_module = await import('$lib/api.remote.js');
-			browser_data = await api_module.get_page_browser_data();
-			loaded_version = page_browser?.version ?? 0;
-		} catch (err) {
-			console.error('Failed to load page browser data', err);
-			load_error = 'Failed to load pages.';
-		} finally {
-			loading = false;
+	$effect(() => {
+		if (page_url_dialog_item && page_url_dialog_ref && !page_url_dialog_ref.open) {
+			page_url_dialog_ref.showModal();
+		} else if (!page_url_dialog_item && page_url_dialog_ref?.open) {
+			page_url_dialog_ref.close();
 		}
-	}
+	});
+
+
 
 	function get_page_count(node) {
 		if (!node) return 0;
@@ -67,8 +75,12 @@
 		return count;
 	}
 
-	function get_page_href(document_id) {
-		return `/${document_id}`;
+	function get_resolved_page_href(page_href) {
+		return page_href || '/';
+	}
+
+	function get_page_slug_label(page_href) {
+		return page_href || '/';
 	}
 
 	function get_preview_src(preview_image_src) {
@@ -85,10 +97,10 @@
 		return browser_data?.home_page_id === document_id;
 	}
 
-	function handle_page_click(event, document_id) {
+	function handle_page_click(event, item) {
 		if (!is_picker_mode) return;
 		event.preventDefault();
-		page_browser.handle_page_selected(document_id);
+		page_browser.handle_page_selected(item);
 	}
 
 	function open_menu(event, item) {
@@ -97,6 +109,7 @@
 		menu_anchor_ref = event.currentTarget;
 		menu_item = item;
 		delete_error = '';
+		page_url_error = '';
 	}
 
 	function close_menu() {
@@ -116,6 +129,20 @@
 		delete_error = '';
 	}
 
+	function open_page_url_dialog() {
+		if (!menu_item || menu_item.is_home_page) return;
+		page_url_dialog_item = menu_item;
+		page_url_value = menu_item.page_href ? menu_item.page_href.replace(/^\//, '') : '';
+		page_url_error = '';
+		close_menu();
+	}
+
+	function close_page_url_dialog() {
+		page_url_dialog_item = null;
+		page_url_value = '';
+		page_url_error = '';
+	}
+
 	function handle_menu_click(event) {
 		if (event.target === menu_ref) {
 			close_menu();
@@ -125,6 +152,12 @@
 	function handle_confirm_click(event) {
 		if (event.target === confirm_ref) {
 			close_confirm();
+		}
+	}
+
+	function handle_page_url_dialog_click(event) {
+		if (event.target === page_url_dialog_ref) {
+			close_page_url_dialog();
 		}
 	}
 
@@ -138,9 +171,14 @@
 		close_confirm();
 	}
 
+	function handle_page_url_dialog_cancel(event) {
+		event.preventDefault();
+		close_page_url_dialog();
+	}
+
 	function open_in_new_tab() {
 		if (!menu_item) return;
-		window.open(resolve(get_page_href(menu_item.document_id)), '_blank', 'noopener,noreferrer');
+		window.open(get_resolved_page_href(menu_item.page_href), '_blank', 'noopener,noreferrer');
 		close_menu();
 	}
 
@@ -149,7 +187,69 @@
 		if (confirm_item.kind === 'draft') {
 			return 'Are you sure you want to delete this draft?';
 		}
-		return "Are you sure you want to delete this page?";
+		return 'Are you sure you want to delete this page? It is still linked from other pages. Remove those links first if you want to avoid broken links.';
+	}
+
+	async function save_page_url() {
+		if (!page_url_dialog_item || saving_page_url) return;
+
+		saving_page_url = true;
+		page_url_error = '';
+
+		try {
+			const api_module = await import('$lib/api.remote.js');
+			const result = await api_module.update_page_slug({
+				document_id: page_url_dialog_item.document_id,
+				slug: page_url_value
+			});
+
+			if (result && result.ok === false && 'code' in result && 'message' in result) {
+				page_url_error = result.message || 'Failed to update Page URL.';
+				return;
+			}
+
+			const updated_page_href =
+				result && 'page_href' in result && typeof result.page_href === 'string'
+					? result.page_href
+					: `/${page_url_value}`;
+			close_page_url_dialog();
+			browser_data = null;
+			loaded_version = -1;
+			page_browser.invalidate?.();
+			menu_item = menu_item
+				? {
+						...menu_item,
+						page_href: updated_page_href
+					}
+				: null;
+			await invalidateAll();
+			get_page_browser_data().refresh();
+		} catch (err) {
+			console.error('Failed to update page URL', err);
+
+			const error_body =
+				typeof err === 'object' && err !== null && 'body' in err && typeof err.body === 'object'
+					? err.body
+					: null;
+
+			const error_message =
+				error_body &&
+				'message' in error_body &&
+				typeof error_body.message === 'string'
+					? error_body.message
+					: typeof err === 'object' &&
+						  err !== null &&
+						  'message' in err &&
+						  typeof err.message === 'string'
+						? err.message
+						: err instanceof Error
+							? err.message
+							: 'Failed to update Page URL.';
+
+			page_url_error = error_message;
+		} finally {
+			saving_page_url = false;
+		}
 	}
 
 	async function confirm_delete() {
@@ -169,8 +269,12 @@
 			browser_data = null;
 			loaded_version = -1;
 			page_browser.invalidate?.();
-			await page_browser.handle_page_deleted?.(deleted_document_id, home_page_id);
-			await load_browser_data();
+			await page_browser.handle_page_deleted?.(
+				deleted_document_id,
+				home_page_id,
+				page_url_dialog_item?.document_id ?? confirm_item.document_id
+			);
+			get_page_browser_data().refresh();
 		} catch (err) {
 			console.error('Failed to delete page', err);
 			delete_error = err instanceof Error ? err.message : 'Failed to delete page.';
@@ -203,7 +307,7 @@
 			<div class="drafts-strip" role="list" aria-label="Draft pages">
 				{#if !is_picker_mode}
 					<div role="listitem" class="draft-item">
-						<a class="draft-card create-card" href={resolve('/new')}>
+						<a class="draft-card create-card" href="/new">
 							<div class="page-illustration draft-illustration create-illustration" aria-hidden="true">
 								<div class="plus-glyph">+</div>
 							</div>
@@ -222,8 +326,12 @@
 							<div class="draft-card-shell">
 								<a
 									class="draft-card"
-									href={resolve(get_page_href(draft.document_id))}
-									onclick={(event) => handle_page_click(event, draft.document_id)}
+									href={get_resolved_page_href(draft.page_href)}
+									onclick={(event) =>
+										handle_page_click(event, {
+											document_id: draft.document_id,
+											page_href: draft.page_href
+										})}
 								>
 									<div class="page-illustration draft-illustration" aria-hidden="true">
 										{#if draft.preview_image_src}
@@ -250,7 +358,10 @@
 											</div>
 										{/if}
 									</div>
-									<div class="draft-title">{draft.title}</div>
+									<div class="draft-title">
+										<div>{draft.title}</div>
+										<div class="page-slug-label">{get_page_slug_label(draft.page_href)}</div>
+									</div>
 								</a>
 
 								{#if !is_picker_mode}
@@ -262,6 +373,7 @@
 											open_menu(event, {
 												kind: 'draft',
 												document_id: draft.document_id,
+												page_href: draft.page_href,
 												title: draft.title,
 												is_home_page: false
 											})}
@@ -295,8 +407,12 @@
 						<div class="tree-row-shell">
 							<a
 								class="tree-row"
-								href={resolve(get_page_href(node.document_id))}
-								onclick={(event) => handle_page_click(event, node.document_id)}
+								href={get_resolved_page_href(node.page_href)}
+								onclick={(event) =>
+									handle_page_click(event, {
+										document_id: node.document_id,
+										page_href: node.page_href
+									})}
 							>
 								<div class="tree-indent" aria-hidden="true"></div>
 
@@ -326,7 +442,10 @@
 									{/if}
 								</div>
 
-								<div class="tree-label">{node.title}</div>
+								<div class="tree-label">
+									<div>{node.title}</div>
+									<div class="page-slug-label">{get_page_slug_label(node.page_href)}</div>
+								</div>
 							</a>
 
 							{#if !is_picker_mode}
@@ -338,6 +457,7 @@
 										open_menu(event, {
 											kind: 'page',
 											document_id: node.document_id,
+											page_href: node.page_href,
 											title: node.title,
 											is_home_page: is_home_page(node.document_id)
 										})}
@@ -379,6 +499,14 @@
 			</button>
 			<button
 				type="button"
+				class="menu-item {menu_item.is_home_page ? 'menu-item-disabled' : ''}"
+				onclick={open_page_url_dialog}
+				disabled={menu_item.is_home_page}
+			>
+				Edit URL
+			</button>
+			<button
+				type="button"
 				class="menu-item {menu_item.is_home_page ? 'menu-item-disabled' : 'menu-item-danger'}"
 				onclick={open_confirm}
 				disabled={menu_item.is_home_page}
@@ -413,6 +541,49 @@
 					disabled={deleting}
 				>
 					{deleting ? 'Deleting…' : 'Delete'}
+				</button>
+			</div>
+		</div>
+	{/if}
+</dialog>
+
+<dialog
+	bind:this={page_url_dialog_ref}
+	class="confirm-dialog"
+	oncancel={handle_page_url_dialog_cancel}
+	onclick={handle_page_url_dialog_click}
+>
+	{#if page_url_dialog_item}
+		<div class="confirm-panel">
+			<h3 class="confirm-title">Edit URL</h3>
+			<div class="page-url-field">
+				<span class="page-url-prefix">example.com/</span>
+				<input
+					type="text"
+					bind:value={page_url_value}
+					class="page-url-input"
+					placeholder="your-page-url"
+				/>
+			</div>
+			{#if page_url_error}
+				<p class="confirm-error" role="alert">{page_url_error}</p>
+			{/if}
+			<div class="confirm-actions">
+				<button
+					type="button"
+					class="confirm-btn"
+					onclick={close_page_url_dialog}
+					disabled={saving_page_url}
+				>
+					Cancel
+				</button>
+				<button
+					type="button"
+					class="confirm-btn"
+					onclick={save_page_url}
+					disabled={saving_page_url}
+				>
+					{saving_page_url ? 'Saving…' : 'Save'}
 				</button>
 			</div>
 		</div>
@@ -774,7 +945,35 @@
 	.confirm-actions {
 		display: flex;
 		justify-content: flex-end;
-		gap: 0.6rem;
+		gap: 0.75rem;
+	}
+
+	.page-url-field {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+		padding: 0.75rem 0;
+	}
+
+	.page-url-prefix {
+		font-size: 0.95rem;
+		color: color-mix(in oklch, currentColor 70%, transparent);
+		white-space: nowrap;
+	}
+
+	.page-url-input {
+		flex: 1;
+		min-width: 0;
+		border: 1px solid color-mix(in oklch, var(--foreground) 18%, transparent);
+		background: var(--background);
+		color: var(--foreground);
+		padding: 0.5rem 0.65rem;
+		font-size: 0.95rem;
+		outline: none;
+	}
+
+	.page-url-input:focus {
+		border-color: var(--svedit-editing-stroke);
 	}
 
 	.confirm-btn {

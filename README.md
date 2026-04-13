@@ -108,7 +108,7 @@ Editable Website runs on any VPS. All you need is Node.js and SQLite. The reposi
 
 ### Static builds?
 
-There's no point for static builds with Editable Website. The whole idea is that users edit content live, without having to wait for a rebuild to finish. SQLite is fast. Very fast. Web-optimized images are generated on the fly and cached on the server's file system. It makes sense to enable a proxy for images, so they can be delivered from a CDN.
+There's no point for static builds with Editable Website. The whole idea is that users edit content live, without having to wait for a rebuild to finish. SQLite is fast. Very fast. Web-optimized images are generated client-side before upload: resizing happens in the browser via canvas and `toBlob()`, and WebP encoding is done with `@jsquash/webp`. It still makes sense to enable a proxy for images, so they can be delivered from a CDN.
 
 ### License?
 

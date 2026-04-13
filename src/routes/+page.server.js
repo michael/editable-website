@@ -6,15 +6,17 @@ export async function load({ parent }) {
 	if (!has_backend) {
 		return {
 			has_backend,
-			shared_documents: null
+			document: null,
+			slug: null
 		};
 	}
 
-	const { get_shared_documents } = await import('$lib/api.remote.js');
-	const shared_documents = await get_shared_documents();
+	const { get_home_document } = await import('$lib/api.remote.js');
+	const result = await get_home_document();
 
 	return {
 		has_backend,
-		shared_documents
+		document: result.document,
+		slug: result.slug
 	};
 }

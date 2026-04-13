@@ -7,7 +7,6 @@
 	import EditLink from './EditLink.svelte';
 	import LinkPreview from './LinkPreview.svelte';
 	import Drawer from './Drawer.svelte';
-	import PagesDrawer from './PagesDrawer.svelte';
 
 	const svedit = getContext('svedit');
 	const has_backend = getContext('has_backend');
@@ -217,7 +216,8 @@
 		<CreateLink />
 	{/if}
 
-	{#if has_backend && (!svedit.editable || page_browser.state.open)}
+	{#if has_backend() && (!svedit.editable || page_browser.state.open)}
+		{@const PagesDrawer = (await import('./PagesDrawer.svelte')).default}
 		<Drawer bind:open={page_browser.state.open} label="Pages">
 			<PagesDrawer />
 		</Drawer>

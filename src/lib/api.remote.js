@@ -1,8 +1,16 @@
 import { getRequestEvent, query, command } from '$app/server';
 import * as v from 'valibot';
+import slugify from 'slugify';
 import db from '$lib/server/db.js';
-import { DB_PATH } from '$lib/server_config.js';
 import { document_schema } from '$lib/document_schema.js';
+
+function create_page_url_error_result(code, message) {
+	return {
+		ok: false,
+		code,
+		message
+	};
+}
 
 /**
  * @typedef {Object} DocumentRow
@@ -22,6 +30,7 @@ import { document_schema } from '$lib/document_schema.js';
  * @property {string} document_id
  * @property {string} title
  * @property {string | null} preview_image_src
+ * @property {string} page_href
  */
 
 /**
@@ -36,6 +45,7 @@ import { document_schema } from '$lib/document_schema.js';
  * @property {string} document_id
  * @property {string} title
  * @property {string | null} preview_image_src
+ * @property {string} page_href
  * @property {PageTreeNode[]} children
  */
 
@@ -43,6 +53,11 @@ const save_document_input_schema = v.object({
 	document_id: v.string(),
 	nodes: v.record(v.string(), v.any()),
 	create: v.optional(v.boolean())
+});
+
+const update_page_slug_input_schema = v.object({
+	document_id: v.string(),
+	slug: v.string()
 });
 
 const delete_page_input_schema = v.object({
@@ -214,6 +229,51 @@ function get_home_page_id_from_db() {
 }
 
 /**
+ * @param {string} document_id
+ * @returns {boolean}
+ */
+function is_home_page_document_id(document_id) {
+	return get_home_page_id_from_db() === document_id;
+}
+
+/**
+ * @param {string} document_id
+ * @returns {string | null}
+ */
+function get_active_slug_for_document_id(document_id) {
+	const row = /** @type {{ slug: string } | undefined } */ (
+		db.prepare('SELECT slug FROM document_slugs WHERE document_id = ? AND is_active = 1').get(
+			document_id
+		)
+	);
+
+	return row?.slug ?? null;
+}
+
+/**
+ * @param {string} slug
+ * @returns {{ document_id: string, is_active: boolean, active_slug: string } | null}
+ */
+function resolve_slug(slug) {
+	const row = /** @type {{ document_id: string, is_active: number } | undefined } */ (
+		db.prepare('SELECT document_id, is_active FROM document_slugs WHERE slug = ?').get(slug)
+	);
+
+	if (!row) return null;
+
+	const active_slug = get_active_slug_for_document_id(row.document_id);
+	if (!active_slug) {
+		throw new Error(`Active slug not found for document: ${row.document_id}`);
+	}
+
+	return {
+		document_id: row.document_id,
+		is_active: row.is_active === 1,
+		active_slug
+	};
+}
+
+/**
  * @returns {DocumentData[]}
  */
 function list_page_documents() {
@@ -225,29 +285,74 @@ function list_page_documents() {
 }
 
 /**
+ * @param {string} title
+ * @param {string} document_id
+ * @returns {string}
+ */
+function create_slug_candidate(title, document_id) {
+	const slug = slugify(title, { lower: true, strict: true, trim: true });
+	return slug || document_id;
+}
+
+/**
+ * @param {string} base_slug
+ * @returns {string}
+ */
+function create_unique_slug(base_slug) {
+	const slug_exists_stmt = db.prepare(
+		'SELECT document_id FROM document_slugs WHERE slug = ?'
+	);
+
+	let slug = base_slug;
+	let suffix = 2;
+
+	while (true) {
+		const row = /** @type {{ document_id: string } | undefined } */ (slug_exists_stmt.get(slug));
+		if (!row) return slug;
+		slug = `${base_slug}-${suffix}`;
+		suffix += 1;
+	}
+}
+
+/**
+ * @param {string} href
+ * @returns {{ slug: string, fragment: string }} | null
+ */
+function parse_internal_page_href(href) {
+	if (!href) return null;
+	if (/^[a-z][a-z0-9+.-]*:/i.test(href)) return null;
+	if (href.startsWith('//')) return null;
+	if (!href.startsWith('/')) return null;
+
+	const [path_part, fragment_part] = href.split('#');
+	if (!path_part || path_part === '/') return null;
+
+	const segments = path_part.split('/').filter(Boolean);
+	if (segments.length !== 1) return null;
+
+	const slug = segments[0];
+	if (!slug) return null;
+
+	return {
+		slug,
+		fragment: fragment_part ? `#${fragment_part}` : ''
+	};
+}
+
+/**
  * @param {string} href
  * @param {string | undefined} source_document_id
  * @returns {string | null}
  */
 function normalize_internal_page_href(href, source_document_id) {
-	if (!href) return null;
-	if (/^[a-z][a-z0-9+.-]*:/i.test(href)) return null;
-	if (href.startsWith('//')) return null;
+	const parsed = parse_internal_page_href(href);
+	if (!parsed) return null;
 
-	const [path_part] = href.split('#');
+	const resolved = resolve_slug(parsed.slug);
+	if (!resolved) return null;
+	if (source_document_id && resolved.document_id === source_document_id) return null;
 
-	if (!path_part) return null;
-	if (path_part === '/') return null;
-	if (!path_part.startsWith('/')) return null;
-
-	const segments = path_part.split('/').filter(Boolean);
-	if (segments.length !== 1) return null;
-
-	const target_document_id = segments[0];
-	if (!target_document_id) return null;
-	if (source_document_id && target_document_id === source_document_id) return null;
-
-	return target_document_id;
+	return resolved.document_id;
 }
 
 /**
@@ -419,9 +524,9 @@ function extract_plain_text(annotated_text) {
 
 /**
  * @param {DocumentData} page_doc
- * @returns {PageSummary}
+ * @returns {{ title: string, preview_image_src: string | null }}
  */
-function summarize_page_document(page_doc) {
+function extract_page_metadata(page_doc) {
 	const body_node_ids = collect_page_body_node_ids(page_doc);
 
 	let explicit_title = '';
@@ -475,9 +580,26 @@ function summarize_page_document(page_doc) {
 	}
 
 	return {
-		document_id: page_doc.document_id,
 		title: explicit_title || heading_title || fallback_title || 'Untitled page',
 		preview_image_src
+	};
+}
+
+/**
+ * @param {DocumentData} page_doc
+ * @returns {PageSummary}
+ */
+function summarize_page_document(page_doc) {
+	const metadata = extract_page_metadata(page_doc);
+	const active_slug = get_active_slug_for_document_id(page_doc.document_id);
+
+	// By invariant, only the home page has no active slug row. All other pages
+	// must have an active slug, so a missing slug here implies `/`.
+	return {
+		document_id: page_doc.document_id,
+		title: metadata.title,
+		preview_image_src: metadata.preview_image_src,
+		page_href: active_slug ? `/${active_slug}` : '/'
 	};
 }
 
@@ -557,6 +679,7 @@ function build_tree_children(refs, seen_page_ids, summaries_by_id, body_refs_by_
 			document_id: summary.document_id,
 			title: summary.title,
 			preview_image_src: summary.preview_image_src,
+			page_href: summary.page_href,
 			children: build_tree_children(
 				body_refs_by_page_id.get(target_document_id) ?? [],
 				seen_page_ids,
@@ -624,7 +747,8 @@ function build_page_browser_data() {
 		const home_summary = summaries_by_id.get(home_page_id) ?? {
 			document_id: home_page_id,
 			title: 'Untitled page',
-			preview_image_src: null
+			preview_image_src: null,
+			page_href: '/'
 		};
 
 		const seen_page_ids = new Set([home_page_id]);
@@ -633,6 +757,7 @@ function build_page_browser_data() {
 			document_id: home_summary.document_id,
 			title: home_summary.title,
 			preview_image_src: home_summary.preview_image_src,
+			page_href: home_summary.page_href,
 			children: build_tree_children(
 				[...nav_refs, ...home_body_refs, ...footer_refs],
 				seen_page_ids,
@@ -656,8 +781,19 @@ function build_page_browser_data() {
 /**
  * Get a document from the database, stitching in shared documents (nav, footer).
  */
-export const get_document = query(v.string(), async (document_id) => {
-	return get_combined_document(document_id);
+export const get_document = query(v.string(), async (slug) => {
+	const resolved = resolve_slug(slug);
+
+	if (!resolved) {
+		throw new Error(`Page not found for slug: ${slug}`);
+	}
+
+	return {
+		document: get_combined_document(resolved.document_id),
+		document_id: resolved.document_id,
+		slug: resolved.active_slug,
+		redirect_to_slug: resolved.is_active ? null : resolved.active_slug
+	};
 });
 
 /**
@@ -670,7 +806,12 @@ export const get_home_document = query(v.void(), async () => {
 		throw new Error('Home page is not configured');
 	}
 
-	return get_combined_document(home_page_id);
+	return {
+		document: get_combined_document(home_page_id),
+		document_id: home_page_id,
+		slug: get_active_slug_for_document_id(home_page_id),
+		redirect_to_slug: null
+	};
 });
 
 /**
@@ -734,6 +875,7 @@ export const delete_page = command(delete_page_input_schema, async ({ document_i
 	const delete_incoming_document_refs = db.prepare(
 		'DELETE FROM document_refs WHERE target_document_id = ?'
 	);
+	const delete_document_slugs = db.prepare('DELETE FROM document_slugs WHERE document_id = ?');
 
 	db.exec(sql`
 		BEGIN IMMEDIATE
@@ -743,6 +885,7 @@ export const delete_page = command(delete_page_input_schema, async ({ document_i
 		delete_asset_refs.run(document_id);
 		delete_outgoing_document_refs.run(document_id);
 		delete_incoming_document_refs.run(document_id);
+		delete_document_slugs.run(document_id);
 		delete_document.run(document_id, 'page');
 
 		db.exec(sql`
@@ -762,42 +905,101 @@ export const delete_page = command(delete_page_input_schema, async ({ document_i
 });
 
 /**
- * Return a lightweight preview for a simple internal page href like `/some_id`.
+ * Return a lightweight preview for a simple internal page href like `/some-slug`.
  */
 export const get_internal_link_preview = query(v.string(), async (href) => {
-	if (typeof href !== 'string' || !href.startsWith('/') || href === '/') {
+	const parsed = parse_internal_page_href(href);
+	if (!parsed) {
 		return null;
 	}
 
-	if (href.includes('?') || href.includes('#')) {
-		return null;
-	}
-
-	const document_id = href.slice(1);
-	if (!document_id || document_id.includes('/')) {
+	const resolved = resolve_slug(parsed.slug);
+	if (!resolved) {
 		return null;
 	}
 
 	const doc_row = /** @type {DocumentRow | undefined} */ (
-		db.prepare('SELECT type, data FROM documents WHERE document_id = ?').get(document_id)
+		db.prepare('SELECT type, data FROM documents WHERE document_id = ?').get(resolved.document_id)
 	);
 	if (!doc_row || doc_row.type !== 'page') {
 		return null;
 	}
 
 	const page_doc = /** @type {DocumentData} */ (JSON.parse(doc_row.data));
-	const summary = summarize_page_document(page_doc);
+	const metadata = extract_page_metadata(page_doc);
 
 	return /** @type {InternalLinkPreview} */ ({
-		document_id,
-		title: summary.title,
-		preview_image_src: summary.preview_image_src
+		document_id: resolved.document_id,
+		title: metadata.title,
+		preview_image_src: metadata.preview_image_src
 	});
 });
 
 /**
  * Save a document to the database, splitting shared documents (nav, footer) back out.
  */
+function rewrite_internal_page_href(href, target_document_id, new_slug) {
+	const parsed = parse_internal_page_href(href);
+	if (!parsed) return href;
+
+	const resolved = resolve_slug(parsed.slug);
+	if (resolved?.document_id !== target_document_id) return href;
+
+	return `/${new_slug}${parsed.fragment}`;
+}
+
+function rewrite_internal_page_hrefs(nodes, target_document_id, new_slug) {
+	for (const node of Object.values(nodes)) {
+		if (!node || typeof node !== 'object') continue;
+
+		if (typeof node.href === 'string') {
+			node.href = rewrite_internal_page_href(node.href, target_document_id, new_slug);
+		}
+
+		const type_schema = document_schema[node.type];
+		if (!type_schema) continue;
+
+		for (const [prop_name, prop_def] of Object.entries(type_schema.properties)) {
+			if (prop_def.type !== 'annotated_text') continue;
+
+			const value = node[prop_name];
+			if (!value?.annotations) continue;
+
+			for (const annotation of value.annotations) {
+				const annotation_node = annotation?.node_id ? nodes[annotation.node_id] : null;
+				if (!annotation_node || annotation_node.type !== 'link') continue;
+				if (typeof annotation_node.href !== 'string') continue;
+
+				annotation_node.href = rewrite_internal_page_href(
+					annotation_node.href,
+					target_document_id,
+					new_slug
+				);
+			}
+		}
+	}
+}
+
+function insert_active_slug(document_id, slug, insert_slug_stmt, deactivate_slug_stmt) {
+	deactivate_slug_stmt.run(document_id);
+	insert_slug_stmt.run(slug, document_id, 1, new Date().toISOString());
+}
+
+function move_active_slug_to_history(document_id, insert_slug_stmt, deactivate_slug_stmt, delete_slug_stmt) {
+	const current_slug = get_active_slug_for_document_id(document_id);
+	if (!current_slug) return null;
+
+	delete_slug_stmt.run(current_slug);
+	insert_slug_stmt.run(current_slug, document_id, 0, new Date().toISOString());
+	deactivate_slug_stmt.run(document_id);
+	return current_slug;
+}
+
+function assign_active_slug(document_id, slug, insert_slug_stmt, deactivate_slug_stmt, delete_slug_stmt) {
+	delete_slug_stmt.run(slug);
+	insert_active_slug(document_id, slug, insert_slug_stmt, deactivate_slug_stmt);
+}
+
 export const save_document = command(save_document_input_schema, async (combined_doc) => {
 	const { locals } = getRequestEvent();
 
@@ -806,13 +1008,7 @@ export const save_document = command(save_document_input_schema, async (combined
 	// 	throw new Error('Unauthorized');
 	// }
 
-	console.log('[save_document] start', {
-		document_id: combined_doc.document_id,
-		create: !!combined_doc.create,
-		db_path: DB_PATH
-	});
-
-	const all_nodes = combined_doc.nodes;
+	const all_nodes = structuredClone(combined_doc.nodes);
 	const page_node = all_nodes[combined_doc.document_id];
 
 	if (!page_node) {
@@ -821,10 +1017,6 @@ export const save_document = command(save_document_input_schema, async (combined
 
 	if (combined_doc.create) {
 		const existing_doc = get_optional_doc_from_db(combined_doc.document_id);
-		console.log('[save_document] create check', {
-			document_id: combined_doc.document_id,
-			already_exists: !!existing_doc
-		});
 		if (existing_doc) {
 			throw new Error(`Document already exists: ${combined_doc.document_id}`);
 		}
@@ -832,12 +1024,6 @@ export const save_document = command(save_document_input_schema, async (combined
 
 	const nav_root_id = page_node.nav;
 	const footer_root_id = page_node.footer;
-
-	console.log('[save_document] roots', {
-		page_document_id: combined_doc.document_id,
-		nav_root_id,
-		footer_root_id
-	});
 
 	const nav_node_ids = nav_root_id ? new Set(collect_node_ids_in_order(nav_root_id, all_nodes)) : new Set();
 	const footer_node_ids = footer_root_id
@@ -850,12 +1036,6 @@ export const save_document = command(save_document_input_schema, async (combined
 
 	const page_node_ids = collect_node_ids(combined_doc.document_id, all_nodes, exclude_roots);
 	const page_doc = extract_document(combined_doc.document_id, page_node_ids, all_nodes);
-
-	console.log('[save_document] split sizes', {
-		page_node_count: page_node_ids.size,
-		nav_node_count: nav_node_ids.size,
-		footer_node_count: footer_node_ids.size
-	});
 
 	const upsert = db.prepare(
 		'INSERT INTO documents (document_id, type, data) VALUES(?, ?, ?) ON CONFLICT(document_id) DO UPDATE SET data = excluded.data'
@@ -871,9 +1051,13 @@ export const save_document = command(save_document_input_schema, async (combined
 		'INSERT OR REPLACE INTO document_refs (target_document_id, source_document_id, ref_order) VALUES (?, ?, ?)'
 	);
 
-	console.log('[save_document] begin transaction', {
-		document_id: combined_doc.document_id
-	});
+	const delete_slug = db.prepare('DELETE FROM document_slugs WHERE slug = ?');
+	const deactivate_active_slug = db.prepare(
+		'UPDATE document_slugs SET is_active = 0 WHERE document_id = ? AND is_active = 1'
+	);
+	const insert_slug = db.prepare(
+		'INSERT INTO document_slugs (slug, document_id, is_active, created_at) VALUES (?, ?, ?, ?)'
+	);
 
 	db.exec(sql`
 		BEGIN IMMEDIATE
@@ -881,9 +1065,6 @@ export const save_document = command(save_document_input_schema, async (combined
 
 	try {
 		upsert.run(combined_doc.document_id, 'page', JSON.stringify(page_doc));
-		console.log('[save_document] upserted page', {
-			document_id: combined_doc.document_id
-		});
 		update_asset_refs(
 			combined_doc.document_id,
 			page_node_ids,
@@ -901,9 +1082,6 @@ export const save_document = command(save_document_input_schema, async (combined
 		if (nav_root_id && nav_node_ids.size > 0) {
 			const nav_doc = extract_document(nav_root_id, nav_node_ids, all_nodes);
 			upsert.run(nav_root_id, 'nav', JSON.stringify(nav_doc));
-			console.log('[save_document] upserted nav', {
-				document_id: nav_root_id
-			});
 			update_asset_refs(nav_root_id, nav_node_ids, all_nodes, delete_asset_refs, insert_asset_ref);
 			update_document_refs(
 				nav_root_id,
@@ -916,9 +1094,6 @@ export const save_document = command(save_document_input_schema, async (combined
 		if (footer_root_id && footer_node_ids.size > 0) {
 			const footer_doc = extract_document(footer_root_id, footer_node_ids, all_nodes);
 			upsert.run(footer_root_id, 'footer', JSON.stringify(footer_doc));
-			console.log('[save_document] upserted footer', {
-				document_id: footer_root_id
-			});
 			update_asset_refs(
 				footer_root_id,
 				footer_node_ids,
@@ -934,11 +1109,16 @@ export const save_document = command(save_document_input_schema, async (combined
 			);
 		}
 
+		let active_slug = get_active_slug_for_document_id(combined_doc.document_id);
+
+		if (combined_doc.create && !active_slug && !is_home_page_document_id(combined_doc.document_id)) {
+			const metadata = extract_page_metadata(page_doc);
+			const base_slug = create_slug_candidate(metadata.title, combined_doc.document_id);
+			active_slug = create_unique_slug(base_slug);
+			insert_active_slug(combined_doc.document_id, active_slug, insert_slug, deactivate_active_slug);
+		}
+
 		const persisted_page = get_optional_doc_from_db(combined_doc.document_id);
-		console.log('[save_document] read back page before commit', {
-			document_id: combined_doc.document_id,
-			found: !!persisted_page
-		});
 		if (!persisted_page) {
 			throw new Error(`Failed to persist page document: ${combined_doc.document_id}`);
 		}
@@ -946,16 +1126,7 @@ export const save_document = command(save_document_input_schema, async (combined
 		db.exec(sql`
 			COMMIT
 		`);
-		console.log('[save_document] committed', {
-			document_id: combined_doc.document_id,
-			created: !!combined_doc.create
-		});
 	} catch (err) {
-		console.error('[save_document] failed', {
-			document_id: combined_doc.document_id,
-			create: !!combined_doc.create,
-			error: err instanceof Error ? err.message : String(err)
-		});
 		db.exec(sql`
 			ROLLBACK
 		`);
@@ -965,6 +1136,134 @@ export const save_document = command(save_document_input_schema, async (combined
 	return {
 		ok: true,
 		document_id: combined_doc.document_id,
+		slug: is_home_page_document_id(combined_doc.document_id)
+			? null
+			: get_active_slug_for_document_id(combined_doc.document_id),
 		created: !!combined_doc.create
+	};
+});
+
+export const update_page_slug = command(update_page_slug_input_schema, async (input) => {
+	const normalized_slug = slugify(input.slug, { lower: true, strict: true, trim: true });
+
+	if (!normalized_slug) {
+		return create_page_url_error_result('page_url_empty', 'Page URL cannot be empty');
+	}
+
+	const existing_doc = get_optional_doc_from_db(input.document_id);
+	if (!existing_doc) {
+		return create_page_url_error_result('page_not_found', `Document not found: ${input.document_id}`);
+	}
+
+	const home_page_id = get_home_page_id_from_db();
+	if (home_page_id === input.document_id) {
+		return create_page_url_error_result('home_page_url_locked', 'The home page URL cannot be changed');
+	}
+
+	const current_active_slug = get_active_slug_for_document_id(input.document_id);
+	if (!current_active_slug) {
+		return create_page_url_error_result(
+			'active_slug_missing',
+			`Active slug not found for document: ${input.document_id}`
+		);
+	}
+
+	if (normalized_slug === current_active_slug) {
+		return create_page_url_error_result(
+			'page_url_same_as_current',
+			'That Page URL is already in use by this page'
+		);
+	}
+
+	const existing_slug = /** @type {{ document_id: string, is_active: number } | undefined} */ (
+		db.prepare('SELECT document_id, is_active FROM document_slugs WHERE slug = ?').get(normalized_slug)
+	);
+
+	if (existing_slug && existing_slug.document_id !== input.document_id && existing_slug.is_active === 1) {
+		return create_page_url_error_result(
+			'page_url_used_by_other_page',
+			'That Page URL is already in use by another page. Rename that page first.'
+		);
+	}
+
+	const delete_slug = db.prepare('DELETE FROM document_slugs WHERE slug = ?');
+	const deactivate_active_slug = db.prepare(
+		'UPDATE document_slugs SET is_active = 0 WHERE document_id = ? AND is_active = 1'
+	);
+	const insert_slug = db.prepare(
+		'INSERT INTO document_slugs (slug, document_id, is_active, created_at) VALUES (?, ?, ?, ?)'
+	);
+
+	db.exec(sql`
+		BEGIN IMMEDIATE
+	`);
+
+	let new_active_slug = null;
+
+	try {
+		move_active_slug_to_history(
+			input.document_id,
+			insert_slug,
+			deactivate_active_slug,
+			delete_slug
+		);
+		assign_active_slug(
+			input.document_id,
+			normalized_slug,
+			insert_slug,
+			deactivate_active_slug,
+			delete_slug
+		);
+
+		new_active_slug = get_active_slug_for_document_id(input.document_id);
+		if (!new_active_slug) {
+			throw new Error('Failed to assign new active slug');
+		}
+
+		const page_rows = /** @type {DocumentRow[]} */ (
+			db.prepare('SELECT * FROM documents WHERE type IN (?, ?, ?) ORDER BY document_id').all(
+				'page',
+				'nav',
+				'footer'
+			)
+		);
+
+		const upsert = db.prepare(
+			'INSERT INTO documents (document_id, type, data) VALUES(?, ?, ?) ON CONFLICT(document_id) DO UPDATE SET data = excluded.data'
+		);
+		const delete_document_refs = db.prepare('DELETE FROM document_refs WHERE source_document_id = ?');
+		const insert_document_ref = db.prepare(
+			'INSERT OR REPLACE INTO document_refs (target_document_id, source_document_id, ref_order) VALUES (?, ?, ?)'
+		);
+
+		for (const row of page_rows) {
+			const doc = JSON.parse(row.data);
+			rewrite_internal_page_hrefs(doc.nodes, input.document_id, new_active_slug);
+			upsert.run(row.document_id, row.type, JSON.stringify(doc));
+
+			const root_id = row.document_id;
+			const node_ids = collect_node_ids(root_id, doc.nodes);
+			update_document_refs(
+				root_id,
+				collect_document_refs(doc.nodes, node_ids, root_id),
+				delete_document_refs,
+				insert_document_ref
+			);
+		}
+
+		db.exec(sql`
+			COMMIT
+		`);
+	} catch (err) {
+		db.exec(sql`
+			ROLLBACK
+		`);
+		throw err;
+	}
+
+	return {
+		ok: true,
+		document_id: input.document_id,
+		page_href: `/${new_active_slug}`
 	};
 });
