@@ -13,6 +13,7 @@ The next planned step is simple owner authentication for editing and private pag
 Implement a single-password admin authentication flow with these rules:
 
 - the admin password is configured via `ADMIN_PASSWORD`
+- `ADMIN_PASSWORD` is required in full runtime mode; if it is missing, the app must not start
 - whoever knows that password can authenticate as admin
 - authenticated admins can edit and save content, browse drafts, and use the full page browser
 - unauthenticated visitors can still choose “Edit for fun” on the current page
@@ -264,6 +265,11 @@ The authentication flow is:
 
 Logout deletes the session row and clears the cookie.
 
+Admin sessions use a sliding expiration window of two weeks:
+- when a session is created, `expires` is set to `now + 2 weeks`
+- when an authenticated admin makes a meaningful authenticated request, the server extends `expires` to `now + 2 weeks`
+- expired sessions are treated as invalid and deleted on lookup
+
 Session validation happens on every request in the server hook. If the cookie points to an expired or missing session, the request is treated as unauthenticated and the cookie should be cleared.
 
 ### Cookie requirements
@@ -316,9 +322,12 @@ Constraints of edit-for-fun mode:
 - there is no access to drafts or private page-management UI
 - there is no page browser for navigating private site structure
 - there is no ability to create or delete pages
-- there is no ability to persist uploaded assets
+- media replacement and other in-memory editing interactions may still run normally while editing
+- uploaded assets are never persisted because persistence only happens through save
 
 The UI should make this distinction explicit so users understand they are not authenticated as admin.
+
+If the user is already in edit-for-fun mode and presses the edit shortcut again, nothing changes — they are already editing.
 
 ### Login UX
 
@@ -337,13 +346,13 @@ This keeps the owner anchored to the exact page where they noticed something to 
 
 ### Environment requirements
 
-`ADMIN_PASSWORD` is required in full runtime mode if admin authentication is enabled.
+`ADMIN_PASSWORD` is required in full runtime mode.
 
 Behavior rules:
 
 - in static / `VERCEL=1` mode, authentication is disabled and `ADMIN_PASSWORD` is ignored
-- in full runtime mode, missing `ADMIN_PASSWORD` should disable admin login and saving rather than silently granting access
-- the app should fail clearly or surface a clear server-side error if a protected mutation is attempted without a configured password
+- in full runtime mode, the app must fail to start if `ADMIN_PASSWORD` is missing
+- the app must never silently grant access when `ADMIN_PASSWORD` is missing
 
 ### Remote function and route protection
 
@@ -373,6 +382,7 @@ This state is used to decide:
 - whether the save button is shown/enabled
 - whether the page browser and draft-management UI are available
 - whether the current editing session is admin-editable or edit-for-fun only
+- whether a logout button is shown
 
 The server remains the source of truth. Client auth state is only a convenience for UI branching.
 

@@ -11,6 +11,7 @@ This step adds simple owner authentication for editing and private page-manageme
 Implement admin authentication with these rules:
 
 - the admin password is configured via `ADMIN_PASSWORD`
+- `ADMIN_PASSWORD` is required in full runtime mode; if it is missing, the app must not start
 - whoever knows that password can authenticate as admin
 - authenticated admins can edit and save content, browse drafts, and use the full page browser
 - unauthenticated visitors can still choose `Edit for fun`
@@ -49,10 +50,18 @@ Required behavior:
 
 - `ADMIN_PASSWORD` is the single source of truth for admin login
 - in static / `VERCEL=1` mode, authentication is disabled
+- in full runtime mode, the app must not start if `ADMIN_PASSWORD` is missing
 - in full runtime mode, protected mutations must fail if the request is not authenticated as admin
 - the session cookie stores only an opaque session id
 - the password itself is never stored client-side
 - expired sessions are deleted on lookup
+
+Session lifetime rules:
+
+- admin sessions last for two weeks
+- when a session is created, `expires` is set to `now + 2 weeks`
+- when an authenticated admin makes a meaningful authenticated request, the server extends `expires` to `now + 2 weeks`
+- this is a sliding session window, not a fixed expiry from first login
 
 Cookie requirements:
 
@@ -100,6 +109,7 @@ Required behavior:
 #### `get_auth_status()`
 
 - return whether the current request is authenticated as admin
+- if authenticated, extend the session expiry to `now + 2 weeks`
 - this is only for UI branching; the server remains the source of truth for authorization
 
 ### Protected server operations
@@ -111,6 +121,8 @@ Require `event.locals.is_admin === true` for:
 - `update_page_slug(...)`
 - any persistent asset mutation flow used during save
 - `get_page_browser_data(...)`
+
+For these authenticated operations, successful session validation should also extend the session expiry to `now + 2 weeks`.
 
 Public page/document reads remain public:
 
@@ -145,16 +157,19 @@ There is no primary `/login` route in this step.
 ### Edit-for-fun mode
 
 Add a distinct unauthenticated editing mode with these rules:
+Constraints of edit-for-fun mode:
 
-- only the currently open page can be edited
-- edits are local and disposable
-- there is no save button
+- edits are local and disposable only
+- there is no save action
 - there is no page browser access
 - there is no drafts access
 - there is no create-page flow
 - there is no delete-page flow
 - there is no page URL editing flow
+- normal in-memory editing interactions can still run while editing for fun
+- uploads are never persisted because persistence only happens through save
 - cancel resets the page back to its initial loaded state
+- pressing the edit shortcut again while already in edit-for-fun mode does nothing
 
 ### Client UI changes
 
@@ -172,6 +187,7 @@ Required UI behavior:
 - drafts and private sitemap UI are hidden unless authenticated as admin
 - link pickers must not expose drafts to unauthenticated users
 - toolbar actions that require admin auth must be hidden or disabled when unauthenticated
+- authenticated admins get an explicit logout button
 
 ### Page browser behavior
 
@@ -180,7 +196,7 @@ The page browser becomes admin-only.
 Required behavior:
 
 - unauthenticated users do not see drafts
-- unauthenticated users do not see the private sitemap drawer
+- unauthenticated users do not see the private sitemap drawer at all
 - authenticated admins continue to see drafts and the full page browser
 - all server-side page browser data remains protected even if the client UI is bypassed
 
