@@ -1,5 +1,6 @@
 <script>
 	import { invalidateAll } from '$app/navigation';
+	import { get_page_browser_data } from '$lib/api.remote.js';
 	import { get_page_browser } from './page_browser_context.svelte.js';
 
 	const page_browser = get_page_browser();
@@ -24,11 +25,18 @@
 	let page_url_error = $state('');
 	let saving_page_url = $state(false);
 
+	const browser_data_query = $derived.by(() => {
+		page_browser?.version ?? 0;
+		return get_page_browser_data();
+	});
+
 	$effect(() => {
-		const current_version = page_browser?.version ?? 0;
-		if (loading) return;
-		if (browser_data && loaded_version === current_version) return;
-		void load_browser_data();
+		const query = browser_data_query;
+
+		loading = query.loading;
+		load_error = query.error ? 'Failed to load pages.' : '';
+		browser_data = query.current ?? null;
+		loaded_version = page_browser?.version ?? 0;
 	});
 
 	$effect(() => {
@@ -55,21 +63,7 @@
 		}
 	});
 
-	async function load_browser_data() {
-		loading = true;
-		load_error = '';
 
-		try {
-			const api_module = await import('$lib/api.remote.js');
-			browser_data = await api_module.get_page_browser_data();
-			loaded_version = page_browser?.version ?? 0;
-		} catch (err) {
-			console.error('Failed to load page browser data', err);
-			load_error = 'Failed to load pages.';
-		} finally {
-			loading = false;
-		}
-	}
 
 	function get_page_count(node) {
 		if (!node) return 0;
@@ -229,7 +223,7 @@
 					}
 				: null;
 			await invalidateAll();
-			await load_browser_data();
+			get_page_browser_data().refresh();
 		} catch (err) {
 			console.error('Failed to update page URL', err);
 
@@ -280,7 +274,7 @@
 				home_page_id,
 				page_url_dialog_item?.document_id ?? confirm_item.document_id
 			);
-			await load_browser_data();
+			get_page_browser_data().refresh();
 		} catch (err) {
 			console.error('Failed to delete page', err);
 			delete_error = err instanceof Error ? err.message : 'Failed to delete page.';
