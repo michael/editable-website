@@ -1268,54 +1268,19 @@ export const update_page_slug = command(update_page_slug_input_schema, async (in
 	`);
 
 	try {
-		if (!existing_slug) {
-			move_active_slug_to_history(
-				input.document_id,
-				insert_slug,
-				deactivate_active_slug,
-				delete_slug
-			);
-			assign_active_slug(
-				input.document_id,
-				normalized_slug,
-				insert_slug,
-				deactivate_active_slug,
-				delete_slug
-			);
-		} else if (existing_slug.document_id === input.document_id && existing_slug.is_active === 0) {
-			move_active_slug_to_history(
-				input.document_id,
-				insert_slug,
-				deactivate_active_slug,
-				delete_slug
-			);
-			assign_active_slug(
-				input.document_id,
-				normalized_slug,
-				insert_slug,
-				deactivate_active_slug,
-				delete_slug
-			);
-		} else if (existing_slug.document_id !== input.document_id && existing_slug.is_active === 0) {
-			move_active_slug_to_history(
-				input.document_id,
-				insert_slug,
-				deactivate_active_slug,
-				delete_slug
-			);
-			assign_active_slug(
-				input.document_id,
-				normalized_slug,
-				insert_slug,
-				deactivate_active_slug,
-				delete_slug
-			);
-		} else {
-			db.exec(sql`
-				ROLLBACK
-			`);
-			return create_page_url_result('page_url_unavailable', 'That Page URL is unavailable.');
-		}
+		move_active_slug_to_history(
+			input.document_id,
+			insert_slug,
+			deactivate_active_slug,
+			delete_slug
+		);
+		assign_active_slug(
+			input.document_id,
+			normalized_slug,
+			insert_slug,
+			deactivate_active_slug,
+			delete_slug
+		);
 
 		const new_active_slug = get_active_slug_for_document_id(input.document_id);
 		if (!new_active_slug) {
