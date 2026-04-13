@@ -31,7 +31,8 @@ function create_page_url_result(code, message) {
  * @property {string} document_id
  * @property {string} title
  * @property {string | null} preview_image_src
- * @property {string | null} slug
+ * @property {string | null} active_slug
+ * @property {string} page_href
  */
 
 /**
@@ -46,7 +47,7 @@ function create_page_url_result(code, message) {
  * @property {string} document_id
  * @property {string} title
  * @property {string | null} preview_image_src
- * @property {string | null} slug
+ * @property {string} page_href
  * @property {PageTreeNode[]} children
  */
 
@@ -227,6 +228,14 @@ function get_home_page_id_from_db() {
 	);
 
 	return row?.value ?? null;
+}
+
+/**
+ * @param {string} document_id
+ * @returns {boolean}
+ */
+function is_home_page_document_id(document_id) {
+	return get_home_page_id_from_db() === document_id;
 }
 
 /**
@@ -538,9 +547,9 @@ function extract_plain_text(annotated_text) {
 
 /**
  * @param {DocumentData} page_doc
- * @returns {PageSummary}
+ * @returns {{ title: string, preview_image_src: string | null }}
  */
-function summarize_page_document(page_doc) {
+function extract_page_metadata(page_doc) {
 	const body_node_ids = collect_page_body_node_ids(page_doc);
 
 	let explicit_title = '';
@@ -594,10 +603,29 @@ function summarize_page_document(page_doc) {
 	}
 
 	return {
-		document_id: page_doc.document_id,
 		title: explicit_title || heading_title || fallback_title || 'Untitled page',
-		preview_image_src,
-		slug: get_active_slug_for_document_id(page_doc.document_id)
+		preview_image_src
+	};
+}
+
+/**
+ * @param {DocumentData} page_doc
+ * @returns {PageSummary}
+ */
+function summarize_page_document(page_doc) {
+	const metadata = extract_page_metadata(page_doc);
+	const active_slug = get_active_slug_for_document_id(page_doc.document_id);
+
+	return {
+		document_id: page_doc.document_id,
+		title: metadata.title,
+		preview_image_src: metadata.preview_image_src,
+		active_slug,
+		page_href: is_home_page_document_id(page_doc.document_id)
+			? '/'
+			: active_slug
+				? `/${active_slug}`
+				: '/'
 	};
 }
 
@@ -677,7 +705,7 @@ function build_tree_children(refs, seen_page_ids, summaries_by_id, body_refs_by_
 			document_id: summary.document_id,
 			title: summary.title,
 			preview_image_src: summary.preview_image_src,
-			slug: summary.slug,
+			page_href: summary.page_href,
 			children: build_tree_children(
 				body_refs_by_page_id.get(target_document_id) ?? [],
 				seen_page_ids,
@@ -746,7 +774,8 @@ function build_page_browser_data() {
 			document_id: home_page_id,
 			title: 'Untitled page',
 			preview_image_src: null,
-			slug: null
+			active_slug: null,
+			page_href: '/'
 		};
 
 		const seen_page_ids = new Set([home_page_id]);
@@ -755,7 +784,7 @@ function build_page_browser_data() {
 			document_id: home_summary.document_id,
 			title: home_summary.title,
 			preview_image_src: home_summary.preview_image_src,
-			slug: home_summary.slug,
+			page_href: home_summary.page_href,
 			children: build_tree_children(
 				[...nav_refs, ...home_body_refs, ...footer_refs],
 				seen_page_ids,
@@ -924,12 +953,12 @@ export const get_internal_link_preview = query(v.string(), async (href) => {
 	}
 
 	const page_doc = /** @type {DocumentData} */ (JSON.parse(doc_row.data));
-	const summary = summarize_page_document(page_doc);
+	const metadata = extract_page_metadata(page_doc);
 
 	return /** @type {InternalLinkPreview} */ ({
 		document_id: resolved.document_id,
-		title: summary.title,
-		preview_image_src: summary.preview_image_src
+		title: metadata.title,
+		preview_image_src: metadata.preview_image_src
 	});
 });
 
@@ -1142,9 +1171,9 @@ export const save_document = command(save_document_input_schema, async (combined
 
 		let active_slug = get_active_slug_for_document_id(combined_doc.document_id);
 
-		if (combined_doc.create && !active_slug) {
-			const summary = summarize_page_document(page_doc);
-			const base_slug = create_slug_candidate(summary.title, combined_doc.document_id);
+		if (combined_doc.create && !active_slug && !is_home_page_document_id(combined_doc.document_id)) {
+			const metadata = extract_page_metadata(page_doc);
+			const base_slug = create_slug_candidate(metadata.title, combined_doc.document_id);
 			active_slug = create_unique_slug(base_slug);
 			insert_active_slug(combined_doc.document_id, active_slug, insert_slug, deactivate_active_slug);
 		}
@@ -1181,7 +1210,9 @@ export const save_document = command(save_document_input_schema, async (combined
 	return {
 		ok: true,
 		document_id: combined_doc.document_id,
-		slug: get_active_slug_for_document_id(combined_doc.document_id),
+		slug: is_home_page_document_id(combined_doc.document_id)
+			? null
+			: get_active_slug_for_document_id(combined_doc.document_id),
 		created: !!combined_doc.create
 	};
 });

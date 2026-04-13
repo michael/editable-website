@@ -101,7 +101,7 @@
 					aria-label="Select page"
 					onclick={() => {
 						page_browser.open_select((page) => {
-							href_input_value = `/${page.slug}`;
+							href_input_value = page.page_href || '/';
 							open_in_new_tab = false;
 							save();
 						});

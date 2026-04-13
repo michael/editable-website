@@ -44,8 +44,8 @@ export function create_page_browser(options) {
 		}
 
 		reset();
-		if (page?.slug) {
-			void goto(`/${page.slug}`);
+		if (page?.page_href) {
+			void goto(page.page_href);
 		}
 	}
 

@@ -80,17 +80,12 @@
 		return count;
 	}
 
-	function get_page_href(document_id, slug) {
-		return is_home_page(document_id) ? '/' : slug ? `/${slug}` : '/';
+	function get_resolved_page_href(page_href) {
+		return page_href || '/';
 	}
 
-	function get_resolved_page_href(document_id, slug) {
-		return get_page_href(document_id, slug);
-	}
-
-	function get_page_slug_label(document_id, slug) {
-		if (is_home_page(document_id)) return '/';
-		return slug ? `/${slug}` : '/';
+	function get_page_slug_label(page_href) {
+		return page_href || '/';
 	}
 
 	function get_preview_src(preview_image_src) {
@@ -142,7 +137,7 @@
 	function open_page_url_dialog() {
 		if (!menu_item || menu_item.is_home_page) return;
 		page_url_dialog_item = menu_item;
-		page_url_value = menu_item.slug ?? '';
+		page_url_value = menu_item.page_href ? menu_item.page_href.replace(/^\//, '') : '';
 		page_url_error = '';
 		close_menu();
 	}
@@ -188,11 +183,7 @@
 
 	function open_in_new_tab() {
 		if (!menu_item) return;
-		window.open(
-			get_resolved_page_href(menu_item.document_id, menu_item.slug),
-			'_blank',
-			'noopener,noreferrer'
-		);
+		window.open(get_resolved_page_href(menu_item.page_href), '_blank', 'noopener,noreferrer');
 		close_menu();
 	}
 
@@ -222,20 +213,22 @@
 				return;
 			}
 
-			const updated_slug =
+			const updated_page_href =
 				result && 'slug' in result && typeof result.slug === 'string'
-					? result.slug
-					: page_url_value;
+					? `/${result.slug}`
+					: `/${page_url_value}`;
 			const updated_document_id = page_url_dialog_item.document_id;
 
 			close_page_url_dialog();
 			browser_data = null;
 			loaded_version = -1;
 			page_browser.invalidate?.();
-			page_browser.set_current_page({
-				document_id: updated_document_id,
-				slug: updated_slug
-			});
+			menu_item = menu_item
+				? {
+						...menu_item,
+						page_href: updated_page_href
+					}
+				: null;
 			await load_browser_data();
 		} catch (err) {
 			console.error('Failed to update page URL', err);
@@ -339,11 +332,11 @@
 							<div class="draft-card-shell">
 								<a
 									class="draft-card"
-									href={get_resolved_page_href(draft.document_id, draft.slug)}
+									href={get_resolved_page_href(draft.page_href)}
 									onclick={(event) =>
 										handle_page_click(event, {
 											document_id: draft.document_id,
-											slug: draft.slug
+											page_href: draft.page_href
 										})}
 								>
 									<div class="page-illustration draft-illustration" aria-hidden="true">
@@ -373,7 +366,7 @@
 									</div>
 									<div class="draft-title">
 										<div>{draft.title}</div>
-										<div class="page-slug-label">{get_page_slug_label(draft.document_id, draft.slug)}</div>
+										<div class="page-slug-label">{get_page_slug_label(draft.page_href)}</div>
 									</div>
 								</a>
 
@@ -386,7 +379,7 @@
 											open_menu(event, {
 												kind: 'draft',
 												document_id: draft.document_id,
-												slug: draft.slug,
+												page_href: draft.page_href,
 												title: draft.title,
 												is_home_page: false
 											})}
@@ -420,11 +413,11 @@
 						<div class="tree-row-shell">
 							<a
 								class="tree-row"
-								href={get_resolved_page_href(node.document_id, node.slug)}
+								href={get_resolved_page_href(node.page_href)}
 								onclick={(event) =>
 									handle_page_click(event, {
 										document_id: node.document_id,
-										slug: node.slug
+										page_href: node.page_href
 									})}
 							>
 								<div class="tree-indent" aria-hidden="true"></div>
@@ -457,7 +450,7 @@
 
 								<div class="tree-label">
 									<div>{node.title}</div>
-									<div class="page-slug-label">{get_page_slug_label(node.document_id, node.slug)}</div>
+									<div class="page-slug-label">{get_page_slug_label(node.page_href)}</div>
 								</div>
 							</a>
 
@@ -470,7 +463,7 @@
 										open_menu(event, {
 											kind: 'page',
 											document_id: node.document_id,
-											slug: node.slug,
+											page_href: node.page_href,
 											title: node.title,
 											is_home_page: is_home_page(node.document_id)
 										})}
