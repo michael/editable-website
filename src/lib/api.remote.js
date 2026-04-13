@@ -1,10 +1,27 @@
 import { getRequestEvent, query, command } from '$app/server';
+import { env } from '$env/dynamic/private';
 import * as v from 'valibot';
 import slugify from 'slugify';
+import crypto from 'node:crypto';
 import db from '$lib/server/db.js';
 import { document_schema } from '$lib/document_schema.js';
 
+const admin_login_input_schema = v.object({
+	password: v.string()
+});
+
+const session_duration_seconds = 14 * 24 * 60 * 60;
+const admin_session_cookie_name = 'ew_admin_session';
+
 function create_page_url_error_result(code, message) {
+	return {
+		ok: false,
+		code,
+		message
+	};
+}
+
+function create_auth_error_result(code, message) {
 	return {
 		ok: false,
 		code,
@@ -226,6 +243,87 @@ function get_home_page_id_from_db() {
 	);
 
 	return row?.value ?? null;
+}
+
+/**
+ * @returns {string}
+ */
+function get_required_admin_password() {
+	const admin_password = env.ADMIN_PASSWORD;
+	if (!admin_password) {
+		throw new Error('ADMIN_PASSWORD must be set');
+	}
+
+	return admin_password;
+}
+
+/**
+ * @returns {number}
+ */
+function get_session_expires_at() {
+	return Math.floor(Date.now() / 1000) + session_duration_seconds;
+}
+
+/**
+ * @param {string} session_id
+ */
+function delete_session(session_id) {
+	db.prepare('DELETE FROM sessions WHERE session_id = ?').run(session_id);
+}
+
+/**
+ * @param {string} session_id
+ */
+function extend_session(session_id) {
+	db.prepare('UPDATE sessions SET expires = ? WHERE session_id = ?').run(
+		get_session_expires_at(),
+		session_id
+	);
+}
+
+/**
+ * @param {import('@sveltejs/kit').Cookies} cookies
+ */
+function clear_admin_session_cookie(cookies) {
+	cookies.set(admin_session_cookie_name, '', {
+		path: '/',
+		httpOnly: true,
+		sameSite: 'lax',
+		secure: env.NODE_ENV === 'production',
+		maxAge: 0
+	});
+}
+
+/**
+ * @param {import('@sveltejs/kit').Cookies} cookies
+ * @param {string} session_id
+ */
+function set_admin_session_cookie(cookies, session_id) {
+	cookies.set(admin_session_cookie_name, session_id, {
+		path: '/',
+		httpOnly: true,
+		sameSite: 'lax',
+		secure: env.NODE_ENV === 'production',
+		maxAge: session_duration_seconds
+	});
+}
+
+/**
+ * @param {boolean} [extend]
+ * @returns {boolean}
+ */
+function require_admin_session(extend = true) {
+	const { locals } = getRequestEvent();
+
+	if (!locals.is_admin || !locals.admin_session_id) {
+		throw new Error('Unauthorized');
+	}
+
+	if (extend) {
+		extend_session(locals.admin_session_id);
+	}
+
+	return true;
 }
 
 /**
@@ -844,7 +942,57 @@ export const get_shared_documents = query(v.void(), async () => {
 /**
  * Return page browser data for the pages drawer.
  */
+export const get_auth_status = query(v.void(), async () => {
+	const { locals } = getRequestEvent();
+
+	if (locals.is_admin && locals.admin_session_id) {
+		extend_session(locals.admin_session_id);
+	}
+
+	return {
+		is_admin: !!locals.is_admin
+	};
+});
+
+export const login_admin = command(admin_login_input_schema, async ({ password }) => {
+	const { cookies } = getRequestEvent();
+	const admin_password = get_required_admin_password();
+
+	if (password !== admin_password) {
+		return create_auth_error_result('invalid_password', 'Incorrect admin password.');
+	}
+
+	const session_id = crypto.randomUUID();
+	db.prepare('INSERT INTO sessions (session_id, expires) VALUES (?, ?)').run(
+		session_id,
+		get_session_expires_at()
+	);
+	set_admin_session_cookie(cookies, session_id);
+
+	return {
+		ok: true
+	};
+});
+
+export const logout_admin = command(v.void(), async () => {
+	const { locals, cookies } = getRequestEvent();
+
+	if (locals.admin_session_id) {
+		delete_session(locals.admin_session_id);
+	}
+
+	clear_admin_session_cookie(cookies);
+
+	return {
+		ok: true
+	};
+});
+
+/**
+ * Return page browser data for the pages drawer.
+ */
 export const get_page_browser_data = query(v.void(), async () => {
+	require_admin_session();
 	return build_page_browser_data();
 });
 
@@ -852,6 +1000,8 @@ export const get_page_browser_data = query(v.void(), async () => {
  * Delete a page document and its related refs.
  */
 export const delete_page = command(delete_page_input_schema, async ({ document_id }) => {
+	require_admin_session();
+
 	const home_page_id = get_home_page_id_from_db();
 
 	if (!document_id) {
@@ -1001,12 +1151,7 @@ function assign_active_slug(document_id, slug, insert_slug_stmt, deactivate_slug
 }
 
 export const save_document = command(save_document_input_schema, async (combined_doc) => {
-	const { locals } = getRequestEvent();
-
-	// TODO: check auth once authentication is implemented
-	// if (!locals.user) {
-	// 	throw new Error('Unauthorized');
-	// }
+	require_admin_session();
 
 	const all_nodes = structuredClone(combined_doc.nodes);
 	const page_node = all_nodes[combined_doc.document_id];
@@ -1144,6 +1289,8 @@ export const save_document = command(save_document_input_schema, async (combined
 });
 
 export const update_page_slug = command(update_page_slug_input_schema, async (input) => {
+	require_admin_session();
+
 	const normalized_slug = slugify(input.slug, { lower: true, strict: true, trim: true });
 
 	if (!normalized_slug) {

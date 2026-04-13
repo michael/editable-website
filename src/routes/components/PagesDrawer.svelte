@@ -27,11 +27,20 @@
 
 	const browser_data_query = $derived.by(() => {
 		page_browser?.version ?? 0;
+		if (!page_browser.state.open) return null;
 		return get_page_browser_data();
 	});
 
 	$effect(() => {
 		const query = browser_data_query;
+
+		if (!query) {
+			loading = false;
+			load_error = '';
+			browser_data = null;
+			loaded_version = page_browser?.version ?? 0;
+			return;
+		}
 
 		loading = query.loading;
 		load_error = query.error ? 'Failed to load pages.' : '';

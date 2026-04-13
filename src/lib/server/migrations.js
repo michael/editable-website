@@ -66,6 +66,13 @@ export default [
 		`);
 
 		db.exec(sql`
+			CREATE TABLE sessions (
+				session_id TEXT NOT NULL PRIMARY KEY,
+				expires INTEGER NOT NULL
+			);
+		`);
+
+		db.exec(sql`
 			CREATE UNIQUE INDEX document_slugs_active_document_id_idx
 			ON document_slugs (document_id)
 			WHERE is_active = 1

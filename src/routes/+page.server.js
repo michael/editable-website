@@ -2,10 +2,12 @@
 export async function load({ parent }) {
 	const parent_data = await parent();
 	const has_backend = parent_data.has_backend;
+	const is_admin = parent_data.is_admin ?? false;
 
 	if (!has_backend) {
 		return {
 			has_backend,
+			is_admin,
 			document: null,
 			slug: null
 		};
@@ -16,6 +18,7 @@ export async function load({ parent }) {
 
 	return {
 		has_backend,
+		is_admin,
 		document: result.document,
 		slug: result.slug
 	};
