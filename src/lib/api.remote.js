@@ -58,8 +58,7 @@ const save_document_input_schema = v.object({
 
 const update_page_slug_input_schema = v.object({
 	document_id: v.string(),
-	slug: v.string(),
-	enforce_historical_alias: v.optional(v.boolean())
+	slug: v.string()
 });
 
 const delete_page_input_schema = v.object({
@@ -311,10 +310,9 @@ function create_slug_candidate(title, document_id) {
 
 /**
  * @param {string} base_slug
- * @param {string | null} exclude_document_id
  * @returns {string}
  */
-function create_unique_slug(base_slug, exclude_document_id = null) {
+function create_unique_slug(base_slug) {
 	const slug_exists_stmt = db.prepare(
 		'SELECT document_id FROM document_slugs WHERE slug = ?'
 	);
@@ -325,7 +323,6 @@ function create_unique_slug(base_slug, exclude_document_id = null) {
 	while (true) {
 		const row = /** @type {{ document_id: string } | undefined } */ (slug_exists_stmt.get(slug));
 		if (!row) return slug;
-		if (exclude_document_id && row.document_id === exclude_document_id) return slug;
 		slug = `${base_slug}-${suffix}`;
 		suffix += 1;
 	}
@@ -1274,16 +1271,6 @@ export const update_page_slug = command(update_page_slug_input_schema, async (in
 				delete_slug
 			);
 		} else if (existing_slug.document_id !== input.document_id && existing_slug.is_active === 0) {
-			if (!input.enforce_historical_alias) {
-				db.exec(sql`
-					ROLLBACK
-				`);
-				return create_page_url_result(
-					'page_url_historical_alias_reclaim_required',
-					'That Page URL is reserved by another page. Confirm reclaim to continue.'
-				);
-			}
-
 			move_active_slug_to_history(
 				input.document_id,
 				insert_slug,

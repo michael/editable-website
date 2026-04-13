@@ -204,7 +204,7 @@
 		return 'Are you sure you want to delete this page? It is still linked from other pages. Remove those links first if you want to avoid broken links.';
 	}
 
-	async function save_page_url(enforce_historical_alias = false) {
+	async function save_page_url() {
 		if (!page_url_dialog_item || saving_page_url) return;
 
 		saving_page_url = true;
@@ -214,26 +214,10 @@
 			const api_module = await import('$lib/api.remote.js');
 			const result = await api_module.update_page_slug({
 				document_id: page_url_dialog_item.document_id,
-				slug: page_url_value,
-				enforce_historical_alias
+				slug: page_url_value
 			});
 
 			if (result && result.ok === false && 'code' in result && 'message' in result) {
-				if (
-					!enforce_historical_alias &&
-					result.code === 'page_url_historical_alias_reclaim_required'
-				) {
-					const confirmed = window.confirm(
-						'This Page URL is currently a historical alias for another page. Reclaim it and redirect that old alias to this page instead?'
-					);
-
-					if (confirmed) {
-						saving_page_url = false;
-						await save_page_url(true);
-						return;
-					}
-				}
-
 				page_url_error = result.message || 'Failed to update Page URL.';
 				return;
 			}
@@ -609,7 +593,7 @@
 				<button
 					type="button"
 					class="confirm-btn"
-					onclick={() => save_page_url(false)}
+					onclick={save_page_url}
 					disabled={saving_page_url}
 				>
 					{saving_page_url ? 'Saving…' : 'Save'}
