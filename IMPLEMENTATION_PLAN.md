@@ -2,6 +2,209 @@
 
 This document tracks what to implement next. One step at a time. All implementation must conform to the design decisions in [ARCHITECTURE.md](ARCHITECTURE.md) — if a conflict arises, update the architecture first, then implement.
 
+## Next implementation draft — admin authentication
+
+This step adds simple owner authentication for editing and private page-management features.
+
+### Goal
+
+Implement admin authentication with these rules:
+
+- the admin password is configured via `ADMIN_PASSWORD`
+- whoever knows that password can authenticate as admin
+- authenticated admins can edit and save content, browse drafts, and use the full page browser
+- unauthenticated visitors can still choose `Edit for fun`
+- edit-for-fun mode only affects the currently open page and never persists changes
+- the primary login entry point is the edit shortcut flow on the current page
+- static / `VERCEL=1` mode keeps authentication disabled
+
+### Scope
+
+This step includes:
+
+- server-side admin session creation and validation using the existing `sessions` table
+- session cookie creation and logout
+- `event.locals.is_admin` wiring in `hooks.server.js`
+- a login command that validates `ADMIN_PASSWORD`
+- a lightweight auth-status read API for the client
+- server-side protection for save and page-management mutations
+- server-side protection for private page browser data
+- an auth dialog shown when unauthenticated users try to edit
+- edit-for-fun mode in the editor UI
+- hiding private page-management UI from unauthenticated users
+
+This step does not include:
+
+- multi-user accounts
+- usernames or email addresses
+- password reset flows
+- role-based permissions
+- rate limiting / brute-force protection
+- changing the public browsing experience
+- changing the static / `VERCEL=1` compatibility model
+
+### Environment and session rules
+
+Required behavior:
+
+- `ADMIN_PASSWORD` is the single source of truth for admin login
+- in static / `VERCEL=1` mode, authentication is disabled
+- in full runtime mode, protected mutations must fail if the request is not authenticated as admin
+- the session cookie stores only an opaque session id
+- the password itself is never stored client-side
+- expired sessions are deleted on lookup
+
+Cookie requirements:
+
+- `httpOnly`
+- `sameSite='lax'`
+- `secure` in production
+- path `/`
+
+### Server hook changes
+
+Update `src/hooks.server.js` so that on every request it:
+
+1. reads the admin session cookie
+2. looks up the session in `sessions`
+3. deletes expired sessions
+4. sets `event.locals.is_admin` to `true` or `false`
+
+There is no `user` object in this model.
+
+### Remote function changes
+
+Add admin auth remote functions:
+
+- `login_admin(password)`
+- `logout_admin()`
+- `get_auth_status()`
+
+Required behavior:
+
+#### `login_admin(password)`
+
+- validate the submitted password against `ADMIN_PASSWORD`
+- if invalid, return a user-facing auth error result
+- if valid:
+  - create a new session row
+  - set the session cookie
+  - return `{ ok: true }`
+
+#### `logout_admin()`
+
+- delete the current session row if present
+- clear the session cookie
+- return `{ ok: true }`
+
+#### `get_auth_status()`
+
+- return whether the current request is authenticated as admin
+- this is only for UI branching; the server remains the source of truth for authorization
+
+### Protected server operations
+
+Require `event.locals.is_admin === true` for:
+
+- `save_document(...)`
+- `delete_page(...)`
+- `update_page_slug(...)`
+- any persistent asset mutation flow used during save
+- `get_page_browser_data(...)`
+
+Public page/document reads remain public:
+
+- page loading by slug
+- home page loading
+- internal link preview for already-public pages
+
+### Edit shortcut and auth dialog flow
+
+When the user presses the edit shortcut on a page:
+
+#### If already authenticated as admin
+
+- enter normal editable mode immediately
+
+#### If not authenticated
+
+Open a dialog with two choices:
+
+1. password field + `Login and edit`
+2. `Edit for fun`
+
+Behavior:
+
+- `Login and edit` submits the password to `login_admin(...)`
+- on success, enter normal editable mode on the current page
+- on failure, keep the dialog open and show an error
+- `Edit for fun` enters temporary local editing mode without authentication
+
+There is no primary `/login` route in this step.
+
+### Edit-for-fun mode
+
+Add a distinct unauthenticated editing mode with these rules:
+
+- only the currently open page can be edited
+- edits are local and disposable
+- there is no save button
+- there is no page browser access
+- there is no drafts access
+- there is no create-page flow
+- there is no delete-page flow
+- there is no page URL editing flow
+- cancel resets the page back to its initial loaded state
+
+### Client UI changes
+
+Update the editor UI so that it distinguishes between:
+
+- public browsing mode
+- edit-for-fun mode
+- authenticated admin editing mode
+
+Required UI behavior:
+
+- unauthenticated users pressing edit see the auth dialog
+- authenticated admins see the existing save-capable editing UI
+- edit-for-fun mode shows only disposable editing controls
+- drafts and private sitemap UI are hidden unless authenticated as admin
+- link pickers must not expose drafts to unauthenticated users
+- toolbar actions that require admin auth must be hidden or disabled when unauthenticated
+
+### Page browser behavior
+
+The page browser becomes admin-only.
+
+Required behavior:
+
+- unauthenticated users do not see drafts
+- unauthenticated users do not see the private sitemap drawer
+- authenticated admins continue to see drafts and the full page browser
+- all server-side page browser data remains protected even if the client UI is bypassed
+
+### Save behavior
+
+Saving is admin-only.
+
+Required behavior:
+
+- in edit-for-fun mode, there is no save action
+- if an unauthenticated save somehow reaches the server, the server rejects it
+- authenticated admin saves continue to work as before
+
+### Logout behavior
+
+Add a logout action for authenticated admins.
+
+Required behavior:
+
+- clears the session cookie
+- invalidates admin-only UI state
+- if the user is currently editing, exit admin editing mode
+- after logout, pressing the edit shortcut again should reopen the auth dialog
+
 ## Next implementation draft — slug-based page URLs
 
 This step replaces id-based public page routes with slug-based page URLs while keeping `document_id` as the stable internal identity.
