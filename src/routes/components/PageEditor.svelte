@@ -271,15 +271,27 @@
 		}
 	};
 
+	class BrowsePagesCommand extends Command {
+		is_enabled() {
+			return !!(props.has_backend ?? true) && !this.context.editable;
+		}
+
+		execute() {
+			page_browser.open_navigate();
+		}
+	}
+
 	const app_commands = {
 		edit_document: new EditCommand(app_command_context),
 		cancel_editing: new CancelCommand(app_command_context),
-		save_document: new SaveCommand(app_command_context)
+		save_document: new SaveCommand(app_command_context),
+		browse_pages: new BrowsePagesCommand(app_command_context)
 	};
 
 	const app_key_map = define_keymap({
 		'meta+escape,ctrl+escape': [app_commands.cancel_editing],
 		'meta+e,ctrl+e': [app_commands.edit_document],
+		'meta+p,ctrl+p': [app_commands.browse_pages],
 		'meta+s,ctrl+s': [app_commands.save_document]
 	});
 	key_mapper.push_scope(app_key_map);
