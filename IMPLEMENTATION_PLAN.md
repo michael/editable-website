@@ -11,26 +11,27 @@ This step replaces id-based public page routes with slug-based page URLs while k
 Implement human-readable page URLs with these rules:
 
 - each page keeps a stable internal `document_id`
-- each page has one active slug used for its public route
-- old slugs remain as historical aliases and `301` redirect to the current active slug
-- the first slug is generated on first save from the extracted page title using `slugify`
+- non-home pages have one active slug used for their public route
+- the home page is a special case whose canonical public route is always `/`
+- old non-home slugs remain as historical aliases and `301` redirect to the current active slug
+- the first non-home slug is generated on first save from the extracted page title using `slugify`
 - after first save, the slug stays stable until the user explicitly changes it
-- active slugs cannot be force-taken from another page
-- historical aliases can be reclaimed with explicit confirmation
-- whenever an active slug changes, all internal persisted `href` links referencing that page are rewritten
+- active slugs cannot be taken from another page
+- historical aliases of other pages can be claimed automatically without a confirmation step
+- whenever an active non-home slug changes, all internal persisted `href` links referencing that page are rewritten
 
 ### Scope
 
 This step includes:
 
-- database schema for slug storage and lookup
+- database schema for slug storage and lookup for non-home pages
 - slug generation and uniqueness rules
 - slug resolution in page loading routes and APIs
-- save flow updates so first save assigns the initial slug
-- page browser UI for viewing and editing the Page URL
-- historical alias reclaim flow
+- save flow updates so first save assigns the initial slug for non-home pages
+- page browser UI for viewing and editing the Page URL of non-home pages
 - internal href rewrite logic for slug changes
 - canonical redirects from historical aliases to active slugs
+- explicit home-page special-casing at `/`
 
 This step does not include:
 
@@ -41,27 +42,27 @@ This step does not include:
 
 ### Data model changes
 
-Add a dedicated slug mapping table.
+Add a dedicated slug mapping table for non-home pages.
 
 Required fields:
 
-- `slug` — unique text key across all active and historical slugs
+- `slug` — unique text key across all active and historical non-home slugs
 - `document_id` — owning page document id
 - `is_active` — whether this is the page’s current active slug
 - `created_at` — timestamp for ordering/debugging
 
 Constraints and invariants:
 
-- every slug row belongs to exactly one page document
-- a page has exactly one active slug
-- a page may have zero or more inactive historical slugs
+- every slug row belongs to exactly one non-home page document
+- a non-home page has exactly one active slug
+- a non-home page may have zero or more inactive historical slugs
 - `slug` is globally unique across the table
-- only page documents participate in slug mapping
+- the home page does not need a slug row because its canonical route is always `/`
 - `documents.document_id` remains the primary internal identity
 
 Recommended schema shape:
 
-- new table `document_slugs`
+- include `document_slugs` directly in the initial schema setup rather than as a later migration step
 - unique index on `slug`
 - unique partial index on active slug per `document_id`
 
@@ -90,11 +91,11 @@ Important rule:
 
 ### Route and API changes
 
-Public routing changes from `/:page_id` to `/:slug`.
+Public routing changes from `/:page_id` to `/:slug` for non-home pages.
 
 Required behavior:
 
-- `/` remains the canonical home page route
+- `/` remains the canonical home page route and resolves directly from `home_page_id`
 - `/:slug` resolves through `document_slugs.slug`
 - if the slug row is active, load that page
 - if the slug row is historical, resolve the page and issue a `301` redirect to the current active slug
@@ -102,7 +103,7 @@ Required behavior:
 
 API/document loading changes:
 
-- all page-loading entry points that currently accept a page id in the URL must resolve by slug first
+- all non-home page-loading entry points that currently accept a page id in the URL must resolve by slug first
 - internal server logic should normalize back to `document_id` immediately after slug resolution
 - all graph/reference logic continues to use `document_id`, not slug strings
 
@@ -131,11 +132,11 @@ On later saves:
 
 ### Slug editing flow in the page browser
 
-The page browser ellipsis menu should expose Page URL editing.
+The page browser ellipsis menu should expose URL editing for non-home pages.
 
 User-facing presentation:
 
-- label it as `Page URL`
+- label it as `Edit URL`
 - present it visually as `example.com/[your-slug-here]`
 - only the part after the slash is editable
 
@@ -154,8 +155,8 @@ When the user submits a new slug:
 - reject a slug equal to the page’s current active slug as a no-op
 - allow a slug equal to one of the page’s own historical aliases
 - allow an unused slug
+- allow a slug that is only a historical alias of another page
 - reject an active slug owned by another page
-- offer `Cancel` / `Enforce` only when the slug is a historical alias owned by another page
 
 ### Slug change cases
 
@@ -180,19 +181,14 @@ If the requested slug is already a historical alias of the same page:
 
 If the requested slug is a historical alias of another page:
 
-UI offers:
-
-- `Cancel`
-- `Enforce`
-
-If the user chooses `Enforce`:
-
 1. remove that historical alias row from the other page
 2. demote the current active slug of the target page to historical
 3. assign the requested slug as the target page’s new active slug
 4. rewrite all internal persisted `href` links referencing the target page
 
 The other page keeps its own active slug unchanged.
+
+This happens automatically with no extra confirmation step, because historical alias ownership is treated as an internal implementation detail rather than a user-facing concept.
 
 #### Case 4 — active slug owned by another page
 
@@ -255,11 +251,12 @@ Extend the page browser query to return, for each page:
 - `document_id`
 - extracted title
 - preview image
-- current active slug
+- current active slug for non-home pages
 
 The home page row must additionally be marked so the UI can:
 
-- hide Page URL editing
+- display `/` as its URL
+- hide URL editing
 - hide delete
 
 ### Home page rules
@@ -268,8 +265,9 @@ Keep these rules explicit in implementation:
 
 - `/` is always canonical for the home page
 - the home page is not reassigned to another page
-- Page URL editing is hidden for the home page
-- requests to historical aliases of the home page still resolve and `301` redirect to `/`
+- the home page does not need a slug row in `document_slugs`
+- URL editing is hidden for the home page
+- requests to historical aliases of the home page are not needed because the home page does not participate in slug history
 
 ### Deletion behavior
 
@@ -290,13 +288,13 @@ UI behavior:
 
 Add focused helpers for:
 
-- resolve slug → `{ document_id, is_active, active_slug }`
+- resolve slug → `{ document_id, is_active, active_slug }` for non-home pages
 - get active slug for `document_id`
-- generate initial unique slug for a page
+- generate initial unique slug for a non-home page
 - promote/demote slug rows during slug changes
-- reclaim historical alias
+- claim historical aliases automatically when they are not active
 - rewrite internal hrefs referencing a page
-- list pages with active slug + summary data
+- list pages with active slug + summary data, while special-casing the home page as `/`
 
 ### Required transaction boundaries
 
@@ -321,32 +319,32 @@ If any part fails, the whole slug change must roll back.
 
 ### Suggested implementation order
 
-1. add database migration for `document_slugs`
-2. add slug resolution helpers and uniqueness helpers
-3. update page loading routes and APIs to resolve by slug
+1. fold `document_slugs` into the initial schema setup
+2. add slug resolution helpers and uniqueness helpers for non-home pages
+3. update page loading routes and APIs to resolve non-home pages by slug while keeping `/` special-cased
 4. update first-save flow to assign initial slug and navigate to `/:slug`
 5. add page browser query support for active slug
-6. add Page URL editing UI in the page browser
+6. add URL editing UI in the page browser
 7. implement manual slug change flow for unused slug and own historical alias
-8. implement historical alias reclaim flow with `Cancel` / `Enforce`
+8. implement automatic claiming of historical aliases owned by other pages
 9. implement href rewriting across all schema `href` properties
 10. wire canonical `301` redirects for historical aliases
-11. hide Page URL editing for the home page
+11. hide URL editing for the home page and display `/`
 12. verify delete flow removes slug rows and keeps warning behavior
 
 ### Definition of done
 
 This step is done when all of the following are true:
 
-- new pages get a human-readable slug on first save
-- public page routes use `/:slug`
+- new non-home pages get a human-readable slug on first save
+- public non-home page routes use `/:slug`
 - old aliases `301` redirect to the current active slug
 - title changes no longer auto-change slugs
-- users can edit Page URL from the page browser
-- active slugs cannot be force-taken from another page
-- historical aliases can be reclaimed with confirmation
+- users can edit URL from the page browser for non-home pages
+- active slugs cannot be taken from another page
+- historical aliases owned by other pages are claimed automatically when requested
 - all internal persisted `href` links referencing a page are rewritten when that page’s active slug changes
-- home page Page URL editing is hidden
+- the home page is always `/` and URL editing is hidden for it
 - deleting a page removes all of its slug rows
 
 ## Existing implementation steps (compacted history)

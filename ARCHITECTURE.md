@@ -184,18 +184,19 @@ Assets (images, videos) are stored as files in `ASSET_PATH`. Assets are referenc
 
 ### Page ids, slugs, and routes
 
-Page documents continue to have a stable internal `document_id`, but public page URLs are **slug-based**, not id-based.
+Page documents continue to have a stable internal `document_id`, but public page URLs are **slug-based** for non-home pages.
 
 **Key rule:**
 - `document_id` is the durable internal identity
-- `slug` is the human-readable public route segment
+- non-home pages have a human-readable public `slug`
+- the home page is a special case whose canonical public URL is always `/`
 
 Examples:
 - internal id: `WRfteHhfPvzJBJjvFxQCEpg`
 - public slug: `survey`
 - public URL: `/survey`
 
-This separation keeps internal references stable while allowing pretty URLs.
+This separation keeps internal references stable while allowing pretty URLs, while keeping the home page fixed at `/`.
 
 #### Slug generation
 
@@ -223,9 +224,9 @@ Auto-generated slugs are assigned once on first save and then remain stable unti
 
 #### Slug ownership and history
 
-The system needs a durable mapping from slugs to page documents, including old slugs that should continue to resolve.
+The system needs a durable mapping from non-home page slugs to page documents, including old slugs that should continue to resolve.
 
-A page therefore has:
+A non-home page therefore has:
 - one **current active slug**
 - zero or more **historical slugs**
 
@@ -236,6 +237,11 @@ This requires a slug mapping table in the database rather than storing only a si
 Conceptually, the mapping must support:
 - resolving a slug to a `document_id`
 - distinguishing the current active slug from historical aliases
+
+The home page is excluded from this mapping:
+- its canonical URL is always `/`
+- it does not need a stored slug row
+- it is treated as a special case in routing and in the page browser
 
 #### Custom slugs
 
@@ -272,17 +278,15 @@ This keeps active page URLs stable and avoids surprising background rewrites.
 
 **Case B — the slug is only a historical alias of another page**
 
-The UI must offer:
-1. **Cancel** — keep everything unchanged
-2. **Enforce** — claim that address for the current page
+This is allowed immediately.
 
-If the user chooses **Enforce**:
+When this happens:
 1. remove that historical alias from the page that currently owns it
 2. assign the slug as the new active slug of the target page
 3. if the target page's active slug changed, rewrite all internal links that target the target page
 4. do not change the other page's active slug, because it did not lose its current slug
 
-This is the one case where an old slug should **not** remain as a historical alias for the previous owner, because the slug has been intentionally reassigned.
+Historical alias ownership is therefore an internal implementation detail, not a user-facing confirmation flow.
 
 #### Link rewriting rule
 
@@ -302,8 +306,8 @@ The system therefore treats slug changes as a graph rewrite operation, not just 
 
 Slug resolution must behave as follows:
 
-- `/` still resolves to the configured home page
-- `/:slug` resolves by looking up the slug mapping table
+- `/` resolves directly to the configured home page
+- `/:slug` resolves by looking up the slug mapping table for non-home pages
 - if the slug is the current active slug of a page, load that page
 - if the slug is a historical alias of a page, also load that page
 - if the slug is unknown, return 404
