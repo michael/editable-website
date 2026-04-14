@@ -469,9 +469,8 @@ Extend the page browser query to return, for each page:
 
 - `document_id`
 - extracted title
-- preview image
+- optional `preview_media_node`
 - current active slug for non-home pages
-
 The home page row must additionally be marked so the UI can:
 
 - display `/` as its URL

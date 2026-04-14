@@ -32,6 +32,6 @@
 		class="overflow-hidden h-full"
 		class:ew-bg-checkerboard={is_selected || !node.src}
 	>
-		<Media {path} />
+		<Media {node} editable={svedit.editable} />
 	</div>
 </CustomProperty>

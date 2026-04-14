@@ -1,5 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
+	import Media from './Media.svelte';
 
 	const svedit = getContext('svedit');
 	const has_backend = getContext('has_backend');
@@ -49,9 +50,7 @@
 		return href;
 	}
 
-	function is_image_preview(preview_image_src) {
-		return !!preview_image_src && !/\.(mp4|webm)$/i.test(preview_image_src);
-	}
+
 </script>
 
 <div
@@ -62,7 +61,7 @@
 		<div class="bg-(--background) text-(--foreground) border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)]">
 			<div class="flex items-center gap-3 px-3 py-2">
 				<a
-					href={node.href}
+					href={internal_page_href ?? node.href}
 					target="_blank"
 					rel="noopener noreferrer"
 					class="text-sm text-(--foreground) max-w-70 truncate hover:underline"
@@ -92,12 +91,12 @@
 					{:then resolved_page_preview}
 						{#if resolved_page_preview}
 							<div class="flex items-center gap-3">
-								{#if resolved_page_preview.preview_image_src && is_image_preview(resolved_page_preview.preview_image_src)}
-									<img
-										src={`/assets/${resolved_page_preview.preview_image_src}`}
-										alt=""
-										class="h-12 w-12 shrink-0 border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] object-cover"
-									/>
+								{#if resolved_page_preview.preview_media_node}
+									<div
+										class="h-12 w-12 shrink-0 overflow-hidden border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)]"
+									>
+										<Media node={resolved_page_preview.preview_media_node} />
+									</div>
 								{/if}
 								<div class="min-w-0">
 									<div class="text-sm font-semibold text-(--foreground) truncate">

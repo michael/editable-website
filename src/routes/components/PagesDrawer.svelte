@@ -1,6 +1,7 @@
 <script>
 	import { invalidateAll } from '$app/navigation';
 	import { get_page_browser_data } from '$lib/api.remote.js';
+	import Media from './Media.svelte';
 	import { get_page_browser } from './page_browser_context.svelte.js';
 
 	const page_browser = get_page_browser();
@@ -90,16 +91,6 @@
 
 	function get_page_slug_label(page_href) {
 		return page_href || '/';
-	}
-
-	function get_preview_src(preview_image_src) {
-		if (!preview_image_src) return null;
-		if (preview_image_src.startsWith('blob:')) return preview_image_src;
-		return `/assets/${preview_image_src}`;
-	}
-
-	function is_video_preview(preview_image_src) {
-		return !!preview_image_src && /\.(mp4|webm)$/i.test(preview_image_src);
 	}
 
 	function is_home_page(document_id) {
@@ -343,28 +334,12 @@
 										})}
 								>
 									<div class="page-illustration draft-illustration" aria-hidden="true">
-										{#if draft.preview_image_src}
-											{#if is_video_preview(draft.preview_image_src)}
-												<video
-													class="media-preview"
-													src={get_preview_src(draft.preview_image_src)}
-													muted
-													playsinline
-													disablepictureinpicture
-												></video>
-											{:else}
-												<img
-													class="media-preview"
-													src={get_preview_src(draft.preview_image_src)}
-													alt=""
-												/>
-											{/if}
-										{:else}
-											<div class="page-sheet">
-												<div class="line long"></div>
-												<div class="line"></div>
-												<div class="line short"></div>
+										{#if draft.preview_media_node}
+											<div class="media-preview">
+												<Media node={draft.preview_media_node} />
 											</div>
+										{:else}
+											<div class="page-illustration-fallback"></div>
 										{/if}
 									</div>
 									<div class="draft-title">
@@ -426,28 +401,12 @@
 								<div class="tree-indent" aria-hidden="true"></div>
 
 								<div class="page-illustration tree-illustration" aria-hidden="true">
-									{#if node.preview_image_src}
-										{#if is_video_preview(node.preview_image_src)}
-											<video
-												class="media-preview"
-												src={get_preview_src(node.preview_image_src)}
-												muted
-												playsinline
-												disablepictureinpicture
-											></video>
-										{:else}
-											<img
-												class="media-preview"
-												src={get_preview_src(node.preview_image_src)}
-												alt=""
-											/>
-										{/if}
-									{:else}
-										<div class="page-sheet compact">
-											<div class="line long"></div>
-											<div class="line"></div>
-											<div class="line short"></div>
+									{#if node.preview_media_node}
+										<div class="media-preview">
+											<Media node={node.preview_media_node} />
 										</div>
+									{:else}
+										<div class="page-illustration-fallback"></div>
 									{/if}
 								</div>
 

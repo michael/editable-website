@@ -43,10 +43,24 @@ function create_auth_error_result(code, message) {
  */
 
 /**
+ * @typedef {Object} PreviewMediaNode
+ * @property {string} type
+ * @property {string} src
+ * @property {number} width
+ * @property {number} height
+ * @property {string} alt
+ * @property {number} scale
+ * @property {number} focal_point_x
+ * @property {number} focal_point_y
+ * @property {string} object_fit
+ * @property {string | undefined} mime_type
+ */
+
+/**
  * @typedef {Object} PageSummary
  * @property {string} document_id
  * @property {string} title
- * @property {string | null} preview_image_src
+ * @property {PreviewMediaNode | null} preview_media_node
  * @property {string} page_href
  */
 
@@ -54,14 +68,14 @@ function create_auth_error_result(code, message) {
  * @typedef {Object} InternalLinkPreview
  * @property {string} document_id
  * @property {string} title
- * @property {string | null} preview_image_src
+ * @property {PreviewMediaNode | null} preview_media_node
  */
 
 /**
  * @typedef {Object} PageTreeNode
  * @property {string} document_id
  * @property {string} title
- * @property {string | null} preview_image_src
+ * @property {PreviewMediaNode | null} preview_media_node
  * @property {string} page_href
  * @property {PageTreeNode[]} children
  */
@@ -608,36 +622,8 @@ function extract_plain_text(annotated_text) {
 }
 
 /**
- * @param {string} src
- * @param {number | null | undefined} width
- * @returns {string}
- */
-function get_preview_image_src(src, width) {
-	if (!src.endsWith('.webp')) return src;
-	if (!width || width <= 320) return src;
-
-	const extension_index = src.lastIndexOf('.');
-	if (extension_index === -1) return src;
-
-	const asset_stem = src.slice(0, extension_index);
-	return `${asset_stem}/w320.webp`;
-}
-
-/**
- * @param {any} node
- * @returns {string | null}
- */
-function get_preview_media_src(node) {
-	if (!node || typeof node !== 'object' || !node.src) return null;
-	if (node.type === 'video') return node.src;
-	if (node.type !== 'image') return null;
-
-	return get_preview_image_src(node.src, node.width);
-}
-
-/**
  * @param {DocumentData} page_doc
- * @returns {{ title: string, preview_image_src: string | null }}
+ * @returns {{ title: string, preview_media_node: PreviewMediaNode | null }}
  */
 function extract_page_metadata(page_doc) {
 	const body_node_ids = collect_page_body_node_ids(page_doc);
@@ -645,14 +631,17 @@ function extract_page_metadata(page_doc) {
 	let explicit_title = '';
 	let heading_title = '';
 	let fallback_title = '';
-	let preview_image_src = null;
+	let first_image_node = null;
+	let first_video_node = null;
 
 	for (const node_id of body_node_ids) {
 		const node = page_doc.nodes[node_id];
 		if (!node) continue;
 
-		if (!preview_image_src) {
-			preview_image_src = get_preview_media_src(node);
+		if (!first_image_node && node.type === 'image') {
+			first_image_node = node;
+		} else if (!first_video_node && node.type === 'video') {
+			first_video_node = node;
 		}
 
 		if (node.type === 'text') {
@@ -694,7 +683,7 @@ function extract_page_metadata(page_doc) {
 
 	return {
 		title: explicit_title || heading_title || fallback_title || 'Untitled page',
-		preview_image_src
+		preview_media_node: first_image_node || first_video_node
 	};
 }
 
@@ -711,7 +700,7 @@ function summarize_page_document(page_doc) {
 	return {
 		document_id: page_doc.document_id,
 		title: metadata.title,
-		preview_image_src: metadata.preview_image_src,
+		preview_media_node: metadata.preview_media_node,
 		page_href: active_slug ? `/${active_slug}` : '/'
 	};
 }
@@ -791,7 +780,7 @@ function build_tree_children(refs, seen_page_ids, summaries_by_id, body_refs_by_
 		children.push({
 			document_id: summary.document_id,
 			title: summary.title,
-			preview_image_src: summary.preview_image_src,
+			preview_media_node: summary.preview_media_node,
 			page_href: summary.page_href,
 			children: build_tree_children(
 				body_refs_by_page_id.get(target_document_id) ?? [],
@@ -860,7 +849,7 @@ function build_page_browser_data() {
 		const home_summary = summaries_by_id.get(home_page_id) ?? {
 			document_id: home_page_id,
 			title: 'Untitled page',
-			preview_image_src: null,
+			preview_media_node: null,
 			page_href: '/'
 		};
 
@@ -869,7 +858,7 @@ function build_page_browser_data() {
 		sitemap = {
 			document_id: home_summary.document_id,
 			title: home_summary.title,
-			preview_image_src: home_summary.preview_image_src,
+			preview_media_node: home_summary.preview_media_node,
 			page_href: home_summary.page_href,
 			children: build_tree_children(
 				[...nav_refs, ...home_body_refs, ...footer_refs],
@@ -1093,7 +1082,7 @@ export const get_internal_link_preview = query(v.string(), async (href) => {
 	return /** @type {InternalLinkPreview} */ ({
 		document_id: resolved.document_id,
 		title: metadata.title,
-		preview_image_src: metadata.preview_image_src
+		preview_media_node: metadata.preview_media_node
 	});
 });
 
