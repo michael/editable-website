@@ -1,17 +1,22 @@
 import { getRequestEvent, query, command } from '$app/server';
-import { env } from '$env/dynamic/private';
 import * as v from 'valibot';
 import slugify from 'slugify';
 import crypto from 'node:crypto';
 import db from '$lib/server/db.js';
 import { document_schema } from '$lib/document_schema.js';
+import {
+	admin_session_cookie_name,
+	get_required_admin_password,
+	get_session_expires_at,
+	delete_session,
+	clear_admin_session_cookie,
+	set_admin_session_cookie,
+	require_admin_session
+} from '$lib/server/auth.js';
 
 const admin_login_input_schema = v.object({
 	password: v.string()
 });
-
-const session_duration_seconds = 14 * 24 * 60 * 60;
-const admin_session_cookie_name = 'ew_admin_session';
 
 function create_page_url_error_result(code, message) {
 	return {
@@ -259,73 +264,7 @@ function get_home_page_id_from_db() {
 	return row?.value ?? null;
 }
 
-/**
- * @returns {string}
- */
-function get_required_admin_password() {
-	const admin_password = env.ADMIN_PASSWORD;
-	if (!admin_password) {
-		throw new Error('ADMIN_PASSWORD must be set');
-	}
 
-	return admin_password;
-}
-
-/**
- * @returns {number}
- */
-function get_session_expires_at() {
-	return Math.floor(Date.now() / 1000) + session_duration_seconds;
-}
-
-/**
- * @param {string} session_id
- */
-function delete_session(session_id) {
-	db.prepare('DELETE FROM sessions WHERE session_id = ?').run(session_id);
-}
-
-
-
-/**
- * @param {import('@sveltejs/kit').Cookies} cookies
- */
-function clear_admin_session_cookie(cookies) {
-	cookies.set(admin_session_cookie_name, '', {
-		path: '/',
-		httpOnly: true,
-		sameSite: 'lax',
-		secure: env.NODE_ENV === 'production',
-		maxAge: 0
-	});
-}
-
-/**
- * @param {import('@sveltejs/kit').Cookies} cookies
- * @param {string} session_id
- */
-function set_admin_session_cookie(cookies, session_id) {
-	cookies.set(admin_session_cookie_name, session_id, {
-		path: '/',
-		httpOnly: true,
-		sameSite: 'lax',
-		secure: env.NODE_ENV === 'production',
-		maxAge: session_duration_seconds
-	});
-}
-
-/**
- * @returns {boolean}
- */
-function require_admin_session() {
-	const { locals } = getRequestEvent();
-
-	if (!locals.is_admin) {
-		throw new Error('Unauthorized');
-	}
-
-	return true;
-}
 
 /**
  * @param {string} document_id
@@ -993,7 +932,7 @@ export const logout_admin = command(v.void(), async () => {
  * Return page browser data for the pages drawer.
  */
 export const get_page_browser_data = query(v.void(), async () => {
-	require_admin_session();
+	require_admin_session(getRequestEvent().locals);
 	return build_page_browser_data();
 });
 
@@ -1001,7 +940,7 @@ export const get_page_browser_data = query(v.void(), async () => {
  * Delete a page document and its related refs.
  */
 export const delete_page = command(delete_page_input_schema, async ({ document_id }) => {
-	require_admin_session();
+	require_admin_session(getRequestEvent().locals);
 
 	const home_page_id = get_home_page_id_from_db();
 
@@ -1152,7 +1091,7 @@ function assign_active_slug(document_id, slug, insert_slug_stmt, deactivate_slug
 }
 
 export const save_document = command(save_document_input_schema, async (combined_doc) => {
-	require_admin_session();
+	require_admin_session(getRequestEvent().locals);
 
 	const all_nodes = structuredClone(combined_doc.nodes);
 	const page_node = all_nodes[combined_doc.document_id];
@@ -1290,7 +1229,7 @@ export const save_document = command(save_document_input_schema, async (combined
 });
 
 export const update_page_slug = command(update_page_slug_input_schema, async (input) => {
-	require_admin_session();
+	require_admin_session(getRequestEvent().locals);
 
 	const normalized_slug = slugify(input.slug, { lower: true, strict: true, trim: true });
 

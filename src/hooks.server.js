@@ -1,41 +1,10 @@
 import { env } from '$env/dynamic/private';
-
-const admin_session_cookie_name = 'ew_admin_session';
-const session_duration_seconds = 14 * 24 * 60 * 60;
-
-/**
- * @returns {number}
- */
-function get_session_expires_at() {
-	return Math.floor(Date.now() / 1000) + session_duration_seconds;
-}
-
-/**
- * @param {import('@sveltejs/kit').Cookies} cookies
- */
-function clear_admin_session_cookie(cookies) {
-	cookies.set(admin_session_cookie_name, '', {
-		path: '/',
-		httpOnly: true,
-		sameSite: 'lax',
-		secure: env.NODE_ENV === 'production',
-		maxAge: 0
-	});
-}
-
-/**
- * @param {import('@sveltejs/kit').Cookies} cookies
- * @param {string} session_id
- */
-function set_admin_session_cookie(cookies, session_id) {
-	cookies.set(admin_session_cookie_name, session_id, {
-		path: '/',
-		httpOnly: true,
-		sameSite: 'lax',
-		secure: env.NODE_ENV === 'production',
-		maxAge: session_duration_seconds
-	});
-}
+import {
+	admin_session_cookie_name,
+	clear_admin_session_cookie,
+	get_session_expires_at,
+	set_admin_session_cookie
+} from '$lib/server/auth.js';
 
 /** @type {import('@sveltejs/kit').ServerInit} */
 export async function init() {
