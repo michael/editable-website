@@ -3,7 +3,7 @@
 	import Media from './Media.svelte';
 
 	const svedit = getContext('svedit');
-	const has_backend = getContext('has_backend');
+	const app = getContext('app');
 
 	let { node, path } = $props();
 
@@ -12,7 +12,7 @@
 
 	let page_preview = $derived.by(async () => {
 		const href = internal_page_href;
-		if (!has_backend()) return null;
+		if (!app.has_backend) return null;
 		if (!href) return null;
 
 		const api_module = await import('$lib/api.remote.js');

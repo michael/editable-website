@@ -9,8 +9,7 @@
 	import Drawer from './Drawer.svelte';
 
 	const svedit = getContext('svedit');
-	const has_backend = getContext('has_backend');
-	const is_admin = getContext('is_admin');
+	const app = getContext('app');
 
 	// True for the whole period the mouse button is down
 	let is_mouse_down = $state(false);
@@ -217,7 +216,7 @@
 		<CreateLink />
 	{/if}
 
-	{#if has_backend() && is_admin() && (!svedit.editable || page_browser.state.open)}
+	{#if app.has_backend && app.is_admin && (!svedit.editable || page_browser.state.open)}
 		{@const PagesDrawer = (await import('./PagesDrawer.svelte')).default}
 		<Drawer bind:open={page_browser.state.open} label="Pages">
 			<PagesDrawer />

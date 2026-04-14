@@ -8,22 +8,26 @@
 	import { create_session } from '../create_session.js';
 	import { create_page_browser, set_page_browser } from './page_browser_context.svelte.js';
 
-	/** @type {{ initial_doc: any, initial_slug?: string | null, has_backend?: boolean, is_new?: boolean, is_admin?: boolean }} */
-	let props = $props();
+	import { demo_doc } from '$lib/demo_doc.js';
 
-	let initial_doc = $derived(props.initial_doc);
-	let is_new = $derived(props.is_new ?? false);
-	let server_is_admin = $derived(!!(props.is_admin ?? false));
+	/** @type {{ document?: any, slug?: string | null, has_backend?: boolean, is_new?: boolean, is_admin?: boolean }} */
+	let {
+		document,
+		has_backend = false,
+		is_new = false,
+		is_admin: server_is_admin = false
+	} = $props();
 
-	let initial_doc_json = $derived(JSON.stringify(props.initial_doc));
+	let initial_doc = $derived(has_backend ? document : demo_doc);
+
+	let initial_doc_json = $derived(JSON.stringify(initial_doc));
 
 	let app_el = $state();
 	let svedit_ref = $state();
 	let editable = $state(false);
 	let current_is_new = $state(false);
-	let is_admin_override = $state(/** @type {boolean | null} */ (null));
-	let is_admin = $derived(is_admin_override ?? server_is_admin);
-	let edit_mode = $state(/** @type {'admin' | 'fun' | null} */ (null));
+	let is_admin = $derived(server_is_admin);
+	let is_admin_mode = $derived(editable && is_admin);
 
 	let save_progress_visible = $state(false);
 	let save_progress_message = $state('');
@@ -37,13 +41,20 @@
 	let auth_error = $state('');
 	let auth_pending = $state(false);
 
-	setContext('has_backend', () => props.has_backend ?? true);
-	setContext('is_admin', () => is_admin);
-	setContext('edit_mode', () => edit_mode);
+	const app = {
+		get has_backend() {
+			return has_backend;
+		},
+		get is_admin() {
+			return is_admin;
+		}
+	};
+
+	setContext('app', app);
 
 	const page_browser = create_page_browser({
 		goto,
-		is_admin: () => is_admin
+		is_admin: () => app.is_admin
 	});
 
 	Object.defineProperty(page_browser, 'version', {
@@ -57,6 +68,7 @@
 	set_page_browser(page_browser);
 
 	$effect(() => {
+		if (typeof document === 'undefined' || !document.documentElement) return;
 		document.documentElement.style.scrollBehavior = editable ? 'auto' : 'smooth';
 	});
 
@@ -64,7 +76,6 @@
 		current_is_new = !!is_new;
 		if (current_is_new) {
 			editable = true;
-			edit_mode = 'admin';
 		}
 	});
 
@@ -127,9 +138,8 @@
 		close_auth_dialog();
 	}
 
-	function enter_edit_mode(next_edit_mode) {
+	function enter_edit_mode() {
 		editable = true;
-		edit_mode = next_edit_mode;
 		close_auth_dialog();
 	}
 
@@ -148,9 +158,8 @@
 				return;
 			}
 
-			is_admin_override = true;
 			await invalidateAll();
-			enter_edit_mode('admin');
+			enter_edit_mode();
 		} catch (err) {
 			auth_error = err instanceof Error ? err.message : 'Login failed.';
 		} finally {
@@ -159,7 +168,7 @@
 	}
 
 	function edit_for_fun() {
-		enter_edit_mode('fun');
+		enter_edit_mode();
 	}
 
 	class EditCommand extends Command {
@@ -175,8 +184,8 @@
 				);
 			}
 
-			if (!(props.has_backend ?? true) || is_admin) {
-				enter_edit_mode('admin');
+			if (!has_backend || is_admin) {
+				enter_edit_mode();
 				return;
 			}
 
@@ -199,25 +208,23 @@
 
 			session = create_session(JSON.parse(initial_doc_json));
 			this.context.editable = false;
-			edit_mode = null;
 		}
 	}
 
 	class SaveCommand extends Command {
 		is_enabled() {
-			return this.context.editable && edit_mode === 'admin';
+			return is_admin_mode;
 		}
 
 		async execute() {
-			if (!(props.has_backend ?? true)) {
+			if (!has_backend) {
 				console.log('Document saved', session.to_json());
 				session.selection = null;
 				this.context.editable = false;
-				edit_mode = null;
 				return;
 			}
 
-			if (edit_mode !== 'admin') {
+			if (!is_admin_mode) {
 				return;
 			}
 
@@ -307,7 +314,6 @@
 
 				session.selection = null;
 				this.context.editable = false;
-				edit_mode = null;
 
 				if (result?.created && result.document_id && result.slug) {
 					try {
@@ -341,15 +347,14 @@
 
 	class LogoutCommand extends Command {
 		is_enabled() {
-			return !!(props.has_backend ?? true) && is_admin && !editable;
+			return has_backend && is_admin && !editable;
 		}
 
 		async execute() {
 			try {
 				const api_module = await import('$lib/api.remote.js');
 				await api_module.logout_admin();
-				is_admin_override = false;
-				edit_mode = null;
+				editable = false;
 				page_browser.close?.();
 				await invalidateAll();
 			} catch (err) {
@@ -378,7 +383,7 @@
 
 	class BrowsePagesCommand extends Command {
 		is_enabled() {
-			return !!(props.has_backend ?? true) && is_admin && !this.context.editable;
+			return has_backend && is_admin && !this.context.editable;
 		}
 
 		execute() {
@@ -402,14 +407,13 @@
 	});
 	key_mapper.push_scope(app_key_map);
 
-	let session = $derived.by(() => create_session(props.initial_doc));
-	let loaded_document_id = $derived(props.initial_doc.document_id);
+	let session = $derived.by(() => create_session(initial_doc));
+	let loaded_document_id = $derived(initial_doc.document_id);
 
 	$effect(() => {
 		loaded_document_id;
-		if (props.is_new ?? false) {
+		if (is_new) {
 			editable = true;
-			edit_mode = 'admin';
 		}
 	});
 
@@ -497,7 +501,7 @@
 		{/if}
 	</dialog>
 
-	{#if props.has_backend ?? true}
+	{#if has_backend}
 		<SaveProgressModal
 			visible={save_progress_visible}
 			message={save_progress_message}

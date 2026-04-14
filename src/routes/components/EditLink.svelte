@@ -3,7 +3,7 @@
 	import { get_page_browser } from './page_browser_context.svelte.js';
 
 	const svedit = getContext('svedit');
-	const has_backend = getContext('has_backend');
+	const app = getContext('app');
 	const page_browser = get_page_browser();
 
 	let { path } = $props();
@@ -93,7 +93,7 @@
 				class="w-72 min-w-0 flex-1 border-0 bg-(--background) px-3 py-2 text-sm text-(--foreground) outline-none focus:ring-1 focus:ring-(--svedit-editing-stroke)"
 				onkeydown={handle_keydown}
 			/>
-			{#if has_backend()}
+			{#if app.has_backend}
 				<button
 					type="button"
 					class="shrink-0 cursor-pointer border-l border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] px-3 text-(--svedit-editing-stroke) hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))]"

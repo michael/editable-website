@@ -6,16 +6,13 @@
 	let { session, app_commands, editable, focus_canvas } = $props();
 
 	const page_browser = get_page_browser();
-	const has_backend = getContext('has_backend');
-	const is_admin = getContext('is_admin');
-	const edit_mode = getContext('edit_mode');
+	const app = getContext('app');
 
 	let cancel_command = $derived(app_commands.cancel_editing ?? null);
 	let cancel_button_label = $derived(cancel_command?.label || 'Cancel');
-	let can_save = $derived(edit_mode?.() === 'admin' && !app_commands.save_document.disabled);
-	let can_browse_pages = $derived(has_backend() && is_admin() && !editable);
-	let can_create_pages = $derived(has_backend() && is_admin());
-	let can_logout = $derived(has_backend() && is_admin() && !editable);
+	let can_browse_pages = $derived(app.has_backend && app.is_admin && !editable);
+	let can_create_pages = $derived(app.has_backend && app.is_admin);
+	let can_logout = $derived(app.has_backend && app.is_admin && !editable);
 
 	let selected_property = $derived(
 		session.selection?.type === 'property'
