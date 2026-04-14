@@ -4,11 +4,58 @@
 
 This document describes the backend architecture for Editable Website v2.
 
+## Next implementation draft — admin authentication
+
+The next planned step is simple owner authentication for editing and private page-management features.
+
+### Goal
+
+Implement a single-password admin authentication flow with these rules:
+
+- the admin password is configured via `ADMIN_PASSWORD`
+- `ADMIN_PASSWORD` is required in full runtime mode; if it is missing, the app must not start
+- whoever knows that password can authenticate as admin
+- authenticated admins can edit and save content, browse drafts, and use the full page browser
+- unauthenticated visitors can still choose “Edit for fun” on the current page
+- edit-for-fun mode never persists changes
+- there is no dedicated remembered login route as the primary UX
+- the main login entry point is the edit shortcut flow on the current page
+- static / `VERCEL=1` mode keeps authentication disabled
+
+### Scope
+
+This step includes:
+
+- server-side admin session handling using the existing `sessions` table
+- session cookie creation, validation, and logout
+- `event.locals.is_admin` wiring in the server hook
+- a login command that validates `ADMIN_PASSWORD`
+- server-side protection for save and page-management mutations
+- server-side protection for private page browser data
+- client UI state for authenticated admin vs edit-for-fun mode
+- an auth dialog shown when unauthenticated users try to edit
+- edit-for-fun restrictions in the editor UI
+
+This step does not include:
+
+- multi-user accounts
+- usernames or email addresses
+- password reset flows
+- role-based permissions
+- rate limiting or brute-force protection beyond basic server-side checks
+- exposing drafts or private sitemap data to unauthenticated users
+
 ## Overview
 
 Editable Website is a SvelteKit application that lets site owners edit content directly in the browser. The editor (Svedit) works with a graph-based document model — a flat map of nodes with references between them. The backend stores these documents in SQLite and serves them to the frontend, stitching together shared content (nav, footer) with page-specific content into a single document that Svedit can edit locally.
 
 The production architecture is database-backed and supports multiple pages, but the project must also continue to support static preview/local development mode (for example `VERCEL=1`) where the app falls back to the demo document. In that mode, only the `/` route needs to work, multi-page features are disabled, authentication is disabled, and code paths must avoid hard dependencies on server-only runtime features that would break static deployments.
+
+In full runtime mode, Editable Website also supports a simple owner-only admin authentication model. Whoever knows the admin password can unlock editing and private page-management features. This is intentionally not a multi-user system — there is no user database, no roles, and no per-user ownership model. Authentication exists only to distinguish between:
+
+1. **Admin mode** — authenticated with the configured admin password, can edit and save, browse drafts, create pages, delete pages, and use the full page browser
+2. **Edit-for-fun mode** — unauthenticated, can temporarily edit the currently open page in the browser UI, but cannot save changes or access private site-management features
+3. **Public browsing mode** — normal site visitor mode with no editing UI active
 
 ## SvelteKit configuration
 
@@ -46,7 +93,16 @@ export async function init() {
 }
 ```
 
-The `handle` hook runs on every request and is where session validation and `event.locals.user` assignment will happen once authentication is implemented.
+The `handle` hook runs on every request and is where session validation and `event.locals` assignment happens.
+
+For admin authentication, the hook is responsible for:
+
+- reading the admin session cookie
+- validating the session against the `sessions` table
+- deleting expired sessions on lookup
+- assigning `event.locals.is_admin` as a boolean for downstream route loads and remote functions
+
+There is no `user` object in this model. The only server-side auth state needed is whether the current request is authenticated as admin.
 
 ## Static / Vercel compatibility mode
 
@@ -62,12 +118,13 @@ Editable Website must preserve a lightweight static-compatible mode for preview 
   - no links or flows that send the user to dynamic `/:page_id` pages
 - the multi-page routes may still exist in the codebase and may assume a full Node + database runtime; they just must not be linked to or otherwise used from the `VERCEL=1` branch.
 - authentication is disabled in this mode.
+- the admin password flow must not be surfaced in this mode.
 - Client code must not hardwire imports or execution paths that force server-only database/remote-function behavior for the `/` route in static/Vercel mode.
 - Be especially careful with top-level async imports and route setup so the static adapter / preview deployment path remains viable.
 
 This means the app effectively has two operating modes:
 
-1. **Full runtime mode** — database-backed, multi-page, shared nav/footer, authentication-ready
+1. **Full runtime mode** — database-backed, multi-page, shared nav/footer, admin-authenticated editing
 2. **Static/Vercel mode** — single-page demo-doc fallback on `/`, while multi-page routes may still exist but are not surfaced or used
 
 The static/Vercel mode is a compatibility constraint on all future multi-page work.
@@ -165,14 +222,179 @@ This table is the single source of truth for asset ownership. It enables cleanup
 
 **`sessions`**
 
+The `sessions` table stores authenticated admin sessions.
+
 - `session_id` — a cryptographically secure UUID (generated via `crypto.randomUUID()`)
 - `expires` — Unix timestamp (seconds) when the session expires
 
 Expired sessions are deleted on lookup. No background cleanup job needed.
 
+There is no user id column because there is only one logical admin identity: “whoever knows `ADMIN_PASSWORD`”.
+
 ### Assets
 
 Assets (images, videos) are stored as files in `ASSET_PATH`. Assets are referenced from image nodes via their `src` property. The `asset_refs` table tracks which documents reference which assets.
+
+## Admin authentication
+
+### Authentication model
+
+Editable Website uses a single shared admin password configured via the `ADMIN_PASSWORD` environment variable.
+
+Properties of this model:
+
+- there is no username
+- there is no user table
+- there is no registration flow
+- there is no password reset flow inside the app
+- there is no distinction between multiple admins
+
+If a request proves knowledge of `ADMIN_PASSWORD`, the server creates a session row in `sessions` and sets a secure session cookie. Subsequent requests are authenticated by that cookie until the session expires or is explicitly cleared.
+
+This is intentionally simple and optimized for the “site owner edits their own site” use case.
+
+### Session flow
+
+The authentication flow is:
+
+1. the client submits the admin password to a server-side login command
+2. the server compares it against `process.env.ADMIN_PASSWORD`
+3. if valid, the server creates a new session row in `sessions`
+4. the server sets an HTTP-only session cookie
+5. future requests are treated as admin requests while the session remains valid
+
+Logout deletes the session row and clears the cookie.
+
+Admin sessions use a sliding expiration window of two weeks:
+- when a session is created, `expires` is set to `now + 2 weeks`
+- when an authenticated admin makes a meaningful authenticated request, the server extends `expires` to `now + 2 weeks`
+- expired sessions are treated as invalid and deleted on lookup
+
+Session validation happens on every request in the server hook. If the cookie points to an expired or missing session, the request is treated as unauthenticated and the cookie should be cleared.
+
+### Cookie requirements
+
+The admin session cookie must be:
+
+- `httpOnly`
+- `sameSite='lax'`
+- `secure` in production
+- scoped to `/`
+
+The cookie value should be an opaque session id only. The password itself must never be stored in the cookie, local storage, or client-visible state.
+
+### Authorization boundaries
+
+Authentication and authorization are intentionally coarse-grained.
+
+**Admin-only capabilities:**
+
+- entering real editable mode
+- saving document changes
+- uploading assets intended for persistence
+- creating pages
+- deleting pages
+- editing page URLs
+- browsing drafts
+- browsing the private page sitemap/drawer
+- selecting draft pages as internal link targets
+
+**Unauthenticated but allowed capabilities:**
+
+- browsing the public site
+- opening the edit prompt
+- entering “Edit for fun” mode on the current page only
+- making temporary in-memory edits that can be discarded
+
+### Edit-for-fun mode
+
+Unauthenticated visitors may still enter a temporary editing mode for the currently open page.
+
+This mode exists for two reasons:
+
+- it preserves the lightweight “press Cmd+E anywhere” editing discovery flow
+- it acts as a product demo / marketing easter egg
+
+Constraints of edit-for-fun mode:
+
+- edits are local and disposable only
+- there is no save action
+- there is no access to drafts or private page-management UI
+- there is no page browser for navigating private site structure
+- there is no ability to create or delete pages
+- media replacement and other in-memory editing interactions may still run normally while editing
+- uploaded assets are never persisted because persistence only happens through save
+
+The UI should make this distinction explicit so users understand they are not authenticated as admin.
+
+If the user is already in edit-for-fun mode and presses the edit shortcut again, nothing changes — they are already editing.
+
+### Login UX
+
+There is intentionally no dedicated `/login` route as the primary entry point.
+
+The main authentication entry is contextual:
+
+1. the site owner browses to the page they want to edit
+2. they press the editing shortcut (for example `Cmd+E`)
+3. if they are not authenticated, the app opens an auth dialog in place
+4. the dialog offers:
+   - password entry + “Login and edit”
+   - “Edit for fun”
+
+This keeps the owner anchored to the exact page where they noticed something to fix.
+
+### Environment requirements
+
+`ADMIN_PASSWORD` is required in full runtime mode.
+
+Behavior rules:
+
+- in static / `VERCEL=1` mode, authentication is disabled and `ADMIN_PASSWORD` is ignored
+- in full runtime mode, the app must fail to start if `ADMIN_PASSWORD` is missing
+- the app must never silently grant access when `ADMIN_PASSWORD` is missing
+
+### Remote function and route protection
+
+All mutating remote functions must enforce admin authentication on the server.
+
+This includes at least:
+
+- document save
+- page deletion
+- page URL updates
+- any future persistent asset mutation endpoints
+
+Read APIs should be split by visibility:
+
+- public page/document reads remain public
+- private page-management reads (drafts, private sitemap/page browser data) require admin authentication
+
+The server must treat the page browser data as private because it exposes drafts and internal site structure that should not be visible to unauthenticated visitors.
+
+### Client auth state
+
+The client only needs a minimal boolean auth state such as `is_admin`.
+
+This state is used to decide:
+
+- whether pressing the edit shortcut enters editing immediately or opens the auth dialog
+- whether the save button is shown/enabled
+- whether the page browser and draft-management UI are available
+- whether the current editing session is admin-editable or edit-for-fun only
+- whether a logout button is shown
+
+The server remains the source of truth. Client auth state is only a convenience for UI branching.
+
+### Security notes
+
+This model is intentionally simple, but it still needs basic hardening:
+
+- compare passwords on the server only
+- never expose `ADMIN_PASSWORD` to the client
+- rate limiting is desirable but not required for the first implementation step
+- session ids must be cryptographically random
+- protected mutations must always check server-side auth, regardless of what the client UI shows
 
 ## Documents
 
@@ -245,7 +467,7 @@ The home page is excluded from this mapping:
 
 #### Custom slugs
 
-Users can change a page's Page URL from the page browser ellipsis menu.
+Admins can change a page's Page URL from the page browser ellipsis menu.
 
 When a user changes a page's slug:
 - that slug becomes the page's active slug
@@ -257,7 +479,7 @@ User-facing behavior should stay simple:
 - the UI can present it as `example.com/[your-slug-here]`, with only the part after the slash editable
 - the UI does not expose an "auto mode" vs "custom mode" concept
 - the system auto-generates the first slug on first save
-- after that, the slug stays stable unless the user explicitly changes it
+- after that, the slug stays stable unless the admin explicitly changes it
 
 This keeps the mental model simple for users while preserving deterministic behavior internally.
 

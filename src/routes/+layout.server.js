@@ -1,6 +1,9 @@
+import { env } from '$env/dynamic/private';
+
 /** @type {import('./$types').LayoutServerLoad} */
-export function load() {
+export function load({ locals }) {
 	return {
-		has_backend: !process.env.VERCEL
+		has_backend: !env.VERCEL,
+		is_admin: !!locals.is_admin
 	};
 }

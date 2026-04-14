@@ -3,10 +3,10 @@ import { createContext } from 'svelte';
 export const [get_page_browser, set_page_browser] = createContext();
 
 /**
- * @param {{ goto: (href: string) => Promise<void> | void }} options
+ * @param {{ goto: (href: string) => Promise<void> | void, is_admin: () => boolean }} options
  */
 export function create_page_browser(options) {
-	const { goto } = options;
+	const { goto, is_admin } = options;
 
 	const state = $state({
 		open: false,
@@ -21,12 +21,14 @@ export function create_page_browser(options) {
 	}
 
 	function open_navigate() {
+		if (!is_admin()) return;
 		state.mode = 'navigate';
 		state.on_select_page = null;
 		state.open = true;
 	}
 
 	function open_select(on_select_page) {
+		if (!is_admin()) return;
 		state.mode = 'select';
 		state.on_select_page = on_select_page;
 		state.open = true;

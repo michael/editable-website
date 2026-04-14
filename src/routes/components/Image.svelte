@@ -1,11 +1,8 @@
 <script>
-	import { getContext } from 'svelte';
 	import { ASSET_BASE, VARIANT_WIDTHS } from '$lib/config.js';
-	const svedit = getContext('svedit');
 
-	/** @type {{ path: any[] }} */
-	let { path } = $props();
-	let node = $derived(svedit.session.get(path));
+	/** @type {{ node: any }} */
+	let { node } = $props();
 
 	// Determine if src is a blob URL (unsaved), a saved asset id, or empty
 	let is_blob = $derived(node.src?.startsWith('blob:'));

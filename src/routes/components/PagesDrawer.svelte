@@ -1,6 +1,7 @@
 <script>
 	import { invalidateAll } from '$app/navigation';
 	import { get_page_browser_data } from '$lib/api.remote.js';
+	import Media from './Media.svelte';
 	import { get_page_browser } from './page_browser_context.svelte.js';
 
 	const page_browser = get_page_browser();
@@ -27,11 +28,20 @@
 
 	const browser_data_query = $derived.by(() => {
 		page_browser?.version ?? 0;
+		if (!page_browser.state.open) return null;
 		return get_page_browser_data();
 	});
 
 	$effect(() => {
 		const query = browser_data_query;
+
+		if (!query) {
+			loading = false;
+			load_error = '';
+			browser_data = null;
+			loaded_version = page_browser?.version ?? 0;
+			return;
+		}
 
 		loading = query.loading;
 		load_error = query.error ? 'Failed to load pages.' : '';
@@ -83,22 +93,11 @@
 		return page_href || '/';
 	}
 
-	function get_preview_src(preview_image_src) {
-		if (!preview_image_src) return null;
-		if (preview_image_src.startsWith('blob:')) return preview_image_src;
-		return `/assets/${preview_image_src}`;
-	}
-
-	function is_video_preview(preview_image_src) {
-		return !!preview_image_src && /\.(mp4|webm)$/i.test(preview_image_src);
-	}
-
 	function is_home_page(document_id) {
 		return browser_data?.home_page_id === document_id;
 	}
 
 	function handle_page_click(event, item) {
-		if (!is_picker_mode) return;
 		event.preventDefault();
 		page_browser.handle_page_selected(item);
 	}
@@ -334,28 +333,12 @@
 										})}
 								>
 									<div class="page-illustration draft-illustration" aria-hidden="true">
-										{#if draft.preview_image_src}
-											{#if is_video_preview(draft.preview_image_src)}
-												<video
-													class="media-preview"
-													src={get_preview_src(draft.preview_image_src)}
-													muted
-													playsinline
-													disablepictureinpicture
-												></video>
-											{:else}
-												<img
-													class="media-preview"
-													src={get_preview_src(draft.preview_image_src)}
-													alt=""
-												/>
-											{/if}
-										{:else}
-											<div class="page-sheet">
-												<div class="line long"></div>
-												<div class="line"></div>
-												<div class="line short"></div>
+										{#if draft.preview_media_node}
+											<div class="media-preview">
+												<Media node={draft.preview_media_node} />
 											</div>
+										{:else}
+											<div class="page-illustration-fallback"></div>
 										{/if}
 									</div>
 									<div class="draft-title">
@@ -417,28 +400,12 @@
 								<div class="tree-indent" aria-hidden="true"></div>
 
 								<div class="page-illustration tree-illustration" aria-hidden="true">
-									{#if node.preview_image_src}
-										{#if is_video_preview(node.preview_image_src)}
-											<video
-												class="media-preview"
-												src={get_preview_src(node.preview_image_src)}
-												muted
-												playsinline
-												disablepictureinpicture
-											></video>
-										{:else}
-											<img
-												class="media-preview"
-												src={get_preview_src(node.preview_image_src)}
-												alt=""
-											/>
-										{/if}
-									{:else}
-										<div class="page-sheet compact">
-											<div class="line long"></div>
-											<div class="line"></div>
-											<div class="line short"></div>
+									{#if node.preview_media_node}
+										<div class="media-preview">
+											<Media node={node.preview_media_node} />
 										</div>
+									{:else}
+										<div class="page-illustration-fallback"></div>
 									{/if}
 								</div>
 
@@ -766,48 +733,7 @@
 		background: color-mix(in oklch, var(--foreground) 3%, var(--background));
 	}
 
-	.page-sheet {
-		width: 100%;
-		height: 100%;
-		background:
-			linear-gradient(
-				180deg,
-				color-mix(in oklch, var(--background) 96%, white) 0%,
-				color-mix(in oklch, var(--background) 92%, white) 100%
-			);
-		box-shadow:
-			0 1px 2px color-mix(in oklch, black 8%, transparent),
-			0 8px 18px color-mix(in oklch, black 10%, transparent),
-			inset 0 0 0 1px color-mix(in oklch, var(--foreground) 12%, transparent);
-		padding: 0.62rem 0.5rem;
-		display: flex;
-		flex-direction: column;
-		gap: 0.22rem;
-	}
 
-	.page-sheet.compact {
-		padding: 0.42rem 0.34rem;
-		gap: 0.16rem;
-	}
-
-	.line {
-		height: 0.16rem;
-		background: color-mix(in oklch, var(--foreground) 28%, transparent);
-		margin-left: 0.04rem;
-		margin-right: 0.04rem;
-	}
-
-	.page-sheet.compact .line {
-		height: 0.11rem;
-	}
-
-	.line.long {
-		width: 100%;
-	}
-
-	.line.short {
-		width: 55%;
-	}
 
 	.plus-glyph {
 		font-size: 2rem;

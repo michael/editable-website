@@ -6,10 +6,13 @@
 	let { session, app_commands, editable, focus_canvas } = $props();
 
 	const page_browser = get_page_browser();
-	const has_backend = getContext('has_backend');
+	const app = getContext('app');
 
 	let cancel_command = $derived(app_commands.cancel_editing ?? null);
 	let cancel_button_label = $derived(cancel_command?.label || 'Cancel');
+	let can_browse_pages = $derived(app.has_backend && app.is_admin && !editable);
+	let can_create_pages = $derived(app.has_backend && app.is_admin);
+	let can_logout = $derived(app.has_backend && app.is_admin && !editable);
 
 	let selected_property = $derived(
 		session.selection?.type === 'property'
@@ -72,7 +75,7 @@
 			{#if !editable}
 				<!-- Read mode: New page + Edit + Pages buttons -->
 				<div class="flex items-center gap-1">
-					{#if has_backend()}
+					{#if can_create_pages}
 						<a
 							class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
 							href={resolve('/new')}
@@ -98,7 +101,7 @@
 						</button>
 					{/if}
 
-					{#if has_backend()}
+					{#if can_browse_pages}
 						<button
 							class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
 							onclick={() => page_browser?.open_navigate()}
@@ -110,6 +113,21 @@
 								<rect x="8.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
 								<rect x="1.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
 								<rect x="8.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+							</svg>
+						</button>
+					{/if}
+
+					{#if can_logout}
+						<button
+							class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
+							onclick={() => app_commands.logout_admin.execute()}
+							title="Logout"
+							aria-label="Logout"
+						>
+							<svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+								<path d="M6 2.5H3.5V12.5H6" stroke="currentColor" />
+								<path d="M8.5 4.5L11.5 7.5L8.5 10.5" stroke="currentColor" />
+								<path d="M11 7.5H5" stroke="currentColor" />
 							</svg>
 						</button>
 					{/if}

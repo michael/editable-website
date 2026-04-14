@@ -1,11 +1,8 @@
 <script>
-	import { getContext } from 'svelte';
 	import { ASSET_BASE } from '$lib/config.js';
-	const svedit = getContext('svedit');
 
-	/** @type {{ path: any[] }} */
-	let { path } = $props();
-	let node = $derived(svedit.session.get(path));
+	/** @type {{ node: any, editable?: boolean }} */
+	let { node, editable = false } = $props();
 
 	// Determine if src is a blob URL (unsaved), a saved asset id, or empty
 	let is_blob = $derived(node.src?.startsWith('blob:'));
@@ -65,7 +62,7 @@
 	/** @param {MouseEvent} e */
 	function enter_fullscreen(e) {
 		// Only allow fullscreen in published view (not editable)
-		if (svedit.editable) return;
+		if (editable) return;
 		e.preventDefault();
 		const v = video_el;
 		if (!v || is_fullscreen) return;
@@ -159,7 +156,7 @@
 		disablepictureinpicture
 		preload="auto"
 		onclick={enter_fullscreen}
-		class:clickable={!svedit.editable && !is_fullscreen}
+		class:clickable={!editable && !is_fullscreen}
 	></video>
 {/if}
 
