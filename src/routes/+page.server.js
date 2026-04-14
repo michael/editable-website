@@ -17,9 +17,8 @@ export async function load({ parent }) {
 	const result = await get_home_document();
 
 	return {
+		...result,
 		has_backend,
-		is_admin,
-		document: result.document,
-		slug: result.slug
+		is_admin
 	};
 }

@@ -5,6 +5,7 @@
 	import { Svedit, KeyMapper, Command, define_keymap } from 'svedit';
 	import Toolbar from './Toolbar.svelte';
 	import SaveProgressModal from './SaveProgressModal.svelte';
+	import AuthDialog from './AuthDialog.svelte';
 	import { create_session } from '../create_session.js';
 	import { create_page_browser, set_page_browser } from './page_browser_context.svelte.js';
 
@@ -12,13 +13,13 @@
 
 	/** @type {{ document?: any, slug?: string | null, has_backend?: boolean, is_new?: boolean, is_admin?: boolean }} */
 	let {
-		document,
+		document: doc,
 		has_backend = false,
 		is_new = false,
 		is_admin: server_is_admin = false
 	} = $props();
 
-	let initial_doc = $derived(has_backend ? document : demo_doc);
+	let initial_doc = $derived(has_backend ? doc : demo_doc);
 
 	let initial_doc_json = $derived(JSON.stringify(initial_doc));
 
@@ -36,10 +37,6 @@
 	let browser_data_version = $state(0);
 
 	let auth_dialog_open = $state(false);
-	let auth_dialog_ref = $state();
-	let auth_password = $state('');
-	let auth_error = $state('');
-	let auth_pending = $state(false);
 
 	const app = {
 		get has_backend() {
@@ -68,7 +65,6 @@
 	set_page_browser(page_browser);
 
 	$effect(() => {
-		if (typeof document === 'undefined' || !document.documentElement) return;
 		document.documentElement.style.scrollBehavior = editable ? 'auto' : 'smooth';
 	});
 
@@ -116,26 +112,10 @@
 
 	function open_auth_dialog() {
 		auth_dialog_open = true;
-		auth_password = '';
-		auth_error = '';
 	}
 
 	function close_auth_dialog() {
 		auth_dialog_open = false;
-		auth_password = '';
-		auth_error = '';
-		auth_pending = false;
-	}
-
-	function handle_auth_dialog_click(event) {
-		if (event.target === auth_dialog_ref) {
-			close_auth_dialog();
-		}
-	}
-
-	function handle_auth_dialog_cancel(event) {
-		event.preventDefault();
-		close_auth_dialog();
 	}
 
 	function enter_edit_mode() {
@@ -143,28 +123,9 @@
 		close_auth_dialog();
 	}
 
-	async function login_and_edit() {
-		if (auth_pending) return;
-
-		auth_pending = true;
-		auth_error = '';
-
-		try {
-			const api_module = await import('$lib/api.remote.js');
-			const result = await api_module.login_admin({ password: auth_password });
-
-			if (result && result.ok === false && 'message' in result) {
-				auth_error = result.message || 'Login failed.';
-				return;
-			}
-
-			await invalidateAll();
-			enter_edit_mode();
-		} catch (err) {
-			auth_error = err instanceof Error ? err.message : 'Login failed.';
-		} finally {
-			auth_pending = false;
-		}
+	async function handle_auth_success() {
+		await invalidateAll();
+		enter_edit_mode();
 	}
 
 	function edit_for_fun() {
@@ -417,13 +378,6 @@
 		}
 	});
 
-	$effect(() => {
-		if (auth_dialog_open && auth_dialog_ref && !auth_dialog_ref.open) {
-			auth_dialog_ref.showModal();
-		} else if (!auth_dialog_open && auth_dialog_ref?.open) {
-			auth_dialog_ref.close();
-		}
-	});
 </script>
 
 <svelte:window onkeydown={key_mapper.handle_keydown.bind(key_mapper)} />
@@ -437,69 +391,12 @@
 	/>
 	<Svedit {session} bind:editable bind:this={svedit_ref} path={[session.doc.document_id]} />
 
-	<dialog
-		bind:this={auth_dialog_ref}
-		class="fixed inset-0 m-auto border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] bg-(--background) p-0 text-(--foreground) shadow-xl backdrop:bg-black/40"
-		oncancel={handle_auth_dialog_cancel}
-		onclick={handle_auth_dialog_click}
-	>
-		{#if auth_dialog_open}
-			<div class="flex w-[min(28rem,calc(100vw-2rem))] flex-col gap-4 p-5">
-				<div class="flex flex-col gap-1">
-					<h2 class="text-base font-medium">Edit this page</h2>
-					<p class="text-sm text-[color-mix(in_oklch,var(--foreground)_70%,transparent)]">
-						Enter the admin password to save changes, or edit for fun without saving.
-					</p>
-				</div>
-
-				<label class="flex flex-col gap-2">
-					<span class="text-sm">Admin password</span>
-					<input
-						type="password"
-						bind:value={auth_password}
-						class="border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] bg-(--background) px-3 py-2 outline-none focus:border-(--svedit-editing-stroke)"
-						onkeydown={(event) => {
-							if (event.key === 'Enter') {
-								void login_and_edit();
-							}
-						}}
-					/>
-				</label>
-
-				{#if auth_error}
-					<div class="text-sm text-red-600">{auth_error}</div>
-				{/if}
-
-				<div class="flex items-center justify-between gap-3">
-					<button
-						type="button"
-						class="border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] px-3 py-2 text-sm"
-						onclick={edit_for_fun}
-					>
-						Edit for fun
-					</button>
-
-					<div class="flex items-center gap-2">
-						<button
-							type="button"
-							class="border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] px-3 py-2 text-sm"
-							onclick={close_auth_dialog}
-						>
-							Cancel
-						</button>
-						<button
-							type="button"
-							class="bg-(--foreground) px-3 py-2 text-sm text-(--background)"
-							onclick={() => void login_and_edit()}
-							disabled={auth_pending}
-						>
-							{auth_pending ? 'Logging in…' : 'Login and edit'}
-						</button>
-					</div>
-				</div>
-			</div>
-		{/if}
-	</dialog>
+	<AuthDialog
+		open={auth_dialog_open}
+		onclose={close_auth_dialog}
+		onedit_for_fun={edit_for_fun}
+		onlogin_success={handle_auth_success}
+	/>
 
 	{#if has_backend}
 		<SaveProgressModal

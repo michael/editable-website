@@ -831,7 +831,6 @@ export const get_document = query(v.string(), async (slug) => {
 
 	return {
 		document: get_combined_document(resolved.document_id),
-		document_id: resolved.document_id,
 		slug: resolved.active_slug,
 		redirect_to_slug: resolved.is_active ? null : resolved.active_slug
 	};
@@ -849,7 +848,6 @@ export const get_home_document = query(v.void(), async () => {
 
 	return {
 		document: get_combined_document(home_page_id),
-		document_id: home_page_id,
 		slug: get_active_slug_for_document_id(home_page_id),
 		redirect_to_slug: null
 	};
