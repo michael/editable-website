@@ -7,7 +7,6 @@ declare global {
 			db: DatabaseSync,
 			user: string,
 			is_admin: boolean,
-			admin_session_id: string | null,
 		}
 		// interface PageData {}
 		// interface PageState {}

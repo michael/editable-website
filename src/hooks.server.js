@@ -23,6 +23,20 @@ function clear_admin_session_cookie(cookies) {
 	});
 }
 
+/**
+ * @param {import('@sveltejs/kit').Cookies} cookies
+ * @param {string} session_id
+ */
+function set_admin_session_cookie(cookies, session_id) {
+	cookies.set(admin_session_cookie_name, session_id, {
+		path: '/',
+		httpOnly: true,
+		sameSite: 'lax',
+		secure: env.NODE_ENV === 'production',
+		maxAge: session_duration_seconds
+	});
+}
+
 /** @type {import('@sveltejs/kit').ServerInit} */
 export async function init() {
 	if (!env.VERCEL && !env.ADMIN_PASSWORD) {
@@ -38,7 +52,6 @@ export async function init() {
 /** @type {import('@sveltejs/kit').Handle} */
 export const handle = async ({ event, resolve }) => {
 	event.locals.is_admin = false;
-	event.locals.admin_session_id = null;
 
 	if (!env.VERCEL) {
 		const session_id = event.cookies.get(admin_session_cookie_name);
@@ -59,15 +72,8 @@ export const handle = async ({ event, resolve }) => {
 					get_session_expires_at(),
 					session_id
 				);
-				event.cookies.set(admin_session_cookie_name, session_id, {
-					path: '/',
-					httpOnly: true,
-					sameSite: 'lax',
-					secure: env.NODE_ENV === 'production',
-					maxAge: session_duration_seconds
-				});
+				set_admin_session_cookie(event.cookies, session_id);
 				event.locals.is_admin = true;
-				event.locals.admin_session_id = session_id;
 			}
 		}
 	}

@@ -271,15 +271,7 @@ function delete_session(session_id) {
 	db.prepare('DELETE FROM sessions WHERE session_id = ?').run(session_id);
 }
 
-/**
- * @param {string} session_id
- */
-function extend_session(session_id) {
-	db.prepare('UPDATE sessions SET expires = ? WHERE session_id = ?').run(
-		get_session_expires_at(),
-		session_id
-	);
-}
+
 
 /**
  * @param {import('@sveltejs/kit').Cookies} cookies
@@ -309,18 +301,13 @@ function set_admin_session_cookie(cookies, session_id) {
 }
 
 /**
- * @param {boolean} [extend]
  * @returns {boolean}
  */
-function require_admin_session(extend = true) {
+function require_admin_session() {
 	const { locals } = getRequestEvent();
 
-	if (!locals.is_admin || !locals.admin_session_id) {
+	if (!locals.is_admin) {
 		throw new Error('Unauthorized');
-	}
-
-	if (extend) {
-		extend_session(locals.admin_session_id);
 	}
 
 	return true;
@@ -945,10 +932,6 @@ export const get_shared_documents = query(v.void(), async () => {
 export const get_auth_status = query(v.void(), async () => {
 	const { locals } = getRequestEvent();
 
-	if (locals.is_admin && locals.admin_session_id) {
-		extend_session(locals.admin_session_id);
-	}
-
 	return {
 		is_admin: !!locals.is_admin
 	};
@@ -975,10 +958,11 @@ export const login_admin = command(admin_login_input_schema, async ({ password }
 });
 
 export const logout_admin = command(v.void(), async () => {
-	const { locals, cookies } = getRequestEvent();
+	const { cookies } = getRequestEvent();
+	const session_id = cookies.get(admin_session_cookie_name);
 
-	if (locals.admin_session_id) {
-		delete_session(locals.admin_session_id);
+	if (session_id) {
+		delete_session(session_id);
 	}
 
 	clear_admin_session_cookie(cookies);
