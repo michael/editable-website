@@ -733,48 +733,7 @@
 		background: color-mix(in oklch, var(--foreground) 3%, var(--background));
 	}
 
-	.page-sheet {
-		width: 100%;
-		height: 100%;
-		background:
-			linear-gradient(
-				180deg,
-				color-mix(in oklch, var(--background) 96%, white) 0%,
-				color-mix(in oklch, var(--background) 92%, white) 100%
-			);
-		box-shadow:
-			0 1px 2px color-mix(in oklch, black 8%, transparent),
-			0 8px 18px color-mix(in oklch, black 10%, transparent),
-			inset 0 0 0 1px color-mix(in oklch, var(--foreground) 12%, transparent);
-		padding: 0.62rem 0.5rem;
-		display: flex;
-		flex-direction: column;
-		gap: 0.22rem;
-	}
 
-	.page-sheet.compact {
-		padding: 0.42rem 0.34rem;
-		gap: 0.16rem;
-	}
-
-	.line {
-		height: 0.16rem;
-		background: color-mix(in oklch, var(--foreground) 28%, transparent);
-		margin-left: 0.04rem;
-		margin-right: 0.04rem;
-	}
-
-	.page-sheet.compact .line {
-		height: 0.11rem;
-	}
-
-	.line.long {
-		width: 100%;
-	}
-
-	.line.short {
-		width: 55%;
-	}
 
 	.plus-glyph {
 		font-size: 2rem;
