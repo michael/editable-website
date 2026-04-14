@@ -1,5 +1,4 @@
 import { env } from '$env/dynamic/private';
-import db from '$lib/server/db.js';
 
 export const admin_session_cookie_name = 'ew_admin_session';
 export const session_duration_seconds = 14 * 24 * 60 * 60;
@@ -53,7 +52,8 @@ export function set_admin_session_cookie(cookies, session_id) {
 /**
  * @param {string} session_id
  */
-export function delete_session(session_id) {
+export async function delete_session(session_id) {
+	const { default: db } = await import('$lib/server/db.js');
 	db.prepare('DELETE FROM sessions WHERE session_id = ?').run(session_id);
 }
 

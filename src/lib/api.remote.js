@@ -918,7 +918,7 @@ export const logout_admin = command(v.void(), async () => {
 	const session_id = cookies.get(admin_session_cookie_name);
 
 	if (session_id) {
-		delete_session(session_id);
+		await delete_session(session_id);
 	}
 
 	clear_admin_session_cookie(cookies);
