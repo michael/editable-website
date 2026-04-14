@@ -787,7 +787,7 @@ function build_page_browser_data() {
 	if (home_page_id) {
 		const home_summary = summaries_by_id.get(home_page_id) ?? {
 			document_id: home_page_id,
-			title: 'Untitled page',
+			title: 'Home',
 			preview_media_node: null,
 			page_href: '/'
 		};
@@ -796,7 +796,7 @@ function build_page_browser_data() {
 
 		sitemap = {
 			document_id: home_summary.document_id,
-			title: home_summary.title,
+			title: 'Home',
 			preview_media_node: home_summary.preview_media_node,
 			page_href: home_summary.page_href,
 			children: build_tree_children(

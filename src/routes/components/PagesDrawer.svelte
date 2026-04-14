@@ -98,7 +98,6 @@
 	}
 
 	function handle_page_click(event, item) {
-		if (!is_picker_mode) return;
 		event.preventDefault();
 		page_browser.handle_page_selected(item);
 	}
