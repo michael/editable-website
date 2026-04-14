@@ -608,6 +608,34 @@ function extract_plain_text(annotated_text) {
 }
 
 /**
+ * @param {string} src
+ * @param {number | null | undefined} width
+ * @returns {string}
+ */
+function get_preview_image_src(src, width) {
+	if (!src.endsWith('.webp')) return src;
+	if (!width || width <= 320) return src;
+
+	const extension_index = src.lastIndexOf('.');
+	if (extension_index === -1) return src;
+
+	const asset_stem = src.slice(0, extension_index);
+	return `${asset_stem}/w320.webp`;
+}
+
+/**
+ * @param {any} node
+ * @returns {string | null}
+ */
+function get_preview_media_src(node) {
+	if (!node || typeof node !== 'object' || !node.src) return null;
+	if (node.type === 'video') return node.src;
+	if (node.type !== 'image') return null;
+
+	return get_preview_image_src(node.src, node.width);
+}
+
+/**
  * @param {DocumentData} page_doc
  * @returns {{ title: string, preview_image_src: string | null }}
  */
@@ -623,8 +651,8 @@ function extract_page_metadata(page_doc) {
 		const node = page_doc.nodes[node_id];
 		if (!node) continue;
 
-		if (!preview_image_src && (node.type === 'image' || node.type === 'video') && node.src) {
-			preview_image_src = node.src;
+		if (!preview_image_src) {
+			preview_image_src = get_preview_media_src(node);
 		}
 
 		if (node.type === 'text') {
