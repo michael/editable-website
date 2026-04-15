@@ -1038,7 +1038,37 @@ This means the sitemap is not a full graph visualization. It is a stable, editor
 
 If a page is linked from multiple places, later occurrences are ignored for tree placement. This keeps the page browser compact and avoids crowded duplicates. If needed in the future, secondary references can be surfaced separately (for example as “also linked from…” metadata), but they are not duplicated in the primary tree.
 
+### Contextual search in the page browser
 
+The page browser supports a client-side contextual search over the already loaded drawer data. No dedicated server-side search endpoint is required for the initial implementation.
+
+The search applies to both drafts and the sitemap:
+
+- **Drafts:** filter independently by the query
+- **Sitemap:** preserve structural context rather than flattening results into a list
+
+For the sitemap tree, visibility follows these rules:
+
+- If a page **directly matches** the query, show that page
+- If a page directly matches the query, also show **all of its descendants**
+- If a descendant matches the query, also show its **ancestor chain** up to the root so the page’s placement in the site structure remains visible
+- Pages shown only because their parent matched or because they are ancestors of a match remain visible, but they are not treated as direct matches
+
+Direct matches should be visually highlighted so it is clear why a page is shown. Context-only pages may remain visually normal or use a lighter treatment, but they should not share the same direct-match emphasis.
+
+While a search query is active, matching branches should be shown even if they would otherwise be collapsed.
+
+When the page browser drawer opens, the search input should receive focus immediately so keyboard search can begin without an extra click.
+
+Keyboard navigation should operate over the currently visible results in the same order they appear in the drawer:
+
+- `ArrowDown` moves to the next visible result
+- `ArrowUp` moves to the previous visible result
+- `Enter` opens the currently selected result
+
+Because the sitemap is a canonical tree projection rather than a full graph view, search results only surface the page’s canonical placement in the tree. Secondary graph placements are out of scope for the initial implementation.
+
+The expected scale is on the order of hundreds of pages (for example around 500), so a straightforward client-side tree traversal per query is acceptable.
 
 ### Page summaries for the drawer
 

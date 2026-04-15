@@ -1162,6 +1162,24 @@ Note:
 - otherwise, on drag release, the drawer should snap to the nearest preset height based on the release position: `1/3`, `2/3`, or `3/4` of the viewport height
 - after release, the drawer height should animate smoothly toward the snapped value rather than jumping immediately, including when dragged above the highest snap point and settling back to `3/4`
 - when the drawer is reopened after being closed near zero height, it should restore the previous non-zero snapped height
+- add a contextual search box to the page browser drawer
+- the search should run client-side against the already loaded drawer data; no dedicated server search endpoint is needed for the initial implementation
+- focus the search box as soon as the drawer is opened
+- drafts should be filtered independently by the same search query
+- sitemap filtering should preserve structural context:
+  - if a page directly matches the query, show that page
+  - if a page directly matches the query, also show all of its descendants
+  - if a descendant matches the query, also show its ancestor chain up to the root so the placement in the site structure remains visible
+- direct matches should be visually highlighted so it is clear why a page is shown
+- pages shown only because their parent matched or because they are ancestors of a match should remain visible but should not use the same direct-match highlight treatment
+- while a search query is active, matching branches should be shown even if they would otherwise be collapsed
+- keyboard navigation should work over the currently visible search results:
+  - `ArrowDown` moves to the next visible result
+  - `ArrowUp` moves to the previous visible result
+  - `Enter` opens the currently selected result
+- the keyboard result order should follow the visible drawer order so navigation feels predictable
+- the existing canonical sitemap tree remains the source of truth; search does not need to surface secondary graph placements for pages that are linked from multiple places
+- the expected scale is on the order of hundreds of pages (for example around 500), so a straightforward client-side tree traversal per query is acceptable
 
 ## Phase 5 — save flow integration and navigation correctness
 

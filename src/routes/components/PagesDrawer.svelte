@@ -27,6 +27,10 @@
 	let page_url_error = $state('');
 	let saving_page_url = $state(false);
 
+	let search_query = $state('');
+	let search_input_ref = $state(null);
+	let selected_result_index = $state(0);
+
 	let collapsed_document_ids = new SvelteSet();
 
 	const browser_data_query = $derived.by(() => {
@@ -72,6 +76,15 @@
 		} else if (!page_url_dialog_item && page_url_dialog_ref?.open) {
 			page_url_dialog_ref.close();
 		}
+	});
+
+	$effect(() => {
+		if (!page_browser.state.open || !search_input_ref) return;
+
+		requestAnimationFrame(() => {
+			search_input_ref?.focus();
+			search_input_ref?.select();
+		});
 	});
 
 	function get_page_count(node) {
@@ -281,17 +294,220 @@
 		return `${count} ${count === 1 ? singular_label : plural_label}`;
 	}
 
+	function normalize_search_text(value) {
+		return (value ?? '').trim().toLowerCase();
+	}
+
+	function get_page_search_text(item) {
+		return `${item?.title ?? ''} ${item?.page_href ?? ''}`.trim().toLowerCase();
+	}
+
+	function item_matches_search(item, normalized_query) {
+		if (!normalized_query) return false;
+		return get_page_search_text(item).includes(normalized_query);
+	}
+
+	function get_highlight_parts(text, normalized_query) {
+		const source_text = text ?? '';
+		if (!normalized_query) {
+			return [{ text: source_text, is_match: false }];
+		}
+
+		const lower_text = source_text.toLowerCase();
+		const match_index = lower_text.indexOf(normalized_query);
+
+		if (match_index === -1) {
+			return [{ text: source_text, is_match: false }];
+		}
+
+		const parts = [];
+		if (match_index > 0) {
+			parts.push({ text: source_text.slice(0, match_index), is_match: false });
+		}
+		parts.push({
+			text: source_text.slice(match_index, match_index + normalized_query.length),
+			is_match: true
+		});
+		if (match_index + normalized_query.length < source_text.length) {
+			parts.push({
+				text: source_text.slice(match_index + normalized_query.length),
+				is_match: false
+			});
+		}
+		return parts;
+	}
+
+	function filter_drafts(items, normalized_query) {
+		if (!normalized_query) return items;
+		return items.filter((item) => item_matches_search(item, normalized_query));
+	}
+
+	function filter_sitemap_node(node, normalized_query) {
+		if (!node) return null;
+
+		if (!normalized_query) {
+			return {
+				...node,
+				match_kind: 'none',
+				children: (node.children ?? []).map((child) => filter_sitemap_node(child, normalized_query))
+			};
+		}
+
+		const self_matches = item_matches_search(node, normalized_query);
+
+		if (self_matches) {
+			return {
+				...node,
+				match_kind: 'direct',
+				children: (node.children ?? []).map((child) => ({
+					...child,
+					match_kind: 'descendant_context',
+					children: mark_descendant_context(child.children ?? [])
+				}))
+			};
+		}
+
+		const filtered_children = [];
+		for (const child of node.children ?? []) {
+			const filtered_child = filter_sitemap_node(child, normalized_query);
+			if (filtered_child) {
+				filtered_children.push(filtered_child);
+			}
+		}
+
+		if (filtered_children.length > 0) {
+			return {
+				...node,
+				match_kind: 'ancestor_context',
+				children: filtered_children
+			};
+		}
+
+		return null;
+	}
+
+	function mark_descendant_context(children) {
+		return children.map((child) => ({
+			...child,
+			match_kind: 'descendant_context',
+			children: mark_descendant_context(child.children ?? [])
+		}));
+	}
+
+	function should_force_expand(node_is_root, normalized_query) {
+		return node_is_root || !!normalized_query;
+	}
+
+	function get_match_kind_class(match_kind) {
+		if (match_kind === 'direct') return 'tree-row-match-direct';
+		if (match_kind === 'ancestor_context') return 'tree-row-match-context';
+		if (match_kind === 'descendant_context') return 'tree-row-match-context';
+		return '';
+	}
+
+	function flatten_sitemap_results(node) {
+		if (!node) return [];
+
+		const results = [
+			{
+				document_id: node.document_id,
+				page_href: node.page_href,
+				title: node.title
+			}
+		];
+
+		for (const child of node.children ?? []) {
+			results.push(...flatten_sitemap_results(child));
+		}
+
+		return results;
+	}
+
+	function get_visible_results(filtered_drafts, filtered_sitemap) {
+		return [
+			...filtered_drafts.map((draft) => ({
+				document_id: draft.document_id,
+				page_href: draft.page_href,
+				title: draft.title
+			})),
+			...flatten_sitemap_results(filtered_sitemap)
+		];
+	}
+
+	function get_visible_result_index(document_id, visible_results) {
+		return visible_results.findIndex((result) => result.document_id === document_id);
+	}
+
+	function clamp_selected_result_index(index, visible_results) {
+		if (visible_results.length === 0) return 0;
+		return Math.min(Math.max(index, 0), visible_results.length - 1);
+	}
+
+	function handle_search_keydown(event, visible_results) {
+		if (visible_results.length === 0) return;
+
+		if (event.key === 'ArrowDown') {
+			event.preventDefault();
+			selected_result_index = clamp_selected_result_index(
+				selected_result_index + 1,
+				visible_results
+			);
+			return;
+		}
+
+		if (event.key === 'ArrowUp') {
+			event.preventDefault();
+			selected_result_index = clamp_selected_result_index(
+				selected_result_index - 1,
+				visible_results
+			);
+			return;
+		}
+
+		if (event.key === 'Enter') {
+			event.preventDefault();
+			const selected_result = visible_results[selected_result_index];
+			if (!selected_result) return;
+
+			page_browser.handle_page_selected({
+				document_id: selected_result.document_id,
+				page_href: selected_result.page_href
+			});
+		}
+	}
+
+	let normalized_search_query = $derived(normalize_search_text(search_query));
 	let drafts = $derived(browser_data?.drafts ?? []);
+	let filtered_drafts = $derived(filter_drafts(drafts, normalized_search_query));
 	let sitemap = $derived(browser_data?.sitemap ?? null);
+	let filtered_sitemap = $derived(filter_sitemap_node(sitemap, normalized_search_query));
+	let visible_results = $derived(get_visible_results(filtered_drafts, filtered_sitemap));
 	let page_count = $derived(get_page_count(sitemap));
+	let filtered_page_count = $derived(get_page_count(filtered_sitemap));
 	let is_picker_mode = $derived(page_browser.state.mode === 'select');
 	let drawer_title = $derived(is_picker_mode ? 'Select page' : 'Pages');
+
+	$effect(() => {
+		selected_result_index = clamp_selected_result_index(selected_result_index, visible_results);
+	});
 </script>
 
 <div class="pages-drawer">
+	<div class="search-shell">
+		<input
+			bind:this={search_input_ref}
+			type="search"
+			class="search-input"
+			bind:value={search_query}
+			placeholder="Search pages"
+			aria-label="Search pages"
+			onkeydown={(event) => handle_search_keydown(event, visible_results)}
+		/>
+	</div>
+
 	<section class="section">
 		<div class="section-header">
-			<h3>{get_count_label(drafts.length, 'draft', 'drafts')}</h3>
+			<h3>{get_count_label(normalized_search_query ? filtered_drafts.length : drafts.length, 'draft', 'drafts')}</h3>
 			{#if is_picker_mode}
 				<span class="section-mode-label">{drawer_title}</span>
 			{/if}
@@ -303,7 +519,7 @@
 			<div class="status-message" role="alert">{load_error}</div>
 		{:else}
 			<div class="drafts-strip" role="list" aria-label="Draft pages">
-				{#if !is_picker_mode}
+				{#if !is_picker_mode && !normalized_search_query}
 					<div role="listitem" class="draft-item">
 						<a class="draft-card create-card" href="/new">
 							<div class="page-illustration draft-illustration create-illustration" aria-hidden="true">
@@ -314,18 +530,24 @@
 					</div>
 				{/if}
 
-				{#if drafts.length !== 0}
-					{#each drafts as draft (draft.document_id)}
+				{#if filtered_drafts.length !== 0}
+					{#each filtered_drafts as draft (draft.document_id)}
+						{@const draft_is_match = item_matches_search(draft, normalized_search_query)}
 						<div role="listitem" class="draft-item">
 							<div class="draft-card-shell">
 								<a
 									class="draft-card"
+									class:draft-card-match-direct={draft_is_match}
+									class:draft-card-keyboard-selected={visible_results[selected_result_index]?.document_id === draft.document_id}
 									href={get_resolved_page_href(draft.page_href)}
 									onclick={(event) =>
 										handle_page_click(event, {
 											document_id: draft.document_id,
 											page_href: draft.page_href
 										})}
+									onmousemove={() => {
+										selected_result_index = get_visible_result_index(draft.document_id, visible_results);
+									}}
 								>
 									<div class="page-illustration draft-illustration" aria-hidden="true">
 										{#if draft.preview_media_node}
@@ -337,8 +559,16 @@
 										{/if}
 									</div>
 									<div class="draft-title">
-										<div>{draft.title}</div>
-										<div class="page-slug-label">{get_page_slug_label(draft.page_href)}</div>
+										<div>
+											{#each get_highlight_parts(draft.title, normalized_search_query) as part}
+												<span class:match-highlight={part.is_match}>{part.text}</span>
+											{/each}
+										</div>
+										<div class="page-slug-label">
+											{#each get_highlight_parts(get_page_slug_label(draft.page_href), normalized_search_query) as part}
+												<span class:match-highlight={part.is_match}>{part.text}</span>
+											{/each}
+										</div>
 									</div>
 								</a>
 
@@ -364,6 +594,8 @@
 							</div>
 						</div>
 					{/each}
+				{:else if normalized_search_query}
+					<div class="status-message">No matching drafts.</div>
 				{/if}
 			</div>
 		{/if}
@@ -371,7 +603,7 @@
 
 	<section class="section">
 		<div class="section-header">
-			<h3>{get_count_label(page_count, 'page', 'pages')}</h3>
+			<h3>{get_count_label(normalized_search_query ? filtered_page_count : page_count, 'page', 'pages')}</h3>
 		</div>
 
 		{#if loading && !browser_data}
@@ -380,12 +612,16 @@
 			<div class="status-message" role="alert">{load_error}</div>
 		{:else if !sitemap}
 			<div class="status-message">No home page configured.</div>
+		{:else if normalized_search_query && !filtered_sitemap}
+			<div class="status-message">No matching pages.</div>
 		{:else}
 			<div class="tree">
 				{#snippet node_item(node, depth = 0, is_last = true, ancestor_columns = [])}
 					{@const node_has_children = has_children(node)}
 					{@const node_is_root = is_root_node(node, depth)}
-					{@const node_is_collapsed = node_is_root ? false : is_collapsed(node.document_id)}
+					{@const node_is_collapsed = should_force_expand(node_is_root, normalized_search_query)
+						? false
+						: is_collapsed(node.document_id)}
 					{@const current_column_continues = node_is_root ? false : !is_last || node_has_children}
 					<div class="tree-node">
 						<div class="tree-row-shell">
@@ -408,9 +644,9 @@
 												: `Collapse ${node.title}`
 											: `${node.title} has no child pages`}
 										aria-expanded={node_has_children ? !node_is_collapsed : undefined}
-										disabled={!node_has_children}
+										disabled={!node_has_children || !!normalized_search_query}
 										onclick={(event) => {
-											if (!node_has_children) return;
+											if (!node_has_children || normalized_search_query) return;
 											handle_toggle_click(event, node.document_id);
 										}}
 									>
@@ -431,14 +667,18 @@
 							</div>
 
 							<a
-								class="tree-row"
+								class={`tree-row ${get_match_kind_class(node.match_kind)}`}
 								class:tree-row-root={node_is_root}
+								class:tree-row-keyboard-selected={visible_results[selected_result_index]?.document_id === node.document_id}
 								href={get_resolved_page_href(node.page_href)}
 								onclick={(event) =>
 									handle_page_click(event, {
 										document_id: node.document_id,
 										page_href: node.page_href
 									})}
+								onmousemove={() => {
+									selected_result_index = get_visible_result_index(node.document_id, visible_results);
+								}}
 							>
 								<div class="page-illustration tree-illustration" aria-hidden="true">
 									{#if node.preview_media_node}
@@ -457,9 +697,15 @@
 								</div>
 
 								<div class="tree-label">
-									<div class="tree-title" title={node.title}>{node.title}</div>
+									<div class="tree-title" title={node.title}>
+										{#each get_highlight_parts(node.title, normalized_search_query) as part}
+											<span class:match-highlight={part.is_match}>{part.text}</span>
+										{/each}
+									</div>
 									<div class="page-slug-label" title={get_page_slug_label(node.page_href)}>
-										{get_page_slug_label(node.page_href)}
+										{#each get_highlight_parts(get_page_slug_label(node.page_href), normalized_search_query) as part}
+											<span class:match-highlight={part.is_match}>{part.text}</span>
+										{/each}
 									</div>
 								</div>
 							</a>
@@ -500,7 +746,7 @@
 					</div>
 				{/snippet}
 
-				{@render node_item(sitemap)}
+				{@render node_item(filtered_sitemap ?? sitemap)}
 			</div>
 		{/if}
 	</section>
@@ -618,7 +864,29 @@
 		position: relative;
 		display: flex;
 		flex-direction: column;
-		gap: 1.5rem;
+		gap: 1.25rem;
+	}
+
+	.search-shell {
+		position: sticky;
+		top: 0;
+		z-index: 1;
+		padding-top: 0.1rem;
+		background: var(--background);
+	}
+
+	.search-input {
+		width: 100%;
+		border: 1px solid color-mix(in oklch, var(--foreground) 14%, transparent);
+		background: color-mix(in oklch, var(--foreground) 2%, var(--background));
+		color: var(--foreground);
+		padding: 0.55rem 0.7rem;
+		font-size: 0.88rem;
+		outline: none;
+	}
+
+	.search-input:focus {
+		border-color: var(--svedit-editing-stroke);
 	}
 
 	.section {
@@ -712,6 +980,22 @@
 	.tree-row:hover,
 	.tree-row:focus-visible {
 		background: var(--svedit-editing-fill);
+	}
+
+	.draft-card-match-direct,
+	.tree-row-match-direct {
+		background: color-mix(in oklch, var(--svedit-editing-fill) 72%, var(--background));
+	}
+
+	.draft-card-keyboard-selected,
+	.tree-row-keyboard-selected {
+		outline: 1px solid var(--svedit-editing-stroke);
+		outline-offset: -1px;
+		background: color-mix(in oklch, var(--svedit-editing-fill) 82%, var(--background));
+	}
+
+	.tree-row-match-context {
+		background: color-mix(in oklch, var(--foreground) 4%, var(--background));
 	}
 
 	.item-actions-btn {
@@ -813,8 +1097,6 @@
 		width: 62%;
 	}
 
-
-
 	.plus-glyph {
 		font-size: 2rem;
 		line-height: 1;
@@ -828,6 +1110,11 @@
 		line-height: 1.18;
 		color: inherit;
 		text-align: center;
+	}
+
+	.match-highlight {
+		background: color-mix(in oklch, var(--svedit-editing-fill) 88%, transparent);
+		color: inherit;
 	}
 
 	.tree {
@@ -1153,6 +1440,11 @@
 
 		.draft-title {
 			font-size: 0.68rem;
+		}
+
+		.search-input {
+			font-size: 0.84rem;
+			padding: 0.5rem 0.65rem;
 		}
 	}
 </style>
