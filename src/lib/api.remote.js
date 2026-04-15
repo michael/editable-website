@@ -757,28 +757,48 @@ function build_page_browser_data() {
 
 	const page_forest = [];
 	const assigned_page_ids = new Set();
+	const incoming_page_ref_counts = new Map();
 
-	let home_root = null;
+	for (const page_doc of page_docs) {
+		incoming_page_ref_counts.set(page_doc.document_id, 0);
+	}
+
+	for (const refs of body_refs_by_page_id.values()) {
+		for (const target_document_id of refs) {
+			if (!incoming_page_ref_counts.has(target_document_id)) continue;
+			incoming_page_ref_counts.set(
+				target_document_id,
+				(incoming_page_ref_counts.get(target_document_id) ?? 0) + 1
+			);
+		}
+	}
+
+	let home_linked_page_ids = new Set();
 
 	if (home_page_id && summaries_by_id.has(home_page_id)) {
 		const nav_refs = nav_root_id ? get_outgoing_refs(nav_root_id) : [];
 		const footer_refs = footer_root_id ? get_outgoing_refs(footer_root_id) : [];
 		const home_body_refs = body_refs_by_page_id.get(home_page_id) ?? [];
 
-		home_root = build_page_tree_node(
-			home_page_id,
-			assigned_page_ids,
+		home_linked_page_ids = new Set([home_page_id]);
+		build_tree_children(
+			[...nav_refs, ...home_body_refs, ...footer_refs],
+			home_linked_page_ids,
 			summaries_by_id,
-			body_refs_by_page_id,
-			[...nav_refs, ...home_body_refs, ...footer_refs]
+			body_refs_by_page_id
 		);
 	}
 
-	const remaining_summaries = summaries
-		.filter((summary) => summary.document_id !== home_page_id)
+	const non_home_root_summaries = summaries
+		.filter(
+			(summary) =>
+				summary.document_id !== home_page_id &&
+				!home_linked_page_ids.has(summary.document_id) &&
+				(incoming_page_ref_counts.get(summary.document_id) ?? 0) === 0
+		)
 		.sort((a, b) => a.title.localeCompare(b.title));
 
-	for (const summary of remaining_summaries) {
+	for (const summary of non_home_root_summaries) {
 		if (assigned_page_ids.has(summary.document_id)) continue;
 
 		const root_node = build_page_tree_node(
@@ -793,8 +813,22 @@ function build_page_browser_data() {
 		}
 	}
 
-	if (home_root) {
-		page_forest.push(home_root);
+	if (home_page_id && summaries_by_id.has(home_page_id)) {
+		const nav_refs = nav_root_id ? get_outgoing_refs(nav_root_id) : [];
+		const footer_refs = footer_root_id ? get_outgoing_refs(footer_root_id) : [];
+		const home_body_refs = body_refs_by_page_id.get(home_page_id) ?? [];
+
+		const home_root = build_page_tree_node(
+			home_page_id,
+			assigned_page_ids,
+			summaries_by_id,
+			body_refs_by_page_id,
+			[...nav_refs, ...home_body_refs, ...footer_refs]
+		);
+
+		if (home_root) {
+			page_forest.push(home_root);
+		}
 	}
 
 	return {
