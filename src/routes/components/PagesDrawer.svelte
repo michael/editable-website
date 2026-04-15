@@ -1,5 +1,6 @@
 <script>
 	import { invalidateAll } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { SvelteSet } from 'svelte/reactivity';
 	import { get_page_browser_data } from '$lib/api.remote.js';
 	import Media from './Media.svelte';
@@ -93,6 +94,14 @@
 		let count = 1;
 		for (const child of node.children ?? []) {
 			count += get_page_count(child);
+		}
+		return count;
+	}
+
+	function get_page_forest_count(nodes) {
+		let count = 0;
+		for (const node of nodes ?? []) {
+			count += get_page_count(node);
 		}
 		return count;
 	}
@@ -337,19 +346,16 @@
 		return parts;
 	}
 
-	function filter_drafts(items, normalized_query) {
-		if (!normalized_query) return items;
-		return items.filter((item) => item_matches_search(item, normalized_query));
-	}
-
-	function filter_sitemap_node(node, normalized_query) {
+	function filter_page_forest_node(node, normalized_query) {
 		if (!node) return null;
 
 		if (!normalized_query) {
 			return {
 				...node,
 				match_kind: 'none',
-				children: (node.children ?? []).map((child) => filter_sitemap_node(child, normalized_query))
+				children: (node.children ?? []).map((child) =>
+					filter_page_forest_node(child, normalized_query)
+				)
 			};
 		}
 
@@ -369,7 +375,7 @@
 
 		const filtered_children = [];
 		for (const child of node.children ?? []) {
-			const filtered_child = filter_sitemap_node(child, normalized_query);
+			const filtered_child = filter_page_forest_node(child, normalized_query);
 			if (filtered_child) {
 				filtered_children.push(filtered_child);
 			}
@@ -384,6 +390,21 @@
 		}
 
 		return null;
+	}
+
+	function filter_page_forest(nodes, normalized_query) {
+		if (!normalized_query) {
+			return (nodes ?? []).map((node) => filter_page_forest_node(node, normalized_query));
+		}
+
+		const filtered_nodes = [];
+		for (const node of nodes ?? []) {
+			const filtered_node = filter_page_forest_node(node, normalized_query);
+			if (filtered_node) {
+				filtered_nodes.push(filtered_node);
+			}
+		}
+		return filtered_nodes;
 	}
 
 	function mark_descendant_context(children) {
@@ -405,33 +426,26 @@
 		return '';
 	}
 
-	function flatten_sitemap_results(node) {
-		if (!node) return [];
+	function flatten_page_forest_results(nodes) {
+		const results = [];
 
-		const results = [
-			{
+		for (const node of nodes ?? []) {
+			results.push({
 				document_id: node.document_id,
 				page_href: node.page_href,
 				title: node.title
-			}
-		];
+			});
 
-		for (const child of node.children ?? []) {
-			results.push(...flatten_sitemap_results(child));
+			for (const child of node.children ?? []) {
+				results.push(...flatten_page_forest_results([child]));
+			}
 		}
 
 		return results;
 	}
 
-	function get_visible_results(filtered_drafts, filtered_sitemap) {
-		return [
-			...filtered_drafts.map((draft) => ({
-				document_id: draft.document_id,
-				page_href: draft.page_href,
-				title: draft.title
-			})),
-			...flatten_sitemap_results(filtered_sitemap)
-		];
+	function get_visible_results(filtered_page_forest) {
+		return flatten_page_forest_results(filtered_page_forest);
 	}
 
 	function get_visible_result_index(document_id, visible_results) {
@@ -477,13 +491,11 @@
 	}
 
 	let normalized_search_query = $derived(normalize_search_text(search_query));
-	let drafts = $derived(browser_data?.drafts ?? []);
-	let filtered_drafts = $derived(filter_drafts(drafts, normalized_search_query));
-	let sitemap = $derived(browser_data?.sitemap ?? null);
-	let filtered_sitemap = $derived(filter_sitemap_node(sitemap, normalized_search_query));
-	let visible_results = $derived(get_visible_results(filtered_drafts, filtered_sitemap));
-	let page_count = $derived(get_page_count(sitemap));
-	let filtered_page_count = $derived(get_page_count(filtered_sitemap));
+	let page_forest = $derived(browser_data?.page_forest ?? []);
+	let filtered_page_forest = $derived(filter_page_forest(page_forest, normalized_search_query));
+	let visible_results = $derived(get_visible_results(filtered_page_forest));
+	let page_count = $derived(get_page_forest_count(page_forest));
+	let filtered_page_count = $derived(get_page_forest_count(filtered_page_forest));
 	let is_picker_mode = $derived(page_browser.state.mode === 'select');
 	let drawer_title = $derived(is_picker_mode ? 'Select page' : 'Pages');
 
@@ -507,7 +519,7 @@
 
 	<section class="section">
 		<div class="section-header">
-			<h3>{get_count_label(normalized_search_query ? filtered_drafts.length : drafts.length, 'draft', 'drafts')}</h3>
+			<h3>{get_count_label(normalized_search_query ? filtered_page_count : page_count, 'page', 'pages')}</h3>
 			{#if is_picker_mode}
 				<span class="section-mode-label">{drawer_title}</span>
 			{/if}
@@ -518,104 +530,23 @@
 		{:else if load_error}
 			<div class="status-message" role="alert">{load_error}</div>
 		{:else}
-			<div class="drafts-strip" role="list" aria-label="Draft pages">
+			<div class="tree">
 				{#if !is_picker_mode && !normalized_search_query}
-					<div role="listitem" class="draft-item">
-						<a class="draft-card create-card" href="/new">
-							<div class="page-illustration draft-illustration create-illustration" aria-hidden="true">
-								<div class="plus-glyph">+</div>
+					<div class="tree-row-shell">
+						<a class="tree-row tree-row-root" href={resolve('/new')}>
+							<div class="page-illustration tree-illustration" aria-hidden="true">
+								<div class="page-illustration-fallback create-illustration">
+									<div class="plus-glyph">+</div>
+								</div>
 							</div>
-							<div class="draft-title">New page</div>
+							<div class="tree-label">
+								<div class="tree-title">New page</div>
+								<div class="page-slug-label">Create a new page</div>
+							</div>
 						</a>
 					</div>
 				{/if}
 
-				{#if filtered_drafts.length !== 0}
-					{#each filtered_drafts as draft (draft.document_id)}
-						{@const draft_is_match = item_matches_search(draft, normalized_search_query)}
-						<div role="listitem" class="draft-item">
-							<div class="draft-card-shell">
-								<a
-									class="draft-card"
-									class:draft-card-match-direct={draft_is_match}
-									class:draft-card-keyboard-selected={visible_results[selected_result_index]?.document_id === draft.document_id}
-									href={get_resolved_page_href(draft.page_href)}
-									onclick={(event) =>
-										handle_page_click(event, {
-											document_id: draft.document_id,
-											page_href: draft.page_href
-										})}
-									onmousemove={() => {
-										selected_result_index = get_visible_result_index(draft.document_id, visible_results);
-									}}
-								>
-									<div class="page-illustration draft-illustration" aria-hidden="true">
-										{#if draft.preview_media_node}
-											<div class="media-preview">
-												<Media node={draft.preview_media_node} />
-											</div>
-										{:else}
-											<div class="page-illustration-fallback"></div>
-										{/if}
-									</div>
-									<div class="draft-title">
-										<div>
-											{#each get_highlight_parts(draft.title, normalized_search_query) as part}
-												<span class:match-highlight={part.is_match}>{part.text}</span>
-											{/each}
-										</div>
-										<div class="page-slug-label">
-											{#each get_highlight_parts(get_page_slug_label(draft.page_href), normalized_search_query) as part}
-												<span class:match-highlight={part.is_match}>{part.text}</span>
-											{/each}
-										</div>
-									</div>
-								</a>
-
-								{#if !is_picker_mode}
-									<button
-										type="button"
-										class="item-actions-btn"
-										style={`anchor-name: ${get_menu_anchor_name(draft.document_id)};`}
-										aria-label={`Page actions for ${draft.title}`}
-										onclick={(event) =>
-											open_menu(event, {
-												kind: 'draft',
-												document_id: draft.document_id,
-												page_href: draft.page_href,
-												title: draft.title,
-												is_home_page: false
-											})}
-									>
-										⋯
-									</button>
-
-								{/if}
-							</div>
-						</div>
-					{/each}
-				{:else if normalized_search_query}
-					<div class="status-message">No matching drafts.</div>
-				{/if}
-			</div>
-		{/if}
-	</section>
-
-	<section class="section">
-		<div class="section-header">
-			<h3>{get_count_label(normalized_search_query ? filtered_page_count : page_count, 'page', 'pages')}</h3>
-		</div>
-
-		{#if loading && !browser_data}
-			<div class="status-message" role="status">Loading sitemap…</div>
-		{:else if load_error}
-			<div class="status-message" role="alert">{load_error}</div>
-		{:else if !sitemap}
-			<div class="status-message">No home page configured.</div>
-		{:else if normalized_search_query && !filtered_sitemap}
-			<div class="status-message">No matching pages.</div>
-		{:else}
-			<div class="tree">
 				{#snippet node_item(node, depth = 0, is_last = true, ancestor_columns = [])}
 					{@const node_has_children = has_children(node)}
 					{@const node_is_root = is_root_node(node, depth)}
@@ -626,7 +557,7 @@
 					<div class="tree-node">
 						<div class="tree-row-shell">
 							<div class="tree-guides" aria-hidden="true">
-								{#each ancestor_columns as show_rail}
+								{#each ancestor_columns as show_rail, guide_index (`${depth}-${guide_index}`)}
 									<div class="tree-guide-column">
 										{#if show_rail}
 											<div class="tree-guide-rail"></div>
@@ -670,7 +601,7 @@
 								class={`tree-row ${get_match_kind_class(node.match_kind)}`}
 								class:tree-row-root={node_is_root}
 								class:tree-row-keyboard-selected={visible_results[selected_result_index]?.document_id === node.document_id}
-								href={get_resolved_page_href(node.page_href)}
+								href={resolve(get_resolved_page_href(node.page_href))}
 								onclick={(event) =>
 									handle_page_click(event, {
 										document_id: node.document_id,
@@ -698,12 +629,12 @@
 
 								<div class="tree-label">
 									<div class="tree-title" title={node.title}>
-										{#each get_highlight_parts(node.title, normalized_search_query) as part}
+										{#each get_highlight_parts(node.title, normalized_search_query) as part, part_index (`title-${node.document_id}-${part_index}`)}
 											<span class:match-highlight={part.is_match}>{part.text}</span>
 										{/each}
 									</div>
 									<div class="page-slug-label" title={get_page_slug_label(node.page_href)}>
-										{#each get_highlight_parts(get_page_slug_label(node.page_href), normalized_search_query) as part}
+										{#each get_highlight_parts(get_page_slug_label(node.page_href), normalized_search_query) as part, part_index (`slug-${node.document_id}-${part_index}`)}
 											<span class:match-highlight={part.is_match}>{part.text}</span>
 										{/each}
 									</div>
@@ -746,7 +677,15 @@
 					</div>
 				{/snippet}
 
-				{@render node_item(filtered_sitemap ?? sitemap)}
+				{#if normalized_search_query && filtered_page_forest.length === 0}
+					<div class="status-message">No matching pages.</div>
+				{:else if !normalized_search_query && page_forest.length === 0}
+					<div class="status-message">No pages yet.</div>
+				{:else}
+					{#each filtered_page_forest as root_node, index (root_node.document_id)}
+						{@render node_item(root_node, 0, index === filtered_page_forest.length - 1, [])}
+					{/each}
+				{/if}
 			</div>
 		{/if}
 	</section>
@@ -922,27 +861,10 @@
 		color: color-mix(in oklch, currentColor 65%, transparent);
 	}
 
-	.drafts-strip {
-		display: grid;
-		grid-auto-flow: column;
-		grid-auto-columns: 6.2rem;
-		gap: 0.7rem;
-		overflow-x: auto;
-		padding: 0.05rem 0.05rem 0.2rem;
-		scrollbar-width: thin;
-		-webkit-overflow-scrolling: touch;
-	}
-
-	.draft-item {
-		display: block;
-	}
-
-	.draft-card-shell,
 	.tree-row-shell {
 		position: relative;
 	}
 
-	.draft-card,
 	.tree-row {
 		border: 0;
 		background: transparent;
@@ -950,16 +872,6 @@
 		text-align: left;
 		transition: background-color 140ms ease;
 		outline: none;
-	}
-
-	.draft-card {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 0.35rem;
-		width: 100%;
-		padding: 0.3rem;
-		padding-top: 1.55rem;
 	}
 
 	.tree-row {
@@ -975,8 +887,6 @@
 		padding-left: 0.3rem;
 	}
 
-	.draft-card:hover,
-	.draft-card:focus-visible,
 	.tree-row:hover,
 	.tree-row:focus-visible {
 		background: var(--svedit-editing-fill);
@@ -1427,16 +1337,6 @@
 	}
 
 	@media (max-width: 640px) {
-		.drafts-strip {
-			grid-auto-columns: 5.6rem;
-			gap: 0.6rem;
-		}
-
-		.draft-card {
-			padding: 0.25rem;
-			padding-top: 1.45rem;
-			gap: 0.3rem;
-		}
 
 		.draft-title {
 			font-size: 0.68rem;
