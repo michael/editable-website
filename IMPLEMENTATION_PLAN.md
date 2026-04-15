@@ -1156,6 +1156,12 @@ Implemented:
 
 Note:
 - drawer-close-on-click can be refined later if needed
+- the drawer resize handle should render outside the drawer panel, centered on the top edge, so it visually floats above the sheet instead of taking space inside the drawer content area
+- while dragging, the drawer should be able to move all the way down to the bottom of the viewport
+- on drag release near zero height, the drawer should animate smoothly down to `0` height and then close instead of remaining open at a tiny height or closing abruptly
+- otherwise, on drag release, the drawer should snap to the nearest preset height based on the release position: `1/3`, `2/3`, or `3/4` of the viewport height
+- after release, the drawer height should animate smoothly toward the snapped value rather than jumping immediately, including when dragged above the highest snap point and settling back to `3/4`
+- when the drawer is reopened after being closed near zero height, it should restore the previous non-zero snapped height
 
 ## Phase 5 — save flow integration and navigation correctness
 

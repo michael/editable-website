@@ -977,6 +977,8 @@ To reuse media that's already on the site, navigate to the page that has it, cop
 
 The only admin interface is a **site map** — a listing of all pages plus drafts (pages that are not linked anywhere yet). There is no need for a media library, asset browser, or content management dashboard beyond this.
 
+The page browser uses a bottom drawer. Its resize handle is rendered outside the drawer panel, centered on the top edge, so it visually floats above the sheet instead of taking space inside the drawer content area. While dragging, the drawer can be pulled all the way down to the bottom of the viewport and up past the highest snap point before release. When the user releases it near zero height, the drawer should animate smoothly down to `0` height and then close, rather than closing abruptly or remaining open at a tiny height. Otherwise its final height snaps to whichever preset is closest to the release position: `1/3`, `2/3`, or `3/4` of the viewport height. This snap should animate smoothly after release in both directions, including when the user drags above `3/4` and the drawer settles back down to that preset. If the drawer is reopened after being closed near zero height, it restores the previous non-zero snapped height.
+
 ### Page reachability
 
 A page is **reachable** (and appears in `sitemap.xml`) if it can be reached by following links starting from the home page, nav, or footer. This is a transitive check — a page linked only from a draft is still a draft, because the draft itself isn't reachable.

@@ -1,5 +1,6 @@
 <script>
 	import { invalidateAll } from '$app/navigation';
+	import { SvelteSet } from 'svelte/reactivity';
 	import { get_page_browser_data } from '$lib/api.remote.js';
 	import Media from './Media.svelte';
 	import { get_page_browser } from './page_browser_context.svelte.js';
@@ -12,7 +13,7 @@
 	let loaded_version = $state(-1);
 
 	let menu_item = $state(null);
-	let menu_anchor_ref = $state(null);
+	let menu_anchor_name = $state('');
 	let menu_ref = $state(null);
 
 	let confirm_item = $state(null);
@@ -26,6 +27,8 @@
 	let page_url_error = $state('');
 	let saving_page_url = $state(false);
 
+	let collapsed_document_ids = new SvelteSet();
+
 	const browser_data_query = $derived.by(() => {
 		page_browser?.version ?? 0;
 		if (!page_browser.state.open) return null;
@@ -38,8 +41,6 @@
 		if (!query) {
 			loading = false;
 			load_error = '';
-			browser_data = null;
-			loaded_version = page_browser?.version ?? 0;
 			return;
 		}
 
@@ -73,8 +74,6 @@
 		}
 	});
 
-
-
 	function get_page_count(node) {
 		if (!node) return 0;
 
@@ -97,15 +96,45 @@
 		return browser_data?.home_page_id === document_id;
 	}
 
+	function has_children(node) {
+		return !!node?.children?.length;
+	}
+
+	function is_root_node(node, depth) {
+		return depth === 0 && is_home_page(node.document_id);
+	}
+
+	function is_collapsed(document_id) {
+		return collapsed_document_ids.has(document_id);
+	}
+
+	function toggle_collapsed(document_id) {
+		if (collapsed_document_ids.has(document_id)) {
+			collapsed_document_ids.delete(document_id);
+		} else {
+			collapsed_document_ids.add(document_id);
+		}
+	}
+
+	function handle_toggle_click(event, document_id) {
+		event.preventDefault();
+		event.stopPropagation();
+		toggle_collapsed(document_id);
+	}
+
 	function handle_page_click(event, item) {
 		event.preventDefault();
 		page_browser.handle_page_selected(item);
 	}
 
+	function get_menu_anchor_name(document_id) {
+		return `--page-actions-${document_id}`;
+	}
+
 	function open_menu(event, item) {
 		event.preventDefault();
 		event.stopPropagation();
-		menu_anchor_ref = event.currentTarget;
+		menu_anchor_name = get_menu_anchor_name(item.document_id);
 		menu_item = item;
 		delete_error = '';
 		page_url_error = '';
@@ -113,7 +142,7 @@
 
 	function close_menu() {
 		menu_item = null;
-		menu_anchor_ref = null;
+		menu_anchor_name = '';
 	}
 
 	function open_confirm() {
@@ -144,6 +173,8 @@
 
 	function handle_menu_click(event) {
 		if (event.target === menu_ref) {
+			event.preventDefault();
+			event.stopPropagation();
 			close_menu();
 		}
 	}
@@ -175,22 +206,14 @@
 		close_page_url_dialog();
 	}
 
-	function open_in_new_tab() {
-		if (!menu_item) return;
+	async function open_in_new_tab() {
+		if (!menu_item?.page_href) return;
 		window.open(get_resolved_page_href(menu_item.page_href), '_blank', 'noopener,noreferrer');
 		close_menu();
 	}
 
-	function get_delete_confirmation_message() {
-		if (!confirm_item) return '';
-		if (confirm_item.kind === 'draft') {
-			return 'Are you sure you want to delete this draft?';
-		}
-		return 'Are you sure you want to delete this page? It is still linked from other pages. Remove those links first if you want to avoid broken links.';
-	}
-
 	async function save_page_url() {
-		if (!page_url_dialog_item || saving_page_url) return;
+		if (!page_url_dialog_item) return;
 
 		saving_page_url = true;
 		page_url_error = '';
@@ -207,52 +230,25 @@
 				return;
 			}
 
-			const updated_page_href =
-				result && 'page_href' in result && typeof result.page_href === 'string'
-					? result.page_href
-					: `/${page_url_value}`;
 			close_page_url_dialog();
 			browser_data = null;
 			loaded_version = -1;
 			page_browser.invalidate?.();
-			menu_item = menu_item
-				? {
-						...menu_item,
-						page_href: updated_page_href
-					}
-				: null;
 			await invalidateAll();
-			get_page_browser_data().refresh();
 		} catch (err) {
-			console.error('Failed to update page URL', err);
-
-			const error_body =
-				typeof err === 'object' && err !== null && 'body' in err && typeof err.body === 'object'
-					? err.body
-					: null;
-
-			const error_message =
-				error_body &&
-				'message' in error_body &&
-				typeof error_body.message === 'string'
-					? error_body.message
-					: typeof err === 'object' &&
-						  err !== null &&
-						  'message' in err &&
-						  typeof err.message === 'string'
-						? err.message
-						: err instanceof Error
-							? err.message
-							: 'Failed to update Page URL.';
-
-			page_url_error = error_message;
+			page_url_error = err instanceof Error ? err.message : 'Failed to update Page URL.';
 		} finally {
 			saving_page_url = false;
 		}
 	}
 
+	function get_delete_confirmation_message() {
+		if (!confirm_item) return '';
+		return `Delete “${confirm_item.title}”? This cannot be undone.`;
+	}
+
 	async function confirm_delete() {
-		if (!confirm_item || deleting || confirm_item.is_home_page) return;
+		if (!confirm_item) return;
 
 		deleting = true;
 		delete_error = '';
@@ -268,31 +264,34 @@
 			browser_data = null;
 			loaded_version = -1;
 			page_browser.invalidate?.();
+			await invalidateAll();
 			await page_browser.handle_page_deleted?.(
 				deleted_document_id,
 				home_page_id,
 				page_url_dialog_item?.document_id ?? confirm_item.document_id
 			);
-			get_page_browser_data().refresh();
 		} catch (err) {
-			console.error('Failed to delete page', err);
 			delete_error = err instanceof Error ? err.message : 'Failed to delete page.';
 		} finally {
 			deleting = false;
 		}
 	}
 
-	const drafts = $derived(browser_data?.drafts ?? []);
-	const sitemap = $derived(browser_data?.sitemap ?? null);
-	const page_count = $derived(get_page_count(sitemap));
-	const is_picker_mode = $derived(page_browser.state.mode === 'select');
-	const drawer_title = $derived(is_picker_mode ? 'Select page' : 'Pages');
+	function get_count_label(count, singular_label, plural_label) {
+		return `${count} ${count === 1 ? singular_label : plural_label}`;
+	}
+
+	let drafts = $derived(browser_data?.drafts ?? []);
+	let sitemap = $derived(browser_data?.sitemap ?? null);
+	let page_count = $derived(get_page_count(sitemap));
+	let is_picker_mode = $derived(page_browser.state.mode === 'select');
+	let drawer_title = $derived(is_picker_mode ? 'Select page' : 'Pages');
 </script>
 
 <div class="pages-drawer">
 	<section class="section">
 		<div class="section-header">
-			<h3>{drafts.length} drafts</h3>
+			<h3>{get_count_label(drafts.length, 'draft', 'drafts')}</h3>
 			{#if is_picker_mode}
 				<span class="section-mode-label">{drawer_title}</span>
 			{/if}
@@ -315,11 +314,7 @@
 					</div>
 				{/if}
 
-				{#if drafts.length === 0}
-					<div class="empty-state-card" role="listitem">
-						<div class="empty-state-text">No drafts yet</div>
-					</div>
-				{:else}
+				{#if drafts.length !== 0}
 					{#each drafts as draft (draft.document_id)}
 						<div role="listitem" class="draft-item">
 							<div class="draft-card-shell">
@@ -351,6 +346,7 @@
 									<button
 										type="button"
 										class="item-actions-btn"
+										style={`anchor-name: ${get_menu_anchor_name(draft.document_id)};`}
 										aria-label={`Page actions for ${draft.title}`}
 										onclick={(event) =>
 											open_menu(event, {
@@ -363,6 +359,7 @@
 									>
 										⋯
 									</button>
+
 								{/if}
 							</div>
 						</div>
@@ -374,7 +371,7 @@
 
 	<section class="section">
 		<div class="section-header">
-			<h3>{page_count} pages</h3>
+			<h3>{get_count_label(page_count, 'page', 'pages')}</h3>
 		</div>
 
 		{#if loading && !browser_data}
@@ -385,11 +382,57 @@
 			<div class="status-message">No home page configured.</div>
 		{:else}
 			<div class="tree">
-				{#snippet node_item(node, depth = 0)}
-					<div class="tree-node" style={`--depth:${depth};`}>
+				{#snippet node_item(node, depth = 0, is_last = true, ancestor_columns = [])}
+					{@const node_has_children = has_children(node)}
+					{@const node_is_root = is_root_node(node, depth)}
+					{@const node_is_collapsed = node_is_root ? false : is_collapsed(node.document_id)}
+					{@const current_column_continues = node_is_root ? false : !is_last || node_has_children}
+					<div class="tree-node">
 						<div class="tree-row-shell">
+							<div class="tree-guides" aria-hidden="true">
+								{#each ancestor_columns as show_rail}
+									<div class="tree-guide-column">
+										{#if show_rail}
+											<div class="tree-guide-rail"></div>
+										{/if}
+									</div>
+								{/each}
+
+								{#if !node_is_root}
+									<button
+										type="button"
+										class="tree-gutter"
+										aria-label={node_has_children
+											? node_is_collapsed
+												? `Expand ${node.title}`
+												: `Collapse ${node.title}`
+											: `${node.title} has no child pages`}
+										aria-expanded={node_has_children ? !node_is_collapsed : undefined}
+										disabled={!node_has_children}
+										onclick={(event) => {
+											if (!node_has_children) return;
+											handle_toggle_click(event, node.document_id);
+										}}
+									>
+										<div class="tree-gutter-rail tree-gutter-rail-top"></div>
+										{#if current_column_continues}
+											<div class="tree-gutter-rail tree-gutter-rail-bottom"></div>
+										{/if}
+										<div class="tree-gutter-elbow"></div>
+										{#if node_has_children}
+											<div class="tree-toggle">
+												<span class:tree-toggle-collapsed={node_is_collapsed}>⌄</span>
+											</div>
+										{:else}
+											<div class="tree-leaf-dot"></div>
+										{/if}
+									</button>
+								{/if}
+							</div>
+
 							<a
 								class="tree-row"
+								class:tree-row-root={node_is_root}
 								href={get_resolved_page_href(node.page_href)}
 								onclick={(event) =>
 									handle_page_click(event, {
@@ -397,21 +440,27 @@
 										page_href: node.page_href
 									})}
 							>
-								<div class="tree-indent" aria-hidden="true"></div>
-
 								<div class="page-illustration tree-illustration" aria-hidden="true">
 									{#if node.preview_media_node}
 										<div class="media-preview">
 											<Media node={node.preview_media_node} />
 										</div>
 									{:else}
-										<div class="page-illustration-fallback"></div>
+										<div class="page-illustration-fallback">
+											<div class="page-symbol">
+												<div class="page-symbol-line page-symbol-line-short"></div>
+												<div class="page-symbol-line"></div>
+												<div class="page-symbol-line"></div>
+											</div>
+										</div>
 									{/if}
 								</div>
 
 								<div class="tree-label">
-									<div>{node.title}</div>
-									<div class="page-slug-label">{get_page_slug_label(node.page_href)}</div>
+									<div class="tree-title" title={node.title}>{node.title}</div>
+									<div class="page-slug-label" title={get_page_slug_label(node.page_href)}>
+										{get_page_slug_label(node.page_href)}
+									</div>
 								</div>
 							</a>
 
@@ -419,6 +468,7 @@
 								<button
 									type="button"
 									class="item-actions-btn tree-actions-btn"
+									style={`anchor-name: ${get_menu_anchor_name(node.document_id)};`}
 									aria-label={`Page actions for ${node.title}`}
 									onclick={(event) =>
 										open_menu(event, {
@@ -429,15 +479,21 @@
 											is_home_page: is_home_page(node.document_id)
 										})}
 								>
-									⋯
+									<span class="tree-actions-dots">⋯</span>
 								</button>
+
 							{/if}
 						</div>
 
-						{#if node.children?.length}
+						{#if node_has_children && !node_is_collapsed}
 							<div class="tree-children">
-								{#each node.children as child (child.document_id)}
-									{@render node_item(child, depth + 1)}
+								{#each node.children as child, index (child.document_id)}
+									{@render node_item(
+										child,
+										depth + 1,
+										index === node.children.length - 1,
+										[...ancestor_columns, current_column_continues]
+									)}
 								{/each}
 							</div>
 						{/if}
@@ -459,7 +515,7 @@
 	{#if menu_item}
 		<div
 			class="menu-panel"
-			style={`position: fixed; top: ${menu_anchor_ref?.getBoundingClientRect().bottom ?? 0}px; left: ${Math.max((menu_anchor_ref?.getBoundingClientRect().right ?? 0) - 192, 8)}px;`}
+			style={`position-anchor: ${menu_anchor_name}; position-area: block-end span-all; justify-self: anchor-center; position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;`}
 		>
 			<button type="button" class="menu-item" onclick={open_in_new_tab}>
 				Open in new tab
@@ -580,10 +636,10 @@
 
 	.section-header h3 {
 		margin: 0;
-		font-size: 0.95rem;
-		font-weight: 700;
-		letter-spacing: -0.01em;
-		color: inherit;
+		font-size: 0.78rem;
+		font-weight: 500;
+		letter-spacing: 0.01em;
+		color: color-mix(in oklch, currentColor 58%, transparent);
 	}
 
 	.section-mode-label {
@@ -601,10 +657,10 @@
 	.drafts-strip {
 		display: grid;
 		grid-auto-flow: column;
-		grid-auto-columns: 8.4rem;
-		gap: 1rem;
+		grid-auto-columns: 6.2rem;
+		gap: 0.7rem;
 		overflow-x: auto;
-		padding: 0.15rem 0.05rem 0.35rem;
+		padding: 0.05rem 0.05rem 0.2rem;
 		scrollbar-width: thin;
 		-webkit-overflow-scrolling: touch;
 	}
@@ -616,22 +672,6 @@
 	.draft-card-shell,
 	.tree-row-shell {
 		position: relative;
-	}
-
-	.empty-state-card {
-		display: grid;
-		place-items: center;
-		min-height: 10rem;
-		padding: 0.75rem;
-		border: 1px dashed color-mix(in oklch, var(--foreground) 22%, transparent);
-		background: color-mix(in oklch, var(--foreground) 3%, var(--background));
-	}
-
-	.empty-state-text {
-		font-size: 0.84rem;
-		font-weight: 600;
-		color: color-mix(in oklch, currentColor 65%, transparent);
-		text-align: center;
 	}
 
 	.draft-card,
@@ -648,19 +688,23 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 0.65rem;
+		gap: 0.35rem;
 		width: 100%;
-		padding: 0.45rem;
-		padding-top: 2rem;
+		padding: 0.3rem;
+		padding-top: 1.55rem;
 	}
 
 	.tree-row {
 		display: flex;
 		align-items: center;
-		gap: 0.8rem;
+		gap: 0.75rem;
 		width: 100%;
-		min-height: 3.35rem;
-		padding: 0.45rem 2.5rem 0.45rem calc(0.6rem + var(--depth) * 1rem);
+		min-height: 2.95rem;
+		padding: 0.42rem 2.5rem 0.42rem 0.3rem;
+	}
+
+	.tree-row-root {
+		padding-left: 0.3rem;
 	}
 
 	.draft-card:hover,
@@ -677,25 +721,35 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 1.9rem;
-		height: 1.9rem;
+		width: 1.5rem;
+		height: 1.5rem;
 		border: 0;
-		background: color-mix(in oklch, var(--background) 88%, var(--foreground) 12%);
-		color: inherit;
+		padding: 0;
+		background: transparent;
+		color: color-mix(in oklch, currentColor 34%, transparent);
 		cursor: pointer;
-		font-size: 1.1rem;
+		font-size: 1rem;
 		line-height: 1;
+		opacity: 1;
+		pointer-events: auto;
+		transition: color 140ms ease, opacity 140ms ease;
 	}
 
 	.tree-actions-btn {
 		top: 50%;
 		transform: translateY(-50%);
-		right: 0.45rem;
+		right: 0.7rem;
 	}
 
+	.tree-row-shell:hover .item-actions-btn,
+	.tree-row-shell:focus-within .item-actions-btn,
+	.tree-row:hover + .item-actions-btn,
+	.tree-row:focus-visible + .item-actions-btn,
 	.item-actions-btn:hover,
 	.item-actions-btn:focus-visible {
-		background: color-mix(in oklch, var(--foreground) 10%, var(--background));
+		opacity: 1;
+		pointer-events: auto;
+		color: color-mix(in oklch, currentColor 68%, transparent);
 		outline: none;
 	}
 
@@ -708,7 +762,7 @@
 
 	.draft-illustration {
 		width: 100%;
-		aspect-ratio: 3 / 4;
+		aspect-ratio: 1;
 		background: oklch(from var(--svedit-brand, oklch(60% 0.22 283)) 0.985 0.012 h);
 		box-shadow: none;
 	}
@@ -720,9 +774,11 @@
 	}
 
 	.tree-illustration {
-		width: 2.65rem;
-		aspect-ratio: 3 / 4;
+		width: 2.15rem;
+		aspect-ratio: 1;
 		flex: 0 0 auto;
+		border: 1px solid color-mix(in oklch, var(--foreground) 10%, transparent);
+		background: color-mix(in oklch, var(--foreground) 2%, var(--background));
 	}
 
 	.media-preview {
@@ -731,6 +787,30 @@
 		display: block;
 		object-fit: cover;
 		background: color-mix(in oklch, var(--foreground) 3%, var(--background));
+	}
+
+	.page-illustration-fallback {
+		width: 100%;
+		height: 100%;
+		display: grid;
+		place-items: center;
+		background: color-mix(in oklch, var(--foreground) 2%, var(--background));
+	}
+
+	.page-symbol {
+		width: 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.12rem;
+	}
+
+	.page-symbol-line {
+		height: 1px;
+		background: color-mix(in oklch, var(--foreground) 24%, transparent);
+	}
+
+	.page-symbol-line-short {
+		width: 62%;
 	}
 
 
@@ -743,9 +823,9 @@
 	}
 
 	.draft-title {
-		font-size: 0.8rem;
-		font-weight: 600;
-		line-height: 1.2;
+		font-size: 0.72rem;
+		font-weight: 500;
+		line-height: 1.18;
 		color: inherit;
 		text-align: center;
 	}
@@ -753,31 +833,157 @@
 	.tree {
 		display: flex;
 		flex-direction: column;
-		gap: 0.45rem;
+		gap: 0;
 	}
 
 	.tree-node {
 		display: flex;
 		flex-direction: column;
-		gap: 0.45rem;
+		gap: 0;
 	}
 
-	.tree-indent {
-		width: 0;
-		height: 0;
+	.tree-row-shell {
+		display: flex;
+		align-items: stretch;
+	}
+
+	.tree-guides {
+		flex: 0 0 auto;
+		display: flex;
+		align-items: stretch;
+	}
+
+	.tree-guide-column,
+	.tree-gutter {
+		position: relative;
+		width: 0.9rem;
+		flex: 0 0 0.9rem;
+	}
+
+	.tree-guide-rail,
+	.tree-gutter-rail {
+		position: absolute;
+		left: calc(50% - 0.5px);
+		width: 1px;
+		background: color-mix(in oklch, var(--foreground) 12%, transparent);
+	}
+
+	.tree-guide-rail {
+		top: 0;
+		bottom: 0;
+	}
+
+	.tree-gutter {
+		padding: 0;
+		border: 0;
+		background: transparent;
+		cursor: pointer;
+	}
+
+	.tree-gutter:disabled {
+		cursor: default;
+	}
+
+	.tree-gutter:focus-visible {
+		outline: none;
+	}
+
+	.tree-gutter-rail-top {
+		top: 0;
+		height: 50%;
+	}
+
+	.tree-gutter-rail-bottom {
+		top: 50%;
+		height: 50%;
+	}
+
+	.tree-gutter-elbow {
+		position: absolute;
+		left: calc(50% - 0.5px);
+		top: 50%;
+		width: 0.62rem;
+		height: 1px;
+		background: color-mix(in oklch, var(--foreground) 12%, transparent);
+	}
+
+	.tree-toggle,
+	.tree-leaf-dot {
+		position: absolute;
+		left: 0;
+		top: calc(50% - 0.45rem);
+		width: 0.9rem;
+		height: 0.9rem;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		background: var(--background);
+		color: color-mix(in oklch, var(--foreground) 52%, transparent);
+	}
+
+	.tree-toggle {
+		font-size: 0.72rem;
+		line-height: 1;
+		transition: color 140ms ease, transform 140ms ease;
+	}
+
+	.tree-gutter:hover .tree-toggle,
+	.tree-gutter:focus-visible .tree-toggle {
+		color: var(--foreground);
+	}
+
+	.tree-toggle span {
+		display: inline-block;
+		transform: rotate(0deg);
+		transition: transform 140ms ease;
+	}
+
+	.tree-toggle-collapsed {
+		transform: rotate(-90deg);
+	}
+
+	.tree-leaf-dot::before {
+		content: '';
+		width: 0.22rem;
+		height: 0.22rem;
+		background: color-mix(in oklch, var(--foreground) 22%, transparent);
 	}
 
 	.tree-label {
-		font-size: 0.92rem;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.14rem;
+		font-size: 0.9rem;
 		font-weight: 600;
-		line-height: 1.2;
+		line-height: 1.15;
 		color: inherit;
+	}
+
+	.tree-title {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.page-slug-label {
+		font-family: ui-monospace, 'SFMono-Regular', 'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+		font-size: 0.68rem;
+		font-weight: 500;
+		line-height: 1.1;
+		letter-spacing: 0.01em;
+		color: color-mix(in oklch, currentColor 52%, transparent);
+	}
+
+	.tree-actions-dots {
+		display: inline-block;
+		transform: translateY(-0.02rem);
 	}
 
 	.tree-children {
 		display: flex;
 		flex-direction: column;
-		gap: 0.35rem;
+		gap: 0;
 	}
 
 	.page-actions-dialog,
@@ -793,16 +999,21 @@
 		overflow: visible;
 	}
 
-	.page-actions-dialog::backdrop,
+	.page-actions-dialog::backdrop {
+		background: transparent;
+	}
+
 	.confirm-dialog::backdrop {
 		background: color-mix(in oklch, var(--foreground) 10%, transparent);
 	}
 
 	.menu-panel {
 		position: fixed;
+		z-index: 40;
 		display: flex;
 		flex-direction: column;
 		min-width: 12rem;
+		margin: 0;
 		background: var(--background);
 		color: var(--foreground);
 		border: 1px solid color-mix(in oklch, var(--foreground) 18%, transparent);
@@ -930,18 +1141,18 @@
 
 	@media (max-width: 640px) {
 		.drafts-strip {
-			grid-auto-columns: 7.5rem;
-			gap: 0.85rem;
+			grid-auto-columns: 5.6rem;
+			gap: 0.6rem;
 		}
 
 		.draft-card {
-			padding: 0.4rem;
-			padding-top: 1.9rem;
-			gap: 0.55rem;
+			padding: 0.25rem;
+			padding-top: 1.45rem;
+			gap: 0.3rem;
 		}
 
 		.draft-title {
-			font-size: 0.74rem;
+			font-size: 0.68rem;
 		}
 	}
 </style>
