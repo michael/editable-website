@@ -798,21 +798,6 @@ function build_page_browser_data() {
 		)
 		.sort((a, b) => a.title.localeCompare(b.title));
 
-	for (const summary of non_home_root_summaries) {
-		if (assigned_page_ids.has(summary.document_id)) continue;
-
-		const root_node = build_page_tree_node(
-			summary.document_id,
-			assigned_page_ids,
-			summaries_by_id,
-			body_refs_by_page_id
-		);
-
-		if (root_node) {
-			page_forest.push(root_node);
-		}
-	}
-
 	if (home_page_id && summaries_by_id.has(home_page_id)) {
 		const nav_refs = nav_root_id ? get_outgoing_refs(nav_root_id) : [];
 		const footer_refs = footer_root_id ? get_outgoing_refs(footer_root_id) : [];
@@ -827,7 +812,23 @@ function build_page_browser_data() {
 		);
 
 		if (home_root) {
+			home_root.title = 'Home';
 			page_forest.push(home_root);
+		}
+	}
+
+	for (const summary of non_home_root_summaries) {
+		if (assigned_page_ids.has(summary.document_id)) continue;
+
+		const root_node = build_page_tree_node(
+			summary.document_id,
+			assigned_page_ids,
+			summaries_by_id,
+			body_refs_by_page_id
+		);
+
+		if (root_node) {
+			page_forest.push(root_node);
 		}
 	}
 

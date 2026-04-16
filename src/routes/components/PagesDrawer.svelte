@@ -1,7 +1,7 @@
 <script>
 	import { invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import { SvelteSet } from 'svelte/reactivity';
+
 	import { get_page_browser_data } from '$lib/api.remote.js';
 	import Media from './Media.svelte';
 	import { get_page_browser } from './page_browser_context.svelte.js';
@@ -32,7 +32,7 @@
 	let search_input_ref = $state(null);
 	let selected_result_index = $state(0);
 
-	let collapsed_document_ids = new SvelteSet();
+
 
 	const browser_data_query = $derived.by(() => {
 		page_browser?.version ?? 0;
@@ -80,7 +80,11 @@
 	});
 
 	$effect(() => {
-		if (!page_browser.state.open || !search_input_ref) return;
+		if (!page_browser.state.open) return;
+
+		search_query = '';
+
+		if (!search_input_ref) return;
 
 		requestAnimationFrame(() => {
 			search_input_ref?.focus();
@@ -123,25 +127,7 @@
 	}
 
 	function is_root_node(node, depth) {
-		return depth === 0 && is_home_page(node.document_id);
-	}
-
-	function is_collapsed(document_id) {
-		return collapsed_document_ids.has(document_id);
-	}
-
-	function toggle_collapsed(document_id) {
-		if (collapsed_document_ids.has(document_id)) {
-			collapsed_document_ids.delete(document_id);
-		} else {
-			collapsed_document_ids.add(document_id);
-		}
-	}
-
-	function handle_toggle_click(event, document_id) {
-		event.preventDefault();
-		event.stopPropagation();
-		toggle_collapsed(document_id);
+		return depth === 0;
 	}
 
 	function handle_page_click(event, item) {
@@ -415,10 +401,6 @@
 		}));
 	}
 
-	function should_force_expand(node_is_root, normalized_query) {
-		return node_is_root || !!normalized_query;
-	}
-
 	function get_match_kind_class(match_kind) {
 		if (match_kind === 'direct') return 'tree-row-match-direct';
 		if (match_kind === 'ancestor_context') return 'tree-row-match-context';
@@ -511,92 +493,27 @@
 			type="search"
 			class="search-input"
 			bind:value={search_query}
-			placeholder="Search pages"
-			aria-label="Search pages"
+			placeholder={`Search ${page_count} pages`}
+			aria-label={`Search ${page_count} pages`}
 			onkeydown={(event) => handle_search_keydown(event, visible_results)}
 		/>
 	</div>
 
 	<section class="section">
-		<div class="section-header">
-			<h3>{get_count_label(normalized_search_query ? filtered_page_count : page_count, 'page', 'pages')}</h3>
-			{#if is_picker_mode}
-				<span class="section-mode-label">{drawer_title}</span>
-			{/if}
-		</div>
-
 		{#if loading && !browser_data}
 			<div class="status-message" role="status">Loading pages…</div>
 		{:else if load_error}
 			<div class="status-message" role="alert">{load_error}</div>
 		{:else}
 			<div class="tree">
-				{#if !is_picker_mode && !normalized_search_query}
-					<div class="tree-row-shell">
-						<a class="tree-row tree-row-root" href={resolve('/new')}>
-							<div class="page-illustration tree-illustration" aria-hidden="true">
-								<div class="page-illustration-fallback create-illustration">
-									<div class="plus-glyph">+</div>
-								</div>
-							</div>
-							<div class="tree-label">
-								<div class="tree-title">New page</div>
-								<div class="page-slug-label">Create a new page</div>
-							</div>
-						</a>
-					</div>
-				{/if}
+
 
 				{#snippet node_item(node, depth = 0, is_last = true, ancestor_columns = [])}
 					{@const node_has_children = has_children(node)}
 					{@const node_is_root = is_root_node(node, depth)}
-					{@const node_is_collapsed = should_force_expand(node_is_root, normalized_search_query)
-						? false
-						: is_collapsed(node.document_id)}
 					{@const current_column_continues = node_is_root ? false : !is_last || node_has_children}
 					<div class="tree-node">
 						<div class="tree-row-shell">
-							<div class="tree-guides" aria-hidden="true">
-								{#each ancestor_columns as show_rail, guide_index (`${depth}-${guide_index}`)}
-									<div class="tree-guide-column">
-										{#if show_rail}
-											<div class="tree-guide-rail"></div>
-										{/if}
-									</div>
-								{/each}
-
-								{#if !node_is_root}
-									<button
-										type="button"
-										class="tree-gutter"
-										aria-label={node_has_children
-											? node_is_collapsed
-												? `Expand ${node.title}`
-												: `Collapse ${node.title}`
-											: `${node.title} has no child pages`}
-										aria-expanded={node_has_children ? !node_is_collapsed : undefined}
-										disabled={!node_has_children || !!normalized_search_query}
-										onclick={(event) => {
-											if (!node_has_children || normalized_search_query) return;
-											handle_toggle_click(event, node.document_id);
-										}}
-									>
-										<div class="tree-gutter-rail tree-gutter-rail-top"></div>
-										{#if current_column_continues}
-											<div class="tree-gutter-rail tree-gutter-rail-bottom"></div>
-										{/if}
-										<div class="tree-gutter-elbow"></div>
-										{#if node_has_children}
-											<div class="tree-toggle">
-												<span class:tree-toggle-collapsed={node_is_collapsed}>⌄</span>
-											</div>
-										{:else}
-											<div class="tree-leaf-dot"></div>
-										{/if}
-									</button>
-								{/if}
-							</div>
-
 							<a
 								class={`tree-row ${get_match_kind_class(node.match_kind)}`}
 								class:tree-row-root={node_is_root}
@@ -611,6 +528,29 @@
 									selected_result_index = get_visible_result_index(node.document_id, visible_results);
 								}}
 							>
+								<div class="tree-guides" aria-hidden="true">
+									{#each ancestor_columns as show_rail, guide_index (`${depth}-${guide_index}`)}
+										<div class="tree-guide-column">
+											{#if show_rail}
+												<div class="tree-guide-rail"></div>
+											{/if}
+										</div>
+									{/each}
+
+									{#if !node_is_root}
+										<div class="tree-gutter">
+											<div class="tree-gutter-rail tree-gutter-rail-top"></div>
+											{#if current_column_continues}
+												<div class="tree-gutter-rail tree-gutter-rail-bottom"></div>
+											{/if}
+											<div class="tree-gutter-elbow"></div>
+											{#if !node_has_children}
+												<div class="tree-leaf-dot"></div>
+											{/if}
+										</div>
+									{/if}
+								</div>
+
 								<div class="page-illustration tree-illustration" aria-hidden="true">
 									{#if node.preview_media_node}
 										<div class="media-preview">
@@ -633,7 +573,10 @@
 											<span class:match-highlight={part.is_match}>{part.text}</span>
 										{/each}
 									</div>
-									<div class="page-slug-label" title={get_page_slug_label(node.page_href)}>
+								</div>
+
+								<div class="tree-row-meta">
+									<div class="page-slug-label page-slug-label-right" title={get_page_slug_label(node.page_href)}>
 										{#each get_highlight_parts(get_page_slug_label(node.page_href), normalized_search_query) as part, part_index (`slug-${node.document_id}-${part_index}`)}
 											<span class:match-highlight={part.is_match}>{part.text}</span>
 										{/each}
@@ -662,7 +605,7 @@
 							{/if}
 						</div>
 
-						{#if node_has_children && !node_is_collapsed}
+						{#if node_has_children}
 							<div class="tree-children">
 								{#each node.children as child, index (child.document_id)}
 									{@render node_item(
@@ -834,27 +777,6 @@
 		gap: 0.75rem;
 	}
 
-	.section-header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 0.75rem;
-	}
-
-	.section-header h3 {
-		margin: 0;
-		font-size: 0.78rem;
-		font-weight: 500;
-		letter-spacing: 0.01em;
-		color: color-mix(in oklch, currentColor 58%, transparent);
-	}
-
-	.section-mode-label {
-		font-size: 0.78rem;
-		font-weight: 600;
-		color: color-mix(in oklch, currentColor 65%, transparent);
-	}
-
 	.status-message {
 		padding: 0.8rem 0;
 		font-size: 0.9rem;
@@ -877,14 +799,27 @@
 	.tree-row {
 		display: flex;
 		align-items: center;
-		gap: 0.75rem;
+		gap: 0;
 		width: 100%;
+		min-width: 0;
 		min-height: 2.95rem;
-		padding: 0.42rem 2.5rem 0.42rem 0.3rem;
+		padding: 0 2.5rem 0 0;
+	}
+
+	.tree-row-meta {
+		margin-left: auto;
+		min-width: 0;
+		max-width: 7rem;
+		flex: 0 1 7rem;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		padding-left: 0.75rem;
+		padding-right: 1rem;
 	}
 
 	.tree-row-root {
-		padding-left: 0.3rem;
+		padding-left: 0;
 	}
 
 	.tree-row:hover,
@@ -971,6 +906,7 @@
 		width: 2.15rem;
 		aspect-ratio: 1;
 		flex: 0 0 auto;
+		margin: 0.2rem 0.2rem 0.2rem 0;
 		border: 1px solid color-mix(in oklch, var(--foreground) 10%, transparent);
 		background: color-mix(in oklch, var(--foreground) 2%, var(--background));
 	}
@@ -1042,19 +978,24 @@
 	.tree-row-shell {
 		display: flex;
 		align-items: stretch;
+		min-width: 0;
 	}
 
 	.tree-guides {
 		flex: 0 0 auto;
 		display: flex;
 		align-items: stretch;
+		align-self: stretch;
+		min-width: max-content;
+		margin-right: 0.2rem;
 	}
 
 	.tree-guide-column,
 	.tree-gutter {
 		position: relative;
-		width: 0.9rem;
-		flex: 0 0 0.9rem;
+		width: 1rem;
+		flex: 0 0 1rem;
+		align-self: stretch;
 	}
 
 	.tree-guide-rail,
@@ -1062,7 +1003,7 @@
 		position: absolute;
 		left: calc(50% - 0.5px);
 		width: 1px;
-		background: color-mix(in oklch, var(--foreground) 12%, transparent);
+		background: color-mix(in oklch, var(--foreground) 22%, transparent);
 	}
 
 	.tree-guide-rail {
@@ -1074,15 +1015,10 @@
 		padding: 0;
 		border: 0;
 		background: transparent;
-		cursor: pointer;
-	}
-
-	.tree-gutter:disabled {
 		cursor: default;
-	}
-
-	.tree-gutter:focus-visible {
-		outline: none;
+		pointer-events: none;
+		overflow: visible;
+		min-height: 100%;
 	}
 
 	.tree-gutter-rail-top {
@@ -1099,62 +1035,33 @@
 		position: absolute;
 		left: calc(50% - 0.5px);
 		top: 50%;
-		width: 0.62rem;
+		width: 0.72rem;
 		height: 1px;
-		background: color-mix(in oklch, var(--foreground) 12%, transparent);
+		background: color-mix(in oklch, var(--foreground) 22%, transparent);
 	}
 
-	.tree-toggle,
 	.tree-leaf-dot {
 		position: absolute;
-		left: 0;
-		top: calc(50% - 0.45rem);
-		width: 0.9rem;
-		height: 0.9rem;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		background: var(--background);
-		color: color-mix(in oklch, var(--foreground) 52%, transparent);
-	}
-
-	.tree-toggle {
-		font-size: 0.72rem;
-		line-height: 1;
-		transition: color 140ms ease, transform 140ms ease;
-	}
-
-	.tree-gutter:hover .tree-toggle,
-	.tree-gutter:focus-visible .tree-toggle {
-		color: var(--foreground);
-	}
-
-	.tree-toggle span {
-		display: inline-block;
-		transform: rotate(0deg);
-		transition: transform 140ms ease;
-	}
-
-	.tree-toggle-collapsed {
-		transform: rotate(-90deg);
-	}
-
-	.tree-leaf-dot::before {
-		content: '';
+		left: calc(50% - 0.11rem);
+		top: calc(50% - 0.11rem);
 		width: 0.22rem;
 		height: 0.22rem;
-		background: color-mix(in oklch, var(--foreground) 22%, transparent);
+		background: color-mix(in oklch, var(--foreground) 28%, transparent);
 	}
 
 	.tree-label {
 		min-width: 0;
+		flex: 1 1 auto;
+		overflow: hidden;
 		display: flex;
 		flex-direction: column;
-		gap: 0.14rem;
+		justify-content: center;
+		gap: 0;
 		font-size: 0.9rem;
 		font-weight: 600;
 		line-height: 1.15;
 		color: inherit;
+		padding-left: 0.75rem;
 	}
 
 	.tree-title {
@@ -1170,6 +1077,15 @@
 		line-height: 1.1;
 		letter-spacing: 0.01em;
 		color: color-mix(in oklch, currentColor 52%, transparent);
+	}
+
+	.page-slug-label-right {
+		display: block;
+		width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		text-align: right;
 	}
 
 	.tree-actions-dots {
