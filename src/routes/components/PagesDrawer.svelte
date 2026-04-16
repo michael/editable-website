@@ -1,5 +1,7 @@
 <script>
 	import { invalidateAll } from '$app/navigation';
+	import { resolve } from '$app/paths';
+	import { SvelteSet } from 'svelte/reactivity';
 	import { get_page_browser_data } from '$lib/api.remote.js';
 	import Media from './Media.svelte';
 	import { get_page_browser } from './page_browser_context.svelte.js';
@@ -12,7 +14,7 @@
 	let loaded_version = $state(-1);
 
 	let menu_item = $state(null);
-	let menu_anchor_ref = $state(null);
+	let menu_anchor_name = $state('');
 	let menu_ref = $state(null);
 
 	let confirm_item = $state(null);
@@ -26,6 +28,12 @@
 	let page_url_error = $state('');
 	let saving_page_url = $state(false);
 
+	let search_query = $state('');
+	let search_input_ref = $state(null);
+	let selected_result_index = $state(0);
+
+	let collapsed_document_ids = new SvelteSet();
+
 	const browser_data_query = $derived.by(() => {
 		page_browser?.version ?? 0;
 		if (!page_browser.state.open) return null;
@@ -38,8 +46,6 @@
 		if (!query) {
 			loading = false;
 			load_error = '';
-			browser_data = null;
-			loaded_version = page_browser?.version ?? 0;
 			return;
 		}
 
@@ -73,7 +79,14 @@
 		}
 	});
 
+	$effect(() => {
+		if (!page_browser.state.open || !search_input_ref) return;
 
+		requestAnimationFrame(() => {
+			search_input_ref?.focus();
+			search_input_ref?.select();
+		});
+	});
 
 	function get_page_count(node) {
 		if (!node) return 0;
@@ -81,6 +94,14 @@
 		let count = 1;
 		for (const child of node.children ?? []) {
 			count += get_page_count(child);
+		}
+		return count;
+	}
+
+	function get_page_forest_count(nodes) {
+		let count = 0;
+		for (const node of nodes ?? []) {
+			count += get_page_count(node);
 		}
 		return count;
 	}
@@ -97,15 +118,45 @@
 		return browser_data?.home_page_id === document_id;
 	}
 
+	function has_children(node) {
+		return !!node?.children?.length;
+	}
+
+	function is_root_node(node, depth) {
+		return depth === 0 && is_home_page(node.document_id);
+	}
+
+	function is_collapsed(document_id) {
+		return collapsed_document_ids.has(document_id);
+	}
+
+	function toggle_collapsed(document_id) {
+		if (collapsed_document_ids.has(document_id)) {
+			collapsed_document_ids.delete(document_id);
+		} else {
+			collapsed_document_ids.add(document_id);
+		}
+	}
+
+	function handle_toggle_click(event, document_id) {
+		event.preventDefault();
+		event.stopPropagation();
+		toggle_collapsed(document_id);
+	}
+
 	function handle_page_click(event, item) {
 		event.preventDefault();
 		page_browser.handle_page_selected(item);
 	}
 
+	function get_menu_anchor_name(document_id) {
+		return `--page-actions-${document_id}`;
+	}
+
 	function open_menu(event, item) {
 		event.preventDefault();
 		event.stopPropagation();
-		menu_anchor_ref = event.currentTarget;
+		menu_anchor_name = get_menu_anchor_name(item.document_id);
 		menu_item = item;
 		delete_error = '';
 		page_url_error = '';
@@ -113,7 +164,7 @@
 
 	function close_menu() {
 		menu_item = null;
-		menu_anchor_ref = null;
+		menu_anchor_name = '';
 	}
 
 	function open_confirm() {
@@ -144,6 +195,8 @@
 
 	function handle_menu_click(event) {
 		if (event.target === menu_ref) {
+			event.preventDefault();
+			event.stopPropagation();
 			close_menu();
 		}
 	}
@@ -175,22 +228,14 @@
 		close_page_url_dialog();
 	}
 
-	function open_in_new_tab() {
-		if (!menu_item) return;
+	async function open_in_new_tab() {
+		if (!menu_item?.page_href) return;
 		window.open(get_resolved_page_href(menu_item.page_href), '_blank', 'noopener,noreferrer');
 		close_menu();
 	}
 
-	function get_delete_confirmation_message() {
-		if (!confirm_item) return '';
-		if (confirm_item.kind === 'draft') {
-			return 'Are you sure you want to delete this draft?';
-		}
-		return 'Are you sure you want to delete this page? It is still linked from other pages. Remove those links first if you want to avoid broken links.';
-	}
-
 	async function save_page_url() {
-		if (!page_url_dialog_item || saving_page_url) return;
+		if (!page_url_dialog_item) return;
 
 		saving_page_url = true;
 		page_url_error = '';
@@ -207,52 +252,25 @@
 				return;
 			}
 
-			const updated_page_href =
-				result && 'page_href' in result && typeof result.page_href === 'string'
-					? result.page_href
-					: `/${page_url_value}`;
 			close_page_url_dialog();
 			browser_data = null;
 			loaded_version = -1;
 			page_browser.invalidate?.();
-			menu_item = menu_item
-				? {
-						...menu_item,
-						page_href: updated_page_href
-					}
-				: null;
 			await invalidateAll();
-			get_page_browser_data().refresh();
 		} catch (err) {
-			console.error('Failed to update page URL', err);
-
-			const error_body =
-				typeof err === 'object' && err !== null && 'body' in err && typeof err.body === 'object'
-					? err.body
-					: null;
-
-			const error_message =
-				error_body &&
-				'message' in error_body &&
-				typeof error_body.message === 'string'
-					? error_body.message
-					: typeof err === 'object' &&
-						  err !== null &&
-						  'message' in err &&
-						  typeof err.message === 'string'
-						? err.message
-						: err instanceof Error
-							? err.message
-							: 'Failed to update Page URL.';
-
-			page_url_error = error_message;
+			page_url_error = err instanceof Error ? err.message : 'Failed to update Page URL.';
 		} finally {
 			saving_page_url = false;
 		}
 	}
 
+	function get_delete_confirmation_message() {
+		if (!confirm_item) return '';
+		return `Delete “${confirm_item.title}”? This cannot be undone.`;
+	}
+
 	async function confirm_delete() {
-		if (!confirm_item || deleting || confirm_item.is_home_page) return;
+		if (!confirm_item) return;
 
 		deleting = true;
 		delete_error = '';
@@ -268,31 +286,240 @@
 			browser_data = null;
 			loaded_version = -1;
 			page_browser.invalidate?.();
+			await invalidateAll();
 			await page_browser.handle_page_deleted?.(
 				deleted_document_id,
 				home_page_id,
 				page_url_dialog_item?.document_id ?? confirm_item.document_id
 			);
-			get_page_browser_data().refresh();
 		} catch (err) {
-			console.error('Failed to delete page', err);
 			delete_error = err instanceof Error ? err.message : 'Failed to delete page.';
 		} finally {
 			deleting = false;
 		}
 	}
 
-	const drafts = $derived(browser_data?.drafts ?? []);
-	const sitemap = $derived(browser_data?.sitemap ?? null);
-	const page_count = $derived(get_page_count(sitemap));
-	const is_picker_mode = $derived(page_browser.state.mode === 'select');
-	const drawer_title = $derived(is_picker_mode ? 'Select page' : 'Pages');
+	function get_count_label(count, singular_label, plural_label) {
+		return `${count} ${count === 1 ? singular_label : plural_label}`;
+	}
+
+	function normalize_search_text(value) {
+		return (value ?? '').trim().toLowerCase();
+	}
+
+	function get_page_search_text(item) {
+		return `${item?.title ?? ''} ${item?.page_href ?? ''}`.trim().toLowerCase();
+	}
+
+	function item_matches_search(item, normalized_query) {
+		if (!normalized_query) return false;
+		return get_page_search_text(item).includes(normalized_query);
+	}
+
+	function get_highlight_parts(text, normalized_query) {
+		const source_text = text ?? '';
+		if (!normalized_query) {
+			return [{ text: source_text, is_match: false }];
+		}
+
+		const lower_text = source_text.toLowerCase();
+		const match_index = lower_text.indexOf(normalized_query);
+
+		if (match_index === -1) {
+			return [{ text: source_text, is_match: false }];
+		}
+
+		const parts = [];
+		if (match_index > 0) {
+			parts.push({ text: source_text.slice(0, match_index), is_match: false });
+		}
+		parts.push({
+			text: source_text.slice(match_index, match_index + normalized_query.length),
+			is_match: true
+		});
+		if (match_index + normalized_query.length < source_text.length) {
+			parts.push({
+				text: source_text.slice(match_index + normalized_query.length),
+				is_match: false
+			});
+		}
+		return parts;
+	}
+
+	function filter_page_forest_node(node, normalized_query) {
+		if (!node) return null;
+
+		if (!normalized_query) {
+			return {
+				...node,
+				match_kind: 'none',
+				children: (node.children ?? []).map((child) =>
+					filter_page_forest_node(child, normalized_query)
+				)
+			};
+		}
+
+		const self_matches = item_matches_search(node, normalized_query);
+
+		if (self_matches) {
+			return {
+				...node,
+				match_kind: 'direct',
+				children: (node.children ?? []).map((child) => ({
+					...child,
+					match_kind: 'descendant_context',
+					children: mark_descendant_context(child.children ?? [])
+				}))
+			};
+		}
+
+		const filtered_children = [];
+		for (const child of node.children ?? []) {
+			const filtered_child = filter_page_forest_node(child, normalized_query);
+			if (filtered_child) {
+				filtered_children.push(filtered_child);
+			}
+		}
+
+		if (filtered_children.length > 0) {
+			return {
+				...node,
+				match_kind: 'ancestor_context',
+				children: filtered_children
+			};
+		}
+
+		return null;
+	}
+
+	function filter_page_forest(nodes, normalized_query) {
+		if (!normalized_query) {
+			return (nodes ?? []).map((node) => filter_page_forest_node(node, normalized_query));
+		}
+
+		const filtered_nodes = [];
+		for (const node of nodes ?? []) {
+			const filtered_node = filter_page_forest_node(node, normalized_query);
+			if (filtered_node) {
+				filtered_nodes.push(filtered_node);
+			}
+		}
+		return filtered_nodes;
+	}
+
+	function mark_descendant_context(children) {
+		return children.map((child) => ({
+			...child,
+			match_kind: 'descendant_context',
+			children: mark_descendant_context(child.children ?? [])
+		}));
+	}
+
+	function should_force_expand(node_is_root, normalized_query) {
+		return node_is_root || !!normalized_query;
+	}
+
+	function get_match_kind_class(match_kind) {
+		if (match_kind === 'direct') return 'tree-row-match-direct';
+		if (match_kind === 'ancestor_context') return 'tree-row-match-context';
+		if (match_kind === 'descendant_context') return 'tree-row-match-context';
+		return '';
+	}
+
+	function flatten_page_forest_results(nodes) {
+		const results = [];
+
+		for (const node of nodes ?? []) {
+			results.push({
+				document_id: node.document_id,
+				page_href: node.page_href,
+				title: node.title
+			});
+
+			for (const child of node.children ?? []) {
+				results.push(...flatten_page_forest_results([child]));
+			}
+		}
+
+		return results;
+	}
+
+	function get_visible_results(filtered_page_forest) {
+		return flatten_page_forest_results(filtered_page_forest);
+	}
+
+	function get_visible_result_index(document_id, visible_results) {
+		return visible_results.findIndex((result) => result.document_id === document_id);
+	}
+
+	function clamp_selected_result_index(index, visible_results) {
+		if (visible_results.length === 0) return 0;
+		return Math.min(Math.max(index, 0), visible_results.length - 1);
+	}
+
+	function handle_search_keydown(event, visible_results) {
+		if (visible_results.length === 0) return;
+
+		if (event.key === 'ArrowDown') {
+			event.preventDefault();
+			selected_result_index = clamp_selected_result_index(
+				selected_result_index + 1,
+				visible_results
+			);
+			return;
+		}
+
+		if (event.key === 'ArrowUp') {
+			event.preventDefault();
+			selected_result_index = clamp_selected_result_index(
+				selected_result_index - 1,
+				visible_results
+			);
+			return;
+		}
+
+		if (event.key === 'Enter') {
+			event.preventDefault();
+			const selected_result = visible_results[selected_result_index];
+			if (!selected_result) return;
+
+			page_browser.handle_page_selected({
+				document_id: selected_result.document_id,
+				page_href: selected_result.page_href
+			});
+		}
+	}
+
+	let normalized_search_query = $derived(normalize_search_text(search_query));
+	let page_forest = $derived(browser_data?.page_forest ?? []);
+	let filtered_page_forest = $derived(filter_page_forest(page_forest, normalized_search_query));
+	let visible_results = $derived(get_visible_results(filtered_page_forest));
+	let page_count = $derived(get_page_forest_count(page_forest));
+	let filtered_page_count = $derived(get_page_forest_count(filtered_page_forest));
+	let is_picker_mode = $derived(page_browser.state.mode === 'select');
+	let drawer_title = $derived(is_picker_mode ? 'Select page' : 'Pages');
+
+	$effect(() => {
+		selected_result_index = clamp_selected_result_index(selected_result_index, visible_results);
+	});
 </script>
 
 <div class="pages-drawer">
+	<div class="search-shell">
+		<input
+			bind:this={search_input_ref}
+			type="search"
+			class="search-input"
+			bind:value={search_query}
+			placeholder="Search pages"
+			aria-label="Search pages"
+			onkeydown={(event) => handle_search_keydown(event, visible_results)}
+		/>
+	</div>
+
 	<section class="section">
 		<div class="section-header">
-			<h3>{drafts.length} drafts</h3>
+			<h3>{get_count_label(normalized_search_query ? filtered_page_count : page_count, 'page', 'pages')}</h3>
 			{#if is_picker_mode}
 				<span class="section-mode-label">{drawer_title}</span>
 			{/if}
@@ -303,115 +530,114 @@
 		{:else if load_error}
 			<div class="status-message" role="alert">{load_error}</div>
 		{:else}
-			<div class="drafts-strip" role="list" aria-label="Draft pages">
-				{#if !is_picker_mode}
-					<div role="listitem" class="draft-item">
-						<a class="draft-card create-card" href="/new">
-							<div class="page-illustration draft-illustration create-illustration" aria-hidden="true">
-								<div class="plus-glyph">+</div>
+			<div class="tree">
+				{#if !is_picker_mode && !normalized_search_query}
+					<div class="tree-row-shell">
+						<a class="tree-row tree-row-root" href={resolve('/new')}>
+							<div class="page-illustration tree-illustration" aria-hidden="true">
+								<div class="page-illustration-fallback create-illustration">
+									<div class="plus-glyph">+</div>
+								</div>
 							</div>
-							<div class="draft-title">New page</div>
+							<div class="tree-label">
+								<div class="tree-title">New page</div>
+								<div class="page-slug-label">Create a new page</div>
+							</div>
 						</a>
 					</div>
 				{/if}
 
-				{#if drafts.length === 0}
-					<div class="empty-state-card" role="listitem">
-						<div class="empty-state-text">No drafts yet</div>
-					</div>
-				{:else}
-					{#each drafts as draft (draft.document_id)}
-						<div role="listitem" class="draft-item">
-							<div class="draft-card-shell">
-								<a
-									class="draft-card"
-									href={get_resolved_page_href(draft.page_href)}
-									onclick={(event) =>
-										handle_page_click(event, {
-											document_id: draft.document_id,
-											page_href: draft.page_href
-										})}
-								>
-									<div class="page-illustration draft-illustration" aria-hidden="true">
-										{#if draft.preview_media_node}
-											<div class="media-preview">
-												<Media node={draft.preview_media_node} />
-											</div>
-										{:else}
-											<div class="page-illustration-fallback"></div>
+				{#snippet node_item(node, depth = 0, is_last = true, ancestor_columns = [])}
+					{@const node_has_children = has_children(node)}
+					{@const node_is_root = is_root_node(node, depth)}
+					{@const node_is_collapsed = should_force_expand(node_is_root, normalized_search_query)
+						? false
+						: is_collapsed(node.document_id)}
+					{@const current_column_continues = node_is_root ? false : !is_last || node_has_children}
+					<div class="tree-node">
+						<div class="tree-row-shell">
+							<div class="tree-guides" aria-hidden="true">
+								{#each ancestor_columns as show_rail, guide_index (`${depth}-${guide_index}`)}
+									<div class="tree-guide-column">
+										{#if show_rail}
+											<div class="tree-guide-rail"></div>
 										{/if}
 									</div>
-									<div class="draft-title">
-										<div>{draft.title}</div>
-										<div class="page-slug-label">{get_page_slug_label(draft.page_href)}</div>
-									</div>
-								</a>
+								{/each}
 
-								{#if !is_picker_mode}
+								{#if !node_is_root}
 									<button
 										type="button"
-										class="item-actions-btn"
-										aria-label={`Page actions for ${draft.title}`}
-										onclick={(event) =>
-											open_menu(event, {
-												kind: 'draft',
-												document_id: draft.document_id,
-												page_href: draft.page_href,
-												title: draft.title,
-												is_home_page: false
-											})}
+										class="tree-gutter"
+										aria-label={node_has_children
+											? node_is_collapsed
+												? `Expand ${node.title}`
+												: `Collapse ${node.title}`
+											: `${node.title} has no child pages`}
+										aria-expanded={node_has_children ? !node_is_collapsed : undefined}
+										disabled={!node_has_children || !!normalized_search_query}
+										onclick={(event) => {
+											if (!node_has_children || normalized_search_query) return;
+											handle_toggle_click(event, node.document_id);
+										}}
 									>
-										⋯
+										<div class="tree-gutter-rail tree-gutter-rail-top"></div>
+										{#if current_column_continues}
+											<div class="tree-gutter-rail tree-gutter-rail-bottom"></div>
+										{/if}
+										<div class="tree-gutter-elbow"></div>
+										{#if node_has_children}
+											<div class="tree-toggle">
+												<span class:tree-toggle-collapsed={node_is_collapsed}>⌄</span>
+											</div>
+										{:else}
+											<div class="tree-leaf-dot"></div>
+										{/if}
 									</button>
 								{/if}
 							</div>
-						</div>
-					{/each}
-				{/if}
-			</div>
-		{/if}
-	</section>
 
-	<section class="section">
-		<div class="section-header">
-			<h3>{page_count} pages</h3>
-		</div>
-
-		{#if loading && !browser_data}
-			<div class="status-message" role="status">Loading sitemap…</div>
-		{:else if load_error}
-			<div class="status-message" role="alert">{load_error}</div>
-		{:else if !sitemap}
-			<div class="status-message">No home page configured.</div>
-		{:else}
-			<div class="tree">
-				{#snippet node_item(node, depth = 0)}
-					<div class="tree-node" style={`--depth:${depth};`}>
-						<div class="tree-row-shell">
 							<a
-								class="tree-row"
-								href={get_resolved_page_href(node.page_href)}
+								class={`tree-row ${get_match_kind_class(node.match_kind)}`}
+								class:tree-row-root={node_is_root}
+								class:tree-row-keyboard-selected={visible_results[selected_result_index]?.document_id === node.document_id}
+								href={resolve(get_resolved_page_href(node.page_href))}
 								onclick={(event) =>
 									handle_page_click(event, {
 										document_id: node.document_id,
 										page_href: node.page_href
 									})}
+								onmousemove={() => {
+									selected_result_index = get_visible_result_index(node.document_id, visible_results);
+								}}
 							>
-								<div class="tree-indent" aria-hidden="true"></div>
-
 								<div class="page-illustration tree-illustration" aria-hidden="true">
 									{#if node.preview_media_node}
 										<div class="media-preview">
 											<Media node={node.preview_media_node} />
 										</div>
 									{:else}
-										<div class="page-illustration-fallback"></div>
+										<div class="page-illustration-fallback">
+											<div class="page-symbol">
+												<div class="page-symbol-line page-symbol-line-short"></div>
+												<div class="page-symbol-line"></div>
+												<div class="page-symbol-line"></div>
+											</div>
+										</div>
 									{/if}
 								</div>
 
 								<div class="tree-label">
-									<div>{node.title}</div>
-									<div class="page-slug-label">{get_page_slug_label(node.page_href)}</div>
+									<div class="tree-title" title={node.title}>
+										{#each get_highlight_parts(node.title, normalized_search_query) as part, part_index (`title-${node.document_id}-${part_index}`)}
+											<span class:match-highlight={part.is_match}>{part.text}</span>
+										{/each}
+									</div>
+									<div class="page-slug-label" title={get_page_slug_label(node.page_href)}>
+										{#each get_highlight_parts(get_page_slug_label(node.page_href), normalized_search_query) as part, part_index (`slug-${node.document_id}-${part_index}`)}
+											<span class:match-highlight={part.is_match}>{part.text}</span>
+										{/each}
+									</div>
 								</div>
 							</a>
 
@@ -419,6 +645,7 @@
 								<button
 									type="button"
 									class="item-actions-btn tree-actions-btn"
+									style={`anchor-name: ${get_menu_anchor_name(node.document_id)};`}
 									aria-label={`Page actions for ${node.title}`}
 									onclick={(event) =>
 										open_menu(event, {
@@ -429,22 +656,36 @@
 											is_home_page: is_home_page(node.document_id)
 										})}
 								>
-									⋯
+									<span class="tree-actions-dots">⋯</span>
 								</button>
+
 							{/if}
 						</div>
 
-						{#if node.children?.length}
+						{#if node_has_children && !node_is_collapsed}
 							<div class="tree-children">
-								{#each node.children as child (child.document_id)}
-									{@render node_item(child, depth + 1)}
+								{#each node.children as child, index (child.document_id)}
+									{@render node_item(
+										child,
+										depth + 1,
+										index === node.children.length - 1,
+										[...ancestor_columns, current_column_continues]
+									)}
 								{/each}
 							</div>
 						{/if}
 					</div>
 				{/snippet}
 
-				{@render node_item(sitemap)}
+				{#if normalized_search_query && filtered_page_forest.length === 0}
+					<div class="status-message">No matching pages.</div>
+				{:else if !normalized_search_query && page_forest.length === 0}
+					<div class="status-message">No pages yet.</div>
+				{:else}
+					{#each filtered_page_forest as root_node, index (root_node.document_id)}
+						{@render node_item(root_node, 0, index === filtered_page_forest.length - 1, [])}
+					{/each}
+				{/if}
 			</div>
 		{/if}
 	</section>
@@ -459,7 +700,7 @@
 	{#if menu_item}
 		<div
 			class="menu-panel"
-			style={`position: fixed; top: ${menu_anchor_ref?.getBoundingClientRect().bottom ?? 0}px; left: ${Math.max((menu_anchor_ref?.getBoundingClientRect().right ?? 0) - 192, 8)}px;`}
+			style={`position-anchor: ${menu_anchor_name}; position-area: block-end span-all; justify-self: anchor-center; position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;`}
 		>
 			<button type="button" class="menu-item" onclick={open_in_new_tab}>
 				Open in new tab
@@ -562,7 +803,29 @@
 		position: relative;
 		display: flex;
 		flex-direction: column;
-		gap: 1.5rem;
+		gap: 1.25rem;
+	}
+
+	.search-shell {
+		position: sticky;
+		top: 0;
+		z-index: 1;
+		padding-top: 0.1rem;
+		background: var(--background);
+	}
+
+	.search-input {
+		width: 100%;
+		border: 1px solid color-mix(in oklch, var(--foreground) 14%, transparent);
+		background: color-mix(in oklch, var(--foreground) 2%, var(--background));
+		color: var(--foreground);
+		padding: 0.55rem 0.7rem;
+		font-size: 0.88rem;
+		outline: none;
+	}
+
+	.search-input:focus {
+		border-color: var(--svedit-editing-stroke);
 	}
 
 	.section {
@@ -580,10 +843,10 @@
 
 	.section-header h3 {
 		margin: 0;
-		font-size: 0.95rem;
-		font-weight: 700;
-		letter-spacing: -0.01em;
-		color: inherit;
+		font-size: 0.78rem;
+		font-weight: 500;
+		letter-spacing: 0.01em;
+		color: color-mix(in oklch, currentColor 58%, transparent);
 	}
 
 	.section-mode-label {
@@ -598,43 +861,10 @@
 		color: color-mix(in oklch, currentColor 65%, transparent);
 	}
 
-	.drafts-strip {
-		display: grid;
-		grid-auto-flow: column;
-		grid-auto-columns: 8.4rem;
-		gap: 1rem;
-		overflow-x: auto;
-		padding: 0.15rem 0.05rem 0.35rem;
-		scrollbar-width: thin;
-		-webkit-overflow-scrolling: touch;
-	}
-
-	.draft-item {
-		display: block;
-	}
-
-	.draft-card-shell,
 	.tree-row-shell {
 		position: relative;
 	}
 
-	.empty-state-card {
-		display: grid;
-		place-items: center;
-		min-height: 10rem;
-		padding: 0.75rem;
-		border: 1px dashed color-mix(in oklch, var(--foreground) 22%, transparent);
-		background: color-mix(in oklch, var(--foreground) 3%, var(--background));
-	}
-
-	.empty-state-text {
-		font-size: 0.84rem;
-		font-weight: 600;
-		color: color-mix(in oklch, currentColor 65%, transparent);
-		text-align: center;
-	}
-
-	.draft-card,
 	.tree-row {
 		border: 0;
 		background: transparent;
@@ -644,30 +874,38 @@
 		outline: none;
 	}
 
-	.draft-card {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 0.65rem;
-		width: 100%;
-		padding: 0.45rem;
-		padding-top: 2rem;
-	}
-
 	.tree-row {
 		display: flex;
 		align-items: center;
-		gap: 0.8rem;
+		gap: 0.75rem;
 		width: 100%;
-		min-height: 3.35rem;
-		padding: 0.45rem 2.5rem 0.45rem calc(0.6rem + var(--depth) * 1rem);
+		min-height: 2.95rem;
+		padding: 0.42rem 2.5rem 0.42rem 0.3rem;
 	}
 
-	.draft-card:hover,
-	.draft-card:focus-visible,
+	.tree-row-root {
+		padding-left: 0.3rem;
+	}
+
 	.tree-row:hover,
 	.tree-row:focus-visible {
 		background: var(--svedit-editing-fill);
+	}
+
+	.draft-card-match-direct,
+	.tree-row-match-direct {
+		background: color-mix(in oklch, var(--svedit-editing-fill) 72%, var(--background));
+	}
+
+	.draft-card-keyboard-selected,
+	.tree-row-keyboard-selected {
+		outline: 1px solid var(--svedit-editing-stroke);
+		outline-offset: -1px;
+		background: color-mix(in oklch, var(--svedit-editing-fill) 82%, var(--background));
+	}
+
+	.tree-row-match-context {
+		background: color-mix(in oklch, var(--foreground) 4%, var(--background));
 	}
 
 	.item-actions-btn {
@@ -677,25 +915,35 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 1.9rem;
-		height: 1.9rem;
+		width: 1.5rem;
+		height: 1.5rem;
 		border: 0;
-		background: color-mix(in oklch, var(--background) 88%, var(--foreground) 12%);
-		color: inherit;
+		padding: 0;
+		background: transparent;
+		color: color-mix(in oklch, currentColor 34%, transparent);
 		cursor: pointer;
-		font-size: 1.1rem;
+		font-size: 1rem;
 		line-height: 1;
+		opacity: 1;
+		pointer-events: auto;
+		transition: color 140ms ease, opacity 140ms ease;
 	}
 
 	.tree-actions-btn {
 		top: 50%;
 		transform: translateY(-50%);
-		right: 0.45rem;
+		right: 0.7rem;
 	}
 
+	.tree-row-shell:hover .item-actions-btn,
+	.tree-row-shell:focus-within .item-actions-btn,
+	.tree-row:hover + .item-actions-btn,
+	.tree-row:focus-visible + .item-actions-btn,
 	.item-actions-btn:hover,
 	.item-actions-btn:focus-visible {
-		background: color-mix(in oklch, var(--foreground) 10%, var(--background));
+		opacity: 1;
+		pointer-events: auto;
+		color: color-mix(in oklch, currentColor 68%, transparent);
 		outline: none;
 	}
 
@@ -708,7 +956,7 @@
 
 	.draft-illustration {
 		width: 100%;
-		aspect-ratio: 3 / 4;
+		aspect-ratio: 1;
 		background: oklch(from var(--svedit-brand, oklch(60% 0.22 283)) 0.985 0.012 h);
 		box-shadow: none;
 	}
@@ -720,9 +968,11 @@
 	}
 
 	.tree-illustration {
-		width: 2.65rem;
-		aspect-ratio: 3 / 4;
+		width: 2.15rem;
+		aspect-ratio: 1;
 		flex: 0 0 auto;
+		border: 1px solid color-mix(in oklch, var(--foreground) 10%, transparent);
+		background: color-mix(in oklch, var(--foreground) 2%, var(--background));
 	}
 
 	.media-preview {
@@ -733,7 +983,29 @@
 		background: color-mix(in oklch, var(--foreground) 3%, var(--background));
 	}
 
+	.page-illustration-fallback {
+		width: 100%;
+		height: 100%;
+		display: grid;
+		place-items: center;
+		background: color-mix(in oklch, var(--foreground) 2%, var(--background));
+	}
 
+	.page-symbol {
+		width: 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.12rem;
+	}
+
+	.page-symbol-line {
+		height: 1px;
+		background: color-mix(in oklch, var(--foreground) 24%, transparent);
+	}
+
+	.page-symbol-line-short {
+		width: 62%;
+	}
 
 	.plus-glyph {
 		font-size: 2rem;
@@ -743,41 +1015,172 @@
 	}
 
 	.draft-title {
-		font-size: 0.8rem;
-		font-weight: 600;
-		line-height: 1.2;
+		font-size: 0.72rem;
+		font-weight: 500;
+		line-height: 1.18;
 		color: inherit;
 		text-align: center;
+	}
+
+	.match-highlight {
+		background: color-mix(in oklch, var(--svedit-editing-fill) 88%, transparent);
+		color: inherit;
 	}
 
 	.tree {
 		display: flex;
 		flex-direction: column;
-		gap: 0.45rem;
+		gap: 0;
 	}
 
 	.tree-node {
 		display: flex;
 		flex-direction: column;
-		gap: 0.45rem;
+		gap: 0;
 	}
 
-	.tree-indent {
-		width: 0;
-		height: 0;
+	.tree-row-shell {
+		display: flex;
+		align-items: stretch;
+	}
+
+	.tree-guides {
+		flex: 0 0 auto;
+		display: flex;
+		align-items: stretch;
+	}
+
+	.tree-guide-column,
+	.tree-gutter {
+		position: relative;
+		width: 0.9rem;
+		flex: 0 0 0.9rem;
+	}
+
+	.tree-guide-rail,
+	.tree-gutter-rail {
+		position: absolute;
+		left: calc(50% - 0.5px);
+		width: 1px;
+		background: color-mix(in oklch, var(--foreground) 12%, transparent);
+	}
+
+	.tree-guide-rail {
+		top: 0;
+		bottom: 0;
+	}
+
+	.tree-gutter {
+		padding: 0;
+		border: 0;
+		background: transparent;
+		cursor: pointer;
+	}
+
+	.tree-gutter:disabled {
+		cursor: default;
+	}
+
+	.tree-gutter:focus-visible {
+		outline: none;
+	}
+
+	.tree-gutter-rail-top {
+		top: 0;
+		height: 50%;
+	}
+
+	.tree-gutter-rail-bottom {
+		top: 50%;
+		height: 50%;
+	}
+
+	.tree-gutter-elbow {
+		position: absolute;
+		left: calc(50% - 0.5px);
+		top: 50%;
+		width: 0.62rem;
+		height: 1px;
+		background: color-mix(in oklch, var(--foreground) 12%, transparent);
+	}
+
+	.tree-toggle,
+	.tree-leaf-dot {
+		position: absolute;
+		left: 0;
+		top: calc(50% - 0.45rem);
+		width: 0.9rem;
+		height: 0.9rem;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		background: var(--background);
+		color: color-mix(in oklch, var(--foreground) 52%, transparent);
+	}
+
+	.tree-toggle {
+		font-size: 0.72rem;
+		line-height: 1;
+		transition: color 140ms ease, transform 140ms ease;
+	}
+
+	.tree-gutter:hover .tree-toggle,
+	.tree-gutter:focus-visible .tree-toggle {
+		color: var(--foreground);
+	}
+
+	.tree-toggle span {
+		display: inline-block;
+		transform: rotate(0deg);
+		transition: transform 140ms ease;
+	}
+
+	.tree-toggle-collapsed {
+		transform: rotate(-90deg);
+	}
+
+	.tree-leaf-dot::before {
+		content: '';
+		width: 0.22rem;
+		height: 0.22rem;
+		background: color-mix(in oklch, var(--foreground) 22%, transparent);
 	}
 
 	.tree-label {
-		font-size: 0.92rem;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.14rem;
+		font-size: 0.9rem;
 		font-weight: 600;
-		line-height: 1.2;
+		line-height: 1.15;
 		color: inherit;
+	}
+
+	.tree-title {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.page-slug-label {
+		font-family: ui-monospace, 'SFMono-Regular', 'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+		font-size: 0.68rem;
+		font-weight: 500;
+		line-height: 1.1;
+		letter-spacing: 0.01em;
+		color: color-mix(in oklch, currentColor 52%, transparent);
+	}
+
+	.tree-actions-dots {
+		display: inline-block;
+		transform: translateY(-0.02rem);
 	}
 
 	.tree-children {
 		display: flex;
 		flex-direction: column;
-		gap: 0.35rem;
+		gap: 0;
 	}
 
 	.page-actions-dialog,
@@ -793,16 +1196,21 @@
 		overflow: visible;
 	}
 
-	.page-actions-dialog::backdrop,
+	.page-actions-dialog::backdrop {
+		background: transparent;
+	}
+
 	.confirm-dialog::backdrop {
 		background: color-mix(in oklch, var(--foreground) 10%, transparent);
 	}
 
 	.menu-panel {
 		position: fixed;
+		z-index: 40;
 		display: flex;
 		flex-direction: column;
 		min-width: 12rem;
+		margin: 0;
 		background: var(--background);
 		color: var(--foreground);
 		border: 1px solid color-mix(in oklch, var(--foreground) 18%, transparent);
@@ -929,19 +1337,14 @@
 	}
 
 	@media (max-width: 640px) {
-		.drafts-strip {
-			grid-auto-columns: 7.5rem;
-			gap: 0.85rem;
-		}
-
-		.draft-card {
-			padding: 0.4rem;
-			padding-top: 1.9rem;
-			gap: 0.55rem;
-		}
 
 		.draft-title {
-			font-size: 0.74rem;
+			font-size: 0.68rem;
+		}
+
+		.search-input {
+			font-size: 0.84rem;
+			padding: 0.5rem 0.65rem;
 		}
 	}
 </style>

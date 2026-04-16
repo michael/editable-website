@@ -975,13 +975,17 @@ To reuse media that's already on the site, navigate to the page that has it, cop
 
 ## Admin interface
 
-The only admin interface is a **site map** — a listing of all pages plus drafts (pages that are not linked anywhere yet). There is no need for a media library, asset browser, or content management dashboard beyond this.
+The only admin interface is a **site map** — a single forest of all pages. There is no need for a media library, asset browser, or content management dashboard beyond this.
+
+The page browser does not split pages into separate drafts and sitemap sections. Instead, it shows a unified forest of page subtrees. The configured home page appears as the last top-level subtree. Any pages that are not linked from the home page appear first as additional top-level entry points, and those entry points may themselves contain full page hierarchies.
+
+The page browser uses a bottom drawer. Its resize handle is rendered outside the drawer panel, centered on the top edge, so it visually floats above the sheet instead of taking space inside the drawer content area. While dragging, the drawer can be pulled all the way down to the bottom of the viewport and up past the highest snap point before release. When the user releases it near zero height, the drawer should animate smoothly down to `0` height and then close, rather than closing abruptly or remaining open at a tiny height. Otherwise its final height snaps to whichever preset is closest to the release position: `1/3`, `2/3`, or `3/4` of the viewport height. This snap should animate smoothly after release in both directions, including when the user drags above `3/4` and the drawer settles back down to that preset. If the drawer is reopened after being closed near zero height, it restores the previous non-zero snapped height.
 
 ### Page reachability
 
-A page is **reachable** (and appears in `sitemap.xml`) if it can be reached by following links starting from the home page, nav, or footer. This is a transitive check — a page linked only from a draft is still a draft, because the draft itself isn't reachable.
+A page is **home-reachable** (and appears in `sitemap.xml`) if it can be reached by following links starting from the home page, nav, or footer. This is a transitive check. A page may still exist publicly by URL even if it is not home-reachable.
 
-This reachability logic only applies in the full database-backed multi-page runtime. In static/Vercel compatibility mode there is no live multi-page graph, no sitemap drawer, and no draft/public distinction — the app simply serves the demo document at `/`.
+This reachability logic only applies in the full database-backed multi-page runtime. In static/Vercel compatibility mode there is no live multi-page graph, no sitemap drawer, and no home-reachable vs unlisted distinction — the app simply serves the demo document at `/`.
 
 The traversal starts from three roots:
 
@@ -989,7 +993,9 @@ The traversal starts from three roots:
 2. `nav_1` — its links are live on every page
 3. `footer_1` — same
 
-From these roots, follow all outgoing `document_refs` recursively to collect the full set of reachable pages. Any page document not in this set is a **draft**. Drafts are visible in the admin site map but not included in `sitemap.xml`. This is a live query — not a precomputed cache — so it always reflects the current state of `document_refs` and `site_settings`.
+From these roots, follow all outgoing `document_refs` recursively to collect the full set of home-reachable pages. Any page document not in this set is still public by URL, but it is **unlisted**: it does not appear in `sitemap.xml`, and it appears in the page browser as a top-level subtree outside the home subtree unless it is absorbed into another non-home top-level subtree by first occurrence.
+
+This is a live query — not a precomputed cache — so it always reflects the current state of `document_refs` and `site_settings`.
 
 A single query returns all pages with a computed `status` column:
 
@@ -1003,40 +1009,75 @@ WITH RECURSIVE reachable(document_id) AS (
     JOIN reachable ON reachable.document_id = source_document_id
 )
 SELECT d.document_id, d.data,
-    CASE WHEN r.document_id IS NOT NULL THEN 'public' ELSE 'draft' END AS status
+    CASE WHEN r.document_id IS NOT NULL THEN 'listed' ELSE 'unlisted' END AS status
 FROM documents d
 LEFT JOIN reachable r ON d.document_id = r.document_id
 WHERE d.type = 'page';
 ```
 
-This serves both the admin site map (all rows) and `sitemap.xml` (filter `WHERE status = 'public'`).
+This serves both the admin site map forest (all rows) and `sitemap.xml` (filter `WHERE status = 'listed'`).
 
-This query is cheap — most sites have tens to low hundreds of pages. It runs on demand: when serving `/sitemap.xml`, when rendering the admin site map, or when checking whether a specific page is public. There is no background sync or precomputed reachability table — the query is the source of truth.
+This query is cheap — most sites have tens to low hundreds of pages. It runs on demand: when serving `/sitemap.xml`, when rendering the admin site map, or when checking whether a specific page is included in the listed site tree. There is no background sync or precomputed reachability table — the query is the source of truth.
 
-`document_refs` is updated on save for all documents, including drafts. A draft's outgoing links are already tracked, so when it becomes linked from a live page, its targets are immediately reachable without re-saving.
+`document_refs` is updated on save for all documents. An unlisted page's outgoing links are already tracked, so when it becomes linked from the home-reachable site tree, its targets are immediately home-reachable without re-saving.
 
-When the home page is changed via `site_settings`, pages that were only reachable through the old home page's link tree may become drafts. This is expected — they're still visible in the admin site map and can be re-linked or deleted.
+When the home page is changed via `site_settings`, pages that were only reachable through the old home page's link tree may become unlisted. This is expected — they are still visible in the admin site map forest and can be re-linked or deleted.
 
 ### Sitemap tree construction
 
-The admin page browser needs not just a reachable/unreachable split, but also a deterministic **tree projection** of the reachable page graph.
+The admin page browser needs a deterministic **forest projection** of the full page graph.
 
-The tree is built with these rules:
+The forest is built with these rules:
 
-- **No duplicates in the tree** — each reachable page appears at most once
+- **No duplicates in the forest** — each page appears at most once
 - **First occurrence wins** — if a page is referenced multiple times, its canonical position is the first position where it is encountered during traversal
-- **Top-level ordering:** traverse references from the home page in this order:
+- **Top-level roots:** every page that has not already been placed under an earlier root becomes a top-level root
+- **Top-level ordering:** all non-home roots come first, and the configured home page root comes last
+- **Home root child ordering:** traverse references from the home page in this order:
   1. shared nav links
   2. home page body links
   3. shared footer links
-- **Recursive ordering:** once a child page has been placed in the tree, recurse into that page using **body links only**
+- **Non-home root child ordering:** once a non-home root has been placed, recurse into that page using **body links only**
+- **Recursive ordering for descendants:** once a child page has been placed in the forest, recurse into that page using **body links only**
 - **Within each source document, preserve author order:** outgoing refs are consumed in the same order they appear in the source document, with duplicates removed by first occurrence
 
-This means the sitemap is not a full graph visualization. It is a stable, editor-friendly tree derived from the reachable graph, where shared navigation and footer establish the top-level site structure, and deeper nesting comes from contextual links inside page content.
+This means the page browser is not a full graph visualization. It is a stable, editor-friendly forest derived from the full page graph. The home subtree represents the canonical main site structure, while other top-level roots represent unlisted entry points and any parallel hierarchies built away from the home page.
 
-If a page is linked from multiple places, later occurrences are ignored for tree placement. This keeps the page browser compact and avoids crowded duplicates. If needed in the future, secondary references can be surfaced separately (for example as “also linked from…” metadata), but they are not duplicated in the primary tree.
+If a page is linked from multiple places, later occurrences are ignored for placement. This keeps the page browser compact and avoids crowded duplicates. If needed in the future, secondary references can be surfaced separately (for example as “also linked from…” metadata), but they are not duplicated in the primary forest.
 
+### Contextual search in the page browser
 
+The page browser supports a client-side contextual search over the already loaded drawer data. No dedicated server-side search endpoint is required for the initial implementation.
+
+The search applies to the unified page forest:
+
+- preserve structural context rather than flattening results into a list
+- match pages anywhere in the forest by title or URL
+- when a page matches, keep its ancestor chain visible so its position in the forest remains understandable
+- when a page matches, its descendants may remain visible as contextual subtree content
+
+For the sitemap tree, visibility follows these rules:
+
+- If a page **directly matches** the query, show that page
+- If a page directly matches the query, also show **all of its descendants**
+- If a descendant matches the query, also show its **ancestor chain** up to the root so the page’s placement in the site structure remains visible
+- Pages shown only because their parent matched or because they are ancestors of a match remain visible, but they are not treated as direct matches
+
+Direct matches should be visually highlighted so it is clear why a page is shown. Context-only pages may remain visually normal or use a lighter treatment, but they should not share the same direct-match emphasis.
+
+While a search query is active, matching branches should be shown even if they would otherwise be collapsed.
+
+When the page browser drawer opens, the search input should receive focus immediately so keyboard search can begin without an extra click.
+
+Keyboard navigation should operate over the currently visible results in the same order they appear in the drawer:
+
+- `ArrowDown` moves to the next visible result
+- `ArrowUp` moves to the previous visible result
+- `Enter` opens the currently selected result
+
+Because the sitemap is a canonical tree projection rather than a full graph view, search results only surface the page’s canonical placement in the tree. Secondary graph placements are out of scope for the initial implementation.
+
+The expected scale is on the order of hundreds of pages (for example around 500), so a straightforward client-side tree traversal per query is acceptable.
 
 ### Page summaries for the drawer
 

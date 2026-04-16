@@ -833,32 +833,33 @@ Return shape:
 
 ```js
 {
-  home_page_id: string,
-  drafts: Array<PageSummary>,
-  sitemap: PageTreeNode | null
+  home_page_id: string | null,
+  page_forest: PageTreeNode[]
 }
 ```
 
-Where a `PageSummary` could be:
-
-```js
-{
-  document_id: string,
-  title: string,
-  preview_image_src: string | null
-}
-```
-
-And `PageTreeNode`:
+Where `PageTreeNode` is:
 
 ```js
 {
   document_id: string,
   title: string,
   preview_image_src: string | null,
+  page_href: string,
   children: PageTreeNode[]
 }
 ```
+
+The page browser should render a single forest of page subtrees, not separate `drafts` and `sitemap` sections.
+
+Rules for the returned forest:
+
+- every page appears exactly once in the forest
+- the configured home page appears as one root node if it exists
+- the home page root is always the **last** root in the forest
+- all other roots come first and represent entry pages for page subtrees that are not linked from the home page, ordered deterministically by first-seen traversal across the remaining unassigned pages
+- those non-home roots may themselves have descendants and therefore represent parallel site hierarchies
+- the client should not need to reconstruct graph relationships or merge multiple datasets
 
 This keeps the drawer UI simple and avoids doing graph analysis in the client.
 
@@ -920,62 +921,69 @@ The likely cost of summary extraction is low enough for now:
 
 If later needed, the same extraction helper can become the canonical generator for cached summaries.
 
-## Decision 8: drafts are unreachable pages, not merely “unlinked by nav”
+## Decision 8: all pages are public by URL; home reachability only controls sitemap inclusion
 
-Drafts should be defined according to reachability from the live site graph:
+Pages should no longer be modeled as private drafts.
 
-- start at `home_page_id`
-- include internal links from:
-  - pages
-  - nav
-  - footer
-- all reachable page documents form the sitemap/reachable set
-- any page document not in that set becomes a draft
+Instead:
 
-This matches the architecture and avoids conflating “not in nav” with “draft”.
+- every page is public by default
+- every page gets a slug and is discoverable by direct URL
+- pages not linked from the home page are **unlisted**, not private
+- only pages reachable from the home page graph are included in `sitemap.xml`
+
+This means the system supports both:
+
+- the main site hierarchy rooted at the home page
+- additional parallel page hierarchies that are routable but not advertised to search engines through `sitemap.xml`
+
+This matches the actual routing behavior better than the old draft/public split.
 
 ## Decision 9: internal page reference rules are route-based and deterministic
 
 Internal page references should follow these rules:
 
-- page routes are `/:page_id`
+- page routes are slug-based
 - `/` is the home page
-- `/${page_id}` is an internal link to the page with that document id
-- `/${page_id}#section` is also an internal link to that page; the `#section` fragment is ignored for reachability / sitemap purposes
+- `/${slug}` is an internal link to the page with that active slug
+- `/${slug}#section` is also an internal link to that page; the `#section` fragment is ignored for reachability / sitemap purposes
 - `/#section` is **not** a page reference when it points to the current home page; it is just an in-page anchor and must not create a `document_refs` edge
 - more generally, anchor links that resolve to the **same page** are ignored for `document_refs`
 - external URLs are ignored
 
 This means `document_refs` should track page-to-page relationships by normalized target page id, not by full href string. Fragments are only relevant for browser navigation, not for sitemap reachability.
 
-## Decision 10: sitemap hierarchy is a canonical tree projection, not a graph view
+## Decision 10: the page browser shows a canonical forest, with the home subtree last
 
-The sitemap drawer should render a **tree projection** of the reachable page graph, not the full graph.
+The page browser should render a **forest projection** of all pages, not a split between drafts and sitemap and not a full graph visualization.
 
-### Final tree-building rule
+### Final forest-building rule
 
-- **No duplicates in the tree**
+- **No duplicates in the forest**
 - **First occurrence wins**
-- **Top-level ordering:** shared nav links → home page body links → shared footer links
-- **Recursive ordering for child pages:** body links only
+- **Home subtree last**
+- **Non-home entry roots first**
+- **Within each subtree, preserve deterministic traversal order**
+- **Recursive ordering for child pages:** body links only after placement, except for the home root which seeds its top level from shared nav links, home page body links, then shared footer links
 
 This means:
 
-- Start traversal at the configured home page.
-- At the root level, collect outgoing internal page references in this order:
-  1. shared nav
-  2. home page body
-  3. shared footer
-- When a referenced page is encountered for the first time, insert it into the tree at that position.
-- Then recurse into that page, but only inspect its **body-derived** page references.
-- If the same page is encountered again later from another path, ignore that later occurrence for tree placement.
+- Build the canonical home subtree first using the existing main-site ordering:
+  1. shared nav links
+  2. home page body links
+  3. shared footer links
+- Recurse into placed child pages using body-derived links only.
+- Mark every page placed into that home subtree as already assigned.
+- Then scan the remaining unassigned pages and create additional root nodes for them in a deterministic order based on the first page encountered in a stable traversal of the remaining page set.
+- For each such non-home root, recurse through body-derived links only, again using first occurrence wins, so each parallel subtree is stable even when pages cross-link.
+- Append the home root as the final root in the returned forest.
 
-This produces a deterministic, editor-friendly sitemap:
-- global nav/footer define the top-level site structure
-- deeper nesting comes from contextual links inside page content
+This produces a deterministic, editor-friendly page browser:
+
+- the main site remains easy to read because the home subtree is intact
+- pages outside the home-linked site are still visible in the same browser
+- parallel site hierarchies are represented naturally as additional roots
 - repeated references do not crowd the drawer with duplicates
-
-Reachability is still graph-based, but the drawer presents a clean canonical tree rather than a literal graph visualization.
 
 ## Proposed phased implementation
 
@@ -1156,6 +1164,30 @@ Implemented:
 
 Note:
 - drawer-close-on-click can be refined later if needed
+- the drawer resize handle should render outside the drawer panel, centered on the top edge, so it visually floats above the sheet instead of taking space inside the drawer content area
+- while dragging, the drawer should be able to move all the way down to the bottom of the viewport
+- on drag release near zero height, the drawer should animate smoothly down to `0` height and then close instead of remaining open at a tiny height or closing abruptly
+- otherwise, on drag release, the drawer should snap to the nearest preset height based on the release position: `1/3`, `2/3`, or `3/4` of the viewport height
+- after release, the drawer height should animate smoothly toward the snapped value rather than jumping immediately, including when dragged above the highest snap point and settling back to `3/4`
+- when the drawer is reopened after being closed near zero height, it should restore the previous non-zero snapped height
+- add a contextual search box to the page browser drawer
+- the search should run client-side against the already loaded drawer data; no dedicated server search endpoint is needed for the initial implementation
+- focus the search box as soon as the drawer is opened
+- drafts should be filtered independently by the same search query
+- sitemap filtering should preserve structural context:
+  - if a page directly matches the query, show that page
+  - if a page directly matches the query, also show all of its descendants
+  - if a descendant matches the query, also show its ancestor chain up to the root so the placement in the site structure remains visible
+- direct matches should be visually highlighted so it is clear why a page is shown
+- pages shown only because their parent matched or because they are ancestors of a match should remain visible but should not use the same direct-match highlight treatment
+- while a search query is active, matching branches should be shown even if they would otherwise be collapsed
+- keyboard navigation should work over the currently visible search results:
+  - `ArrowDown` moves to the next visible result
+  - `ArrowUp` moves to the previous visible result
+  - `Enter` opens the currently selected result
+- the keyboard result order should follow the visible drawer order so navigation feels predictable
+- the existing canonical sitemap tree remains the source of truth; search does not need to surface secondary graph placements for pages that are linked from multiple places
+- the expected scale is on the order of hundreds of pages (for example around 500), so a straightforward client-side tree traversal per query is acceptable
 
 ## Phase 5 — save flow integration and navigation correctness
 

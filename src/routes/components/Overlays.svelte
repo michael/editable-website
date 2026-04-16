@@ -216,7 +216,7 @@
 		<CreateLink />
 	{/if}
 
-	{#if app.has_backend && app.is_admin && (!svedit.editable || page_browser.state.open)}
+	{#if app.has_backend && app.is_admin}
 		{@const PagesDrawer = (await import('./PagesDrawer.svelte')).default}
 		<Drawer bind:open={page_browser.state.open} label="Pages">
 			<PagesDrawer />
