@@ -130,6 +130,14 @@
 		return depth === 0;
 	}
 
+	function is_non_home_root_node(node, depth) {
+		return depth === 0 && !is_home_page(node.document_id);
+	}
+
+	function is_undiscoverable_branch(node, depth, ancestor_is_undiscoverable = false) {
+		return ancestor_is_undiscoverable || is_non_home_root_node(node, depth);
+	}
+
 	function handle_page_click(event, item) {
 		event.preventDefault();
 		page_browser.handle_page_selected(item);
@@ -508,14 +516,16 @@
 			<div class="tree">
 
 
-				{#snippet node_item(node, depth = 0, is_last = true, ancestor_columns = [])}
+				{#snippet node_item(node, depth = 0, is_last = true, ancestor_columns = [], ancestor_is_undiscoverable = false)}
 					{@const node_has_children = has_children(node)}
 					{@const node_is_root = is_root_node(node, depth)}
+					{@const node_is_undiscoverable = is_undiscoverable_branch(node, depth, ancestor_is_undiscoverable)}
 					{@const current_column_continues = node_is_root ? false : !is_last || node_has_children}
+					{@const node_text_class = node_is_undiscoverable ? 'tree-row-undiscoverable' : ''}
 					<div class="tree-node">
 						<div class="tree-row-shell">
 							<a
-								class={`tree-row ${get_match_kind_class(node.match_kind)}`}
+								class={`tree-row ${get_match_kind_class(node.match_kind)} ${node_text_class}`}
 								class:tree-row-root={node_is_root}
 								class:tree-row-keyboard-selected={visible_results[selected_result_index]?.document_id === node.document_id}
 								href={resolve(get_resolved_page_href(node.page_href))}
@@ -532,18 +542,18 @@
 									{#each ancestor_columns as show_rail, guide_index (`${depth}-${guide_index}`)}
 										<div class="tree-guide-column">
 											{#if show_rail}
-												<div class="tree-guide-rail"></div>
+												<div class={`tree-guide-rail ${node_is_undiscoverable ? 'tree-guide-rail-dashed' : ''}`}></div>
 											{/if}
 										</div>
 									{/each}
 
 									{#if !node_is_root}
 										<div class="tree-gutter">
-											<div class="tree-gutter-rail tree-gutter-rail-top"></div>
+											<div class={`tree-gutter-rail tree-gutter-rail-top ${node_is_undiscoverable ? 'tree-gutter-rail-dashed' : ''}`}></div>
 											{#if current_column_continues}
-												<div class="tree-gutter-rail tree-gutter-rail-bottom"></div>
+												<div class={`tree-gutter-rail tree-gutter-rail-bottom ${node_is_undiscoverable ? 'tree-gutter-rail-dashed' : ''}`}></div>
 											{/if}
-											<div class="tree-gutter-elbow"></div>
+											<div class={`tree-gutter-elbow ${node_is_undiscoverable ? 'tree-gutter-elbow-dashed' : ''}`}></div>
 											{#if !node_has_children}
 												<div class="tree-leaf-dot"></div>
 											{/if}
@@ -551,7 +561,7 @@
 									{/if}
 								</div>
 
-								<div class="page-illustration tree-illustration" aria-hidden="true">
+								<div class={`page-illustration tree-illustration ${node_is_undiscoverable ? 'tree-illustration-dashed' : ''}`} aria-hidden="true">
 									{#if node.preview_media_node}
 										<div class="media-preview">
 											<Media node={node.preview_media_node} />
@@ -612,7 +622,8 @@
 										child,
 										depth + 1,
 										index === node.children.length - 1,
-										[...ancestor_columns, current_column_continues]
+										[...ancestor_columns, current_column_continues],
+										node_is_undiscoverable
 									)}
 								{/each}
 							</div>
@@ -626,7 +637,7 @@
 					<div class="status-message">No pages yet.</div>
 				{:else}
 					{#each filtered_page_forest as root_node, index (root_node.document_id)}
-						{@render node_item(root_node, 0, index === filtered_page_forest.length - 1, [])}
+						{@render node_item(root_node, 0, index === filtered_page_forest.length - 1, [], false)}
 					{/each}
 				{/if}
 			</div>
@@ -911,6 +922,10 @@
 		background: color-mix(in oklch, var(--foreground) 2%, var(--background));
 	}
 
+	.tree-illustration-dashed {
+		border-style: dashed;
+	}
+
 	.media-preview {
 		width: 100%;
 		height: 100%;
@@ -1011,6 +1026,15 @@
 		bottom: 0;
 	}
 
+	.tree-guide-rail-dashed {
+		background:
+			repeating-linear-gradient(
+				to bottom,
+				color-mix(in oklch, var(--foreground) 22%, transparent) 0 0.22rem,
+				transparent 0.22rem 0.42rem
+			);
+	}
+
 	.tree-gutter {
 		padding: 0;
 		border: 0;
@@ -1038,6 +1062,24 @@
 		width: 0.72rem;
 		height: 1px;
 		background: color-mix(in oklch, var(--foreground) 22%, transparent);
+	}
+
+	.tree-gutter-rail-dashed {
+		background:
+			repeating-linear-gradient(
+				to bottom,
+				color-mix(in oklch, var(--foreground) 22%, transparent) 0 0.22rem,
+				transparent 0.22rem 0.42rem
+			);
+	}
+
+	.tree-gutter-elbow-dashed {
+		background:
+			repeating-linear-gradient(
+				to right,
+				color-mix(in oklch, var(--foreground) 22%, transparent) 0 0.22rem,
+				transparent 0.22rem 0.42rem
+			);
 	}
 
 	.tree-leaf-dot {
@@ -1068,6 +1110,10 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+
+	.tree-row-undiscoverable {
+		color: color-mix(in oklch, var(--foreground) 62%, transparent);
 	}
 
 	.page-slug-label {
