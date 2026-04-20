@@ -562,8 +562,12 @@
 					{@const node_is_root = is_root_node(node, depth)}
 					{@const node_is_unlisted = is_unlisted_page(node, depth, ancestor_is_unlisted)}
 					{@const current_column_continues = node_is_root ? false : !is_last}
+					{@const guide_column_count = ancestor_columns.length}
 					<div class="tree-node">
-						<div class="tree-row-shell" style={`--tree-guide-columns: ${ancestor_columns.length + (node_is_root ? 0 : 1)};`}>
+						<div
+							class="tree-row-shell"
+							style={`--tree-guide-columns: ${guide_column_count};`}
+						>
 							<div class="tree-guides" aria-hidden="true">
 								{#each ancestor_columns as show_rail, guide_index (`${depth}-${guide_index}`)}
 									<div class="tree-guide-column">
@@ -580,9 +584,6 @@
 											<div class="tree-gutter-rail tree-gutter-rail-bottom"></div>
 										{/if}
 										<div class="tree-gutter-elbow"></div>
-										{#if !node_has_children}
-											<div class="tree-leaf-dot"></div>
-										{/if}
 									</div>
 								{/if}
 							</div>
@@ -1117,6 +1118,7 @@
 		align-items: stretch;
 		align-self: stretch;
 		min-width: max-content;
+		margin-left: calc(var(--tree-indent-width, 1.3rem) * -1);
 		margin-right: 0;
 		pointer-events: none;
 	}
@@ -1124,7 +1126,7 @@
 	.tree-row {
 		position: relative;
 		z-index: 1;
-		padding-left: calc((var(--tree-guide-columns, 0) * 1rem) + 0.2rem);
+		padding-left: calc(var(--tree-guide-columns, 0) * var(--tree-indent-width, 1.3rem));
 	}
 
 	.search-shell {
@@ -1134,8 +1136,8 @@
 	.tree-guide-column,
 	.tree-gutter {
 		position: relative;
-		width: 1rem;
-		flex: 0 0 1rem;
+		width: var(--tree-indent-width, 1.3rem);
+		flex: 0 0 var(--tree-indent-width, 1.3rem);
 		align-self: stretch;
 	}
 
@@ -1178,7 +1180,7 @@
 		position: absolute;
 		left: calc(50% - 0.5px);
 		top: 50%;
-		width: 0.72rem;
+		width: calc(var(--tree-indent-width, 1.3rem) / 2);
 		height: 1px;
 		background: color-mix(in oklch, var(--background) 88%, var(--foreground));
 	}
@@ -1411,7 +1413,6 @@
 	}
 
 	@media (max-width: 640px) {
-
 		.draft-title {
 			font-size: 0.68rem;
 		}
@@ -1434,6 +1435,16 @@
 			display: flex;
 			padding-left: 0.5rem;
 			padding-right: 0.75rem;
+		}
+
+		.tree-row-shell {
+			--tree-indent-width: 1.3rem;
+		}
+	}
+
+	@media (min-width: 641px) {
+		.tree-row-shell {
+			--tree-indent-width: 2.6rem;
 		}
 	}
 </style>
