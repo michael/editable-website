@@ -805,7 +805,7 @@
 		<div class="confirm-panel unlisted-info-panel">
 			<h3 class="confirm-title">Unlisted page</h3>
 			<p class="confirm-message">
-				Unlisted pages are not discoverable from the homepage, but can be accessed when you have the link.
+				Unlisted pages are not discoverable from the homepage (and for Google), but can be accessed by anyone who has the link.
 			</p>
 			<div class="confirm-actions">
 				<button type="button" class="confirm-btn" onclick={close_unlisted_info}>
@@ -1071,7 +1071,7 @@
 		position: absolute;
 		left: calc(50% - 0.5px);
 		width: 1px;
-		background: color-mix(in oklch, var(--foreground) 22%, transparent);
+		background: color-mix(in oklch, var(--background) 88%, var(--foreground));
 	}
 
 	.tree-guide-rail {
@@ -1107,18 +1107,13 @@
 		top: 50%;
 		width: 0.72rem;
 		height: 1px;
-		background: color-mix(in oklch, var(--foreground) 22%, transparent);
+		background: color-mix(in oklch, var(--background) 88%, var(--foreground));
 	}
 
 
 
 	.tree-leaf-dot {
-		position: absolute;
-		left: calc(50% - 0.11rem);
-		top: calc(50% - 0.11rem);
-		width: 0.22rem;
-		height: 0.22rem;
-		background: color-mix(in oklch, var(--foreground) 28%, transparent);
+		display: none;
 	}
 
 	.tree-label {

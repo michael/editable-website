@@ -88,19 +88,6 @@
 						</a>
 					{/if}
 
-					{#if !app_commands.edit_document.disabled}
-						<button
-							class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
-							onclick={() => app_commands.edit_document.execute()}
-							title="Edit (⌘ E)"
-							aria-label="Edit"
-						>
-							<svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" fill="none" aria-hidden="true">
-								<path d="M12.6017 4.51322L10.4804 2.3919M12.6017 4.51322L3.76282 13.3521L1.77642 13.5C1.58297 13.5266 1.48259 13.4069 1.5 13.2107L1.6415 11.2308L10.4804 2.3919M12.6017 4.51322C12.9552 4.15965 12.9552 4.15969 12.9552 4.15969L13.3088 3.80612C13.6623 3.45255 13.4942 2.58389 12.9552 2.0384C12.4189 1.50211 11.541 1.33123 11.1875 1.6848L10.8339 2.03837C10.8339 2.03837 10.8339 2.03833 10.4804 2.3919" stroke="currentColor"/>
-							</svg>
-						</button>
-					{/if}
-
 					{#if can_browse_pages}
 						<button
 							class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
@@ -113,6 +100,19 @@
 								<rect x="8.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
 								<rect x="1.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
 								<rect x="8.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+							</svg>
+						</button>
+					{/if}
+
+					{#if !app_commands.edit_document.disabled}
+						<button
+							class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
+							onclick={() => app_commands.edit_document.execute()}
+							title="Edit (⌘ E)"
+							aria-label="Edit"
+						>
+							<svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+								<path d="M12.6017 4.51322L10.4804 2.3919M12.6017 4.51322L3.76282 13.3521L1.77642 13.5C1.58297 13.5266 1.48259 13.4069 1.5 13.2107L1.6415 11.2308L10.4804 2.3919M12.6017 4.51322C12.9552 4.15965 12.9552 4.15969 12.9552 4.15969L13.3088 3.80612C13.6623 3.45255 13.4942 2.58389 12.9552 2.0384C12.4189 1.50211 11.541 1.33123 11.1875 1.6848L10.8339 2.03837C10.8339 2.03837 10.8339 2.03833 10.4804 2.3919" stroke="currentColor"/>
 							</svg>
 						</button>
 					{/if}
