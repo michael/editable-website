@@ -132,7 +132,11 @@ Public page/document reads remain public:
 
 ### Edit shortcut and auth dialog flow
 
-When the user presses the edit shortcut on a page:
+When the user triggers editing on a page:
+
+- desktop users can use the edit shortcut
+- mobile users can pull past the end of the page and hold that overscroll for about one second to open the same auth dialog
+- the mobile overscroll trigger is only enabled on touch-capable / coarse-pointer devices
 
 #### If already authenticated as admin
 
@@ -140,17 +144,38 @@ When the user presses the edit shortcut on a page:
 
 #### If not authenticated
 
-Open a dialog with two choices:
+Open a first dialog with two large visual choice cards:
 
-1. password field + `Login and edit`
-2. `Edit for fun`
+1. `Edit for fun`
+2. `Login`
 
-Behavior:
+Behavior of the first dialog:
 
-- `Login and edit` submits the password to `login_admin(...)`
-- on success, enter normal editable mode on the current page
-- on failure, keep the dialog open and show an error
+- the `Edit for fun` card uses a large primary label with supporting copy such as `Changes can't be saved`
+- the `Login` card uses a large primary label with supporting copy such as `For admins`
+- each choice is presented as a large square or near-square button-like card rather than a small inline action row
+- the first-step dialog may include simple illustrative treatment inside each card to make the two paths feel visually distinct
 - `Edit for fun` enters temporary local editing mode without authentication
+- `Login` advances to a second dialog that prompts for the admin password
+- there is no dedicated cancel button on the first-step dialog; dismissing it is done by clicking outside the dialog or pressing escape
+
+Behavior of the second dialog:
+
+- submitting the password calls `login_admin(...)`
+- on success, authenticate as admin, refresh admin-only UI state, and close the dialog without entering page editing mode automatically
+- on failure, keep the password dialog open and show an error
+- cancel closes the password dialog and returns to normal browsing mode
+
+Behavior of the mobile overscroll trigger:
+
+- it only opens the auth dialog and does not enter editing directly
+- it only applies while not already editing
+- it is mobile-only and should only be armed on touch-capable / coarse-pointer devices
+- it should only trigger after the user has reached the end of the page and held the overscroll state for about one second
+- it should only trigger while the user is actively holding a touch through that hold period
+- it must not trigger from inertial or momentum scrolling after the finger has lifted
+- it should not retrigger repeatedly during the same continuous gesture
+- it should reset once the user returns to the normal scroll range or ends the touch
 
 There is no primary `/login` route in this step.
 

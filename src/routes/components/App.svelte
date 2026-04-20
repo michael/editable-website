@@ -37,6 +37,10 @@
 	let browser_data_version = $state(0);
 
 	let auth_dialog_open = $state(false);
+	let mobile_overscroll_triggered = $state(false);
+	let mobile_overscroll_timeout_id = $state(null);
+	let mobile_touch_active = $state(false);
+	let mobile_touch_started_at_page_end = $state(false);
 
 	const app = {
 		get has_backend() {
@@ -112,18 +116,96 @@
 
 	function open_auth_dialog() {
 		auth_dialog_open = true;
+		mobile_overscroll_triggered = true;
 	}
 
 	function close_auth_dialog() {
 		auth_dialog_open = false;
+		mobile_overscroll_triggered = false;
+		mobile_touch_active = false;
+		mobile_touch_started_at_page_end = false;
+		clear_mobile_overscroll_timeout();
+	}
+
+	function clear_mobile_overscroll_timeout() {
+		if (mobile_overscroll_timeout_id) {
+			clearTimeout(mobile_overscroll_timeout_id);
+			mobile_overscroll_timeout_id = null;
+		}
+	}
+
+	function is_mobile_touch_device() {
+		if (typeof window === 'undefined') return false;
+		return window.matchMedia('(pointer: coarse)').matches;
+	}
+
+	function is_at_page_end() {
+		const scroll_top = window.scrollY || window.pageYOffset || 0;
+		const viewport_height = window.innerHeight || 0;
+		const document_height = document.documentElement.scrollHeight || 0;
+		return scroll_top + viewport_height >= document_height - 2;
+	}
+
+	function handle_mobile_overscroll_check() {
+		if (!is_mobile_touch_device() || editable || is_admin || auth_dialog_open || !mobile_touch_active) {
+			clear_mobile_overscroll_timeout();
+			return;
+		}
+
+		const at_page_end = is_at_page_end();
+
+		if (!at_page_end) {
+			mobile_overscroll_triggered = false;
+			clear_mobile_overscroll_timeout();
+			return;
+		}
+
+		if (!mobile_touch_started_at_page_end || mobile_overscroll_triggered || mobile_overscroll_timeout_id) {
+			return;
+		}
+
+		mobile_overscroll_timeout_id = setTimeout(() => {
+			mobile_overscroll_timeout_id = null;
+			const still_at_page_end = is_at_page_end();
+
+			if (
+				is_mobile_touch_device() &&
+				!editable &&
+				!auth_dialog_open &&
+				!mobile_overscroll_triggered &&
+				mobile_touch_active &&
+				mobile_touch_started_at_page_end &&
+				still_at_page_end
+			) {
+				open_auth_dialog();
+			}
+		}, 1000);
+	}
+
+	function handle_mobile_touchstart() {
+		if (!is_mobile_touch_device() || editable || is_admin || auth_dialog_open) return;
+		mobile_touch_active = true;
+		mobile_touch_started_at_page_end = is_at_page_end();
+		if (!mobile_touch_started_at_page_end) {
+			mobile_overscroll_triggered = false;
+		}
+		clear_mobile_overscroll_timeout();
+	}
+
+	function handle_mobile_touchend() {
+		mobile_touch_active = false;
+		mobile_touch_started_at_page_end = false;
+		clear_mobile_overscroll_timeout();
 	}
 
 	function enter_edit_mode() {
+		clear_mobile_overscroll_timeout();
 		editable = true;
 		close_auth_dialog();
 	}
 
 	async function handle_auth_success() {
+		clear_mobile_overscroll_timeout();
 		await invalidateAll();
 		close_auth_dialog();
 	}
@@ -378,9 +460,20 @@
 		}
 	});
 
+	$effect(() => {
+		return () => {
+			clear_mobile_overscroll_timeout();
+		};
+	});
 </script>
 
-<svelte:window onkeydown={key_mapper.handle_keydown.bind(key_mapper)} />
+<svelte:window
+	onkeydown={key_mapper.handle_keydown.bind(key_mapper)}
+	onscroll={handle_mobile_overscroll_check}
+	ontouchstart={handle_mobile_touchstart}
+	ontouchend={handle_mobile_touchend}
+	ontouchcancel={handle_mobile_touchend}
+/>
 
 <div class="demo-wrapper antialiased" bind:this={app_el}>
 	<Toolbar

@@ -19,6 +19,17 @@
 	let pending = $state(false);
 	let step = $state('choice');
 	let password_input_ref = $state();
+	let should_focus_password_input = $state(false);
+
+	$effect(() => {
+		if (!open || step !== 'choice') return;
+
+		requestAnimationFrame(() => {
+			if (document.activeElement instanceof HTMLElement) {
+				document.activeElement.blur();
+			}
+		});
+	});
 
 	$effect(() => {
 		if (open && dialog_ref && !dialog_ref.open) {
@@ -37,13 +48,16 @@
 	});
 
 	$effect(() => {
-		if (!open || step !== 'login' || !password_input_ref) return;
+		if (!open || step !== 'login' || !password_input_ref || !should_focus_password_input) return;
 
 		requestAnimationFrame(() => {
 			password_input_ref?.focus();
 			password_input_ref?.select();
+			should_focus_password_input = false;
 		});
 	});
+
+
 
 	function handle_dialog_cancel(event) {
 		event.preventDefault();
@@ -60,6 +74,7 @@
 		step = 'login';
 		error = '';
 		password = '';
+		should_focus_password_input = true;
 	}
 
 	async function login_and_edit() {
@@ -100,22 +115,34 @@
 >
 	{#if open}
 		{#if step === 'choice'}
-			<div class="flex w-[min(40rem,calc(100vw-2rem))] flex-col gap-5 p-5">
+			<div class="flex w-[min(40rem,calc(100vw-2rem))] max-w-full overflow-x-hidden flex-col gap-3 p-5 sm:gap-5 sm:p-5">
 				<div class="flex flex-col gap-1">
-					<h2 class="text-base font-medium">Edit this page</h2>
+					<h2 class="text-base font-medium">
+						This is an
+						<a
+							href="https://editable.website"
+							target="_blank"
+							rel="noopener noreferrer"
+							tabindex="-1"
+							class="underline underline-offset-2"
+						>
+							editable.website
+						</a>
+					</h2>
 				</div>
 
-				<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+				<div class="grid w-full min-w-0 grid-cols-2 gap-2 sm:gap-3">
 					<button
 						type="button"
-						class="cursor-pointer flex aspect-square min-h-56 flex-col justify-between rounded-[1.25rem] border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] bg-(--background) p-5 text-center transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] active:scale-95 active:translate-y-px focus:outline-none focus:ring-2 focus:ring-(--svedit-editing-stroke)"
+
+						class="cursor-pointer flex w-full min-w-0 overflow-hidden flex-col justify-between rounded-[0.9rem] border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] bg-(--background) px-2 py-3 text-center transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] active:scale-95 active:translate-y-px focus:outline-none focus:ring-2 focus:ring-(--svedit-editing-stroke) sm:aspect-square sm:min-h-56 sm:rounded-[1.25rem] sm:p-5"
 						onclick={onedit_for_fun}
 					>
-						<div class="flex h-28 items-center justify-center overflow-hidden">
+						<div class="flex h-14 items-center justify-center overflow-hidden sm:h-28">
 							<svg
 								viewBox="0 0 160 96"
 								aria-hidden="true"
-								class="h-full w-full text-[color-mix(in_oklch,var(--foreground)_62%,transparent)]"
+								class="h-full w-full scale-[0.68] text-[color-mix(in_oklch,var(--foreground)_62%,transparent)] sm:scale-100"
 								fill="none"
 								stroke="currentColor"
 								stroke-width="1.25"
@@ -132,9 +159,9 @@
 							</svg>
 						</div>
 
-						<div class="flex flex-col items-center gap-1 text-center">
-							<div class="text-2xl font-medium leading-none">Edit for fun</div>
-							<div class="text-sm text-[color-mix(in_oklch,var(--foreground)_62%,transparent)]">
+						<div class="flex flex-col items-center gap-0.5 text-center sm:gap-1">
+							<div class="text-[1rem] font-medium leading-none sm:text-2xl">Edit for fun</div>
+							<div class="text-[0.68rem] leading-tight text-[color-mix(in_oklch,var(--foreground)_62%,transparent)] sm:text-sm">
 								Changes can't be saved
 							</div>
 						</div>
@@ -142,14 +169,14 @@
 
 					<button
 						type="button"
-						class="cursor-pointer flex aspect-square min-h-56 flex-col justify-between rounded-[1.25rem] border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] bg-(--background) p-5 text-center transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] active:scale-95 active:translate-y-px focus:outline-none focus:ring-2 focus:ring-(--svedit-editing-stroke)"
+						class="cursor-pointer flex w-full min-w-0 overflow-hidden flex-col justify-between rounded-[0.9rem] border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] bg-(--background) px-2 py-3 text-center transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] active:scale-95 active:translate-y-px focus:outline-none focus:ring-2 focus:ring-(--svedit-editing-stroke) sm:aspect-square sm:min-h-56 sm:rounded-[1.25rem] sm:p-5"
 						onclick={open_login_step}
 					>
-						<div class="flex h-28 items-center justify-center overflow-hidden">
+						<div class="flex h-14 items-center justify-center overflow-hidden sm:h-28">
 							<svg
 								viewBox="0 0 160 96"
 								aria-hidden="true"
-								class="h-full w-full text-[color-mix(in_oklch,var(--foreground)_62%,transparent)]"
+								class="h-full w-full scale-[0.68] text-[color-mix(in_oklch,var(--foreground)_62%,transparent)] sm:scale-100"
 								fill="none"
 								stroke="currentColor"
 								stroke-width="1.25"
@@ -165,9 +192,9 @@
 							</svg>
 						</div>
 
-						<div class="flex flex-col items-center gap-1 text-center">
-							<div class="text-2xl font-medium leading-none">Login</div>
-							<div class="text-sm text-[color-mix(in_oklch,var(--foreground)_62%,transparent)]">
+						<div class="flex flex-col items-center gap-0.5 text-center sm:gap-1">
+							<div class="text-[1rem] font-medium leading-none sm:text-2xl">Login</div>
+							<div class="text-[0.68rem] leading-tight text-[color-mix(in_oklch,var(--foreground)_62%,transparent)] sm:text-sm">
 								For admins
 							</div>
 						</div>
