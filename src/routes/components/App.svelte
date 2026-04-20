@@ -125,7 +125,7 @@
 
 	async function handle_auth_success() {
 		await invalidateAll();
-		enter_edit_mode();
+		close_auth_dialog();
 	}
 
 	function edit_for_fun() {

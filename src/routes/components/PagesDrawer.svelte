@@ -28,6 +28,9 @@
 	let page_url_error = $state('');
 	let saving_page_url = $state(false);
 
+	let unlisted_info_item = $state(null);
+	let unlisted_info_ref = $state(null);
+
 	let search_query = $state('');
 	let search_input_ref = $state(null);
 	let selected_result_index = $state(0);
@@ -76,6 +79,14 @@
 			page_url_dialog_ref.showModal();
 		} else if (!page_url_dialog_item && page_url_dialog_ref?.open) {
 			page_url_dialog_ref.close();
+		}
+	});
+
+	$effect(() => {
+		if (unlisted_info_item && unlisted_info_ref && !unlisted_info_ref.open) {
+			unlisted_info_ref.showModal();
+		} else if (!unlisted_info_item && unlisted_info_ref?.open) {
+			unlisted_info_ref.close();
 		}
 	});
 
@@ -134,8 +145,29 @@
 		return depth === 0 && !is_home_page(node.document_id);
 	}
 
-	function is_undiscoverable_branch(node, depth, ancestor_is_undiscoverable = false) {
+	function is_unlisted_page(node, depth, ancestor_is_undiscoverable = false) {
 		return ancestor_is_undiscoverable || is_non_home_root_node(node, depth);
+	}
+
+	function open_unlisted_info(event, item) {
+		event.preventDefault();
+		event.stopPropagation();
+		unlisted_info_item = item;
+	}
+
+	function close_unlisted_info() {
+		unlisted_info_item = null;
+	}
+
+	function handle_unlisted_info_click(event) {
+		if (event.target === unlisted_info_ref) {
+			close_unlisted_info();
+		}
+	}
+
+	function handle_unlisted_info_cancel(event) {
+		event.preventDefault();
+		close_unlisted_info();
 	}
 
 	function handle_page_click(event, item) {
@@ -410,9 +442,6 @@
 	}
 
 	function get_match_kind_class(match_kind) {
-		if (match_kind === 'direct') return 'tree-row-match-direct';
-		if (match_kind === 'ancestor_context') return 'tree-row-match-context';
-		if (match_kind === 'descendant_context') return 'tree-row-match-context';
 		return '';
 	}
 
@@ -519,13 +548,12 @@
 				{#snippet node_item(node, depth = 0, is_last = true, ancestor_columns = [], ancestor_is_undiscoverable = false)}
 					{@const node_has_children = has_children(node)}
 					{@const node_is_root = is_root_node(node, depth)}
-					{@const node_is_undiscoverable = is_undiscoverable_branch(node, depth, ancestor_is_undiscoverable)}
+					{@const node_is_unlisted = is_unlisted_page(node, depth, ancestor_is_undiscoverable)}
 					{@const current_column_continues = node_is_root ? false : !is_last || node_has_children}
-					{@const node_text_class = node_is_undiscoverable ? 'tree-row-undiscoverable' : ''}
 					<div class="tree-node">
 						<div class="tree-row-shell">
 							<a
-								class={`tree-row ${get_match_kind_class(node.match_kind)} ${node_text_class}`}
+								class={`tree-row ${get_match_kind_class(node.match_kind)}`}
 								class:tree-row-root={node_is_root}
 								class:tree-row-keyboard-selected={visible_results[selected_result_index]?.document_id === node.document_id}
 								href={resolve(get_resolved_page_href(node.page_href))}
@@ -542,18 +570,18 @@
 									{#each ancestor_columns as show_rail, guide_index (`${depth}-${guide_index}`)}
 										<div class="tree-guide-column">
 											{#if show_rail}
-												<div class={`tree-guide-rail ${node_is_undiscoverable ? 'tree-guide-rail-dashed' : ''}`}></div>
+												<div class="tree-guide-rail"></div>
 											{/if}
 										</div>
 									{/each}
 
 									{#if !node_is_root}
 										<div class="tree-gutter">
-											<div class={`tree-gutter-rail tree-gutter-rail-top ${node_is_undiscoverable ? 'tree-gutter-rail-dashed' : ''}`}></div>
+											<div class="tree-gutter-rail tree-gutter-rail-top"></div>
 											{#if current_column_continues}
-												<div class={`tree-gutter-rail tree-gutter-rail-bottom ${node_is_undiscoverable ? 'tree-gutter-rail-dashed' : ''}`}></div>
+												<div class="tree-gutter-rail tree-gutter-rail-bottom"></div>
 											{/if}
-											<div class={`tree-gutter-elbow ${node_is_undiscoverable ? 'tree-gutter-elbow-dashed' : ''}`}></div>
+											<div class="tree-gutter-elbow"></div>
 											{#if !node_has_children}
 												<div class="tree-leaf-dot"></div>
 											{/if}
@@ -561,7 +589,7 @@
 									{/if}
 								</div>
 
-								<div class={`page-illustration tree-illustration ${node_is_undiscoverable ? 'tree-illustration-dashed' : ''}`} aria-hidden="true">
+								<div class="page-illustration tree-illustration" aria-hidden="true">
 									{#if node.preview_media_node}
 										<div class="media-preview">
 											<Media node={node.preview_media_node} />
@@ -586,6 +614,21 @@
 								</div>
 
 								<div class="tree-row-meta">
+									{#if node_is_unlisted}
+										<button
+											type="button"
+											class="unlisted-badge"
+											title="Explain what unlisted means"
+											aria-label={`Explain what unlisted means for ${node.title}`}
+											onclick={(event) =>
+												open_unlisted_info(event, {
+													document_id: node.document_id,
+													title: node.title
+												})}
+										>
+											unlisted
+										</button>
+									{/if}
 									<div class="page-slug-label page-slug-label-right" title={get_page_slug_label(node.page_href)}>
 										{#each get_highlight_parts(get_page_slug_label(node.page_href), normalized_search_query) as part, part_index (`slug-${node.document_id}-${part_index}`)}
 											<span class:match-highlight={part.is_match}>{part.text}</span>
@@ -623,7 +666,7 @@
 										depth + 1,
 										index === node.children.length - 1,
 										[...ancestor_columns, current_column_continues],
-										node_is_undiscoverable
+										node_is_unlisted
 									)}
 								{/each}
 							</div>
@@ -752,6 +795,27 @@
 	{/if}
 </dialog>
 
+<dialog
+	bind:this={unlisted_info_ref}
+	class="confirm-dialog"
+	oncancel={handle_unlisted_info_cancel}
+	onclick={handle_unlisted_info_click}
+>
+	{#if unlisted_info_item}
+		<div class="confirm-panel unlisted-info-panel">
+			<h3 class="confirm-title">Unlisted page</h3>
+			<p class="confirm-message">
+				Unlisted pages are not discoverable from the homepage, but can be accessed when you have the link.
+			</p>
+			<div class="confirm-actions">
+				<button type="button" class="confirm-btn" onclick={close_unlisted_info}>
+					Got it
+				</button>
+			</div>
+		</div>
+	{/if}
+</dialog>
+
 <style>
 	.pages-drawer {
 		position: relative;
@@ -820,11 +884,12 @@
 	.tree-row-meta {
 		margin-left: auto;
 		min-width: 0;
-		max-width: 7rem;
-		flex: 0 1 7rem;
+		max-width: 14rem;
+		flex: 0 0 14rem;
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
+		gap: 0.5rem;
 		padding-left: 0.75rem;
 		padding-right: 1rem;
 	}
@@ -838,20 +903,11 @@
 		background: var(--svedit-editing-fill);
 	}
 
-	.draft-card-match-direct,
-	.tree-row-match-direct {
-		background: color-mix(in oklch, var(--svedit-editing-fill) 72%, var(--background));
-	}
-
 	.draft-card-keyboard-selected,
 	.tree-row-keyboard-selected {
 		outline: 1px solid var(--svedit-editing-stroke);
 		outline-offset: -1px;
 		background: color-mix(in oklch, var(--svedit-editing-fill) 82%, var(--background));
-	}
-
-	.tree-row-match-context {
-		background: color-mix(in oklch, var(--foreground) 4%, var(--background));
 	}
 
 	.item-actions-btn {
@@ -918,13 +974,10 @@
 		aspect-ratio: 1;
 		flex: 0 0 auto;
 		margin: 0.2rem 0.2rem 0.2rem 0;
-		border: 1px solid color-mix(in oklch, var(--foreground) 10%, transparent);
 		background: color-mix(in oklch, var(--foreground) 2%, var(--background));
 	}
 
-	.tree-illustration-dashed {
-		border-style: dashed;
-	}
+
 
 	.media-preview {
 		width: 100%;
@@ -1026,14 +1079,7 @@
 		bottom: 0;
 	}
 
-	.tree-guide-rail-dashed {
-		background:
-			repeating-linear-gradient(
-				to bottom,
-				color-mix(in oklch, var(--foreground) 22%, transparent) 0 0.22rem,
-				transparent 0.22rem 0.42rem
-			);
-	}
+
 
 	.tree-gutter {
 		padding: 0;
@@ -1064,23 +1110,7 @@
 		background: color-mix(in oklch, var(--foreground) 22%, transparent);
 	}
 
-	.tree-gutter-rail-dashed {
-		background:
-			repeating-linear-gradient(
-				to bottom,
-				color-mix(in oklch, var(--foreground) 22%, transparent) 0 0.22rem,
-				transparent 0.22rem 0.42rem
-			);
-	}
 
-	.tree-gutter-elbow-dashed {
-		background:
-			repeating-linear-gradient(
-				to right,
-				color-mix(in oklch, var(--foreground) 22%, transparent) 0 0.22rem,
-				transparent 0.22rem 0.42rem
-			);
-	}
 
 	.tree-leaf-dot {
 		position: absolute;
@@ -1112,9 +1142,7 @@
 		white-space: nowrap;
 	}
 
-	.tree-row-undiscoverable {
-		color: color-mix(in oklch, var(--foreground) 62%, transparent);
-	}
+
 
 	.page-slug-label {
 		font-family: ui-monospace, 'SFMono-Regular', 'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
@@ -1127,11 +1155,33 @@
 
 	.page-slug-label-right {
 		display: block;
-		width: 100%;
+		min-width: 0;
+		flex: 0 1 auto;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 		text-align: right;
+	}
+
+	.unlisted-badge {
+		flex: 0 0 auto;
+		border: 1px solid color-mix(in oklch, var(--foreground) 10%, transparent);
+		background: transparent;
+		color: color-mix(in oklch, currentColor 48%, transparent);
+		padding: 0.12rem 0.3rem;
+		font-size: 0.62rem;
+		font-weight: 600;
+		line-height: 1;
+		letter-spacing: 0.02em;
+		text-transform: lowercase;
+		cursor: pointer;
+	}
+
+	.unlisted-badge:hover,
+	.unlisted-badge:focus-visible {
+		background: color-mix(in oklch, var(--foreground) 4%, transparent);
+		color: color-mix(in oklch, currentColor 62%, transparent);
+		outline: none;
 	}
 
 	.tree-actions-dots {
@@ -1217,6 +1267,10 @@
 		color: var(--foreground);
 		border: 1px solid color-mix(in oklch, var(--foreground) 18%, transparent);
 		box-shadow: 0 12px 30px color-mix(in oklch, black 12%, transparent);
+	}
+
+	.unlisted-info-panel {
+		width: min(24rem, calc(100vw - 2rem));
 	}
 
 	.confirm-title {
@@ -1307,6 +1361,10 @@
 		.search-input {
 			font-size: 0.84rem;
 			padding: 0.5rem 0.65rem;
+		}
+
+		.tree-row-meta {
+			display: none;
 		}
 	}
 </style>

@@ -27,15 +27,15 @@
 
 :root {
 	/* Website colors */
-	--background: oklch(0.98 0 0);
-	--foreground: oklch(0 0 0);
-	--accent: oklch(0.21 0.034 264);
-	--accent-foreground: oklch(0.98 0 0);
+	--background: oklch(0 0 0);
+	--foreground: oklch(0.98 0 0);
+	--accent: oklch(0.98 0 0);
+	--accent-foreground: oklch(0 0 0);
 
 	/* Editor colors */
-	--svedit-brand: oklch(60% 0.22 283);
+	--svedit-brand: oklch(88% 0.16 154);
   --svedit-editing-stroke: var(--svedit-brand);
-  --svedit-editing-fill: oklch(from var(--svedit-brand) l c h / 0.1);
+  --svedit-editing-fill: oklch(from var(--svedit-brand) l c h / 0.18);
   --svedit-canvas-stroke: color-mix(in oklch, currentColor 25%, transparent);
 
   /* Rounded corners */
