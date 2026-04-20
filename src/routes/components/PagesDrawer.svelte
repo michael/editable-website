@@ -563,7 +563,30 @@
 					{@const node_is_unlisted = is_unlisted_page(node, depth, ancestor_is_undiscoverable)}
 					{@const current_column_continues = node_is_root ? false : !is_last || node_has_children}
 					<div class="tree-node">
-						<div class="tree-row-shell">
+						<div class="tree-row-shell" style={`--tree-guide-columns: ${ancestor_columns.length + (node_is_root ? 0 : 1)};`}>
+							<div class="tree-guides" aria-hidden="true">
+								{#each ancestor_columns as show_rail, guide_index (`${depth}-${guide_index}`)}
+									<div class="tree-guide-column">
+										{#if show_rail}
+											<div class="tree-guide-rail"></div>
+										{/if}
+									</div>
+								{/each}
+
+								{#if !node_is_root}
+									<div class="tree-gutter">
+										<div class="tree-gutter-rail tree-gutter-rail-top"></div>
+										{#if current_column_continues}
+											<div class="tree-gutter-rail tree-gutter-rail-bottom"></div>
+										{/if}
+										<div class="tree-gutter-elbow"></div>
+										{#if !node_has_children}
+											<div class="tree-leaf-dot"></div>
+										{/if}
+									</div>
+								{/if}
+							</div>
+
 							<a
 								class={`tree-row ${get_match_kind_class(node.match_kind)}`}
 								class:tree-row-root={node_is_root}
@@ -578,33 +601,10 @@
 									selected_result_index = get_visible_result_index(node.document_id, visible_results);
 								}}
 							>
-								<div class="tree-guides" aria-hidden="true">
-									{#each ancestor_columns as show_rail, guide_index (`${depth}-${guide_index}`)}
-										<div class="tree-guide-column">
-											{#if show_rail}
-												<div class="tree-guide-rail"></div>
-											{/if}
-										</div>
-									{/each}
-
-									{#if !node_is_root}
-										<div class="tree-gutter">
-											<div class="tree-gutter-rail tree-gutter-rail-top"></div>
-											{#if current_column_continues}
-												<div class="tree-gutter-rail tree-gutter-rail-bottom"></div>
-											{/if}
-											<div class="tree-gutter-elbow"></div>
-											{#if !node_has_children}
-												<div class="tree-leaf-dot"></div>
-											{/if}
-										</div>
-									{/if}
-								</div>
-
 								<div class="page-illustration tree-illustration" aria-hidden="true">
 									{#if node.preview_media_node}
 										<div class="media-preview">
-											<Media node={node.preview_media_node} />
+											<Media node={{ ...node.preview_media_node, object_fit: 'cover' }} />
 										</div>
 									{:else}
 										<div class="page-illustration-fallback">
@@ -852,6 +852,7 @@
 		padding: 0.48rem 0.78rem;
 		border: 1px solid color-mix(in oklch, var(--background) 92%, var(--foreground));
 		border-radius: 0.9rem;
+		corner-shape: squircle;
 		background: var(--background);
 		box-shadow: 0 0 0 0 transparent;
 		cursor: text;
@@ -918,6 +919,8 @@
 	}
 
 	.tree-row {
+		position: relative;
+		z-index: 1;
 		border: 0;
 		background: transparent;
 		cursor: pointer;
@@ -932,7 +935,7 @@
 		gap: 0;
 		width: 100%;
 		min-width: 0;
-		min-height: 2.95rem;
+		min-height: 3.35rem;
 		padding: 0 2.5rem 0 0;
 	}
 
@@ -962,11 +965,14 @@
 	.tree-row-keyboard-selected {
 		outline: 1px solid var(--svedit-editing-stroke);
 		outline-offset: -1px;
+		border-radius: 1rem;
+		corner-shape: squircle;
 		background: color-mix(in oklch, var(--svedit-editing-fill) 82%, var(--background));
 	}
 
 	.item-actions-btn {
 		position: absolute;
+		z-index: 3;
 		top: 0.35rem;
 		right: 0.35rem;
 		display: inline-flex;
@@ -1025,11 +1031,14 @@
 	}
 
 	.tree-illustration {
-		width: 2.15rem;
+		width: 2.6rem;
 		aspect-ratio: 1;
 		flex: 0 0 auto;
-		margin: 0.2rem 0.2rem 0.2rem 0;
+		margin: 0.3rem 0.35rem 0.3rem 0;
 		background: color-mix(in oklch, var(--foreground) 2%, var(--background));
+		border-radius: 1.05rem;
+		corner-shape: squircle;
+		overflow: hidden;
 	}
 
 
@@ -1040,6 +1049,8 @@
 		display: block;
 		object-fit: cover;
 		background: color-mix(in oklch, var(--foreground) 3%, var(--background));
+		border-radius: inherit;
+		overflow: hidden;
 	}
 
 	.page-illustration-fallback {
@@ -1048,6 +1059,7 @@
 		display: grid;
 		place-items: center;
 		background: color-mix(in oklch, var(--foreground) 2%, var(--background));
+		border-radius: inherit;
 	}
 
 	.page-symbol {
@@ -1099,18 +1111,32 @@
 	}
 
 	.tree-row-shell {
+		position: relative;
 		display: flex;
 		align-items: stretch;
 		min-width: 0;
 	}
 
 	.tree-guides {
-		flex: 0 0 auto;
+		position: absolute;
+		inset: 0 auto 0 0;
+		z-index: 0;
 		display: flex;
 		align-items: stretch;
 		align-self: stretch;
 		min-width: max-content;
-		margin-right: 0.2rem;
+		margin-right: 0;
+		pointer-events: none;
+	}
+
+	.tree-row {
+		position: relative;
+		z-index: 1;
+		padding-left: calc((var(--tree-guide-columns, 0) * 1rem) + 0.2rem);
+	}
+
+	.search-shell {
+		z-index: 4;
 	}
 
 	.tree-guide-column,
