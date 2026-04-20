@@ -557,11 +557,11 @@
 			<div class="tree">
 
 
-				{#snippet node_item(node, depth = 0, is_last = true, ancestor_columns = [], ancestor_is_undiscoverable = false)}
+				{#snippet node_item(node, depth = 0, is_last = true, ancestor_columns = [], ancestor_is_unlisted = false)}
 					{@const node_has_children = has_children(node)}
 					{@const node_is_root = is_root_node(node, depth)}
-					{@const node_is_unlisted = is_unlisted_page(node, depth, ancestor_is_undiscoverable)}
-					{@const current_column_continues = node_is_root ? false : !is_last || node_has_children}
+					{@const node_is_unlisted = is_unlisted_page(node, depth, ancestor_is_unlisted)}
+					{@const current_column_continues = node_is_root ? false : !is_last}
 					<div class="tree-node">
 						<div class="tree-row-shell" style={`--tree-guide-columns: ${ancestor_columns.length + (node_is_root ? 0 : 1)};`}>
 							<div class="tree-guides" aria-hidden="true">
