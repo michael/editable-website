@@ -525,15 +525,27 @@
 
 <div class="pages-drawer">
 	<div class="search-shell">
-		<input
-			bind:this={search_input_ref}
-			type="search"
-			class="search-input"
-			bind:value={search_query}
-			placeholder={`Search ${page_count} pages`}
-			aria-label={`Search ${page_count} pages`}
-			onkeydown={(event) => handle_search_keydown(event, visible_results)}
-		/>
+		<label class="search-input-shell">
+			<svg
+				class="search-input-icon"
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 0 15 15"
+				fill="none"
+				aria-hidden="true"
+			>
+				<circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor"></circle>
+				<path d="M10 10L13 13" stroke="currentColor" stroke-linecap="square"></path>
+			</svg>
+			<input
+				bind:this={search_input_ref}
+				type="search"
+				class="search-input"
+				bind:value={search_query}
+				placeholder={`Search ${page_count} pages`}
+				aria-label={`Search ${page_count} pages`}
+				onkeydown={(event) => handle_search_keydown(event, visible_results)}
+			/>
+		</label>
 	</div>
 
 	<section class="section">
@@ -828,22 +840,65 @@
 		position: sticky;
 		top: 0;
 		z-index: 1;
-		padding-top: 0.1rem;
+		padding: 1rem 0 0.35rem;
 		background: var(--background);
+	}
+
+	.search-input-shell {
+		display: flex;
+		align-items: center;
+		gap: 0.55rem;
+		width: 100%;
+		padding: 0.48rem 0.78rem;
+		border: 1px solid color-mix(in oklch, var(--background) 92%, var(--foreground));
+		border-radius: 0.9rem;
+		background: var(--background);
+		box-shadow: 0 0 0 0 transparent;
+		cursor: text;
+		transition:
+			border-color 150ms ease,
+			box-shadow 150ms ease;
+	}
+
+	.search-input-shell:hover {
+		border-color: color-mix(in oklch, var(--background) 84%, var(--foreground));
+	}
+
+	.search-input-shell:focus-within {
+		border-color: color-mix(in oklch, var(--background) 76%, var(--foreground));
+		box-shadow: 0 0 0 3px color-mix(in oklch, var(--background) 92%, var(--foreground));
+	}
+
+	.search-input-icon {
+		flex: 0 0 auto;
+		width: 1.15rem;
+		height: 1.15rem;
+		color: color-mix(in oklch, var(--foreground) 42%, transparent);
 	}
 
 	.search-input {
 		width: 100%;
-		border: 1px solid color-mix(in oklch, var(--foreground) 14%, transparent);
-		background: color-mix(in oklch, var(--foreground) 2%, var(--background));
+		min-width: 0;
+		border: 0;
+		background: transparent;
 		color: var(--foreground);
-		padding: 0.55rem 0.7rem;
+		padding: 0;
 		font-size: 0.88rem;
 		outline: none;
+		box-shadow: none;
+		appearance: none;
+		-webkit-appearance: none;
 	}
 
-	.search-input:focus {
-		border-color: var(--svedit-editing-stroke);
+	.search-input::placeholder {
+		color: color-mix(in oklch, var(--foreground) 42%, transparent);
+	}
+
+	.search-input:focus,
+	.search-input:focus-visible {
+		outline: none;
+		border: 0;
+		box-shadow: none;
 	}
 
 	.section {
@@ -1353,9 +1408,18 @@
 			font-size: 0.68rem;
 		}
 
+		.search-input-shell {
+			gap: 0.5rem;
+			padding: 0.52rem 0.72rem;
+		}
+
+		.search-input-icon {
+			width: 1.05rem;
+			height: 1.05rem;
+		}
+
 		.search-input {
 			font-size: 0.84rem;
-			padding: 0.5rem 0.65rem;
 		}
 
 		.tree-row-meta {

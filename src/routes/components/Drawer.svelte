@@ -333,7 +333,7 @@
 		width: 100%;
 		max-width: 80rem;
 		margin: 0 auto;
-		padding: 1rem 1.25rem 1.25rem;
+		padding: 0 1.25rem 1.25rem;
 		min-height: 12rem;
 	}
 
