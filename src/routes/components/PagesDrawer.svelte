@@ -641,11 +641,6 @@
 											unlisted
 										</button>
 									{/if}
-									<div class="page-slug-label page-slug-label-right" title={get_page_slug_label(node.page_href)}>
-										{#each get_highlight_parts(get_page_slug_label(node.page_href), normalized_search_query) as part, part_index (`slug-${node.document_id}-${part_index}`)}
-											<span class:match-highlight={part.is_match}>{part.text}</span>
-										{/each}
-									</div>
 								</div>
 							</a>
 
@@ -941,13 +936,10 @@
 
 	.tree-row-meta {
 		margin-left: auto;
-		min-width: 0;
-		max-width: 14rem;
-		flex: 0 0 14rem;
+		flex: 0 0 auto;
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
-		gap: 0.5rem;
 		padding-left: 0.75rem;
 		padding-right: 1rem;
 	}
@@ -1229,16 +1221,6 @@
 		color: color-mix(in oklch, currentColor 52%, transparent);
 	}
 
-	.page-slug-label-right {
-		display: block;
-		min-width: 0;
-		flex: 0 1 auto;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-		text-align: right;
-	}
-
 	.unlisted-badge {
 		flex: 0 0 auto;
 		border: 1px solid color-mix(in oklch, var(--foreground) 10%, transparent);
@@ -1449,7 +1431,9 @@
 		}
 
 		.tree-row-meta {
-			display: none;
+			display: flex;
+			padding-left: 0.5rem;
+			padding-right: 0.75rem;
 		}
 	}
 </style>
