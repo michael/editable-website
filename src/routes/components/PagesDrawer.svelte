@@ -34,6 +34,24 @@
 	let search_query = $state('');
 	let search_input_ref = $state(null);
 	let selected_result_index = $state(0);
+	let tree_ref = $state(null);
+
+	function scroll_selected_result_into_view(visible_results) {
+		const selected_document_id = visible_results[selected_result_index]?.document_id;
+		if (!selected_document_id || !tree_ref) return;
+
+		requestAnimationFrame(() => {
+			const selected_row = tree_ref?.querySelector(
+				`[data-page-browser-row="${selected_document_id}"]`
+			);
+			if (!(selected_row instanceof HTMLElement)) return;
+
+			selected_row.scrollIntoView({
+				block: 'end',
+				inline: 'nearest'
+			});
+		});
+	}
 
 
 
@@ -485,6 +503,7 @@
 				selected_result_index + 1,
 				visible_results
 			);
+			scroll_selected_result_into_view(visible_results);
 			return;
 		}
 
@@ -494,6 +513,7 @@
 				selected_result_index - 1,
 				visible_results
 			);
+			scroll_selected_result_into_view(visible_results);
 			return;
 		}
 
@@ -554,7 +574,7 @@
 		{:else if load_error}
 			<div class="status-message" role="alert">{load_error}</div>
 		{:else}
-			<div class="tree">
+			<div class="tree" bind:this={tree_ref}>
 
 
 				{#snippet node_item(node, depth = 0, is_last = true, ancestor_columns = [], ancestor_is_unlisted = false)}
@@ -592,6 +612,7 @@
 								class={`tree-row ${get_match_kind_class(node.match_kind)}`}
 								class:tree-row-root={node_is_root}
 								class:tree-row-keyboard-selected={visible_results[selected_result_index]?.document_id === node.document_id}
+								data-page-browser-row={node.document_id}
 								href={resolve(get_resolved_page_href(node.page_href))}
 								onclick={(event) =>
 									handle_page_click(event, {
@@ -1233,7 +1254,7 @@
 		font-weight: 600;
 		line-height: 1;
 		letter-spacing: 0.02em;
-		text-transform: lowercase;
+		text-transform: uppercase;
 		cursor: pointer;
 	}
 
