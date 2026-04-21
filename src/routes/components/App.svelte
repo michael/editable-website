@@ -5,7 +5,7 @@
 	import { Svedit, KeyMapper, Command, define_keymap } from 'svedit';
 	import Toolbar from './Toolbar.svelte';
 	import SaveProgressModal from './SaveProgressModal.svelte';
-	import AuthDialog from './AuthDialog.svelte';
+
 	import { create_session } from '../create_session.js';
 	import { create_page_browser, set_page_browser } from './page_browser_context.svelte.js';
 
@@ -48,7 +48,16 @@
 		},
 		get is_admin() {
 			return is_admin;
-		}
+		},
+		get auth_dialog_open() {
+			return auth_dialog_open;
+		},
+		set auth_dialog_open(value) {
+			auth_dialog_open = value;
+		},
+		close_auth_dialog,
+		edit_for_fun,
+		handle_auth_success
 	};
 
 	setContext('app', app);
@@ -483,13 +492,6 @@
 		{focus_canvas}
 	/>
 	<Svedit {session} bind:editable bind:this={svedit_ref} path={[session.doc.document_id]} />
-
-	<AuthDialog
-		open={auth_dialog_open}
-		onclose={close_auth_dialog}
-		onedit_for_fun={edit_for_fun}
-		onlogin_success={handle_auth_success}
-	/>
 
 	{#if has_backend}
 		<SaveProgressModal

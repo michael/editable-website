@@ -6,6 +6,7 @@
 	import CreateLink from './CreateLink.svelte';
 	import EditLink from './EditLink.svelte';
 	import LinkPreview from './LinkPreview.svelte';
+	import AuthDialog from './AuthDialog.svelte';
 	import Drawer from './Drawer.svelte';
 
 	const svedit = getContext('svedit');
@@ -214,6 +215,16 @@
 
 	{#if svedit.session.commands?.toggle_link?.show_prompt}
 		<CreateLink />
+	{/if}
+
+	{#if app.auth_dialog_open}
+		<Drawer bind:open={app.auth_dialog_open} label="Edit options">
+			<AuthDialog
+				onclose={app.close_auth_dialog}
+				onedit_for_fun={app.edit_for_fun}
+				onlogin_success={app.handle_auth_success}
+			/>
+		</Drawer>
 	{/if}
 
 	{#if app.has_backend && app.is_admin}
