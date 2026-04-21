@@ -1,5 +1,5 @@
 <script>
-	import { invalidateAll } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
 
 	import { get_page_browser_data } from '$lib/api.remote.js';
@@ -16,6 +16,8 @@
 	let menu_item = $state(null);
 	let menu_anchor_name = $state('');
 	let menu_ref = $state(null);
+	let menu_item_refs = $state([]);
+	let menu_selected_index = $state(0);
 
 	let confirm_item = $state(null);
 	let confirm_ref = $state(null);
@@ -82,6 +84,20 @@
 		} else if (!menu_item && menu_ref?.open) {
 			menu_ref.close();
 		}
+	});
+
+	$effect(() => {
+		if (!menu_item) {
+			menu_item_refs = [];
+			menu_selected_index = 0;
+			return;
+		}
+
+		requestAnimationFrame(() => {
+			const enabled_index = menu_item_refs.findIndex((item_ref) => !item_ref?.disabled);
+			menu_selected_index = enabled_index === -1 ? 0 : enabled_index;
+			menu_item_refs[menu_selected_index]?.focus();
+		});
 	});
 
 	$effect(() => {
@@ -245,6 +261,55 @@
 		}
 	}
 
+	function handle_menu_keydown(event) {
+		if (!menu_item) return;
+
+		const enabled_item_refs = menu_item_refs.filter((item_ref) => item_ref && !item_ref.disabled);
+		if (enabled_item_refs.length === 0) return;
+
+		const current_enabled_index = enabled_item_refs.findIndex(
+			(item_ref) => item_ref === menu_item_refs[menu_selected_index]
+		);
+
+		if (event.key === 'ArrowDown') {
+			event.preventDefault();
+			const next_enabled_index =
+				current_enabled_index === -1
+					? 0
+					: (current_enabled_index + 1) % enabled_item_refs.length;
+			const next_item_ref = enabled_item_refs[next_enabled_index];
+			const next_index = menu_item_refs.findIndex((item_ref) => item_ref === next_item_ref);
+			if (next_index !== -1) {
+				menu_selected_index = next_index;
+				next_item_ref.focus();
+			}
+			return;
+		}
+
+		if (event.key === 'ArrowUp') {
+			event.preventDefault();
+			const next_enabled_index =
+				current_enabled_index === -1
+					? enabled_item_refs.length - 1
+					: (current_enabled_index - 1 + enabled_item_refs.length) % enabled_item_refs.length;
+			const next_item_ref = enabled_item_refs[next_enabled_index];
+			const next_index = menu_item_refs.findIndex((item_ref) => item_ref === next_item_ref);
+			if (next_index !== -1) {
+				menu_selected_index = next_index;
+				next_item_ref.focus();
+			}
+			return;
+		}
+
+		if (event.key === 'Enter') {
+			const active_item = document.activeElement;
+			if (active_item instanceof HTMLButtonElement && active_item.closest('.menu-panel')) {
+				event.preventDefault();
+				active_item.click();
+			}
+		}
+	}
+
 	function handle_confirm_click(event) {
 		if (event.target === confirm_ref) {
 			close_confirm();
@@ -325,17 +390,23 @@
 
 			const deleted_document_id = confirm_item.document_id;
 			const home_page_id = browser_data?.home_page_id ?? null;
+			const current_document_id = browser_data?.current_document_id ?? null;
+			const deleted_current_page = current_document_id === deleted_document_id;
 
 			close_confirm();
 			browser_data = null;
 			loaded_version = -1;
-			page_browser.invalidate?.();
-			await invalidateAll();
-			await page_browser.handle_page_deleted?.(
-				deleted_document_id,
-				home_page_id,
-				page_url_dialog_item?.document_id ?? confirm_item.document_id
-			);
+
+			if (deleted_current_page) {
+				await page_browser.handle_page_deleted?.(
+					deleted_document_id,
+					home_page_id,
+					current_document_id
+				);
+			} else {
+				page_browser.invalidate?.();
+				await invalidateAll();
+			}
 		} catch (err) {
 			delete_error = err instanceof Error ? err.message : 'Failed to delete page.';
 		} finally {
@@ -517,7 +588,7 @@
 			return;
 		}
 
-		if (event.key === 'Enter') {
+		if (event.key === 'Enter' && event.target === search_input_ref) {
 			event.preventDefault();
 			const selected_result = visible_results[selected_result_index];
 			if (!selected_result) return;
@@ -722,27 +793,44 @@
 	class="page-actions-dialog"
 	oncancel={handle_menu_cancel}
 	onclick={handle_menu_click}
+	onkeydown={handle_menu_keydown}
 >
 	{#if menu_item}
 		<div
 			class="menu-panel"
 			style={`position-anchor: ${menu_anchor_name}; position-area: block-end span-all; justify-self: anchor-center; position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;`}
 		>
-			<button type="button" class="menu-item" onclick={open_in_new_tab}>
+			<button
+				bind:this={menu_item_refs[0]}
+				type="button"
+				class="menu-item"
+				onclick={open_in_new_tab}
+				onfocus={() => {
+					menu_selected_index = 0;
+				}}
+			>
 				Open in new tab
 			</button>
 			<button
+				bind:this={menu_item_refs[1]}
 				type="button"
 				class="menu-item {menu_item.is_home_page ? 'menu-item-disabled' : ''}"
 				onclick={open_page_url_dialog}
+				onfocus={() => {
+					menu_selected_index = 1;
+				}}
 				disabled={menu_item.is_home_page}
 			>
 				Edit URL
 			</button>
 			<button
+				bind:this={menu_item_refs[2]}
 				type="button"
 				class="menu-item {menu_item.is_home_page ? 'menu-item-disabled' : 'menu-item-danger'}"
 				onclick={open_confirm}
+				onfocus={() => {
+					menu_selected_index = 2;
+				}}
 				disabled={menu_item.is_home_page}
 			>
 				Delete
@@ -758,7 +846,10 @@
 	onclick={handle_confirm_click}
 >
 	{#if confirm_item}
-		<div class="confirm-panel">
+		<form class="confirm-panel" onsubmit={(event) => {
+			event.preventDefault();
+			void confirm_delete();
+		}}>
 			<h3 class="confirm-title">Delete page</h3>
 			<p class="confirm-message">{get_delete_confirmation_message()}</p>
 			{#if delete_error}
@@ -769,15 +860,14 @@
 					Cancel
 				</button>
 				<button
-					type="button"
+					type="submit"
 					class="confirm-btn confirm-btn-danger"
-					onclick={confirm_delete}
 					disabled={deleting}
 				>
 					{deleting ? 'Deleting…' : 'Delete'}
 				</button>
 			</div>
-		</div>
+		</form>
 	{/if}
 </dialog>
 
@@ -788,7 +878,10 @@
 	onclick={handle_page_url_dialog_click}
 >
 	{#if page_url_dialog_item}
-		<div class="confirm-panel">
+		<form class="confirm-panel" onsubmit={(event) => {
+			event.preventDefault();
+			void save_page_url();
+		}}>
 			<h3 class="confirm-title">Edit URL</h3>
 			<div class="page-url-field">
 				<span class="page-url-prefix">example.com/</span>
@@ -812,15 +905,14 @@
 					Cancel
 				</button>
 				<button
-					type="button"
+					type="submit"
 					class="confirm-btn"
-					onclick={save_page_url}
 					disabled={saving_page_url}
 				>
 					{saving_page_url ? 'Saving…' : 'Save'}
 				</button>
 			</div>
-		</div>
+		</form>
 	{/if}
 </dialog>
 
@@ -1016,12 +1108,19 @@
 	.tree-row-shell:focus-within .item-actions-btn,
 	.tree-row:hover + .item-actions-btn,
 	.tree-row:focus-visible + .item-actions-btn,
-	.item-actions-btn:hover,
+	.item-actions-btn:hover {
+		opacity: 1;
+		pointer-events: auto;
+		color: color-mix(in oklch, currentColor 68%, transparent);
+	}
+
 	.item-actions-btn:focus-visible {
 		opacity: 1;
 		pointer-events: auto;
 		color: color-mix(in oklch, currentColor 68%, transparent);
-		outline: none;
+		outline: 2px solid var(--svedit-editing-stroke);
+		outline-offset: 2px;
+		border-radius: 9999px;
 	}
 
 	.page-illustration {
@@ -1258,11 +1357,16 @@
 		cursor: pointer;
 	}
 
-	.unlisted-badge:hover,
+	.unlisted-badge:hover {
+		background: color-mix(in oklch, var(--foreground) 4%, transparent);
+		color: color-mix(in oklch, currentColor 62%, transparent);
+	}
+
 	.unlisted-badge:focus-visible {
 		background: color-mix(in oklch, var(--foreground) 4%, transparent);
 		color: color-mix(in oklch, currentColor 62%, transparent);
-		outline: none;
+		outline: 2px solid var(--svedit-editing-stroke);
+		outline-offset: 2px;
 	}
 
 	.tree-actions-dots {
@@ -1417,10 +1521,14 @@
 		font-weight: 600;
 	}
 
-	.confirm-btn:hover,
+	.confirm-btn:hover {
+		background: color-mix(in oklch, var(--foreground) 10%, var(--background));
+	}
+
 	.confirm-btn:focus-visible {
 		background: color-mix(in oklch, var(--foreground) 10%, var(--background));
-		outline: none;
+		outline: 2px solid var(--svedit-editing-stroke);
+		outline-offset: 2px;
 	}
 
 	.confirm-btn-danger {

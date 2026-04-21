@@ -1273,10 +1273,10 @@ export const update_page_slug = command(update_page_slug_input_schema, async (in
 	}
 
 	if (normalized_slug === current_active_slug) {
-		return create_page_url_error_result(
-			'page_url_same_as_current',
-			'That Page URL is already in use by this page'
-		);
+		return {
+			ok: true,
+			slug: current_active_slug
+		};
 	}
 
 	const existing_slug = /** @type {{ document_id: string, is_active: number } | undefined} */ (
