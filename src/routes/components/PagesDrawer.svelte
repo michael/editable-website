@@ -1043,7 +1043,8 @@
 		position: sticky;
 		top: 0;
 		z-index: 1;
-		padding: 1rem 0 0.35rem;
+		margin-inline: -0.4rem;
+		padding: 1rem 0.4rem 0.35rem;
 		background: var(--background);
 	}
 
@@ -1169,8 +1170,14 @@
 	}
 
 	.tree-row:hover::before,
-	.tree-row:focus-visible::before {
-		background: color-mix(in oklch, var(--svedit-editing-fill) 58%, var(--background));
+	.tree-row-shell:hover .tree-row::before {
+		background: color-mix(in oklch, var(--foreground) 3%, var(--background));
+	}
+
+	.tree-row:focus-visible::before,
+	.tree-row-shell:focus-within .tree-row:focus-visible::before {
+		background: transparent;
+		outline-color: var(--svedit-editing-stroke);
 	}
 
 	.draft-card-keyboard-selected,
@@ -1184,9 +1191,14 @@
 		outline-color: var(--svedit-editing-stroke);
 	}
 
-	.tree-row-keyboard-selected:hover::before,
-	.tree-row-keyboard-selected:focus-visible::before {
+	.tree-row-keyboard-selected:hover::before {
 		background: color-mix(in oklch, var(--svedit-editing-fill) 88%, var(--background));
+	}
+
+	.tree-row-keyboard-selected:focus-visible::before,
+	.tree-row-shell:focus-within .tree-row-keyboard-selected:focus-visible::before {
+		background: color-mix(in oklch, var(--svedit-editing-fill) 82%, var(--background));
+		outline-color: var(--svedit-editing-stroke);
 	}
 
 	.item-actions-btn {
@@ -1231,9 +1243,10 @@
 		opacity: 1;
 		pointer-events: auto;
 		color: color-mix(in oklch, currentColor 68%, transparent);
-		outline: 2px solid var(--svedit-editing-stroke);
-		outline-offset: 2px;
+		outline: 1px solid var(--svedit-editing-stroke);
+		outline-offset: 1px;
 		border-radius: 9999px;
+		box-shadow: none;
 	}
 
 	.page-illustration {
