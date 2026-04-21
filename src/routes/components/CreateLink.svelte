@@ -78,13 +78,13 @@
 				type="url"
 				bind:value={href_input_value}
 				placeholder="https://example.com"
-				class="w-72 min-w-0 flex-1 border-0 bg-(--background) px-3 py-2 text-sm text-(--foreground) outline-none focus:ring-1 focus:ring-(--svedit-editing-stroke)"
+				class="w-72 min-w-0 flex-1 border-0 bg-(--background) px-3 py-2 text-sm text-(--foreground) outline-1 outline-transparent focus:outline-none focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 				onkeydown={handle_keydown}
 			/>
 			{#if app.has_backend}
 				<button
 					type="button"
-					class="shrink-0 cursor-pointer border-l border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] px-3 text-(--svedit-editing-stroke) hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))]"
+					class="shrink-0 cursor-pointer border-l border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] px-3 text-(--svedit-editing-stroke) hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))] outline-1 outline-transparent focus:outline-none focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 					title="Select page"
 					aria-label="Select page"
 					onclick={() => {
@@ -109,13 +109,13 @@
 				<input
 					type="checkbox"
 					bind:checked={open_in_new_tab}
-					class="w-4 h-4 cursor-pointer text-(--svedit-editing-stroke) focus:ring-(--svedit-editing-stroke)"
+					class="w-4 h-4 cursor-pointer text-(--svedit-editing-stroke) outline-1 outline-transparent focus:outline-none focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 				/>
 				<span class="text-sm text-(--foreground)">Open in new tab</span>
 			</label>
 			<button
 				type="button"
-				class="text-sm text-(--svedit-editing-stroke) cursor-pointer shrink-0 hover:opacity-80"
+				class="text-sm text-(--svedit-editing-stroke) cursor-pointer shrink-0 hover:opacity-80 outline-1 outline-transparent focus:outline-none focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 				onclick={create_link}
 			>
 				CREATE

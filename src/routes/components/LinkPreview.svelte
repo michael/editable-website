@@ -64,20 +64,20 @@
 					href={internal_page_href ?? node.href}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="text-sm text-(--foreground) max-w-70 truncate hover:underline"
+					class="text-sm text-(--foreground) max-w-70 truncate hover:underline outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 				>
 					{node.href}
 				</a>
 				<button
 					type="button"
-					class="text-sm text-(--svedit-editing-stroke) cursor-pointer shrink-0 hover:opacity-80"
+					class="text-sm text-(--svedit-editing-stroke) cursor-pointer shrink-0 hover:opacity-80 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 					onclick={handle_edit}
 				>
 					EDIT
 				</button>
 				<button
 					type="button"
-					class="text-sm text-(--svedit-editing-stroke) cursor-pointer shrink-0 hover:opacity-80"
+					class="text-sm text-(--svedit-editing-stroke) cursor-pointer shrink-0 hover:opacity-80 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 					onclick={handle_remove}
 				>
 					REMOVE

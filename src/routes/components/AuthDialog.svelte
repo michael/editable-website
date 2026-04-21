@@ -135,7 +135,7 @@
 					<button
 						type="button"
 
-						class="cursor-pointer flex w-full min-w-0 overflow-hidden flex-col justify-between rounded-[0.9rem] border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] bg-(--background) px-2 py-3 text-center transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] active:scale-95 active:translate-y-px focus:outline-none focus:ring-2 focus:ring-(--svedit-editing-stroke) sm:aspect-square sm:min-h-56 sm:rounded-[1.25rem] sm:p-5"
+						class="cursor-pointer flex w-full min-w-0 overflow-hidden flex-col justify-between rounded-[0.9rem] border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] bg-(--background) px-2 py-3 text-center transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] active:scale-95 active:translate-y-px outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1 sm:aspect-square sm:min-h-56 sm:rounded-[1.25rem] sm:p-5"
 						onclick={onedit_for_fun}
 					>
 						<div class="flex h-14 items-center justify-center overflow-hidden sm:h-28">
@@ -169,7 +169,7 @@
 
 					<button
 						type="button"
-						class="cursor-pointer flex w-full min-w-0 overflow-hidden flex-col justify-between rounded-[0.9rem] border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] bg-(--background) px-2 py-3 text-center transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] active:scale-95 active:translate-y-px focus:outline-none focus:ring-2 focus:ring-(--svedit-editing-stroke) sm:aspect-square sm:min-h-56 sm:rounded-[1.25rem] sm:p-5"
+						class="cursor-pointer flex w-full min-w-0 overflow-hidden flex-col justify-between rounded-[0.9rem] border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] bg-(--background) px-2 py-3 text-center transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] active:scale-95 active:translate-y-px outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1 sm:aspect-square sm:min-h-56 sm:rounded-[1.25rem] sm:p-5"
 						onclick={open_login_step}
 					>
 						<div class="flex h-14 items-center justify-center overflow-hidden sm:h-28">
@@ -211,7 +211,7 @@
 					type="password"
 					bind:this={password_input_ref}
 					bind:value={password}
-					class="rounded-[0.9rem] border border-[color-mix(in_oklch,var(--foreground)_12%,transparent)] bg-(--background) px-3 py-2 outline-none focus:ring-2 focus:ring-(--svedit-editing-stroke)"
+					class="rounded-[0.9rem] border border-[color-mix(in_oklch,var(--foreground)_12%,transparent)] bg-(--background) px-3 py-2 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 					onkeydown={handle_password_keydown}
 				/>
 
@@ -222,7 +222,7 @@
 				<div class="flex items-center justify-end gap-2">
 					<button
 						type="button"
-						class="inline-flex items-center justify-center rounded-full border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] bg-(--background) px-4 py-2 text-sm font-semibold text-(--foreground) shadow-sm transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] active:scale-95 active:translate-y-px focus:outline-none focus:ring-2 focus:ring-(--svedit-editing-stroke)"
+						class="inline-flex items-center justify-center rounded-full border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] bg-(--background) px-4 py-2 text-sm font-semibold text-(--foreground) shadow-sm transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] active:scale-95 active:translate-y-px outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 						onclick={onclose}
 						disabled={pending}
 					>
@@ -230,7 +230,7 @@
 					</button>
 					<button
 						type="button"
-						class="inline-flex items-center justify-center rounded-full border border-(--svedit-editing-stroke) bg-(--background) px-4 py-2 text-sm font-semibold text-(--svedit-editing-stroke) shadow-sm transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--foreground)_4%,var(--background))] active:bg-[color-mix(in_oklch,var(--foreground)_7%,var(--background))] active:scale-95 active:translate-y-px focus:outline-none focus:ring-2 focus:ring-(--svedit-editing-stroke)"
+						class="inline-flex items-center justify-center rounded-full border border-(--svedit-editing-stroke) bg-(--background) px-4 py-2 text-sm font-semibold text-(--svedit-editing-stroke) shadow-sm transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--foreground)_4%,var(--background))] active:bg-[color-mix(in_oklch,var(--foreground)_7%,var(--background))] active:scale-95 active:translate-y-px outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 						onclick={() => void login_and_edit()}
 						disabled={pending}
 					>
