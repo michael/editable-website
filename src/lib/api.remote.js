@@ -731,11 +731,18 @@ function build_page_tree_node(
 /**
  * @returns {{
  *   home_page_id: string | null,
+ *   current_document_id: string | null,
  *   page_forest: PageTreeNode[]
  * }}
  */
 function build_page_browser_data() {
+	const request_event = getRequestEvent();
+	const pathname = request_event.url.pathname;
 	const home_page_id = get_home_page_id_from_db();
+	const current_document_id =
+		pathname === '/'
+			? home_page_id
+			: resolve_slug(pathname.slice(1))?.document_id ?? null;
 	const page_docs = list_page_documents();
 	const page_docs_by_id = new Map(page_docs.map((page_doc) => [page_doc.document_id, page_doc]));
 	const summaries = page_docs.map(summarize_page_document);
@@ -834,6 +841,7 @@ function build_page_browser_data() {
 
 	return {
 		home_page_id,
+		current_document_id,
 		page_forest
 	};
 }

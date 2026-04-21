@@ -37,6 +37,8 @@
 	let search_input_ref = $state(null);
 	let selected_result_index = $state(0);
 	let tree_ref = $state(null);
+	let initialized_selection_version = $state(-1);
+	let initial_scroll_timeout_id = $state(null);
 
 	function scroll_selected_result_into_view(visible_results) {
 		const selected_document_id = visible_results[selected_result_index]?.document_id;
@@ -53,6 +55,12 @@
 				inline: 'nearest'
 			});
 		});
+	}
+
+	function clear_initial_scroll_timeout() {
+		if (initial_scroll_timeout_id === null) return;
+		clearTimeout(initial_scroll_timeout_id);
+		initial_scroll_timeout_id = null;
 	}
 
 
@@ -76,6 +84,43 @@
 		load_error = query.error ? 'Failed to load pages.' : '';
 		browser_data = query.current ?? null;
 		loaded_version = page_browser?.version ?? 0;
+
+		const current_page_id = query.current
+			? /** @type {string | null} */ (query.current.current_document_id ?? null)
+			: null;
+
+		if (
+			page_browser.state.open &&
+			!query.loading &&
+			initialized_selection_version !== (page_browser?.version ?? 0) &&
+			!normalized_search_query &&
+			current_page_id
+		) {
+			const current_page_forest = query.current.page_forest ?? [];
+			const current_filtered_page_forest = filter_page_forest(
+				current_page_forest,
+				normalize_search_text(search_query)
+			);
+			const current_visible_results = get_visible_results(current_filtered_page_forest);
+
+			initialized_selection_version = page_browser?.version ?? 0;
+
+			if (current_visible_results.length > 0) {
+				const current_result_index = get_visible_result_index(
+					current_page_id,
+					current_visible_results
+				);
+
+				if (current_result_index !== -1) {
+					selected_result_index = current_result_index;
+					clear_initial_scroll_timeout();
+					initial_scroll_timeout_id = setTimeout(() => {
+						initial_scroll_timeout_id = null;
+						scroll_selected_result_into_view(current_visible_results);
+					}, 120);
+				}
+			}
+		}
 	});
 
 	$effect(() => {
@@ -125,7 +170,11 @@
 	});
 
 	$effect(() => {
-		if (!page_browser.state.open) return;
+		if (!page_browser.state.open) {
+			initialized_selection_version = -1;
+			clear_initial_scroll_timeout();
+			return;
+		}
 
 		search_query = '';
 
@@ -135,6 +184,10 @@
 			search_input_ref?.focus();
 			search_input_ref?.select();
 		});
+
+		return () => {
+			clear_initial_scroll_timeout();
+		};
 	});
 
 	function get_page_count(node) {
@@ -690,9 +743,6 @@
 										document_id: node.document_id,
 										page_href: node.page_href
 									})}
-								onmousemove={() => {
-									selected_result_index = get_visible_result_index(node.document_id, visible_results);
-								}}
 							>
 								<div class="page-illustration tree-illustration" aria-hidden="true">
 									{#if node.preview_media_node}
@@ -1064,7 +1114,7 @@
 
 	.tree-row:hover,
 	.tree-row:focus-visible {
-		background: var(--svedit-editing-fill);
+		background: color-mix(in oklch, var(--svedit-editing-fill) 58%, var(--background));
 	}
 
 	.draft-card-keyboard-selected,
@@ -1074,6 +1124,11 @@
 		border-radius: 1rem;
 		corner-shape: squircle;
 		background: color-mix(in oklch, var(--svedit-editing-fill) 82%, var(--background));
+	}
+
+	.tree-row-keyboard-selected:hover,
+	.tree-row-keyboard-selected:focus-visible {
+		background: color-mix(in oklch, var(--svedit-editing-fill) 88%, var(--background));
 	}
 
 	.item-actions-btn {
