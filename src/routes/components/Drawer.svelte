@@ -77,7 +77,6 @@
 		is_dragging = false;
 		is_closing = true;
 		is_mounted = false;
-		drawer_height_ratio = 0;
 	}
 
 	function handle_dialog_cancel(event) {
@@ -194,7 +193,6 @@
 			if (dialog_ref.open && !is_closing) {
 				is_mounted = false;
 				is_closing = true;
-				drawer_height_ratio = 0;
 			}
 		}
 
@@ -372,8 +370,6 @@
 		background: var(--background);
 		box-shadow: 0 -12px 40px oklch(0% 0 0 / 0.12);
 		border-top: 0.5px solid color-mix(in oklch, var(--foreground) 18%, transparent);
-		border-top-left-radius: 1.25rem;
-		border-top-right-radius: 1.25rem;
 		color: var(--foreground);
 		padding-bottom: max(1rem, env(safe-area-inset-bottom));
 		overflow: auto;
