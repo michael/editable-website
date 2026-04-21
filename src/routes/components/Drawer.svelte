@@ -15,22 +15,28 @@
 		children
 	} = $props();
 
-	const close_drawer_height_ratio = 0.12;
 	const min_drawer_height_ratio = 0;
-	const max_drawer_height_ratio = 0.9;
+	const max_drawer_height_ratio = 0.95;
 	const default_drawer_height_ratio = 2 / 3;
-	const snap_drawer_height_ratios = [1 / 3, 2 / 3, 3 / 4];
+	const snap_drawer_height_ratios = [3 / 4, 2 / 3, 1 / 3, 0];
+	const velocity_threshold = 0.5;
 
 	let dialog_ref = $state();
+	let handle_ref = $state();
+
 	let is_visible = $state(open);
-	let is_animating_open = $state(false);
+	let is_mounted = $state(false);
+	let is_closing = $state(false);
+	let is_dragging = $state(false);
+
 	let drawer_height_ratio = $state(default_drawer_height_ratio);
-	let is_resizing = $state(false);
-	let is_snapping = $state(false);
-	let is_closing_from_drag = $state(false);
-	let resize_start_y = $state(0);
-	let resize_start_height_ratio = $state(default_drawer_height_ratio);
 	let last_open_drawer_height_ratio = $state(default_drawer_height_ratio);
+
+	let drag_start_y = $state(0);
+	let drag_start_height_ratio = $state(default_drawer_height_ratio);
+	let last_pointer_y = $state(0);
+	let last_pointer_time = $state(0);
+	let drag_velocity = $state(0);
 
 	function clamp_drawer_height_ratio(value) {
 		return Math.min(Math.max(value, min_drawer_height_ratio), max_drawer_height_ratio);
@@ -51,13 +57,27 @@
 		return nearest_ratio;
 	}
 
-	function close() {
-		if (!is_closing_from_drag) {
-			drawer_height_ratio = last_open_drawer_height_ratio;
+	function get_snap_drawer_height_ratio(value, velocity) {
+		if (Math.abs(velocity) > velocity_threshold) {
+			if (velocity > 0) {
+				return snap_drawer_height_ratios.find((ratio) => ratio < value) ?? 0;
+			}
+
+			return [...snap_drawer_height_ratios]
+				.reverse()
+				.find((ratio) => ratio > value) ?? snap_drawer_height_ratios[0];
 		}
-		is_snapping = false;
-		is_closing_from_drag = false;
-		open = false;
+
+		return get_nearest_snap_drawer_height_ratio(value);
+	}
+
+	function close() {
+		if (is_closing) return;
+
+		is_dragging = false;
+		is_closing = true;
+		is_mounted = false;
+		drawer_height_ratio = 0;
 	}
 
 	function handle_dialog_cancel(event) {
@@ -71,58 +91,82 @@
 		}
 	}
 
-	function start_resize(client_y) {
-		is_resizing = true;
-		is_snapping = false;
-		is_closing_from_drag = false;
-		resize_start_y = client_y;
-		resize_start_height_ratio = drawer_height_ratio;
+	function handle_handle_pointerdown(event) {
+		event.preventDefault();
+
+		is_dragging = true;
+		drag_start_y = event.clientY;
+		drag_start_height_ratio = drawer_height_ratio;
+		last_pointer_y = event.clientY;
+		last_pointer_time = Date.now();
+		drag_velocity = 0;
+
+		handle_ref?.setPointerCapture(event.pointerId);
 	}
 
-	function update_resize(client_y) {
-		if (!is_resizing) return;
+	function handle_handle_pointermove(event) {
+		if (!is_dragging) return;
+
+		const now = Date.now();
+		const delta_time = now - last_pointer_time;
+		const delta_y = event.clientY - last_pointer_y;
+
+		if (delta_time > 0) {
+			drag_velocity = delta_y / delta_time;
+		}
+
+		last_pointer_y = event.clientY;
+		last_pointer_time = now;
 
 		const viewport_height = window.innerHeight || 1;
-		const delta_y = resize_start_y - client_y;
-		const next_height_ratio = resize_start_height_ratio + delta_y / viewport_height;
-		drawer_height_ratio = clamp_drawer_height_ratio(next_height_ratio);
+		const drag_delta = event.clientY - drag_start_y;
+		const height_delta = drag_delta / viewport_height;
+		drawer_height_ratio = clamp_drawer_height_ratio(drag_start_height_ratio - height_delta);
 	}
 
-	function finish_resize(client_y) {
-		if (!is_resizing) return;
+	function finish_drag(event) {
+		if (!is_dragging) return;
+
+		is_dragging = false;
+		handle_ref?.releasePointerCapture(event.pointerId);
 
 		const viewport_height = window.innerHeight || 1;
-		const delta_y = resize_start_y - client_y;
-		const raw_released_height_ratio = resize_start_height_ratio + delta_y / viewport_height;
-		const released_height_ratio = clamp_drawer_height_ratio(raw_released_height_ratio);
+		const drag_delta = event.clientY - drag_start_y;
+		const released_height_ratio = clamp_drawer_height_ratio(
+			drag_start_height_ratio - drag_delta / viewport_height
+		);
 
-		is_resizing = false;
+		const snap_target = get_snap_drawer_height_ratio(released_height_ratio, drag_velocity);
+		drag_velocity = 0;
 
-		if (raw_released_height_ratio <= close_drawer_height_ratio) {
-			is_snapping = true;
-			is_closing_from_drag = true;
-			drawer_height_ratio = 0;
+		if (snap_target <= 0) {
+			close();
 			return;
 		}
 
-		is_snapping = true;
-		is_closing_from_drag = false;
-		const snapped_height_ratio = get_nearest_snap_drawer_height_ratio(released_height_ratio);
-		drawer_height_ratio = snapped_height_ratio;
-		last_open_drawer_height_ratio = snapped_height_ratio;
+		drawer_height_ratio = snap_target;
+		last_open_drawer_height_ratio = snap_target;
 	}
 
-	function handle_handle_pointerdown(event) {
-		event.preventDefault();
-		start_resize(event.clientY);
+	function handle_handle_pointerup(event) {
+		finish_drag(event);
 	}
 
-	function handle_window_pointermove(event) {
-		update_resize(event.clientY);
+	function handle_handle_pointercancel(event) {
+		finish_drag(event);
 	}
 
-	function handle_window_pointerup(event) {
-		finish_resize(event.clientY);
+	function handle_drawer_transition_end(event) {
+		if (event.target !== event.currentTarget) return;
+		if (event.propertyName !== 'transform') return;
+
+		if (!is_mounted && dialog_ref?.open) {
+			dialog_ref.close();
+			is_visible = false;
+			is_closing = false;
+			open = false;
+			drawer_height_ratio = last_open_drawer_height_ratio;
+		}
 	}
 
 	$effect(() => {
@@ -131,9 +175,9 @@
 		if (open) {
 			document.documentElement.classList.add('drawer-open');
 			document.body.classList.add('drawer-open');
+
 			is_visible = true;
-			is_snapping = false;
-			is_closing_from_drag = false;
+			is_closing = false;
 			drawer_height_ratio = last_open_drawer_height_ratio;
 
 			if (!dialog_ref.open) {
@@ -141,14 +185,16 @@
 			}
 
 			requestAnimationFrame(() => {
-				is_animating_open = true;
+				is_mounted = true;
 			});
 		} else {
 			document.documentElement.classList.remove('drawer-open');
 			document.body.classList.remove('drawer-open');
 
-			if (dialog_ref.open) {
-				is_animating_open = false;
+			if (dialog_ref.open && !is_closing) {
+				is_mounted = false;
+				is_closing = true;
+				drawer_height_ratio = 0;
 			}
 		}
 
@@ -157,67 +203,49 @@
 			document.body.classList.remove('drawer-open');
 		};
 	});
-
-	function handle_transition_end(event) {
-		if (event.target !== event.currentTarget) return;
-
-		if (event.propertyName === 'transform') {
-			if (!open && dialog_ref?.open) {
-				dialog_ref.close();
-				is_visible = false;
-			}
-			return;
-		}
-
-		if (event.propertyName !== 'height') return;
-
-		if (is_closing_from_drag) {
-			is_snapping = false;
-			is_closing_from_drag = false;
-			open = false;
-			return;
-		}
-
-		if (is_snapping) {
-			is_snapping = false;
-		}
-	}
 </script>
-
-<svelte:window onpointermove={handle_window_pointermove} onpointerup={handle_window_pointerup} />
 
 <dialog
 	bind:this={dialog_ref}
 	class="drawer-dialog"
-	class:animating-open={is_animating_open}
-	class:resizing={is_resizing}
-	class:snapping={is_snapping}
+	class:mounted={is_mounted}
+	class:closing={is_closing}
+	class:dragging={is_dragging}
 	oncancel={handle_dialog_cancel}
 	onclick={handle_backdrop_click}
 >
-	<div class="drawer-shell" role="complementary" aria-label={label}>
-		<div class="drawer" ontransitionend={handle_transition_end}>
-			<button
-				type="button"
-				class="drawer-handle-button"
-				aria-label={`Resize ${label} drawer`}
+
+
+		<div
+			class="drawer-shell"
+			role="complementary"
+			aria-label={label}
+			style={`--drawer-height: ${drawer_height_ratio * 100}dvh;`}
+		>
+			<div
+				class="drawer-handle-area"
+				bind:this={handle_ref}
+				role="presentation"
+				aria-hidden="true"
 				onpointerdown={handle_handle_pointerdown}
+				onpointermove={handle_handle_pointermove}
+				onpointerup={handle_handle_pointerup}
+				onpointercancel={handle_handle_pointercancel}
 			>
 				<span class="drawer-handle" aria-hidden="true"></span>
-			</button>
+			</div>
 
 			<div
-				id="drawer-panel"
-				class="drawer-panel"
-				style={`height: ${drawer_height_ratio * 100}vh; max-height: ${drawer_height_ratio * 100}vh;`}
-				ontransitionend={handle_transition_end}
+				class="drawer"
+				ontransitionend={handle_drawer_transition_end}
 			>
+			<div class="drawer-panel">
 				<div class="drawer-content">
 					{@render children?.({ close })}
 				</div>
 			</div>
+			</div>
 		</div>
-	</div>
 </dialog>
 
 <style>
@@ -248,12 +276,15 @@
 
 	.drawer-dialog::backdrop {
 		background: transparent;
+		opacity: 0;
+		transition: opacity 0.2s ease-out;
 	}
 
-	.drawer-dialog[open]::backdrop {
-		background: color-mix(in oklch, var(--foreground) 10%, transparent);
+	.drawer-dialog[open].mounted::backdrop {
+		background: color-mix(in oklch, var(--foreground) 16%, transparent);
 		backdrop-filter: blur(2px);
 		-webkit-backdrop-filter: blur(2px);
+		opacity: 1;
 	}
 
 	.drawer-shell {
@@ -262,71 +293,92 @@
 		pointer-events: none;
 	}
 
-	.drawer {
+	.drawer-handle-area {
 		position: absolute;
 		left: 0;
 		right: 0;
-		bottom: 0;
+		bottom: var(--drawer-height);
+		height: 2rem;
 		display: flex;
-		flex-direction: column;
 		align-items: center;
-		pointer-events: none;
-		transform: translateY(calc(100% - 1.5rem));
-		transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
-		will-change: transform;
+		justify-content: center;
+		pointer-events: auto;
+		cursor: ns-resize;
+		touch-action: none;
+		transform: translateY(100vh);
+		transition:
+			transform 250ms cubic-bezier(0.32, 0.72, 0, 1),
+			bottom 250ms cubic-bezier(0.32, 0.72, 0, 1);
+		z-index: 2;
 	}
 
-	.drawer-dialog.animating-open .drawer {
+	.drawer-dialog.mounted .drawer-handle-area {
 		transform: translateY(0);
 	}
 
-	.drawer-dialog.resizing .drawer {
+	.drawer-dialog.closing .drawer-handle-area {
+		transform: translateY(100vh);
+		transition:
+			transform 150ms cubic-bezier(0.32, 0, 0.67, 0),
+			bottom 150ms cubic-bezier(0.32, 0, 0.67, 0);
+	}
+
+	.drawer-dialog.dragging .drawer-handle-area {
 		transition: none;
-	}
-
-	.drawer-panel {
-		transition: height 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
-	}
-
-	.drawer-dialog.resizing .drawer-panel {
-		transition: none;
-	}
-
-	.drawer-panel {
-		width: 100%;
-		background: var(--background);
-		box-shadow: 0 -12px 40px oklch(0% 0 0 / 0.12);
-		border-top: 0.5px solid color-mix(in oklch, var(--foreground) 18%, transparent);
-		color: var(--foreground);
-		padding-bottom: max(1rem, env(safe-area-inset-bottom));
-		overflow: auto;
-		overscroll-behavior: contain;
-		pointer-events: auto;
-	}
-
-	.drawer-handle-button {
-		position: absolute;
-		left: 50%;
-		top: -1.5rem;
-		z-index: 1;
-		display: flex;
-		justify-content: center;
-		width: 4rem;
-		padding: 0.55rem 0 0.35rem;
-		border: 0;
-		background: transparent;
 		cursor: ns-resize;
-		touch-action: none;
-		transform: translateX(-50%);
-		pointer-events: auto;
 	}
 
 	.drawer-handle {
 		display: block;
 		width: 2.5rem;
 		height: 0.32rem;
-		background: color-mix(in oklch, var(--background) 92%, var(--foreground) 22%);
+		background: var(--background);
+		border-radius: 9999px;
 		box-shadow: 0 1px 8px oklch(0% 0 0 / 0.18);
+	}
+
+	.drawer {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		pointer-events: none;
+		transform: translateY(100%);
+		transition:
+			transform 250ms cubic-bezier(0.32, 0.72, 0, 1),
+			height 250ms cubic-bezier(0.32, 0.72, 0, 1);
+		will-change: transform;
+	}
+
+	.drawer-dialog.mounted .drawer {
+		transform: translateY(0);
+	}
+
+	.drawer-dialog.closing .drawer {
+		transform: translateY(100%);
+		transition:
+			transform 150ms cubic-bezier(0.32, 0, 0.67, 0),
+			height 150ms cubic-bezier(0.32, 0, 0.67, 0);
+	}
+
+	.drawer-dialog.dragging .drawer {
+		transition: none;
+	}
+
+	.drawer-panel {
+		width: 100%;
+		height: var(--drawer-height);
+		max-height: 95dvh;
+		background: var(--background);
+		box-shadow: 0 -12px 40px oklch(0% 0 0 / 0.12);
+		border-top: 0.5px solid color-mix(in oklch, var(--foreground) 18%, transparent);
+		border-top-left-radius: 1.25rem;
+		border-top-right-radius: 1.25rem;
+		color: var(--foreground);
+		padding-bottom: max(1rem, env(safe-area-inset-bottom));
+		overflow: auto;
+		overscroll-behavior: contain;
+		pointer-events: auto;
 	}
 
 	.drawer-content {
@@ -355,12 +407,6 @@
 		.drawer-content {
 			padding-left: 3.5rem;
 			padding-right: 3.5rem;
-		}
-	}
-
-	@media (max-width: 640px) {
-		.drawer {
-			transform: translateY(100%);
 		}
 	}
 </style>
