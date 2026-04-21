@@ -181,41 +181,36 @@
 			</div>
 		</div>
 	{:else}
-		<div class="mx-auto flex w-full max-w-md flex-col gap-4 px-1 pt-1 pb-2">
-			<div class="flex flex-col gap-1">
-				<h2 class="m-0 text-base leading-[1.3] font-medium">Enter the admin password</h2>
+		<div class="mx-auto flex w-full max-w-lg flex-col gap-5 px-1 pt-10 pb-8">
+			<div class="flex flex-col items-center gap-1 text-center">
+				<h2 class="m-0 text-[1.65rem] leading-[1.1] font-medium sm:text-[1.9rem]">
+					Login as an admin
+				</h2>
 			</div>
 
-			<input
-				type="password"
-				bind:this={password_input_ref}
-				bind:value={password}
-				class="border border-[color-mix(in_oklch,var(--foreground)_12%,transparent)] bg-(--background) px-3 py-2 text-(--foreground) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
-				onkeydown={handle_password_keydown}
-			/>
+			<div class="flex items-stretch gap-2">
+				<input
+					type="password"
+					bind:this={password_input_ref}
+					bind:value={password}
+					placeholder="Enter password"
+					class="min-w-0 flex-1 appearance-none rounded-[0.9rem] border border-[color-mix(in_oklch,var(--background)_92%,var(--foreground))] bg-(--background) px-4 py-3 text-base text-(--foreground) outline-none transition-[border-color,box-shadow] duration-150 placeholder:text-[color-mix(in_oklch,var(--foreground)_52%,transparent)] hover:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] focus:outline-none focus:ring-0 focus-visible:border-[color-mix(in_oklch,var(--background)_76%,var(--foreground))] focus-visible:shadow-[0_0_0_3px_color-mix(in_oklch,var(--background)_92%,var(--foreground))]"
+					onkeydown={handle_password_keydown}
+				/>
 
-			{#if error}
-				<div class="text-sm text-red-600">{error}</div>
-			{/if}
-
-			<div class="flex items-center justify-end gap-2">
 				<button
 					type="button"
-					class="inline-flex cursor-pointer items-center justify-center border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] bg-(--background) px-4 py-2 text-sm font-semibold text-(--foreground) shadow-sm outline-1 outline-transparent transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:translate-y-px active:scale-95 active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
-					onclick={close_auth_dialog}
-					disabled={pending}
-				>
-					Cancel
-				</button>
-				<button
-					type="button"
-					class="inline-flex cursor-pointer items-center justify-center border border-(--svedit-editing-stroke) bg-(--background) px-4 py-2 text-sm font-semibold text-(--svedit-editing-stroke) shadow-sm outline-1 outline-transparent transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--foreground)_4%,var(--background))] active:translate-y-px active:scale-95 active:bg-[color-mix(in_oklch,var(--foreground)_7%,var(--background))] focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+					class="inline-flex shrink-0 cursor-pointer items-center justify-center rounded-[0.8rem] border border-(--svedit-editing-stroke) bg-(--background) px-5 py-3 text-base font-semibold text-(--svedit-editing-stroke) shadow-sm outline-1 outline-transparent transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--foreground)_4%,var(--background))] active:translate-y-px active:scale-95 active:bg-[color-mix(in_oklch,var(--foreground)_7%,var(--background))] focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 					onclick={() => void login_and_edit()}
 					disabled={pending}
 				>
 					{pending ? 'Logging in…' : 'Login'}
 				</button>
 			</div>
+
+			{#if error}
+				<div class="text-sm text-red-600">{error}</div>
+			{/if}
 		</div>
 	{/if}
 </div>
