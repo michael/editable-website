@@ -1044,7 +1044,7 @@
 		top: 0;
 		z-index: 1;
 		margin-inline: -0.4rem;
-		padding: 1rem 0.4rem 0.35rem;
+		padding: 1rem 0 0.35rem;
 		background: var(--background);
 	}
 
@@ -1132,6 +1132,21 @@
 		outline: none;
 	}
 
+	.tree-row-shell::before {
+		content: '';
+		position: absolute;
+		inset: 0 -0.4rem;
+		border-radius: 0.8rem;
+		background: transparent;
+		pointer-events: none;
+		z-index: 0;
+		transition: background-color 140ms ease;
+	}
+
+	.tree-row-keyboard-selected {
+		z-index: 3;
+	}
+
 	.tree-row {
 		display: flex;
 		align-items: center;
@@ -1140,6 +1155,7 @@
 		min-width: 0;
 		min-height: 3.35rem;
 		padding: 0 2.5rem 0 0;
+		z-index: 1;
 	}
 
 	.tree-row-meta {
@@ -1156,27 +1172,32 @@
 		padding-left: 0;
 	}
 
-	.tree-row::before {
+	.tree-row::after {
 		content: '';
 		position: absolute;
 		inset: 0 -0.4rem;
 		border-radius: 0.8rem;
+		pointer-events: none;
 		background: transparent;
 		outline: 1px solid transparent;
 		outline-offset: -1px;
-		pointer-events: none;
-		z-index: -1;
-		transition: background-color 140ms ease;
+		z-index: 3;
 	}
 
-	.tree-row:hover::before,
-	.tree-row-shell:hover .tree-row::before {
+	.tree-row-shell:hover::before {
 		background: color-mix(in oklch, var(--foreground) 3%, var(--background));
 	}
 
-	.tree-row:focus-visible::before,
-	.tree-row-shell:focus-within .tree-row:focus-visible::before {
-		background: transparent;
+	.tree-row-shell:hover .tree-row-keyboard-selected::before {
+		background: color-mix(in oklch, var(--svedit-editing-fill) 82%, var(--background));
+	}
+
+	.tree-row-shell:hover .tree-row-keyboard-selected::after {
+		outline-color: var(--svedit-editing-stroke);
+	}
+
+	.tree-row:focus-visible::after,
+	.tree-row-shell:focus-within .tree-row:focus-visible::after {
 		outline-color: var(--svedit-editing-stroke);
 	}
 
@@ -1187,17 +1208,18 @@
 	}
 
 	.tree-row-keyboard-selected::before {
+		content: '';
+		position: absolute;
+		inset: 0 -0.4rem;
+		border-radius: 0.8rem;
+		pointer-events: none;
 		background: color-mix(in oklch, var(--svedit-editing-fill) 82%, var(--background));
-		outline-color: var(--svedit-editing-stroke);
+		z-index: -1;
 	}
 
-	.tree-row-keyboard-selected:hover::before {
-		background: color-mix(in oklch, var(--svedit-editing-fill) 88%, var(--background));
-	}
-
-	.tree-row-keyboard-selected:focus-visible::before,
-	.tree-row-shell:focus-within .tree-row-keyboard-selected:focus-visible::before {
-		background: color-mix(in oklch, var(--svedit-editing-fill) 82%, var(--background));
+	.tree-row-keyboard-selected::after,
+	.tree-row-keyboard-selected:focus-visible::after,
+	.tree-row-shell:focus-within .tree-row-keyboard-selected:focus-visible::after {
 		outline-color: var(--svedit-editing-stroke);
 	}
 
@@ -1353,6 +1375,7 @@
 		display: flex;
 		align-items: stretch;
 		min-width: 0;
+		isolation: isolate;
 	}
 
 	.tree-guides {
