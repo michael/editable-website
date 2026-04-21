@@ -58,7 +58,7 @@
 	// On mobile also pin to left edge so the toolbar can scroll horizontally
 	const TW_TOOLBAR_LEFT = 'left-5 sm:left-7 md:left-auto';
 
-	const TW_TOOLBAR_BTN = 'flex items-center justify-center size-9 rounded-full text-(--foreground) bg-(--background) border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] cursor-pointer pointer-events-auto shadow-sm transition-all duration-150 active:scale-95 active:translate-y-px outline-1 outline-transparent focus:outline-1 focus:outline-(--svedit-editing-stroke) focus:outline-offset-1';
+	const TW_TOOLBAR_BTN = 'flex items-center justify-center size-9 rounded-full text-(--foreground) bg-(--background) border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] cursor-pointer pointer-events-auto shadow-sm transition-all duration-150 active:scale-95 active:translate-y-px outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1';
 	const TW_TOOLBAR_BTN_DISABLED = 'text-[color-mix(in_oklch,var(--background)_70%,var(--foreground))] border-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] !cursor-not-allowed shadow-none';
 	const TW_TOOLBAR_BTN_HOVER = 'hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] active:scale-95 active:translate-y-px';
 
@@ -287,7 +287,7 @@
 				<div class="flex items-center gap-1">
 					{#if cancel_command && !cancel_command.disabled}
 						<button
-							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--foreground) bg-(--background) border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] shadow-sm transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] active:scale-95 active:translate-y-px outline-1 outline-transparent focus:outline-1 focus:outline-(--svedit-editing-stroke) focus:outline-offset-1"
+							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--foreground) bg-(--background) border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] shadow-sm transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] active:scale-95 active:translate-y-px outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 							onclick={() => cancel_command.execute()}
 							title="Cancel (⌘ ⎋)"
 						>
@@ -297,7 +297,7 @@
 
 					{#if !app_commands.save_document.disabled}
 						<button
-							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--svedit-editing-stroke) bg-(--background) border border-(--svedit-editing-stroke) shadow-sm transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--foreground)_4%,var(--background))] active:bg-[color-mix(in_oklch,var(--foreground)_7%,var(--background))] active:scale-95 active:translate-y-px outline-1 outline-transparent focus:outline-1 focus:outline-(--svedit-editing-stroke) focus:outline-offset-1"
+							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--svedit-editing-stroke) bg-(--background) border border-(--svedit-editing-stroke) shadow-sm transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--foreground)_4%,var(--background))] active:bg-[color-mix(in_oklch,var(--foreground)_7%,var(--background))] active:scale-95 active:translate-y-px outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 							onclick={() => app_commands.save_document.execute()}
 							title="Save (⌘ S)"
 						>
