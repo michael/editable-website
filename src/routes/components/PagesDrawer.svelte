@@ -1727,6 +1727,18 @@
 			font-size: 0.84rem;
 		}
 
+		.tree-row-shell:hover::before {
+			background: transparent;
+		}
+
+		.tree-row-shell:hover .tree-row-keyboard-selected::before {
+			background: color-mix(in oklch, var(--svedit-editing-fill) 82%, var(--background));
+		}
+
+		.tree-row-shell:hover .tree-row-keyboard-selected::after {
+			outline-color: var(--svedit-editing-stroke);
+		}
+
 		.tree-row-meta {
 			display: flex;
 			padding-left: 0.5rem;
