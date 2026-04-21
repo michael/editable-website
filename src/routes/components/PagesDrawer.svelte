@@ -220,6 +220,8 @@
 		if (!search_input_ref) return;
 
 		requestAnimationFrame(() => {
+			const is_desktop_focus = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+			if (!is_desktop_focus) return;
 			search_input_ref?.focus();
 			search_input_ref?.select();
 		});
@@ -712,6 +714,13 @@
 </script>
 
 <div class="pages-drawer">
+	<button
+		type="button"
+		class="drawer-initial-focus-target"
+		aria-label="Pages drawer"
+		autofocus
+	></button>
+
 	<div class="search-shell">
 		<label class="search-input-shell">
 			<svg
@@ -1039,6 +1048,17 @@
 		gap: 1.25rem;
 	}
 
+	.drawer-initial-focus-target {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: 0;
+		border: 0;
+		opacity: 0;
+		pointer-events: none;
+	}
+
 	.search-shell {
 		position: sticky;
 		top: 0;
@@ -1087,7 +1107,7 @@
 		background: transparent;
 		color: var(--foreground);
 		padding: 0;
-		font-size: 0.88rem;
+		font-size: 16px !important;
 		outline: none;
 		box-shadow: none;
 		appearance: none;

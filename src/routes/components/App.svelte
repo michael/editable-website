@@ -131,8 +131,6 @@
 	function close_auth_dialog() {
 		auth_dialog_open = false;
 		mobile_overscroll_triggered = false;
-		mobile_touch_active = false;
-		mobile_touch_started_at_page_end = false;
 		clear_mobile_overscroll_timeout();
 	}
 
@@ -204,6 +202,7 @@
 	function handle_mobile_touchend() {
 		mobile_touch_active = false;
 		mobile_touch_started_at_page_end = false;
+		mobile_overscroll_triggered = false;
 		clear_mobile_overscroll_timeout();
 	}
 
