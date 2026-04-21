@@ -38,7 +38,7 @@
 	let selected_result_index = $state(0);
 	let tree_ref = $state(null);
 	let initialized_selection_version = $state(-1);
-	let initial_scroll_timeout_id = $state(null);
+	let initial_scroll_frame_id = $state(null);
 
 	function scroll_selected_result_into_view(visible_results, direction = 'nearest') {
 		const selected_document_id = visible_results[selected_result_index]?.document_id;
@@ -96,10 +96,10 @@
 		});
 	}
 
-	function clear_initial_scroll_timeout() {
-		if (initial_scroll_timeout_id === null) return;
-		clearTimeout(initial_scroll_timeout_id);
-		initial_scroll_timeout_id = null;
+	function clear_initial_scroll_frame() {
+		if (initial_scroll_frame_id === null) return;
+		cancelAnimationFrame(initial_scroll_frame_id);
+		initial_scroll_frame_id = null;
 	}
 
 
@@ -152,11 +152,11 @@
 
 				if (current_result_index !== -1) {
 					selected_result_index = current_result_index;
-					clear_initial_scroll_timeout();
-					initial_scroll_timeout_id = setTimeout(() => {
-						initial_scroll_timeout_id = null;
+					clear_initial_scroll_frame();
+					initial_scroll_frame_id = requestAnimationFrame(() => {
+						initial_scroll_frame_id = null;
 						scroll_selected_result_into_view(current_visible_results);
-					}, 120);
+					});
 				}
 			}
 		}
@@ -211,7 +211,7 @@
 	$effect(() => {
 		if (!page_browser.state.open) {
 			initialized_selection_version = -1;
-			clear_initial_scroll_timeout();
+			clear_initial_scroll_frame();
 			return;
 		}
 
@@ -225,7 +225,7 @@
 		});
 
 		return () => {
-			clear_initial_scroll_timeout();
+			clear_initial_scroll_frame();
 		};
 	});
 
