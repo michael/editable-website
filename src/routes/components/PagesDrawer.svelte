@@ -40,7 +40,7 @@
 	let initialized_selection_version = $state(-1);
 	let initial_scroll_timeout_id = $state(null);
 
-	function scroll_selected_result_into_view(visible_results) {
+	function scroll_selected_result_into_view(visible_results, direction = 'nearest') {
 		const selected_document_id = visible_results[selected_result_index]?.document_id;
 		if (!selected_document_id || !tree_ref) return;
 
@@ -50,10 +50,49 @@
 			);
 			if (!(selected_row instanceof HTMLElement)) return;
 
-			selected_row.scrollIntoView({
-				block: 'end',
-				inline: 'nearest'
-			});
+			const scroll_container = tree_ref.closest('.drawer-panel');
+			if (!(scroll_container instanceof HTMLElement)) return;
+
+			const scroll_container_rect = scroll_container.getBoundingClientRect();
+			const search_shell = tree_ref
+				.closest('.pages-drawer')
+				?.querySelector('.search-shell');
+			const search_shell_rect =
+				search_shell instanceof HTMLElement ? search_shell.getBoundingClientRect() : null;
+
+			const visible_top = Math.max(
+				scroll_container_rect.top,
+				search_shell_rect?.bottom ?? scroll_container_rect.top
+			);
+			const visible_bottom = scroll_container_rect.bottom;
+			const row_rect = selected_row.getBoundingClientRect();
+			const row_height = row_rect.height;
+			const context_padding = row_height * 1.5;
+
+			if (direction === 'down') {
+				const target_bottom = row_rect.bottom + context_padding;
+				if (target_bottom > visible_bottom) {
+					scroll_container.scrollTop += target_bottom - visible_bottom;
+				}
+				return;
+			}
+
+			if (direction === 'up') {
+				const target_top = row_rect.top - context_padding;
+				if (target_top < visible_top) {
+					scroll_container.scrollTop -= visible_top - target_top;
+				}
+				return;
+			}
+
+			if (row_rect.top < visible_top) {
+				scroll_container.scrollTop -= visible_top - (row_rect.top - context_padding);
+				return;
+			}
+
+			if (row_rect.bottom > visible_bottom) {
+				scroll_container.scrollTop += row_rect.bottom + context_padding - visible_bottom;
+			}
 		});
 	}
 
@@ -627,7 +666,7 @@
 				selected_result_index + 1,
 				visible_results
 			);
-			scroll_selected_result_into_view(visible_results);
+			scroll_selected_result_into_view(visible_results, 'down');
 			return;
 		}
 
@@ -637,7 +676,7 @@
 				selected_result_index - 1,
 				visible_results
 			);
-			scroll_selected_result_into_view(visible_results);
+			scroll_selected_result_into_view(visible_results, 'up');
 			return;
 		}
 
