@@ -1246,15 +1246,15 @@
 	.item-actions-btn {
 		position: absolute;
 		z-index: 3;
-		top: 0.35rem;
-		right: 0.35rem;
+		top: 0;
+		right: 0;
+		bottom: 0;
 		display: inline-flex;
 		align-items: center;
-		justify-content: center;
-		width: 1.5rem;
-		height: 1.5rem;
+		justify-content: flex-end;
+		width: 3.25rem;
 		border: 0;
-		padding: 0;
+		padding: 0 0.7rem 0 0;
 		background: transparent;
 		color: color-mix(in oklch, currentColor 34%, transparent);
 		cursor: pointer;
@@ -1262,32 +1262,31 @@
 		line-height: 1;
 		opacity: 1;
 		pointer-events: auto;
-		transition: color 140ms ease, opacity 140ms ease;
+		transition: color 140ms ease;
 	}
 
 	.tree-actions-btn {
-		top: 50%;
-		transform: translateY(-50%);
-		right: 0.7rem;
+		transform: none;
 	}
 
-	.tree-row-shell:hover .item-actions-btn,
-	.tree-row-shell:focus-within .item-actions-btn,
-	.tree-row:hover + .item-actions-btn,
-	.tree-row:focus-visible + .item-actions-btn,
-	.item-actions-btn:hover {
-		opacity: 1;
-		pointer-events: auto;
-		color: color-mix(in oklch, currentColor 68%, transparent);
+	.tree-actions-dots {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.5rem;
+		color: inherit;
+		transition: color 140ms ease;
+	}
+
+	.item-actions-btn:hover,
+	.item-actions-btn:focus-visible {
+		color: color-mix(in oklch, currentColor 78%, transparent);
 	}
 
 	.item-actions-btn:focus-visible {
-		opacity: 1;
-		pointer-events: auto;
-		color: color-mix(in oklch, currentColor 68%, transparent);
 		outline: 1px solid var(--svedit-editing-stroke);
-		outline-offset: 1px;
-		border-radius: 9999px;
+		outline-offset: -1px;
+		border-radius: 0.8rem;
 		box-shadow: none;
 	}
 
@@ -1732,6 +1731,11 @@
 			display: flex;
 			padding-left: 0.5rem;
 			padding-right: 0.75rem;
+		}
+
+		.item-actions-btn {
+			width: 3.75rem;
+			padding-right: 0.85rem;
 		}
 
 		.tree-row-shell {
