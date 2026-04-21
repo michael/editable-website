@@ -12,6 +12,7 @@
 	let {
 		open = $bindable(),
 		label = 'Pages',
+		drawer_height_mode = 'manual',
 		children
 	} = $props();
 
@@ -20,6 +21,7 @@
 	const default_drawer_height_ratio = 2 / 3;
 	const snap_drawer_height_ratios = [3 / 4, 2 / 3, 1 / 3, 0];
 	const velocity_threshold = 0.5;
+	const auto_close_drag_distance = 96;
 
 	let dialog_ref = $state();
 	let handle_ref = $state();
@@ -34,6 +36,7 @@
 
 	let drag_start_y = $state(0);
 	let drag_start_height_ratio = $state(default_drawer_height_ratio);
+	let drag_offset_y = $state(0);
 	let last_pointer_y = $state(0);
 	let last_pointer_time = $state(0);
 	let drag_velocity = $state(0);
@@ -96,6 +99,7 @@
 		is_dragging = true;
 		drag_start_y = event.clientY;
 		drag_start_height_ratio = drawer_height_ratio;
+		drag_offset_y = 0;
 		last_pointer_y = event.clientY;
 		last_pointer_time = Date.now();
 		drag_velocity = 0;
@@ -117,8 +121,14 @@
 		last_pointer_y = event.clientY;
 		last_pointer_time = now;
 
-		const viewport_height = window.innerHeight || 1;
 		const drag_delta = event.clientY - drag_start_y;
+
+		if (drawer_height_mode === 'auto') {
+			drag_offset_y = Math.max(drag_delta, 0);
+			return;
+		}
+
+		const viewport_height = window.innerHeight || 1;
 		const height_delta = drag_delta / viewport_height;
 		drawer_height_ratio = clamp_drawer_height_ratio(drag_start_height_ratio - height_delta);
 	}
@@ -131,6 +141,20 @@
 
 		const viewport_height = window.innerHeight || 1;
 		const drag_delta = event.clientY - drag_start_y;
+
+		if (drawer_height_mode === 'auto') {
+			const released_drag_offset_y = Math.max(drag_delta, 0);
+			drag_velocity = 0;
+			drag_offset_y = 0;
+
+			if (released_drag_offset_y >= auto_close_drag_distance) {
+				close();
+				return;
+			}
+
+			return;
+		}
+
 		const released_height_ratio = clamp_drawer_height_ratio(
 			drag_start_height_ratio - drag_delta / viewport_height
 		);
@@ -165,6 +189,7 @@
 			is_closing = false;
 			open = false;
 			drawer_height_ratio = last_open_drawer_height_ratio;
+			drag_offset_y = 0;
 		}
 	}
 
@@ -218,11 +243,15 @@
 			class="drawer-shell"
 			role="complementary"
 			aria-label={label}
-			style={`--drawer-height: ${drawer_height_ratio * 100}dvh;`}
+			style={drawer_height_mode === 'manual' ? `--drawer-height: ${drawer_height_ratio * 100}dvh;` : undefined}
 		>
 			<div
 				class="drawer"
+				class:auto-dragging={drawer_height_mode === 'auto' && is_dragging}
 				ontransitionend={handle_drawer_transition_end}
+				style={drawer_height_mode === 'auto' && is_dragging
+					? `--auto-drag-offset: ${drag_offset_y}px;`
+					: undefined}
 			>
 				<div
 					class="drawer-handle-area"
@@ -237,7 +266,10 @@
 					<span class="drawer-handle" aria-hidden="true"></span>
 				</div>
 
-				<div class="drawer-panel">
+				<div
+					class:drawer-panel-auto={drawer_height_mode === 'auto'}
+					class="drawer-panel"
+				>
 					<div class="drawer-content">
 						{@render children?.({ close })}
 					</div>
@@ -336,6 +368,10 @@
 		transform: translateY(0);
 	}
 
+	.drawer-dialog.mounted .drawer.auto-dragging {
+		transform: translateY(var(--auto-drag-offset));
+	}
+
 	.drawer-dialog.closing .drawer {
 		transform: translateY(100%);
 		transition:
@@ -359,6 +395,12 @@
 		overflow: auto;
 		overscroll-behavior: contain;
 		pointer-events: auto;
+	}
+
+	.drawer-panel-auto {
+		height: auto;
+		min-height: 0;
+		overflow: visible;
 	}
 
 	.drawer-content {

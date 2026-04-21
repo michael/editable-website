@@ -218,7 +218,7 @@
 	{/if}
 
 	{#if app.auth_dialog_open}
-		<Drawer bind:open={app.auth_dialog_open} label="Edit options">
+		<Drawer bind:open={app.auth_dialog_open} label="Edit options" drawer_height_mode="auto">
 			<AuthDialog
 				onclose={app.close_auth_dialog}
 				onedit_for_fun={app.edit_for_fun}
