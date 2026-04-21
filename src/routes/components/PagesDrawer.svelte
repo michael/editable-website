@@ -702,6 +702,11 @@
 	let drawer_title = $derived(is_picker_mode ? 'Select page' : 'Pages');
 
 	$effect(() => {
+		normalized_search_query;
+		selected_result_index = 0;
+	});
+
+	$effect(() => {
 		selected_result_index = clamp_selected_result_index(selected_result_index, visible_results);
 	});
 </script>
@@ -1050,7 +1055,6 @@
 		padding: 0.48rem 0.78rem;
 		border: 1px solid color-mix(in oklch, var(--background) 92%, var(--foreground));
 		border-radius: 0.9rem;
-		corner-shape: squircle;
 		background: var(--background);
 		box-shadow: 0 0 0 0 transparent;
 		cursor: text;
@@ -1151,22 +1155,37 @@
 		padding-left: 0;
 	}
 
-	.tree-row:hover,
-	.tree-row:focus-visible {
+	.tree-row::before {
+		content: '';
+		position: absolute;
+		inset: 0 -0.4rem;
+		border-radius: 0.8rem;
+		background: transparent;
+		outline: 1px solid transparent;
+		outline-offset: -1px;
+		pointer-events: none;
+		z-index: -1;
+		transition: background-color 140ms ease;
+	}
+
+	.tree-row:hover::before,
+	.tree-row:focus-visible::before {
 		background: color-mix(in oklch, var(--svedit-editing-fill) 58%, var(--background));
 	}
 
 	.draft-card-keyboard-selected,
 	.tree-row-keyboard-selected {
-		outline: 1px solid var(--svedit-editing-stroke);
-		outline-offset: -1px;
-		border-radius: 1rem;
-		corner-shape: squircle;
-		background: color-mix(in oklch, var(--svedit-editing-fill) 82%, var(--background));
+		outline: none;
+		background: transparent;
 	}
 
-	.tree-row-keyboard-selected:hover,
-	.tree-row-keyboard-selected:focus-visible {
+	.tree-row-keyboard-selected::before {
+		background: color-mix(in oklch, var(--svedit-editing-fill) 82%, var(--background));
+		outline-color: var(--svedit-editing-stroke);
+	}
+
+	.tree-row-keyboard-selected:hover::before,
+	.tree-row-keyboard-selected:focus-visible::before {
 		background: color-mix(in oklch, var(--svedit-editing-fill) 88%, var(--background));
 	}
 
@@ -1243,8 +1262,7 @@
 		flex: 0 0 auto;
 		margin: 0.3rem 0.35rem 0.3rem 0;
 		background: color-mix(in oklch, var(--foreground) 2%, var(--background));
-		border-radius: 1.05rem;
-		corner-shape: squircle;
+		border-radius: 0.5rem;
 		overflow: hidden;
 	}
 
