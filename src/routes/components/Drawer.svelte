@@ -221,27 +221,27 @@
 			style={`--drawer-height: ${drawer_height_ratio * 100}dvh;`}
 		>
 			<div
-				class="drawer-handle-area"
-				bind:this={handle_ref}
-				role="presentation"
-				aria-hidden="true"
-				onpointerdown={handle_handle_pointerdown}
-				onpointermove={handle_handle_pointermove}
-				onpointerup={handle_handle_pointerup}
-				onpointercancel={handle_handle_pointercancel}
-			>
-				<span class="drawer-handle" aria-hidden="true"></span>
-			</div>
-
-			<div
 				class="drawer"
 				ontransitionend={handle_drawer_transition_end}
 			>
-			<div class="drawer-panel">
-				<div class="drawer-content">
-					{@render children?.({ close })}
+				<div
+					class="drawer-handle-area"
+					bind:this={handle_ref}
+					role="presentation"
+					aria-hidden="true"
+					onpointerdown={handle_handle_pointerdown}
+					onpointermove={handle_handle_pointermove}
+					onpointerup={handle_handle_pointerup}
+					onpointercancel={handle_handle_pointercancel}
+				>
+					<span class="drawer-handle" aria-hidden="true"></span>
 				</div>
-			</div>
+
+				<div class="drawer-panel">
+					<div class="drawer-content">
+						{@render children?.({ close })}
+					</div>
+				</div>
 			</div>
 		</div>
 </dialog>
@@ -295,7 +295,7 @@
 		position: absolute;
 		left: 0;
 		right: 0;
-		bottom: var(--drawer-height);
+		top: -2rem;
 		height: 2rem;
 		display: flex;
 		align-items: center;
@@ -303,26 +303,10 @@
 		pointer-events: auto;
 		cursor: ns-resize;
 		touch-action: none;
-		transform: translateY(100vh);
-		transition:
-			transform 250ms cubic-bezier(0.32, 0.72, 0, 1),
-			bottom 250ms cubic-bezier(0.32, 0.72, 0, 1);
 		z-index: 2;
 	}
 
-	.drawer-dialog.mounted .drawer-handle-area {
-		transform: translateY(0);
-	}
-
-	.drawer-dialog.closing .drawer-handle-area {
-		transform: translateY(100vh);
-		transition:
-			transform 150ms cubic-bezier(0.32, 0, 0.67, 0),
-			bottom 150ms cubic-bezier(0.32, 0, 0.67, 0);
-	}
-
 	.drawer-dialog.dragging .drawer-handle-area {
-		transition: none;
 		cursor: ns-resize;
 	}
 
