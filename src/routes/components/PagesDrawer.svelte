@@ -1,6 +1,9 @@
 <script>
-	import { invalidateAll } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
+	import { resolve } from '$app/paths';
+
 	import { get_page_browser_data } from '$lib/api.remote.js';
+	import Media from './Media.svelte';
 	import { get_page_browser } from './page_browser_context.svelte.js';
 
 	const page_browser = get_page_browser();
@@ -11,8 +14,10 @@
 	let loaded_version = $state(-1);
 
 	let menu_item = $state(null);
-	let menu_anchor_ref = $state(null);
+	let menu_anchor_name = $state('');
 	let menu_ref = $state(null);
+	let menu_item_refs = $state([]);
+	let menu_selected_index = $state(0);
 
 	let confirm_item = $state(null);
 	let confirm_ref = $state(null);
@@ -25,18 +30,136 @@
 	let page_url_error = $state('');
 	let saving_page_url = $state(false);
 
+	let unlisted_info_item = $state(null);
+	let unlisted_info_ref = $state(null);
+
+	let search_query = $state('');
+	let search_input_ref = $state(null);
+	let selected_result_index = $state(0);
+	let tree_ref = $state(null);
+	let initialized_selection_version = $state(-1);
+	let initial_scroll_frame_id = $state(null);
+
+	function scroll_selected_result_into_view(visible_results, direction = 'nearest') {
+		const selected_document_id = visible_results[selected_result_index]?.document_id;
+		if (!selected_document_id || !tree_ref) return;
+
+		requestAnimationFrame(() => {
+			const selected_row = tree_ref?.querySelector(
+				`[data-page-browser-row="${selected_document_id}"]`
+			);
+			if (!(selected_row instanceof HTMLElement)) return;
+
+			const scroll_container = tree_ref.closest('.drawer-panel');
+			if (!(scroll_container instanceof HTMLElement)) return;
+
+			const scroll_container_rect = scroll_container.getBoundingClientRect();
+			const search_shell = tree_ref
+				.closest('.pages-drawer')
+				?.querySelector('.search-shell');
+			const search_shell_rect =
+				search_shell instanceof HTMLElement ? search_shell.getBoundingClientRect() : null;
+
+			const visible_top = Math.max(
+				scroll_container_rect.top,
+				search_shell_rect?.bottom ?? scroll_container_rect.top
+			);
+			const visible_bottom = scroll_container_rect.bottom;
+			const row_rect = selected_row.getBoundingClientRect();
+			const row_height = row_rect.height;
+			const context_padding = row_height * 1.5;
+
+			if (direction === 'down') {
+				const target_bottom = row_rect.bottom + context_padding;
+				if (target_bottom > visible_bottom) {
+					scroll_container.scrollTop += target_bottom - visible_bottom;
+				}
+				return;
+			}
+
+			if (direction === 'up') {
+				const target_top = row_rect.top - context_padding;
+				if (target_top < visible_top) {
+					scroll_container.scrollTop -= visible_top - target_top;
+				}
+				return;
+			}
+
+			if (row_rect.top < visible_top) {
+				scroll_container.scrollTop -= visible_top - (row_rect.top - context_padding);
+				return;
+			}
+
+			if (row_rect.bottom > visible_bottom) {
+				scroll_container.scrollTop += row_rect.bottom + context_padding - visible_bottom;
+			}
+		});
+	}
+
+	function clear_initial_scroll_frame() {
+		if (initial_scroll_frame_id === null) return;
+		cancelAnimationFrame(initial_scroll_frame_id);
+		initial_scroll_frame_id = null;
+	}
+
+
+
 	const browser_data_query = $derived.by(() => {
 		page_browser?.version ?? 0;
+		if (!page_browser.state.open) return null;
 		return get_page_browser_data();
 	});
 
 	$effect(() => {
 		const query = browser_data_query;
 
+		if (!query) {
+			loading = false;
+			load_error = '';
+			return;
+		}
+
 		loading = query.loading;
 		load_error = query.error ? 'Failed to load pages.' : '';
 		browser_data = query.current ?? null;
 		loaded_version = page_browser?.version ?? 0;
+
+		const current_page_id = query.current
+			? /** @type {string | null} */ (query.current.current_document_id ?? null)
+			: null;
+
+		if (
+			page_browser.state.open &&
+			!query.loading &&
+			initialized_selection_version !== (page_browser?.version ?? 0) &&
+			!normalized_search_query &&
+			current_page_id
+		) {
+			const current_page_forest = query.current.page_forest ?? [];
+			const current_filtered_page_forest = filter_page_forest(
+				current_page_forest,
+				normalize_search_text(search_query)
+			);
+			const current_visible_results = get_visible_results(current_filtered_page_forest);
+
+			initialized_selection_version = page_browser?.version ?? 0;
+
+			if (current_visible_results.length > 0) {
+				const current_result_index = get_visible_result_index(
+					current_page_id,
+					current_visible_results
+				);
+
+				if (current_result_index !== -1) {
+					selected_result_index = current_result_index;
+					clear_initial_scroll_frame();
+					initial_scroll_frame_id = requestAnimationFrame(() => {
+						initial_scroll_frame_id = null;
+						scroll_selected_result_into_view(current_visible_results);
+					});
+				}
+			}
+		}
 	});
 
 	$effect(() => {
@@ -45,6 +168,20 @@
 		} else if (!menu_item && menu_ref?.open) {
 			menu_ref.close();
 		}
+	});
+
+	$effect(() => {
+		if (!menu_item) {
+			menu_item_refs = [];
+			menu_selected_index = 0;
+			return;
+		}
+
+		requestAnimationFrame(() => {
+			const enabled_index = menu_item_refs.findIndex((item_ref) => !item_ref?.disabled);
+			menu_selected_index = enabled_index === -1 ? 0 : enabled_index;
+			menu_item_refs[menu_selected_index]?.focus();
+		});
 	});
 
 	$effect(() => {
@@ -63,7 +200,36 @@
 		}
 	});
 
+	$effect(() => {
+		if (unlisted_info_item && unlisted_info_ref && !unlisted_info_ref.open) {
+			unlisted_info_ref.showModal();
+		} else if (!unlisted_info_item && unlisted_info_ref?.open) {
+			unlisted_info_ref.close();
+		}
+	});
 
+	$effect(() => {
+		if (!page_browser.state.open) {
+			initialized_selection_version = -1;
+			clear_initial_scroll_frame();
+			return;
+		}
+
+		search_query = '';
+
+		if (!search_input_ref) return;
+
+		requestAnimationFrame(() => {
+			const is_desktop_focus = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+			if (!is_desktop_focus) return;
+			search_input_ref?.focus();
+			search_input_ref?.select();
+		});
+
+		return () => {
+			clear_initial_scroll_frame();
+		};
+	});
 
 	function get_page_count(node) {
 		if (!node) return 0;
@@ -71,6 +237,14 @@
 		let count = 1;
 		for (const child of node.children ?? []) {
 			count += get_page_count(child);
+		}
+		return count;
+	}
+
+	function get_page_forest_count(nodes) {
+		let count = 0;
+		for (const node of nodes ?? []) {
+			count += get_page_count(node);
 		}
 		return count;
 	}
@@ -83,30 +257,60 @@
 		return page_href || '/';
 	}
 
-	function get_preview_src(preview_image_src) {
-		if (!preview_image_src) return null;
-		if (preview_image_src.startsWith('blob:')) return preview_image_src;
-		return `/assets/${preview_image_src}`;
-	}
-
-	function is_video_preview(preview_image_src) {
-		return !!preview_image_src && /\.(mp4|webm)$/i.test(preview_image_src);
-	}
-
 	function is_home_page(document_id) {
 		return browser_data?.home_page_id === document_id;
 	}
 
+	function has_children(node) {
+		return !!node?.children?.length;
+	}
+
+	function is_root_node(node, depth) {
+		return depth === 0;
+	}
+
+	function is_non_home_root_node(node, depth) {
+		return depth === 0 && !is_home_page(node.document_id);
+	}
+
+	function is_unlisted_page(node, depth, ancestor_is_undiscoverable = false) {
+		return ancestor_is_undiscoverable || is_non_home_root_node(node, depth);
+	}
+
+	function open_unlisted_info(event, item) {
+		event.preventDefault();
+		event.stopPropagation();
+		unlisted_info_item = item;
+	}
+
+	function close_unlisted_info() {
+		unlisted_info_item = null;
+	}
+
+	function handle_unlisted_info_click(event) {
+		if (event.target === unlisted_info_ref) {
+			close_unlisted_info();
+		}
+	}
+
+	function handle_unlisted_info_cancel(event) {
+		event.preventDefault();
+		close_unlisted_info();
+	}
+
 	function handle_page_click(event, item) {
-		if (!is_picker_mode) return;
 		event.preventDefault();
 		page_browser.handle_page_selected(item);
+	}
+
+	function get_menu_anchor_name(document_id) {
+		return `--page-actions-${document_id}`;
 	}
 
 	function open_menu(event, item) {
 		event.preventDefault();
 		event.stopPropagation();
-		menu_anchor_ref = event.currentTarget;
+		menu_anchor_name = get_menu_anchor_name(item.document_id);
 		menu_item = item;
 		delete_error = '';
 		page_url_error = '';
@@ -114,7 +318,7 @@
 
 	function close_menu() {
 		menu_item = null;
-		menu_anchor_ref = null;
+		menu_anchor_name = '';
 	}
 
 	function open_confirm() {
@@ -145,7 +349,58 @@
 
 	function handle_menu_click(event) {
 		if (event.target === menu_ref) {
+			event.preventDefault();
+			event.stopPropagation();
 			close_menu();
+		}
+	}
+
+	function handle_menu_keydown(event) {
+		if (!menu_item) return;
+
+		const enabled_item_refs = menu_item_refs.filter((item_ref) => item_ref && !item_ref.disabled);
+		if (enabled_item_refs.length === 0) return;
+
+		const current_enabled_index = enabled_item_refs.findIndex(
+			(item_ref) => item_ref === menu_item_refs[menu_selected_index]
+		);
+
+		if (event.key === 'ArrowDown') {
+			event.preventDefault();
+			const next_enabled_index =
+				current_enabled_index === -1
+					? 0
+					: (current_enabled_index + 1) % enabled_item_refs.length;
+			const next_item_ref = enabled_item_refs[next_enabled_index];
+			const next_index = menu_item_refs.findIndex((item_ref) => item_ref === next_item_ref);
+			if (next_index !== -1) {
+				menu_selected_index = next_index;
+				next_item_ref.focus();
+			}
+			return;
+		}
+
+		if (event.key === 'ArrowUp') {
+			event.preventDefault();
+			const next_enabled_index =
+				current_enabled_index === -1
+					? enabled_item_refs.length - 1
+					: (current_enabled_index - 1 + enabled_item_refs.length) % enabled_item_refs.length;
+			const next_item_ref = enabled_item_refs[next_enabled_index];
+			const next_index = menu_item_refs.findIndex((item_ref) => item_ref === next_item_ref);
+			if (next_index !== -1) {
+				menu_selected_index = next_index;
+				next_item_ref.focus();
+			}
+			return;
+		}
+
+		if (event.key === 'Enter') {
+			const active_item = document.activeElement;
+			if (active_item instanceof HTMLButtonElement && active_item.closest('.menu-panel')) {
+				event.preventDefault();
+				active_item.click();
+			}
 		}
 	}
 
@@ -176,22 +431,14 @@
 		close_page_url_dialog();
 	}
 
-	function open_in_new_tab() {
-		if (!menu_item) return;
+	async function open_in_new_tab() {
+		if (!menu_item?.page_href) return;
 		window.open(get_resolved_page_href(menu_item.page_href), '_blank', 'noopener,noreferrer');
 		close_menu();
 	}
 
-	function get_delete_confirmation_message() {
-		if (!confirm_item) return '';
-		if (confirm_item.kind === 'draft') {
-			return 'Are you sure you want to delete this draft?';
-		}
-		return 'Are you sure you want to delete this page? It is still linked from other pages. Remove those links first if you want to avoid broken links.';
-	}
-
 	async function save_page_url() {
-		if (!page_url_dialog_item || saving_page_url) return;
+		if (!page_url_dialog_item) return;
 
 		saving_page_url = true;
 		page_url_error = '';
@@ -208,52 +455,25 @@
 				return;
 			}
 
-			const updated_page_href =
-				result && 'page_href' in result && typeof result.page_href === 'string'
-					? result.page_href
-					: `/${page_url_value}`;
 			close_page_url_dialog();
 			browser_data = null;
 			loaded_version = -1;
 			page_browser.invalidate?.();
-			menu_item = menu_item
-				? {
-						...menu_item,
-						page_href: updated_page_href
-					}
-				: null;
 			await invalidateAll();
-			get_page_browser_data().refresh();
 		} catch (err) {
-			console.error('Failed to update page URL', err);
-
-			const error_body =
-				typeof err === 'object' && err !== null && 'body' in err && typeof err.body === 'object'
-					? err.body
-					: null;
-
-			const error_message =
-				error_body &&
-				'message' in error_body &&
-				typeof error_body.message === 'string'
-					? error_body.message
-					: typeof err === 'object' &&
-						  err !== null &&
-						  'message' in err &&
-						  typeof err.message === 'string'
-						? err.message
-						: err instanceof Error
-							? err.message
-							: 'Failed to update Page URL.';
-
-			page_url_error = error_message;
+			page_url_error = err instanceof Error ? err.message : 'Failed to update Page URL.';
 		} finally {
 			saving_page_url = false;
 		}
 	}
 
+	function get_delete_confirmation_message() {
+		if (!confirm_item) return '';
+		return `Delete “${confirm_item.title}”? This cannot be undone.`;
+	}
+
 	async function confirm_delete() {
-		if (!confirm_item || deleting || confirm_item.is_home_page) return;
+		if (!confirm_item) return;
 
 		deleting = true;
 		delete_error = '';
@@ -264,187 +484,359 @@
 
 			const deleted_document_id = confirm_item.document_id;
 			const home_page_id = browser_data?.home_page_id ?? null;
+			const current_document_id = browser_data?.current_document_id ?? null;
+			const deleted_current_page = current_document_id === deleted_document_id;
 
 			close_confirm();
 			browser_data = null;
 			loaded_version = -1;
-			page_browser.invalidate?.();
-			await page_browser.handle_page_deleted?.(
-				deleted_document_id,
-				home_page_id,
-				page_url_dialog_item?.document_id ?? confirm_item.document_id
-			);
-			get_page_browser_data().refresh();
+
+			if (deleted_current_page) {
+				await page_browser.handle_page_deleted?.(
+					deleted_document_id,
+					home_page_id,
+					current_document_id
+				);
+			} else {
+				page_browser.invalidate?.();
+				await invalidateAll();
+			}
 		} catch (err) {
-			console.error('Failed to delete page', err);
 			delete_error = err instanceof Error ? err.message : 'Failed to delete page.';
 		} finally {
 			deleting = false;
 		}
 	}
 
-	const drafts = $derived(browser_data?.drafts ?? []);
-	const sitemap = $derived(browser_data?.sitemap ?? null);
-	const page_count = $derived(get_page_count(sitemap));
-	const is_picker_mode = $derived(page_browser.state.mode === 'select');
-	const drawer_title = $derived(is_picker_mode ? 'Select page' : 'Pages');
+	function get_count_label(count, singular_label, plural_label) {
+		return `${count} ${count === 1 ? singular_label : plural_label}`;
+	}
+
+	function normalize_search_text(value) {
+		return (value ?? '').trim().toLowerCase();
+	}
+
+	function get_page_search_text(item) {
+		return `${item?.title ?? ''} ${item?.page_href ?? ''}`.trim().toLowerCase();
+	}
+
+	function item_matches_search(item, normalized_query) {
+		if (!normalized_query) return false;
+		return get_page_search_text(item).includes(normalized_query);
+	}
+
+	function get_highlight_parts(text, normalized_query) {
+		const source_text = text ?? '';
+		if (!normalized_query) {
+			return [{ text: source_text, is_match: false }];
+		}
+
+		const lower_text = source_text.toLowerCase();
+		const match_index = lower_text.indexOf(normalized_query);
+
+		if (match_index === -1) {
+			return [{ text: source_text, is_match: false }];
+		}
+
+		const parts = [];
+		if (match_index > 0) {
+			parts.push({ text: source_text.slice(0, match_index), is_match: false });
+		}
+		parts.push({
+			text: source_text.slice(match_index, match_index + normalized_query.length),
+			is_match: true
+		});
+		if (match_index + normalized_query.length < source_text.length) {
+			parts.push({
+				text: source_text.slice(match_index + normalized_query.length),
+				is_match: false
+			});
+		}
+		return parts;
+	}
+
+	function filter_page_forest_node(node, normalized_query) {
+		if (!node) return null;
+
+		if (!normalized_query) {
+			return {
+				...node,
+				match_kind: 'none',
+				children: (node.children ?? []).map((child) =>
+					filter_page_forest_node(child, normalized_query)
+				)
+			};
+		}
+
+		const self_matches = item_matches_search(node, normalized_query);
+
+		if (self_matches) {
+			return {
+				...node,
+				match_kind: 'direct',
+				children: (node.children ?? []).map((child) => ({
+					...child,
+					match_kind: 'descendant_context',
+					children: mark_descendant_context(child.children ?? [])
+				}))
+			};
+		}
+
+		const filtered_children = [];
+		for (const child of node.children ?? []) {
+			const filtered_child = filter_page_forest_node(child, normalized_query);
+			if (filtered_child) {
+				filtered_children.push(filtered_child);
+			}
+		}
+
+		if (filtered_children.length > 0) {
+			return {
+				...node,
+				match_kind: 'ancestor_context',
+				children: filtered_children
+			};
+		}
+
+		return null;
+	}
+
+	function filter_page_forest(nodes, normalized_query) {
+		if (!normalized_query) {
+			return (nodes ?? []).map((node) => filter_page_forest_node(node, normalized_query));
+		}
+
+		const filtered_nodes = [];
+		for (const node of nodes ?? []) {
+			const filtered_node = filter_page_forest_node(node, normalized_query);
+			if (filtered_node) {
+				filtered_nodes.push(filtered_node);
+			}
+		}
+		return filtered_nodes;
+	}
+
+	function mark_descendant_context(children) {
+		return children.map((child) => ({
+			...child,
+			match_kind: 'descendant_context',
+			children: mark_descendant_context(child.children ?? [])
+		}));
+	}
+
+	function get_match_kind_class(match_kind) {
+		return '';
+	}
+
+	function flatten_page_forest_results(nodes) {
+		const results = [];
+
+		for (const node of nodes ?? []) {
+			results.push({
+				document_id: node.document_id,
+				page_href: node.page_href,
+				title: node.title
+			});
+
+			for (const child of node.children ?? []) {
+				results.push(...flatten_page_forest_results([child]));
+			}
+		}
+
+		return results;
+	}
+
+	function get_visible_results(filtered_page_forest) {
+		return flatten_page_forest_results(filtered_page_forest);
+	}
+
+	function get_visible_result_index(document_id, visible_results) {
+		return visible_results.findIndex((result) => result.document_id === document_id);
+	}
+
+	function clamp_selected_result_index(index, visible_results) {
+		if (visible_results.length === 0) return 0;
+		return Math.min(Math.max(index, 0), visible_results.length - 1);
+	}
+
+	function handle_search_keydown(event, visible_results) {
+		if (visible_results.length === 0) return;
+
+		if (event.key === 'ArrowDown') {
+			event.preventDefault();
+			selected_result_index = clamp_selected_result_index(
+				selected_result_index + 1,
+				visible_results
+			);
+			scroll_selected_result_into_view(visible_results, 'down');
+			return;
+		}
+
+		if (event.key === 'ArrowUp') {
+			event.preventDefault();
+			selected_result_index = clamp_selected_result_index(
+				selected_result_index - 1,
+				visible_results
+			);
+			scroll_selected_result_into_view(visible_results, 'up');
+			return;
+		}
+
+		if (event.key === 'Enter' && event.target === search_input_ref) {
+			event.preventDefault();
+			const selected_result = visible_results[selected_result_index];
+			if (!selected_result) return;
+
+			page_browser.handle_page_selected({
+				document_id: selected_result.document_id,
+				page_href: selected_result.page_href
+			});
+		}
+	}
+
+	let normalized_search_query = $derived(normalize_search_text(search_query));
+	let page_forest = $derived(browser_data?.page_forest ?? []);
+	let filtered_page_forest = $derived(filter_page_forest(page_forest, normalized_search_query));
+	let visible_results = $derived(get_visible_results(filtered_page_forest));
+	let page_count = $derived(get_page_forest_count(page_forest));
+	let filtered_page_count = $derived(get_page_forest_count(filtered_page_forest));
+	let is_picker_mode = $derived(page_browser.state.mode === 'select');
+	let drawer_title = $derived(is_picker_mode ? 'Select page' : 'Pages');
+
+	$effect(() => {
+		normalized_search_query;
+		selected_result_index = 0;
+	});
+
+	$effect(() => {
+		selected_result_index = clamp_selected_result_index(selected_result_index, visible_results);
+	});
 </script>
 
 <div class="pages-drawer">
-	<section class="section">
-		<div class="section-header">
-			<h3>{drafts.length} drafts</h3>
-			{#if is_picker_mode}
-				<span class="section-mode-label">{drawer_title}</span>
-			{/if}
-		</div>
+	<button
+		type="button"
+		class="drawer-initial-focus-target"
+		aria-label="Pages drawer"
+		autofocus
+	></button>
 
+	<div class="search-shell">
+		<label class="search-input-shell">
+			<svg
+				class="search-input-icon"
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 0 15 15"
+				fill="none"
+				aria-hidden="true"
+			>
+				<circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor"></circle>
+				<path d="M10 10L13 13" stroke="currentColor" stroke-linecap="square"></path>
+			</svg>
+			<input
+				bind:this={search_input_ref}
+				type="search"
+				class="search-input"
+				bind:value={search_query}
+				placeholder={`Search ${page_count} pages`}
+				aria-label={`Search ${page_count} pages`}
+				onkeydown={(event) => handle_search_keydown(event, visible_results)}
+			/>
+		</label>
+	</div>
+
+	<section class="section">
 		{#if loading && !browser_data}
 			<div class="status-message" role="status">Loading pages…</div>
 		{:else if load_error}
 			<div class="status-message" role="alert">{load_error}</div>
 		{:else}
-			<div class="drafts-strip" role="list" aria-label="Draft pages">
-				{#if !is_picker_mode}
-					<div role="listitem" class="draft-item">
-						<a class="draft-card create-card" href="/new">
-							<div class="page-illustration draft-illustration create-illustration" aria-hidden="true">
-								<div class="plus-glyph">+</div>
-							</div>
-							<div class="draft-title">New page</div>
-						</a>
-					</div>
-				{/if}
+			<div class="tree" bind:this={tree_ref}>
 
-				{#if drafts.length === 0}
-					<div class="empty-state-card" role="listitem">
-						<div class="empty-state-text">No drafts yet</div>
-					</div>
-				{:else}
-					{#each drafts as draft (draft.document_id)}
-						<div role="listitem" class="draft-item">
-							<div class="draft-card-shell">
-								<a
-									class="draft-card"
-									href={get_resolved_page_href(draft.page_href)}
-									onclick={(event) =>
-										handle_page_click(event, {
-											document_id: draft.document_id,
-											page_href: draft.page_href
-										})}
-								>
-									<div class="page-illustration draft-illustration" aria-hidden="true">
-										{#if draft.preview_image_src}
-											{#if is_video_preview(draft.preview_image_src)}
-												<video
-													class="media-preview"
-													src={get_preview_src(draft.preview_image_src)}
-													muted
-													playsinline
-													disablepictureinpicture
-												></video>
-											{:else}
-												<img
-													class="media-preview"
-													src={get_preview_src(draft.preview_image_src)}
-													alt=""
-												/>
-											{/if}
-										{:else}
-											<div class="page-sheet">
-												<div class="line long"></div>
-												<div class="line"></div>
-												<div class="line short"></div>
-											</div>
+
+				{#snippet node_item(node, depth = 0, is_last = true, ancestor_columns = [], ancestor_is_unlisted = false)}
+					{@const node_has_children = has_children(node)}
+					{@const node_is_root = is_root_node(node, depth)}
+					{@const node_is_unlisted = is_unlisted_page(node, depth, ancestor_is_unlisted)}
+					{@const current_column_continues = node_is_root ? false : !is_last}
+					{@const guide_column_count = ancestor_columns.length}
+					<div class="tree-node">
+						<div
+							class="tree-row-shell"
+							style={`--tree-guide-columns: ${guide_column_count};`}
+						>
+							<div class="tree-guides" aria-hidden="true">
+								{#each ancestor_columns as show_rail, guide_index (`${depth}-${guide_index}`)}
+									<div class="tree-guide-column">
+										{#if show_rail}
+											<div class="tree-guide-rail"></div>
 										{/if}
 									</div>
-									<div class="draft-title">
-										<div>{draft.title}</div>
-										<div class="page-slug-label">{get_page_slug_label(draft.page_href)}</div>
-									</div>
-								</a>
+								{/each}
 
-								{#if !is_picker_mode}
-									<button
-										type="button"
-										class="item-actions-btn"
-										aria-label={`Page actions for ${draft.title}`}
-										onclick={(event) =>
-											open_menu(event, {
-												kind: 'draft',
-												document_id: draft.document_id,
-												page_href: draft.page_href,
-												title: draft.title,
-												is_home_page: false
-											})}
-									>
-										⋯
-									</button>
+								{#if !node_is_root}
+									<div class="tree-gutter">
+										<div class="tree-gutter-rail tree-gutter-rail-top"></div>
+										{#if current_column_continues}
+											<div class="tree-gutter-rail tree-gutter-rail-bottom"></div>
+										{/if}
+										<div class="tree-gutter-elbow"></div>
+									</div>
 								{/if}
 							</div>
-						</div>
-					{/each}
-				{/if}
-			</div>
-		{/if}
-	</section>
 
-	<section class="section">
-		<div class="section-header">
-			<h3>{page_count} pages</h3>
-		</div>
-
-		{#if loading && !browser_data}
-			<div class="status-message" role="status">Loading sitemap…</div>
-		{:else if load_error}
-			<div class="status-message" role="alert">{load_error}</div>
-		{:else if !sitemap}
-			<div class="status-message">No home page configured.</div>
-		{:else}
-			<div class="tree">
-				{#snippet node_item(node, depth = 0)}
-					<div class="tree-node" style={`--depth:${depth};`}>
-						<div class="tree-row-shell">
 							<a
-								class="tree-row"
-								href={get_resolved_page_href(node.page_href)}
+								class={`tree-row ${get_match_kind_class(node.match_kind)}`}
+								class:tree-row-root={node_is_root}
+								class:tree-row-keyboard-selected={visible_results[selected_result_index]?.document_id === node.document_id}
+								data-page-browser-row={node.document_id}
+								href={resolve(get_resolved_page_href(node.page_href))}
 								onclick={(event) =>
 									handle_page_click(event, {
 										document_id: node.document_id,
 										page_href: node.page_href
 									})}
 							>
-								<div class="tree-indent" aria-hidden="true"></div>
-
 								<div class="page-illustration tree-illustration" aria-hidden="true">
-									{#if node.preview_image_src}
-										{#if is_video_preview(node.preview_image_src)}
-											<video
-												class="media-preview"
-												src={get_preview_src(node.preview_image_src)}
-												muted
-												playsinline
-												disablepictureinpicture
-											></video>
-										{:else}
-											<img
-												class="media-preview"
-												src={get_preview_src(node.preview_image_src)}
-												alt=""
-											/>
-										{/if}
+									{#if node.preview_media_node}
+										<div class="media-preview">
+											<Media node={{ ...node.preview_media_node, object_fit: 'cover' }} />
+										</div>
 									{:else}
-										<div class="page-sheet compact">
-											<div class="line long"></div>
-											<div class="line"></div>
-											<div class="line short"></div>
+										<div class="page-illustration-fallback">
+											<div class="page-symbol">
+												<div class="page-symbol-line page-symbol-line-short"></div>
+												<div class="page-symbol-line"></div>
+												<div class="page-symbol-line"></div>
+											</div>
 										</div>
 									{/if}
 								</div>
 
 								<div class="tree-label">
-									<div>{node.title}</div>
-									<div class="page-slug-label">{get_page_slug_label(node.page_href)}</div>
+									<div class="tree-title" title={node.title}>
+										{#each get_highlight_parts(node.title, normalized_search_query) as part, part_index (`title-${node.document_id}-${part_index}`)}
+											<span class:match-highlight={part.is_match}>{part.text}</span>
+										{/each}
+									</div>
+								</div>
+
+								<div class="tree-row-meta">
+									{#if node_is_unlisted}
+										<button
+											type="button"
+											class="unlisted-badge"
+											title="Explain what unlisted means"
+											aria-label={`Explain what unlisted means for ${node.title}`}
+											onclick={(event) =>
+												open_unlisted_info(event, {
+													document_id: node.document_id,
+													title: node.title
+												})}
+										>
+											unlisted
+										</button>
+									{/if}
 								</div>
 							</a>
 
@@ -452,6 +844,7 @@
 								<button
 									type="button"
 									class="item-actions-btn tree-actions-btn"
+									style={`anchor-name: ${get_menu_anchor_name(node.document_id)};`}
 									aria-label={`Page actions for ${node.title}`}
 									onclick={(event) =>
 										open_menu(event, {
@@ -462,22 +855,37 @@
 											is_home_page: is_home_page(node.document_id)
 										})}
 								>
-									⋯
+									<span class="tree-actions-dots">⋯</span>
 								</button>
+
 							{/if}
 						</div>
 
-						{#if node.children?.length}
+						{#if node_has_children}
 							<div class="tree-children">
-								{#each node.children as child (child.document_id)}
-									{@render node_item(child, depth + 1)}
+								{#each node.children as child, index (child.document_id)}
+									{@render node_item(
+										child,
+										depth + 1,
+										index === node.children.length - 1,
+										[...ancestor_columns, current_column_continues],
+										node_is_unlisted
+									)}
 								{/each}
 							</div>
 						{/if}
 					</div>
 				{/snippet}
 
-				{@render node_item(sitemap)}
+				{#if normalized_search_query && filtered_page_forest.length === 0}
+					<div class="status-message">No matching pages.</div>
+				{:else if !normalized_search_query && page_forest.length === 0}
+					<div class="status-message">No pages yet.</div>
+				{:else}
+					{#each filtered_page_forest as root_node, index (root_node.document_id)}
+						{@render node_item(root_node, 0, index === filtered_page_forest.length - 1, [], false)}
+					{/each}
+				{/if}
 			</div>
 		{/if}
 	</section>
@@ -488,27 +896,44 @@
 	class="page-actions-dialog"
 	oncancel={handle_menu_cancel}
 	onclick={handle_menu_click}
+	onkeydown={handle_menu_keydown}
 >
 	{#if menu_item}
 		<div
 			class="menu-panel"
-			style={`position: fixed; top: ${menu_anchor_ref?.getBoundingClientRect().bottom ?? 0}px; left: ${Math.max((menu_anchor_ref?.getBoundingClientRect().right ?? 0) - 192, 8)}px;`}
+			style={`position-anchor: ${menu_anchor_name}; position-area: block-end span-all; justify-self: anchor-center; position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;`}
 		>
-			<button type="button" class="menu-item" onclick={open_in_new_tab}>
+			<button
+				bind:this={menu_item_refs[0]}
+				type="button"
+				class="menu-item"
+				onclick={open_in_new_tab}
+				onfocus={() => {
+					menu_selected_index = 0;
+				}}
+			>
 				Open in new tab
 			</button>
 			<button
+				bind:this={menu_item_refs[1]}
 				type="button"
 				class="menu-item {menu_item.is_home_page ? 'menu-item-disabled' : ''}"
 				onclick={open_page_url_dialog}
+				onfocus={() => {
+					menu_selected_index = 1;
+				}}
 				disabled={menu_item.is_home_page}
 			>
 				Edit URL
 			</button>
 			<button
+				bind:this={menu_item_refs[2]}
 				type="button"
 				class="menu-item {menu_item.is_home_page ? 'menu-item-disabled' : 'menu-item-danger'}"
 				onclick={open_confirm}
+				onfocus={() => {
+					menu_selected_index = 2;
+				}}
 				disabled={menu_item.is_home_page}
 			>
 				Delete
@@ -524,7 +949,10 @@
 	onclick={handle_confirm_click}
 >
 	{#if confirm_item}
-		<div class="confirm-panel">
+		<form class="confirm-panel" onsubmit={(event) => {
+			event.preventDefault();
+			void confirm_delete();
+		}}>
 			<h3 class="confirm-title">Delete page</h3>
 			<p class="confirm-message">{get_delete_confirmation_message()}</p>
 			{#if delete_error}
@@ -535,15 +963,14 @@
 					Cancel
 				</button>
 				<button
-					type="button"
+					type="submit"
 					class="confirm-btn confirm-btn-danger"
-					onclick={confirm_delete}
 					disabled={deleting}
 				>
 					{deleting ? 'Deleting…' : 'Delete'}
 				</button>
 			</div>
-		</div>
+		</form>
 	{/if}
 </dialog>
 
@@ -554,7 +981,10 @@
 	onclick={handle_page_url_dialog_click}
 >
 	{#if page_url_dialog_item}
-		<div class="confirm-panel">
+		<form class="confirm-panel" onsubmit={(event) => {
+			event.preventDefault();
+			void save_page_url();
+		}}>
 			<h3 class="confirm-title">Edit URL</h3>
 			<div class="page-url-field">
 				<span class="page-url-prefix">example.com/</span>
@@ -578,12 +1008,32 @@
 					Cancel
 				</button>
 				<button
-					type="button"
+					type="submit"
 					class="confirm-btn"
-					onclick={save_page_url}
 					disabled={saving_page_url}
 				>
 					{saving_page_url ? 'Saving…' : 'Save'}
+				</button>
+			</div>
+		</form>
+	{/if}
+</dialog>
+
+<dialog
+	bind:this={unlisted_info_ref}
+	class="confirm-dialog"
+	oncancel={handle_unlisted_info_cancel}
+	onclick={handle_unlisted_info_click}
+>
+	{#if unlisted_info_item}
+		<div class="confirm-panel unlisted-info-panel">
+			<h3 class="confirm-title">Unlisted page</h3>
+			<p class="confirm-message">
+				Unlisted pages are not discoverable from the homepage (and for Google), but can be accessed by anyone who has the link.
+			</p>
+			<div class="confirm-actions">
+				<button type="button" class="confirm-btn" onclick={close_unlisted_info}>
+					Got it
 				</button>
 			</div>
 		</div>
@@ -595,7 +1045,84 @@
 		position: relative;
 		display: flex;
 		flex-direction: column;
-		gap: 1.5rem;
+		gap: 1.25rem;
+	}
+
+	.drawer-initial-focus-target {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: 0;
+		border: 0;
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.search-shell {
+		position: sticky;
+		top: 0;
+		z-index: 1;
+		margin-inline: -0.4rem;
+		padding: 1rem 0 0.35rem;
+		background: var(--background);
+	}
+
+	.search-input-shell {
+		display: flex;
+		align-items: center;
+		gap: 0.55rem;
+		width: 100%;
+		padding: 0.48rem 0.78rem;
+		border: 1px solid color-mix(in oklch, var(--background) 92%, var(--foreground));
+		border-radius: 0.9rem;
+		background: var(--background);
+		box-shadow: 0 0 0 0 transparent;
+		cursor: text;
+		transition:
+			border-color 150ms ease,
+			box-shadow 150ms ease;
+	}
+
+	.search-input-shell:hover {
+		border-color: color-mix(in oklch, var(--background) 84%, var(--foreground));
+	}
+
+	.search-input-shell:focus-within {
+		border-color: color-mix(in oklch, var(--background) 76%, var(--foreground));
+		box-shadow: 0 0 0 3px color-mix(in oklch, var(--background) 92%, var(--foreground));
+	}
+
+	.search-input-icon {
+		flex: 0 0 auto;
+		width: 1.15rem;
+		height: 1.15rem;
+		color: color-mix(in oklch, var(--foreground) 42%, transparent);
+	}
+
+	.search-input {
+		width: 100%;
+		min-width: 0;
+		border: 0;
+		background: transparent;
+		color: var(--foreground);
+		padding: 0;
+		font-size: 16px !important;
+		outline: none;
+		box-shadow: none;
+		appearance: none;
+		-webkit-appearance: none;
+	}
+
+	.search-input::placeholder {
+		color: color-mix(in oklch, var(--foreground) 42%, transparent);
+	}
+
+	.search-input:focus,
+	.search-input:focus-visible {
+		outline: none;
+		border: 0;
+		box-shadow: none;
 	}
 
 	.section {
@@ -604,71 +1131,19 @@
 		gap: 0.75rem;
 	}
 
-	.section-header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 0.75rem;
-	}
-
-	.section-header h3 {
-		margin: 0;
-		font-size: 0.95rem;
-		font-weight: 700;
-		letter-spacing: -0.01em;
-		color: inherit;
-	}
-
-	.section-mode-label {
-		font-size: 0.78rem;
-		font-weight: 600;
-		color: color-mix(in oklch, currentColor 65%, transparent);
-	}
-
 	.status-message {
 		padding: 0.8rem 0;
 		font-size: 0.9rem;
 		color: color-mix(in oklch, currentColor 65%, transparent);
 	}
 
-	.drafts-strip {
-		display: grid;
-		grid-auto-flow: column;
-		grid-auto-columns: 8.4rem;
-		gap: 1rem;
-		overflow-x: auto;
-		padding: 0.15rem 0.05rem 0.35rem;
-		scrollbar-width: thin;
-		-webkit-overflow-scrolling: touch;
-	}
-
-	.draft-item {
-		display: block;
-	}
-
-	.draft-card-shell,
 	.tree-row-shell {
 		position: relative;
 	}
 
-	.empty-state-card {
-		display: grid;
-		place-items: center;
-		min-height: 10rem;
-		padding: 0.75rem;
-		border: 1px dashed color-mix(in oklch, var(--foreground) 22%, transparent);
-		background: color-mix(in oklch, var(--foreground) 3%, var(--background));
-	}
-
-	.empty-state-text {
-		font-size: 0.84rem;
-		font-weight: 600;
-		color: color-mix(in oklch, currentColor 65%, transparent);
-		text-align: center;
-	}
-
-	.draft-card,
 	.tree-row {
+		position: relative;
+		z-index: 1;
 		border: 0;
 		background: transparent;
 		cursor: pointer;
@@ -677,59 +1152,142 @@
 		outline: none;
 	}
 
-	.draft-card {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 0.65rem;
-		width: 100%;
-		padding: 0.45rem;
-		padding-top: 2rem;
+	.tree-row-shell::before {
+		content: '';
+		position: absolute;
+		inset: 0 -0.4rem;
+		border-radius: 0.8rem;
+		background: transparent;
+		pointer-events: none;
+		z-index: 0;
+		transition: background-color 140ms ease;
+	}
+
+	.tree-row-keyboard-selected {
+		z-index: 3;
 	}
 
 	.tree-row {
 		display: flex;
 		align-items: center;
-		gap: 0.8rem;
+		gap: 0;
 		width: 100%;
+		min-width: 0;
 		min-height: 3.35rem;
-		padding: 0.45rem 2.5rem 0.45rem calc(0.6rem + var(--depth) * 1rem);
+		padding: 0 2.5rem 0 0;
+		z-index: 1;
 	}
 
-	.draft-card:hover,
-	.draft-card:focus-visible,
-	.tree-row:hover,
-	.tree-row:focus-visible {
-		background: var(--svedit-editing-fill);
+	.tree-row-meta {
+		margin-left: auto;
+		flex: 0 0 auto;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		padding-left: 0.75rem;
+		padding-right: 1rem;
+	}
+
+	.tree-row-root {
+		padding-left: 0;
+	}
+
+	.tree-row::after {
+		content: '';
+		position: absolute;
+		inset: 0 -0.4rem;
+		border-radius: 0.8rem;
+		pointer-events: none;
+		background: transparent;
+		outline: 1px solid transparent;
+		outline-offset: -1px;
+		z-index: 3;
+	}
+
+	.tree-row-shell:hover::before {
+		background: color-mix(in oklch, var(--foreground) 3%, var(--background));
+	}
+
+	.tree-row-shell:hover .tree-row-keyboard-selected::before {
+		background: color-mix(in oklch, var(--svedit-editing-fill) 82%, var(--background));
+	}
+
+	.tree-row-shell:hover .tree-row-keyboard-selected::after {
+		outline-color: var(--svedit-editing-stroke);
+	}
+
+	.tree-row:focus-visible::after,
+	.tree-row-shell:focus-within .tree-row:focus-visible::after {
+		outline-color: var(--svedit-editing-stroke);
+	}
+
+	.draft-card-keyboard-selected,
+	.tree-row-keyboard-selected {
+		outline: none;
+		background: transparent;
+	}
+
+	.tree-row-keyboard-selected::before {
+		content: '';
+		position: absolute;
+		inset: 0 -0.4rem;
+		border-radius: 0.8rem;
+		pointer-events: none;
+		background: color-mix(in oklch, var(--svedit-editing-fill) 82%, var(--background));
+		z-index: -1;
+	}
+
+	.tree-row-keyboard-selected::after,
+	.tree-row-keyboard-selected:focus-visible::after,
+	.tree-row-shell:focus-within .tree-row-keyboard-selected:focus-visible::after {
+		outline-color: var(--svedit-editing-stroke);
 	}
 
 	.item-actions-btn {
 		position: absolute;
-		top: 0.35rem;
-		right: 0.35rem;
+		z-index: 3;
+		top: 0;
+		right: 0;
+		bottom: 0;
 		display: inline-flex;
 		align-items: center;
-		justify-content: center;
-		width: 1.9rem;
-		height: 1.9rem;
+		justify-content: flex-end;
+		width: 3.25rem;
 		border: 0;
-		background: color-mix(in oklch, var(--background) 88%, var(--foreground) 12%);
-		color: inherit;
+		padding: 0 0.7rem 0 0;
+		background: transparent;
+		color: color-mix(in oklch, currentColor 34%, transparent);
 		cursor: pointer;
-		font-size: 1.1rem;
+		font-size: 1rem;
 		line-height: 1;
+		opacity: 1;
+		pointer-events: auto;
+		transition: color 140ms ease;
 	}
 
 	.tree-actions-btn {
-		top: 50%;
-		transform: translateY(-50%);
-		right: 0.45rem;
+		transform: none;
+	}
+
+	.tree-actions-dots {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.5rem;
+		color: inherit;
+		transition: color 140ms ease;
 	}
 
 	.item-actions-btn:hover,
 	.item-actions-btn:focus-visible {
-		background: color-mix(in oklch, var(--foreground) 10%, var(--background));
-		outline: none;
+		color: color-mix(in oklch, currentColor 78%, transparent);
+	}
+
+	.item-actions-btn:focus-visible {
+		outline: 1px solid var(--svedit-editing-stroke);
+		outline-offset: -1px;
+		border-radius: 0.8rem;
+		box-shadow: none;
 	}
 
 	.page-illustration {
@@ -741,7 +1299,7 @@
 
 	.draft-illustration {
 		width: 100%;
-		aspect-ratio: 3 / 4;
+		aspect-ratio: 1;
 		background: oklch(from var(--svedit-brand, oklch(60% 0.22 283)) 0.985 0.012 h);
 		box-shadow: none;
 	}
@@ -753,10 +1311,16 @@
 	}
 
 	.tree-illustration {
-		width: 2.65rem;
-		aspect-ratio: 3 / 4;
+		width: 2.6rem;
+		aspect-ratio: 1;
 		flex: 0 0 auto;
+		margin: 0.3rem 0.35rem 0.3rem 0;
+		background: color-mix(in oklch, var(--foreground) 2%, var(--background));
+		border-radius: 0.5rem;
+		overflow: hidden;
 	}
+
+
 
 	.media-preview {
 		width: 100%;
@@ -764,49 +1328,33 @@
 		display: block;
 		object-fit: cover;
 		background: color-mix(in oklch, var(--foreground) 3%, var(--background));
+		border-radius: inherit;
+		overflow: hidden;
 	}
 
-	.page-sheet {
+	.page-illustration-fallback {
 		width: 100%;
 		height: 100%;
-		background:
-			linear-gradient(
-				180deg,
-				color-mix(in oklch, var(--background) 96%, white) 0%,
-				color-mix(in oklch, var(--background) 92%, white) 100%
-			);
-		box-shadow:
-			0 1px 2px color-mix(in oklch, black 8%, transparent),
-			0 8px 18px color-mix(in oklch, black 10%, transparent),
-			inset 0 0 0 1px color-mix(in oklch, var(--foreground) 12%, transparent);
-		padding: 0.62rem 0.5rem;
+		display: grid;
+		place-items: center;
+		background: color-mix(in oklch, var(--foreground) 2%, var(--background));
+		border-radius: inherit;
+	}
+
+	.page-symbol {
+		width: 1rem;
 		display: flex;
 		flex-direction: column;
-		gap: 0.22rem;
+		gap: 0.12rem;
 	}
 
-	.page-sheet.compact {
-		padding: 0.42rem 0.34rem;
-		gap: 0.16rem;
+	.page-symbol-line {
+		height: 1px;
+		background: color-mix(in oklch, var(--foreground) 24%, transparent);
 	}
 
-	.line {
-		height: 0.16rem;
-		background: color-mix(in oklch, var(--foreground) 28%, transparent);
-		margin-left: 0.04rem;
-		margin-right: 0.04rem;
-	}
-
-	.page-sheet.compact .line {
-		height: 0.11rem;
-	}
-
-	.line.long {
-		width: 100%;
-	}
-
-	.line.short {
-		width: 55%;
+	.page-symbol-line-short {
+		width: 62%;
 	}
 
 	.plus-glyph {
@@ -817,41 +1365,186 @@
 	}
 
 	.draft-title {
-		font-size: 0.8rem;
-		font-weight: 600;
-		line-height: 1.2;
+		font-size: 0.72rem;
+		font-weight: 500;
+		line-height: 1.18;
 		color: inherit;
 		text-align: center;
+	}
+
+	.match-highlight {
+		background: color-mix(in oklch, var(--svedit-editing-fill) 88%, transparent);
+		color: inherit;
 	}
 
 	.tree {
 		display: flex;
 		flex-direction: column;
-		gap: 0.45rem;
+		gap: 0;
 	}
 
 	.tree-node {
 		display: flex;
 		flex-direction: column;
-		gap: 0.45rem;
+		gap: 0;
 	}
 
-	.tree-indent {
-		width: 0;
-		height: 0;
+	.tree-row-shell {
+		position: relative;
+		display: flex;
+		align-items: stretch;
+		min-width: 0;
+		isolation: isolate;
+	}
+
+	.tree-guides {
+		position: absolute;
+		inset: 0 auto 0 0;
+		z-index: 0;
+		display: flex;
+		align-items: stretch;
+		align-self: stretch;
+		min-width: max-content;
+		margin-left: calc(var(--tree-indent-width, 1.3rem) * -1);
+		margin-right: 0;
+		pointer-events: none;
+	}
+
+	.tree-row {
+		position: relative;
+		z-index: 1;
+		padding-left: calc(var(--tree-guide-columns, 0) * var(--tree-indent-width, 1.3rem));
+	}
+
+	.search-shell {
+		z-index: 4;
+	}
+
+	.tree-guide-column,
+	.tree-gutter {
+		position: relative;
+		width: var(--tree-indent-width, 1.3rem);
+		flex: 0 0 var(--tree-indent-width, 1.3rem);
+		align-self: stretch;
+	}
+
+	.tree-guide-rail,
+	.tree-gutter-rail {
+		position: absolute;
+		left: calc(50% - 0.5px);
+		width: 1px;
+		background: color-mix(in oklch, var(--background) 88%, var(--foreground));
+	}
+
+	.tree-guide-rail {
+		top: 0;
+		bottom: 0;
+	}
+
+
+
+	.tree-gutter {
+		padding: 0;
+		border: 0;
+		background: transparent;
+		cursor: default;
+		pointer-events: none;
+		overflow: visible;
+		min-height: 100%;
+	}
+
+	.tree-gutter-rail-top {
+		top: 0;
+		height: 50%;
+	}
+
+	.tree-gutter-rail-bottom {
+		top: 50%;
+		height: 50%;
+	}
+
+	.tree-gutter-elbow {
+		position: absolute;
+		left: calc(50% - 0.5px);
+		top: 50%;
+		width: calc(var(--tree-indent-width, 1.3rem) / 2);
+		height: 1px;
+		background: color-mix(in oklch, var(--background) 88%, var(--foreground));
+	}
+
+
+
+	.tree-leaf-dot {
+		display: none;
 	}
 
 	.tree-label {
-		font-size: 0.92rem;
+		min-width: 0;
+		flex: 1 1 auto;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 0;
+		font-size: 0.9rem;
 		font-weight: 600;
-		line-height: 1.2;
+		line-height: 1.15;
 		color: inherit;
+		padding-left: 0.75rem;
+	}
+
+	.tree-title {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+
+
+	.page-slug-label {
+		font-family: ui-monospace, 'SFMono-Regular', 'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+		font-size: 0.68rem;
+		font-weight: 500;
+		line-height: 1.1;
+		letter-spacing: 0.01em;
+		color: color-mix(in oklch, currentColor 52%, transparent);
+	}
+
+	.unlisted-badge {
+		flex: 0 0 auto;
+		border: 1px solid color-mix(in oklch, var(--foreground) 10%, transparent);
+		background: transparent;
+		color: color-mix(in oklch, currentColor 48%, transparent);
+		padding: 0.12rem 0.3rem;
+		font-size: 0.62rem;
+		font-weight: 600;
+		line-height: 1;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+		cursor: pointer;
+	}
+
+	.unlisted-badge:hover {
+		background: color-mix(in oklch, var(--foreground) 4%, transparent);
+		color: color-mix(in oklch, currentColor 62%, transparent);
+	}
+
+	.unlisted-badge:focus-visible {
+		background: color-mix(in oklch, var(--foreground) 4%, transparent);
+		color: color-mix(in oklch, currentColor 62%, transparent);
+		outline: 2px solid var(--svedit-editing-stroke);
+		outline-offset: 2px;
+	}
+
+	.tree-actions-dots {
+		display: inline-block;
+		transform: translateY(-0.02rem);
 	}
 
 	.tree-children {
 		display: flex;
 		flex-direction: column;
-		gap: 0.35rem;
+		gap: 0;
 	}
 
 	.page-actions-dialog,
@@ -867,16 +1560,21 @@
 		overflow: visible;
 	}
 
-	.page-actions-dialog::backdrop,
+	.page-actions-dialog::backdrop {
+		background: transparent;
+	}
+
 	.confirm-dialog::backdrop {
 		background: color-mix(in oklch, var(--foreground) 10%, transparent);
 	}
 
 	.menu-panel {
 		position: fixed;
+		z-index: 40;
 		display: flex;
 		flex-direction: column;
 		min-width: 12rem;
+		margin: 0;
 		background: var(--background);
 		color: var(--foreground);
 		border: 1px solid color-mix(in oklch, var(--foreground) 18%, transparent);
@@ -921,6 +1619,10 @@
 		color: var(--foreground);
 		border: 1px solid color-mix(in oklch, var(--foreground) 18%, transparent);
 		box-shadow: 0 12px 30px color-mix(in oklch, black 12%, transparent);
+	}
+
+	.unlisted-info-panel {
+		width: min(24rem, calc(100vw - 2rem));
 	}
 
 	.confirm-title {
@@ -986,10 +1688,14 @@
 		font-weight: 600;
 	}
 
-	.confirm-btn:hover,
+	.confirm-btn:hover {
+		background: color-mix(in oklch, var(--foreground) 10%, var(--background));
+	}
+
 	.confirm-btn:focus-visible {
 		background: color-mix(in oklch, var(--foreground) 10%, var(--background));
-		outline: none;
+		outline: 2px solid var(--svedit-editing-stroke);
+		outline-offset: 2px;
 	}
 
 	.confirm-btn-danger {
@@ -1003,19 +1709,55 @@
 	}
 
 	@media (max-width: 640px) {
-		.drafts-strip {
-			grid-auto-columns: 7.5rem;
-			gap: 0.85rem;
-		}
-
-		.draft-card {
-			padding: 0.4rem;
-			padding-top: 1.9rem;
-			gap: 0.55rem;
-		}
-
 		.draft-title {
-			font-size: 0.74rem;
+			font-size: 0.68rem;
+		}
+
+		.search-input-shell {
+			gap: 0.5rem;
+			padding: 0.52rem 0.72rem;
+		}
+
+		.search-input-icon {
+			width: 1.05rem;
+			height: 1.05rem;
+		}
+
+		.search-input {
+			font-size: 0.84rem;
+		}
+
+		.tree-row-shell:hover::before {
+			background: transparent;
+		}
+
+		.tree-row-shell:hover .tree-row-keyboard-selected::before {
+			background: color-mix(in oklch, var(--svedit-editing-fill) 82%, var(--background));
+		}
+
+		.tree-row-shell:hover .tree-row-keyboard-selected::after {
+			outline-color: var(--svedit-editing-stroke);
+		}
+
+		.tree-row-meta {
+			display: flex;
+			padding-left: 0.5rem;
+			padding-right: 0.75rem;
+		}
+
+		.item-actions-btn {
+			width: 3.75rem;
+			padding-right: 0.85rem;
+		}
+
+		.tree-row-shell {
+			--tree-indent-width: 1.3rem;
+		}
+	}
+
+	@media (min-width: 641px) {
+		.tree-row-shell {
+			--tree-indent-width: 2.6rem;
 		}
 	}
 </style>

@@ -1,17 +1,12 @@
 <script>
-	import PageEditor from '../components/PageEditor.svelte';
+	import App from '../components/App.svelte';
 
+	/** @type {{ data: { document: any, slug: string | null, is_admin?: boolean, has_backend?: boolean, is_new?: boolean } }} */
 	const props = $props();
-	const page_data = $derived(props.data);
 </script>
 
 <svelte:head>
 	<title>Editable Website</title>
 </svelte:head>
 
-<PageEditor
-	initial_doc={page_data.document}
-	initial_slug={page_data.slug}
-	has_backend={true}
-	is_new={false}
-/>
+<App {...props.data} has_backend={true} is_new={false} />

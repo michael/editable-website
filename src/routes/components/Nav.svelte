@@ -41,7 +41,7 @@
 			<!-- Logo -->
 			<div class="flex items-center shrink min-w-10 {TW_PAGE_PADDING_X} py-3">
 				<svelte:element
-					class="h-10 block min-w-0"
+					class="h-10 block min-w-0 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 					style:aspect-ratio={logo_node.width && logo_node.height ? `${logo_node.width} / ${logo_node.height}` : '1 / 1'}
 					this={svedit.editable ? 'div' : 'a'}
 					href={svedit.editable ? undefined : '/'}

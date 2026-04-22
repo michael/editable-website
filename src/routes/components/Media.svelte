@@ -1,17 +1,13 @@
 <script>
-	import { getContext } from 'svelte';
 	import Image from './Image.svelte';
 	import Video from './Video.svelte';
 
-	const svedit = getContext('svedit');
-
-	/** @type {{ path: any[] }} */
-	let { path } = $props();
-	let node = $derived(svedit.session.get(path));
+	/** @type {{ node: any, editable?: boolean }} */
+	let { node, editable = false } = $props();
 </script>
 
-{#if node.type === 'video'}
-	<Video {path} />
-{:else}
-	<Image {path} />
+{#if node?.type === 'video'}
+	<Video {node} {editable} />
+{:else if node}
+	<Image {node} />
 {/if}

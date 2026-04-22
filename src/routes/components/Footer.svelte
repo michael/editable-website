@@ -23,7 +23,7 @@
 			<div class="flex flex-col items-center lg:items-start lg:w-1/3">
 				<SizableViewbox {path} media_property="logo" placeholder_aspect_ratio={1}>
 					<svelte:element
-						class="block w-full h-full"
+						class="block w-full h-full outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:-outline-offset-1"
 						this={svedit.editable ? 'div' : 'a'}
 						href={svedit.editable ? undefined : '/'}
 					>

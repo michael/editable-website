@@ -27,6 +27,20 @@ Install dependencies:
 npm install
 ```
 
+Copy `.env.example` to `.env` and set an admin password for local development:
+
+```sh
+cp .env.example .env
+```
+
+Then set `ADMIN_PASSWORD` in `.env`:
+
+```sh
+ADMIN_PASSWORD='change-me'
+```
+
+`ADMIN_PASSWORD` is required for admin login and save-capable editing.
+
 And run the development server:
 
 ```sh
@@ -73,7 +87,8 @@ fly apps create my-editable-website
 ```
 fly secrets set -a my-editable-website \
   ORIGIN='https://my-editable-website.fly.dev' \
-  BODY_SIZE_LIMIT='30000000'
+  BODY_SIZE_LIMIT='30000000' \
+  ADMIN_PASSWORD='change-me'
 ```
 
 ```

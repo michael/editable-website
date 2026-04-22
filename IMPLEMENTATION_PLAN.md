@@ -2,6 +2,250 @@
 
 This document tracks what to implement next. One step at a time. All implementation must conform to the design decisions in [ARCHITECTURE.md](ARCHITECTURE.md) — if a conflict arises, update the architecture first, then implement.
 
+## Next implementation draft — admin authentication
+
+This step adds simple owner authentication for editing and private page-management features.
+
+### Goal
+
+Implement admin authentication with these rules:
+
+- the admin password is configured via `ADMIN_PASSWORD`
+- `ADMIN_PASSWORD` is required in full runtime mode; if it is missing, the app must not start
+- whoever knows that password can authenticate as admin
+- authenticated admins can edit and save content, browse drafts, and use the full page browser
+- unauthenticated visitors can still choose `Edit for fun`
+- edit-for-fun mode only affects the currently open page and never persists changes
+- the primary login entry point is the edit shortcut flow on the current page
+- static / `VERCEL=1` mode keeps authentication disabled
+
+### Scope
+
+This step includes:
+
+- server-side admin session creation and validation using the existing `sessions` table
+- session cookie creation and logout
+- `event.locals.is_admin` wiring in `hooks.server.js`
+- a login command that validates `ADMIN_PASSWORD`
+- a lightweight auth-status read API for the client
+- server-side protection for save and page-management mutations
+- server-side protection for private page browser data
+- an auth dialog shown when unauthenticated users try to edit
+- edit-for-fun mode in the editor UI
+- hiding private page-management UI from unauthenticated users
+
+This step does not include:
+
+- multi-user accounts
+- usernames or email addresses
+- password reset flows
+- role-based permissions
+- rate limiting / brute-force protection
+- changing the public browsing experience
+- changing the static / `VERCEL=1` compatibility model
+
+### Environment and session rules
+
+Required behavior:
+
+- `ADMIN_PASSWORD` is the single source of truth for admin login
+- in static / `VERCEL=1` mode, authentication is disabled
+- in full runtime mode, the app must not start if `ADMIN_PASSWORD` is missing
+- in full runtime mode, protected mutations must fail if the request is not authenticated as admin
+- the session cookie stores only an opaque session id
+- the password itself is never stored client-side
+- expired sessions are deleted on lookup
+
+Session lifetime rules:
+
+- admin sessions last for two weeks
+- when a session is created, `expires` is set to `now + 2 weeks`
+- when an authenticated admin makes a meaningful authenticated request, the server extends `expires` to `now + 2 weeks`
+- this is a sliding session window, not a fixed expiry from first login
+
+Cookie requirements:
+
+- `httpOnly`
+- `sameSite='lax'`
+- `secure` in production
+- path `/`
+
+### Server hook changes
+
+Update `src/hooks.server.js` so that on every request it:
+
+1. reads the admin session cookie
+2. looks up the session in `sessions`
+3. deletes expired sessions
+4. sets `event.locals.is_admin` to `true` or `false`
+
+There is no `user` object in this model.
+
+### Remote function changes
+
+Add admin auth remote functions:
+
+- `login_admin(password)`
+- `logout_admin()`
+- `get_auth_status()`
+
+Required behavior:
+
+#### `login_admin(password)`
+
+- validate the submitted password against `ADMIN_PASSWORD`
+- if invalid, return a user-facing auth error result
+- if valid:
+  - create a new session row
+  - set the session cookie
+  - return `{ ok: true }`
+
+#### `logout_admin()`
+
+- delete the current session row if present
+- clear the session cookie
+- return `{ ok: true }`
+
+#### `get_auth_status()`
+
+- return whether the current request is authenticated as admin
+- if authenticated, extend the session expiry to `now + 2 weeks`
+- this is only for UI branching; the server remains the source of truth for authorization
+
+### Protected server operations
+
+Require `event.locals.is_admin === true` for:
+
+- `save_document(...)`
+- `delete_page(...)`
+- `update_page_slug(...)`
+- any persistent asset mutation flow used during save
+- `get_page_browser_data(...)`
+
+For these authenticated operations, successful session validation should also extend the session expiry to `now + 2 weeks`.
+
+Public page/document reads remain public:
+
+- page loading by slug
+- home page loading
+- internal link preview for already-public pages
+
+### Edit shortcut and auth dialog flow
+
+When the user triggers editing on a page:
+
+- desktop users can use the edit shortcut
+- mobile users can pull past the end of the page and hold that overscroll for about one second to open the same auth dialog
+- the mobile overscroll trigger is only enabled on touch-capable / coarse-pointer devices
+
+#### If already authenticated as admin
+
+- enter normal editable mode immediately
+
+#### If not authenticated
+
+Open a first dialog with two large visual choice cards:
+
+1. `Edit for fun`
+2. `Login`
+
+Behavior of the first dialog:
+
+- the `Edit for fun` card uses a large primary label with supporting copy such as `Changes can't be saved`
+- the `Login` card uses a large primary label with supporting copy such as `For admins`
+- each choice is presented as a large square or near-square button-like card rather than a small inline action row
+- the first-step dialog may include simple illustrative treatment inside each card to make the two paths feel visually distinct
+- `Edit for fun` enters temporary local editing mode without authentication
+- `Login` advances to a second dialog that prompts for the admin password
+- there is no dedicated cancel button on the first-step dialog; dismissing it is done by clicking outside the dialog or pressing escape
+
+Behavior of the second dialog:
+
+- submitting the password calls `login_admin(...)`
+- on success, authenticate as admin, refresh admin-only UI state, and close the dialog without entering page editing mode automatically
+- on failure, keep the password dialog open and show an error
+- cancel closes the password dialog and returns to normal browsing mode
+
+Behavior of the mobile overscroll trigger:
+
+- it only opens the auth dialog and does not enter editing directly
+- it only applies while not already editing
+- it is mobile-only and should only be armed on touch-capable / coarse-pointer devices
+- it should only trigger after the user has reached the end of the page and held the overscroll state for about one second
+- it should only trigger while the user is actively holding a touch through that hold period
+- it must not trigger from inertial or momentum scrolling after the finger has lifted
+- it should not retrigger repeatedly during the same continuous gesture
+- it should reset once the user returns to the normal scroll range or ends the touch
+
+There is no primary `/login` route in this step.
+
+### Edit-for-fun mode
+
+Add a distinct unauthenticated editing mode with these rules:
+Constraints of edit-for-fun mode:
+
+- edits are local and disposable only
+- there is no save action
+- there is no page browser access
+- there is no drafts access
+- there is no create-page flow
+- there is no delete-page flow
+- there is no page URL editing flow
+- normal in-memory editing interactions can still run while editing for fun
+- uploads are never persisted because persistence only happens through save
+- cancel resets the page back to its initial loaded state
+- pressing the edit shortcut again while already in edit-for-fun mode does nothing
+
+### Client UI changes
+
+Update the editor UI so that it distinguishes between:
+
+- public browsing mode
+- edit-for-fun mode
+- authenticated admin editing mode
+
+Required UI behavior:
+
+- unauthenticated users pressing edit see the auth dialog
+- authenticated admins see the existing save-capable editing UI
+- edit-for-fun mode shows only disposable editing controls
+- drafts and private sitemap UI are hidden unless authenticated as admin
+- link pickers must not expose drafts to unauthenticated users
+- toolbar actions that require admin auth must be hidden or disabled when unauthenticated
+- authenticated admins get an explicit logout button
+
+### Page browser behavior
+
+The page browser becomes admin-only.
+
+Required behavior:
+
+- unauthenticated users do not see drafts
+- unauthenticated users do not see the private sitemap drawer at all
+- authenticated admins continue to see drafts and the full page browser
+- all server-side page browser data remains protected even if the client UI is bypassed
+
+### Save behavior
+
+Saving is admin-only.
+
+Required behavior:
+
+- in edit-for-fun mode, there is no save action
+- if an unauthenticated save somehow reaches the server, the server rejects it
+- authenticated admin saves continue to work as before
+
+### Logout behavior
+
+Add a logout action for authenticated admins.
+
+Required behavior:
+
+- clears the session cookie
+- invalidates admin-only UI state
+- if the user is currently editing, exit admin editing mode
+- after logout, pressing the edit shortcut again should reopen the auth dialog
+
 ## Next implementation draft — slug-based page URLs
 
 This step replaces id-based public page routes with slug-based page URLs while keeping `document_id` as the stable internal identity.
@@ -250,9 +494,8 @@ Extend the page browser query to return, for each page:
 
 - `document_id`
 - extracted title
-- preview image
+- optional `preview_media_node`
 - current active slug for non-home pages
-
 The home page row must additionally be marked so the UI can:
 
 - display `/` as its URL
@@ -615,32 +858,33 @@ Return shape:
 
 ```js
 {
-  home_page_id: string,
-  drafts: Array<PageSummary>,
-  sitemap: PageTreeNode | null
+  home_page_id: string | null,
+  page_forest: PageTreeNode[]
 }
 ```
 
-Where a `PageSummary` could be:
-
-```js
-{
-  document_id: string,
-  title: string,
-  preview_image_src: string | null
-}
-```
-
-And `PageTreeNode`:
+Where `PageTreeNode` is:
 
 ```js
 {
   document_id: string,
   title: string,
   preview_image_src: string | null,
+  page_href: string,
   children: PageTreeNode[]
 }
 ```
+
+The page browser should render a single forest of page subtrees, not separate `drafts` and `sitemap` sections.
+
+Rules for the returned forest:
+
+- every page appears exactly once in the forest
+- the configured home page appears as one root node if it exists
+- the home page root is always the **last** root in the forest
+- all other roots come first and represent entry pages for page subtrees that are not linked from the home page, ordered deterministically by first-seen traversal across the remaining unassigned pages
+- those non-home roots may themselves have descendants and therefore represent parallel site hierarchies
+- the client should not need to reconstruct graph relationships or merge multiple datasets
 
 This keeps the drawer UI simple and avoids doing graph analysis in the client.
 
@@ -702,62 +946,69 @@ The likely cost of summary extraction is low enough for now:
 
 If later needed, the same extraction helper can become the canonical generator for cached summaries.
 
-## Decision 8: drafts are unreachable pages, not merely “unlinked by nav”
+## Decision 8: all pages are public by URL; home reachability only controls sitemap inclusion
 
-Drafts should be defined according to reachability from the live site graph:
+Pages should no longer be modeled as private drafts.
 
-- start at `home_page_id`
-- include internal links from:
-  - pages
-  - nav
-  - footer
-- all reachable page documents form the sitemap/reachable set
-- any page document not in that set becomes a draft
+Instead:
 
-This matches the architecture and avoids conflating “not in nav” with “draft”.
+- every page is public by default
+- every page gets a slug and is discoverable by direct URL
+- pages not linked from the home page are **unlisted**, not private
+- only pages reachable from the home page graph are included in `sitemap.xml`
+
+This means the system supports both:
+
+- the main site hierarchy rooted at the home page
+- additional parallel page hierarchies that are routable but not advertised to search engines through `sitemap.xml`
+
+This matches the actual routing behavior better than the old draft/public split.
 
 ## Decision 9: internal page reference rules are route-based and deterministic
 
 Internal page references should follow these rules:
 
-- page routes are `/:page_id`
+- page routes are slug-based
 - `/` is the home page
-- `/${page_id}` is an internal link to the page with that document id
-- `/${page_id}#section` is also an internal link to that page; the `#section` fragment is ignored for reachability / sitemap purposes
+- `/${slug}` is an internal link to the page with that active slug
+- `/${slug}#section` is also an internal link to that page; the `#section` fragment is ignored for reachability / sitemap purposes
 - `/#section` is **not** a page reference when it points to the current home page; it is just an in-page anchor and must not create a `document_refs` edge
 - more generally, anchor links that resolve to the **same page** are ignored for `document_refs`
 - external URLs are ignored
 
 This means `document_refs` should track page-to-page relationships by normalized target page id, not by full href string. Fragments are only relevant for browser navigation, not for sitemap reachability.
 
-## Decision 10: sitemap hierarchy is a canonical tree projection, not a graph view
+## Decision 10: the page browser shows a canonical forest, with the home subtree last
 
-The sitemap drawer should render a **tree projection** of the reachable page graph, not the full graph.
+The page browser should render a **forest projection** of all pages, not a split between drafts and sitemap and not a full graph visualization.
 
-### Final tree-building rule
+### Final forest-building rule
 
-- **No duplicates in the tree**
+- **No duplicates in the forest**
 - **First occurrence wins**
-- **Top-level ordering:** shared nav links → home page body links → shared footer links
-- **Recursive ordering for child pages:** body links only
+- **Home subtree last**
+- **Non-home entry roots first**
+- **Within each subtree, preserve deterministic traversal order**
+- **Recursive ordering for child pages:** body links only after placement, except for the home root which seeds its top level from shared nav links, home page body links, then shared footer links
 
 This means:
 
-- Start traversal at the configured home page.
-- At the root level, collect outgoing internal page references in this order:
-  1. shared nav
-  2. home page body
-  3. shared footer
-- When a referenced page is encountered for the first time, insert it into the tree at that position.
-- Then recurse into that page, but only inspect its **body-derived** page references.
-- If the same page is encountered again later from another path, ignore that later occurrence for tree placement.
+- Build the canonical home subtree first using the existing main-site ordering:
+  1. shared nav links
+  2. home page body links
+  3. shared footer links
+- Recurse into placed child pages using body-derived links only.
+- Mark every page placed into that home subtree as already assigned.
+- Then scan the remaining unassigned pages and create additional root nodes for them in a deterministic order based on the first page encountered in a stable traversal of the remaining page set.
+- For each such non-home root, recurse through body-derived links only, again using first occurrence wins, so each parallel subtree is stable even when pages cross-link.
+- Append the home root as the final root in the returned forest.
 
-This produces a deterministic, editor-friendly sitemap:
-- global nav/footer define the top-level site structure
-- deeper nesting comes from contextual links inside page content
+This produces a deterministic, editor-friendly page browser:
+
+- the main site remains easy to read because the home subtree is intact
+- pages outside the home-linked site are still visible in the same browser
+- parallel site hierarchies are represented naturally as additional roots
 - repeated references do not crowd the drawer with duplicates
-
-Reachability is still graph-based, but the drawer presents a clean canonical tree rather than a literal graph visualization.
 
 ## Proposed phased implementation
 
@@ -938,6 +1189,30 @@ Implemented:
 
 Note:
 - drawer-close-on-click can be refined later if needed
+- the drawer resize handle should render outside the drawer panel, centered on the top edge, so it visually floats above the sheet instead of taking space inside the drawer content area
+- while dragging, the drawer should be able to move all the way down to the bottom of the viewport
+- on drag release near zero height, the drawer should animate smoothly down to `0` height and then close instead of remaining open at a tiny height or closing abruptly
+- otherwise, on drag release, the drawer should snap to the nearest preset height based on the release position: `1/3`, `2/3`, or `3/4` of the viewport height
+- after release, the drawer height should animate smoothly toward the snapped value rather than jumping immediately, including when dragged above the highest snap point and settling back to `3/4`
+- when the drawer is reopened after being closed near zero height, it should restore the previous non-zero snapped height
+- add a contextual search box to the page browser drawer
+- the search should run client-side against the already loaded drawer data; no dedicated server search endpoint is needed for the initial implementation
+- focus the search box as soon as the drawer is opened
+- drafts should be filtered independently by the same search query
+- sitemap filtering should preserve structural context:
+  - if a page directly matches the query, show that page
+  - if a page directly matches the query, also show all of its descendants
+  - if a descendant matches the query, also show its ancestor chain up to the root so the placement in the site structure remains visible
+- direct matches should be visually highlighted so it is clear why a page is shown
+- pages shown only because their parent matched or because they are ancestors of a match should remain visible but should not use the same direct-match highlight treatment
+- while a search query is active, matching branches should be shown even if they would otherwise be collapsed
+- keyboard navigation should work over the currently visible search results:
+  - `ArrowDown` moves to the next visible result
+  - `ArrowUp` moves to the previous visible result
+  - `Enter` opens the currently selected result
+- the keyboard result order should follow the visible drawer order so navigation feels predictable
+- the existing canonical sitemap tree remains the source of truth; search does not need to surface secondary graph placements for pages that are linked from multiple places
+- the expected scale is on the order of hundreds of pages (for example around 500), so a straightforward client-side tree traversal per query is acceptable
 
 ## Phase 5 — save flow integration and navigation correctness
 

@@ -6,6 +6,7 @@ declare global {
 		interface Locals {
 			db: DatabaseSync,
 			user: string,
+			is_admin: boolean,
 		}
 		// interface PageData {}
 		// interface PageState {}

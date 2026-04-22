@@ -4,11 +4,58 @@
 
 This document describes the backend architecture for Editable Website v2.
 
+## Next implementation draft — admin authentication
+
+The next planned step is simple owner authentication for editing and private page-management features.
+
+### Goal
+
+Implement a single-password admin authentication flow with these rules:
+
+- the admin password is configured via `ADMIN_PASSWORD`
+- `ADMIN_PASSWORD` is required in full runtime mode; if it is missing, the app must not start
+- whoever knows that password can authenticate as admin
+- authenticated admins can edit and save content, browse drafts, and use the full page browser
+- unauthenticated visitors can still choose “Edit for fun” on the current page
+- edit-for-fun mode never persists changes
+- there is no dedicated remembered login route as the primary UX
+- the main login entry point is the edit shortcut flow on the current page
+- static / `VERCEL=1` mode keeps authentication disabled
+
+### Scope
+
+This step includes:
+
+- server-side admin session handling using the existing `sessions` table
+- session cookie creation, validation, and logout
+- `event.locals.is_admin` wiring in the server hook
+- a login command that validates `ADMIN_PASSWORD`
+- server-side protection for save and page-management mutations
+- server-side protection for private page browser data
+- client UI state for authenticated admin vs edit-for-fun mode
+- an auth dialog shown when unauthenticated users try to edit
+- edit-for-fun restrictions in the editor UI
+
+This step does not include:
+
+- multi-user accounts
+- usernames or email addresses
+- password reset flows
+- role-based permissions
+- rate limiting or brute-force protection beyond basic server-side checks
+- exposing drafts or private sitemap data to unauthenticated users
+
 ## Overview
 
 Editable Website is a SvelteKit application that lets site owners edit content directly in the browser. The editor (Svedit) works with a graph-based document model — a flat map of nodes with references between them. The backend stores these documents in SQLite and serves them to the frontend, stitching together shared content (nav, footer) with page-specific content into a single document that Svedit can edit locally.
 
 The production architecture is database-backed and supports multiple pages, but the project must also continue to support static preview/local development mode (for example `VERCEL=1`) where the app falls back to the demo document. In that mode, only the `/` route needs to work, multi-page features are disabled, authentication is disabled, and code paths must avoid hard dependencies on server-only runtime features that would break static deployments.
+
+In full runtime mode, Editable Website also supports a simple owner-only admin authentication model. Whoever knows the admin password can unlock editing and private page-management features. This is intentionally not a multi-user system — there is no user database, no roles, and no per-user ownership model. Authentication exists only to distinguish between:
+
+1. **Admin mode** — authenticated with the configured admin password, can edit and save, browse drafts, create pages, delete pages, and use the full page browser
+2. **Edit-for-fun mode** — unauthenticated, can temporarily edit the currently open page in the browser UI, but cannot save changes or access private site-management features
+3. **Public browsing mode** — normal site visitor mode with no editing UI active
 
 ## SvelteKit configuration
 
@@ -46,7 +93,16 @@ export async function init() {
 }
 ```
 
-The `handle` hook runs on every request and is where session validation and `event.locals.user` assignment will happen once authentication is implemented.
+The `handle` hook runs on every request and is where session validation and `event.locals` assignment happens.
+
+For admin authentication, the hook is responsible for:
+
+- reading the admin session cookie
+- validating the session against the `sessions` table
+- deleting expired sessions on lookup
+- assigning `event.locals.is_admin` as a boolean for downstream route loads and remote functions
+
+There is no `user` object in this model. The only server-side auth state needed is whether the current request is authenticated as admin.
 
 ## Static / Vercel compatibility mode
 
@@ -62,12 +118,13 @@ Editable Website must preserve a lightweight static-compatible mode for preview 
   - no links or flows that send the user to dynamic `/:page_id` pages
 - the multi-page routes may still exist in the codebase and may assume a full Node + database runtime; they just must not be linked to or otherwise used from the `VERCEL=1` branch.
 - authentication is disabled in this mode.
+- the admin password flow must not be surfaced in this mode.
 - Client code must not hardwire imports or execution paths that force server-only database/remote-function behavior for the `/` route in static/Vercel mode.
 - Be especially careful with top-level async imports and route setup so the static adapter / preview deployment path remains viable.
 
 This means the app effectively has two operating modes:
 
-1. **Full runtime mode** — database-backed, multi-page, shared nav/footer, authentication-ready
+1. **Full runtime mode** — database-backed, multi-page, shared nav/footer, admin-authenticated editing
 2. **Static/Vercel mode** — single-page demo-doc fallback on `/`, while multi-page routes may still exist but are not surfaced or used
 
 The static/Vercel mode is a compatibility constraint on all future multi-page work.
@@ -165,14 +222,186 @@ This table is the single source of truth for asset ownership. It enables cleanup
 
 **`sessions`**
 
+The `sessions` table stores authenticated admin sessions.
+
 - `session_id` — a cryptographically secure UUID (generated via `crypto.randomUUID()`)
 - `expires` — Unix timestamp (seconds) when the session expires
 
 Expired sessions are deleted on lookup. No background cleanup job needed.
 
+There is no user id column because there is only one logical admin identity: “whoever knows `ADMIN_PASSWORD`”.
+
 ### Assets
 
 Assets (images, videos) are stored as files in `ASSET_PATH`. Assets are referenced from image nodes via their `src` property. The `asset_refs` table tracks which documents reference which assets.
+
+## Admin authentication
+
+### Authentication model
+
+Editable Website uses a single shared admin password configured via the `ADMIN_PASSWORD` environment variable.
+
+Properties of this model:
+
+- there is no username
+- there is no user table
+- there is no registration flow
+- there is no password reset flow inside the app
+- there is no distinction between multiple admins
+
+If a request proves knowledge of `ADMIN_PASSWORD`, the server creates a session row in `sessions` and sets a secure session cookie. Subsequent requests are authenticated by that cookie until the session expires or is explicitly cleared.
+
+This is intentionally simple and optimized for the “site owner edits their own site” use case.
+
+### Session flow
+
+The authentication flow is:
+
+1. the client submits the admin password to a server-side login command
+2. the server compares it against `process.env.ADMIN_PASSWORD`
+3. if valid, the server creates a new session row in `sessions`
+4. the server sets an HTTP-only session cookie
+5. future requests are treated as admin requests while the session remains valid
+
+Logout deletes the session row and clears the cookie.
+
+Admin sessions use a sliding expiration window of two weeks:
+- when a session is created, `expires` is set to `now + 2 weeks`
+- when an authenticated admin makes a meaningful authenticated request, the server extends `expires` to `now + 2 weeks`
+- expired sessions are treated as invalid and deleted on lookup
+
+Session validation happens on every request in the server hook. If the cookie points to an expired or missing session, the request is treated as unauthenticated and the cookie should be cleared.
+
+### Cookie requirements
+
+The admin session cookie must be:
+
+- `httpOnly`
+- `sameSite='lax'`
+- `secure` in production
+- scoped to `/`
+
+The cookie value should be an opaque session id only. The password itself must never be stored in the cookie, local storage, or client-visible state.
+
+### Authorization boundaries
+
+Authentication and authorization are intentionally coarse-grained.
+
+**Admin-only capabilities:**
+
+- entering real editable mode
+- saving document changes
+- uploading assets intended for persistence
+- creating pages
+- deleting pages
+- editing page URLs
+- browsing drafts
+- browsing the private page sitemap/drawer
+- selecting draft pages as internal link targets
+
+**Unauthenticated but allowed capabilities:**
+
+- browsing the public site
+- opening the edit prompt
+- entering “Edit for fun” mode on the current page only
+- making temporary in-memory edits that can be discarded
+
+### Edit-for-fun mode
+
+Unauthenticated visitors may still enter a temporary editing mode for the currently open page.
+
+This mode exists for two reasons:
+
+- it preserves the lightweight “press Cmd+E anywhere” editing discovery flow
+- it acts as a product demo / marketing easter egg
+
+Constraints of edit-for-fun mode:
+
+- edits are local and disposable only
+- there is no save action
+- there is no access to drafts or private page-management UI
+- there is no page browser for navigating private site structure
+- there is no ability to create or delete pages
+- media replacement and other in-memory editing interactions may still run normally while editing
+- uploaded assets are never persisted because persistence only happens through save
+
+The UI should make this distinction explicit so users understand they are not authenticated as admin.
+
+If the user is already in edit-for-fun mode and presses the edit shortcut again, nothing changes — they are already editing.
+
+### Login UX
+
+There is intentionally no dedicated `/login` route as the primary entry point.
+
+The main authentication entry is contextual:
+
+1. the site owner browses to the page they want to edit
+2. they trigger editing either with the editing shortcut (for example `Cmd+E`) or, on mobile, by pulling past the end of the page and holding that overscroll for about one second
+3. if they are not authenticated, the app opens an auth dialog in place
+4. the first dialog presents two large visual choice cards:
+   - `Edit for fun`
+   - `Login`
+5. the `Edit for fun` card should emphasize immediate playful editing with supporting copy that makes clear changes cannot be saved
+6. the `Login` card should emphasize that it is intended for admins, with supporting copy such as `For admins`
+7. the first-step dialog should not include a dedicated cancel button; dismissing the dialog is done by clicking outside it or pressing escape
+8. if the user chooses `Login`, the app opens a second dialog that prompts for the admin password
+9. after a successful login, the app should refresh admin-only UI state but should not enter page editing mode automatically; the user can then choose to edit, open the page browser, create a page, or use other admin actions explicitly
+
+The mobile overscroll gesture is only a discovery path for opening the same auth dialog. It is mobile-only and should only be armed on touch-capable / coarse-pointer devices. It should only trigger while not already editing, only while the user is actively holding a touch through the overscroll hold period, should not fire from inertial or momentum scrolling after the finger has lifted, should not fire repeatedly during the same continuous gesture, and should reset once the user scrolls back into the normal page range or ends the touch.
+
+This keeps the owner anchored to the exact page where they noticed something to fix, keeps the casual edit-for-fun path lightweight, makes the initial choice feel more visual and inviting, and avoids assuming that logging in always means “start editing this page right now.”
+
+### Environment requirements
+
+`ADMIN_PASSWORD` is required in full runtime mode.
+
+Behavior rules:
+
+- in static / `VERCEL=1` mode, authentication is disabled and `ADMIN_PASSWORD` is ignored
+- in full runtime mode, the app must fail to start if `ADMIN_PASSWORD` is missing
+- the app must never silently grant access when `ADMIN_PASSWORD` is missing
+
+### Remote function and route protection
+
+All mutating remote functions must enforce admin authentication on the server.
+
+This includes at least:
+
+- document save
+- page deletion
+- page URL updates
+- any future persistent asset mutation endpoints
+
+Read APIs should be split by visibility:
+
+- public page/document reads remain public
+- private page-management reads (drafts, private sitemap/page browser data) require admin authentication
+
+The server must treat the page browser data as private because it exposes drafts and internal site structure that should not be visible to unauthenticated visitors.
+
+### Client auth state
+
+The client only needs a minimal boolean auth state such as `is_admin`.
+
+This state is used to decide:
+
+- whether pressing the edit shortcut enters editing immediately or opens the auth dialog
+- whether the save button is shown/enabled
+- whether the page browser and draft-management UI are available
+- whether the current editing session is admin-editable or edit-for-fun only
+- whether a logout button is shown
+
+The server remains the source of truth. Client auth state is only a convenience for UI branching.
+
+### Security notes
+
+This model is intentionally simple, but it still needs basic hardening:
+
+- compare passwords on the server only
+- never expose `ADMIN_PASSWORD` to the client
+- rate limiting is desirable but not required for the first implementation step
+- session ids must be cryptographically random
+- protected mutations must always check server-side auth, regardless of what the client UI shows
 
 ## Documents
 
@@ -245,7 +474,7 @@ The home page is excluded from this mapping:
 
 #### Custom slugs
 
-Users can change a page's Page URL from the page browser ellipsis menu.
+Admins can change a page's Page URL from the page browser ellipsis menu.
 
 When a user changes a page's slug:
 - that slug becomes the page's active slug
@@ -257,7 +486,7 @@ User-facing behavior should stay simple:
 - the UI can present it as `example.com/[your-slug-here]`, with only the part after the slash editable
 - the UI does not expose an "auto mode" vs "custom mode" concept
 - the system auto-generates the first slug on first save
-- after that, the slug stays stable unless the user explicitly changes it
+- after that, the slug stays stable unless the admin explicitly changes it
 
 This keeps the mental model simple for users while preserving deterministic behavior internally.
 
@@ -753,13 +982,17 @@ To reuse media that's already on the site, navigate to the page that has it, cop
 
 ## Admin interface
 
-The only admin interface is a **site map** — a listing of all pages plus drafts (pages that are not linked anywhere yet). There is no need for a media library, asset browser, or content management dashboard beyond this.
+The only admin interface is a **site map** — a single forest of all pages. There is no need for a media library, asset browser, or content management dashboard beyond this.
+
+The page browser does not split pages into separate drafts and sitemap sections. Instead, it shows a unified forest of page subtrees. The configured home page appears as the last top-level subtree. Any pages that are not linked from the home page appear first as additional top-level entry points, and those entry points may themselves contain full page hierarchies.
+
+The page browser uses a bottom drawer. Its resize handle is rendered outside the drawer panel, centered on the top edge, so it visually floats above the sheet instead of taking space inside the drawer content area. While dragging, the drawer can be pulled all the way down to the bottom of the viewport and up past the highest snap point before release. When the user releases it near zero height, the drawer should animate smoothly down to `0` height and then close, rather than closing abruptly or remaining open at a tiny height. Otherwise its final height snaps to whichever preset is closest to the release position: `1/3`, `2/3`, or `3/4` of the viewport height. This snap should animate smoothly after release in both directions, including when the user drags above `3/4` and the drawer settles back down to that preset. If the drawer is reopened after being closed near zero height, it restores the previous non-zero snapped height.
 
 ### Page reachability
 
-A page is **reachable** (and appears in `sitemap.xml`) if it can be reached by following links starting from the home page, nav, or footer. This is a transitive check — a page linked only from a draft is still a draft, because the draft itself isn't reachable.
+A page is **home-reachable** (and appears in `sitemap.xml`) if it can be reached by following links starting from the home page, nav, or footer. This is a transitive check. A page may still exist publicly by URL even if it is not home-reachable.
 
-This reachability logic only applies in the full database-backed multi-page runtime. In static/Vercel compatibility mode there is no live multi-page graph, no sitemap drawer, and no draft/public distinction — the app simply serves the demo document at `/`.
+This reachability logic only applies in the full database-backed multi-page runtime. In static/Vercel compatibility mode there is no live multi-page graph, no sitemap drawer, and no home-reachable vs unlisted distinction — the app simply serves the demo document at `/`.
 
 The traversal starts from three roots:
 
@@ -767,7 +1000,9 @@ The traversal starts from three roots:
 2. `nav_1` — its links are live on every page
 3. `footer_1` — same
 
-From these roots, follow all outgoing `document_refs` recursively to collect the full set of reachable pages. Any page document not in this set is a **draft**. Drafts are visible in the admin site map but not included in `sitemap.xml`. This is a live query — not a precomputed cache — so it always reflects the current state of `document_refs` and `site_settings`.
+From these roots, follow all outgoing `document_refs` recursively to collect the full set of home-reachable pages. Any page document not in this set is still public by URL, but it is **unlisted**: it does not appear in `sitemap.xml`, and it appears in the page browser as a top-level subtree outside the home subtree unless it is absorbed into another non-home top-level subtree by first occurrence.
+
+This is a live query — not a precomputed cache — so it always reflects the current state of `document_refs` and `site_settings`.
 
 A single query returns all pages with a computed `status` column:
 
@@ -781,40 +1016,75 @@ WITH RECURSIVE reachable(document_id) AS (
     JOIN reachable ON reachable.document_id = source_document_id
 )
 SELECT d.document_id, d.data,
-    CASE WHEN r.document_id IS NOT NULL THEN 'public' ELSE 'draft' END AS status
+    CASE WHEN r.document_id IS NOT NULL THEN 'listed' ELSE 'unlisted' END AS status
 FROM documents d
 LEFT JOIN reachable r ON d.document_id = r.document_id
 WHERE d.type = 'page';
 ```
 
-This serves both the admin site map (all rows) and `sitemap.xml` (filter `WHERE status = 'public'`).
+This serves both the admin site map forest (all rows) and `sitemap.xml` (filter `WHERE status = 'listed'`).
 
-This query is cheap — most sites have tens to low hundreds of pages. It runs on demand: when serving `/sitemap.xml`, when rendering the admin site map, or when checking whether a specific page is public. There is no background sync or precomputed reachability table — the query is the source of truth.
+This query is cheap — most sites have tens to low hundreds of pages. It runs on demand: when serving `/sitemap.xml`, when rendering the admin site map, or when checking whether a specific page is included in the listed site tree. There is no background sync or precomputed reachability table — the query is the source of truth.
 
-`document_refs` is updated on save for all documents, including drafts. A draft's outgoing links are already tracked, so when it becomes linked from a live page, its targets are immediately reachable without re-saving.
+`document_refs` is updated on save for all documents. An unlisted page's outgoing links are already tracked, so when it becomes linked from the home-reachable site tree, its targets are immediately home-reachable without re-saving.
 
-When the home page is changed via `site_settings`, pages that were only reachable through the old home page's link tree may become drafts. This is expected — they're still visible in the admin site map and can be re-linked or deleted.
+When the home page is changed via `site_settings`, pages that were only reachable through the old home page's link tree may become unlisted. This is expected — they are still visible in the admin site map forest and can be re-linked or deleted.
 
 ### Sitemap tree construction
 
-The admin page browser needs not just a reachable/unreachable split, but also a deterministic **tree projection** of the reachable page graph.
+The admin page browser needs a deterministic **forest projection** of the full page graph.
 
-The tree is built with these rules:
+The forest is built with these rules:
 
-- **No duplicates in the tree** — each reachable page appears at most once
+- **No duplicates in the forest** — each page appears at most once
 - **First occurrence wins** — if a page is referenced multiple times, its canonical position is the first position where it is encountered during traversal
-- **Top-level ordering:** traverse references from the home page in this order:
+- **Top-level roots:** every page that has not already been placed under an earlier root becomes a top-level root
+- **Top-level ordering:** all non-home roots come first, and the configured home page root comes last
+- **Home root child ordering:** traverse references from the home page in this order:
   1. shared nav links
   2. home page body links
   3. shared footer links
-- **Recursive ordering:** once a child page has been placed in the tree, recurse into that page using **body links only**
+- **Non-home root child ordering:** once a non-home root has been placed, recurse into that page using **body links only**
+- **Recursive ordering for descendants:** once a child page has been placed in the forest, recurse into that page using **body links only**
 - **Within each source document, preserve author order:** outgoing refs are consumed in the same order they appear in the source document, with duplicates removed by first occurrence
 
-This means the sitemap is not a full graph visualization. It is a stable, editor-friendly tree derived from the reachable graph, where shared navigation and footer establish the top-level site structure, and deeper nesting comes from contextual links inside page content.
+This means the page browser is not a full graph visualization. It is a stable, editor-friendly forest derived from the full page graph. The home subtree represents the canonical main site structure, while other top-level roots represent unlisted entry points and any parallel hierarchies built away from the home page.
 
-If a page is linked from multiple places, later occurrences are ignored for tree placement. This keeps the page browser compact and avoids crowded duplicates. If needed in the future, secondary references can be surfaced separately (for example as “also linked from…” metadata), but they are not duplicated in the primary tree.
+If a page is linked from multiple places, later occurrences are ignored for placement. This keeps the page browser compact and avoids crowded duplicates. If needed in the future, secondary references can be surfaced separately (for example as “also linked from…” metadata), but they are not duplicated in the primary forest.
 
+### Contextual search in the page browser
 
+The page browser supports a client-side contextual search over the already loaded drawer data. No dedicated server-side search endpoint is required for the initial implementation.
+
+The search applies to the unified page forest:
+
+- preserve structural context rather than flattening results into a list
+- match pages anywhere in the forest by title or URL
+- when a page matches, keep its ancestor chain visible so its position in the forest remains understandable
+- when a page matches, its descendants may remain visible as contextual subtree content
+
+For the sitemap tree, visibility follows these rules:
+
+- If a page **directly matches** the query, show that page
+- If a page directly matches the query, also show **all of its descendants**
+- If a descendant matches the query, also show its **ancestor chain** up to the root so the page’s placement in the site structure remains visible
+- Pages shown only because their parent matched or because they are ancestors of a match remain visible, but they are not treated as direct matches
+
+Direct matches should be visually highlighted so it is clear why a page is shown. Context-only pages may remain visually normal or use a lighter treatment, but they should not share the same direct-match emphasis.
+
+While a search query is active, matching branches should be shown even if they would otherwise be collapsed.
+
+When the page browser drawer opens, the search input should receive focus immediately so keyboard search can begin without an extra click.
+
+Keyboard navigation should operate over the currently visible results in the same order they appear in the drawer:
+
+- `ArrowDown` moves to the next visible result
+- `ArrowUp` moves to the previous visible result
+- `Enter` opens the currently selected result
+
+Because the sitemap is a canonical tree projection rather than a full graph view, search results only surface the page’s canonical placement in the tree. Secondary graph placements are out of scope for the initial implementation.
+
+The expected scale is on the order of hundreds of pages (for example around 500), so a straightforward client-side tree traversal per query is acceptable.
 
 ### Page summaries for the drawer
 

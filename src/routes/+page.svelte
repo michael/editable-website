@@ -1,11 +1,8 @@
 <script>
-	import PageEditor from './components/PageEditor.svelte';
-	import { demo_doc } from '$lib/demo_doc.js';
+	import App from './components/App.svelte';
 
+	/** @type {{ data: { has_backend?: boolean, is_admin?: boolean, document: any, slug: string | null, is_new?: boolean } }} */
 	const props = $props();
-	const page_data = $derived(props.data);
-	const has_backend = $derived(page_data.has_backend ?? false);
-	const initial_doc = $derived(has_backend ? page_data.document : demo_doc);
 </script>
 
 <svelte:head>
@@ -17,11 +14,6 @@
 	with a stale session, breaking editing.
 	See https://github.com/michael/editable-website/issues/40
 -->
-{#key initial_doc.document_id}
-	<PageEditor
-		initial_doc={initial_doc}
-		initial_slug={has_backend ? page_data.slug : null}
-		has_backend={has_backend}
-		is_new={false}
-	/>
-{/key}
+<!-- {#key initial_doc.document_id} -->
+<App {...props.data} />
+<!-- {/key} -->

@@ -16,7 +16,7 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="block"
+		class="block outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 		use:reveal={{ delay: item_index * 150 }}
 	>
 		<div class="overflow-hidden" style:aspect-ratio="4/3" style:border-radius="var(--image-border-radius)">

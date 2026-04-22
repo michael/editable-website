@@ -1,10 +1,32 @@
 import { getRequestEvent, query, command } from '$app/server';
 import * as v from 'valibot';
 import slugify from 'slugify';
+import crypto from 'node:crypto';
 import db from '$lib/server/db.js';
 import { document_schema } from '$lib/document_schema.js';
+import {
+	admin_session_cookie_name,
+	get_required_admin_password,
+	get_session_expires_at,
+	delete_session,
+	clear_admin_session_cookie,
+	set_admin_session_cookie,
+	require_admin_session
+} from '$lib/server/auth.js';
+
+const admin_login_input_schema = v.object({
+	password: v.string()
+});
 
 function create_page_url_error_result(code, message) {
+	return {
+		ok: false,
+		code,
+		message
+	};
+}
+
+function create_auth_error_result(code, message) {
 	return {
 		ok: false,
 		code,
@@ -26,10 +48,24 @@ function create_page_url_error_result(code, message) {
  */
 
 /**
+ * @typedef {Object} PreviewMediaNode
+ * @property {string} type
+ * @property {string} src
+ * @property {number} width
+ * @property {number} height
+ * @property {string} alt
+ * @property {number} scale
+ * @property {number} focal_point_x
+ * @property {number} focal_point_y
+ * @property {string} object_fit
+ * @property {string | undefined} mime_type
+ */
+
+/**
  * @typedef {Object} PageSummary
  * @property {string} document_id
  * @property {string} title
- * @property {string | null} preview_image_src
+ * @property {PreviewMediaNode | null} preview_media_node
  * @property {string} page_href
  */
 
@@ -37,14 +73,14 @@ function create_page_url_error_result(code, message) {
  * @typedef {Object} InternalLinkPreview
  * @property {string} document_id
  * @property {string} title
- * @property {string | null} preview_image_src
+ * @property {PreviewMediaNode | null} preview_media_node
  */
 
 /**
  * @typedef {Object} PageTreeNode
  * @property {string} document_id
  * @property {string} title
- * @property {string | null} preview_image_src
+ * @property {PreviewMediaNode | null} preview_media_node
  * @property {string} page_href
  * @property {PageTreeNode[]} children
  */
@@ -227,6 +263,8 @@ function get_home_page_id_from_db() {
 
 	return row?.value ?? null;
 }
+
+
 
 /**
  * @param {string} document_id
@@ -524,7 +562,7 @@ function extract_plain_text(annotated_text) {
 
 /**
  * @param {DocumentData} page_doc
- * @returns {{ title: string, preview_image_src: string | null }}
+ * @returns {{ title: string, preview_media_node: PreviewMediaNode | null }}
  */
 function extract_page_metadata(page_doc) {
 	const body_node_ids = collect_page_body_node_ids(page_doc);
@@ -532,14 +570,17 @@ function extract_page_metadata(page_doc) {
 	let explicit_title = '';
 	let heading_title = '';
 	let fallback_title = '';
-	let preview_image_src = null;
+	let first_image_node = null;
+	let first_video_node = null;
 
 	for (const node_id of body_node_ids) {
 		const node = page_doc.nodes[node_id];
 		if (!node) continue;
 
-		if (!preview_image_src && (node.type === 'image' || node.type === 'video') && node.src) {
-			preview_image_src = node.src;
+		if (!first_image_node && node.type === 'image') {
+			first_image_node = node;
+		} else if (!first_video_node && node.type === 'video') {
+			first_video_node = node;
 		}
 
 		if (node.type === 'text') {
@@ -581,7 +622,7 @@ function extract_page_metadata(page_doc) {
 
 	return {
 		title: explicit_title || heading_title || fallback_title || 'Untitled page',
-		preview_image_src
+		preview_media_node: first_image_node || first_video_node
 	};
 }
 
@@ -598,7 +639,7 @@ function summarize_page_document(page_doc) {
 	return {
 		document_id: page_doc.document_id,
 		title: metadata.title,
-		preview_image_src: metadata.preview_image_src,
+		preview_media_node: metadata.preview_media_node,
 		page_href: active_slug ? `/${active_slug}` : '/'
 	};
 }
@@ -618,71 +659,31 @@ function get_outgoing_refs(source_document_id) {
 }
 
 /**
- * @param {Map<string, DocumentData>} page_docs_by_id
- * @param {string | null} home_page_id
- * @param {string | null} nav_root_id
- * @param {string | null} footer_root_id
- * @returns {Set<string>}
- */
-function get_reachable_page_ids(page_docs_by_id, home_page_id, nav_root_id, footer_root_id) {
-	const reachable = new Set();
-
-	if (!home_page_id || !page_docs_by_id.has(home_page_id)) {
-		return reachable;
-	}
-
-	const queue = [home_page_id];
-	if (nav_root_id) queue.push(nav_root_id);
-	if (footer_root_id) queue.push(footer_root_id);
-
-	const visited_documents = new Set();
-
-	while (queue.length > 0) {
-		const source_document_id = queue.shift();
-		if (!source_document_id || visited_documents.has(source_document_id)) continue;
-
-		visited_documents.add(source_document_id);
-
-		if (page_docs_by_id.has(source_document_id)) {
-			reachable.add(source_document_id);
-		}
-
-		for (const target_document_id of get_outgoing_refs(source_document_id)) {
-			if (!visited_documents.has(target_document_id)) {
-				queue.push(target_document_id);
-			}
-		}
-	}
-
-	return reachable;
-}
-
-/**
  * @param {string[]} refs
- * @param {Set<string>} seen_page_ids
+ * @param {Set<string>} assigned_page_ids
  * @param {Map<string, PageSummary>} summaries_by_id
  * @param {Map<string, string[]>} body_refs_by_page_id
  * @returns {PageTreeNode[]}
  */
-function build_tree_children(refs, seen_page_ids, summaries_by_id, body_refs_by_page_id) {
+function build_tree_children(refs, assigned_page_ids, summaries_by_id, body_refs_by_page_id) {
 	const children = [];
 
 	for (const target_document_id of refs) {
-		if (seen_page_ids.has(target_document_id)) continue;
+		if (assigned_page_ids.has(target_document_id)) continue;
 
 		const summary = summaries_by_id.get(target_document_id);
 		if (!summary) continue;
 
-		seen_page_ids.add(target_document_id);
+		assigned_page_ids.add(target_document_id);
 
 		children.push({
 			document_id: summary.document_id,
 			title: summary.title,
-			preview_image_src: summary.preview_image_src,
+			preview_media_node: summary.preview_media_node,
 			page_href: summary.page_href,
 			children: build_tree_children(
 				body_refs_by_page_id.get(target_document_id) ?? [],
-				seen_page_ids,
+				assigned_page_ids,
 				summaries_by_id,
 				body_refs_by_page_id
 			)
@@ -693,14 +694,55 @@ function build_tree_children(refs, seen_page_ids, summaries_by_id, body_refs_by_
 }
 
 /**
+ * @param {string} root_document_id
+ * @param {Set<string>} assigned_page_ids
+ * @param {Map<string, PageSummary>} summaries_by_id
+ * @param {Map<string, string[]>} body_refs_by_page_id
+ * @param {string[] | null} root_refs
+ * @returns {PageTreeNode | null}
+ */
+function build_page_tree_node(
+	root_document_id,
+	assigned_page_ids,
+	summaries_by_id,
+	body_refs_by_page_id,
+	root_refs = null
+) {
+	const summary = summaries_by_id.get(root_document_id);
+	if (!summary) return null;
+	if (assigned_page_ids.has(root_document_id)) return null;
+
+	assigned_page_ids.add(root_document_id);
+
+	return {
+		document_id: summary.document_id,
+		title: summary.title,
+		preview_media_node: summary.preview_media_node,
+		page_href: summary.page_href,
+		children: build_tree_children(
+			root_refs ?? body_refs_by_page_id.get(root_document_id) ?? [],
+			assigned_page_ids,
+			summaries_by_id,
+			body_refs_by_page_id
+		)
+	};
+}
+
+/**
  * @returns {{
  *   home_page_id: string | null,
- *   drafts: PageSummary[],
- *   sitemap: PageTreeNode | null
+ *   current_document_id: string | null,
+ *   page_forest: PageTreeNode[]
  * }}
  */
 function build_page_browser_data() {
+	const request_event = getRequestEvent();
+	const pathname = request_event.url.pathname;
 	const home_page_id = get_home_page_id_from_db();
+	const current_document_id =
+		pathname === '/'
+			? home_page_id
+			: resolve_slug(pathname.slice(1))?.document_id ?? null;
 	const page_docs = list_page_documents();
 	const page_docs_by_id = new Map(page_docs.map((page_doc) => [page_doc.document_id, page_doc]));
 	const summaries = page_docs.map(summarize_page_document);
@@ -711,13 +753,6 @@ function build_page_browser_data() {
 		? get_shared_root_ids(home_page_doc)
 		: { nav_root_id: null, footer_root_id: null };
 
-	const reachable_page_ids = get_reachable_page_ids(
-		page_docs_by_id,
-		home_page_id,
-		nav_root_id,
-		footer_root_id
-	);
-
 	const body_refs_by_page_id = new Map();
 	for (const page_doc of page_docs) {
 		const body_node_ids = collect_page_body_node_ids(page_doc);
@@ -727,54 +762,87 @@ function build_page_browser_data() {
 		);
 	}
 
-	const nav_refs = nav_root_id
-		? get_outgoing_refs(nav_root_id).filter((document_id) => reachable_page_ids.has(document_id))
-		: [];
+	const page_forest = [];
+	const assigned_page_ids = new Set();
+	const incoming_page_ref_counts = new Map();
 
-	const footer_refs = footer_root_id
-		? get_outgoing_refs(footer_root_id).filter((document_id) => reachable_page_ids.has(document_id))
-		: [];
-
-	const home_body_refs = home_page_id
-		? (body_refs_by_page_id.get(home_page_id) ?? []).filter((document_id) =>
-				reachable_page_ids.has(document_id)
-			)
-		: [];
-
-	let sitemap = null;
-
-	if (home_page_id) {
-		const home_summary = summaries_by_id.get(home_page_id) ?? {
-			document_id: home_page_id,
-			title: 'Untitled page',
-			preview_image_src: null,
-			page_href: '/'
-		};
-
-		const seen_page_ids = new Set([home_page_id]);
-
-		sitemap = {
-			document_id: home_summary.document_id,
-			title: home_summary.title,
-			preview_image_src: home_summary.preview_image_src,
-			page_href: home_summary.page_href,
-			children: build_tree_children(
-				[...nav_refs, ...home_body_refs, ...footer_refs],
-				seen_page_ids,
-				summaries_by_id,
-				body_refs_by_page_id
-			)
-		};
+	for (const page_doc of page_docs) {
+		incoming_page_ref_counts.set(page_doc.document_id, 0);
 	}
 
-	const drafts = summaries
-		.filter((summary) => !reachable_page_ids.has(summary.document_id))
+	for (const refs of body_refs_by_page_id.values()) {
+		for (const target_document_id of refs) {
+			if (!incoming_page_ref_counts.has(target_document_id)) continue;
+			incoming_page_ref_counts.set(
+				target_document_id,
+				(incoming_page_ref_counts.get(target_document_id) ?? 0) + 1
+			);
+		}
+	}
+
+	let home_linked_page_ids = new Set();
+
+	if (home_page_id && summaries_by_id.has(home_page_id)) {
+		const nav_refs = nav_root_id ? get_outgoing_refs(nav_root_id) : [];
+		const footer_refs = footer_root_id ? get_outgoing_refs(footer_root_id) : [];
+		const home_body_refs = body_refs_by_page_id.get(home_page_id) ?? [];
+
+		home_linked_page_ids = new Set([home_page_id]);
+		build_tree_children(
+			[...nav_refs, ...home_body_refs, ...footer_refs],
+			home_linked_page_ids,
+			summaries_by_id,
+			body_refs_by_page_id
+		);
+	}
+
+	const non_home_root_summaries = summaries
+		.filter(
+			(summary) =>
+				summary.document_id !== home_page_id &&
+				!home_linked_page_ids.has(summary.document_id) &&
+				(incoming_page_ref_counts.get(summary.document_id) ?? 0) === 0
+		)
 		.sort((a, b) => a.title.localeCompare(b.title));
+
+	if (home_page_id && summaries_by_id.has(home_page_id)) {
+		const nav_refs = nav_root_id ? get_outgoing_refs(nav_root_id) : [];
+		const footer_refs = footer_root_id ? get_outgoing_refs(footer_root_id) : [];
+		const home_body_refs = body_refs_by_page_id.get(home_page_id) ?? [];
+
+		const home_root = build_page_tree_node(
+			home_page_id,
+			assigned_page_ids,
+			summaries_by_id,
+			body_refs_by_page_id,
+			[...nav_refs, ...home_body_refs, ...footer_refs]
+		);
+
+		if (home_root) {
+			home_root.title = 'Home';
+			page_forest.push(home_root);
+		}
+	}
+
+	for (const summary of non_home_root_summaries) {
+		if (assigned_page_ids.has(summary.document_id)) continue;
+
+		const root_node = build_page_tree_node(
+			summary.document_id,
+			assigned_page_ids,
+			summaries_by_id,
+			body_refs_by_page_id
+		);
+
+		if (root_node) {
+			page_forest.push(root_node);
+		}
+	}
 
 	return {
 		home_page_id,
-		drafts,
-		sitemap
+		current_document_id,
+		page_forest
 	};
 }
 
@@ -790,7 +858,6 @@ export const get_document = query(v.string(), async (slug) => {
 
 	return {
 		document: get_combined_document(resolved.document_id),
-		document_id: resolved.document_id,
 		slug: resolved.active_slug,
 		redirect_to_slug: resolved.is_active ? null : resolved.active_slug
 	};
@@ -808,7 +875,6 @@ export const get_home_document = query(v.void(), async () => {
 
 	return {
 		document: get_combined_document(home_page_id),
-		document_id: home_page_id,
 		slug: get_active_slug_for_document_id(home_page_id),
 		redirect_to_slug: null
 	};
@@ -844,7 +910,54 @@ export const get_shared_documents = query(v.void(), async () => {
 /**
  * Return page browser data for the pages drawer.
  */
+export const get_auth_status = query(v.void(), async () => {
+	const { locals } = getRequestEvent();
+
+	return {
+		is_admin: !!locals.is_admin
+	};
+});
+
+export const login_admin = command(admin_login_input_schema, async ({ password }) => {
+	const { cookies } = getRequestEvent();
+	const admin_password = get_required_admin_password();
+
+	if (password !== admin_password) {
+		return create_auth_error_result('invalid_password', 'Incorrect admin password.');
+	}
+
+	const session_id = crypto.randomUUID();
+	db.prepare('INSERT INTO sessions (session_id, expires) VALUES (?, ?)').run(
+		session_id,
+		get_session_expires_at()
+	);
+	set_admin_session_cookie(cookies, session_id);
+
+	return {
+		ok: true
+	};
+});
+
+export const logout_admin = command(v.void(), async () => {
+	const { cookies } = getRequestEvent();
+	const session_id = cookies.get(admin_session_cookie_name);
+
+	if (session_id) {
+		await delete_session(session_id);
+	}
+
+	clear_admin_session_cookie(cookies);
+
+	return {
+		ok: true
+	};
+});
+
+/**
+ * Return page browser data for the pages drawer.
+ */
 export const get_page_browser_data = query(v.void(), async () => {
+	require_admin_session(getRequestEvent().locals);
 	return build_page_browser_data();
 });
 
@@ -852,6 +965,8 @@ export const get_page_browser_data = query(v.void(), async () => {
  * Delete a page document and its related refs.
  */
 export const delete_page = command(delete_page_input_schema, async ({ document_id }) => {
+	require_admin_session(getRequestEvent().locals);
+
 	const home_page_id = get_home_page_id_from_db();
 
 	if (!document_id) {
@@ -931,7 +1046,7 @@ export const get_internal_link_preview = query(v.string(), async (href) => {
 	return /** @type {InternalLinkPreview} */ ({
 		document_id: resolved.document_id,
 		title: metadata.title,
-		preview_image_src: metadata.preview_image_src
+		preview_media_node: metadata.preview_media_node
 	});
 });
 
@@ -1001,12 +1116,7 @@ function assign_active_slug(document_id, slug, insert_slug_stmt, deactivate_slug
 }
 
 export const save_document = command(save_document_input_schema, async (combined_doc) => {
-	const { locals } = getRequestEvent();
-
-	// TODO: check auth once authentication is implemented
-	// if (!locals.user) {
-	// 	throw new Error('Unauthorized');
-	// }
+	require_admin_session(getRequestEvent().locals);
 
 	const all_nodes = structuredClone(combined_doc.nodes);
 	const page_node = all_nodes[combined_doc.document_id];
@@ -1144,6 +1254,8 @@ export const save_document = command(save_document_input_schema, async (combined
 });
 
 export const update_page_slug = command(update_page_slug_input_schema, async (input) => {
+	require_admin_session(getRequestEvent().locals);
+
 	const normalized_slug = slugify(input.slug, { lower: true, strict: true, trim: true });
 
 	if (!normalized_slug) {
@@ -1169,10 +1281,10 @@ export const update_page_slug = command(update_page_slug_input_schema, async (in
 	}
 
 	if (normalized_slug === current_active_slug) {
-		return create_page_url_error_result(
-			'page_url_same_as_current',
-			'That Page URL is already in use by this page'
-		);
+		return {
+			ok: true,
+			slug: current_active_slug
+		};
 	}
 
 	const existing_slug = /** @type {{ document_id: string, is_active: number } | undefined} */ (
