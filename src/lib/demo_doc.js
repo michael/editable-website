@@ -1296,11 +1296,11 @@ const FULL_DOC = {
             "id": "page_1",
             "type": "page",
             "title": {
-                "text": "",
+                "text": "Editable Website",
                 "annotations": []
             },
             "description": {
-                "text": "",
+                "text": "SvelteKit template for building CMS-free editable websites. Site owners can edit content directly in the layout - no CMS needed.",
                 "annotations": []
             },
             "image": "page_image_1",
