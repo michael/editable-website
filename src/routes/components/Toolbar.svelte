@@ -29,6 +29,12 @@
 		document.documentElement.dataset.replaceMediaPath = JSON.stringify(path);
 	}
 
+	function handle_edit_image_click(e) {
+		e.preventDefault();
+		if (session.commands.edit_image?.disabled) return;
+		session.commands.edit_image?.execute();
+	}
+
 	function handle_replace_image_click(e) {
 		e.preventDefault();
 		if (session.selection?.type !== 'property') return;
@@ -197,20 +203,32 @@
 					</div>
 				{/if}
 
-				<!-- Replace image (visible when media is selected) -->
+				<!-- Media actions (visible when media is selected) -->
 				{#if is_media_selected}
-					<button
-						id="replace-media-btn"
-						class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
-						onmousedown={handle_replace_image_click}
-						title="Replace image (⏎)"
-					>
-						<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-							<rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-							<circle cx="8.5" cy="8.5" r="1.5" />
-							<polyline points="21 15 16 10 5 21" />
-						</svg>
-					</button>
+					<div class="flex items-center gap-1">
+						<button
+							class="{TW_TOOLBAR_BTN} text-[10px] font-semibold tracking-[0.08em] {session.commands.edit_image?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
+							onmousedown={handle_edit_image_click}
+							title="Alt text"
+							aria-label="Alt text"
+						>
+							ALT
+						</button>
+
+						<button
+							id="replace-media-btn"
+							class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
+							onmousedown={handle_replace_image_click}
+							title="Replace image (⏎)"
+							aria-label="Replace image"
+						>
+							<svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+								<rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+								<circle cx="8.5" cy="8.5" r="1.5" />
+								<polyline points="21 15 16 10 5 21" />
+							</svg>
+						</button>
+					</div>
 				{/if}
 
 				<!-- Type / Layout group (always visible, disabled when not applicable) -->

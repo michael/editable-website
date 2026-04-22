@@ -13,7 +13,6 @@
 
 	let media_node = $derived(svedit.session.get(path));
 	let controls_ref = $state(null);
-
 	// Panning control — disable only when the media exactly fills the container
 	// with no room to move: cover at scale 1.0 with matching aspect ratios.
 	// All other cases (contain, scale > 1, mismatched ratios) allow panning.
@@ -149,6 +148,8 @@
 			></div>
 		{/if}
 	</div>
+
+
 {/if}
 
 <style>
@@ -208,4 +209,6 @@
 		background: var(--svedit-editing-stroke);
 		transform: translate(-50%, -50%);
 	}
+
+
 </style>

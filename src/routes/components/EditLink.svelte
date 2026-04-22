@@ -90,7 +90,7 @@
 				type="url"
 				bind:value={href_input_value}
 				placeholder="https://example.com"
-				class="w-72 min-w-0 flex-1 border-0 bg-(--background) px-3 py-2 text-sm text-(--foreground) outline-1 outline-transparent focus:outline-none focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+				class="w-72 min-w-0 flex-1 border-0 bg-(--background) px-3 py-2 text-sm text-(--foreground) outline-none ring-0 focus:ring-0 focus-visible:ring-0 focus:outline-none focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 				onkeydown={handle_keydown}
 			/>
 			{#if app.has_backend}
@@ -121,7 +121,7 @@
 				<input
 					type="checkbox"
 					bind:checked={open_in_new_tab}
-					class="w-4 h-4 cursor-pointer text-(--svedit-editing-stroke) outline-1 outline-transparent focus:outline-none focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+					class="w-4 h-4 cursor-pointer text-(--svedit-editing-stroke) outline-none ring-0 focus:ring-0 focus-visible:ring-0 focus:outline-none focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 				/>
 				<span class="text-sm text-(--foreground)">Open in new tab</span>
 			</label>

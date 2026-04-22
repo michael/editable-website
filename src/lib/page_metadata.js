@@ -1,3 +1,4 @@
+import { ASSET_BASE } from '$lib/config.js';
 import { collect_node_ids_in_order } from '$lib/document_graph.js';
 
 // Shared helpers for extracting page-level metadata from a page document.
@@ -150,6 +151,15 @@ export function extract_page_metadata(page_doc) {
 		description: explicit_description || fallback_description || null,
 		preview_media_node
 	};
+}
+
+/**
+ * @param {PreviewMediaNode | null | undefined} media_node
+ * @returns {string | null}
+ */
+export function get_media_asset_url(media_node) {
+	if (!media_node?.src) return null;
+	return `${ASSET_BASE}/${media_node.src}`;
 }
 
 /**

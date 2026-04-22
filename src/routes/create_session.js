@@ -17,7 +17,8 @@ import {
 	CycleColorsetCommand,
 	ToggleLinkCommand,
 	EditLinkCommand,
-	ReplaceMediaCommand
+	ReplaceMediaCommand,
+	EditImageCommand
 } from './commands.svelte.js';
 // Command imported from 'svedit' above
 
@@ -278,6 +279,7 @@ const session_config = {
 			cycle_node_type_previous: new CycleNodeTypeCommand('previous', context),
 			toggle_link: new ToggleLinkCommand(context),
 			edit_link: new EditLinkCommand(context),
+			edit_image: new EditImageCommand(context),
 			cycle_colorset: new CycleColorsetCommand(context),
 			replace_media: new ReplaceMediaCommand(context)
 		};
@@ -289,6 +291,7 @@ const session_config = {
 			// In case of a node cursor, fall back to inserting a default node. This is needed
 			// because on iOS selecting a node cursor triggers auto capitalization (shift pressed)
 			'shift+enter': [commands.replace_media, commands.add_new_line, commands.insert_default_node],
+			'alt+enter': [commands.edit_image],
 			'meta+b,ctrl+b': [commands.toggle_strong],
 			'meta+i,ctrl+i': [commands.toggle_emphasis],
 			'meta+u,ctrl+u': [commands.toggle_highlight],

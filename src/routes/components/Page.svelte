@@ -4,8 +4,7 @@
   import Nav from './Nav.svelte';
   import Footer from './Footer.svelte';
   import MediaProperty from './MediaProperty.svelte';
-  import { get_head_metadata } from '$lib/page_metadata.js';
-  import { ASSET_BASE } from '$lib/config.js';
+  import { get_head_metadata, get_media_asset_url } from '$lib/page_metadata.js';
   import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 
   const svedit = getContext('svedit');
@@ -20,8 +19,8 @@
   let footer_colorset_class = $derived(last_body_node?.colorset ? `ew-colorset-${last_body_node.colorset}` : '');
   let head_metadata = $derived(get_head_metadata(svedit.session.doc));
   let social_image_url = $derived(
-    head_metadata.preview_media_node?.type === 'image' && head_metadata.preview_media_node.src
-      ? `${ASSET_BASE}/${head_metadata.preview_media_node.src}`
+    head_metadata.preview_media_node?.type === 'image'
+      ? get_media_asset_url(head_metadata.preview_media_node)
       : null
   );
 </script>

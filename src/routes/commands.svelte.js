@@ -135,6 +135,34 @@ export class ReplaceMediaCommand extends Command {
 	}
 }
 
+export class EditImageCommand extends Command {
+	show_prompt = $state(false);
+
+	constructor(context) {
+		super(context);
+
+		$effect(() => {
+			this.context.session.selection;
+			this.show_prompt = false;
+		});
+	}
+
+	is_enabled() {
+		const session = this.context.session;
+		if (!this.context.editable || session.selection?.type !== 'property') return false;
+		const selected_property = session.get(session.selection.path);
+		return selected_property?.type === 'image';
+	}
+
+	execute() {
+		if (!this.is_enabled()) return;
+
+		setTimeout(() => {
+			this.show_prompt = true;
+		}, 0);
+	}
+}
+
 /**
  * Command that toggles link annotations on text selections.
  * Shows a custom prompt for URL when creating a link.
