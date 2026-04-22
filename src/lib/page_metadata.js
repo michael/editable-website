@@ -21,7 +21,6 @@ import { collect_node_ids_in_order } from '$lib/document_graph.js';
  * @property {string} title
  * @property {string | null} description
  * @property {PreviewMediaNode | null} preview_media_node
- * @property {string | null} social_image_url
  */
 
 /**
@@ -72,8 +71,7 @@ export function extract_page_metadata(page_doc) {
 		return {
 			title: 'Editable Website',
 			description: null,
-			preview_media_node: null,
-			social_image_url: null
+			preview_media_node: null
 		};
 	}
 
@@ -150,8 +148,7 @@ export function extract_page_metadata(page_doc) {
 	return {
 		title: explicit_title || heading_title || fallback_title || 'Untitled page',
 		description: explicit_description || fallback_description || null,
-		preview_media_node,
-		social_image_url: preview_media_node?.src ? `/assets/${preview_media_node.src}` : null
+		preview_media_node
 	};
 }
 

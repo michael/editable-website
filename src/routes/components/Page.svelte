@@ -5,6 +5,7 @@
   import Footer from './Footer.svelte';
   import MediaProperty from './MediaProperty.svelte';
   import { get_head_metadata } from '$lib/page_metadata.js';
+  import { ASSET_BASE } from '$lib/config.js';
   import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 
   const svedit = getContext('svedit');
@@ -18,6 +19,11 @@
   let last_body_node = $derived(last_body_node_id ? svedit.session.get([last_body_node_id]) : null);
   let footer_colorset_class = $derived(last_body_node?.colorset ? `ew-colorset-${last_body_node.colorset}` : '');
   let head_metadata = $derived(get_head_metadata(svedit.session.doc));
+  let social_image_url = $derived(
+    head_metadata.preview_media_node?.type === 'image' && head_metadata.preview_media_node.src
+      ? `${ASSET_BASE}/${head_metadata.preview_media_node.src}`
+      : null
+  );
 </script>
 
 <svelte:head>
@@ -31,9 +37,9 @@
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content={head_metadata.title} />
-  {#if head_metadata.social_image_url}
-    <meta property="og:image" content={head_metadata.social_image_url} />
-    <meta name="twitter:image" content={head_metadata.social_image_url} />
+  {#if social_image_url}
+    <meta property="og:image" content={social_image_url} />
+    <meta name="twitter:image" content={social_image_url} />
   {/if}
 </svelte:head>
 
