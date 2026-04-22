@@ -1282,6 +1282,14 @@ const FULL_DOC = {
         "page_1": {
             "id": "page_1",
             "type": "page",
+            "title": {
+                "text": "",
+                "annotations": []
+            },
+            "description": {
+                "text": "",
+                "annotations": []
+            },
             "body": [
                 "hero_1",
                 "RtYpQwXsZvNmKjHgFdSaLe",

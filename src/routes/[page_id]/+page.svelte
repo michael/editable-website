@@ -5,8 +5,4 @@
 	const props = $props();
 </script>
 
-<svelte:head>
-	<title>Editable Website</title>
-</svelte:head>
-
 <App {...props.data} has_backend={true} is_new={false} />

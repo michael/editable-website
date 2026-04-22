@@ -4,6 +4,12 @@ import slugify from 'slugify';
 import crypto from 'node:crypto';
 import db from '$lib/server/db.js';
 import { document_schema } from '$lib/document_schema.js';
+import { collect_node_ids_in_order } from '$lib/document_graph.js';
+import {
+	extract_page_metadata,
+	extract_plain_text,
+	collect_page_body_node_ids
+} from '$lib/page_metadata.js';
 import {
 	admin_session_cookie_name,
 	get_required_admin_password,
@@ -65,6 +71,7 @@ function create_auth_error_result(code, message) {
  * @typedef {Object} PageSummary
  * @property {string} document_id
  * @property {string} title
+ * @property {string | null} description
  * @property {PreviewMediaNode | null} preview_media_node
  * @property {string} page_href
  */
@@ -73,6 +80,7 @@ function create_auth_error_result(code, message) {
  * @typedef {Object} InternalLinkPreview
  * @property {string} document_id
  * @property {string} title
+ * @property {string | null} description
  * @property {PreviewMediaNode | null} preview_media_node
  */
 
@@ -151,62 +159,7 @@ function collect_node_ids(root_id, nodes, exclude_roots) {
 	return collected;
 }
 
-/**
- * Collect all node ids reachable from a root node by walking node/node_array
- * properties and annotation references, preserving first-seen traversal order.
- *
- * @param {string} root_id
- * @param {Record<string, any>} nodes
- * @param {Set<string>} [exclude_roots]
- * @returns {string[]}
- */
-function collect_node_ids_in_order(root_id, nodes, exclude_roots) {
-	const collected = [];
-	const seen_ids = new Set();
-	const stack = [root_id];
 
-	while (stack.length > 0) {
-		const id = stack.pop();
-		if (!id || seen_ids.has(id)) continue;
-		if (exclude_roots && exclude_roots.has(id) && id !== root_id) continue;
-
-		seen_ids.add(id);
-		collected.push(id);
-
-		const node = nodes[id];
-		if (!node) continue;
-
-		const type_schema = document_schema[node.type];
-		if (!type_schema) continue;
-
-		const next_ids = [];
-
-		for (const [prop_name, prop_def] of Object.entries(type_schema.properties)) {
-			const value = node[prop_name];
-			if (value == null) continue;
-
-			if (prop_def.type === 'node' && typeof value === 'string') {
-				next_ids.push(value);
-			} else if (prop_def.type === 'node_array' && Array.isArray(value)) {
-				for (const child_id of value) {
-					next_ids.push(child_id);
-				}
-			} else if (prop_def.type === 'annotated_text' && value.annotations) {
-				for (const annotation of value.annotations) {
-					if (annotation.node_id) {
-						next_ids.push(annotation.node_id);
-					}
-				}
-			}
-		}
-
-		for (let i = next_ids.length - 1; i >= 0; i -= 1) {
-			stack.push(next_ids[i]);
-		}
-	}
-
-	return collected;
-}
 
 /**
  * @param {string} document_id
@@ -527,107 +480,6 @@ function get_combined_document(document_id) {
 
 /**
  * @param {DocumentData} page_doc
- * @returns {string[]}
- */
-function collect_page_body_node_ids(page_doc) {
-	const page_root = page_doc.nodes[page_doc.document_id];
-
-	if (!page_root?.body || !Array.isArray(page_root.body)) {
-		return [page_doc.document_id];
-	}
-
-	const body_node_ids = [page_doc.document_id];
-	const seen_ids = new Set(body_node_ids);
-
-	for (const child_id of page_root.body) {
-		const subtree_ids = collect_node_ids_in_order(child_id, page_doc.nodes);
-		for (const subtree_id of subtree_ids) {
-			if (seen_ids.has(subtree_id)) continue;
-			seen_ids.add(subtree_id);
-			body_node_ids.push(subtree_id);
-		}
-	}
-
-	return body_node_ids;
-}
-
-/**
- * @param {any} annotated_text
- * @returns {string}
- */
-function extract_plain_text(annotated_text) {
-	if (!annotated_text || typeof annotated_text.text !== 'string') return '';
-	return annotated_text.text.trim();
-}
-
-/**
- * @param {DocumentData} page_doc
- * @returns {{ title: string, preview_media_node: PreviewMediaNode | null }}
- */
-function extract_page_metadata(page_doc) {
-	const body_node_ids = collect_page_body_node_ids(page_doc);
-
-	let explicit_title = '';
-	let heading_title = '';
-	let fallback_title = '';
-	let first_image_node = null;
-	let first_video_node = null;
-
-	for (const node_id of body_node_ids) {
-		const node = page_doc.nodes[node_id];
-		if (!node) continue;
-
-		if (!first_image_node && node.type === 'image') {
-			first_image_node = node;
-		} else if (!first_video_node && node.type === 'video') {
-			first_video_node = node;
-		}
-
-		if (node.type === 'text') {
-			const text = extract_plain_text(node.content);
-			if (!text) continue;
-
-			if (!heading_title && (node.layout === 2 || node.layout === 3 || node.layout === 4)) {
-				heading_title = text;
-			}
-
-			if (!fallback_title) {
-				fallback_title = text;
-			}
-		}
-
-		if (node.type === 'hero') {
-			const hero_title = extract_plain_text(node.title);
-			if (!explicit_title && hero_title) {
-				explicit_title = hero_title;
-			}
-
-			if (!fallback_title && hero_title) {
-				fallback_title = hero_title;
-			}
-
-			const hero_description = extract_plain_text(node.description);
-			if (!fallback_title && hero_description) {
-				fallback_title = hero_description;
-			}
-		}
-
-		if (node.type === 'link_collection_item') {
-			const item_title = extract_plain_text(node.title);
-			if (!fallback_title && item_title) {
-				fallback_title = item_title;
-			}
-		}
-	}
-
-	return {
-		title: explicit_title || heading_title || fallback_title || 'Untitled page',
-		preview_media_node: first_image_node || first_video_node
-	};
-}
-
-/**
- * @param {DocumentData} page_doc
  * @returns {PageSummary}
  */
 function summarize_page_document(page_doc) {
@@ -639,6 +491,7 @@ function summarize_page_document(page_doc) {
 	return {
 		document_id: page_doc.document_id,
 		title: metadata.title,
+		description: metadata.description,
 		preview_media_node: metadata.preview_media_node,
 		page_href: active_slug ? `/${active_slug}` : '/'
 	};
@@ -1046,6 +899,7 @@ export const get_internal_link_preview = query(v.string(), async (href) => {
 	return /** @type {InternalLinkPreview} */ ({
 		document_id: resolved.document_id,
 		title: metadata.title,
+		description: metadata.description,
 		preview_media_node: metadata.preview_media_node
 	});
 });

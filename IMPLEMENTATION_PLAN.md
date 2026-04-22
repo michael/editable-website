@@ -276,6 +276,9 @@ This step includes:
 - internal href rewrite logic for slug changes
 - canonical redirects from historical aliases to active slugs
 - explicit home-page special-casing at `/`
+- page-level `title` and `description` metadata fields on the `page` root node
+- edit-mode-only UI for editing those metadata fields with `<AnnotatedTextProperty>`
+- page `<title>`, description meta tags, and Open Graph title/description tags driven by explicit page metadata when present, otherwise by the same fallback extraction used for page browser summaries
 
 This step does not include:
 
@@ -283,6 +286,8 @@ This step does not include:
 - exposing slug internals like “auto mode” or “custom mode” in the UI
 - automatic slug updates when titles change after first save
 - repairing broken links on page deletion
+- adding a separate metadata settings screen
+- adding cached summary columns to the database
 
 ### Data model changes
 
@@ -333,6 +338,37 @@ Important rule:
 - slug generation happens on first save only
 - later title changes do not auto-update the slug
 
+### Page metadata rules
+
+Add two optional page-root properties:
+
+- `page.title`
+- `page.description`
+
+Both fields should use the `annotated_text` property type so they can be edited with `<AnnotatedTextProperty>`.
+
+Metadata extraction rules:
+
+1. extracted page title:
+   - use explicit `page.title` if it exists and is non-empty
+   - otherwise fall back to the existing title extraction from page-local body content
+   - otherwise fall back to `"Untitled page"`
+2. extracted page description:
+   - use explicit `page.description` if it exists and is non-empty
+   - otherwise fall back to the first meaningful text-ish page-local body content
+   - otherwise fall back to `null`
+
+These extracted values should be the shared source for:
+
+- first-save slug generation
+- page browser title/summary metadata
+- `<title>`
+- `<meta name="description">`
+- `<meta property="og:title">`
+- `<meta property="og:description">`
+
+Description meta tags should only be rendered when a description value exists.
+
 ### Route and API changes
 
 Public routing changes from `/:page_id` to `/:slug` for non-home pages.
@@ -357,7 +393,7 @@ API/document loading changes:
 
 On first save of a new page:
 
-1. persist the page document under the already client-generated `document_id`
+1. persist the page document under the already client-generated `document_id`, including any explicit `page.title` / `page.description` values on the root node
 2. extract the page title
 3. generate the initial unique slug
 4. insert the active slug row
@@ -370,9 +406,34 @@ On first save of a new page:
 
 On later saves:
 
+- persist any edits to `page.title` / `page.description` on the page root node
 - keep the current active slug unchanged
 - do not regenerate from title
 - continue updating `document_refs`, `asset_refs`, and split shared documents as before
+
+### Client UI changes for page metadata
+
+1. extend the page schema so the `page` root node includes `title` and `description` annotated-text properties
+2. render a small metadata editor section at the very end of the page component
+3. only render that section when `svedit.editable` is true
+4. use `<AnnotatedTextProperty>` for both fields
+5. do not render this metadata editor section in non-edit mode
+6. keep the metadata editor outside the normal public page content so it does not appear on the live page
+
+Suggested rendering shape:
+
+- metadata section after the footer
+- one field for page title
+- one field for page description
+- simple labels are acceptable, but the editable values themselves should be the annotated-text fields
+
+### Head metadata changes
+
+1. replace hard-coded page `<title>` values with extracted page metadata
+2. render description tags only when an extracted description exists
+3. render `og:title` and `og:description` from the same extracted metadata values
+4. when explicit `page.title` / `page.description` are absent, use the same fallback extraction logic already used for page browser data
+5. keep one shared extraction helper so page browser summaries, slug generation, and head metadata stay consistent
 
 ### Slug editing flow in the page browser
 
