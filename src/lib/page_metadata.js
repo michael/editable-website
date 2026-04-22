@@ -21,6 +21,7 @@ import { collect_node_ids_in_order } from '$lib/document_graph.js';
  * @property {string} title
  * @property {string | null} description
  * @property {PreviewMediaNode | null} preview_media_node
+ * @property {string | null} social_image_url
  */
 
 /**
@@ -71,12 +72,15 @@ export function extract_page_metadata(page_doc) {
 		return {
 			title: 'Editable Website',
 			description: null,
-			preview_media_node: null
+			preview_media_node: null,
+			social_image_url: null
 		};
 	}
 
 	const body_node_ids = collect_page_body_node_ids(page_doc);
 	const page_root = page_doc.nodes[page_doc.document_id];
+	const explicit_image_node =
+		typeof page_root?.image === 'string' ? page_doc.nodes[page_root.image] ?? null : null;
 
 	let explicit_title = extract_plain_text(page_root?.title);
 	let explicit_description = extract_plain_text(page_root?.description);
@@ -138,10 +142,16 @@ export function extract_page_metadata(page_doc) {
 		}
 	}
 
+	const preview_media_node =
+		explicit_image_node?.type === 'image' && explicit_image_node.src
+			? explicit_image_node
+			: first_image_node || first_video_node;
+
 	return {
 		title: explicit_title || heading_title || fallback_title || 'Untitled page',
 		description: explicit_description || fallback_description || null,
-		preview_media_node: first_image_node || first_video_node
+		preview_media_node,
+		social_image_url: preview_media_node?.src ? `/assets/${preview_media_node.src}` : null
 	};
 }
 

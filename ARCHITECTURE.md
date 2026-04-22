@@ -557,8 +557,11 @@ The page root node also owns page-level metadata fields:
 
 - `page.title`
 - `page.description`
+- `page.image`
 
 These are page-local fields, not shared-document fields. They belong to the page document row alongside `body`, `nav`, and `footer`.
+
+`page.image` is a page-root `node` property that points to an `image` node. Unlike `page.title` and `page.description`, this node should always exist on the page root even when no image has been chosen yet. The presence check for explicit image metadata is therefore based on `page.image.src`, not on whether the `page.image` node reference exists.
 
 **On read (loading a page):**
 
@@ -592,7 +595,7 @@ slug mapping           page document          nav document          footer docum
 
 1. Receive the combined document from the client
 2. Determine which nodes belong to the nav document, the footer document, and the page document (by walking the graph from each root node)
-3. Persist `page.title` and `page.description` as part of the page document whenever they are present in the root node
+3. Persist `page.title`, `page.description`, and the always-present `page.image` node as part of the page document
 4. On first save only, extract the page summary title and assign the page its first slug using `slugify`, falling back to `document_id` if needed
 5. On later saves, keep the existing active slug unchanged unless the user explicitly changed it through the slug editing flow
 6. If the active slug changes, update slug mappings and rewrite all internal links that target that page
@@ -1128,9 +1131,11 @@ The description extractor should prefer human-readable body copy, not navigation
 
 **Preview image extraction order:**
 
-1. explicit page-level preview image field if one is added in the future
+1. explicit `page.image` if the `page.image` node exists and its `src` is non-empty
 2. otherwise, the first image or video found while traversing the page body in document order
 3. fallback to `null`
+
+Because the `page.image` node is always present on the page root, the explicit-image check must look at `page.image.src`, not merely at whether the node reference exists.
 
 Because the drawer already has a strong illustrated page fallback, `null` is perfectly acceptable and does not require a placeholder asset.
 
@@ -1139,7 +1144,10 @@ The same metadata extraction helper should also drive page-level browser metadat
 - `<title>` should use the extracted page title
 - `<meta name="description">` should use the extracted page description when available
 - Open Graph / social tags such as `og:title` and `og:description` should use `page.title` / `page.description` when present, otherwise the same fallback extraction used for page browser data
+- Open Graph / social image tags such as `og:image` and `twitter:image` should use the extracted page image
+- for now, social image tags should use the original asset URL rather than a derived smaller variant
 - if no description can be extracted, description meta tags should be omitted rather than filled with placeholder text
+- if no image can be extracted, image meta tags should be omitted
 
 If this on-the-fly extraction later proves too costly, the same extraction helper can become the canonical summary generator for a cached summary written on save. But caching is an optimization step for later, not part of the initial multi-page implementation.
 
@@ -1150,10 +1158,13 @@ Page-level metadata should be editable directly in the page editor, but only whi
 Requirements:
 
 1. add `title` and `description` as `annotated_text` properties on the `page` root node
-2. render them with `<AnnotatedTextProperty>` at the very end of the page
-3. only render that metadata editor UI when the editor is in edit mode
-4. keep the rendered metadata editor outside the normal page body flow so it does not affect public page content or summary extraction order
-5. when not in edit mode, do not render the metadata editor UI at all
+2. add `image` as a page-root `node` property pointing to an `image` node, and ensure that image node always exists
+3. render the metadata editor UI at the very end of the page
+4. render `title` and `description` with `<AnnotatedTextProperty>`
+5. render `page.image` as a square image field in that same metadata area
+6. only render that metadata editor UI when the editor is in edit mode
+7. keep the rendered metadata editor outside the normal page body flow so it does not affect public page content or summary extraction order
+8. when not in edit mode, do not render the metadata editor UI at all
 
 This gives site owners an explicit place to override auto-derived metadata without introducing a separate CMS screen.
 
