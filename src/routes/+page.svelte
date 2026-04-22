@@ -5,10 +5,6 @@
 	const props = $props();
 </script>
 
-<svelte:head>
-	<title>Editable Website</title>
-</svelte:head>
-
 <!--
 	BUG: When navigating from / with preloading on the Svedit component ends up
 	with a stale session, breaking editing.

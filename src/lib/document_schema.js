@@ -7,6 +7,21 @@ export const document_schema = define_document_schema({
 	page: {
 		kind: 'document',
 		properties: {
+			title: {
+				type: 'annotated_text',
+				node_types: [],
+				allow_newlines: false
+			},
+			description: {
+				type: 'annotated_text',
+				node_types: [],
+				allow_newlines: true
+			},
+			image: {
+				type: 'node',
+				node_types: ['image'],
+				default_node_type: 'image'
+			},
 			body: {
 				type: 'node_array',
 				node_types: ['prose', 'figure', 'gallery', 'feature', 'link_collection', 'hero'],

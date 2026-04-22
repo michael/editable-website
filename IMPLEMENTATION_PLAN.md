@@ -276,6 +276,9 @@ This step includes:
 - internal href rewrite logic for slug changes
 - canonical redirects from historical aliases to active slugs
 - explicit home-page special-casing at `/`
+- page-level `title` and `description` metadata fields on the `page` root node
+- edit-mode-only UI for editing those metadata fields with `<AnnotatedTextProperty>`
+- page `<title>`, description meta tags, and Open Graph title/description tags driven by explicit page metadata when present, otherwise by the same fallback extraction used for page browser summaries
 
 This step does not include:
 
@@ -283,6 +286,8 @@ This step does not include:
 - exposing slug internals like “auto mode” or “custom mode” in the UI
 - automatic slug updates when titles change after first save
 - repairing broken links on page deletion
+- adding a separate metadata settings screen
+- adding cached summary columns to the database
 
 ### Data model changes
 
@@ -333,6 +338,49 @@ Important rule:
 - slug generation happens on first save only
 - later title changes do not auto-update the slug
 
+### Page metadata rules
+
+Add three page-root properties:
+
+- `page.title`
+- `page.description`
+- `page.image`
+
+`page.title` and `page.description` should use the `annotated_text` property type so they can be edited with `<AnnotatedTextProperty>`.
+
+`page.image` should use a `node` property pointing to an `image` node. That image node should always exist on the page root, even when no image has been chosen yet. This means explicit-image checks must look at `page.image.src`, not merely at whether the `page.image` node reference exists.
+
+Metadata extraction rules:
+
+1. extracted page title:
+   - use explicit `page.title` if it exists and is non-empty
+   - otherwise fall back to the existing title extraction from page-local body content
+   - otherwise fall back to `"Untitled page"`
+2. extracted page description:
+   - use explicit `page.description` if it exists and is non-empty
+   - otherwise fall back to the first meaningful text-ish page-local body content
+   - otherwise fall back to `null`
+3. extracted page image:
+   - use explicit `page.image` if its node exists and `page.image.src` is non-empty
+   - otherwise fall back to the first image found in page-local body content
+   - otherwise fall back to `null`
+
+These extracted values should be the shared source for:
+
+- first-save slug generation
+- page browser title/summary metadata
+- page browser preview image metadata
+- `<title>`
+- `<meta name="description">`
+- `<meta property="og:title">`
+- `<meta property="og:description">`
+- `<meta property="og:image">`
+- `<meta name="twitter:image">`
+
+Description meta tags should only be rendered when a description value exists.
+
+Image meta tags should use the extracted page image when available. For now, they should use the original asset URL rather than a smaller derived variant. If no image can be extracted, image meta tags should be omitted.
+
 ### Route and API changes
 
 Public routing changes from `/:page_id` to `/:slug` for non-home pages.
@@ -357,7 +405,7 @@ API/document loading changes:
 
 On first save of a new page:
 
-1. persist the page document under the already client-generated `document_id`
+1. persist the page document under the already client-generated `document_id`, including any explicit `page.title` / `page.description` values and the always-present `page.image` node on the root node
 2. extract the page title
 3. generate the initial unique slug
 4. insert the active slug row
@@ -370,9 +418,39 @@ On first save of a new page:
 
 On later saves:
 
+- persist any edits to `page.title` / `page.description` and `page.image` on the page root node
 - keep the current active slug unchanged
 - do not regenerate from title
 - continue updating `document_refs`, `asset_refs`, and split shared documents as before
+
+### Client UI changes for page metadata
+
+1. extend the page schema so the `page` root node includes `title` and `description` annotated-text properties plus an `image` node property
+2. ensure the `page.image` image node always exists on the page root, including in seeded data, migrations, and new-page creation
+3. render a small metadata editor section at the very end of the page component
+4. only render that section when `svedit.editable` is true
+5. use `<AnnotatedTextProperty>` for `title` and `description`
+6. render `page.image` as a square image field in the same metadata section
+7. do not render this metadata editor section in non-edit mode
+8. keep the metadata editor outside the normal public page content so it does not appear on the live page
+
+Suggested rendering shape:
+
+- metadata section after the footer
+- one square image field for page image
+- one field for page title
+- one field for page description
+- simple labels are acceptable, but the editable values themselves should be the page-root metadata fields
+
+### Head metadata changes
+
+1. replace hard-coded page `<title>` values with extracted page metadata
+2. render description tags only when an extracted description exists
+3. render `og:title` and `og:description` from the same extracted metadata values
+4. render `og:image` and `twitter:image` from the extracted page image value
+5. for now, use the original asset URL for social image tags rather than a smaller derived variant
+6. when explicit `page.title` / `page.description` / `page.image` are absent, use the same fallback extraction logic already used for page browser data
+7. keep one shared extraction helper so page browser summaries, slug generation, and head metadata stay consistent
 
 ### Slug editing flow in the page browser
 

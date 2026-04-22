@@ -10,8 +10,4 @@
 	});
 </script>
 
-<svelte:head>
-	<title>New page</title>
-</svelte:head>
-
 <App {...data} />

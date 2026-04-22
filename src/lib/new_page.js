@@ -1,4 +1,5 @@
 import nanoid from '../routes/nanoid.js';
+import { MEDIA_DEFAULTS } from '$lib/config.js';
 
 /**
  * Create a new unsaved page document for the `/new` route.
@@ -19,6 +20,7 @@ import nanoid from '../routes/nanoid.js';
  */
 export function create_empty_doc(shared_documents) {
 	const page_id = nanoid();
+	const page_image_id = nanoid();
 	const prose_id = nanoid();
 	const heading_id = nanoid();
 	const paragraph_id = nanoid();
@@ -42,9 +44,23 @@ export function create_empty_doc(shared_documents) {
 			[page_id]: {
 				id: page_id,
 				type: 'page',
+				title: {
+					text: '',
+					annotations: []
+				},
+				description: {
+					text: '',
+					annotations: []
+				},
+				image: page_image_id,
 				nav: nav_document.document_id,
 				footer: footer_document.document_id,
 				body: [prose_id]
+			},
+			[page_image_id]: {
+				id: page_image_id,
+				type: 'image',
+				...MEDIA_DEFAULTS
 			},
 			[prose_id]: {
 				id: prose_id,

@@ -4,6 +4,21 @@ import { MEDIA_DEFAULTS } from '$lib/config.js';
 // No-op tag for SQL syntax highlighting with the SQL Tagged Template Literals VSCode extension
 const sql = (strings) => strings.join('');
 
+function create_empty_annotated_text() {
+	return {
+		text: '',
+		annotations: []
+	};
+}
+
+function create_empty_image_node(id) {
+	return {
+		id,
+		type: 'image',
+		...MEDIA_DEFAULTS
+	};
+}
+
 /**
  * Deep clone a document and reset all image/video nodes to MEDIA_DEFAULTS,
  * since a fresh database has no uploaded assets yet.
@@ -89,5 +104,61 @@ export default [
 			'home_page_id',
 			'page_1'
 		);
+	},
+	function add_page_metadata_fields({ db }) {
+		const page_rows = db.prepare('SELECT document_id, data FROM documents WHERE type = ?').all('page');
+		const update_doc = db.prepare('UPDATE documents SET data = ? WHERE document_id = ?');
+
+		for (const row of page_rows) {
+			const doc = JSON.parse(row.data);
+			const page_node = doc?.nodes?.[doc.document_id];
+
+			if (!page_node || page_node.type !== 'page') continue;
+
+			let did_change = false;
+
+			if (!page_node.title) {
+				page_node.title = create_empty_annotated_text();
+				did_change = true;
+			}
+
+			if (!page_node.description) {
+				page_node.description = create_empty_annotated_text();
+				did_change = true;
+			}
+
+			if (did_change) {
+				update_doc.run(JSON.stringify(doc), row.document_id);
+			}
+		}
+	},
+	function add_page_image_nodes({ db }) {
+		const page_rows = db.prepare('SELECT document_id, data FROM documents WHERE type = ?').all('page');
+		const update_doc = db.prepare('UPDATE documents SET data = ? WHERE document_id = ?');
+
+		for (const row of page_rows) {
+			const doc = JSON.parse(row.data);
+			const page_node = doc?.nodes?.[doc.document_id];
+
+			if (!page_node || page_node.type !== 'page') continue;
+
+			let did_change = false;
+			const page_image_id = typeof page_node.image === 'string' ? page_node.image : `${doc.document_id}_image`;
+
+			if (typeof page_node.image !== 'string') {
+				page_node.image = page_image_id;
+				did_change = true;
+			}
+
+			const page_image_node = doc.nodes?.[page_image_id];
+			if (!page_image_node || page_image_node.type !== 'image') {
+				doc.nodes[page_image_id] = create_empty_image_node(page_image_id);
+				did_change = true;
+			}
+
+			if (did_change) {
+				update_doc.run(JSON.stringify(doc), row.document_id);
+			}
+		}
 	}
 ];
