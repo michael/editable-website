@@ -15,6 +15,18 @@
 
 	let mobile_menu_open = $state(false);
 	let show_edit_nav = $derived(svedit.editable);
+
+	$effect(() => {
+		if (mobile_menu_open) {
+			document.body.style.overflow = 'hidden';
+		} else {
+			document.body.style.overflow = '';
+		}
+
+		return () => {
+			document.body.style.overflow = '';
+		};
+	});
 </script>
 
 <Node {path}>
