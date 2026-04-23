@@ -11,7 +11,7 @@
 
 <Node {path}>
 	<div class="{TW_LIMITER}">
-		<div class="figure {TW_PAGE_PADDING_X} py-16">
+		<div class="figure {TW_PAGE_PADDING_X}">
 			<div
 				class="overflow-hidden"
 				style:border-radius="var(--image-border-radius)"
