@@ -317,6 +317,25 @@
 
 				<!-- Type / Layout group (always visible, disabled when not applicable) -->
 				<div class="flex items-center gap-1">
+					<!-- Select parent -->
+					<button
+						class="{TW_TOOLBAR_BTN} {session.commands.select_parent?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
+						onmousedown={(e) => handle_btn_mousedown(e, session.commands.select_parent)}
+						title="Select parent (Esc)"
+						aria-label="Select parent"
+					>
+						<svg
+							class="size-4"
+							viewBox="0 0 24 24"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+							aria-hidden="true"
+						>
+							<rect x="4" y="6" width="16" height="12" stroke="currentColor" stroke-width="2" />
+							<rect x="10" y="10" width="4" height="4" fill="currentColor" />
+						</svg>
+					</button>
+
 					<!-- Type: cycle to next node type -->
 					<button
 						class="{TW_TOOLBAR_BTN} {session.commands.cycle_node_type_next?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
