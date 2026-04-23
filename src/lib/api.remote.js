@@ -45,12 +45,22 @@ function create_auth_error_result(code, message) {
  * @property {string} document_id
  * @property {string} type
  * @property {string} data
+ * @property {string | null | undefined} created_at
+ * @property {string | null | undefined} updated_at
  */
 
 /**
  * @typedef {Object} DocumentData
  * @property {string} document_id
  * @property {Record<string, any>} nodes
+ */
+
+/**
+ * @typedef {Object} PageDocumentRecord
+ * @property {string} document_id
+ * @property {Record<string, any>} nodes
+ * @property {string | null} created_at
+ * @property {string | null} updated_at
  */
 
 /**
@@ -74,6 +84,9 @@ function create_auth_error_result(code, message) {
  * @property {string | null} description
  * @property {PreviewMediaNode | null} preview_media_node
  * @property {string} page_href
+ * @property {string} slug
+ * @property {string | null} created_at
+ * @property {string | null} updated_at
  */
 
 /**
@@ -90,6 +103,9 @@ function create_auth_error_result(code, message) {
  * @property {string} title
  * @property {PreviewMediaNode | null} preview_media_node
  * @property {string} page_href
+ * @property {string} slug
+ * @property {string | null} created_at
+ * @property {string | null} updated_at
  * @property {PageTreeNode[]} children
  */
 
@@ -265,14 +281,22 @@ function resolve_slug(slug) {
 }
 
 /**
- * @returns {DocumentData[]}
+ * @returns {PageDocumentRecord[]}
  */
 function list_page_documents() {
 	const rows = /** @type {DocumentRow[]} */ (
 		db.prepare('SELECT * FROM documents WHERE type = ? ORDER BY document_id').all('page')
 	);
 
-	return rows.map((row) => JSON.parse(row.data));
+	return rows.map((row) => {
+		const doc = /** @type {DocumentData} */ (JSON.parse(row.data));
+		return {
+			document_id: doc.document_id,
+			nodes: doc.nodes,
+			created_at: row.created_at ?? null,
+			updated_at: row.updated_at ?? null
+		};
+	});
 }
 
 /**
@@ -479,11 +503,14 @@ function get_combined_document(document_id) {
 }
 
 /**
- * @param {DocumentData} page_doc
+ * @param {PageDocumentRecord} page_doc
  * @returns {PageSummary}
  */
 function summarize_page_document(page_doc) {
-	const metadata = extract_page_metadata(page_doc);
+	const metadata = extract_page_metadata({
+		document_id: page_doc.document_id,
+		nodes: page_doc.nodes
+	});
 	const active_slug = get_active_slug_for_document_id(page_doc.document_id);
 
 	// By invariant, only the home page has no active slug row. All other pages
@@ -493,7 +520,10 @@ function summarize_page_document(page_doc) {
 		title: metadata.title,
 		description: metadata.description,
 		preview_media_node: metadata.preview_media_node,
-		page_href: active_slug ? `/${active_slug}` : '/'
+		page_href: active_slug ? `/${active_slug}` : '/',
+		slug: active_slug ?? '',
+		created_at: page_doc.created_at ?? null,
+		updated_at: page_doc.updated_at ?? null
 	};
 }
 
@@ -534,6 +564,9 @@ function build_tree_children(refs, assigned_page_ids, summaries_by_id, body_refs
 			title: summary.title,
 			preview_media_node: summary.preview_media_node,
 			page_href: summary.page_href,
+			slug: summary.slug,
+			created_at: summary.created_at,
+			updated_at: summary.updated_at,
 			children: build_tree_children(
 				body_refs_by_page_id.get(target_document_id) ?? [],
 				assigned_page_ids,
@@ -572,6 +605,9 @@ function build_page_tree_node(
 		title: summary.title,
 		preview_media_node: summary.preview_media_node,
 		page_href: summary.page_href,
+		slug: summary.slug,
+		created_at: summary.created_at,
+		updated_at: summary.updated_at,
 		children: build_tree_children(
 			root_refs ?? body_refs_by_page_id.get(root_document_id) ?? [],
 			assigned_page_ids,
@@ -656,7 +692,16 @@ function build_page_browser_data() {
 				!home_linked_page_ids.has(summary.document_id) &&
 				(incoming_page_ref_counts.get(summary.document_id) ?? 0) === 0
 		)
-		.sort((a, b) => a.title.localeCompare(b.title));
+		.sort((a, b) => {
+			const a_updated_at = a.updated_at ?? a.created_at ?? '';
+			const b_updated_at = b.updated_at ?? b.created_at ?? '';
+
+			if (a_updated_at !== b_updated_at) {
+				return b_updated_at.localeCompare(a_updated_at);
+			}
+
+			return a.title.localeCompare(b.title);
+		});
 
 	if (home_page_id && summaries_by_id.has(home_page_id)) {
 		const nav_refs = nav_root_id ? get_outgoing_refs(nav_root_id) : [];
@@ -1002,7 +1047,7 @@ export const save_document = command(save_document_input_schema, async (combined
 	const page_doc = extract_document(combined_doc.document_id, page_node_ids, all_nodes);
 
 	const upsert = db.prepare(
-		'INSERT INTO documents (document_id, type, data) VALUES(?, ?, ?) ON CONFLICT(document_id) DO UPDATE SET data = excluded.data'
+		'INSERT INTO documents (document_id, type, data, created_at, updated_at) VALUES(?, ?, ?, ?, ?) ON CONFLICT(document_id) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at'
 	);
 
 	const delete_asset_refs = db.prepare('DELETE FROM asset_refs WHERE document_id = ?');
@@ -1028,7 +1073,13 @@ export const save_document = command(save_document_input_schema, async (combined
 	`);
 
 	try {
-		upsert.run(combined_doc.document_id, 'page', JSON.stringify(page_doc));
+		const existing_page_row = /** @type {DocumentRow | undefined} */ (
+			db.prepare('SELECT created_at FROM documents WHERE document_id = ?').get(combined_doc.document_id)
+		);
+		const now_iso = new Date().toISOString();
+		const created_at = existing_page_row?.created_at ?? now_iso;
+
+		upsert.run(combined_doc.document_id, 'page', JSON.stringify(page_doc), created_at, now_iso);
 		update_asset_refs(
 			combined_doc.document_id,
 			page_node_ids,
@@ -1045,7 +1096,11 @@ export const save_document = command(save_document_input_schema, async (combined
 
 		if (nav_root_id && nav_node_ids.size > 0) {
 			const nav_doc = extract_document(nav_root_id, nav_node_ids, all_nodes);
-			upsert.run(nav_root_id, 'nav', JSON.stringify(nav_doc));
+			const existing_nav_row = /** @type {DocumentRow | undefined} */ (
+				db.prepare('SELECT created_at FROM documents WHERE document_id = ?').get(nav_root_id)
+			);
+			const nav_created_at = existing_nav_row?.created_at ?? now_iso;
+			upsert.run(nav_root_id, 'nav', JSON.stringify(nav_doc), nav_created_at, now_iso);
 			update_asset_refs(nav_root_id, nav_node_ids, all_nodes, delete_asset_refs, insert_asset_ref);
 			update_document_refs(
 				nav_root_id,
@@ -1057,7 +1112,11 @@ export const save_document = command(save_document_input_schema, async (combined
 
 		if (footer_root_id && footer_node_ids.size > 0) {
 			const footer_doc = extract_document(footer_root_id, footer_node_ids, all_nodes);
-			upsert.run(footer_root_id, 'footer', JSON.stringify(footer_doc));
+			const existing_footer_row = /** @type {DocumentRow | undefined} */ (
+				db.prepare('SELECT created_at FROM documents WHERE document_id = ?').get(footer_root_id)
+			);
+			const footer_created_at = existing_footer_row?.created_at ?? now_iso;
+			upsert.run(footer_root_id, 'footer', JSON.stringify(footer_doc), footer_created_at, now_iso);
 			update_asset_refs(
 				footer_root_id,
 				footer_node_ids,
@@ -1195,17 +1254,25 @@ export const update_page_slug = command(update_page_slug_input_schema, async (in
 		);
 
 		const upsert = db.prepare(
-			'INSERT INTO documents (document_id, type, data) VALUES(?, ?, ?) ON CONFLICT(document_id) DO UPDATE SET data = excluded.data'
+			'INSERT INTO documents (document_id, type, data, created_at, updated_at) VALUES(?, ?, ?, ?, ?) ON CONFLICT(document_id) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at'
 		);
 		const delete_document_refs = db.prepare('DELETE FROM document_refs WHERE source_document_id = ?');
 		const insert_document_ref = db.prepare(
 			'INSERT OR REPLACE INTO document_refs (target_document_id, source_document_id, ref_order) VALUES (?, ?, ?)'
 		);
 
+		const now_iso = new Date().toISOString();
+
 		for (const row of page_rows) {
 			const doc = JSON.parse(row.data);
 			rewrite_internal_page_hrefs(doc.nodes, input.document_id, new_active_slug);
-			upsert.run(row.document_id, row.type, JSON.stringify(doc));
+			upsert.run(
+				row.document_id,
+				row.type,
+				JSON.stringify(doc),
+				row.created_at ?? now_iso,
+				now_iso
+			);
 
 			const root_id = row.document_id;
 			const node_ids = collect_node_ids(root_id, doc.nodes);

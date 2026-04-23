@@ -43,7 +43,9 @@ export default [
 			CREATE TABLE documents (
 				document_id TEXT NOT NULL PRIMARY KEY,
 				type TEXT NOT NULL,
-				data TEXT
+				data TEXT,
+				created_at TEXT NOT NULL,
+				updated_at TEXT NOT NULL
 			);
 		`);
 
@@ -93,12 +95,14 @@ export default [
 			WHERE is_active = 1
 		`);
 
+		const now = new Date().toISOString();
+
 		const insert_doc = db.prepare(
-			'INSERT INTO documents (document_id, type, data) VALUES(?, ?, ?)'
+			'INSERT INTO documents (document_id, type, data, created_at, updated_at) VALUES(?, ?, ?, ?, ?)'
 		);
-		insert_doc.run('nav_1', 'nav', JSON.stringify(nav_1));
-		insert_doc.run('footer_1', 'footer', JSON.stringify(footer_1));
-		insert_doc.run('page_1', 'page', JSON.stringify(page_1));
+		insert_doc.run('nav_1', 'nav', JSON.stringify(nav_1), now, now);
+		insert_doc.run('footer_1', 'footer', JSON.stringify(footer_1), now, now);
+		insert_doc.run('page_1', 'page', JSON.stringify(page_1), now, now);
 
 		db.prepare('INSERT INTO site_settings (key, value) VALUES(?, ?)').run(
 			'home_page_id',
@@ -160,5 +164,23 @@ export default [
 				update_doc.run(JSON.stringify(doc), row.document_id);
 			}
 		}
+	},
+	function add_document_timestamps({ db }) {
+		const now = new Date().toISOString();
+
+		db.exec(sql`
+			ALTER TABLE documents ADD COLUMN created_at TEXT
+		`);
+		db.exec(sql`
+			ALTER TABLE documents ADD COLUMN updated_at TEXT
+		`);
+
+		db.prepare(
+			`
+				UPDATE documents
+				SET created_at = COALESCE(created_at, ?),
+					updated_at = COALESCE(updated_at, ?)
+			`
+		).run(now, now);
 	}
 ];

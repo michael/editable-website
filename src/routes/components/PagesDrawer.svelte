@@ -257,6 +257,32 @@
 		return page_href || '/';
 	}
 
+	function format_page_browser_timestamp(value) {
+		if (!value) return 'Unknown';
+
+		const date = new Date(value);
+		if (Number.isNaN(date.getTime())) return value;
+
+		return date.toLocaleString('en-US', {
+			month: 'short',
+			day: 'numeric',
+			year: 'numeric',
+			hour: 'numeric',
+			minute: '2-digit',
+			hour12: true
+		});
+	}
+
+	function get_page_title_tooltip(node) {
+		const slug_label = get_page_slug_label(node.page_href);
+		const created_at_label = format_page_browser_timestamp(node.created_at);
+		const updated_at_label = format_page_browser_timestamp(node.updated_at);
+
+		return `URL: ${slug_label}
+Created: ${created_at_label}
+Updated: ${updated_at_label}`;
+	}
+
 	function is_home_page(document_id) {
 		return browser_data?.home_page_id === document_id;
 	}
@@ -790,6 +816,7 @@
 								class:tree-row-root={node_is_root}
 								class:tree-row-keyboard-selected={visible_results[selected_result_index]?.document_id === node.document_id}
 								data-page-browser-row={node.document_id}
+								title={get_page_title_tooltip(node)}
 								href={resolve(get_resolved_page_href(node.page_href))}
 								onclick={(event) =>
 									handle_page_click(event, {
@@ -814,7 +841,7 @@
 								</div>
 
 								<div class="tree-label">
-									<div class="tree-title" title={node.title}>
+									<div class="tree-title">
 										{#each get_highlight_parts(node.title, normalized_search_query) as part, part_index (`title-${node.document_id}-${part_index}`)}
 											<span class:match-highlight={part.is_match}>{part.text}</span>
 										{/each}
