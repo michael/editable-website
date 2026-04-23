@@ -151,7 +151,7 @@ export class EditImageCommand extends Command {
 		const session = this.context.session;
 		if (!this.context.editable || session.selection?.type !== 'property') return false;
 		const selected_property = session.get(session.selection.path);
-		return selected_property?.type === 'image';
+		return selected_property?.type === 'image' || selected_property?.type === 'video';
 	}
 
 	execute() {

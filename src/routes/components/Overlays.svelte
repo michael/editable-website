@@ -5,7 +5,7 @@
 	import SizableViewboxControls from './SizableViewboxControls.svelte';
 	import CreateLink from './CreateLink.svelte';
 	import EditLink from './EditLink.svelte';
-	import EditImage from './EditImage.svelte';
+	import EditMedia from './EditMedia.svelte';
 	import LinkPreview from './LinkPreview.svelte';
 	import AuthDialog from './AuthDialog.svelte';
 	import Drawer from './Drawer.svelte';
@@ -219,7 +219,7 @@
 	{/if}
 
 	{#if svedit.session.commands?.edit_image?.show_prompt && is_media_selected}
-		<EditImage path={svedit.session.selection.path} />
+		<EditMedia path={svedit.session.selection.path} />
 	{/if}
 
 	{#if app.auth_dialog_open}

@@ -83,20 +83,21 @@
 	onclick={handle_backdrop_click}
 >
 	<div class="flex flex-col">
-		<div class="flex items-stretch border-b border-[color-mix(in_oklch,var(--foreground)_18%,transparent)]">
+		<div class="px-1 pt-1">
+			<div class="flex items-stretch">
 			<input
 				id="edit-link-url-input"
 				bind:this={href_input_ref}
 				type="url"
 				bind:value={href_input_value}
 				placeholder="https://example.com"
-				class="w-72 min-w-0 flex-1 border-0 bg-(--background) px-3 py-2 text-sm text-(--foreground) outline-none ring-0 focus:ring-0 focus-visible:ring-0 focus:outline-none focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+				class="w-72 min-w-0 flex-1 border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:border-[var(--svedit-editing-stroke)] focus:outline-none focus:ring-0 focus:shadow-none"
 				onkeydown={handle_keydown}
 			/>
 			{#if app.has_backend}
 				<button
 					type="button"
-					class="shrink-0 cursor-pointer border-l border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] px-3 text-(--svedit-editing-stroke) hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))] outline-1 outline-transparent focus:outline-none focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+					class="shrink-0 cursor-pointer border border-l-transparent border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] px-3 text-(--svedit-editing-stroke) hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))] focus:border-[var(--svedit-editing-stroke)] focus:outline-none focus:ring-0 focus:shadow-none"
 					title="Select page"
 					aria-label="Select page"
 					onclick={() => {
@@ -115,19 +116,20 @@
 					</svg>
 				</button>
 			{/if}
+			</div>
 		</div>
 		<div class="flex items-center justify-between px-3 py-2">
 			<label class="flex items-center gap-2 cursor-pointer">
 				<input
 					type="checkbox"
 					bind:checked={open_in_new_tab}
-					class="w-4 h-4 cursor-pointer text-(--svedit-editing-stroke) outline-none ring-0 focus:ring-0 focus-visible:ring-0 focus:outline-none focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+					class="w-4 h-4 cursor-pointer text-(--svedit-editing-stroke) ring-0 focus:ring-0 focus-visible:ring-0 focus-visible:outline-1 focus-visible:outline-[var(--svedit-editing-stroke)] focus-visible:outline-offset-1"
 				/>
 				<span class="text-sm text-(--foreground)">Open in new tab</span>
 			</label>
 			<button
 				type="button"
-				class="text-sm text-(--svedit-editing-stroke) cursor-pointer shrink-0 hover:opacity-80 outline-1 outline-transparent focus:outline-none focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+				class="text-sm text-(--svedit-editing-stroke) cursor-pointer shrink-0 hover:opacity-80 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-[var(--svedit-editing-stroke)] focus-visible:outline-offset-1"
 				onclick={save}
 			>
 				UPDATE
