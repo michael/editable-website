@@ -128,7 +128,7 @@
 						</button>
 					{/if}
 
-					{#if !app_commands.edit_document.disabled}
+					{#if app.has_backend && app.is_admin && !app_commands.edit_document.disabled}
 						<button
 							class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
 							onclick={() => app_commands.edit_document.execute()}

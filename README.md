@@ -95,6 +95,12 @@ fly secrets set -a my-editable-website \
 fly deploy -a my-editable-website --primary-region fra --vm-size shared-cpu-1x --vm-memory 256 --volume-initial-size 1
 ```
 
+You now probably want to watch the logs as the app is booting up.
+
+```
+fly logs -a my-editable-website
+```
+
 ## FAQs
 
 ### How is this different to using a CMS?
