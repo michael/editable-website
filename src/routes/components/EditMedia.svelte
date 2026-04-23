@@ -76,14 +76,15 @@
 				bind:value={alt_input_value}
 				rows="3"
 				placeholder="Describe the media for people using screen readers."
-				class="w-72 min-w-0 border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] bg-(--background) px-3 py-2 text-sm text-(--foreground) resize-none focus:border-[var(--svedit-editing-stroke)] focus:outline-none focus:ring-0 focus:shadow-none"
+				class="edit-media-textarea w-72 min-w-0 border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] bg-(--background) px-3 py-2 text-sm text-(--foreground) resize-none focus:border-[var(--svedit-editing-stroke)] focus:outline-none focus:ring-0 focus:shadow-none"
 				onkeydown={handle_keydown}
 			></textarea>
 		</div>
-		<div class="flex items-center justify-end px-3 py-2 border-t border-[color-mix(in_oklch,var(--foreground)_18%,transparent)]">
+		<div class="flex items-center justify-between px-3 py-2 border-t border-[color-mix(in_oklch,var(--foreground)_18%,transparent)]">
+			<div></div>
 			<button
 				type="button"
-				class="text-sm text-(--svedit-editing-stroke) cursor-pointer shrink-0 border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] px-2 py-1 hover:opacity-80 focus:border-[var(--svedit-editing-stroke)] focus:outline-none focus:ring-0 focus:shadow-none"
+				class="text-sm text-(--svedit-editing-stroke) cursor-pointer shrink-0 hover:opacity-80 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-[var(--svedit-editing-stroke)] focus-visible:outline-offset-1"
 				onclick={save}
 			>
 				UPDATE
@@ -93,6 +94,10 @@
 </dialog>
 
 <style>
+	.edit-media-textarea {
+		font-size: 16px !important;
+	}
+
 	.edit-media-dialog::backdrop {
 		background: color-mix(in oklch, var(--foreground) 10%, transparent);
 	}

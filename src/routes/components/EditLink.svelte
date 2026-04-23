@@ -91,7 +91,7 @@
 				type="url"
 				bind:value={href_input_value}
 				placeholder="https://example.com"
-				class="w-72 min-w-0 flex-1 border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:border-[var(--svedit-editing-stroke)] focus:outline-none focus:ring-0 focus:shadow-none"
+				class="edit-link-input w-72 min-w-0 flex-1 border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:border-[var(--svedit-editing-stroke)] focus:outline-none focus:ring-0 focus:shadow-none"
 				onkeydown={handle_keydown}
 			/>
 			{#if app.has_backend}
@@ -139,6 +139,10 @@
 </dialog>
 
 <style>
+	.edit-link-input {
+		font-size: 16px !important;
+	}
+
 	.edit-link-dialog::backdrop {
 		background: color-mix(in oklch, var(--foreground) 10%, transparent);
 	}
