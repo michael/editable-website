@@ -4,6 +4,7 @@ import { env } from '$env/dynamic/private';
 export function load({ locals }) {
 	return {
 		has_backend: !env.VERCEL,
-		is_admin: !!locals.is_admin
+		is_admin: !!locals.is_admin,
+		origin: env.ORIGIN ?? ''
 	};
 }

@@ -1,11 +1,13 @@
 <script>
 	import { goto, invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import { getContext } from 'svelte';
 
 	import { get_page_browser_data } from '$lib/api.remote.js';
 	import Media from './Media.svelte';
 	import { get_page_browser } from './page_browser_context.svelte.js';
 
+	const app = getContext('app');
 	const page_browser = get_page_browser();
 
 	let browser_data = $state(null);
@@ -1014,7 +1016,7 @@ Updated: ${updated_at_label}`;
 		}}>
 			<h3 class="confirm-title">Edit URL</h3>
 			<div class="page-url-field">
-				<span class="page-url-prefix">example.com/</span>
+				<span class="page-url-prefix">{app.origin || 'example.com'}/</span>
 				<input
 					type="text"
 					bind:value={page_url_value}

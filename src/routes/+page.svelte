@@ -1,7 +1,7 @@
 <script>
 	import App from './components/App.svelte';
 
-	/** @type {{ data: { has_backend?: boolean, is_admin?: boolean, document: any, slug: string | null, is_new?: boolean } }} */
+	/** @type {{ data: { has_backend?: boolean, is_admin?: boolean, origin?: string | null, document: any, slug: string | null, is_new?: boolean } }} */
 	const props = $props();
 </script>
 
