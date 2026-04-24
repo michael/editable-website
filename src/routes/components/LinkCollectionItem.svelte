@@ -6,7 +6,6 @@
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
-	let item_index = $derived(typeof path[path.length - 1] === 'number' ? path[path.length - 1] : 0);
 	let node = $derived(svedit.session.get(path));
 	let render_as_link = $derived(!svedit.editable && node.href);
 </script>
@@ -17,7 +16,7 @@
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
 		class="block outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
-		use:reveal={{ delay: item_index * 150 }}
+		use:reveal
 	>
 		<div class="overflow-hidden" style:aspect-ratio="4/3" style:border-radius="var(--image-border-radius)">
 			<MediaProperty path={[...path, 'media']} />
