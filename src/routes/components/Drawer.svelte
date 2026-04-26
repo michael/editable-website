@@ -391,7 +391,7 @@
 		box-shadow: 0 -12px 40px oklch(0% 0 0 / 0.12);
 		border-top: 0.5px solid color-mix(in oklch, var(--foreground) 18%, transparent);
 		color: var(--foreground);
-		padding-bottom: max(1rem, env(safe-area-inset-bottom));
+		padding-bottom: env(safe-area-inset-bottom);
 		overflow: auto;
 		overscroll-behavior: contain;
 		pointer-events: auto;

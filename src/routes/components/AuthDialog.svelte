@@ -95,85 +95,65 @@
 
 <div class="mx-auto flex w-full max-w-xl flex-col text-(--foreground)">
 	{#if step === 'choice'}
-		<div class="flex flex-col gap-3 px-1 pt-8 pb-2 sm:gap-8">
+		<div class="flex flex-col gap-7 px-2 pt-8 pb-2 sm:px-1 sm:gap-8">
 			<div class="flex flex-col items-center gap-1 text-center">
-				<h2 class="m-0 text-base leading-[1.3] font-medium">
-					This is an
-					<a
-						href="https://editable.website"
-						target="_blank"
-						rel="noopener noreferrer"
-						tabindex="-1"
-						class="underline underline-offset-2 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
-					>
-						editable.website
-					</a>
+				<h2 class="m-0 text-xl leading-[1.15] font-medium sm:text-2xl">
+					You can edit this website
 				</h2>
 			</div>
 
-			<div class="mx-auto grid w-full max-w-lg min-w-0 grid-cols-2 gap-2 sm:gap-3">
+			<div class="mx-auto grid w-full max-w-md min-w-0 grid-cols-2 gap-7 sm:max-w-sm sm:gap-7">
 				<button
 					type="button"
-					class="flex w-full min-w-0 cursor-pointer flex-col justify-between overflow-hidden rounded-[0.8rem] border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] bg-(--background) px-2 py-3 text-center outline-1 outline-transparent transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:translate-y-px active:scale-95 active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1 sm:aspect-square sm:min-h-48 sm:p-4"
+					class="flex w-full min-w-0 cursor-pointer flex-col justify-center gap-4 overflow-hidden rounded-[0.8rem] border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] bg-(--background) px-2 py-5 text-center outline-1 outline-transparent transition-[background-color,border-color,transform] duration-200 ease-out hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:translate-y-px active:scale-95 active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1 sm:aspect-square sm:min-h-32 sm:gap-4 sm:p-4"
 					onclick={handle_edit_for_fun}
 				>
-					<div class="flex h-14 items-center justify-center overflow-hidden sm:h-24">
+					<div class="flex items-center justify-center overflow-hidden">
 						<svg
-							viewBox="0 0 160 96"
-							aria-hidden="true"
-							class="h-full w-full scale-[0.68] text-[color-mix(in_oklch,var(--foreground)_62%,transparent)] sm:scale-95"
+							class="size-8 sm:size-8"
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 15 15"
 							fill="none"
-							stroke="currentColor"
-							stroke-width="1.25"
-							stroke-linecap="square"
-							stroke-linejoin="miter"
+							stroke-width="0.75"
+							aria-hidden="true"
 						>
-							<rect x="34" y="20" width="34" height="44"></rect>
-							<rect x="42" y="28" width="34" height="44"></rect>
-							<line x1="92" y1="30" x2="122" y2="30"></line>
-							<line x1="92" y1="40" x2="128" y2="40"></line>
-							<line x1="92" y1="50" x2="120" y2="50"></line>
-							<path d="M74 70 L86 58 L90 62 L78 74 Z"></path>
-							<path d="M90 62 L96 56 L100 60 L94 66 Z"></path>
+							<path
+								d="M12.6017 4.51322L10.4804 2.3919M12.6017 4.51322L3.76282 13.3521L1.77642 13.5C1.58297 13.5266 1.48259 13.4069 1.5 13.2107L1.6415 11.2308L10.4804 2.3919M12.6017 4.51322C12.9552 4.15965 12.9552 4.15969 12.9552 4.15969L13.3088 3.80612C13.6623 3.45255 13.4942 2.58389 12.9552 2.0384C12.4189 1.50211 11.541 1.33123 11.1875 1.6848L10.8339 2.03837C10.8339 2.03837 10.8339 2.03833 10.4804 2.3919"
+								stroke="currentColor"
+							/>
 						</svg>
 					</div>
 
-					<div class="flex flex-col items-center gap-0.5 text-center sm:gap-1">
-						<div class="text-[1rem] leading-none font-medium sm:text-[1.65rem]">Edit for fun</div>
-						<div class="text-[0.68rem] leading-tight text-[color-mix(in_oklch,var(--foreground)_62%,transparent)] sm:text-sm">
-							Changes can't be saved
+					<div class="flex flex-col items-center gap-1 text-center sm:gap-1.5">
+						<div class="text-[1rem] leading-none font-medium sm:text-[1.15rem]">Try editing</div>
+						<div class="text-[0.68rem] leading-tight text-[color-mix(in_oklch,var(--foreground)_62%,transparent)] sm:text-xs">
+							Won't save
 						</div>
 					</div>
 				</button>
 
 				<button
 					type="button"
-					class="flex w-full min-w-0 cursor-pointer flex-col justify-between overflow-hidden rounded-[0.8rem] border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] bg-(--background) px-2 py-3 text-center outline-1 outline-transparent transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:translate-y-px active:scale-95 active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1 sm:aspect-square sm:min-h-48 sm:p-4"
+					class="flex w-full min-w-0 cursor-pointer flex-col justify-center gap-4 overflow-hidden rounded-[0.8rem] border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] bg-(--background) px-2 py-5 text-center outline-1 outline-transparent transition-[background-color,border-color,transform] duration-200 ease-out hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:translate-y-px active:scale-95 active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1 sm:aspect-square sm:min-h-32 sm:gap-4 sm:p-4"
 					onclick={open_login_step}
 				>
-					<div class="flex h-14 items-center justify-center overflow-hidden sm:h-24">
+					<div class="flex items-center justify-center overflow-hidden">
 						<svg
-							viewBox="0 0 160 96"
-							aria-hidden="true"
-							class="h-full w-full scale-[0.68] text-[color-mix(in_oklch,var(--foreground)_62%,transparent)] sm:scale-95"
+							class="size-8 sm:size-8"
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 15 15"
 							fill="none"
-							stroke="currentColor"
-							stroke-width="1.25"
-							stroke-linecap="square"
-							stroke-linejoin="miter"
+							stroke-width="0.75"
+							aria-hidden="true"
 						>
-							<circle cx="58" cy="34" r="12"></circle>
-							<path d="M38 68 C42 56, 52 50, 58 50 C64 50, 74 56, 78 68"></path>
-							<rect x="92" y="38" width="34" height="26"></rect>
-							<path d="M99 38 V31 C99 24, 103 20, 109 20 C115 20, 119 24, 119 31 V38"></path>
-							<circle cx="109" cy="50" r="3"></circle>
-							<line x1="109" y1="53" x2="109" y2="58"></line>
+							<path d="M13.5 12.5C13.5 13.5 13.5 13.5 7.5 13.5C1.5 13.5 1.5 13.5 1.5 12.5C1.5 10.2 4.18629 8 7.5 8C10.8137 8 13.5 10.2 13.5 12.5Z" stroke="currentColor"></path>
+							<path d="M10.5 3.75C10.5 5.40685 9.15685 6.75 7.5 6.75C5.84315 6.75 4.5 5.40685 4.5 3.75C4.5 2.09315 5.84315 0.75 7.5 0.75C9.15685 0.75 10.5 2.09315 10.5 3.75Z" stroke="currentColor"></path>
 						</svg>
 					</div>
 
-					<div class="flex flex-col items-center gap-0.5 text-center sm:gap-1">
-						<div class="text-[1rem] leading-none font-medium sm:text-[1.65rem]">Login</div>
-						<div class="text-[0.68rem] leading-tight text-[color-mix(in_oklch,var(--foreground)_62%,transparent)] sm:text-sm">
+					<div class="flex flex-col items-center gap-1 text-center sm:gap-1.5">
+						<div class="text-[1rem] leading-none font-medium sm:text-[1.15rem]">Login</div>
+						<div class="text-[0.68rem] leading-tight text-[color-mix(in_oklch,var(--foreground)_62%,transparent)] sm:text-xs">
 							For admins
 						</div>
 					</div>
@@ -181,10 +161,10 @@
 			</div>
 		</div>
 	{:else}
-		<div class="mx-auto flex w-full max-w-lg flex-col gap-5 px-1 pt-10 pb-8">
+		<div class="mx-auto flex w-full max-w-lg flex-col gap-8 px-1 pt-8 pb-8">
 			<div class="flex flex-col items-center gap-1 text-center">
-				<h2 class="m-0 text-[1.65rem] leading-[1.1] font-medium sm:text-[1.9rem]">
-					Login as an admin
+				<h2 class="m-0 text-xl leading-[1.15] font-medium sm:text-2xl">
+					Login as admin
 				</h2>
 			</div>
 
