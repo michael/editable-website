@@ -22,12 +22,41 @@
 	let is_media_selected = $derived(
 		selected_property?.type === 'image' || selected_property?.type === 'video'
 	);
+	let is_multi_node_selection = $derived(
+		session.selection?.type === 'node' &&
+			Math.abs(session.selection.focus_offset - session.selection.anchor_offset) > 1
+	);
+	let is_single_node_selection = $derived(
+		session.selection?.type === 'node' &&
+			Math.abs(session.selection.focus_offset - session.selection.anchor_offset) === 1
+	);
+	let is_node_caret = $derived(
+		session.selection?.type === 'node' &&
+			session.selection.anchor_offset === session.selection.focus_offset
+	);
+
+	let can_show_selection_tool_group = $derived(
+		!!session.selection &&
+			!is_multi_node_selection &&
+			(!session.commands.select_parent?.disabled ||
+				!session.commands.cycle_node_type_next?.disabled ||
+				!session.commands.cycle_layout_next?.disabled)
+	);
 
 	let file_input_ref = $state(null);
 
-	function handle_clear_image_click(e) {
+	function handle_insert_default_node_click(e) {
+		handle_btn_mousedown(e, session.commands.insert_default_node);
+	}
+
+	function handle_delete_selection_click(e) {
 		e.preventDefault();
-		if (session.selection?.type !== 'property') return;
+		if (session.selection?.type === 'node') {
+			session.apply(session.tr.delete_selection('backward'));
+			return;
+		}
+
+		if (!is_media_selected) return;
 		session.config.handle_property_deletion?.(session, session.selection.path);
 	}
 
@@ -303,85 +332,113 @@
 								<polyline points="21 15 16 10 5 21" />
 							</svg>
 						</button>
+					</div>
+				{/if}
 
+				{#if session.selection?.type === 'node' || is_media_selected}
+					<div class="flex items-center gap-1">
+						{#if is_node_caret && !session.commands.insert_default_node?.disabled}
+							<button
+								class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
+								onmousedown={handle_insert_default_node_click}
+								title="Insert (↵)"
+								aria-label="Insert"
+							>
+								<svg
+									class="size-4"
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 15 15"
+									fill="none"
+									aria-hidden="true"
+								>
+									<path d="M7.5 3V12M3 7.5H12" stroke="currentColor" stroke-linecap="square" />
+								</svg>
+							</button>
+						{/if}
 						<button
 							class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
-							onmousedown={handle_clear_image_click}
-							title="Clear image"
-							aria-label="Clear image"
+							onmousedown={handle_delete_selection_click}
+							title="Delete backwards (⌫)"
+							aria-label="Delete backwards"
 						>
 							⌫
 						</button>
 					</div>
 				{/if}
 
-				<!-- Type / Layout group (always visible, disabled when not applicable) -->
-				<div class="flex items-center gap-1">
-					<!-- Select parent -->
-					<button
-						class="{TW_TOOLBAR_BTN} {session.commands.select_parent?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
-						onmousedown={(e) => handle_btn_mousedown(e, session.commands.select_parent)}
-						title="Select parent (Esc)"
-						aria-label="Select parent"
-					>
-						<svg
-							class="size-4"
-							viewBox="0 0 24 24"
-							fill="none"
-							xmlns="http://www.w3.org/2000/svg"
-							aria-hidden="true"
-						>
-							<rect x="4" y="6" width="16" height="12" stroke="currentColor" stroke-width="2" />
-							<rect x="10" y="10" width="4" height="4" fill="currentColor" />
-						</svg>
-					</button>
+				{#if can_show_selection_tool_group}
+					<!-- Type / Layout group (always visible, disabled when not applicable) -->
+					<div class="flex items-center gap-1">
+						{#if is_single_node_selection}
+							<!-- Type: cycle to next node type -->
+							<button
+								class="{TW_TOOLBAR_BTN} {session.commands.cycle_node_type_next?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
+								onmousedown={(e) => handle_btn_mousedown(e, session.commands.cycle_node_type_next)}
+								title="Cycle type (⌃ ⇧ ↓)"
+								disabled={session.commands.cycle_node_type_next?.disabled}
+							>
+								<!-- T with small arrows icon -->
+								<svg
+									class="size-4"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<line x1="6" y1="4" x2="18" y2="4" />
+									<line x1="12" y1="4" x2="12" y2="14" />
+									<polyline points="8 18 12 22 16 18" />
+									<line x1="12" y1="14" x2="12" y2="22" />
+								</svg>
+							</button>
 
-					<!-- Type: cycle to next node type -->
-					<button
-						class="{TW_TOOLBAR_BTN} {session.commands.cycle_node_type_next?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
-						onmousedown={(e) => handle_btn_mousedown(e, session.commands.cycle_node_type_next)}
-						title="Cycle type (⌃ ⇧ ↓)"
-					>
-						<!-- T with small arrows icon -->
-						<svg
-							class="size-4"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						>
-							<line x1="6" y1="4" x2="18" y2="4" />
-							<line x1="12" y1="4" x2="12" y2="14" />
-							<polyline points="8 18 12 22 16 18" />
-							<line x1="12" y1="14" x2="12" y2="22" />
-						</svg>
-					</button>
+							<!-- Layout: cycle to next layout -->
+							<button
+								class="{TW_TOOLBAR_BTN} {session.commands.cycle_layout_next?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
+								onmousedown={(e) => handle_btn_mousedown(e, session.commands.cycle_layout_next)}
+								title="Cycle layout (⌃ ⇧ →)"
+								disabled={session.commands.cycle_layout_next?.disabled}
+							>
+								<!-- T with right arrow icon -->
+								<svg
+									class="size-4"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<line x1="4" y1="6" x2="4" y2="18" />
+									<line x1="4" y1="12" x2="14" y2="12" />
+									<polyline points="18 8 22 12 18 16" />
+									<line x1="14" y1="12" x2="22" y2="12" />
+								</svg>
+							</button>
+						{/if}
 
-					<!-- Layout: cycle to next layout -->
-					<button
-						class="{TW_TOOLBAR_BTN} {session.commands.cycle_layout_next?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
-						onmousedown={(e) => handle_btn_mousedown(e, session.commands.cycle_layout_next)}
-						title="Cycle layout (⌃ ⇧ →)"
-					>
-						<!-- T with right arrow icon -->
-						<svg
-							class="size-4"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
+						<!-- Select parent -->
+						<button
+							class="{TW_TOOLBAR_BTN} {session.commands.select_parent?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
+							onmousedown={(e) => handle_btn_mousedown(e, session.commands.select_parent)}
+							title="Select parent (Esc)"
+							aria-label="Select parent"
 						>
-							<line x1="4" y1="6" x2="4" y2="18" />
-							<line x1="4" y1="12" x2="14" y2="12" />
-							<polyline points="18 8 22 12 18 16" />
-							<line x1="14" y1="12" x2="22" y2="12" />
-						</svg>
-					</button>
-				</div>
+							<svg
+								class="size-4"
+								viewBox="0 0 24 24"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+								aria-hidden="true"
+							>
+								<rect x="4" y="6" width="16" height="12" stroke="currentColor" stroke-width="2" />
+								<rect x="10" y="10" width="4" height="4" fill="currentColor" />
+							</svg>
+						</button>
+					</div>
+				{/if}
 
 				<!-- Hidden file input for replace-image -->
 				<input
