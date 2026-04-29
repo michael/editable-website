@@ -30,18 +30,17 @@
 		session.selection?.type === 'node' &&
 			Math.abs(session.selection.focus_offset - session.selection.anchor_offset) === 1
 	);
+	let can_show_cycle_tools = $derived(
+		is_single_node_selection ||
+			session.selection?.type === 'text' ||
+			session.selection?.type === 'property'
+	);
 	let is_node_caret = $derived(
 		session.selection?.type === 'node' &&
 			session.selection.anchor_offset === session.selection.focus_offset
 	);
 
-	let can_show_selection_tool_group = $derived(
-		!!session.selection &&
-			!is_multi_node_selection &&
-			(!session.commands.select_parent?.disabled ||
-				!session.commands.cycle_node_type_next?.disabled ||
-				!session.commands.cycle_layout_next?.disabled)
-	);
+	let can_show_selection_tool_group = $derived(!!session.selection);
 
 	let file_input_ref = $state(null);
 
@@ -356,12 +355,31 @@
 							</button>
 						{/if}
 						<button
-							class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
+							class="{TW_TOOLBAR_BTN} aspect-square {TW_TOOLBAR_BTN_HOVER}"
 							onmousedown={handle_delete_selection_click}
 							title="Delete backwards (⌫)"
 							aria-label="Delete backwards"
 						>
-							⌫
+							<svg
+								class="size-5"
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 15 15"
+								fill="none"
+								aria-hidden="true"
+							>
+								<path
+									d="M5 3.5H13.5V11.5H5L1.5 7.5L5 3.5Z"
+									stroke="currentColor"
+									stroke-linejoin="miter"
+									stroke-width="0.85"
+								/>
+								<path
+									d="M7.25 6L10.25 9M10.25 6L7.25 9"
+									stroke="currentColor"
+									stroke-linecap="square"
+									stroke-width="0.85"
+								/>
+							</svg>
 						</button>
 					</div>
 				{/if}
@@ -369,7 +387,7 @@
 				{#if can_show_selection_tool_group}
 					<!-- Type / Layout group (always visible, disabled when not applicable) -->
 					<div class="flex items-center gap-1">
-						{#if is_single_node_selection}
+						{#if can_show_cycle_tools}
 							<!-- Type: cycle to next node type -->
 							<button
 								class="{TW_TOOLBAR_BTN} {session.commands.cycle_node_type_next?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
@@ -433,8 +451,8 @@
 								xmlns="http://www.w3.org/2000/svg"
 								aria-hidden="true"
 							>
-								<rect x="4" y="6" width="16" height="12" stroke="currentColor" stroke-width="2" />
-								<rect x="10" y="10" width="4" height="4" fill="currentColor" />
+								<rect x="3" y="5" width="18" height="14" stroke="currentColor" stroke-width="1.5" />
+								<rect x="10.25" y="10.25" width="3.5" height="3.5" fill="currentColor" />
 							</svg>
 						</button>
 					</div>
