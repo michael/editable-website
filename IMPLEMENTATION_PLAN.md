@@ -2,6 +2,22 @@
 
 This document tracks what to implement next. One step at a time. All implementation must conform to the design decisions in [ARCHITECTURE.md](ARCHITECTURE.md) — if a conflict arises, update the architecture first, then implement.
 
+## Next implementation draft — codeblock node
+
+Add a `codeblock` page body node for editable code samples.
+
+Implementation steps:
+
+1. Add `codeblock` to the page `body` node array in `src/lib/document_schema.js`.
+2. Add a `line` schema entry of kind `text` with an annotated text `content` property that does not allow newlines.
+3. Add a `codeblock` schema entry with a `lines` node array that accepts `line` nodes and defaults to `line`.
+4. Add a `Codeblock.svelte` node component that renders `lines` with `NodeArrayProperty`, monospace styling, preserved whitespace, no wrapping, and horizontal overflow scrolling.
+5. Register `Codeblock` in `src/routes/create_session.js`.
+6. Add a `codeblock` inserter that creates one `codeblock` containing one or more `line` nodes.
+7. Add the requested sample code as a seeded `codeblock` in `src/lib/demo_doc.js` using `line` nodes.
+8. Add a migration that inserts the requested sample `codeblock` into existing seeded page documents using `line` nodes.
+9. Add a migration that converts existing `codeblock.lines` children from `text` nodes to `line` nodes.
+
 ## Next implementation draft — admin authentication
 
 This step adds simple owner authentication for editing and private page-management features.

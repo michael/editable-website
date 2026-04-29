@@ -407,9 +407,17 @@ This model is intentionally simple, but it still needs basic hardening:
 
 ### Document types
 
-- **Page documents** — each page on the site (e.g. home, about, blog posts). Contains all the page-specific nodes: prose, features, galleries, figures, etc. Also contains references to shared documents (nav, footer) via node properties.
+- **Page documents** — each page on the site (e.g. home, about, blog posts). Contains all the page-specific nodes: prose, features, galleries, figures, codeblocks, etc. Also contains references to shared documents (nav, footer) via node properties.
 - **Nav document** — a single shared document containing the navigation structure (`nav` node + `nav_item` nodes). Referenced by page documents via the `nav` property on the `page` node.
 - **Footer document** — a single shared document containing the footer structure (`footer` node + `footer_link_column` + `footer_link` nodes). Referenced by page documents via the `footer` property on the `page` node.
+
+### Codeblock nodes
+
+`codeblock` is a page body block node for displaying editable code samples.
+
+A `codeblock` has a `lines` property with type `node_array`. The allowed child node type is `line`, and the default child node type is `line`. Each line is represented as one `line` node of kind `text`, so codeblocks behave like lists structurally while preserving line-level editing.
+
+Codeblock rendering should use monospace text, preserve whitespace, prevent line wrapping, and allow horizontal overflow scrolling. This keeps long code lines on a single visual line instead of wrapping within the block. Codeblock lines should not allow embedded newline characters, so Shift+Enter must not insert newlines inside `line` nodes.
 
 ### Page ids, slugs, and routes
 

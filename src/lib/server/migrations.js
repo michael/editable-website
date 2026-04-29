@@ -178,5 +178,91 @@ export default [
 					updated_at = COALESCE(updated_at, ?)
 			`
 		).run(now, now);
+	},
+	function add_seeded_codeblock_sample({ db }) {
+		const row = db
+			.prepare('SELECT document_id, data FROM documents WHERE document_id = ?')
+			.get('page_1');
+		if (!row) return;
+
+		const doc = JSON.parse(row.data);
+		const page_node = doc?.nodes?.[doc.document_id];
+
+		if (!page_node || page_node.type !== 'page' || !Array.isArray(page_node.body)) return;
+		if (doc.nodes.codeblock_sample_1 || page_node.body.includes('codeblock_sample_1')) return;
+
+		doc.nodes.codeblock_sample_line_1 = {
+			id: 'codeblock_sample_line_1',
+			type: 'line',
+			content: {
+				text: 'function hello(str) {',
+				annotations: []
+			}
+		};
+		doc.nodes.codeblock_sample_line_2 = {
+			id: 'codeblock_sample_line_2',
+			type: 'line',
+			content: {
+				text: "  return 'Hello ' + str;",
+				annotations: []
+			}
+		};
+		doc.nodes.codeblock_sample_line_3 = {
+			id: 'codeblock_sample_line_3',
+			type: 'line',
+			content: {
+				text: '}',
+				annotations: []
+			}
+		};
+		doc.nodes.codeblock_sample_1 = {
+			id: 'codeblock_sample_1',
+			type: 'codeblock',
+			colorset: 0,
+			lines: [
+				'codeblock_sample_line_1',
+				'codeblock_sample_line_2',
+				'codeblock_sample_line_3'
+			]
+		};
+
+		const after_node_id = 'RtYpQwXsZvNmKjHgFdSaLe';
+		const insert_index = page_node.body.indexOf(after_node_id);
+		page_node.body.splice(
+			insert_index >= 0 ? insert_index + 1 : 1,
+			0,
+			'codeblock_sample_1'
+		);
+
+		db.prepare('UPDATE documents SET data = ? WHERE document_id = ?').run(
+			JSON.stringify(doc),
+			row.document_id
+		);
+	},
+	function convert_codeblock_text_children_to_lines({ db }) {
+		const rows = db.prepare('SELECT document_id, data FROM documents').all();
+		const update_doc = db.prepare('UPDATE documents SET data = ? WHERE document_id = ?');
+
+		for (const row of rows) {
+			const doc = JSON.parse(row.data);
+			let did_change = false;
+
+			for (const node of Object.values(doc.nodes ?? {})) {
+				if (node?.type !== 'codeblock' || !Array.isArray(node.lines)) continue;
+
+				for (const line_id of node.lines) {
+					const line_node = doc.nodes?.[line_id];
+					if (line_node?.type !== 'text') continue;
+
+					line_node.type = 'line';
+					delete line_node.layout;
+					did_change = true;
+				}
+			}
+
+			if (did_change) {
+				update_doc.run(JSON.stringify(doc), row.document_id);
+			}
+		}
 	}
 ];
