@@ -219,6 +219,7 @@ export default [
 			id: 'codeblock_sample_1',
 			type: 'codeblock',
 			colorset: 0,
+			language: 'javascript',
 			lines: [
 				'codeblock_sample_line_1',
 				'codeblock_sample_line_2',
@@ -239,7 +240,7 @@ export default [
 			row.document_id
 		);
 	},
-	function convert_codeblock_text_children_to_lines({ db }) {
+	function add_codeblock_defaults({ db }) {
 		const rows = db.prepare('SELECT document_id, data FROM documents').all();
 		const update_doc = db.prepare('UPDATE documents SET data = ? WHERE document_id = ?');
 
@@ -249,6 +250,11 @@ export default [
 
 			for (const node of Object.values(doc.nodes ?? {})) {
 				if (node?.type !== 'codeblock' || !Array.isArray(node.lines)) continue;
+
+				if (!node.language) {
+					node.language = 'javascript';
+					did_change = true;
+				}
 
 				for (const line_id of node.lines) {
 					const line_node = doc.nodes?.[line_id];

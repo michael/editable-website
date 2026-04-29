@@ -417,6 +417,14 @@ This model is intentionally simple, but it still needs basic hardening:
 
 A `codeblock` has a `lines` property with type `node_array`. The allowed child node type is `line`, and the default child node type is `line`. Each line is represented as one `line` node of kind `text`, so codeblocks behave like lists structurally while preserving line-level editing.
 
+Codeblocks support syntax highlighting for JavaScript and bash without replacing Svedit's editing surface with a code editor such as CodeMirror. Highlighting is visual-only and must not mutate document text or introduce annotation nodes.
+
+Syntax highlighting is implemented with the browser CSS Custom Highlight API. The rendered editable text remains normal DOM text owned by Svedit, while a client-side highlighter tokenizes the full codeblock text and maps token ranges back onto the editable line text nodes using `Range` objects. Those ranges are registered in `CSS.highlights` under stable highlight names.
+
+Tokenization should use existing TextMate grammars through Shiki. Only JavaScript and bash are required initially. The highlighter should load lazily on the client and should not run during SSR. If the CSS Highlight API or grammar loading is unavailable, codeblocks should remain editable and readable without highlighting.
+
+A `codeblock` has a language property. Supported language values are `javascript` and `bash`, with `javascript` as the default for inserted and seeded code samples. The language value controls which grammar is used for tokenization.
+
 Codeblock rendering should use monospace text, preserve whitespace, prevent line wrapping, and allow horizontal overflow scrolling. This keeps long code lines on a single visual line instead of wrapping within the block. Codeblock lines should not allow embedded newline characters, so Shift+Enter must not insert newlines inside `line` nodes.
 
 ### Page ids, slugs, and routes

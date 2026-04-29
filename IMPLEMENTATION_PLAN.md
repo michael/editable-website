@@ -17,6 +17,12 @@ Implementation steps:
 7. Add the requested sample code as a seeded `codeblock` in `src/lib/demo_doc.js` using `line` nodes.
 8. Add a migration that inserts the requested sample `codeblock` into existing seeded page documents using `line` nodes.
 9. Add a migration that converts existing `codeblock.lines` children from `text` nodes to `line` nodes.
+10. Add a `language` string property to `codeblock`, supporting `javascript` and `bash`, with `javascript` as the default for inserted and seeded samples.
+11. Add Shiki as the TextMate grammar-backed tokenizer dependency for client-side syntax highlighting.
+12. Add a client-only syntax highlighter helper that lazily loads Shiki with only the JavaScript and bash grammars and returns token ranges for a full codeblock string.
+13. Add a CSS Custom Highlight API helper that maps token offsets back onto rendered editable `line` text nodes using `Range` objects and registers stable `CSS.highlights` entries per codeblock.
+14. Wire the highlighting helper into `Codeblock.svelte` so highlighting updates after line text or language changes without mutating Svedit document data or replacing the editable DOM.
+15. Add global `::highlight(...)` styles for syntax token categories and keep codeblocks readable/editable if the CSS Highlight API or grammar loading is unavailable.
 
 ## Next implementation draft — admin authentication
 

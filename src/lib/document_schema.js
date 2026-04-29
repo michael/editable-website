@@ -167,6 +167,7 @@ export const document_schema = define_document_schema({
 		kind: 'block',
 		properties: {
 			colorset: { type: 'integer', default: 0 },
+			language: { type: 'string', default: 'javascript' },
 			lines: {
 				type: 'node_array',
 				node_types: ['line'],

@@ -1320,6 +1320,7 @@ const FULL_DOC = {
             "id": "codeblock_sample_1",
             "type": "codeblock",
             "colorset": 0,
+            "language": "javascript",
             "lines": [
                 "codeblock_sample_line_1",
                 "codeblock_sample_line_2",

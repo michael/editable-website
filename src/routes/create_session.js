@@ -404,6 +404,7 @@ const session_config = {
 				id: nanoid(),
 				type: 'codeblock',
 				colorset: 0,
+				language: 'javascript',
 				lines: codeblock_lines
 			};
 			tr.create(new_codeblock);
