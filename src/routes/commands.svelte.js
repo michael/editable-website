@@ -113,6 +113,21 @@ export class CycleColorsetCommand extends Command {
 	}
 }
 
+export class BlockCodeblockNewLineCommand extends Command {
+	is_enabled() {
+		const { session, editable } = this.context;
+		if (!editable || session.selection?.type !== 'text') return false;
+
+		const node = session.get(session.selection.path.slice(0, -1));
+		return node?.type === 'line';
+	}
+
+	execute() {
+		// Intentionally empty. When this command is first in the Shift+Enter
+		// keymap, Svedit prevents the browser newline and stops command fallback.
+	}
+}
+
 export class ReplaceMediaCommand extends Command {
 	is_enabled() {
 		const session = this.context.session;

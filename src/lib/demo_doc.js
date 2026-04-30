@@ -1292,6 +1292,41 @@ const FULL_DOC = {
             "focal_point_y": 0.5,
             "object_fit": "contain"
         },
+        "codeblock_sample_line_1": {
+            "id": "codeblock_sample_line_1",
+            "type": "line",
+            "content": {
+                "text": "function hello(str) {",
+                "annotations": []
+            }
+        },
+        "codeblock_sample_line_2": {
+            "id": "codeblock_sample_line_2",
+            "type": "line",
+            "content": {
+                "text": "  return 'Hello ' + str;",
+                "annotations": []
+            }
+        },
+        "codeblock_sample_line_3": {
+            "id": "codeblock_sample_line_3",
+            "type": "line",
+            "content": {
+                "text": "}",
+                "annotations": []
+            }
+        },
+        "codeblock_sample_1": {
+            "id": "codeblock_sample_1",
+            "type": "codeblock",
+            "colorset": 0,
+            "language": "javascript",
+            "lines": [
+                "codeblock_sample_line_1",
+                "codeblock_sample_line_2",
+                "codeblock_sample_line_3"
+            ]
+        },
         "page_1": {
             "id": "page_1",
             "type": "page",
@@ -1307,6 +1342,7 @@ const FULL_DOC = {
             "body": [
                 "hero_1",
                 "RtYpQwXsZvNmKjHgFdSaLe",
+                "codeblock_sample_1",
                 "xKmNqPrStVwYzAbCdEfGh",
                 "BPdekRaDEUcQZqtEwPwBvyu",
                 "jLnPqRsTuVwXyZaBcDeFg",

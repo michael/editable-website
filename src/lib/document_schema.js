@@ -24,7 +24,7 @@ export const document_schema = define_document_schema({
 			},
 			body: {
 				type: 'node_array',
-				node_types: ['prose', 'figure', 'gallery', 'feature', 'link_collection', 'hero'],
+				node_types: ['prose', 'figure', 'gallery', 'feature', 'link_collection', 'hero', 'codeblock'],
 				default_node_type: 'prose'
 			},
 			nav: {
@@ -160,6 +160,28 @@ export const document_schema = define_document_schema({
 				type: 'node_array',
 				node_types: ['text', 'decoration'],
 				default_node_type: 'text'
+			}
+		}
+	},
+	codeblock: {
+		kind: 'block',
+		properties: {
+			colorset: { type: 'integer', default: 0 },
+			language: { type: 'string', default: 'javascript' },
+			lines: {
+				type: 'node_array',
+				node_types: ['line'],
+				default_node_type: 'line'
+			}
+		}
+	},
+	line: {
+		kind: 'text',
+		properties: {
+			content: {
+				type: 'annotated_text',
+				node_types: [],
+				allow_newlines: false
 			}
 		}
 	},

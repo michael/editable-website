@@ -18,7 +18,8 @@ import {
 	ToggleLinkCommand,
 	EditLinkCommand,
 	ReplaceMediaCommand,
-	EditImageCommand
+	EditImageCommand,
+	BlockCodeblockNewLineCommand
 } from './commands.svelte.js';
 // Command imported from 'svedit' above
 
@@ -35,6 +36,7 @@ import FooterLink from './components/FooterLink.svelte';
 
 import Prose from './components/Prose.svelte';
 import Text from './components/Text.svelte';
+import Line from './components/Line.svelte';
 import Gallery from './components/Gallery.svelte';
 import GalleryItem from './components/GalleryItem.svelte';
 import LinkCollection from './components/LinkCollection.svelte';
@@ -44,6 +46,7 @@ import Decoration from './components/Decoration.svelte';
 import Feature from './components/Feature.svelte';
 import Hero from './components/Hero.svelte';
 import Button from './components/Button.svelte';
+import Codeblock from './components/Codeblock.svelte';
 import Image from './components/Image.svelte';
 import Video from './components/Video.svelte';
 
@@ -136,8 +139,10 @@ const session_config = {
 		FooterLink,
 		Hero,
 		Button,
+		Codeblock,
 		Prose,
 		Text,
+		Line,
 		Image,
 		Video,
 		Figure,
@@ -250,7 +255,8 @@ const session_config = {
 		gallery: 4,
 		nav_item: 2,
 		button: 2,
-		hero: 4
+		hero: 4,
+		codeblock: 1
 	},
 
 	/**
@@ -265,6 +271,7 @@ const session_config = {
 		const commands = {
 			select_all: new SelectAllCommand(context),
 			insert_default_node: new InsertDefaultNodeCommand(context),
+			block_codeblock_new_line: new BlockCodeblockNewLineCommand(context),
 			add_new_line: new AddNewLineCommand(context),
 			break_text_node: new BreakTextNodeCommand(context),
 			toggle_strong: new ToggleAnnotationCommand('strong', context),
@@ -290,7 +297,12 @@ const session_config = {
 			enter: [commands.replace_media, commands.break_text_node, commands.insert_default_node],
 			// In case of a node cursor, fall back to inserting a default node. This is needed
 			// because on iOS selecting a node cursor triggers auto capitalization (shift pressed)
-			'shift+enter': [commands.replace_media, commands.add_new_line, commands.insert_default_node],
+			'shift+enter': [
+				commands.replace_media,
+				commands.block_codeblock_new_line,
+				commands.add_new_line,
+				commands.insert_default_node
+			],
 			'alt+enter': [commands.edit_image],
 			'meta+b,ctrl+b': [commands.toggle_strong],
 			'meta+i,ctrl+i': [commands.toggle_emphasis],
@@ -361,6 +373,42 @@ const session_config = {
 				anchor_offset: 0,
 				focus_offset: 0
 			});
+		},
+		line: function (tr, content = { text: '', annotations: [] }) {
+			const new_line = {
+				id: nanoid(),
+				type: 'line',
+				content
+			};
+			tr.create(new_line);
+			tr.insert_nodes([new_line.id]);
+			tr.set_selection({
+				type: 'text',
+				path: [...tr.selection.path, tr.selection.focus_offset - 1, 'content'],
+				anchor_offset: 0,
+				focus_offset: 0
+			});
+		},
+		codeblock: function (tr) {
+			const codeblock_lines = [''].map((text) => {
+				const line = {
+					id: nanoid(),
+					type: 'line',
+					content: { text, annotations: [] }
+				};
+				tr.create(line);
+				return line.id;
+			});
+
+			const new_codeblock = {
+				id: nanoid(),
+				type: 'codeblock',
+				colorset: 0,
+				language: 'javascript',
+				lines: codeblock_lines
+			};
+			tr.create(new_codeblock);
+			tr.insert_nodes([new_codeblock.id]);
 		},
 		feature: function (tr) {
 			const new_feature_id = tr.build('new_feature', {
