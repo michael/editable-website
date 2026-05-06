@@ -1,5 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
+	import { serialize_path } from 'svedit';
 
 	const svedit = getContext('svedit');
 
@@ -63,7 +64,7 @@
 <dialog
 	bind:this={dialog_ref}
 	class="edit-media-dialog absolute z-40 mt-1 m-0 bg-(--background) text-(--foreground) p-0 shadow-xl overflow-visible max-h-90 border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)]"
-	style="position-anchor: --{path.join('-')}; position-area: block-end span-all; justify-self: anchor-center;"
+	style="position-anchor: --{serialize_path(path)}; position-area: block-end span-all; justify-self: anchor-center;"
 	onclick={handle_backdrop_click}
 >
 	<div class="flex flex-col">

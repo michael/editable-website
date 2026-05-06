@@ -1,5 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
+	import { serialize_path } from 'svedit';
 	import { touch_drag, lock_cursor, unlock_cursor } from '$lib/client/touch_drag.js';
 	import { SNAP_ASPECT_RATIOS } from '$lib/config.js';
 
@@ -46,7 +47,7 @@
 	);
 
 	// Anchor name must match what SizableViewbox sets
-	let anchor_name = $derived(`--viewbox-${path.join('-')}-${media_property}`);
+	let anchor_name = $derived(`--viewbox-${serialize_path(path)}-${media_property}`);
 
 	// --- Snap label shown during drag ---
 	let snap_label = $state(/** @type {string | null} */ (null));

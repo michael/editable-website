@@ -1,5 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
+	import { serialize_path } from 'svedit';
 	import { get_page_browser } from './page_browser_context.svelte.js';
 	import MediaControls from './MediaControls.svelte';
 	import SizableViewboxControls from './SizableViewboxControls.svelte';
@@ -125,7 +126,7 @@
 		const media_path = sel.path;
 		const parent_path = media_path.slice(0, -1);
 		const media_property = /** @type {string} */ (media_path.at(-1));
-		const anchor_name = `--viewbox-${parent_path.join('-')}-${media_property}`;
+		const anchor_name = `--viewbox-${serialize_path(parent_path)}-${media_property}`;
 		if (document.querySelector(`[data-viewbox-anchor="${anchor_name}"]`)) {
 			return { parent_path, media_property };
 		}
@@ -175,7 +176,7 @@
 	{#if drop_target_path}
 		<div
 			class="drop-target-overlay"
-			style="position-anchor: --{drop_target_path.join('-')};"
+			style="position-anchor: --{serialize_path(drop_target_path)};"
 		></div>
 	{/if}
 
@@ -184,7 +185,7 @@
 			{#if is_media_selected}
 				<div
 					class="media-controls-overlay property-selection-overlay"
-					style="position-anchor: --{svedit.session.selection.path.join('-')};"
+					style="position-anchor: --{serialize_path(svedit.session.selection.path)};"
 				>
 					{#if selected_property.src}
 						<MediaControls path={svedit.session.selection.path} {is_mouse_down} />
@@ -193,7 +194,7 @@
 			{:else}
 				<div
 					class="property-selection-overlay"
-					style="position-anchor: --{svedit.session.selection.path.join('-')};"
+					style="position-anchor: --{serialize_path(svedit.session.selection.path)};"
 				></div>
 			{/if}
 		{/if}

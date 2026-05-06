@@ -1,5 +1,7 @@
 <script>
+	import { resolve } from '$app/paths';
 	import { getContext } from 'svelte';
+	import { serialize_path } from 'svedit';
 	import Media from './Media.svelte';
 
 	const svedit = getContext('svedit');
@@ -50,20 +52,27 @@
 		return href;
 	}
 
-
+	function get_preview_href(href) {
+		if (typeof href !== 'string') return '';
+		return href.startsWith('/') && !href.startsWith('//')
+			? resolve(/** @type {any} */ (href))
+			: href;
+	}
 </script>
 
 <div
 	class="link-preview absolute z-30 mt-1 pointer-events-auto"
-	style="position-anchor: --{path.join('-')}; position-area: block-end span-all; justify-self: anchor-center;"
+	style="position-anchor: --{serialize_path(path)}; position-area: block-end span-all; justify-self: anchor-center;"
 >
 	{#if node.href}
 		<div class="bg-(--background) text-(--foreground) border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)]">
 			<div class="flex items-center gap-3 px-3 py-2">
 				<a
-					href={internal_page_href ?? node.href}
-					target="_blank"
-					rel="noopener noreferrer"
+					{...{
+						href: get_preview_href(internal_page_href ?? node.href),
+						target: '_blank',
+						rel: 'noopener noreferrer'
+					}}
 					class="text-sm text-(--foreground) max-w-70 truncate hover:underline outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 				>
 					{node.href}
