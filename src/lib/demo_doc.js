@@ -1276,8 +1276,9 @@ const FULL_DOC = {
                 "fcSSWQUTYajjknPChgGsPZz",
                 "footer_column_2",
                 "footer_column_3"
-            ],
-            "logo_max_width": 88
+					],
+					"logo_max_width": 88,
+					"logo_aspect_ratio": 1,
         },
         "page_image_1": {
             "id": "page_image_1",
