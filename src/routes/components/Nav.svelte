@@ -59,7 +59,7 @@
 		the DOM.
 	-->
 	{#if svedit.editable}
-		<div class="{TW_LIMITER} overflow-x-auto overflow-y-hidden">
+		<div class="{TW_LIMITER} overflow-x-auto overflow-y-hidden relative">
 			<div class="flex items-stretch lg:text-lg min-w-full">
 				{@render logo()}
 				<div class="flex-1"></div>
@@ -67,7 +67,7 @@
 			</div>
 		</div>
 	{:else}
-		<div class="{TW_LIMITER}">
+		<div class="{TW_LIMITER} overflow-x-auto overflow-y-hidden relative">
 			<div class="flex items-stretch lg:text-lg min-w-full">
 				{@render logo()}
 				<div class="flex-1"></div>
