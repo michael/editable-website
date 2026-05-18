@@ -153,16 +153,14 @@ const session_config = {
 		Link
 	},
 	replace_media,
-	handle_property_deletion: (session, path) => {
-		const property_definition = session.inspect(path);
+	handle_property_deletion: (tr, path) => {
+		const property_definition = tr.inspect(path);
 		if (property_definition?.type !== 'node') return;
 
-		const target_node = session.get(path);
+		const target_node = tr.get(path);
 		if (target_node?.type !== 'image' && target_node?.type !== 'video') return;
 
-		const tr = session.tr;
 		set_properties(tr, [target_node.id], MEDIA_DEFAULTS);
-		session.apply(tr);
 	},
 	handle_media_paste: async (session, pasted_media) => {
 		if (session.selection.type === 'property') {

@@ -48,15 +48,9 @@
 		handle_btn_mousedown(e, session.commands.insert_default_node);
 	}
 
-	function handle_delete_selection_click(e) {
-		e.preventDefault();
-		if (session.selection?.type === 'node') {
-			session.apply(session.tr.delete_selection('backward'));
-			return;
-		}
-
-		if (!is_media_selected) return;
-		session.config.handle_property_deletion?.(session, session.selection.path);
+	function handle_delete_selection_click(event) {
+		event.preventDefault();
+		session.apply(session.tr.delete_selection('backward'));
 	}
 
 	function cache_replace_media_path(path) {
