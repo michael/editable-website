@@ -20,7 +20,7 @@
 		class:hover:opacity-80={render_as_link}
 	>
 		<AnnotatedTextProperty
-			path={[...path, 'content']}
+			path={[...path, 'label']}
 			placeholder="Label"
 		/>
 	</svelte:element>
@@ -34,7 +34,7 @@
 		class="ew-button font-medium flex items-center justify-center px-4 py-3 -outline-offset-2 outline-2 outline-(--foreground) text-(--foreground) rounded-(--button-border-radius) focus-visible:outline-(--svedit-editing-stroke) {render_as_link ? 'hover:bg-(--foreground)/10' : ''}"
 	>
 		<AnnotatedTextProperty
-			path={[...path, 'content']}
+			path={[...path, 'label']}
 			placeholder="Label"
 		/>
 	</svelte:element>

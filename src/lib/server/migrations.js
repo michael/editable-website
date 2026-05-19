@@ -19,27 +19,6 @@ function create_empty_image_node(id) {
 	};
 }
 
-function migrate_text_link_node_content(doc) {
-	let did_change = false;
-	const text_link_node_types = new Set(['button', 'nav_item', 'footer_link']);
-
-	for (const node of Object.values(doc.nodes ?? {})) {
-		if (!text_link_node_types.has(node.type)) continue;
-
-		if (!node.content && node.label) {
-			node.content = node.label;
-			did_change = true;
-		}
-
-		if ('label' in node) {
-			delete node.label;
-			did_change = true;
-		}
-	}
-
-	return did_change;
-}
-
 /**
  * Deep clone a document and reset all image/video nodes to MEDIA_DEFAULTS,
  * since a fresh database has no uploaded assets yet.
@@ -199,16 +178,5 @@ export default [
 					updated_at = COALESCE(updated_at, ?)
 			`
 		).run(now, now);
-	},
-	function rename_text_link_node_label_to_content({ db }) {
-		const document_rows = db.prepare('SELECT document_id, data FROM documents').all();
-		const update_doc = db.prepare('UPDATE documents SET data = ? WHERE document_id = ?');
-
-		for (const row of document_rows) {
-			const doc = JSON.parse(row.data);
-			if (migrate_text_link_node_content(doc)) {
-				update_doc.run(JSON.stringify(doc), row.document_id);
-			}
-		}
 	}
 ];

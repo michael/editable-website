@@ -428,19 +428,18 @@ const session_config = {
 			const new_nav_item_id = tr.build('new_nav_item', {
 				new_nav_item: {
 					id: 'new_nav_item',
-					type: 'nav_item',
-					layout,
-					content
+					type: 'nav_item'
 				}
 			});
 
 			tr.insert_nodes([new_nav_item_id]);
-			tr.set_selection({
-				type: 'text',
-				path: [...tr.selection.path, tr.selection.focus_offset - 1, 'content'],
-				anchor_offset: 0,
-				focus_offset: 0
-			});
+			// NOTE: Relies on insert_nodes selecting the newly inserted node(s)
+			// tr.set_selection({
+			//   type: 'text',
+			//   path: [...tr.selection.path, tr.selection.focus_offset - 1 , 'content'],
+			//   anchor_offset: 0,
+			//   focus_offset: 0
+			// });
 		},
 		hero: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_hero_id = tr.build('new_hero', {
@@ -460,43 +459,34 @@ const session_config = {
 			const new_button_id = tr.build('new_button', {
 				new_button: {
 					id: 'new_button',
-					type: 'button',
-					layout,
-					content
+					type: 'button'
 				}
 			});
 
 			tr.insert_nodes([new_button_id]);
-			tr.set_selection({
-				type: 'text',
-				path: [...tr.selection.path, tr.selection.focus_offset - 1, 'content'],
-				anchor_offset: 0,
-				focus_offset: 0
-			});
 		},
-		footer_link: function (tr, content = { text: '', annotations: [] }) {
+		footer_link: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_footer_link_id = tr.build('new_footer_link', {
 				new_footer_link: {
 					id: 'new_footer_link',
-					type: 'footer_link',
-					content
+					type: 'footer_link'
 				}
 			});
 
 			tr.insert_nodes([new_footer_link_id]);
-			tr.set_selection({
-				type: 'text',
-				path: [...tr.selection.path, tr.selection.focus_offset - 1, 'content'],
-				anchor_offset: 0,
-				focus_offset: 0
-			});
+			// NOTE: Relies on insert_nodes selecting the newly inserted node(s)
+			// tr.set_selection({
+			//   type: 'text',
+			//   path: [...tr.selection.path, tr.selection.focus_offset - 1 , 'content'],
+			//   anchor_offset: 0,
+			//   focus_offset: 0
+			// });
 		},
 		footer_link_column: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_footer_link_column_id = tr.build('new_footer_link_column', {
 				new_footer_link: {
 					id: 'new_footer_link',
-					type: 'footer_link',
-					content: { text: '', annotations: [] }
+					type: 'footer_link'
 				},
 				new_footer_link_column: {
 					id: 'new_footer_link_column',

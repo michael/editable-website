@@ -106,7 +106,7 @@
 								class="text-3xl font-serif text-(--foreground) py-2 px-3 sm:px-5"
 								onclick={() => (mobile_menu_open = false)}
 							>
-								{item.content?.text || ''}
+								{item.label?.text || ''}
 							</a>
 						{/each}
 					</nav>

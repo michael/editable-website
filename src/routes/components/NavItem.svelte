@@ -17,7 +17,7 @@
 		class="nav-item-link flex items-center justify-center w-full mx-3 sm:mx-4 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 	>
 		<AnnotatedTextProperty
-			path={[...path, 'content']}
+			path={[...path, 'label']}
 			placeholder="Label"
 		/>
 	</svelte:element>
@@ -33,7 +33,7 @@
 	>
 		<AnnotatedTextProperty
 			class="px-3 sm:px-4"
-			path={[...path, 'content']}
+			path={[...path, 'label']}
 			placeholder="Label"
 		/>
 	</svelte:element>
