@@ -1,6 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
-	import { CustomProperty } from 'svedit';
+	import { CustomProperty, serialize_path } from 'svedit';
 	import Media from './Media.svelte';
 
 	const svedit = getContext('svedit');
@@ -20,9 +20,8 @@
 	let is_selected = $derived(is_property_selected());
 
 	function is_property_selected() {
-		const path_of_selection = svedit?.session?.selection?.path?.join('.');
-		const this_path = path.join('.');
-		return path_of_selection === this_path;
+		const path_of_selection = svedit?.session?.selection?.path;
+		return path_of_selection && serialize_path(path_of_selection) === serialize_path(path);
 	}
 </script>
 

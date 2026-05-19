@@ -1,6 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
-	import { serialize_path } from 'svedit';
+	import { deserialize_path, serialize_path } from 'svedit';
 	import { get_page_browser } from './page_browser_context.svelte.js';
 	import MediaControls from './MediaControls.svelte';
 	import SizableViewboxControls from './SizableViewboxControls.svelte';
@@ -47,7 +47,7 @@
 		if (!prop_el) return null;
 		const path_str = prop_el.getAttribute('data-path');
 		if (!path_str) return null;
-		const path = path_str.split('.');
+		const path = deserialize_path(path_str);
 		const node = svedit.session.get(path);
 		if (node?.type !== 'image' && node?.type !== 'video') return null;
 		return path;
@@ -65,8 +65,8 @@
 		e.preventDefault();
 		e.stopPropagation();
 		e.dataTransfer.dropEffect = 'copy';
-		const path_str = path.join('.');
-		if (drop_target_path?.join('.') !== path_str) {
+		const path_str = serialize_path(path);
+		if (!drop_target_path || serialize_path(drop_target_path) !== path_str) {
 			drop_target_path = path;
 		}
 	}
@@ -84,6 +84,7 @@
 	}
 
 	async function on_drop(e) {
+		console.log('YOYOY');
 		const path = drop_target_path ? [...drop_target_path] : null;
 		drop_target_path = null;
 		file_drag_active = false;
