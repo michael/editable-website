@@ -14,7 +14,7 @@ const FULL_DOC = {
             "layout": 1,
             "href": "/#RtYpQwXsZvNmKjHgFdSaLe",
             "target": "_self",
-            "label": {
+            "content": {
                 "text": "↓",
                 "annotations": []
             }
@@ -970,7 +970,7 @@ const FULL_DOC = {
             "layout": 1,
             "href": "https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform?usp=dialog",
             "target": "_blank",
-            "label": {
+            "content": {
                 "text": "Join the Technical Preview",
                 "annotations": []
             }
@@ -1096,7 +1096,7 @@ const FULL_DOC = {
             "layout": 1,
             "href": "/#RtYpQwXsZvNmKjHgFdSaLe",
             "target": "_self",
-            "label": {
+            "content": {
                 "text": "Try it",
                 "annotations": []
             }
@@ -1107,7 +1107,7 @@ const FULL_DOC = {
             "layout": 1,
             "href": "/#XVJGXtwnQMvcrcuByAtcWNa",
             "target": "_self",
-            "label": {
+            "content": {
                 "text": "About",
                 "annotations": []
             }
@@ -1118,7 +1118,7 @@ const FULL_DOC = {
             "layout": 2,
             "href": "https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform",
             "target": "_blank",
-            "label": {
+            "content": {
                 "text": "Join the Technical Preview",
                 "annotations": []
             }
@@ -1151,7 +1151,7 @@ const FULL_DOC = {
             "type": "footer_link",
             "href": "/#RtYpQwXsZvNmKjHgFdSaLe",
             "target": "_self",
-            "label": {
+            "content": {
                 "text": "Editing",
                 "annotations": []
             }
@@ -1161,7 +1161,7 @@ const FULL_DOC = {
             "type": "footer_link",
             "href": "/#xKmNqPrStVwYzAbCdEfGh",
             "target": "_self",
-            "label": {
+            "content": {
                 "text": "Blocks",
                 "annotations": []
             }
@@ -1171,7 +1171,7 @@ const FULL_DOC = {
             "type": "footer_link",
             "href": "/#BPdekRaDEUcQZqtEwPwBvyu",
             "target": "_self",
-            "label": {
+            "content": {
                 "text": "Media",
                 "annotations": []
             }
@@ -1181,7 +1181,7 @@ const FULL_DOC = {
             "type": "footer_link",
             "href": "/#jLnPqRsTuVwXyZaBcDeFg",
             "target": "_self",
-            "label": {
+            "content": {
                 "text": "Links",
                 "annotations": []
             }
@@ -1205,7 +1205,7 @@ const FULL_DOC = {
             "type": "footer_link",
             "href": "https://github.com/michael/editable-website",
             "target": "_blank",
-            "label": {
+            "content": {
                 "text": "Editable Website",
                 "annotations": []
             }
@@ -1214,7 +1214,7 @@ const FULL_DOC = {
             "id": "footer_link_2_1",
             "type": "footer_link",
             "href": "https://svedit.dev",
-            "label": {
+            "content": {
                 "text": "Svedit",
                 "annotations": []
             },
@@ -1236,7 +1236,7 @@ const FULL_DOC = {
             "id": "ewuBYPxRqFsJXffTuwqssXg",
             "type": "footer_link",
             "href": "https://www.youtube.com/watch?v=T2RMYj_1g9E",
-            "label": {
+            "content": {
                 "text": "Introduction",
                 "annotations": []
             },
@@ -1247,7 +1247,7 @@ const FULL_DOC = {
             "type": "footer_link",
             "href": "https://youtu.be/o4kcABS-XH4?t=3226",
             "target": "_blank",
-            "label": {
+            "content": {
                 "text": "Update 2025-10",
                 "annotations": []
             }

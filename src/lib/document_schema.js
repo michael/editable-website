@@ -77,11 +77,11 @@ export const document_schema = define_document_schema({
 		}
 	},
 	footer_link: {
-		kind: 'block',
+		kind: 'text',
 		properties: {
 			href: { type: 'string' },
 			target: { type: 'string', default: '_self' },
-			label: {
+			content: {
 				type: 'annotated_text',
 				node_types: [],
 				allow_newlines: false
@@ -104,12 +104,12 @@ export const document_schema = define_document_schema({
 		}
 	},
 	nav_item: {
-		kind: 'block',
+		kind: 'text',
 		properties: {
 			layout: { type: 'integer', default: 1 },
 			href: { type: 'string' },
 			target: { type: 'string', default: '_self' },
-			label: {
+			content: {
 				type: 'annotated_text',
 				node_types: [],
 				allow_newlines: false
@@ -139,12 +139,12 @@ export const document_schema = define_document_schema({
 		}
 	},
 	button: {
-		kind: 'block',
+		kind: 'text',
 		properties: {
 			layout: { type: 'integer', default: 1 },
 			href: { type: 'string' },
 			target: { type: 'string', default: '_self' },
-			label: {
+			content: {
 				type: 'annotated_text',
 				node_types: [],
 				allow_newlines: false
