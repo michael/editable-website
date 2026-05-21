@@ -14,7 +14,7 @@ Make direct `page.body` blocks behave like full-window slides while limiting pag
 
 - Restrict the `page.body` schema to `hero` and `feature`, with `hero` as the default inserted node.
 - Remove obsolete page body block inserters and layouts from the session config.
-- Keep supporting node types required by `hero`, `feature`, shared nav/footer, media, and annotations, including `decoration` inside `feature.body`.
+- Keep supporting node types required by `hero`, `feature`, media, and annotations, including `decoration` inside `feature.body`.
 - Make `Hero.svelte` and `Feature.svelte` render each node as a viewport-height slide.
 - Trim the demo page body to its existing hero and feature blocks.
 - Update new-page scaffolding so new pages start with a hero instead of a prose block.
@@ -118,7 +118,7 @@ Responsibilities:
   - edit-link prompt
   - media controls
   - property selection overlay
-- Keep unrelated app overlays like auth and the page drawer unchanged.
+- Keep unrelated app overlays like auth unchanged.
 
 ### Styling
 
@@ -152,7 +152,7 @@ Implement admin authentication with these rules:
 - the admin password is configured via `ADMIN_PASSWORD`
 - `ADMIN_PASSWORD` is required in full runtime mode; if it is missing, the app must not start
 - whoever knows that password can authenticate as admin
-- authenticated admins can edit and save content, browse drafts, and use the full page browser
+- authenticated admins can edit and save content and use admin-only presentation management actions
 - unauthenticated visitors can still choose `Edit for fun`
 - edit-for-fun mode only affects the currently open page and never persists changes
 - the primary login entry point is the edit shortcut flow on the current page
@@ -168,7 +168,7 @@ This step includes:
 - a login command that validates `ADMIN_PASSWORD`
 - a lightweight auth-status read API for the client
 - server-side protection for save and page-management mutations
-- server-side protection for private page browser data
+- server-side protection for admin-only presentation management mutations
 - an auth dialog shown when unauthenticated users try to edit
 - edit-for-fun mode in the editor UI
 - hiding private page-management UI from unauthenticated users
@@ -257,7 +257,6 @@ Require `event.locals.is_admin === true` for:
 
 - `save_document(...)`
 - `delete_page(...)`
-- `update_page_slug(...)`
 - any persistent asset mutation flow used during save
 - `get_page_browser_data(...)`
 
@@ -265,9 +264,9 @@ For these authenticated operations, successful session validation should also ex
 
 Public page/document reads remain public:
 
-- page loading by slug
-- home page loading
-- internal link preview for already-public pages
+- presentation loading by document id
+- presentation index loading
+- internal link preview for already-public presentations
 
 ### Edit shortcut and auth dialog flow
 
@@ -325,10 +324,9 @@ Constraints of edit-for-fun mode:
 
 - edits are local and disposable only
 - there is no save action
-- there is no page browser access
-- there is no drafts access
-- there is no create-page flow
-- there is no delete-page flow
+- there is no admin presentation management access
+- there is no create-presentation flow
+- there is no delete-presentation flow
 - there is no page URL editing flow
 - normal in-memory editing interactions can still run while editing for fun
 - uploads are never persisted because persistence only happens through save
@@ -348,21 +346,20 @@ Required UI behavior:
 - unauthenticated users pressing edit see the auth dialog
 - authenticated admins see the existing save-capable editing UI
 - edit-for-fun mode shows only disposable editing controls
-- drafts and private sitemap UI are hidden unless authenticated as admin
-- link pickers must not expose drafts to unauthenticated users
+- admin-only presentation management actions are hidden unless authenticated as admin
 - toolbar actions that require admin auth must be hidden or disabled when unauthenticated
 - authenticated admins get an explicit logout button
 
-### Page browser behavior
+### Presentation management behavior
 
-The page browser becomes admin-only.
+Presentation management actions are admin-only.
 
 Required behavior:
 
-- unauthenticated users do not see drafts
-- unauthenticated users do not see the private sitemap drawer at all
-- authenticated admins continue to see drafts and the full page browser
-- all server-side page browser data remains protected even if the client UI is bypassed
+- unauthenticated users can view the public presentation index and open presentations
+- unauthenticated users do not see create/delete actions
+- authenticated admins see the `New` action and delete/manage actions on `/`
+- all server-side management mutations remain protected even if the client UI is bypassed
 
 ### Save behavior
 
@@ -385,427 +382,257 @@ Required behavior:
 - if the user is currently editing, exit admin editing mode
 - after logout, pressing the edit shortcut again should reopen the auth dialog
 
-## Next implementation draft — slug-based page URLs
+## Next implementation draft — presentation index and document-id routes
 
-This step replaces id-based public page routes with slug-based page URLs while keeping `document_id` as the stable internal identity.
+This step specializes the app around presentations addressed by stable document ids. It removes the slug layer and changes the backend-mode `/` route from a document route into a public presentation index.
 
 ### Goal
 
-Implement human-readable page URLs with these rules:
+In backend mode:
 
-- each page keeps a stable internal `document_id`
-- non-home pages have one active slug used for their public route
-- the home page is a special case whose canonical public route is always `/`
-- old non-home slugs remain as historical aliases and `301` redirect to the current active slug
-- the first non-home slug is generated on first save from the extracted page title using `slugify`
-- after first save, the slug stays stable until the user explicitly changes it
-- active slugs cannot be taken from another page
-- historical aliases of other pages can be claimed automatically without a confirmation step
-- whenever an active non-home slug changes, all internal persisted `href` links referencing that page are rewritten
+- `/` lists all page documents as presentations
+- each presentation is addressable at `/:document_id`
+- authenticated admins see a `New` action on `/` that links to `/new`
+- `/new` continues to create an unsaved presentation and persists it on first save
+- after first save, the client navigates to `/${document_id}`
+- no slug generation, slug resolution, historical aliases, or slug rewrite logic remains
+
+In static / `VERCEL=1` mode:
+
+- `/` continues to render the bundled demo document (`page_1`)
+- the backend presentation index is disabled
+- home-route server code must continue to avoid top-level imports of backend-only modules
 
 ### Scope
 
-This step includes:
+- Replace backend `/` rendering with a presentation index component.
+- Keep static / `VERCEL=1` `/` rendering as the current demo document editor/viewer.
+- Keep `/:page_id` route shape but treat the route param as `document_id`, not slug.
+- Update server document loading to fetch by `document_id` directly.
+- Remove slug generation and resolver helpers from `$lib/api.remote.js`.
+- Remove `document_slugs` reads/writes and add a migration or cleanup step for existing databases.
+- Remove Page URL editing from the old page drawer/index management UI because URLs are fixed document-id routes.
+- Update internal link parsing and link previews to resolve `/${document_id}` directly.
+- Update document reference extraction to normalize internal links by direct document-id lookup.
+- Update save flow so first save returns `document_id` only and the client navigates to `/${document_id}`.
+- Update delete behavior so there is no protected home page document. Page documents, including `page_1`, can be deleted by admins in backend mode.
+- Move the useful page drawer interface into `/` and remove the contextual page drawer flow.
 
-- database schema for slug storage and lookup for non-home pages
-- slug generation and uniqueness rules
-- slug resolution in page loading routes and APIs
-- save flow updates so first save assigns the initial slug for non-home pages
-- page browser UI for viewing and editing the Page URL of non-home pages
-- internal href rewrite logic for slug changes
-- canonical redirects from historical aliases to active slugs
-- explicit home-page special-casing at `/`
-- page-level `title` and `description` metadata fields on the `page` root node
-- edit-mode-only UI for editing those metadata fields with `<AnnotatedTextProperty>`
-- page `<title>`, description meta tags, and Open Graph title/description tags driven by explicit page metadata when present, otherwise by the same fallback extraction used for page browser summaries
+### Route behavior
 
-This step does not include:
+#### `/` in static / `VERCEL=1` mode
 
-- changing the home page identity
-- exposing slug internals like “auto mode” or “custom mode” in the UI
-- automatic slug updates when titles change after first save
-- repairing broken links on page deletion
-- adding a separate metadata settings screen
-- adding cached summary columns to the database
+Keep current behavior:
 
-### Data model changes
+- server load returns `has_backend: false`
+- client renders `<App>` with the demo document fallback
+- no backend-only module is imported at top level from the home route
 
-Add a dedicated slug mapping table for non-home pages.
+#### `/` in backend mode
 
-Required fields:
+Change behavior:
 
-- `slug` — unique text key across all active and historical non-home slugs
-- `document_id` — owning page document id
-- `is_active` — whether this is the page’s current active slug
-- `created_at` — timestamp for ordering/debugging
+- server load lazily imports a backend helper only inside the `has_backend` branch
+- server load returns presentation index data instead of a document
+- page component renders a new index component rather than `<App>`
+- index links each presentation to `/${document_id}`
+- index includes search and the useful management affordances currently living in the page drawer
+- if `is_admin` is true, show a `New` link to `/new` and admin-only presentation actions like delete
 
-Constraints and invariants:
+Suggested new component:
 
-- every slug row belongs to exactly one non-home page document
-- a non-home page has exactly one active slug
-- a non-home page may have zero or more inactive historical slugs
-- `slug` is globally unique across the table
-- the home page does not need a slug row because its canonical route is always `/`
-- `documents.document_id` remains the primary internal identity
+- `src/routes/components/PresentationIndex.svelte`
 
-Recommended schema shape:
+Index item data should include:
 
-- include `document_slugs` directly in the initial schema setup rather than as a later migration step
-- unique index on `slug`
-- unique partial index on active slug per `document_id`
+- `document_id`
+- `title`
+- `description`
+- `preview_media_node`
+- `page_href` as `/${document_id}`
+- `created_at`
+- `updated_at`
 
-### Slug generation rules
+Ordering should be deterministic. Prefer most recently updated first, falling back to title and then `document_id`.
 
-Use the `slugify` package with:
+#### `/:document_id`
 
-- `slugify(title, { lower: true, strict: true, trim: true })`
+Use the existing `src/routes/[page_id]` route initially, but update names and semantics in code:
 
-Generation algorithm:
+- route param value is a document id
+- load calls `get_document(document_id)` or a renamed helper like `get_presentation(document_id)`
+- no redirect handling for historical slug aliases
+- unknown ids return 404
+- returned data no longer needs `slug`
 
-1. extract the page summary title using the same title extraction rules already defined in the architecture
-2. slugify that title
-3. if the result is empty, use `document_id`
-4. if the candidate slug is already used by any active or historical slug row, generate a unique suffix form:
-   - `survey`
-   - `survey-2`
-   - `survey-3`
-   - etc.
-5. persist the chosen slug as the page’s first active slug
+A later cleanup may rename the folder from `[page_id]` to `[document_id]`, but that is optional because the URL shape is unchanged.
 
-Important rule:
+#### `/new`
 
-- slug generation happens on first save only
-- later title changes do not auto-update the slug
+Keep the route admin-only.
 
-### Page metadata rules
+Required changes:
 
-Add three page-root properties:
+- new presentation documents are self-contained and are not composed from shared nav/footer documents
+- remove `get_shared_documents()` usage from `/new`
+- update the new-page helper/template so it creates a complete standalone presentation document
+- first save returns `{ ok, document_id, created }`
+- client navigates to `/${document_id}` with `replaceState: true`
 
-- `page.title`
-- `page.description`
-- `page.image`
+### Server API changes
 
-`page.title` and `page.description` should use the `annotated_text` property type so they can be edited with `<AnnotatedTextProperty>`.
+#### Remove slug concepts
 
-`page.image` should use a `node` property pointing to an `image` node. That image node should always exist on the page root, even when no image has been chosen yet. This means explicit-image checks must look at `page.image.src`, not merely at whether the `page.image` node reference exists.
+Remove or stop using:
 
-Metadata extraction rules:
+- `slugify` dependency/import from `$lib/api.remote.js`
+- `update_page_slug_input_schema`
+- `get_active_slug_for_document_id(...)`
+- `resolve_slug(...)`
+- `create_slug_candidate(...)`
+- `create_unique_slug(...)`
+- `rewrite_internal_page_href(...)`
+- `rewrite_internal_page_hrefs(...)`
+- `insert_active_slug(...)`
+- `move_active_slug_to_history(...)`
+- `assign_active_slug(...)`
+- `update_page_slug(...)`
+- `redirect_to_slug` return values
+- `slug` fields in page summary/tree/index data
 
-1. extracted page title:
-   - use explicit `page.title` if it exists and is non-empty
-   - otherwise fall back to the existing title extraction from page-local body content
-   - otherwise fall back to `"Untitled page"`
-2. extracted page description:
-   - use explicit `page.description` if it exists and is non-empty
-   - otherwise fall back to the first meaningful text-ish page-local body content
-   - otherwise fall back to `null`
-3. extracted page image:
-   - use explicit `page.image` if its node exists and `page.image.src` is non-empty
-   - otherwise fall back to the first image found in page-local body content
-   - otherwise fall back to `null`
+Remove database dependency on:
 
-These extracted values should be the shared source for:
+- `document_slugs`
+- `document_slugs_active_document_id_idx`
 
-- first-save slug generation
-- page browser title/summary metadata
-- page browser preview image metadata
-- `<title>`
-- `<meta name="description">`
-- `<meta property="og:title">`
-- `<meta property="og:description">`
-- `<meta property="og:image">`
-- `<meta name="twitter:image">`
+For existing databases, add a migration that drops `document_slugs` if it exists. If the project chooses to keep old migrations immutable, add a new cleanup migration and stop creating or querying the table in current logic.
 
-Description meta tags should only be rendered when a description value exists.
+#### Document loading
 
-Image meta tags should use the extracted page image when available. For now, they should use the original asset URL rather than a smaller derived variant. If no image can be extracted, image meta tags should be omitted.
+Change `get_document` to accept a document id:
 
-### Route and API changes
+1. validate the input as a string document id
+2. fetch `documents.document_id = input AND type = 'page'`
+3. return the stored self-contained document directly
+4. throw if missing
 
-Public routing changes from `/:page_id` to `/:slug` for non-home pages.
+`get_home_document` should be removed or unused in backend mode, because there is no backend home document.
+
+#### Presentation listing
+
+Add a public helper/query for the index route, for example:
+
+- `get_presentation_index()`
+
+It should list all `documents.type = 'page'`, parse their stored docs, extract metadata with `extract_page_metadata(...)`, and return `page_href: '/' + document_id`.
+
+This helper is public because `/` publicly lists all presentations in backend mode.
+
+#### Self-contained documents for `/new`
+
+Remove the shared-document dependency from `/new`.
 
 Required behavior:
 
-- `/` remains the canonical home page route and resolves directly from `home_page_id`
-- `/:slug` resolves through `document_slugs.slug`
-- if the slug row is active, load that page
-- if the slug row is historical, resolve the page and issue a `301` redirect to the current active slug
-- if no slug row exists, return `404`
-
-API/document loading changes:
-
-- all non-home page-loading entry points that currently accept a page id in the URL must resolve by slug first
-- internal server logic should normalize back to `document_id` immediately after slug resolution
-- all graph/reference logic continues to use `document_id`, not slug strings
-
-### Save flow changes
-
-#### First save of `/new`
-
-On first save of a new page:
-
-1. persist the page document under the already client-generated `document_id`, including any explicit `page.title` / `page.description` values and the always-present `page.image` node on the root node
-2. extract the page title
-3. generate the initial unique slug
-4. insert the active slug row
-5. return both:
-   - `document_id`
-   - active slug
-6. navigate the client from `/new` to `/:slug`
-
-#### Later saves of existing pages
-
-On later saves:
-
-- persist any edits to `page.title` / `page.description` and `page.image` on the page root node
-- keep the current active slug unchanged
-- do not regenerate from title
-- continue updating `document_refs`, `asset_refs`, and split shared documents as before
-
-### Client UI changes for page metadata
-
-1. extend the page schema so the `page` root node includes `title` and `description` annotated-text properties plus an `image` node property
-2. ensure the `page.image` image node always exists on the page root, including in seeded data, migrations, and new-page creation
-3. render a small metadata editor section at the very end of the page component
-4. only render that section when `svedit.editable` is true
-5. use `<AnnotatedTextProperty>` for `title` and `description`
-6. render `page.image` as a square image field in the same metadata section
-7. do not render this metadata editor section in non-edit mode
-8. keep the metadata editor outside the normal public page content so it does not appear on the live page
-
-Suggested rendering shape:
-
-- metadata section after the footer
-- one square image field for page image
-- one field for page title
-- one field for page description
-- simple labels are acceptable, but the editable values themselves should be the page-root metadata fields
-
-### Head metadata changes
-
-1. replace hard-coded page `<title>` values with extracted page metadata
-2. render description tags only when an extracted description exists
-3. render `og:title` and `og:description` from the same extracted metadata values
-4. render `og:image` and `twitter:image` from the extracted page image value
-5. for now, use the original asset URL for social image tags rather than a smaller derived variant
-6. when explicit `page.title` / `page.description` / `page.image` are absent, use the same fallback extraction logic already used for page browser data
-7. keep one shared extraction helper so page browser summaries, slug generation, and head metadata stay consistent
-
-### Slug editing flow in the page browser
-
-The page browser ellipsis menu should expose URL editing for non-home pages.
-
-User-facing presentation:
-
-- label it as `Edit URL`
-- present it visually as `example.com/[your-slug-here]`
-- only the part after the slash is editable
-
-The UI should not expose:
-
-- auto mode
-- custom mode
-- historical alias internals
-
-#### Validation rules
-
-When the user submits a new slug:
-
-- normalize it with the same slug rules used by generation
-- reject empty results
-- reject a slug equal to the page’s current active slug as a no-op
-- allow a slug equal to one of the page’s own historical aliases
-- allow an unused slug
-- allow a slug that is only a historical alias of another page
-- reject an active slug owned by another page
-
-### Slug change cases
-
-#### Case 1 — unused slug
-
-If the requested slug is unused:
-
-1. insert the old active slug as historical if not already present
-2. make the requested slug the new active slug
-3. rewrite all internal persisted `href` links referencing that page
-4. keep all other slug rows unchanged
-
-#### Case 2 — page’s own historical alias
-
-If the requested slug is already a historical alias of the same page:
-
-1. demote the current active slug to historical
-2. promote the requested historical slug to active
-3. rewrite all internal persisted `href` links referencing that page
-
-#### Case 3 — historical alias owned by another page
-
-If the requested slug is a historical alias of another page:
-
-1. remove that historical alias row from the other page
-2. demote the current active slug of the target page to historical
-3. assign the requested slug as the target page’s new active slug
-4. rewrite all internal persisted `href` links referencing the target page
-
-The other page keeps its own active slug unchanged.
-
-This happens automatically with no extra confirmation step, because historical alias ownership is treated as an internal implementation detail rather than a user-facing concept.
-
-#### Case 4 — active slug owned by another page
-
-If the requested slug is the active slug of another page:
-
-- reject the change
-- explain that the Page URL is already in use
-- instruct the user to rename the other page first if they want to free it up
-- do not offer force takeover
-- do not mutate the other page in the background
-
-### Internal href rewrite rules
-
-Whenever a page’s active slug changes, rewrite all persisted internal `href` properties referencing that page.
-
-Rewrite scope:
-
-- inspect the schema for every property named `href`
-- inspect all persisted documents that can contain such properties:
-  - page documents
-  - nav document
-  - footer document
-
-Rewrite targets:
-
-- `/${old_slug}`
-- `/${old_slug}#fragment`
-
-Do not rewrite:
-
-- external URLs
-- same-page anchors like `#section`
-- `/`
-- unrelated slugs
-
-Rewrite output:
-
-- `/${new_active_slug}`
-- preserve `#fragment` if present
-
-Implementation rule:
-
-- resolve hrefs to `document_id` before deciding whether they reference the changed page
-- this avoids ambiguity when aliases are involved
-
-### Save-time reference extraction
-
-`document_refs` extraction must continue to normalize internal links to `document_id`.
-
-That means:
-
-- slug changes do not change graph identity
-- only the stored href strings change
-- reachability logic remains document-id based
-
-### Page browser data requirements
-
-Extend the page browser query to return, for each page:
-
-- `document_id`
-- extracted title
-- optional `preview_media_node`
-- current active slug for non-home pages
-The home page row must additionally be marked so the UI can:
-
-- display `/` as its URL
-- hide URL editing
-- hide delete
-
-### Home page rules
-
-Keep these rules explicit in implementation:
-
-- `/` is always canonical for the home page
-- the home page is not reassigned to another page
-- the home page does not need a slug row in `document_slugs`
-- URL editing is hidden for the home page
-- requests to historical aliases of the home page are not needed because the home page does not participate in slug history
-
-### Deletion behavior
-
-When deleting a page:
-
-1. delete all slug rows for that `document_id`
-2. delete the page document
-3. update `document_refs`
-4. do not rewrite incoming links
-5. allow broken links to remain
-
-UI behavior:
-
-- if the page is still reachable/linked, warn the user
-- recommended workflow remains: unlink first, then delete
-
-### Required server helpers
-
-Add focused helpers for:
-
-- resolve slug → `{ document_id, is_active, active_slug }` for non-home pages
-- get active slug for `document_id`
-- generate initial unique slug for a non-home page
-- promote/demote slug rows during slug changes
-- claim historical aliases automatically when they are not active
-- rewrite internal hrefs referencing a page
-- list pages with active slug + summary data, while special-casing the home page as `/`
-
-### Required transaction boundaries
-
-These operations must be atomic:
-
-#### First page save
-- create page row
-- create first active slug row
-
-#### Manual slug change
-- update slug rows
-- rewrite hrefs in all affected documents
-- update `document_refs` for rewritten documents
-
-#### Historical alias reclaim
-- remove alias from old owner
-- update target page active slug
-- rewrite hrefs in all affected documents
-- update `document_refs` for rewritten documents
-
-If any part fails, the whole slug change must roll back.
-
-### Suggested implementation order
-
-1. fold `document_slugs` into the initial schema setup
-2. add slug resolution helpers and uniqueness helpers for non-home pages
-3. update page loading routes and APIs to resolve non-home pages by slug while keeping `/` special-cased
-4. update first-save flow to assign initial slug and navigate to `/:slug`
-5. add page browser query support for active slug
-6. add URL editing UI in the page browser
-7. implement manual slug change flow for unused slug and own historical alias
-8. implement automatic claiming of historical aliases owned by other pages
-9. implement href rewriting across all schema `href` properties
-10. wire canonical `301` redirects for historical aliases
-11. hide URL editing for the home page and display `/`
-12. verify delete flow removes slug rows and keeps warning behavior
-
-### Definition of done
-
-This step is done when all of the following are true:
-
-- new non-home pages get a human-readable slug on first save
-- public non-home page routes use `/:slug`
-- old aliases `301` redirect to the current active slug
-- title changes no longer auto-change slugs
-- users can edit URL from the page browser for non-home pages
-- active slugs cannot be taken from another page
-- historical aliases owned by other pages are claimed automatically when requested
-- all internal persisted `href` links referencing a page are rewritten when that page’s active slug changes
-- the home page is always `/` and URL editing is hidden for it
-- deleting a page removes all of its slug rows
+- `/new` does not load `nav_1`, `footer_1`, or any shared document data
+- `create_empty_doc(...)` no longer accepts shared documents
+- the new-page helper creates a complete standalone presentation document with its root `page`, metadata fields, initial slide, and any required child nodes
+- save persists that one document as `type = 'page'`
+
+#### Internal href parsing
+
+Replace slug-based parsing with document-id-based parsing:
+
+- ignore external URLs and protocol-relative URLs
+- ignore same-page fragments like `#slide_id` for document references
+- accept only one-segment absolute paths like `/${document_id}` and `/${document_id}#fragment`
+- check that the segment resolves to an existing page document
+- return that `document_id`
+
+No link rewrite is needed because document ids are stable.
+
+### Client changes
+
+#### `App.svelte`
+
+- Remove `slug` prop usage if any remains.
+- Update first-save navigation from `/${result.slug}` to `/${result.document_id}`.
+- Remove read-back-by-slug validation; if keeping read-back validation, call `get_document(result.document_id)`.
+- Keep cancel from `/new` returning to `/`.
+
+#### Home route components
+
+- Update `src/routes/+page.server.js` to branch:
+  - static mode: return data that renders `<App>` with demo fallback
+  - backend mode: lazily load presentation index data and return it
+- Update `src/routes/+page.svelte` to render:
+  - `<App>` when `has_backend` is false
+  - `<PresentationIndex>` when `has_backend` is true
+
+#### Presentation index component
+
+Create `PresentationIndex.svelte` by migrating the useful page drawer behavior into the `/` route.
+
+Required UI:
+
+- list of all presentations
+- search/filter comparable to the existing page drawer search
+- link card/row to `presentation.page_href`
+- preview media when available
+- title and optional description
+- optional updated timestamp
+- `New` link to `/new` only when `is_admin` is true
+- admin-only row/menu actions that still apply, including open in new tab and delete with confirmation
+
+Do not include Page URL editing or slug UI. Use Tailwind classes and rectangular styling.
+
+#### Remove contextual page drawer
+
+After the `/` index has the migrated search and management UI:
+
+- remove the contextual page drawer entry point from the toolbar/overlays
+- remove `page_browser_context.svelte.js` if no longer needed by any remaining link-selection flow
+- remove or simplify `PagesDrawer.svelte` after its useful behavior is migrated
+- remove Page URL edit dialog and `update_page_slug` calls
+- remove `is_home_page` checks and home URL locking
+- remove special home-page delete protection from the client UI and server command
+- keep delete confirmation for page documents, including `page_1`
+
+#### Link creation and previews
+
+- Existing same-page `#node_id` links remain unchanged.
+- Cross-presentation links selected from any presentation list should use `/${document_id}`.
+- `LinkPreview.svelte` should treat `/${document_id}` as an internal presentation link and call the preview query with that href.
+
+### Database and seed changes
+
+- Stop creating `document_slugs` in the current schema path if the project allows editing the initial migration.
+- Otherwise add a new migration that drops `document_slugs` and its active index if present.
+- Stop writing a `home_page_id` setting for routing. It may remain in old databases temporarily, but runtime code should not require it.
+- Stop seeding `nav_1` and `footer_1` as shared documents for this app.
+- Keep seeding `page_1` as a self-contained demo presentation in backend mode.
+- In backend mode, seeded `page_1` appears as one presentation in the `/` index and is reachable at `/page_1`.
+- Admins can delete `page_1` in backend mode like any other presentation.
+- In static mode, `/` still renders demo `page_1` directly.
+
+### Validation
+
+Manual validation for this step:
+
+1. In `VERCEL=1` mode, `/` renders the demo document as before.
+2. In backend mode, `/` renders the presentation index, not the editor page.
+3. Backend `/` lists seeded `page_1` with a link to `/page_1`.
+4. A non-admin visitor does not see `New` on `/`.
+5. An authenticated admin sees `New` on `/` and it links to `/new`.
+6. `/page_1` loads the seeded presentation.
+7. An unknown `/:document_id` returns 404.
+8. Creating and saving a new presentation navigates to `/${document_id}`.
+9. Internal links to `/${document_id}` produce `document_refs` rows.
+10. Same-page `#node_id` links do not produce `document_refs` rows.
+11. `/` search filters presentations similarly to the old page drawer.
+12. Admin delete works from `/`, including deleting `page_1` in backend mode.
+13. The contextual page drawer is no longer surfaced.
+14. No runtime code queries `document_slugs` or imports `slugify`.
 
 ## Existing implementation steps (compacted history)
 

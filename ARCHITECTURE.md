@@ -15,7 +15,7 @@ Implement a single-password admin authentication flow with these rules:
 - the admin password is configured via `ADMIN_PASSWORD`
 - `ADMIN_PASSWORD` is required in full runtime mode; if it is missing, the app must not start
 - whoever knows that password can authenticate as admin
-- authenticated admins can edit and save content, browse drafts, and use the full page browser
+- authenticated admins can edit and save content and use admin-only presentation management actions
 - unauthenticated visitors can still choose “Edit for fun” on the current page
 - edit-for-fun mode never persists changes
 - there is no dedicated remembered login route as the primary UX
@@ -31,7 +31,7 @@ This step includes:
 - `event.locals.is_admin` wiring in the server hook
 - a login command that validates `ADMIN_PASSWORD`
 - server-side protection for save and page-management mutations
-- server-side protection for private page browser data
+- server-side protection for admin-only presentation management mutations
 - client UI state for authenticated admin vs edit-for-fun mode
 - an auth dialog shown when unauthenticated users try to edit
 - edit-for-fun restrictions in the editor UI
@@ -43,7 +43,7 @@ This step does not include:
 - password reset flows
 - role-based permissions
 - rate limiting or brute-force protection beyond basic server-side checks
-- exposing drafts or private sitemap data to unauthenticated users
+- exposing admin-only management controls to unauthenticated users
 
 ## Presentation page setup
 
@@ -68,13 +68,13 @@ The selector button should be available anywhere the create/edit link prompt is 
 
 ## Overview
 
-Editable Website is a SvelteKit application that lets site owners edit content directly in the browser. The editor (Svedit) works with a graph-based document model — a flat map of nodes with references between them. The backend stores these documents in SQLite and serves them to the frontend, stitching together shared content (nav, footer) with page-specific content into a single document that Svedit can edit locally.
+Editable Website is a SvelteKit application that lets site owners edit presentation content directly in the browser. The editor (Svedit) works with a graph-based document model — a flat map of nodes with references between them. The backend stores self-contained presentation documents in SQLite and serves them to the frontend for Svedit to edit locally.
 
 The production architecture is database-backed and supports multiple pages, but the project must also continue to support static preview/local development mode (for example `VERCEL=1`) where the app falls back to the demo document. In that mode, only the `/` route needs to work, multi-page features are disabled, authentication is disabled, and code paths must avoid hard dependencies on server-only runtime features that would break static deployments.
 
 In full runtime mode, Editable Website also supports a simple owner-only admin authentication model. Whoever knows the admin password can unlock editing and private page-management features. This is intentionally not a multi-user system — there is no user database, no roles, and no per-user ownership model. Authentication exists only to distinguish between:
 
-1. **Admin mode** — authenticated with the configured admin password, can edit and save, browse drafts, create pages, delete pages, and use the full page browser
+1. **Admin mode** — authenticated with the configured admin password, can edit and save, create presentations, delete presentations, and use admin-only management actions on the presentation index
 2. **Edit-for-fun mode** — unauthenticated, can temporarily edit the currently open page in the browser UI, but cannot save changes or access private site-management features
 3. **Public browsing mode** — normal site visitor mode with no editing UI active
 
@@ -133,8 +133,8 @@ Editable Website must preserve a lightweight static-compatible mode for preview 
 
 - Only the `/` route must support static/Vercel mode.
 - In static/Vercel mode, `/` renders from the existing demo document instead of the database.
-- multi-page features are disabled in this mode at the **UI / integration** level:
-  - no pages drawer
+- backend presentation features are disabled in this mode at the **UI / integration** level:
+  - no backend presentation index
   - no links or flows that send the user to `/new`
   - no links or flows that send the user to dynamic `/:page_id` pages
 - the multi-page routes may still exist in the codebase and may assume a full Node + database runtime; they just must not be linked to or otherwise used from the `VERCEL=1` branch.
@@ -145,8 +145,8 @@ Editable Website must preserve a lightweight static-compatible mode for preview 
 
 This means the app effectively has two operating modes:
 
-1. **Full runtime mode** — database-backed, multi-page, shared nav/footer, admin-authenticated editing
-2. **Static/Vercel mode** — single-page demo-doc fallback on `/`, while multi-page routes may still exist but are not surfaced or used
+1. **Full runtime mode** — database-backed presentation index, document-id presentation routes, admin-authenticated editing
+2. **Static/Vercel mode** — single-page demo-doc fallback on `/`, while backend presentation routes may still exist but are not surfaced or used
 
 The static/Vercel mode is a compatibility constraint on all future multi-page work.
 
@@ -216,24 +216,22 @@ CREATE TABLE sessions (
 **`documents`**
 
 - `document_id` — a persistent identifier (nanoid with a custom alphabet — letters only, no numbers, no `_` or `-` — so ids are safe to use as HTML ids; see `src/routes/nanoid.js`)
-- `type` — categorizes the document, e.g. `page`, `nav`, or `footer`
+- `type` — categorizes the document; for the presentations app, persisted presentation documents use `page`
 - `data` — the full Svedit document serialized as JSON (`{ document_id, nodes }`)
 
 Each document's `data` column contains a self-contained Svedit document: a `document_id` and a flat `nodes` map where every node is keyed by its `id`.
 
 **`site_settings`**
 
-A simple key-value table for site-wide configuration. Currently stores:
-
-- `home_page_id` — the `document_id` of the page that renders at `/` (e.g. `page_1`)
+A simple key-value table for site-wide configuration. It is no longer used to choose a home page, because backend `/` is the presentation index. It is not required for the presentation routing model.
 
 **`document_refs`**
 
 Tracks which documents link to which other documents. Updated on save — the server scans the document's nodes for internal links (annotations on text nodes that point to other pages) and rewrites the rows for that source document. Same pattern as `asset_refs`.
 
-This table tracks links from all document types — pages, nav, and footer. Since nav and footer are stitched into every page, their links are always live. This is the basis for determining page reachability (see "Page reachability" below).
+This table tracks links between presentation documents. The presentation index still lists every page document regardless of `document_refs`; refs are used for previews, optional admin grouping, and future graph-aware features.
 
-`document_refs` must also preserve the **first-seen link order** for each `source_document_id`, because the page browser sitemap uses that order when projecting the reachable graph into a tree. In other words, if a page body links to pages in the order A, then B, then C, the stored outgoing refs for that page must preserve A → B → C. Duplicate links to the same target are collapsed to the first occurrence only.
+`document_refs` should preserve the **first-seen link order** for each `source_document_id` so any admin grouping based on references remains deterministic. In other words, if a page body links to pages in the order A, then B, then C, the stored outgoing refs for that page must preserve A → B → C. Duplicate links to the same target are collapsed to the first occurrence only.
 
 **`asset_refs`**
 
@@ -316,9 +314,7 @@ Authentication and authorization are intentionally coarse-grained.
 - creating pages
 - deleting pages
 - editing page URLs
-- browsing drafts
-- browsing the private page sitemap/drawer
-- selecting draft pages as internal link targets
+- using admin-only presentation management actions such as creating or deleting presentations
 
 **Unauthenticated but allowed capabilities:**
 
@@ -340,9 +336,8 @@ Constraints of edit-for-fun mode:
 
 - edits are local and disposable only
 - there is no save action
-- there is no access to drafts or private page-management UI
-- there is no page browser for navigating private site structure
-- there is no ability to create or delete pages
+- there is no admin presentation management access
+- there is no ability to create or delete presentations
 - media replacement and other in-memory editing interactions may still run normally while editing
 - uploaded assets are never persisted because persistence only happens through save
 
@@ -366,7 +361,7 @@ The main authentication entry is contextual:
 6. the `Login` card should emphasize that it is intended for admins, with supporting copy such as `For admins`
 7. the first-step dialog should not include a dedicated cancel button; dismissing the dialog is done by clicking outside it or pressing escape
 8. if the user chooses `Login`, the app opens a second dialog that prompts for the admin password
-9. after a successful login, the app should refresh admin-only UI state but should not enter page editing mode automatically; the user can then choose to edit, open the page browser, create a page, or use other admin actions explicitly
+9. after a successful login, the app should refresh admin-only UI state but should not enter page editing mode automatically; the user can then choose to edit, create a presentation, delete a presentation, or use other admin actions explicitly
 
 The mobile overscroll gesture is only a discovery path for opening the same auth dialog. It is mobile-only and should only be armed on touch-capable / coarse-pointer devices. It should only trigger while not already editing, only while the user is actively holding a touch through the overscroll hold period, should not fire from inertial or momentum scrolling after the finger has lifted, should not fire repeatedly during the same continuous gesture, and should reset once the user scrolls back into the normal page range or ends the touch.
 
@@ -396,9 +391,8 @@ This includes at least:
 Read APIs should be split by visibility:
 
 - public page/document reads remain public
-- private page-management reads (drafts, private sitemap/page browser data) require admin authentication
-
-The server must treat the page browser data as private because it exposes drafts and internal site structure that should not be visible to unauthenticated visitors.
+- public presentation index reads remain public
+- admin-only presentation management mutations require admin authentication
 
 ### Client auth state
 
@@ -408,7 +402,7 @@ This state is used to decide:
 
 - whether pressing the edit shortcut enters editing immediately or opens the auth dialog
 - whether the save button is shown/enabled
-- whether the page browser and draft-management UI are available
+- whether admin-only presentation management UI is available
 - whether the current editing session is admin-editable or edit-for-fun only
 - whether a logout button is shown
 
@@ -428,151 +422,64 @@ This model is intentionally simple, but it still needs basic hardening:
 
 ### Document types
 
-- **Page documents** — each page on the site (e.g. home, about, blog posts). Contains all the page-specific nodes: prose, features, galleries, figures, etc. Also contains references to shared documents (nav, footer) via node properties.
-- **Nav document** — a single shared document containing the navigation structure (`nav` node + `nav_item` nodes). Referenced by page documents via the `nav` property on the `page` node.
-- **Footer document** — a single shared document containing the footer structure (`footer` node + `footer_link_column` + `footer_link` nodes). Referenced by page documents via the `footer` property on the `page` node.
+- **Page documents** — each persisted document is a self-contained presentation. It contains the root `page` node and all nodes needed to render that presentation. There are no shared nav or footer documents in the presentations app.
 
-### Page ids, slugs, and routes
+### Presentation ids and routes
 
-Page documents continue to have a stable internal `document_id`, but public page URLs are **slug-based** for non-home pages.
+Editable Website is being specialized as a presentations app. In full backend mode there is no fixed home page document rendered at `/`. Instead, `/` is a public presentation index that lists all page documents. Each page document represents one presentation.
 
-**Key rule:**
-- `document_id` is the durable internal identity
-- non-home pages have a human-readable public `slug`
-- the home page is a special case whose canonical public URL is always `/`
+**Key rules:**
+
+- `document_id` is the durable identity of a presentation
+- the public route for a presentation is `/:document_id`
+- `/` is an index route in backend mode, not a document route
+- `/new` remains the admin-only route for creating a new presentation
+- static / `VERCEL=1` mode is the compatibility exception: `/` renders the bundled demo document (`page_1`) directly, and the backend-only presentation index is disabled
 
 Examples:
-- internal id: `WRfteHhfPvzJBJjvFxQCEpg`
-- public slug: `survey`
-- public URL: `/survey`
 
-This separation keeps internal references stable while allowing pretty URLs, while keeping the home page fixed at `/`.
+- internal id: `page_234`
+- public URL: `/page_234`
+- deep link to a slide in that presentation: `/page_234#hero_1`
+- same-page deep link from inside that presentation: `#hero_1`
 
-#### Slug generation
+There are no human-readable slugs in this project. The app should not generate slugs, resolve historical aliases, canonicalize slug routes, or rewrite internal links after title changes. The `document_slugs` table and related helper code are obsolete for this app direction.
 
-Auto-generated slugs are derived from the page summary title using the `slugify` package.
+### Presentation index
 
-Use:
-- `slugify(title, { lower: true, strict: true, trim: true })`
+In backend mode, the `/` route lists all page documents. The listing should use the same extracted metadata already used elsewhere:
 
-If no title can be extracted on save:
-- fall back to the page's `document_id` as the slug source
+- presentation title
+- optional description
+- optional preview media
+- stable href: `/${document_id}`
+- created/updated timestamps when available
 
-If the generated slug is empty after slugification:
-- fall back to the page's `document_id`
+The index is public. If the current user is authenticated as an admin, it also shows a `New` action linking to `/new`. Non-admin visitors can open existing presentations but cannot create new ones from the index.
 
-If the candidate slug collides with an existing active slug:
-- generate a unique slug deterministically by suffixing
-- examples: `survey`, `survey-2`, `survey-3`, ...
+In static / `VERCEL=1` mode, `/` must keep rendering the demo document rather than trying to load backend index data. Home-route server code must continue to avoid top-level backend-only imports; backend helpers should only be imported inside the `has_backend` branch.
 
-Auto-generated slugs are assigned once on first save and then remain stable until the user explicitly changes them:
-- they are created on first save
-- they do **not** auto-update when the extracted title changes later
-- they must **not** overwrite a user-defined custom slug
-- they must **not** take over a slug that is currently active on another page
-- they must **not** take over a slug that is currently reserved as a historical alias of another page
+### Internal link rules
 
-#### Slug ownership and history
+Internal presentation links use document ids directly:
 
-The system needs a durable mapping from non-home page slugs to page documents, including old slugs that should continue to resolve.
+**Valid internal presentation hrefs:**
 
-A non-home page therefore has:
-- one **current active slug**
-- zero or more **historical slugs**
+- `/${document_id}` — link to another presentation
+- `/${document_id}#section` — link to another presentation and scroll to a node/section
+- `#section` — same-presentation deep link
 
-Historical slugs exist so that when a page's active slug is changed later, old shared URLs do not break.
+**Not internal presentation links:**
 
-This requires a slug mapping table in the database rather than storing only a single slug string on the page row.
+- external URLs
+- protocol-relative URLs
+- any path that does not resolve to an existing page `document_id`
 
-Conceptually, the mapping must support:
-- resolving a slug to a `document_id`
-- distinguishing the current active slug from historical aliases
-
-The home page is excluded from this mapping:
-- its canonical URL is always `/`
-- it does not need a stored slug row
-- it is treated as a special case in routing and in the page browser
-
-#### Custom slugs
-
-Admins can change a page's Page URL from the page browser ellipsis menu.
-
-When a user changes a page's slug:
-- that slug becomes the page's active slug
-- the previously active slug becomes a historical alias unless that slug is explicitly reassigned to another page
-
-User-facing behavior should stay simple:
-- the UI shows the current Page URL
-- the UI can describe it in user-facing copy as "the Page URL your page will be reachable at"
-- the UI can present it as `example.com/[your-slug-here]`, with only the part after the slash editable
-- the UI does not expose an "auto mode" vs "custom mode" concept
-- the system auto-generates the first slug on first save
-- after that, the slug stays stable unless the admin explicitly changes it
-
-This keeps the mental model simple for users while preserving deterministic behavior internally.
-
-#### Slug collisions and reassignment
-
-If a user tries to assign a slug that is already used elsewhere, there are two collision cases:
-
-**Case A — the slug is the active slug of another page**
-
-This is rejected.
-
-The UI should explain that:
-- this address is currently in use by another page
-- the user must first rename that other page if they want to free up this address
-- no automatic reassignment of another page's active slug is ever performed in the background
-
-This keeps active page URLs stable and avoids surprising background rewrites.
-
-**Case B — the slug is only a historical alias of another page**
-
-This is allowed immediately.
-
-When this happens:
-1. remove that historical alias from the page that currently owns it
-2. assign the slug as the new active slug of the target page
-3. if the target page's active slug changed, rewrite all internal links that target the target page
-4. do not change the other page's active slug, because it did not lose its current slug
-
-Historical alias ownership is therefore an internal implementation detail, not a user-facing confirmation flow.
-
-#### Link rewriting rule
-
-Internal page links are slug-based, so whenever a page's active slug changes, all internal links that target that page must be updated to the new slug.
-
-This applies to:
-- manually changing a page slug
-- enforcing reassignment of a historical alias from one page to another
-
-This is a deliberate tradeoff:
-- stable ids would make link maintenance simpler
-- but pretty shareable URLs are more important for this product
-
-The system therefore treats slug changes as a graph rewrite operation, not just a local page metadata update.
-
-#### Resolution rules
-
-Slug resolution must behave as follows:
-
-- `/` resolves directly to the configured home page
-- `/:slug` resolves by looking up the slug mapping table for non-home pages
-- if the slug is the current active slug of a page, load that page
-- if the slug is a historical alias of a page, also load that page
-- if the slug is unknown, return 404
-
-For canonicalization:
-- if a request comes in via a historical alias, the app should still resolve the page
-- the response must issue a `301` redirect to the page's current active slug
-- old slugs continue to work only as redirecting aliases unless that slug has been explicitly reassigned to another page
-- `/` is always the canonical URL for the home page
-- the home page itself is not user-switchable as a different page; users edit the home page's content rather than reassigning which page is home
-- slug editing is hidden entirely for the home page in the page browser UI
+When extracting `document_refs`, fragments are stripped before evaluating the target presentation. The graph tracks document-to-document references only, never section-level anchors. Same-page fragments like `#section` do not create document references.
 
 ### Document composition
 
-Svedit operates on a single flat document — it has no concept of "shared" vs. "local" nodes. The server is responsible for stitching documents together on read and splitting them apart on write.
+Svedit operates on a single flat document. In the presentations app, that model maps directly to persistence: each stored page document is already self-contained, so the server does not stitch in shared documents on read or split shared documents back out on write.
 
 The page root node also owns page-level metadata fields:
 
@@ -580,49 +487,34 @@ The page root node also owns page-level metadata fields:
 - `page.description`
 - `page.image`
 
-These are page-local fields, not shared-document fields. They belong to the page document row alongside `body`, `nav`, and `footer`.
+These are page-local fields. They belong to the presentation document row alongside `body`.
 
 `page.image` is a page-root `node` property that points to an `image` node. Unlike `page.title` and `page.description`, this node should always exist on the page root even when no image has been chosen yet. The presence check for explicit image metadata is therefore based on `page.image.src`, not on whether the `page.image` node reference exists.
 
-**On read (loading a page):**
+**On read (loading a presentation):**
 
-1. Resolve the incoming slug to a page document
-2. Fetch the page document from the database
-3. Read the `nav` and `footer` references from the page's root node
-4. Fetch those shared documents from the database
-5. Merge all nodes into a single flat `nodes` map
-6. Return the combined document to the client
+1. Receive the presentation `document_id` from the `/:document_id` route
+2. Fetch that page document from the database by `document_id`
+3. Return the document to the client
 
 ```
-slug mapping           page document          nav document          footer document
-┌──────────────┐      ┌──────────────┐      ┌──────────────┐      ┌──────────────┐
-│ survey       │─────▶│ page_1       │      │ nav_1        │      │ footer_1     │
-│ about        │      │   nav: nav_1 │─────▶│ nav_item_1   │      │ footer_col_1 │
-│ old-survey   │──┐   │   footer: …  │──┐   │ nav_item_2   │      │ footer_lnk_1 │
-└──────────────┘  │   │ prose_1      │  │   │ ...          │      │ ...          │
-                  │   │ feature_1    │  │   └──────────────┘      └──────────────┘
-                  └──▶│ ...          │  └────────────────────────────────▲
-                      └──────────────┘
-
-                           combined document sent to client
-                    ┌──────────────────────────────────────────┐
-                    │ page_1, nav_1, nav_item_1, ...           │
-                    │ prose_1, feature_1, ...                   │
-                    │ footer_1, footer_col_1, ...               │
-                    └──────────────────────────────────────────┘
+presentation URL        presentation document
+┌──────────────┐      ┌──────────────────────┐
+│ /page_234    │─────▶│ page_234             │
+└──────────────┘      │ hero_1               │
+                      │ feature_1            │
+                      │ image_1              │
+                      │ link_annotation_1    │
+                      │ ...                  │
+                      └──────────────────────┘
 ```
 
-**On write (saving a page):**
+**On write (saving a presentation):**
 
-1. Receive the combined document from the client
-2. Determine which nodes belong to the nav document, the footer document, and the page document (by walking the graph from each root node)
-3. Persist `page.title`, `page.description`, and the always-present `page.image` node as part of the page document
-4. On first save only, extract the page summary title and assign the page its first slug using `slugify`, falling back to `document_id` if needed
-5. On later saves, keep the existing active slug unchanged unless the user explicitly changed it through the slug editing flow
-6. If the active slug changes, update slug mappings and rewrite all internal links that target that page
-7. Write each document back to its own row in the database
-
-This means changes to the nav or footer made on any page are persisted to the shared document and will be reflected on all pages.
+1. Receive the self-contained presentation document from the client
+2. Persist it under its existing `document_id`; first saves from `/new` use the client-generated id unchanged
+3. Update `asset_refs` and `document_refs`
+4. Write the document back to its own row in the database
 
 ### New pages (`/new`)
 
@@ -633,15 +525,15 @@ The `/new` route uses an **ephemeral client-created document**. When the user op
 
 This id is stable from the beginning, even before the document is persisted. The page remains ephemeral only in the sense that it is not stored in the database until the first save.
 
-The transient `/new` document must be composed from the **current shared nav and footer documents in the database**, not from the static demo document. This ensures that if shared nav or footer content has been edited elsewhere, the new page starts from that latest shared state.
+The transient `/new` document is fully self-contained. It should be created from the presentation template/new-page helper, not composed from shared nav or footer documents.
 
 On first save:
 - the client sends that already-generated id to the server with `create: true`
 - the server persists the page under that id if it does not already exist
-- the server also assigns the page its first active slug
-- that first slug is auto-generated from the extracted title, or falls back to the id if no title can be extracted
+- the server returns the persisted `document_id`
+- the client navigates to `/${document_id}`
 
-No server-side id allocation or root-id rewrite is needed.
+No server-side id allocation, root-id rewrite, or slug assignment is needed.
 
 The `/new` route starts in edit mode immediately.
 
@@ -933,7 +825,7 @@ When the user saves, an all-or-nothing upload+save operation runs:
 
 3. **Replace blob URLs.** Walk all image nodes in the document. For every `src` that is a blob URL, replace it with the corresponding asset id. Also update `width` and `height` to the processed dimensions (which may differ from the source if the image was resized down to `MAX_IMAGE_WIDTH`).
 
-4. **Save the document.** Upload the document JSON to the server. The server splits shared documents (nav, footer), updates `asset_refs`, and writes to SQLite.
+4. **Save the document.** Upload the document JSON to the server. The server persists the self-contained presentation document, updates `asset_refs`, and writes to SQLite.
 
 **Atomicity boundary:** the unit of atomicity is the individual asset (original + all its variants). Either a complete asset is on the server, or nothing is. The document is only saved after all assets are successfully uploaded. If the save fails partway through asset uploads, the user sees an error and can retry. Orphaned assets (uploaded but not yet referenced by a saved document) are harmless and will be cleaned up by the normal asset cleanup process.
 
@@ -947,9 +839,7 @@ The `asset_refs` table is updated on every document save as part of the same sav
 
 This is a full replace per document — simple, idempotent, and always consistent with the actual document content. No diffing needed.
 
-Since the server already walks the document on save to split out shared documents (nav, footer), collecting asset references happens in that same walk.
-
-Note: shared documents get their own refs. If the nav has a logo image, that ref lives under `nav_1`, not under every page that includes the nav. The asset belongs to the nav document.
+Since presentation documents are self-contained, asset reference extraction walks the saved presentation document directly.
 
 ### Asset cleanup
 
@@ -966,32 +856,29 @@ This can also run on save if a document previously referenced assets it no longe
 
 ### Documents
 
-- `GET /api/documents/:slug` — load a page document by slug (with shared documents stitched in)
-- `PUT /api/documents/:slug` — save a document addressed by its current slug; server resolves slug → document, splits shared nodes back out, updates `asset_refs`, updates slug mappings if needed, and rewrites internal links if the active slug changes
-- First save from `/new` still uses the same save path with `create: true`. The page id is already client-generated via nanoid, so the server persists that exact id and assigns the first active slug during save.
+- `GET /api/documents/:document_id` — load a self-contained presentation by document id
+- `PUT /api/documents/:document_id` — save a self-contained presentation addressed by its document id; server updates `asset_refs` and `document_refs`
+- First save from `/new` still uses the same save path with `create: true`. The page id is already client-generated via nanoid, so the server persists that exact id and returns it to the client.
 
 ### Internal page href rules
 
-Internal page links use the dynamic `/:slug` route shape.
+Internal presentation links use the dynamic `/:document_id` route shape.
 
-All persisted internal page URLs are stored as href strings, so link rewriting should inspect every schema property named `href` and update any internal page URL found there.
+All persisted internal page URLs are stored as href strings. Since routes are already based on stable document ids, there is no slug rewrite step.
 
 **Valid internal page hrefs:**
 
-- `/${slug}` — a direct link to another page document
-- `/` — the configured home page
-- `/${slug}#section` — counts as a link to the page resolved by `${slug}` for reachability and `document_refs`; the fragment is ignored for graph purposes
-- `/#section` — counts as a link to the home page only if it is used from a different page; when used on the home page itself, it is just an intra-page anchor and does not create a document reference
+- `/${document_id}` — a direct link to another presentation
+- `/${document_id}#section` — counts as a link to the presentation resolved by `${document_id}` for reachability and `document_refs`; the fragment is ignored for graph purposes
+- `#section` — same-presentation anchor; does not create a `document_refs` row
 
 **Not internal page links:**
 
-- pure same-page anchors (for example `#section`, or `/#section` on the home page, or `/${current_page_slug}#section` on that same page)
 - external URLs
-- any other href that does not resolve to `/` or `/:slug`
+- protocol-relative URLs
+- any other href that does not resolve to an existing page `document_id`
 
 When extracting `document_refs`, fragments are stripped before evaluating the target page. The graph tracks document-to-document references only, never section-level anchors.
-
-For graph purposes, internal links should be normalized to the target page's `document_id` after slug resolution. This ensures that slug changes do not change the underlying reference graph identity.
 
 ### Assets
 
@@ -1014,274 +901,58 @@ To reuse media that's already on the site, navigate to the page that has it, cop
 
 ## Admin interface
 
-The only admin interface is a **site map** — a single forest of all pages. There is no need for a media library, asset browser, or content management dashboard beyond this.
+The primary public interface in backend mode is the presentation index at `/`. It lists every page document as a presentation and links to each presentation by document id.
 
-The page browser does not split pages into separate drafts and sitemap sections. Instead, it shows a unified forest of page subtrees. The configured home page appears as the last top-level subtree. Any pages that are not linked from the home page appear first as additional top-level entry points, and those entry points may themselves contain full page hierarchies.
+Authenticated admins additionally get creation and management affordances directly on the `/` index:
 
-The page browser uses a bottom drawer. Its resize handle is rendered outside the drawer panel, centered on the top edge, so it visually floats above the sheet instead of taking space inside the drawer content area. While dragging, the drawer can be pulled all the way down to the bottom of the viewport and up past the highest snap point before release. When the user releases it near zero height, the drawer should animate smoothly down to `0` height and then close, rather than closing abruptly or remaining open at a tiny height. Otherwise its final height snaps to whichever preset is closest to the release position: `1/3`, `2/3`, or `3/4` of the viewport height. This snap should animate smoothly after release in both directions, including when the user drags above `3/4` and the drawer settles back down to that preset. If the drawer is reopened after being closed near zero height, it restores the previous non-zero snapped height.
+- the `/` index shows a `New` action linking to `/new`
+- `/new` creates a self-contained presentation
+- the `/` index replaces the contextual page drawer as the place for search, navigation, and page management
 
-### Page reachability
+### Presentation index
 
-A page is **home-reachable** (and appears in `sitemap.xml`) if it can be reached by following links starting from the home page, nav, or footer. This is a transitive check. A page may still exist publicly by URL even if it is not home-reachable.
+The presentation index is public in backend mode. It should list all page documents with:
 
-This reachability logic only applies in the full database-backed multi-page runtime. In static/Vercel compatibility mode there is no live multi-page graph, no sitemap drawer, and no home-reachable vs unlisted distinction — the app simply serves the demo document at `/`.
+- `document_id`
+- title
+- optional description
+- optional preview media
+- `page_href` as `/${document_id}`
+- created/updated timestamps when available
 
-The traversal starts from three roots:
+There is no home-reachable vs unlisted distinction for the index. Every page document is a public presentation and appears in the list.
 
-1. The home page (`home_page_id` from `site_settings`)
-2. `nav_1` — its links are live on every page
-3. `footer_1` — same
+In static / `VERCEL=1` mode there is no backend presentation index. The `/` route renders the bundled demo document directly.
 
-From these roots, follow all outgoing `document_refs` recursively to collect the full set of home-reachable pages. Any page document not in this set is still public by URL, but it is **unlisted**: it does not appear in `sitemap.xml`, and it appears in the page browser as a top-level subtree outside the home subtree unless it is absorbed into another non-home top-level subtree by first occurrence.
+### Presentation index management UI
 
-This is a live query — not a precomputed cache — so it always reflects the current state of `document_refs` and `site_settings`.
+The `/` index should absorb the useful page drawer behavior and make the contextual drawer unnecessary:
 
-A single query returns all pages with a computed `status` column:
+- show all presentations in one searchable interface
+- support the same contextual actions that still apply, such as opening a presentation in a new tab and deleting a presentation after confirmation
+- use `page_href: /${document_id}` for every presentation
+- show admin-only actions only when `is_admin` is true
+- do not expose Page URL or slug editing
+- do not special-case or protect `page_1`; in backend mode admins can delete it like any other presentation
 
-```sql
-WITH RECURSIVE reachable(document_id) AS (
-    SELECT value FROM site_settings WHERE key = 'home_page_id'
-    UNION SELECT 'nav_1'
-    UNION SELECT 'footer_1'
-    UNION
-    SELECT target_document_id FROM document_refs
-    JOIN reachable ON reachable.document_id = source_document_id
-)
-SELECT d.document_id, d.data,
-    CASE WHEN r.document_id IS NOT NULL THEN 'listed' ELSE 'unlisted' END AS status
-FROM documents d
-LEFT JOIN reachable r ON d.document_id = r.document_id
-WHERE d.type = 'page';
-```
+The contextual page drawer can be removed once its useful behavior exists on `/`. This keeps the presentations app simpler than the website-oriented version.
 
-This serves both the admin site map forest (all rows) and `sitemap.xml` (filter `WHERE status = 'listed'`).
+### Page summaries
 
-This query is cheap — most sites have tens to low hundreds of pages. It runs on demand: when serving `/sitemap.xml`, when rendering the admin site map, or when checking whether a specific page is included in the listed site tree. There is no background sync or precomputed reachability table — the query is the source of truth.
+Presentation summaries are extracted on demand from stored page documents using the shared metadata extraction helper. They are not cached in the database for this step.
 
-`document_refs` is updated on save for all documents. An unlisted page's outgoing links are already tracked, so when it becomes linked from the home-reachable site tree, its targets are immediately home-reachable without re-saving.
+The summary title rules are:
 
-When the home page is changed via `site_settings`, pages that were only reachable through the old home page's link tree may become unlisted. This is expected — they are still visible in the admin site map forest and can be re-linked or deleted.
+1. use explicit `page.title` when present and non-empty
+2. otherwise fall back to title-like body content
+3. otherwise fall back to `Untitled page`
 
-### Sitemap tree construction
+The preview media rules are:
 
-The admin page browser needs a deterministic **forest projection** of the full page graph.
+1. use explicit `page.image` when it has a source
+2. otherwise fall back to the first usable body media node
+3. otherwise return `null`
 
-The forest is built with these rules:
-
-- **No duplicates in the forest** — each page appears at most once
-- **First occurrence wins** — if a page is referenced multiple times, its canonical position is the first position where it is encountered during traversal
-- **Top-level roots:** every page that has not already been placed under an earlier root becomes a top-level root
-- **Top-level ordering:** all non-home roots come first, and the configured home page root comes last
-- **Home root child ordering:** traverse references from the home page in this order:
-  1. shared nav links
-  2. home page body links
-  3. shared footer links
-- **Non-home root child ordering:** once a non-home root has been placed, recurse into that page using **body links only**
-- **Recursive ordering for descendants:** once a child page has been placed in the forest, recurse into that page using **body links only**
-- **Within each source document, preserve author order:** outgoing refs are consumed in the same order they appear in the source document, with duplicates removed by first occurrence
-
-This means the page browser is not a full graph visualization. It is a stable, editor-friendly forest derived from the full page graph. The home subtree represents the canonical main site structure, while other top-level roots represent unlisted entry points and any parallel hierarchies built away from the home page.
-
-If a page is linked from multiple places, later occurrences are ignored for placement. This keeps the page browser compact and avoids crowded duplicates. If needed in the future, secondary references can be surfaced separately (for example as “also linked from…” metadata), but they are not duplicated in the primary forest.
-
-### Contextual search in the page browser
-
-The page browser supports a client-side contextual search over the already loaded drawer data. No dedicated server-side search endpoint is required for the initial implementation.
-
-The search applies to the unified page forest:
-
-- preserve structural context rather than flattening results into a list
-- match pages anywhere in the forest by title or URL
-- when a page matches, keep its ancestor chain visible so its position in the forest remains understandable
-- when a page matches, its descendants may remain visible as contextual subtree content
-
-For the sitemap tree, visibility follows these rules:
-
-- If a page **directly matches** the query, show that page
-- If a page directly matches the query, also show **all of its descendants**
-- If a descendant matches the query, also show its **ancestor chain** up to the root so the page’s placement in the site structure remains visible
-- Pages shown only because their parent matched or because they are ancestors of a match remain visible, but they are not treated as direct matches
-
-Direct matches should be visually highlighted so it is clear why a page is shown. Context-only pages may remain visually normal or use a lighter treatment, but they should not share the same direct-match emphasis.
-
-While a search query is active, matching branches should be shown even if they would otherwise be collapsed.
-
-When the page browser drawer opens, the search input should receive focus immediately so keyboard search can begin without an extra click.
-
-Keyboard navigation should operate over the currently visible results in the same order they appear in the drawer:
-
-- `ArrowDown` moves to the next visible result
-- `ArrowUp` moves to the previous visible result
-- `Enter` opens the currently selected result
-
-Because the sitemap is a canonical tree projection rather than a full graph view, search results only surface the page’s canonical placement in the tree. Secondary graph placements are out of scope for the initial implementation.
-
-The expected scale is on the order of hundreds of pages (for example around 500), so a straightforward client-side tree traversal per query is acceptable.
-
-### Page summaries for the drawer
-
-The page drawer needs lightweight summaries for each page:
-
-- a display title
-- an optional preview image
-- the current active slug
-- whether that slug is auto-generated or custom
-
-For the initial implementation, title and preview summaries are extracted **on the fly** in a server-side helper used by the page-browser query. They are **not** cached in the database yet. This keeps the system simple and avoids introducing additional summary columns or synchronization logic before there is evidence that summary extraction is a performance problem.
-
-Summary extraction should only inspect the **page-local body content and page-local metadata fields**. Shared `nav` and `footer` content must not influence a page's summary, because that would cause many pages to inherit the same logo, links, or other shared content as their title/preview.
-
-**Title extraction order:**
-
-1. explicit `page.title` if that field exists and is non-empty
-2. otherwise, the first heading-like `text` node found in body order
-3. otherwise, the first meaningful body text content
-4. fallback to `"Untitled page"`
-
-The exact heading-like layouts are defined by the page schema / text node semantics in the current implementation. The important part is that heading-like content is preferred over arbitrary text properties.
-
-This same extracted title is also the source for the initial auto-generated slug assigned on first save.
-
-**Description extraction order:**
-
-1. explicit `page.description` if that field exists and is non-empty
-2. otherwise, the first meaningful text-ish body content in document order
-3. fallback to `null`
-
-The description extractor should prefer human-readable body copy, not navigation labels, footer text, or other shared content.
-
-**Preview image extraction order:**
-
-1. explicit `page.image` if the `page.image` node exists and its `src` is non-empty
-2. otherwise, the first image or video found while traversing the page body in document order
-3. fallback to `null`
-
-Because the `page.image` node is always present on the page root, the explicit-image check must look at `page.image.src`, not merely at whether the node reference exists.
-
-Because the drawer already has a strong illustrated page fallback, `null` is perfectly acceptable and does not require a placeholder asset.
-
-The same metadata extraction helper should also drive page-level browser metadata and social metadata. In particular:
-
-- `<title>` should use the extracted page title
-- `<meta name="description">` should use the extracted page description when available
-- Open Graph / social tags such as `og:title` and `og:description` should use `page.title` / `page.description` when present, otherwise the same fallback extraction used for page browser data
-- Open Graph / social image tags such as `og:image` and `twitter:image` should use the extracted page image
-- for now, social image tags should use the original asset URL rather than a derived smaller variant
-- if no description can be extracted, description meta tags should be omitted rather than filled with placeholder text
-- if no image can be extracted, image meta tags should be omitted
-
-If this on-the-fly extraction later proves too costly, the same extraction helper can become the canonical summary generator for a cached summary written on save. But caching is an optimization step for later, not part of the initial multi-page implementation.
-
-### Page metadata editing in edit mode
-
-Page-level metadata should be editable directly in the page editor, but only while editing.
-
-Requirements:
-
-1. add `title` and `description` as `annotated_text` properties on the `page` root node
-2. add `image` as a page-root `node` property pointing to an `image` node, and ensure that image node always exists
-3. render the metadata editor UI at the very end of the page
-4. render `title` and `description` with `<AnnotatedTextProperty>`
-5. render `page.image` as a square image field in that same metadata area
-6. only render that metadata editor UI when the editor is in edit mode
-7. keep the rendered metadata editor outside the normal page body flow so it does not affect public page content or summary extraction order
-8. when not in edit mode, do not render the metadata editor UI at all
-
-This gives site owners an explicit place to override auto-derived metadata without introducing a separate CMS screen.
-
-### Page slug management from the drawer
-
-The page drawer ellipsis menu must support slug management in addition to page actions.
-
-For this architecture step, the menu needs to support:
-
-- `Open in new tab`
-- `Set custom slug`
-- `Delete`
-
-The slug editing flow must cover these cases:
-
-#### User-facing slug editing model
-
-The page browser should present Page URL editing in a simple way:
-- show the current Page URL
-- allow the user to change it
-- describe it in user-facing copy as "the Page URL your page will be reachable at"
-- present it as `example.com/[your-slug-here]`, with only the part after the slash editable
-- do not expose "auto mode" or "custom mode" terminology in the UI
-
-This gives users a simple mental model:
-- "the Page URL is whatever is currently shown"
-- "the system picks an initial Page URL for me"
-- "if I change it manually, the system respects that"
-
-#### 1. Setting a slug that is unused
-
-If the requested slug is not currently used as either an active slug or a historical alias:
-- assign it to the page as the new active slug
-- preserve the previous active slug as a historical alias
-
-#### 2. Setting a slug equal to the page's own current active slug
-
-This is forbidden as a no-op edit:
-- the UI should reject it
-- no database changes are made
-
-#### 3. Setting a slug equal to the page's own historical alias
-
-If the requested slug is already a historical alias of the same page:
-- promote that alias back to the page's active slug
-- remove the historical alias entry for that slug
-- move the previously active slug into historical aliases
-- rewrite internal links targeting that page if the active slug changed
-
-#### 4. Setting a slug that is a historical alias of another page
-
-Historical aliases are still reserved. The UI must offer:
-- `Cancel`
-- `Enforce`
-
-If the user chooses `Enforce`:
-1. remove that historical alias from the page that currently owns it
-2. assign the slug as the new active slug of the target page
-3. rewrite internal links referencing the target page
-
-This avoids ambiguous resolution and keeps slug ownership explicit.
-
-#### 5. Setting a slug that is the active slug of another page
-
-This is rejected.
-
-The UI must explain that:
-- the address is already in use by another page
-- the user must first rename that other page if they want to use this address here
-- no force-takeover flow exists for active page URLs
-
-This keeps the behavior predictable and avoids automatically changing another page's live address in the background.
-
-### Page deletion from the drawer
-
-Deleting a page removes its active slug and all historical aliases.
-
-When a page is deleted:
-1. remove its active slug and all historical aliases from the slug mapping table
-2. delete the page document
-3. update `document_refs` accordingly
-
-Broken links are acceptable after deletion. The intended workflow is:
-- if a page is still linked, the user should first remove those references so the page becomes a draft again
-- then the user can delete it
-
-Deletion still requires confirmation, with copy depending on whether the page is a draft or a reachable page:
-
-1. Draft: `Are you sure you want to delete this draft?`
-2. Reachable page: `Are you sure you want to delete this page? It is still linked from other pages. Remove those links first if you want to avoid broken links.`
-
-The configured home page cannot be deleted. In the drawer UI this is the first page in the page listing and its delete action is unavailable.
-
-If the currently open page is deleted from the drawer, the client should navigate to the home page after the delete succeeds.
-
-The ellipsis menu is implemented as a dialog using anchor positioning. It can be dismissed with `Escape` or by clicking the backdrop, matching the interaction model used by other anchored dialogs in the editor.
 
 ## Authentication
 
