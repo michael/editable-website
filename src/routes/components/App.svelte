@@ -89,7 +89,7 @@
 	set_body_node_selector(body_node_selector);
 
 	$effect(() => {
-		document.documentElement.style.scrollBehavior = editable ? 'auto' : 'smooth';
+		// document.documentElement.style.scrollBehavior = editable ? 'auto' : 'smooth';
 	});
 
 	$effect(() => {
