@@ -1,6 +1,5 @@
-// Seed data for the demo website
+// Seed data for the demo presentation.
 // Stored as a single merged document so you can paste console.logged JSON directly.
-// NAV_1, FOOTER_1, PAGE_1 are extracted automatically using svedit's traverse utility.
 
 import { traverse } from 'svedit';
 import { document_schema } from '$lib/document_schema.js';
@@ -25,9 +24,7 @@ const FULL_DOC = {
 				"RtYpQwXsZvNmKjHgFdSaLe",
 				"YTMHBcPkYXJMRUnuSAhrTDE",
 				"UBNYngEBJYtDWgeabtDJqWW"
-			],
-			"nav": "nav_1",
-			"footer": "footer_1"
+			]
 		},
 		"page_image_1": {
 			"id": "page_image_1",
@@ -63,7 +60,7 @@ const FULL_DOC = {
 			"id": "ccHVKDeyhrRVfKZCpXvxhac",
 			"type": "button",
 			"layout": 1,
-			"href": "/#RtYpQwXsZvNmKjHgFdSaLe",
+			"href": "#RtYpQwXsZvNmKjHgFdSaLe",
 			"target": "_self",
 			"label": {
 				"text": "↓",
@@ -337,251 +334,16 @@ const FULL_DOC = {
 				"text": "Join the Technical Preview",
 				"annotations": []
 			}
-		},
-		"nav_1": {
-			"id": "nav_1",
-			"type": "nav",
-			"logo": "nav_logo",
-			"nav_items": [
-				"DDmmrQzcAxWJfdhatTbkRTh",
-				"GyKyQvRAvkgnywmxTVgvrnF",
-				"FKgjxHCeSbVZrdnPuxYkMYp"
-			]
-		},
-		"nav_logo": {
-			"id": "nav_logo",
-			"type": "image",
-			"src": "logo.svg",
-			"mime_type": "image/svg+xml",
-			"width": 100,
-			"height": 100,
-			"alt": "Logo",
-			"scale": 1,
-			"focal_point_x": 0.5,
-			"focal_point_y": 0.5,
-			"object_fit": "cover"
-		},
-		"DDmmrQzcAxWJfdhatTbkRTh": {
-			"id": "DDmmrQzcAxWJfdhatTbkRTh",
-			"type": "nav_item",
-			"layout": 1,
-			"href": "/#RtYpQwXsZvNmKjHgFdSaLe",
-			"target": "_self",
-			"label": {
-				"text": "Try it",
-				"annotations": []
-			}
-		},
-		"GyKyQvRAvkgnywmxTVgvrnF": {
-			"id": "GyKyQvRAvkgnywmxTVgvrnF",
-			"type": "nav_item",
-			"layout": 1,
-			"href": "/#YTMHBcPkYXJMRUnuSAhrTDE",
-			"target": "_self",
-			"label": {
-				"text": "About",
-				"annotations": []
-			}
-		},
-		"FKgjxHCeSbVZrdnPuxYkMYp": {
-			"id": "FKgjxHCeSbVZrdnPuxYkMYp",
-			"type": "nav_item",
-			"layout": 2,
-			"href": "https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform",
-			"target": "_blank",
-			"label": {
-				"text": "Join the Technical Preview",
-				"annotations": []
-			}
-		},
-		"footer_1": {
-			"id": "footer_1",
-			"type": "footer",
-			"logo": "footer_logo",
-			"copyright": {
-				"text": "© Editable Website",
-				"annotations": []
-			},
-			"footer_link_columns": [
-				"fcSSWQUTYajjknPChgGsPZz",
-				"footer_column_2",
-				"footer_column_3"
-			],
-			"logo_max_width": 88,
-			"logo_aspect_ratio": 1
-		},
-		"footer_logo": {
-			"id": "footer_logo",
-			"type": "image",
-			"src": "logo.svg",
-			"mime_type": "image/svg+xml",
-			"width": 100,
-			"height": 100,
-			"alt": "Logo",
-			"scale": 1,
-			"focal_point_x": 0.5,
-			"focal_point_y": 0.5,
-			"object_fit": "cover"
-		},
-		"fcSSWQUTYajjknPChgGsPZz": {
-			"id": "fcSSWQUTYajjknPChgGsPZz",
-			"type": "footer_link_column",
-			"footer_links": [
-				"EtcfbabRCtPSvSpfFfjPeza",
-				"WVvBSREFCThNYcpgvfUnWkF",
-				"eDAnnFjNdZpzYMtpSqReBxf",
-				"GwPeRFYtAyrcCMfpuyzdWZp"
-			],
-			"label": {
-				"text": "On this page",
-				"annotations": []
-			}
-		},
-		"EtcfbabRCtPSvSpfFfjPeza": {
-			"id": "EtcfbabRCtPSvSpfFfjPeza",
-			"type": "footer_link",
-			"href": "/#hero_1",
-			"target": "_self",
-			"label": {
-				"text": "Opening",
-				"annotations": []
-			}
-		},
-		"WVvBSREFCThNYcpgvfUnWkF": {
-			"id": "WVvBSREFCThNYcpgvfUnWkF",
-			"type": "footer_link",
-			"href": "/#RtYpQwXsZvNmKjHgFdSaLe",
-			"target": "_self",
-			"label": {
-				"text": "Try it",
-				"annotations": []
-			}
-		},
-		"eDAnnFjNdZpzYMtpSqReBxf": {
-			"id": "eDAnnFjNdZpzYMtpSqReBxf",
-			"type": "footer_link",
-			"href": "/#YTMHBcPkYXJMRUnuSAhrTDE",
-			"target": "_self",
-			"label": {
-				"text": "About",
-				"annotations": []
-			}
-		},
-		"GwPeRFYtAyrcCMfpuyzdWZp": {
-			"id": "GwPeRFYtAyrcCMfpuyzdWZp",
-			"type": "footer_link",
-			"href": "/#UBNYngEBJYtDWgeabtDJqWW",
-			"target": "_self",
-			"label": {
-				"text": "Join",
-				"annotations": []
-			}
-		},
-		"footer_column_2": {
-			"id": "footer_column_2",
-			"type": "footer_link_column",
-			"label": {
-				"text": "GitHub",
-				"annotations": []
-			},
-			"footer_links": [
-				"uavzfSnSpTRrHSfJpbfvpsh",
-				"footer_link_2_1"
-			]
-		},
-		"uavzfSnSpTRrHSfJpbfvpsh": {
-			"id": "uavzfSnSpTRrHSfJpbfvpsh",
-			"type": "footer_link",
-			"href": "https://github.com/michael/editable-website",
-			"target": "_blank",
-			"label": {
-				"text": "Editable Website",
-				"annotations": []
-			}
-		},
-		"footer_link_2_1": {
-			"id": "footer_link_2_1",
-			"type": "footer_link",
-			"href": "https://svedit.dev",
-			"label": {
-				"text": "Svedit",
-				"annotations": []
-			},
-			"target": "_blank"
-		},
-		"footer_column_3": {
-			"id": "footer_column_3",
-			"type": "footer_link_column",
-			"label": {
-				"text": "Videos",
-				"annotations": []
-			},
-			"footer_links": [
-				"ewuBYPxRqFsJXffTuwqssXg",
-				"cCMbgzNjRjVjrvWuHJCvJkx"
-			]
-		},
-		"ewuBYPxRqFsJXffTuwqssXg": {
-			"id": "ewuBYPxRqFsJXffTuwqssXg",
-			"type": "footer_link",
-			"href": "https://www.youtube.com/watch?v=T2RMYj_1g9E",
-			"label": {
-				"text": "Introduction",
-				"annotations": []
-			},
-			"target": "_blank"
-		},
-		"cCMbgzNjRjVjrvWuHJCvJkx": {
-			"id": "cCMbgzNjRjVjrvWuHJCvJkx",
-			"type": "footer_link",
-			"href": "https://youtu.be/o4kcABS-XH4?t=3226",
-			"target": "_blank",
-			"label": {
-				"text": "Update 2025-10",
-				"annotations": []
-			}
 		}
 	}
 };
 
-// ---------------------------------------------------------------------------
-// Extract sub-documents using svedit's traverse utility
-// ---------------------------------------------------------------------------
 
-/**
- * Extract a sub-document: traverse from root_id collecting all reachable nodes.
- */
-function extract_document(nodes, root_id) {
-	const node_list = traverse(root_id, document_schema, nodes);
-	const sub_nodes = {};
-	for (const node of node_list) {
-		sub_nodes[node.id] = node;
-	}
-	return { document_id: root_id, nodes: sub_nodes };
-}
 
-const page_node = FULL_DOC.nodes['page_1'];
-const nav_root_id = page_node.nav;
-const footer_root_id = page_node.footer;
-
-export const NAV_1 = extract_document(FULL_DOC.nodes, nav_root_id);
-export const FOOTER_1 = extract_document(FULL_DOC.nodes, footer_root_id);
-
-// PAGE_1 gets everything reachable from page_1, minus nav/footer subtrees.
-const nav_ids = new Set(Object.keys(NAV_1.nodes));
-const footer_ids = new Set(Object.keys(FOOTER_1.nodes));
-const exclude = new Set([...nav_ids, ...footer_ids]);
 const page_nodes_list = traverse('page_1', document_schema, FULL_DOC.nodes);
 const page_nodes = {};
 for (const node of page_nodes_list) {
-	if (!exclude.has(node.id)) {
-		page_nodes[node.id] = node;
-	}
+	page_nodes[node.id] = node;
 }
 export const PAGE_1 = { document_id: 'page_1', nodes: page_nodes };
-
-// Merged document for static deployment (Vercel demo).
-export const demo_doc = {
-	document_id: PAGE_1.document_id,
-	nodes: { ...PAGE_1.nodes, ...NAV_1.nodes, ...FOOTER_1.nodes }
-};
+export const demo_doc = PAGE_1;

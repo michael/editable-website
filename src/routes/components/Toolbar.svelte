@@ -1,17 +1,12 @@
 <script>
 	import { getContext } from 'svelte';
-	import { resolve } from '$app/paths';
-	import { get_page_browser } from './page_browser_context.svelte.js';
 
 	let { session, app_commands, editable, focus_canvas } = $props();
 
-	const page_browser = get_page_browser();
 	const app = getContext('app');
 
 	let cancel_command = $derived(app_commands.cancel_editing ?? null);
 	let cancel_button_label = $derived(cancel_command?.label || 'Cancel');
-	let can_browse_pages = $derived(app.has_backend && app.is_admin && !editable);
-	let can_create_pages = $derived(app.has_backend && app.is_admin);
 	let can_logout = $derived(app.has_backend && app.is_admin && !editable);
 
 	let selected_property = $derived(
@@ -107,49 +102,8 @@
 	<div class="overflow-x-auto">
 		<div class="py-2 px-0.5 flex items-center gap-1.5 sm:gap-3 w-max ml-auto">
 			{#if !editable}
-				<!-- Read mode: New page + Edit + Pages buttons -->
+				<!-- Read mode -->
 				<div class="flex items-center gap-1">
-					{#if can_create_pages}
-						<a
-							class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
-							href={resolve('/new')}
-							title="New page"
-							aria-label="New page"
-						>
-							<svg
-								class="size-4"
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 15 15"
-								fill="none"
-								aria-hidden="true"
-							>
-								<path d="M7.5 3V12M3 7.5H12" stroke="currentColor" stroke-linecap="square" />
-							</svg>
-						</a>
-					{/if}
-
-					{#if can_browse_pages}
-						<button
-							class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
-							onclick={() => page_browser?.open_navigate()}
-							title="Browse (⌘ P)"
-							aria-label="Browse"
-						>
-							<svg
-								class="size-4"
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 15 15"
-								fill="none"
-								aria-hidden="true"
-							>
-								<rect x="1.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-								<rect x="8.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-								<rect x="1.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-								<rect x="8.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-							</svg>
-						</button>
-					{/if}
-
 					{#if (!app.has_backend || app.is_admin) && !app_commands.edit_document.disabled}
 						<button
 							class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"

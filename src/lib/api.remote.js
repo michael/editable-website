@@ -1,15 +1,9 @@
 import { getRequestEvent, query, command } from '$app/server';
 import * as v from 'valibot';
-import slugify from 'slugify';
 import crypto from 'node:crypto';
 import db from '$lib/server/db.js';
 import { document_schema } from '$lib/document_schema.js';
-import { collect_node_ids_in_order } from '$lib/document_graph.js';
-import {
-	extract_page_metadata,
-	extract_plain_text,
-	collect_page_body_node_ids
-} from '$lib/page_metadata.js';
+import { extract_page_metadata } from '$lib/page_metadata.js';
 import {
 	admin_session_cookie_name,
 	get_required_admin_password,
@@ -24,13 +18,17 @@ const admin_login_input_schema = v.object({
 	password: v.string()
 });
 
-function create_page_url_error_result(code, message) {
-	return {
-		ok: false,
-		code,
-		message
-	};
-}
+const save_document_input_schema = v.object({
+	document_id: v.string(),
+	nodes: v.record(v.string(), v.any()),
+	create: v.optional(v.boolean())
+});
+
+const delete_page_input_schema = v.object({
+	document_id: v.string()
+});
+
+const sql = (strings) => strings.join('');
 
 function create_auth_error_result(code, message) {
 	return {
@@ -78,13 +76,12 @@ function create_auth_error_result(code, message) {
  */
 
 /**
- * @typedef {Object} PageSummary
+ * @typedef {Object} PresentationSummary
  * @property {string} document_id
  * @property {string} title
  * @property {string | null} description
  * @property {PreviewMediaNode | null} preview_media_node
  * @property {string} page_href
- * @property {string} slug
  * @property {string | null} created_at
  * @property {string | null} updated_at
  */
@@ -98,51 +95,20 @@ function create_auth_error_result(code, message) {
  */
 
 /**
- * @typedef {Object} PageTreeNode
- * @property {string} document_id
- * @property {string} title
- * @property {PreviewMediaNode | null} preview_media_node
- * @property {string} page_href
- * @property {string} slug
- * @property {string | null} created_at
- * @property {string | null} updated_at
- * @property {PageTreeNode[]} children
- */
-
-const save_document_input_schema = v.object({
-	document_id: v.string(),
-	nodes: v.record(v.string(), v.any()),
-	create: v.optional(v.boolean())
-});
-
-const update_page_slug_input_schema = v.object({
-	document_id: v.string(),
-	slug: v.string()
-});
-
-const delete_page_input_schema = v.object({
-	document_id: v.string()
-});
-
-const sql = (strings) => strings.join('');
-
-/**
  * Collect all node ids reachable from a root node by walking node/node_array
  * properties and annotation references.
  *
  * @param {string} root_id
  * @param {Record<string, any>} nodes
- * @param {Set<string>} [exclude_roots]
  * @returns {Set<string>}
  */
-function collect_node_ids(root_id, nodes, exclude_roots) {
+function collect_node_ids(root_id, nodes) {
 	const collected = new Set();
 	const stack = [root_id];
 
 	while (stack.length > 0) {
 		const id = stack.pop();
 		if (!id || collected.has(id)) continue;
-		if (exclude_roots && exclude_roots.has(id) && id !== root_id) continue;
 
 		collected.add(id);
 
@@ -175,8 +141,6 @@ function collect_node_ids(root_id, nodes, exclude_roots) {
 	return collected;
 }
 
-
-
 /**
  * @param {string} document_id
  * @param {Set<string>} node_ids
@@ -199,7 +163,7 @@ function extract_document(document_id, node_ids, all_nodes) {
  */
 function get_doc_from_db(document_id) {
 	const doc_row = /** @type {DocumentRow | undefined} */ (
-		db.prepare('SELECT * FROM documents WHERE document_id = ?').get(document_id)
+		db.prepare('SELECT * FROM documents WHERE document_id = ? AND type = ?').get(document_id, 'page')
 	);
 
 	if (!doc_row) {
@@ -215,7 +179,7 @@ function get_doc_from_db(document_id) {
  */
 function get_optional_doc_from_db(document_id) {
 	const doc_row = /** @type {DocumentRow | undefined} */ (
-		db.prepare('SELECT * FROM documents WHERE document_id = ?').get(document_id)
+		db.prepare('SELECT * FROM documents WHERE document_id = ? AND type = ?').get(document_id, 'page')
 	);
 
 	if (!doc_row) return null;
@@ -223,61 +187,14 @@ function get_optional_doc_from_db(document_id) {
 }
 
 /**
- * @returns {string | null}
- */
-function get_home_page_id_from_db() {
-	const row = /** @type {{ value: string } | undefined } */ (
-		db.prepare('SELECT value FROM site_settings WHERE key = ?').get('home_page_id')
-	);
-
-	return row?.value ?? null;
-}
-
-
-
-/**
  * @param {string} document_id
  * @returns {boolean}
  */
-function is_home_page_document_id(document_id) {
-	return get_home_page_id_from_db() === document_id;
-}
-
-/**
- * @param {string} document_id
- * @returns {string | null}
- */
-function get_active_slug_for_document_id(document_id) {
-	const row = /** @type {{ slug: string } | undefined } */ (
-		db.prepare('SELECT slug FROM document_slugs WHERE document_id = ? AND is_active = 1').get(
-			document_id
-		)
+function page_document_exists(document_id) {
+	const row = /** @type {{ document_id: string } | undefined} */ (
+		db.prepare('SELECT document_id FROM documents WHERE document_id = ? AND type = ?').get(document_id, 'page')
 	);
-
-	return row?.slug ?? null;
-}
-
-/**
- * @param {string} slug
- * @returns {{ document_id: string, is_active: boolean, active_slug: string } | null}
- */
-function resolve_slug(slug) {
-	const row = /** @type {{ document_id: string, is_active: number } | undefined } */ (
-		db.prepare('SELECT document_id, is_active FROM document_slugs WHERE slug = ?').get(slug)
-	);
-
-	if (!row) return null;
-
-	const active_slug = get_active_slug_for_document_id(row.document_id);
-	if (!active_slug) {
-		throw new Error(`Active slug not found for document: ${row.document_id}`);
-	}
-
-	return {
-		document_id: row.document_id,
-		is_active: row.is_active === 1,
-		active_slug
-	};
+	return !!row;
 }
 
 /**
@@ -300,43 +217,56 @@ function list_page_documents() {
 }
 
 /**
- * @param {string} title
- * @param {string} document_id
- * @returns {string}
+ * @param {PageDocumentRecord} page_doc
+ * @returns {PresentationSummary}
  */
-function create_slug_candidate(title, document_id) {
-	const slug = slugify(title, { lower: true, strict: true, trim: true });
-	return slug || document_id;
+function summarize_page_document(page_doc) {
+	const metadata = extract_page_metadata({
+		document_id: page_doc.document_id,
+		nodes: page_doc.nodes
+	});
+
+	return {
+		document_id: page_doc.document_id,
+		title: metadata.title,
+		description: metadata.description,
+		preview_media_node: metadata.preview_media_node,
+		page_href: `/${page_doc.document_id}`,
+		created_at: page_doc.created_at ?? null,
+		updated_at: page_doc.updated_at ?? null
+	};
 }
 
 /**
- * @param {string} base_slug
- * @returns {string}
+ * @returns {PresentationSummary[]}
  */
-function create_unique_slug(base_slug) {
-	const slug_exists_stmt = db.prepare(
-		'SELECT document_id FROM document_slugs WHERE slug = ?'
-	);
+function build_presentation_index() {
+	return list_page_documents()
+		.map(summarize_page_document)
+		.sort((a, b) => {
+			const a_updated_at = a.updated_at ?? a.created_at ?? '';
+			const b_updated_at = b.updated_at ?? b.created_at ?? '';
 
-	let slug = base_slug;
-	let suffix = 2;
+			if (a_updated_at !== b_updated_at) {
+				return b_updated_at.localeCompare(a_updated_at);
+			}
 
-	while (true) {
-		const row = /** @type {{ document_id: string } | undefined } */ (slug_exists_stmt.get(slug));
-		if (!row) return slug;
-		slug = `${base_slug}-${suffix}`;
-		suffix += 1;
-	}
+			const title_order = a.title.localeCompare(b.title);
+			if (title_order !== 0) return title_order;
+
+			return a.document_id.localeCompare(b.document_id);
+		});
 }
 
 /**
  * @param {string} href
- * @returns {{ slug: string, fragment: string }} | null
+ * @returns {{ document_id: string, fragment: string }} | null
  */
 function parse_internal_page_href(href) {
 	if (!href) return null;
 	if (/^[a-z][a-z0-9+.-]*:/i.test(href)) return null;
 	if (href.startsWith('//')) return null;
+	if (href.startsWith('#')) return null;
 	if (!href.startsWith('/')) return null;
 
 	const [path_part, fragment_part] = href.split('#');
@@ -345,11 +275,11 @@ function parse_internal_page_href(href) {
 	const segments = path_part.split('/').filter(Boolean);
 	if (segments.length !== 1) return null;
 
-	const slug = segments[0];
-	if (!slug) return null;
+	const document_id = segments[0];
+	if (!document_id) return null;
 
 	return {
-		slug,
+		document_id,
 		fragment: fragment_part ? `#${fragment_part}` : ''
 	};
 }
@@ -362,12 +292,9 @@ function parse_internal_page_href(href) {
 function normalize_internal_page_href(href, source_document_id) {
 	const parsed = parse_internal_page_href(href);
 	if (!parsed) return null;
-
-	const resolved = resolve_slug(parsed.slug);
-	if (!resolved) return null;
-	if (source_document_id && resolved.document_id === source_document_id) return null;
-
-	return resolved.document_id;
+	if (source_document_id && parsed.document_id === source_document_id) return null;
+	if (!page_document_exists(parsed.document_id)) return null;
+	return parsed.document_id;
 }
 
 /**
@@ -464,356 +391,41 @@ function update_document_refs(source_document_id, target_document_ids, delete_st
 	}
 }
 
-/**
- * @param {DocumentData} page_doc
- * @returns {{ nav_root_id: string | null, footer_root_id: string | null }}
- */
-function get_shared_root_ids(page_doc) {
-	const page_node = page_doc.nodes[page_doc.document_id];
-
-	return {
-		nav_root_id: typeof page_node?.nav === 'string' ? page_node.nav : null,
-		footer_root_id: typeof page_node?.footer === 'string' ? page_node.footer : null
-	};
-}
-
-/**
- * @param {string} document_id
- * @returns {DocumentData}
- */
-function get_combined_document(document_id) {
-	const page_doc = get_doc_from_db(document_id);
-	const page_node = page_doc.nodes[page_doc.document_id];
-	const merged_nodes = { ...page_doc.nodes };
-
-	if (page_node?.nav) {
-		const nav_doc = get_doc_from_db(page_node.nav);
-		Object.assign(merged_nodes, nav_doc.nodes);
-	}
-
-	if (page_node?.footer) {
-		const footer_doc = get_doc_from_db(page_node.footer);
-		Object.assign(merged_nodes, footer_doc.nodes);
-	}
-
-	return {
-		document_id: page_doc.document_id,
-		nodes: merged_nodes
-	};
-}
-
-/**
- * @param {PageDocumentRecord} page_doc
- * @returns {PageSummary}
- */
-function summarize_page_document(page_doc) {
-	const metadata = extract_page_metadata({
-		document_id: page_doc.document_id,
-		nodes: page_doc.nodes
-	});
-	const active_slug = get_active_slug_for_document_id(page_doc.document_id);
-
-	// By invariant, only the home page has no active slug row. All other pages
-	// must have an active slug, so a missing slug here implies `/`.
-	return {
-		document_id: page_doc.document_id,
-		title: metadata.title,
-		description: metadata.description,
-		preview_media_node: metadata.preview_media_node,
-		page_href: active_slug ? `/${active_slug}` : '/',
-		slug: active_slug ?? '',
-		created_at: page_doc.created_at ?? null,
-		updated_at: page_doc.updated_at ?? null
-	};
-}
-
-/**
- * @param {string} source_document_id
- * @returns {string[]}
- */
-function get_outgoing_refs(source_document_id) {
-	const rows = /** @type {Array<{ target_document_id: string }>} */ (
-		db.prepare(
-			'SELECT target_document_id FROM document_refs WHERE source_document_id = ? ORDER BY ref_order, rowid'
-		).all(source_document_id)
-	);
-
-	return rows.map((row) => row.target_document_id);
-}
-
-/**
- * @param {string[]} refs
- * @param {Set<string>} assigned_page_ids
- * @param {Map<string, PageSummary>} summaries_by_id
- * @param {Map<string, string[]>} body_refs_by_page_id
- * @returns {PageTreeNode[]}
- */
-function build_tree_children(refs, assigned_page_ids, summaries_by_id, body_refs_by_page_id) {
-	const children = [];
-
-	for (const target_document_id of refs) {
-		if (assigned_page_ids.has(target_document_id)) continue;
-
-		const summary = summaries_by_id.get(target_document_id);
-		if (!summary) continue;
-
-		assigned_page_ids.add(target_document_id);
-
-		children.push({
-			document_id: summary.document_id,
-			title: summary.title,
-			preview_media_node: summary.preview_media_node,
-			page_href: summary.page_href,
-			slug: summary.slug,
-			created_at: summary.created_at,
-			updated_at: summary.updated_at,
-			children: build_tree_children(
-				body_refs_by_page_id.get(target_document_id) ?? [],
-				assigned_page_ids,
-				summaries_by_id,
-				body_refs_by_page_id
-			)
-		});
-	}
-
-	return children;
-}
-
-/**
- * @param {string} root_document_id
- * @param {Set<string>} assigned_page_ids
- * @param {Map<string, PageSummary>} summaries_by_id
- * @param {Map<string, string[]>} body_refs_by_page_id
- * @param {string[] | null} root_refs
- * @returns {PageTreeNode | null}
- */
-function build_page_tree_node(
-	root_document_id,
-	assigned_page_ids,
-	summaries_by_id,
-	body_refs_by_page_id,
-	root_refs = null
-) {
-	const summary = summaries_by_id.get(root_document_id);
-	if (!summary) return null;
-	if (assigned_page_ids.has(root_document_id)) return null;
-
-	assigned_page_ids.add(root_document_id);
-
-	return {
-		document_id: summary.document_id,
-		title: summary.title,
-		preview_media_node: summary.preview_media_node,
-		page_href: summary.page_href,
-		slug: summary.slug,
-		created_at: summary.created_at,
-		updated_at: summary.updated_at,
-		children: build_tree_children(
-			root_refs ?? body_refs_by_page_id.get(root_document_id) ?? [],
-			assigned_page_ids,
-			summaries_by_id,
-			body_refs_by_page_id
-		)
-	};
-}
-
-/**
- * @returns {{
- *   home_page_id: string | null,
- *   current_document_id: string | null,
- *   page_forest: PageTreeNode[]
- * }}
- */
-function build_page_browser_data() {
-	const request_event = getRequestEvent();
-	const pathname = request_event.url.pathname;
-	const home_page_id = get_home_page_id_from_db();
-	const current_document_id =
-		pathname === '/'
-			? home_page_id
-			: resolve_slug(pathname.slice(1))?.document_id ?? null;
-	const page_docs = list_page_documents();
-	const page_docs_by_id = new Map(page_docs.map((page_doc) => [page_doc.document_id, page_doc]));
-	const summaries = page_docs.map(summarize_page_document);
-	const summaries_by_id = new Map(summaries.map((summary) => [summary.document_id, summary]));
-
-	const home_page_doc = home_page_id ? page_docs_by_id.get(home_page_id) ?? null : null;
-	const { nav_root_id, footer_root_id } = home_page_doc
-		? get_shared_root_ids(home_page_doc)
-		: { nav_root_id: null, footer_root_id: null };
-
-	const body_refs_by_page_id = new Map();
-	for (const page_doc of page_docs) {
-		const body_node_ids = collect_page_body_node_ids(page_doc);
-		body_refs_by_page_id.set(
-			page_doc.document_id,
-			collect_document_refs(page_doc.nodes, body_node_ids, page_doc.document_id)
-		);
-	}
-
-	const page_forest = [];
-	const assigned_page_ids = new Set();
-	const incoming_page_ref_counts = new Map();
-
-	for (const page_doc of page_docs) {
-		incoming_page_ref_counts.set(page_doc.document_id, 0);
-	}
-
-	for (const refs of body_refs_by_page_id.values()) {
-		for (const target_document_id of refs) {
-			if (!incoming_page_ref_counts.has(target_document_id)) continue;
-			incoming_page_ref_counts.set(
-				target_document_id,
-				(incoming_page_ref_counts.get(target_document_id) ?? 0) + 1
-			);
-		}
-	}
-
-	let home_linked_page_ids = new Set();
-
-	if (home_page_id && summaries_by_id.has(home_page_id)) {
-		const nav_refs = nav_root_id ? get_outgoing_refs(nav_root_id) : [];
-		const footer_refs = footer_root_id ? get_outgoing_refs(footer_root_id) : [];
-		const home_body_refs = body_refs_by_page_id.get(home_page_id) ?? [];
-
-		home_linked_page_ids = new Set([home_page_id]);
-		build_tree_children(
-			[...nav_refs, ...home_body_refs, ...footer_refs],
-			home_linked_page_ids,
-			summaries_by_id,
-			body_refs_by_page_id
-		);
-	}
-
-	const non_home_root_summaries = summaries
-		.filter(
-			(summary) =>
-				summary.document_id !== home_page_id &&
-				!home_linked_page_ids.has(summary.document_id) &&
-				(incoming_page_ref_counts.get(summary.document_id) ?? 0) === 0
-		)
-		.sort((a, b) => {
-			const a_updated_at = a.updated_at ?? a.created_at ?? '';
-			const b_updated_at = b.updated_at ?? b.created_at ?? '';
-
-			if (a_updated_at !== b_updated_at) {
-				return b_updated_at.localeCompare(a_updated_at);
-			}
-
-			return a.title.localeCompare(b.title);
-		});
-
-	if (home_page_id && summaries_by_id.has(home_page_id)) {
-		const nav_refs = nav_root_id ? get_outgoing_refs(nav_root_id) : [];
-		const footer_refs = footer_root_id ? get_outgoing_refs(footer_root_id) : [];
-		const home_body_refs = body_refs_by_page_id.get(home_page_id) ?? [];
-
-		const home_root = build_page_tree_node(
-			home_page_id,
-			assigned_page_ids,
-			summaries_by_id,
-			body_refs_by_page_id,
-			[...nav_refs, ...home_body_refs, ...footer_refs]
-		);
-
-		if (home_root) {
-			home_root.title = 'Home';
-			page_forest.push(home_root);
-		}
-	}
-
-	for (const summary of non_home_root_summaries) {
-		if (assigned_page_ids.has(summary.document_id)) continue;
-
-		const root_node = build_page_tree_node(
-			summary.document_id,
-			assigned_page_ids,
-			summaries_by_id,
-			body_refs_by_page_id
-		);
-
-		if (root_node) {
-			page_forest.push(root_node);
-		}
-	}
-
-	return {
-		home_page_id,
-		current_document_id,
-		page_forest
-	};
-}
-
-/**
- * Get a document from the database, stitching in shared documents (nav, footer).
- */
-export const get_document = query(v.string(), async (slug) => {
-	const resolved = resolve_slug(slug);
-
-	if (!resolved) {
-		throw new Error(`Page not found for slug: ${slug}`);
-	}
-
-	return {
-		document: get_combined_document(resolved.document_id),
-		slug: resolved.active_slug,
-		redirect_to_slug: resolved.is_active ? null : resolved.active_slug
-	};
-});
-
-/**
- * Resolve the configured home page and return its stitched document.
- */
-export const get_home_document = query(v.void(), async () => {
-	const home_page_id = get_home_page_id_from_db();
-
-	if (!home_page_id) {
-		throw new Error('Home page is not configured');
-	}
-
-	return {
-		document: get_combined_document(home_page_id),
-		slug: get_active_slug_for_document_id(home_page_id),
-		redirect_to_slug: null
-	};
-});
-
-/**
- * Return the current shared nav and footer documents used for composing new pages.
- */
-export const get_shared_documents = query(v.void(), async () => {
-	const home_page_id = get_home_page_id_from_db();
-
-	if (!home_page_id) {
-		throw new Error('Home page is not configured');
-	}
-
-	const home_page_doc = get_doc_from_db(home_page_id);
-	const { nav_root_id, footer_root_id } = get_shared_root_ids(home_page_doc);
-
-	if (!nav_root_id) {
-		throw new Error('Home page nav document is not configured');
-	}
-
-	if (!footer_root_id) {
-		throw new Error('Home page footer document is not configured');
-	}
-
-	return {
-		nav_document: get_doc_from_db(nav_root_id),
-		footer_document: get_doc_from_db(footer_root_id)
-	};
-});
-
-/**
- * Return page browser data for the pages drawer.
- */
 export const get_auth_status = query(v.void(), async () => {
 	const { locals } = getRequestEvent();
 
 	return {
 		is_admin: !!locals.is_admin
 	};
+});
+
+export const get_presentation_index = query(v.void(), async () => {
+	return {
+		presentations: build_presentation_index()
+	};
+});
+
+export const get_document = query(v.string(), async (document_id) => {
+	return {
+		document: get_doc_from_db(document_id)
+	};
+});
+
+export const get_internal_link_preview = query(v.string(), async (href) => {
+	const parsed = parse_internal_page_href(href);
+	if (!parsed || !page_document_exists(parsed.document_id)) {
+		return null;
+	}
+
+	const page_doc = get_doc_from_db(parsed.document_id);
+	const metadata = extract_page_metadata(page_doc);
+
+	return /** @type {InternalLinkPreview} */ ({
+		document_id: parsed.document_id,
+		title: metadata.title,
+		description: metadata.description,
+		preview_media_node: metadata.preview_media_node
+	});
 });
 
 export const login_admin = command(admin_login_input_schema, async ({ password }) => {
@@ -851,28 +463,11 @@ export const logout_admin = command(v.void(), async () => {
 	};
 });
 
-/**
- * Return page browser data for the pages drawer.
- */
-export const get_page_browser_data = query(v.void(), async () => {
-	require_admin_session(getRequestEvent().locals);
-	return build_page_browser_data();
-});
-
-/**
- * Delete a page document and its related refs.
- */
 export const delete_page = command(delete_page_input_schema, async ({ document_id }) => {
 	require_admin_session(getRequestEvent().locals);
 
-	const home_page_id = get_home_page_id_from_db();
-
 	if (!document_id) {
 		throw new Error('Document id is required');
-	}
-
-	if (document_id === home_page_id) {
-		throw new Error('The home page cannot be deleted');
 	}
 
 	const existing_doc = get_optional_doc_from_db(document_id);
@@ -888,7 +483,6 @@ export const delete_page = command(delete_page_input_schema, async ({ document_i
 	const delete_incoming_document_refs = db.prepare(
 		'DELETE FROM document_refs WHERE target_document_id = ?'
 	);
-	const delete_document_slugs = db.prepare('DELETE FROM document_slugs WHERE document_id = ?');
 
 	db.exec(sql`
 		BEGIN IMMEDIATE
@@ -898,7 +492,6 @@ export const delete_page = command(delete_page_input_schema, async ({ document_i
 		delete_asset_refs.run(document_id);
 		delete_outgoing_document_refs.run(document_id);
 		delete_incoming_document_refs.run(document_id);
-		delete_document_slugs.run(document_id);
 		delete_document.run(document_id, 'page');
 
 		db.exec(sql`
@@ -917,111 +510,18 @@ export const delete_page = command(delete_page_input_schema, async ({ document_i
 	};
 });
 
-/**
- * Return a lightweight preview for a simple internal page href like `/some-slug`.
- */
-export const get_internal_link_preview = query(v.string(), async (href) => {
-	const parsed = parse_internal_page_href(href);
-	if (!parsed) {
-		return null;
-	}
-
-	const resolved = resolve_slug(parsed.slug);
-	if (!resolved) {
-		return null;
-	}
-
-	const doc_row = /** @type {DocumentRow | undefined} */ (
-		db.prepare('SELECT type, data FROM documents WHERE document_id = ?').get(resolved.document_id)
-	);
-	if (!doc_row || doc_row.type !== 'page') {
-		return null;
-	}
-
-	const page_doc = /** @type {DocumentData} */ (JSON.parse(doc_row.data));
-	const metadata = extract_page_metadata(page_doc);
-
-	return /** @type {InternalLinkPreview} */ ({
-		document_id: resolved.document_id,
-		title: metadata.title,
-		description: metadata.description,
-		preview_media_node: metadata.preview_media_node
-	});
-});
-
-/**
- * Save a document to the database, splitting shared documents (nav, footer) back out.
- */
-function rewrite_internal_page_href(href, target_document_id, new_slug) {
-	const parsed = parse_internal_page_href(href);
-	if (!parsed) return href;
-
-	const resolved = resolve_slug(parsed.slug);
-	if (resolved?.document_id !== target_document_id) return href;
-
-	return `/${new_slug}${parsed.fragment}`;
-}
-
-function rewrite_internal_page_hrefs(nodes, target_document_id, new_slug) {
-	for (const node of Object.values(nodes)) {
-		if (!node || typeof node !== 'object') continue;
-
-		if (typeof node.href === 'string') {
-			node.href = rewrite_internal_page_href(node.href, target_document_id, new_slug);
-		}
-
-		const type_schema = document_schema[node.type];
-		if (!type_schema) continue;
-
-		for (const [prop_name, prop_def] of Object.entries(type_schema.properties)) {
-			if (prop_def.type !== 'annotated_text') continue;
-
-			const value = node[prop_name];
-			if (!value?.annotations) continue;
-
-			for (const annotation of value.annotations) {
-				const annotation_node = annotation?.node_id ? nodes[annotation.node_id] : null;
-				if (!annotation_node || annotation_node.type !== 'link') continue;
-				if (typeof annotation_node.href !== 'string') continue;
-
-				annotation_node.href = rewrite_internal_page_href(
-					annotation_node.href,
-					target_document_id,
-					new_slug
-				);
-			}
-		}
-	}
-}
-
-function insert_active_slug(document_id, slug, insert_slug_stmt, deactivate_slug_stmt) {
-	deactivate_slug_stmt.run(document_id);
-	insert_slug_stmt.run(slug, document_id, 1, new Date().toISOString());
-}
-
-function move_active_slug_to_history(document_id, insert_slug_stmt, deactivate_slug_stmt, delete_slug_stmt) {
-	const current_slug = get_active_slug_for_document_id(document_id);
-	if (!current_slug) return null;
-
-	delete_slug_stmt.run(current_slug);
-	insert_slug_stmt.run(current_slug, document_id, 0, new Date().toISOString());
-	deactivate_slug_stmt.run(document_id);
-	return current_slug;
-}
-
-function assign_active_slug(document_id, slug, insert_slug_stmt, deactivate_slug_stmt, delete_slug_stmt) {
-	delete_slug_stmt.run(slug);
-	insert_active_slug(document_id, slug, insert_slug_stmt, deactivate_slug_stmt);
-}
-
 export const save_document = command(save_document_input_schema, async (combined_doc) => {
 	require_admin_session(getRequestEvent().locals);
 
 	const all_nodes = structuredClone(combined_doc.nodes);
-	const page_node = all_nodes[combined_doc.document_id];
+	const root_node = all_nodes[combined_doc.document_id];
 
-	if (!page_node) {
+	if (!root_node) {
 		throw new Error(`Root node not found: ${combined_doc.document_id}`);
+	}
+
+	if (root_node.type !== 'page') {
+		throw new Error(`Root node must be a page: ${combined_doc.document_id}`);
 	}
 
 	if (combined_doc.create) {
@@ -1031,19 +531,7 @@ export const save_document = command(save_document_input_schema, async (combined
 		}
 	}
 
-	const nav_root_id = page_node.nav;
-	const footer_root_id = page_node.footer;
-
-	const nav_node_ids = nav_root_id ? new Set(collect_node_ids_in_order(nav_root_id, all_nodes)) : new Set();
-	const footer_node_ids = footer_root_id
-		? new Set(collect_node_ids_in_order(footer_root_id, all_nodes))
-		: new Set();
-
-	const exclude_roots = new Set();
-	if (nav_root_id) exclude_roots.add(nav_root_id);
-	if (footer_root_id) exclude_roots.add(footer_root_id);
-
-	const page_node_ids = collect_node_ids(combined_doc.document_id, all_nodes, exclude_roots);
+	const page_node_ids = collect_node_ids(combined_doc.document_id, all_nodes);
 	const page_doc = extract_document(combined_doc.document_id, page_node_ids, all_nodes);
 
 	const upsert = db.prepare(
@@ -1060,21 +548,16 @@ export const save_document = command(save_document_input_schema, async (combined
 		'INSERT OR REPLACE INTO document_refs (target_document_id, source_document_id, ref_order) VALUES (?, ?, ?)'
 	);
 
-	const delete_slug = db.prepare('DELETE FROM document_slugs WHERE slug = ?');
-	const deactivate_active_slug = db.prepare(
-		'UPDATE document_slugs SET is_active = 0 WHERE document_id = ? AND is_active = 1'
-	);
-	const insert_slug = db.prepare(
-		'INSERT INTO document_slugs (slug, document_id, is_active, created_at) VALUES (?, ?, ?, ?)'
-	);
-
 	db.exec(sql`
 		BEGIN IMMEDIATE
 	`);
 
 	try {
 		const existing_page_row = /** @type {DocumentRow | undefined} */ (
-			db.prepare('SELECT created_at FROM documents WHERE document_id = ?').get(combined_doc.document_id)
+			db.prepare('SELECT created_at FROM documents WHERE document_id = ? AND type = ?').get(
+				combined_doc.document_id,
+				'page'
+			)
 		);
 		const now_iso = new Date().toISOString();
 		const created_at = existing_page_row?.created_at ?? now_iso;
@@ -1089,62 +572,10 @@ export const save_document = command(save_document_input_schema, async (combined
 		);
 		update_document_refs(
 			combined_doc.document_id,
-			collect_document_refs(all_nodes, page_node_ids, combined_doc.document_id),
+			collect_document_refs(page_doc.nodes, page_node_ids, combined_doc.document_id),
 			delete_document_refs,
 			insert_document_ref
 		);
-
-		if (nav_root_id && nav_node_ids.size > 0) {
-			const nav_doc = extract_document(nav_root_id, nav_node_ids, all_nodes);
-			const existing_nav_row = /** @type {DocumentRow | undefined} */ (
-				db.prepare('SELECT created_at FROM documents WHERE document_id = ?').get(nav_root_id)
-			);
-			const nav_created_at = existing_nav_row?.created_at ?? now_iso;
-			upsert.run(nav_root_id, 'nav', JSON.stringify(nav_doc), nav_created_at, now_iso);
-			update_asset_refs(nav_root_id, nav_node_ids, all_nodes, delete_asset_refs, insert_asset_ref);
-			update_document_refs(
-				nav_root_id,
-				collect_document_refs(all_nodes, nav_node_ids, nav_root_id),
-				delete_document_refs,
-				insert_document_ref
-			);
-		}
-
-		if (footer_root_id && footer_node_ids.size > 0) {
-			const footer_doc = extract_document(footer_root_id, footer_node_ids, all_nodes);
-			const existing_footer_row = /** @type {DocumentRow | undefined} */ (
-				db.prepare('SELECT created_at FROM documents WHERE document_id = ?').get(footer_root_id)
-			);
-			const footer_created_at = existing_footer_row?.created_at ?? now_iso;
-			upsert.run(footer_root_id, 'footer', JSON.stringify(footer_doc), footer_created_at, now_iso);
-			update_asset_refs(
-				footer_root_id,
-				footer_node_ids,
-				all_nodes,
-				delete_asset_refs,
-				insert_asset_ref
-			);
-			update_document_refs(
-				footer_root_id,
-				collect_document_refs(all_nodes, footer_node_ids, footer_root_id),
-				delete_document_refs,
-				insert_document_ref
-			);
-		}
-
-		let active_slug = get_active_slug_for_document_id(combined_doc.document_id);
-
-		if (combined_doc.create && !active_slug && !is_home_page_document_id(combined_doc.document_id)) {
-			const metadata = extract_page_metadata(page_doc);
-			const base_slug = create_slug_candidate(metadata.title, combined_doc.document_id);
-			active_slug = create_unique_slug(base_slug);
-			insert_active_slug(combined_doc.document_id, active_slug, insert_slug, deactivate_active_slug);
-		}
-
-		const persisted_page = get_optional_doc_from_db(combined_doc.document_id);
-		if (!persisted_page) {
-			throw new Error(`Failed to persist page document: ${combined_doc.document_id}`);
-		}
 
 		db.exec(sql`
 			COMMIT
@@ -1159,144 +590,6 @@ export const save_document = command(save_document_input_schema, async (combined
 	return {
 		ok: true,
 		document_id: combined_doc.document_id,
-		slug: is_home_page_document_id(combined_doc.document_id)
-			? null
-			: get_active_slug_for_document_id(combined_doc.document_id),
 		created: !!combined_doc.create
-	};
-});
-
-export const update_page_slug = command(update_page_slug_input_schema, async (input) => {
-	require_admin_session(getRequestEvent().locals);
-
-	const normalized_slug = slugify(input.slug, { lower: true, strict: true, trim: true });
-
-	if (!normalized_slug) {
-		return create_page_url_error_result('page_url_empty', 'Page URL cannot be empty');
-	}
-
-	const existing_doc = get_optional_doc_from_db(input.document_id);
-	if (!existing_doc) {
-		return create_page_url_error_result('page_not_found', `Document not found: ${input.document_id}`);
-	}
-
-	const home_page_id = get_home_page_id_from_db();
-	if (home_page_id === input.document_id) {
-		return create_page_url_error_result('home_page_url_locked', 'The home page URL cannot be changed');
-	}
-
-	const current_active_slug = get_active_slug_for_document_id(input.document_id);
-	if (!current_active_slug) {
-		return create_page_url_error_result(
-			'active_slug_missing',
-			`Active slug not found for document: ${input.document_id}`
-		);
-	}
-
-	if (normalized_slug === current_active_slug) {
-		return {
-			ok: true,
-			slug: current_active_slug
-		};
-	}
-
-	const existing_slug = /** @type {{ document_id: string, is_active: number } | undefined} */ (
-		db.prepare('SELECT document_id, is_active FROM document_slugs WHERE slug = ?').get(normalized_slug)
-	);
-
-	if (existing_slug && existing_slug.document_id !== input.document_id && existing_slug.is_active === 1) {
-		return create_page_url_error_result(
-			'page_url_used_by_other_page',
-			'That Page URL is already in use by another page. Rename that page first.'
-		);
-	}
-
-	const delete_slug = db.prepare('DELETE FROM document_slugs WHERE slug = ?');
-	const deactivate_active_slug = db.prepare(
-		'UPDATE document_slugs SET is_active = 0 WHERE document_id = ? AND is_active = 1'
-	);
-	const insert_slug = db.prepare(
-		'INSERT INTO document_slugs (slug, document_id, is_active, created_at) VALUES (?, ?, ?, ?)'
-	);
-
-	db.exec(sql`
-		BEGIN IMMEDIATE
-	`);
-
-	let new_active_slug = null;
-
-	try {
-		move_active_slug_to_history(
-			input.document_id,
-			insert_slug,
-			deactivate_active_slug,
-			delete_slug
-		);
-		assign_active_slug(
-			input.document_id,
-			normalized_slug,
-			insert_slug,
-			deactivate_active_slug,
-			delete_slug
-		);
-
-		new_active_slug = get_active_slug_for_document_id(input.document_id);
-		if (!new_active_slug) {
-			throw new Error('Failed to assign new active slug');
-		}
-
-		const page_rows = /** @type {DocumentRow[]} */ (
-			db.prepare('SELECT * FROM documents WHERE type IN (?, ?, ?) ORDER BY document_id').all(
-				'page',
-				'nav',
-				'footer'
-			)
-		);
-
-		const upsert = db.prepare(
-			'INSERT INTO documents (document_id, type, data, created_at, updated_at) VALUES(?, ?, ?, ?, ?) ON CONFLICT(document_id) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at'
-		);
-		const delete_document_refs = db.prepare('DELETE FROM document_refs WHERE source_document_id = ?');
-		const insert_document_ref = db.prepare(
-			'INSERT OR REPLACE INTO document_refs (target_document_id, source_document_id, ref_order) VALUES (?, ?, ?)'
-		);
-
-		const now_iso = new Date().toISOString();
-
-		for (const row of page_rows) {
-			const doc = JSON.parse(row.data);
-			rewrite_internal_page_hrefs(doc.nodes, input.document_id, new_active_slug);
-			upsert.run(
-				row.document_id,
-				row.type,
-				JSON.stringify(doc),
-				row.created_at ?? now_iso,
-				now_iso
-			);
-
-			const root_id = row.document_id;
-			const node_ids = collect_node_ids(root_id, doc.nodes);
-			update_document_refs(
-				root_id,
-				collect_document_refs(doc.nodes, node_ids, root_id),
-				delete_document_refs,
-				insert_document_ref
-			);
-		}
-
-		db.exec(sql`
-			COMMIT
-		`);
-	} catch (err) {
-		db.exec(sql`
-			ROLLBACK
-		`);
-		throw err;
-	}
-
-	return {
-		ok: true,
-		document_id: input.document_id,
-		page_href: `/${new_active_slug}`
 	};
 });

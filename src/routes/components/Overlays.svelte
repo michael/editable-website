@@ -1,7 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
 	import { deserialize_path, serialize_path } from 'svedit';
-	import { get_page_browser } from './page_browser_context.svelte.js';
 	import { get_body_node_selector } from './body_node_selector_context.svelte.js';
 	import BodyNodeSelector from './BodyNodeSelector.svelte';
 	import MediaControls from './MediaControls.svelte';
@@ -22,7 +21,6 @@
 	let is_dragging = $state(false);
 
 	let overlays_ref = $state();
-	const page_browser = get_page_browser();
 	const body_node_selector = get_body_node_selector();
 	let is_selecting_body_node = $derived(body_node_selector.state.active);
 
@@ -242,12 +240,6 @@
 		</Drawer>
 	{/if}
 
-	{#if app.has_backend && app.is_admin}
-		{@const PagesDrawer = (await import('./PagesDrawer.svelte')).default}
-		<Drawer bind:open={page_browser.state.open} label="Pages">
-			<PagesDrawer />
-		</Drawer>
-	{/if}
 </div>
 
 <style>

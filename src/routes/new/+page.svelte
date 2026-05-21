@@ -5,7 +5,7 @@
 	const props = $props();
 	const data = $derived({
 		...props.data,
-		document: create_empty_doc(props.data.shared_documents ?? null),
+		document: create_empty_doc(),
 		is_new: true
 	});
 </script>

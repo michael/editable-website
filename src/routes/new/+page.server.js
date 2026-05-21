@@ -9,8 +9,7 @@ export async function load({ parent }) {
 	if (!has_backend) {
 		return {
 			has_backend,
-			is_admin,
-			shared_documents: null
+			is_admin
 		};
 	}
 
@@ -18,12 +17,8 @@ export async function load({ parent }) {
 		throw redirect(303, '/');
 	}
 
-	const { get_shared_documents } = await import('$lib/api.remote.js');
-	const shared_documents = await get_shared_documents();
-
 	return {
 		has_backend,
-		is_admin,
-		shared_documents
+		is_admin
 	};
 }

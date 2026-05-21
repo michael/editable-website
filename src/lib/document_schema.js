@@ -25,16 +25,6 @@ export const document_schema = define_document_schema({
 				type: 'node_array',
 				node_types: ['hero', 'feature'],
 				default_node_type: 'hero'
-			},
-			nav: {
-				type: 'node',
-				node_types: ['nav'],
-				default_node_type: 'nav'
-			},
-			footer: {
-				type: 'node',
-				node_types: ['footer'],
-				default_node_type: 'footer'
 			}
 		}
 	},

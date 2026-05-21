@@ -8,13 +8,12 @@ export async function load({ parent }) {
 		return {
 			has_backend,
 			is_admin,
-			document: null,
-			slug: null
+			presentations: []
 		};
 	}
 
-	const { get_home_document } = await import('$lib/api.remote.js');
-	const result = await get_home_document();
+	const { get_presentation_index } = await import('$lib/api.remote.js');
+	const result = await get_presentation_index();
 
 	return {
 		...result,

@@ -7,7 +7,6 @@
 	import SaveProgressModal from './SaveProgressModal.svelte';
 
 	import { create_session } from '../create_session.js';
-	import { create_page_browser, set_page_browser } from './page_browser_context.svelte.js';
 	import {
 		create_body_node_selector,
 		set_body_node_selector
@@ -15,7 +14,7 @@
 
 	import { demo_doc } from '$lib/demo_doc.js';
 
-	/** @type {{ document?: any, slug?: string | null, has_backend?: boolean, is_new?: boolean, is_admin?: boolean, origin?: string | null }} */
+	/** @type {{ document?: any, has_backend?: boolean, is_new?: boolean, is_admin?: boolean, origin?: string | null }} */
 	let {
 		document: doc,
 		has_backend = false,
@@ -38,8 +37,6 @@
 	let save_progress_visible = $state(false);
 	let save_progress_message = $state('');
 	let save_progress_done = $state(false);
-
-	let browser_data_version = $state(0);
 
 	let auth_dialog_open = $state(false);
 	let mobile_overscroll_triggered = $state(false);
@@ -70,21 +67,6 @@
 
 	setContext('app', app);
 
-	const page_browser = create_page_browser({
-		goto,
-		is_admin: () => app.is_admin
-	});
-
-	Object.defineProperty(page_browser, 'version', {
-		get() {
-			return browser_data_version;
-		}
-	});
-
-	page_browser.invalidate = invalidate_page_browser_data;
-
-	set_page_browser(page_browser);
-
 	const body_node_selector = create_body_node_selector();
 	set_body_node_selector(body_node_selector);
 
@@ -103,10 +85,6 @@
 		if (svedit_ref) {
 			svedit_ref.focus_canvas();
 		}
-	}
-
-	function invalidate_page_browser_data() {
-		browser_data_version += 1;
 	}
 
 	function check_browser_support() {
@@ -356,7 +334,7 @@
 					replace_blob_urls(doc_json.nodes, mapping);
 				}
 
-				/** @type {{ ok: boolean, document_id?: string, slug?: string, created?: boolean }} */
+				/** @type {{ ok: boolean, document_id?: string, created?: boolean }} */
 				const result = await persist_document({
 					...doc_json,
 					create: current_is_new
@@ -380,20 +358,17 @@
 				session.selection = null;
 				this.context.editable = false;
 
-				if (result?.created && result.document_id && result.slug) {
+				if (result?.created && result.document_id) {
 					try {
-						await get_document(result.slug).run();
+						await get_document(result.document_id).run();
 						current_is_new = false;
-						invalidate_page_browser_data();
-						await goto(resolve(`/${result.slug}`), { replaceState: true });
+						await goto(resolve(`/${result.document_id}`), { replaceState: true });
 						return;
 					} catch (read_back_err) {
-						console.error('Created page could not be read back yet:', read_back_err);
-						alert('The page was saved, but it is not readable yet. Staying on /new so you do not get sent to a missing page.');
+						console.error('Created presentation could not be read back yet:', read_back_err);
+						alert('The presentation was saved, but it is not readable yet. Staying on /new so you do not get sent to a missing page.');
 					}
 				}
-
-				invalidate_page_browser_data();
 
 				if (Date.now() - save_start > 3000) {
 					save_progress_message = 'Successfully saved';
@@ -421,7 +396,6 @@
 				const api_module = await import('$lib/api.remote.js');
 				await api_module.logout_admin();
 				editable = false;
-				page_browser.close?.();
 				await invalidateAll();
 			} catch (err) {
 				alert(err instanceof Error ? err.message : 'Logout failed.');
@@ -447,28 +421,16 @@
 		}
 	};
 
-	class BrowsePagesCommand extends Command {
-		is_enabled() {
-			return has_backend && is_admin && !this.context.editable;
-		}
-
-		execute() {
-			page_browser.open_navigate();
-		}
-	}
-
 	const app_commands = {
 		edit_document: new EditCommand(app_command_context),
 		cancel_editing: new CancelCommand(app_command_context),
 		save_document: new SaveCommand(app_command_context),
-		logout_admin: new LogoutCommand(app_command_context),
-		browse_pages: new BrowsePagesCommand(app_command_context)
+		logout_admin: new LogoutCommand(app_command_context)
 	};
 
 	const app_key_map = define_keymap({
 		'meta+escape,ctrl+escape': [app_commands.cancel_editing],
 		'meta+e,ctrl+e': [app_commands.edit_document],
-		'meta+p,ctrl+p': [app_commands.browse_pages],
 		'meta+s,ctrl+s': [app_commands.save_document]
 	});
 	key_mapper.push_scope(app_key_map);

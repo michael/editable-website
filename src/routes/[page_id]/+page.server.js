@@ -1,21 +1,22 @@
-import { error, redirect } from '@sveltejs/kit';
-import { get_document } from '$lib/api.remote.js';
+import { error } from '@sveltejs/kit';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ params, parent }) {
 	const parent_data = await parent();
+	const has_backend = parent_data.has_backend;
 	const is_admin = parent_data.is_admin ?? false;
 
-	try {
-		const result = await get_document(params.page_id);
+	if (!has_backend) {
+		throw error(404, 'Page not found');
+	}
 
-		if (result.redirect_to_slug) {
-			throw redirect(301, `/${result.redirect_to_slug}`);
-		}
+	try {
+		const { get_document } = await import('$lib/api.remote.js');
+		const result = await get_document(params.page_id);
 
 		return {
 			document: result.document,
-			slug: result.slug,
+			has_backend,
 			is_admin
 		};
 	} catch (err) {
