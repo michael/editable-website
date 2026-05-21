@@ -49,6 +49,23 @@ This step does not include:
 
 Pages are being adapted into a presentation-style experience. The page body is constrained to slide-level content blocks: `hero` and `feature`. Each direct `page.body` block should fill the viewport height so scrolling the body moves between full-window slides. Supporting node types required by those blocks and by shared site chrome remain available: `text`, `decoration`, `button`, `image`, `video`, nav/footer nodes, and annotation nodes. `decoration` is only available inside `feature.body`, not as a direct page slide.
 
+## Body-node deep links
+
+Link editing supports same-page deep links to direct children of `page.body`. These direct body children are treated as presentation slides, so the link target UI should present them as slide targets rather than arbitrary nested document nodes.
+
+Deep links are stored as pure fragment hrefs using the target node id:
+
+- `#hero_1`
+- `#feature_1`
+
+Svedit already renders nodes with DOM ids matching their node ids, so no additional target marker data model is required. Persisted links continue to use the existing `href` string fields on link annotations and link-ish nodes.
+
+The body-node selector is an edit-mode UI flow owned by the Editable Website app, not by Svedit core. It should be implemented as app-level shared state because it coordinates the link prompts, overlay rendering, and completion callback. It is intentionally scoped to the currently loaded page and does not support choosing nodes from other pages.
+
+The selector must only expose direct children of the current page root's `body` property. Descendant nodes inside a slide are not selectable targets in this flow.
+
+The selector button should be available anywhere the create/edit link prompt is available, independent of backend availability or admin status. This keeps local/static editing and edit-for-fun mode behavior consistent with normal link creation.
+
 ## Overview
 
 Editable Website is a SvelteKit application that lets site owners edit content directly in the browser. The editor (Svedit) works with a graph-based document model — a flat map of nodes with references between them. The backend stores these documents in SQLite and serves them to the frontend, stitching together shared content (nav, footer) with page-specific content into a single document that Svedit can edit locally.

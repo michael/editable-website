@@ -19,6 +19,128 @@ Make direct `page.body` blocks behave like full-window slides while limiting pag
 - Trim the demo page body to its existing hero and feature blocks.
 - Update new-page scaffolding so new pages start with a hero instead of a prose block.
 
+## Next implementation draft — body-node deep links
+
+This step adds a same-page body-node target picker to the create/edit link flow.
+
+### Goal
+
+Let editors create links to direct `page.body` slides on the current page by selecting the target visually from the page body.
+
+The saved link href must be a pure fragment using the selected node id:
+
+- `#node_id`
+
+This first version only targets direct children of the current page root's `body` property. It does not support nested body descendants or choosing nodes from another page.
+
+### Scope
+
+- Add a body-node selector button next to the existing page-browser button in both `CreateLink.svelte` and `EditLink.svelte`.
+- Show the button wherever the create/edit link prompt is available; do not gate it on backend availability or admin status.
+- When the button is clicked, hide the current link prompt and enter `select_body_node` mode.
+- Render click-target overlays for each direct child of `page.body` while `select_body_node` mode is active.
+- Show hover feedback that looks like the existing selection rectangle and includes the text `Click to link to this Slide`.
+- On click, update the link href to `#${node.id}` and exit `select_body_node` mode.
+- Support canceling the mode with `Escape` without changing the link.
+
+### State ownership
+
+Create app-level selector state rather than storing this mode in Svedit core or in the page browser. A small context module should coordinate the flow across link prompt components and overlays.
+
+Suggested file:
+
+- `src/routes/components/body_node_selector_context.svelte.js`
+
+Suggested state/API:
+
+- `state.active`
+- `state.on_select_node`
+- `state.hovered_node_id`
+- `open_select(on_select_node)`
+- `close()`
+- `handle_node_selected(node)`
+- `set_hovered_node(node_id)`
+
+Initialize and provide this context from `App.svelte`, similar to `page_browser_context.svelte.js`.
+
+### Component changes
+
+#### `CreateLink.svelte`
+
+- Import the body-node selector context.
+- Add the selector button next to the page-browser button.
+- On click:
+  - preserve the current text selection if needed so `annotate_text('link', ...)` still applies to the original selection after the overlay click
+  - set `toggle_link_command.show_prompt = false`
+  - call `body_node_selector.open_select(...)`
+- In the selection callback:
+  - apply `svedit.session.tr.annotate_text('link', { href: '#' + node.id, target: '_self' })`
+  - close selector mode
+  - focus the canvas
+
+#### `EditLink.svelte`
+
+- Import the body-node selector context.
+- Add the selector button next to the page-browser button.
+- On click:
+  - capture the current target link node
+  - set `edit_link_command.show_prompt = false`
+  - call `body_node_selector.open_select(...)`
+- In the selection callback:
+  - set the captured link node's `href` to `#${node.id}`
+  - set its `target` to `_self`
+  - apply the transaction
+  - close selector mode
+  - focus the canvas
+
+#### `BodyNodeSelector.svelte`
+
+Create `src/routes/components/BodyNodeSelector.svelte`.
+
+Responsibilities:
+
+- Read the current page root via `svedit.session.doc.document_id`.
+- Read direct body node ids from the page root's `body` array.
+- For each direct body node, render an absolute overlay positioned with the existing node anchor:
+  - path: `[page_id, 'body', index]`
+  - anchor name: `--${serialize_path(path)}`
+- Use pointer events so overlays are the active click targets.
+- On hover, set hovered node state and show the label `Click to link to this Slide`.
+- On click, prevent default editor interaction, stop propagation, and call `body_node_selector.handle_node_selected(node)`.
+- Add document-level `Escape` handling to cancel selection mode.
+
+#### `Overlays.svelte`
+
+- Import and render `BodyNodeSelector.svelte` when selector mode is active.
+- While selector mode is active, suppress conflicting overlays and prompts:
+  - link preview
+  - create-link prompt
+  - edit-link prompt
+  - media controls
+  - property selection overlay
+- Keep unrelated app overlays like auth and the page drawer unchanged.
+
+### Styling
+
+- Use Tailwind classes for the overlay label and general layout.
+- Use minimal custom CSS only where anchor positioning requires it.
+- Keep overlays rectangular; do not add rounded corners.
+- Reuse the editor selection colors where possible:
+  - `--svedit-editing-fill`
+  - `--svedit-editing-stroke`
+
+### Validation
+
+Manual validation only for this step:
+
+1. Create a text link, use the body-node selector, click a body slide, and confirm the annotation href is `#selected_node_id`.
+2. Edit an existing text link and retarget it to a different body slide.
+3. Edit a link-ish node with an `href` property and retarget it to a body slide.
+4. Confirm hovering a slide shows the selection-style overlay and `Click to link to this Slide` label.
+5. Press `Escape` during selection mode and confirm no link changes.
+6. Confirm the existing page-browser link button still works.
+7. Save, leave edit mode, click the deep link, and confirm the browser scrolls to the selected slide.
+
 ## Next implementation draft — admin authentication
 
 This step adds simple owner authentication for editing and private page-management features.
