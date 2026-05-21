@@ -45,6 +45,10 @@ This step does not include:
 - rate limiting or brute-force protection beyond basic server-side checks
 - exposing drafts or private sitemap data to unauthenticated users
 
+## Presentation page setup
+
+Pages are being adapted into a presentation-style experience. The page body is constrained to slide-level content blocks: `hero` and `feature`. Each direct `page.body` block should fill the viewport height so scrolling the body moves between full-window slides. Supporting node types required by those blocks and by shared site chrome remain available: `text`, `button`, `image`, `video`, nav/footer nodes, and annotation nodes.
+
 ## Overview
 
 Editable Website is a SvelteKit application that lets site owners edit content directly in the browser. The editor (Svedit) works with a graph-based document model — a flat map of nodes with references between them. The backend stores these documents in SQLite and serves them to the frontend, stitching together shared content (nav, footer) with page-specific content into a single document that Svedit can edit locally.

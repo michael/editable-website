@@ -21,9 +21,7 @@ import { MEDIA_DEFAULTS } from '$lib/config.js';
 export function create_empty_doc(shared_documents) {
 	const page_id = nanoid();
 	const page_image_id = nanoid();
-	const prose_id = nanoid();
-	const heading_id = nanoid();
-	const paragraph_id = nanoid();
+	const hero_id = nanoid();
 
 	const nav_document = shared_documents?.nav_document;
 	const footer_document = shared_documents?.footer_document;
@@ -55,37 +53,27 @@ export function create_empty_doc(shared_documents) {
 				image: page_image_id,
 				nav: nav_document.document_id,
 				footer: footer_document.document_id,
-				body: [prose_id]
+				body: [hero_id]
 			},
 			[page_image_id]: {
 				id: page_image_id,
 				type: 'image',
 				...MEDIA_DEFAULTS
 			},
-			[prose_id]: {
-				id: prose_id,
-				type: 'prose',
+			[hero_id]: {
+				id: hero_id,
+				type: 'hero',
 				layout: 1,
 				colorset: 0,
-				content: [heading_id, paragraph_id]
-			},
-			[heading_id]: {
-				id: heading_id,
-				type: 'text',
-				layout: 2,
-				content: {
+				title: {
 					text: '',
 					annotations: []
-				}
-			},
-			[paragraph_id]: {
-				id: paragraph_id,
-				type: 'text',
-				layout: 1,
-				content: {
+				},
+				description: {
 					text: '',
 					annotations: []
-				}
+				},
+				buttons: []
 			}
 		}
 	};

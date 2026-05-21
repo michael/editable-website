@@ -128,17 +128,6 @@ export function extract_page_metadata(page_doc) {
 			}
 		}
 
-		if (node.type === 'link_collection_item') {
-			const item_title = extract_plain_text(node.title);
-			if (!fallback_title && item_title) {
-				fallback_title = item_title;
-			}
-
-			const item_description = extract_plain_text(node.description);
-			if (!fallback_description && item_description) {
-				fallback_description = item_description;
-			}
-		}
 	}
 
 	const preview_media_node =

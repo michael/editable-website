@@ -2,6 +2,23 @@
 
 This document tracks what to implement next. One step at a time. All implementation must conform to the design decisions in [ARCHITECTURE.md](ARCHITECTURE.md) — if a conflict arises, update the architecture first, then implement.
 
+## Current implementation draft — presentation page setup
+
+This step adapts the page body into a presentation-style sequence.
+
+### Goal
+
+Make direct `page.body` blocks behave like full-window slides while limiting page body block types to `hero` and `feature`.
+
+### Scope
+
+- Restrict the `page.body` schema to `hero` and `feature`, with `hero` as the default inserted node.
+- Remove obsolete page body block inserters and layouts from the session config.
+- Keep supporting node types required by `hero`, `feature`, shared nav/footer, media, and annotations.
+- Make `Hero.svelte` and `Feature.svelte` render each node as a viewport-height slide.
+- Trim the demo page body to its existing hero and feature blocks.
+- Update new-page scaffolding so new pages start with a hero instead of a prose block.
+
 ## Next implementation draft — admin authentication
 
 This step adds simple owner authentication for editing and private page-management features.

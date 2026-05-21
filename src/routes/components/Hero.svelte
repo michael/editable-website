@@ -13,8 +13,8 @@
 </script>
 
 {#snippet layout_1()}
-	<div class="{TW_LIMITER}">
-		<div class="min-h-screen flex items-center py-20 md:py-28 lg:py-36">
+	<div class="{TW_LIMITER} min-h-screen flex items-center">
+		<div class="w-full flex items-center py-20 md:py-28 lg:py-36">
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-5xl text-center w-full" use:reveal>
 				<AnnotatedTextProperty
 					tag="h1"
@@ -38,8 +38,8 @@
 {/snippet}
 
 {#snippet layout_2()}
-	<div class="{TW_LIMITER}">
-		<div class="py-20 md:py-28 lg:py-36">
+	<div class="{TW_LIMITER} min-h-screen flex items-center">
+		<div class="w-full py-20 md:py-28 lg:py-36">
 			<div class="{TW_PAGE_PADDING_X} max-w-4xl" use:reveal>
 				<AnnotatedTextProperty
 					tag="h1"
@@ -63,8 +63,8 @@
 {/snippet}
 
 {#snippet layout_3()}
-	<div class="{TW_LIMITER}">
-		<div class="py-20 md:py-28 lg:py-36">
+	<div class="{TW_LIMITER} min-h-screen flex items-center">
+		<div class="w-full py-20 md:py-28 lg:py-36">
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-4xl text-center" use:reveal>
 				<AnnotatedTextProperty
 					tag="h1"
@@ -88,8 +88,8 @@
 {/snippet}
 
 {#snippet layout_4()}
-	<div class="{TW_LIMITER}">
-		<div class="grid grid-cols-3 py-20 md:py-28 lg:py-36">
+	<div class="{TW_LIMITER} min-h-screen flex items-center">
+		<div class="w-full grid grid-cols-3 py-20 md:py-28 lg:py-36">
 			<!-- IMPORTANT: Keep in sync with TW_PAGE_PADDING_X -->
 			<div class="max-sm:pl-5 max-md:pl-7 pr-5 sm:pr-7 md:pr-10 lg:pr-14 col-span-3 md:col-span-2 md:col-start-2">
 				<div class="{TW_MOBILE_LEFT_INSET}" use:reveal>
@@ -115,7 +115,7 @@
 	</div>
 {/snippet}
 
-<Node class="ew-hero lg:text-lg bg-(--background) text-(--foreground) {colorset_class}" {path}>
+<Node class="ew-hero min-h-screen lg:text-lg bg-(--background) text-(--foreground) {colorset_class}" {path}>
 	{@const layouts = [layout_1, layout_2, layout_3, layout_4]}
 	{@render layouts[layout - 1]()}
 </Node>
