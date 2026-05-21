@@ -10,34 +10,12 @@ const FULL_DOC = {
 		"page_1": {
 			"id": "page_1",
 			"type": "page",
-			"title": {
-				"text": "Editable Website",
-				"annotations": []
-			},
-			"description": {
-				"text": "SvelteKit template for building CMS-free editable websites. Site owners can edit content directly in the layout - no CMS needed.",
-				"annotations": []
-			},
-			"image": "page_image_1",
 			"body": [
 				"hero_1",
 				"RtYpQwXsZvNmKjHgFdSaLe",
 				"YTMHBcPkYXJMRUnuSAhrTDE",
 				"UBNYngEBJYtDWgeabtDJqWW"
 			]
-		},
-		"page_image_1": {
-			"id": "page_image_1",
-			"type": "image",
-			"src": "",
-			"mime_type": "",
-			"width": 0,
-			"height": 0,
-			"alt": "",
-			"scale": 1,
-			"focal_point_x": 0.5,
-			"focal_point_y": 0.5,
-			"object_fit": "contain"
 		},
 		"hero_1": {
 			"id": "hero_1",

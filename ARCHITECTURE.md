@@ -481,15 +481,7 @@ When extracting `document_refs`, fragments are stripped before evaluating the ta
 
 Svedit operates on a single flat document. In the presentations app, that model maps directly to persistence: each stored page document is already self-contained, so the server does not stitch in shared documents on read or split shared documents back out on write.
 
-The page root node also owns page-level metadata fields:
-
-- `page.title`
-- `page.description`
-- `page.image`
-
-These are page-local fields. They belong to the presentation document row alongside `body`.
-
-`page.image` is a page-root `node` property that points to an `image` node. Unlike `page.title` and `page.description`, this node should always exist on the page root even when no image has been chosen yet. The presence check for explicit image metadata is therefore based on `page.image.src`, not on whether the `page.image` node reference exists.
+The page root node owns the `body` array. Presentation titles, descriptions, and preview media are derived from slide content; there is no separate page-root SEO metadata editor or page-root metadata schema.
 
 **On read (loading a presentation):**
 
@@ -943,15 +935,13 @@ Presentation summaries are extracted on demand from stored page documents using 
 
 The summary title rules are:
 
-1. use explicit `page.title` when present and non-empty
-2. otherwise fall back to title-like body content
-3. otherwise fall back to `Untitled page`
+1. use title-like body content
+2. otherwise fall back to `Untitled page`
 
 The preview media rules are:
 
-1. use explicit `page.image` when it has a source
-2. otherwise fall back to the first usable body media node
-3. otherwise return `null`
+1. use the first usable body media node
+2. otherwise return `null`
 
 
 ## Authentication

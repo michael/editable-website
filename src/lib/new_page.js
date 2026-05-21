@@ -1,5 +1,4 @@
 import nanoid from '../routes/nanoid.js';
-import { MEDIA_DEFAULTS } from '$lib/config.js';
 
 function empty_annotated_text() {
 	return {
@@ -19,7 +18,6 @@ function empty_annotated_text() {
  */
 export function create_empty_doc() {
 	const page_id = nanoid();
-	const page_image_id = nanoid();
 	const hero_id = nanoid();
 
 	return {
@@ -28,15 +26,7 @@ export function create_empty_doc() {
 			[page_id]: {
 				id: page_id,
 				type: 'page',
-				title: empty_annotated_text(),
-				description: empty_annotated_text(),
-				image: page_image_id,
 				body: [hero_id]
-			},
-			[page_image_id]: {
-				id: page_image_id,
-				type: 'image',
-				...MEDIA_DEFAULTS
 			},
 			[hero_id]: {
 				id: hero_id,

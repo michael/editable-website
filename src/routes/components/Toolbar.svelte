@@ -1,5 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
+	import { resolve } from '$app/paths';
 
 	let { session, app_commands, editable, focus_canvas } = $props();
 
@@ -104,6 +105,28 @@
 			{#if !editable}
 				<!-- Read mode -->
 				<div class="flex items-center gap-1">
+					{#if app.has_backend}
+						<a
+							class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
+							href={resolve('/')}
+							title="Browse"
+							aria-label="Browse"
+						>
+							<svg
+								class="size-4"
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 15 15"
+								fill="none"
+								aria-hidden="true"
+							>
+								<rect x="1.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+								<rect x="8.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+								<rect x="1.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+								<rect x="8.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+							</svg>
+						</a>
+					{/if}
+
 					{#if (!app.has_backend || app.is_admin) && !app_commands.edit_document.disabled}
 						<button
 							class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
