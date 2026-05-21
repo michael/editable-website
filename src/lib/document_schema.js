@@ -189,6 +189,18 @@ export const document_schema = define_document_schema({
 			object_fit: { type: 'string', default: 'cover' }
 		}
 	},
+	decoration: {
+		kind: 'block',
+		properties: {
+			media_max_width: { type: 'integer', default: 0 },
+			media_aspect_ratio: { type: 'number', default: 0 },
+			media: {
+				type: 'node',
+				node_types: ['image', 'video'],
+				default_node_type: 'image'
+			}
+		}
+	},
 	feature: {
 		kind: 'block',
 		properties: {
@@ -201,7 +213,7 @@ export const document_schema = define_document_schema({
 			},
 			body: {
 				type: 'node_array',
-				node_types: ['text'],
+				node_types: ['text', 'decoration'],
 				default_node_type: 'text'
 			}
 		}

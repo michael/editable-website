@@ -35,6 +35,7 @@ import FooterLink from './components/FooterLink.svelte';
 
 import Text from './components/Text.svelte';
 import Feature from './components/Feature.svelte';
+import Decoration from './components/Decoration.svelte';
 import Hero from './components/Hero.svelte';
 import Button from './components/Button.svelte';
 import Image from './components/Image.svelte';
@@ -142,6 +143,7 @@ const session_config = {
 		Image,
 		Video,
 		Feature,
+		Decoration,
 		Strong,
 		Emphasis,
 		Highlight,
@@ -165,7 +167,13 @@ const session_config = {
 			}
 			return null;
 		} else {
-			if (!session.can_insert('feature')) return null;
+			const target_node_type = session.can_insert('decoration')
+				? 'decoration'
+				: session.can_insert('feature')
+					? 'feature'
+					: null;
+
+			if (!target_node_type) return null;
 
 			const pasted_json = { main_nodes: [], nodes: {} };
 			for (let i = 0; i < pasted_media.length; i++) {
@@ -187,20 +195,31 @@ const session_config = {
 					height,
 					alt: ''
 				};
-				pasted_json.nodes['node_text_' + i] = {
-					id: 'node_text_' + i,
-					type: 'text',
-					layout: 2,
-					content: { text: '', annotations: [] }
-				};
-				pasted_json.nodes['node_' + i] = {
-					id: 'node_' + i,
-					type: 'feature',
-					layout: 1,
-					colorset: 0,
-					media: 'node_media_' + i,
-					body: ['node_text_' + i]
-				};
+
+				if (target_node_type === 'decoration') {
+					pasted_json.nodes['node_' + i] = {
+						id: 'node_' + i,
+						type: 'decoration',
+						media_max_width: 0,
+						media_aspect_ratio: 0,
+						media: 'node_media_' + i
+					};
+				} else {
+					pasted_json.nodes['node_text_' + i] = {
+						id: 'node_text_' + i,
+						type: 'text',
+						layout: 2,
+						content: { text: '', annotations: [] }
+					};
+					pasted_json.nodes['node_' + i] = {
+						id: 'node_' + i,
+						type: 'feature',
+						layout: 1,
+						colorset: 0,
+						media: 'node_media_' + i,
+						body: ['node_text_' + i]
+					};
+				}
 				pasted_json.main_nodes.push('node_' + i);
 
 				// Start background processing (hash + resize/encode)
@@ -227,6 +246,7 @@ const session_config = {
 	node_layouts: {
 		text: 5,
 		feature: 4,
+		decoration: 1,
 		nav_item: 2,
 		button: 2,
 		hero: 4
@@ -331,6 +351,24 @@ const session_config = {
 			});
 
 			tr.insert_nodes([new_feature_id]);
+		},
+		decoration: function (tr) {
+			const new_decoration_id = tr.build('new_decoration', {
+				decoration_media: {
+					id: 'decoration_media',
+					type: 'image',
+					...MEDIA_DEFAULTS
+				},
+				new_decoration: {
+					id: 'new_decoration',
+					type: 'decoration',
+					media_max_width: 0,
+					media_aspect_ratio: 0,
+					media: 'decoration_media'
+				}
+			});
+
+			tr.insert_nodes([new_decoration_id]);
 		},
 		nav_item: function (tr) {
 			const new_nav_item_id = tr.build('new_nav_item', {

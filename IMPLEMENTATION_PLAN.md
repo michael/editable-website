@@ -14,7 +14,7 @@ Make direct `page.body` blocks behave like full-window slides while limiting pag
 
 - Restrict the `page.body` schema to `hero` and `feature`, with `hero` as the default inserted node.
 - Remove obsolete page body block inserters and layouts from the session config.
-- Keep supporting node types required by `hero`, `feature`, shared nav/footer, media, and annotations.
+- Keep supporting node types required by `hero`, `feature`, shared nav/footer, media, and annotations, including `decoration` inside `feature.body`.
 - Make `Hero.svelte` and `Feature.svelte` render each node as a viewport-height slide.
 - Trim the demo page body to its existing hero and feature blocks.
 - Update new-page scaffolding so new pages start with a hero instead of a prose block.
