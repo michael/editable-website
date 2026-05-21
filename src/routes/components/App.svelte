@@ -8,6 +8,10 @@
 
 	import { create_session } from '../create_session.js';
 	import { create_page_browser, set_page_browser } from './page_browser_context.svelte.js';
+	import {
+		create_body_node_selector,
+		set_body_node_selector
+	} from './body_node_selector_context.svelte.js';
 
 	import { demo_doc } from '$lib/demo_doc.js';
 
@@ -80,6 +84,9 @@
 	page_browser.invalidate = invalidate_page_browser_data;
 
 	set_page_browser(page_browser);
+
+	const body_node_selector = create_body_node_selector();
+	set_body_node_selector(body_node_selector);
 
 	$effect(() => {
 		document.documentElement.style.scrollBehavior = editable ? 'auto' : 'smooth';
@@ -254,6 +261,7 @@
 		}
 
 		async execute() {
+			body_node_selector.close();
 			session.selection = null;
 
 			if (current_is_new) {
@@ -272,6 +280,8 @@
 		}
 
 		async execute() {
+			body_node_selector.close();
+
 			if (!has_backend) {
 				console.log('Document saved', session.to_json());
 				session.selection = null;
@@ -407,6 +417,7 @@
 
 		async execute() {
 			try {
+				body_node_selector.close();
 				const api_module = await import('$lib/api.remote.js');
 				await api_module.logout_admin();
 				editable = false;

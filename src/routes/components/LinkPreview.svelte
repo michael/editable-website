@@ -52,11 +52,28 @@
 		return href;
 	}
 
+	function is_same_page_fragment_href(href) {
+		return typeof href === 'string' && href.startsWith('#') && href.length > 1;
+	}
+
 	function get_preview_href(href) {
 		if (typeof href !== 'string') return '';
 		return href.startsWith('/') && !href.startsWith('//')
 			? resolve(/** @type {any} */ (href))
 			: href;
+	}
+
+	function get_preview_link_attributes(href) {
+		const preview_href = get_preview_href(internal_page_href ?? href);
+		if (is_same_page_fragment_href(href)) {
+			return { href: preview_href };
+		}
+
+		return {
+			href: preview_href,
+			target: '_blank',
+			rel: 'noopener noreferrer'
+		};
 	}
 </script>
 
@@ -68,11 +85,7 @@
 		<div class="bg-(--background) text-(--foreground) border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)]">
 			<div class="flex items-center gap-3 px-3 py-2">
 				<a
-					{...{
-						href: get_preview_href(internal_page_href ?? node.href),
-						target: '_blank',
-						rel: 'noopener noreferrer'
-					}}
+					{...get_preview_link_attributes(node.href)}
 					class="text-sm text-(--foreground) max-w-70 truncate hover:underline outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 				>
 					{node.href}

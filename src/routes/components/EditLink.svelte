@@ -2,10 +2,12 @@
 	import { getContext } from 'svelte';
 	import { serialize_path } from 'svedit';
 	import { get_page_browser } from './page_browser_context.svelte.js';
+	import { get_body_node_selector } from './body_node_selector_context.svelte.js';
 
 	const svedit = getContext('svedit');
 	const app = getContext('app');
 	const page_browser = get_page_browser();
+	const body_node_selector = get_body_node_selector();
 
 	let { path } = $props();
 
@@ -34,6 +36,31 @@
 			svedit.session.apply(tr);
 		}
 		close();
+	}
+
+	function update_body_node_link(target_node_id, body_node) {
+		const current_target_node = svedit.session.get([target_node_id]);
+		if (!current_target_node || !('href' in current_target_node)) return;
+
+		const tr = svedit.session.tr;
+		tr.set([target_node_id, 'href'], `#${body_node.id}`);
+		tr.set([target_node_id, 'target'], '_self');
+		svedit.session.apply(tr);
+		svedit.focus_canvas();
+	}
+
+	function select_body_node() {
+		if (!target_node || !('href' in target_node)) return;
+
+		const target_node_id = target_node.id;
+		if (edit_link_command) {
+			edit_link_command.show_prompt = false;
+		}
+		open_in_new_tab = false;
+
+		body_node_selector.open_select((body_node) => {
+			update_body_node_link(target_node_id, body_node);
+		});
 	}
 
 	function close() {
@@ -95,7 +122,7 @@
 				class="edit-link-input w-72 min-w-0 flex-1 border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:border-(--svedit-editing-stroke) focus:outline-none focus:ring-0 focus:shadow-none"
 				onkeydown={handle_keydown}
 			/>
-			{#if app.has_backend}
+			<!-- {#if app.has_backend}
 				<button
 					type="button"
 					class="shrink-0 cursor-pointer border border-l-transparent border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] px-3 text-(--svedit-editing-stroke) hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))] focus:border-(--svedit-editing-stroke) focus:outline-none focus:ring-0 focus:shadow-none"
@@ -116,7 +143,21 @@
 						<rect x="8.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
 					</svg>
 				</button>
-			{/if}
+			{/if} -->
+			<button
+				type="button"
+				class="shrink-0 cursor-pointer border border-l-transparent border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] px-3 text-(--svedit-editing-stroke) hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))] focus:border-(--svedit-editing-stroke) focus:outline-none focus:ring-0 focus:shadow-none"
+				title="Select slide"
+				aria-label="Select slide"
+				onclick={select_body_node}
+			>
+				<svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+					<path d="M5.5 1.5 3.5 13.5" stroke="currentColor" />
+					<path d="M11.5 1.5 9.5 13.5" stroke="currentColor" />
+					<path d="M2 5.5H13" stroke="currentColor" />
+					<path d="M1.5 9.5H12.5" stroke="currentColor" />
+				</svg>
+			</button>
 			</div>
 		</div>
 		<div class="flex items-center justify-between px-3 py-2">

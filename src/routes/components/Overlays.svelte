@@ -2,6 +2,8 @@
 	import { getContext } from 'svelte';
 	import { deserialize_path, serialize_path } from 'svedit';
 	import { get_page_browser } from './page_browser_context.svelte.js';
+	import { get_body_node_selector } from './body_node_selector_context.svelte.js';
+	import BodyNodeSelector from './BodyNodeSelector.svelte';
 	import MediaControls from './MediaControls.svelte';
 	import SizableViewboxControls from './SizableViewboxControls.svelte';
 	import CreateLink from './CreateLink.svelte';
@@ -21,6 +23,8 @@
 
 	let overlays_ref = $state();
 	const page_browser = get_page_browser();
+	const body_node_selector = get_body_node_selector();
+	let is_selecting_body_node = $derived(body_node_selector.state.active);
 
 	// --- File drag-and-drop onto media properties ---
 	let drop_target_path = $state(null);
@@ -181,7 +185,11 @@
 		></div>
 	{/if}
 
-	{#if !file_drag_active}
+	{#if is_selecting_body_node}
+		<BodyNodeSelector />
+	{/if}
+
+	{#if !file_drag_active && !is_selecting_body_node}
 		{#if svedit.session.selection?.type === 'property'}
 			{#if is_media_selected}
 				<div
@@ -208,19 +216,19 @@
 		{/if}
 	{/if}
 
-	{#if link_preview && !svedit.session.commands?.edit_link?.show_prompt && !is_dragging}
+	{#if link_preview && !svedit.session.commands?.edit_link?.show_prompt && !is_dragging && !is_selecting_body_node}
 		<LinkPreview node={link_preview.node} path={link_preview.path} />
 	{/if}
 
-	{#if link_preview && svedit.session.commands?.edit_link?.show_prompt}
+	{#if link_preview && svedit.session.commands?.edit_link?.show_prompt && !is_selecting_body_node}
 		<EditLink path={link_preview.path} />
 	{/if}
 
-	{#if svedit.session.commands?.toggle_link?.show_prompt}
+	{#if svedit.session.commands?.toggle_link?.show_prompt && !is_selecting_body_node}
 		<CreateLink />
 	{/if}
 
-	{#if svedit.session.commands?.edit_image?.show_prompt && is_media_selected}
+	{#if svedit.session.commands?.edit_image?.show_prompt && is_media_selected && !is_selecting_body_node}
 		<EditMedia path={svedit.session.selection.path} />
 	{/if}
 
