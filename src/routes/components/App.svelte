@@ -78,7 +78,16 @@
 	set_body_node_selector(body_node_selector);
 
 	$effect(() => {
-		// document.documentElement.style.scrollBehavior = editable ? 'auto' : 'smooth';
+		const scroll_lock_class = 'ew-presentation-viewer-scroll-locked';
+		const should_lock_scroll = !editable;
+
+		document.documentElement.classList.toggle(scroll_lock_class, should_lock_scroll);
+		document.body.classList.toggle(scroll_lock_class, should_lock_scroll);
+
+		return () => {
+			document.documentElement.classList.remove(scroll_lock_class);
+			document.body.classList.remove(scroll_lock_class);
+		};
 	});
 
 	$effect(() => {

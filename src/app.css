@@ -67,6 +67,12 @@
 	}
 }
 
+html.ew-presentation-viewer-scroll-locked,
+body.ew-presentation-viewer-scroll-locked {
+	overflow: hidden;
+	overscroll-behavior: none;
+}
+
 /* Scroll-triggered reveal animations
    Comment out the block below to disable */
 .svedit-canvas[contenteditable="false"] .reveal-hidden {
