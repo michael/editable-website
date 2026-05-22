@@ -17,7 +17,8 @@ Make direct `page.body` blocks behave like full-window slides while limiting pag
 - Keep supporting node types required by `hero`, `feature`, media, and annotations, including `decoration` inside `feature.body`.
 - Make `Hero.svelte` and `Feature.svelte` render each node as an exact viewport-height slide with overflow clipped.
 - Add a shared non-editable `SlideHeader` rendered at the top of every slide, with slide content filling the remaining viewport height.
-- Disable manual page scrolling in viewer mode while keeping hash-link slide jumps and edit-mode scrolling available.
+- Add a non-editable `HelpDialog` opened from the slide header help button.
+- Disable manual page scrolling in viewer mode while keeping hash-link slide jumps, same-page hash history back/forward, and edit-mode scrolling available.
 - Trim the demo page body to its existing hero and feature blocks.
 - Update new-page scaffolding so new pages start with a hero instead of a prose block.
 

@@ -84,6 +84,10 @@
 		document.documentElement.classList.toggle(scroll_lock_class, should_lock_scroll);
 		document.body.classList.toggle(scroll_lock_class, should_lock_scroll);
 
+		if (should_lock_scroll) {
+			scroll_to_current_hash();
+		}
+
 		return () => {
 			document.documentElement.classList.remove(scroll_lock_class);
 			document.body.classList.remove(scroll_lock_class);
@@ -101,6 +105,25 @@
 		if (svedit_ref) {
 			svedit_ref.focus_canvas();
 		}
+	}
+
+	function scroll_to_current_hash() {
+		requestAnimationFrame(() => {
+			if (editable) return;
+
+			const hash = window.location.hash.slice(1);
+			if (!hash) {
+				window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+				return;
+			}
+
+			const target = document.getElementById(decodeURIComponent(hash));
+			target?.scrollIntoView({ block: 'start', inline: 'nearest', behavior: 'instant' });
+		});
+	}
+
+	function handle_hashchange() {
+		scroll_to_current_hash();
 	}
 
 	function check_browser_support() {
@@ -472,6 +495,7 @@
 
 <svelte:window
 	onkeydown={key_mapper.handle_keydown.bind(key_mapper)}
+	onhashchange={handle_hashchange}
 	onscroll={handle_mobile_overscroll_check}
 	ontouchstart={handle_mobile_touchstart}
 	ontouchend={handle_mobile_touchend}
