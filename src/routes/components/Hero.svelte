@@ -3,6 +3,7 @@
 	import { Node, NodeArrayProperty, AnnotatedTextProperty } from 'svedit';
 	import { TW_PAGE_PADDING_X, TW_MOBILE_LEFT_INSET, TW_LIMITER } from '../tailwind_theme.js';
 	import { reveal } from '../reveal.js';
+	import SlideHeader from './SlideHeader.svelte';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
@@ -115,9 +116,12 @@
 	</div>
 {/snippet}
 
-<Node class="ew-hero h-screen overflow-hidden lg:text-lg bg-(--background) text-(--foreground) {colorset_class}" {path}>
+<Node class="ew-hero flex h-screen flex-col overflow-hidden lg:text-lg bg-(--background) text-(--foreground) {colorset_class}" {path}>
 	{@const layouts = [layout_1, layout_2, layout_3, layout_4]}
-	{@render layouts[layout - 1]()}
+	<SlideHeader />
+	<div class="min-h-0 flex-1 overflow-hidden">
+		{@render layouts[layout - 1]()}
+	</div>
 </Node>
 
 <style>

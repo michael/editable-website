@@ -47,7 +47,7 @@ This step does not include:
 
 ## Presentation page setup
 
-Pages are being adapted into a presentation-style experience. The page body is constrained to slide-level content blocks: `hero` and `feature`. Each direct `page.body` block should fill the viewport height so scrolling the body moves between full-window slides. Supporting node types required by those blocks and by shared site chrome remain available: `text`, `decoration`, `button`, `image`, `video`, nav/footer nodes, and annotation nodes. `decoration` is only available inside `feature.body`, not as a direct page slide.
+Pages are being adapted into a presentation-style experience. The page body is constrained to slide-level content blocks: `hero` and `feature`. Each direct `page.body` block should be exactly one viewport tall and clip overflowing content so authors must fix overfull slides manually. Each slide includes a non-editable `SlideHeader` at the top; the slide content fills the remaining viewport height below it. Scrolling the body moves between full-window slides. Supporting node types required by those blocks and by shared site chrome remain available: `text`, `decoration`, `button`, `image`, `video`, nav/footer nodes, and annotation nodes. `decoration` is only available inside `feature.body`, not as a direct page slide.
 
 ## Body-node deep links
 
