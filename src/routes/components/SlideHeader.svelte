@@ -1,14 +1,21 @@
 <script>
 	import { getContext } from 'svelte';
+	import HelpDialog from './HelpDialog.svelte';
 
 	const svedit = getContext('svedit');
 
 	let { title = 'Angebotsauswahl' } = $props();
 	let is_editing = $derived(svedit.editable);
+	let help_open = $state(false);
 
 	function go_back() {
 		if (is_editing) return;
 		history.back();
+	}
+
+	function open_help() {
+		if (is_editing) return;
+		help_open = true;
 	}
 </script>
 
@@ -46,6 +53,7 @@
 		<button
 			type="button"
 			class="inline-flex size-12 items-center justify-center rounded-md bg-[#6cbfc0] text-xl font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 md:size-14"
+			onclick={open_help}
 			disabled={is_editing}
 			aria-label="Hilfe"
 		>
@@ -70,3 +78,5 @@
 		</button>
 	</div>
 </header>
+
+<HelpDialog bind:open={help_open} />
