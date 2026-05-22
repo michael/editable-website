@@ -39,6 +39,7 @@
 	let save_progress_done = $state(false);
 
 	let auth_dialog_open = $state(false);
+	let auth_dialog_mode = $state('choice');
 	let mobile_overscroll_triggered = $state(false);
 	let mobile_overscroll_timeout_id = $state(null);
 	let mobile_touch_active = $state(false);
@@ -59,6 +60,12 @@
 		},
 		set auth_dialog_open(value) {
 			auth_dialog_open = value;
+		},
+		get auth_dialog_mode() {
+			return auth_dialog_mode;
+		},
+		set auth_dialog_mode(value) {
+			auth_dialog_mode = value;
 		},
 		close_auth_dialog,
 		edit_for_fun,
@@ -112,13 +119,15 @@
 		return { supported: true };
 	}
 
-	function open_auth_dialog() {
+	function open_auth_dialog(mode = 'choice') {
+		auth_dialog_mode = mode;
 		auth_dialog_open = true;
 		mobile_overscroll_triggered = true;
 	}
 
 	function close_auth_dialog() {
 		auth_dialog_open = false;
+		auth_dialog_mode = 'choice';
 		mobile_overscroll_triggered = false;
 		clear_mobile_overscroll_timeout();
 	}
@@ -229,7 +238,7 @@
 				return;
 			}
 
-			open_auth_dialog();
+			open_auth_dialog('login');
 		}
 	}
 

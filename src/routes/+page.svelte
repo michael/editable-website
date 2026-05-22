@@ -9,6 +9,7 @@
 {#if props.data.has_backend}
 	<PresentationIndex
 		presentations={props.data.presentations ?? []}
+		has_backend={props.data.has_backend ?? false}
 		is_admin={props.data.is_admin ?? false}
 	/>
 {:else}

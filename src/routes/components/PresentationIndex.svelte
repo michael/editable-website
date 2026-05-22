@@ -1,10 +1,11 @@
 <script>
 	import { invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import AppToolbar from './AppToolbar.svelte';
 	import Media from './Media.svelte';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 
-	let { presentations = [], is_admin = false } = $props();
+	let { presentations = [], has_backend = true, is_admin = false } = $props();
 
 	let items = $state([]);
 	let search_query = $state('');
@@ -79,11 +80,6 @@
 		close_confirm();
 	}
 
-	function open_in_new_tab(event, item) {
-		event.preventDefault();
-		event.stopPropagation();
-		window.open(resolve(item.page_href), '_blank', 'noopener,noreferrer');
-	}
 
 	async function confirm_delete() {
 		if (!confirm_item) return;
@@ -110,23 +106,14 @@
 </svelte:head>
 
 <div class="min-h-screen bg-(--background) text-(--foreground)">
+	<AppToolbar {has_backend} {is_admin} allow_signed_out_new={true} />
 	<div class={TW_LIMITER}>
 		<div class="{TW_PAGE_PADDING_X} py-10 md:py-14 flex flex-col gap-8">
-			<header class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-				<div class="flex flex-col gap-2">
-					<h1 class="font-serif text-4xl md:text-6xl leading-none">Presentations</h1>
-					<p class="max-w-2xl text-sm md:text-base text-[color-mix(in_oklch,var(--foreground)_72%,transparent)]">
-						Browse all presentations.
-					</p>
-				</div>
-				{#if is_admin}
-					<a
-						href={resolve('/new')}
-						class="inline-flex h-11 items-center justify-center border border-(--foreground) px-5 text-sm font-medium uppercase tracking-widest text-(--foreground) hover:bg-(--foreground) hover:text-(--background) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-2"
-					>
-						New
-					</a>
-				{/if}
+			<header class="flex flex-col gap-2">
+				<h1 class="font-serif text-4xl md:text-6xl leading-none">Presentations</h1>
+				<p class="max-w-2xl text-sm md:text-base text-[color-mix(in_oklch,var(--foreground)_72%,transparent)]">
+					Browse all presentations.
+				</p>
 			</header>
 
 			<label class="relative block max-w-2xl">
@@ -186,24 +173,16 @@
 											{item.description}
 										</p>
 									{/if}
-									<div class="text-xs text-[color-mix(in_oklch,var(--foreground)_54%,transparent)]">
-										{item.page_href}
-										{#if item.updated_at}
-											<span aria-hidden="true"> · </span>Updated {format_timestamp(item.updated_at)}
-										{/if}
-									</div>
+									{#if item.updated_at}
+										<div class="text-xs text-[color-mix(in_oklch,var(--foreground)_54%,transparent)]">
+											Updated {format_timestamp(item.updated_at)}
+										</div>
+									{/if}
 								</div>
 							</a>
 
 							{#if is_admin}
 								<div class="flex items-center gap-2 md:justify-end">
-									<button
-										type="button"
-										class="border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] px-3 py-2 text-xs uppercase tracking-widest hover:border-(--svedit-editing-stroke) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
-										onclick={(event) => open_in_new_tab(event, item)}
-									>
-										Open
-									</button>
 									<button
 										type="button"
 										class="border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] px-3 py-2 text-xs uppercase tracking-widest text-(--svedit-editing-stroke) hover:border-(--svedit-editing-stroke) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"

@@ -9,11 +9,8 @@
 	import EditLink from './EditLink.svelte';
 	import EditMedia from './EditMedia.svelte';
 	import LinkPreview from './LinkPreview.svelte';
-	import AuthDialog from './AuthDialog.svelte';
-	import Drawer from './Drawer.svelte';
 
 	const svedit = getContext('svedit');
-	const app = getContext('app');
 
 	// True for the whole period the mouse button is down
 	let is_mouse_down = $state(false);
@@ -228,16 +225,6 @@
 
 	{#if svedit.session.commands?.edit_image?.show_prompt && is_media_selected && !is_selecting_body_node}
 		<EditMedia path={svedit.session.selection.path} />
-	{/if}
-
-	{#if app.auth_dialog_open}
-		<Drawer bind:open={app.auth_dialog_open} label="Edit options" drawer_height_mode="auto">
-			<AuthDialog
-				onclose={app.close_auth_dialog}
-				onedit_for_fun={app.edit_for_fun}
-				onlogin_success={app.handle_auth_success}
-			/>
-		</Drawer>
 	{/if}
 
 </div>

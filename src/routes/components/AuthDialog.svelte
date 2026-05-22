@@ -1,10 +1,12 @@
 <script>
 	/** @type {{
+		initial_step?: 'choice' | 'login',
 		onclose?: () => void,
 		onedit_for_fun?: () => void,
 		onlogin_success?: () => Promise<void> | void
 	}} */
 	let {
+		initial_step = 'choice',
 		onclose = () => {},
 		onedit_for_fun = () => {},
 		onlogin_success = () => {}
@@ -16,6 +18,11 @@
 	let step = $state('choice');
 	let password_input_ref = $state();
 	let should_focus_password_input = $state(false);
+
+	$effect(() => {
+		step = initial_step;
+		should_focus_password_input = initial_step === 'login';
+	});
 
 	$effect(() => {
 		if (step !== 'choice') return;
@@ -41,7 +48,7 @@
 		password = '';
 		error = '';
 		pending = false;
-		step = 'choice';
+		step = initial_step;
 		should_focus_password_input = false;
 	}
 
@@ -98,7 +105,7 @@
 		<div class="flex flex-col gap-7 px-2 pt-8 pb-2 sm:px-1 sm:gap-8">
 			<div class="flex flex-col items-center gap-1 text-center">
 				<h2 class="m-0 text-xl leading-[1.15] font-medium sm:text-2xl">
-					You can edit this website
+					You can edit this presentation
 				</h2>
 			</div>
 

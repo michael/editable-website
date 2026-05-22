@@ -349,12 +349,14 @@ If the user is already in edit-for-fun mode and presses the edit shortcut again,
 
 There is intentionally no dedicated `/login` route as the primary entry point.
 
-The main authentication entry is contextual:
+The reusable app toolbar exposes admin actions without a standalone login tool. On the presentation index, the new-presentation tool is visible to everyone and opens the admin password step when the user is not authenticated. On individual presentation routes, signed-out visitors see no toolbar tools; the edit shortcut can still open the admin password dialog.
+
+The main editing authentication entry is contextual:
 
 1. the site owner browses to the page they want to edit
 2. they trigger editing either with the editing shortcut (for example `Cmd+E`) or, on mobile, by pulling past the end of the page and holding that overscroll for about one second
-3. if they are not authenticated, the app opens an auth dialog in place
-4. the first dialog presents two large visual choice cards:
+3. if they are not authenticated, the app opens an admin password dialog in place
+4. optional edit-for-fun entry points may present two large visual choice cards:
    - `Edit for fun`
    - `Login`
 5. the `Edit for fun` card should emphasize immediate playful editing with supporting copy that makes clear changes cannot be saved
@@ -923,7 +925,8 @@ The `/` index should absorb the useful page drawer behavior and make the context
 - show all presentations in one searchable interface
 - support the same contextual actions that still apply, such as opening a presentation in a new tab and deleting a presentation after confirmation
 - use `page_href: /${document_id}` for every presentation
-- show admin-only actions only when `is_admin` is true
+- use the reusable app toolbar for login, logout, and new-presentation actions
+- show admin-only row actions only when `is_admin` is true
 - do not expose Page URL or slug editing
 - do not special-case or protect `page_1`; in backend mode admins can delete it like any other presentation
 

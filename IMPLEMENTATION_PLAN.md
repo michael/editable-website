@@ -581,7 +581,10 @@ Required UI:
 - preview media when available
 - title and optional description
 - optional updated timestamp
-- `New` link to `/new` only when `is_admin` is true
+- shared app toolbar with a round icon new-presentation tool visible on `/` even when signed out
+- no explicit login tool; signed-out users authenticate implicitly when they click the new-presentation tool
+- page-route toolbar tools hidden while signed out, with the edit shortcut still opening admin login
+- edit tool only on authenticated page routes, not on the index route
 - admin-only row/menu actions that still apply, including open in new tab and delete with confirmation
 
 Do not include Page URL editing or slug UI. Use Tailwind classes and rectangular styling.
