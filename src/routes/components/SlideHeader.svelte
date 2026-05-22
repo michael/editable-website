@@ -1,5 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
+	import { resolve } from '$app/paths';
 	import HelpDialog from './HelpDialog.svelte';
 
 	const svedit = getContext('svedit');
@@ -17,6 +18,7 @@
 		if (is_editing) return;
 		help_open = true;
 	}
+
 </script>
 
 <header
@@ -59,11 +61,10 @@
 		>
 			?
 		</button>
-		<button
-			type="button"
-			class="inline-flex size-12 items-center justify-center rounded-md bg-[#367d96] text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 md:size-14"
-			onclick={go_back}
-			disabled={is_editing}
+		<a
+			class="inline-flex size-12 items-center justify-center rounded-md bg-[#367d96] text-white transition-opacity hover:opacity-90 aria-disabled:pointer-events-none aria-disabled:opacity-60 md:size-14"
+			href={resolve('/')}
+			aria-disabled={is_editing}
 			aria-label="Schließen"
 		>
 			<svg
@@ -75,7 +76,7 @@
 			>
 				<path d="M3.5 3.5L11.5 11.5M11.5 3.5L3.5 11.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="square" />
 			</svg>
-		</button>
+		</a>
 	</div>
 </header>
 
