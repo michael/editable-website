@@ -37,8 +37,8 @@
 
 <!-- Default layout for Feature -->
 {#snippet layout_1()}
-	<div class="{TW_LIMITER} min-h-screen flex items-center">
-		<div class="w-full min-h-screen grid grid-cols-1 md:grid-cols-2 pt-5 sm:pt-7 md:pt-0">
+	<div class="{TW_LIMITER} h-full flex items-center overflow-hidden">
+		<div class="w-full h-full grid grid-cols-1 md:grid-cols-2 pt-5 sm:pt-7 md:pt-0">
 			<div class="flex flex-col justify-center {TW_PAGE_PADDING} pb-0" use:reveal>
 				<div class="max-w-2xl">{@render body()}</div>
 			</div>
@@ -51,8 +51,8 @@
 
 <!-- Like layout 1 but flipped horizontally -->
 {#snippet layout_2()}
-	<div class="{TW_LIMITER} min-h-screen flex items-center">
-		<div class="w-full min-h-screen grid grid-cols-1 md:grid-cols-2 pt-5 sm:pt-7 md:pt-0">
+	<div class="{TW_LIMITER} h-full flex items-center overflow-hidden">
+		<div class="w-full h-full grid grid-cols-1 md:grid-cols-2 pt-5 sm:pt-7 md:pt-0">
 			<div class="{TW_PAGE_PADDING} max-md:order-2" use:reveal={{ delay: 200 }}>
 				{@render image('3 / 4', true)}
 			</div>
@@ -65,8 +65,8 @@
 
 <!-- Like layout 1 but image stretches to edges (full bleed) -->
 {#snippet layout_3()}
-	<div class="{TW_LIMITER} min-h-screen flex items-center">
-		<div class="w-full min-h-screen grid grid-cols-1 md:grid-cols-2 pt-5 sm:pt-7 md:pt-0">
+	<div class="{TW_LIMITER} h-full flex items-center overflow-hidden">
+		<div class="w-full h-full grid grid-cols-1 md:grid-cols-2 pt-5 sm:pt-7 md:pt-0">
 			<div class="flex flex-col justify-center {TW_PAGE_PADDING}" use:reveal>
 				<div class="max-w-2xl">{@render body()}</div>
 			</div>
@@ -79,8 +79,8 @@
 
 <!-- Like layout 3 but flipped (image left, text right, full bleed) -->
 {#snippet layout_4()}
-	<div class="{TW_LIMITER} min-h-screen flex items-center">
-		<div class="w-full min-h-screen grid grid-cols-1 md:grid-cols-2 pt-5 sm:pt-7 md:pt-0">
+	<div class="{TW_LIMITER} h-full flex items-center overflow-hidden">
+		<div class="w-full h-full grid grid-cols-1 md:grid-cols-2 pt-5 sm:pt-7 md:pt-0">
 			<div class="max-md:order-2" use:reveal={{ delay: 200 }}>
 				{@render image()}
 			</div>
@@ -91,7 +91,7 @@
 	</div>
 {/snippet}
 
-<Node class="ew-feature min-h-screen lg:text-lg bg-(--background) text-(--foreground) {colorset_class}" {path}>
+<Node class="ew-feature h-screen overflow-hidden lg:text-lg bg-(--background) text-(--foreground) {colorset_class}" {path}>
 	{@const layouts = [layout_1, layout_2, layout_3, layout_4]}
 	{@render layouts[node.layout - 1]()}
 </Node>
