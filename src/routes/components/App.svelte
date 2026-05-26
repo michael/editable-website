@@ -1,5 +1,5 @@
 <script>
-	import { setContext } from 'svelte';
+	import { setContext, untrack } from 'svelte';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { Svedit, KeyMapper, Command, define_keymap } from 'svedit';
@@ -29,8 +29,8 @@
 
 	let app_el = $state();
 	let svedit_ref = $state();
-	let editable = $state(false);
-	let current_is_new = $state(false);
+	// `is_new` only sets the initial edit mode; after mount, commands own this state.
+	let editable = $state(untrack(() => !!is_new));
 	let is_admin = $derived(server_is_admin);
 	let is_admin_mode = $derived(editable && is_admin);
 
@@ -92,13 +92,6 @@
 			document.documentElement.classList.remove(scroll_lock_class);
 			document.body.classList.remove(scroll_lock_class);
 		};
-	});
-
-	$effect(() => {
-		current_is_new = !!is_new;
-		if (current_is_new) {
-			editable = true;
-		}
 	});
 
 	function focus_canvas() {
@@ -283,7 +276,7 @@
 			body_node_selector.close();
 			session.selection = null;
 
-			if (current_is_new) {
+			if (is_new) {
 				await goto(resolve('/'));
 				return;
 			}
@@ -378,7 +371,7 @@
 				/** @type {{ ok: boolean, document_id?: string, created?: boolean }} */
 				const result = await persist_document({
 					...doc_json,
-					create: current_is_new
+					create: is_new
 				});
 
 				if (mapping) {
@@ -402,7 +395,6 @@
 				if (result?.created && result.document_id) {
 					try {
 						await get_document(result.document_id).run();
-						current_is_new = false;
 						await goto(resolve(`/${result.document_id}`), { replaceState: true });
 						return;
 					} catch (read_back_err) {
