@@ -186,7 +186,7 @@ export const document_schema = define_document_schema({
 			},
 			columns: {
 				type: 'node_array',
-				node_types: ['descriptive_media_card'],
+				node_types: ['descriptive_media_card', 'chatbot'],
 				default_node_type: 'descriptive_media_card'
 			}
 		}
@@ -208,6 +208,16 @@ export const document_schema = define_document_schema({
 				type: 'node_array',
 				node_types: ['button'],
 				default_node_type: 'button'
+			}
+		}
+	},
+	chatbot: {
+		kind: 'block',
+		properties: {
+			message: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: true
 			}
 		}
 	},

@@ -36,6 +36,7 @@ import FooterLink from './components/FooterLink.svelte';
 import Text from './components/Text.svelte';
 import FourColumnsWithIntro from './components/FourColumnsWithIntro.svelte';
 import DescriptiveMediaCard from './components/DescriptiveMediaCard.svelte';
+import Chatbot from './components/Chatbot.svelte';
 import Decoration from './components/Decoration.svelte';
 import Hero from './components/Hero.svelte';
 import Button from './components/Button.svelte';
@@ -70,6 +71,28 @@ function select_inserted_label(tr) {
 
 function empty_annotated_text() {
 	return { text: '', annotations: [] };
+}
+
+const chatbot_messages = [
+	`Visitor: What can this presentation do?\nChatbot: It turns each slide into live editable content.\nVisitor: Can I change the columns too?\nChatbot: Yes. Switch a card into a chatbot and edit this script directly.`,
+	`Visitor: Give me the short version.\nChatbot: Your website becomes the editor.\nVisitor: No dashboard?\nChatbot: No dashboard. Just click, type, save.`,
+	`Visitor: Can this answer product questions?\nChatbot: Yes. Start with common questions, then connect richer knowledge later.\nVisitor: What should I write here?\nChatbot: A compact demo conversation that shows the value.`
+];
+
+function random_chatbot_message() {
+	const message_index = Math.floor(Math.random() * chatbot_messages.length);
+	return { text: chatbot_messages[message_index], annotations: [] };
+}
+
+function create_chatbot(tr) {
+	const chatbot_id = nanoid();
+	tr.create({
+		id: chatbot_id,
+		type: 'chatbot',
+		message: random_chatbot_message()
+	});
+
+	return chatbot_id;
 }
 
 function create_descriptive_media_card(tr) {
@@ -187,6 +210,7 @@ const session_config = {
 		Video,
 		FourColumnsWithIntro,
 		DescriptiveMediaCard,
+		Chatbot,
 		Decoration,
 		Strong,
 		Emphasis,
@@ -410,6 +434,16 @@ const session_config = {
 				path: [...tr.selection.path],
 				anchor_offset: tr.selection.focus_offset,
 				focus_offset: tr.selection.focus_offset
+			});
+		},
+		chatbot: function (tr) {
+			const chatbot_id = create_chatbot(tr);
+			tr.insert_nodes([chatbot_id]);
+			tr.set_selection({
+				type: 'text',
+				path: [...tr.selection.path, tr.selection.focus_offset - 1, 'message'],
+				anchor_offset: 0,
+				focus_offset: 0
 			});
 		},
 		decoration: function (tr) {

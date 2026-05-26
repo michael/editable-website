@@ -485,7 +485,7 @@ Svedit operates on a single flat document. In the presentations app, that model 
 
 The page root node owns the `body` array. Presentation titles, descriptions, and preview media are derived from slide content; there is no separate page-root SEO metadata editor or page-root metadata schema.
 
-`four_columns_with_intro` is a top-level body block for four descriptive media cards. It owns an `intro` node array for `text` and `decoration` nodes, and a `columns` node array for `descriptive_media_card` nodes. Each `descriptive_media_card` owns a fixed 4:3 `media` node (`image` or `video`), a `body` node array for `text` nodes, and a fixed bottom `buttons` area represented as a one-item node array so button editing uses Svedit's normal node-array selection model.
+`four_columns_with_intro` is a top-level body block for four column cards. It owns an `intro` node array for `text` and `decoration` nodes, and a `columns` node array for `descriptive_media_card` and `chatbot` nodes. Each `descriptive_media_card` owns a fixed 4:3 `media` node (`image` or `video`), a `body` node array for `text` nodes, and a fixed bottom `buttons` area represented as a one-item node array so button editing uses Svedit's normal node-array selection model. Each `chatbot` owns a multiline `message` property that is scrollable while editing and streams line by line in view mode.
 
 **On read (loading a presentation):**
 

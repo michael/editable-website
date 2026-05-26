@@ -2,7 +2,20 @@
 
 This document tracks what to implement next. One step at a time. All implementation must conform to the design decisions in [ARCHITECTURE.md](ARCHITECTURE.md) — if a conflict arises, update the architecture first, then implement.
 
-## Next implementation draft — four columns with intro
+## Next implementation draft — chatbot column card
+
+### Goal
+
+Add a `chatbot` column card that can be used inside `four_columns_with_intro.columns` as an alternative to `descriptive_media_card`.
+
+### Scope
+
+- Add `chatbot` to the document schema with an editable multiline `message` property.
+- Allow `four_columns_with_intro.columns` to contain `descriptive_media_card` or `chatbot`, while keeping `descriptive_media_card` as the default.
+- Add a `Chatbot.svelte` component that shows an editable scrollable message in edit mode and streams the message line by line in view mode.
+- Add a `chatbot` inserter that creates a node with a random prefilled chat message.
+
+## Existing implementation draft — four columns with intro
 
 ### Goal
 
