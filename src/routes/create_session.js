@@ -34,7 +34,6 @@ import FooterLinkColumn from './components/FooterLinkColumn.svelte';
 import FooterLink from './components/FooterLink.svelte';
 
 import Text from './components/Text.svelte';
-import Feature from './components/Feature.svelte';
 import FourColumnsWithIntro from './components/FourColumnsWithIntro.svelte';
 import DescriptiveMediaCard from './components/DescriptiveMediaCard.svelte';
 import Decoration from './components/Decoration.svelte';
@@ -186,7 +185,6 @@ const session_config = {
 		Text,
 		Image,
 		Video,
-		Feature,
 		FourColumnsWithIntro,
 		DescriptiveMediaCard,
 		Decoration,
@@ -215,8 +213,8 @@ const session_config = {
 		} else {
 			const target_node_type = session.can_insert('decoration')
 				? 'decoration'
-				: session.can_insert('feature')
-					? 'feature'
+				: session.can_insert('descriptive_media_card')
+					? 'descriptive_media_card'
 					: null;
 
 			if (!target_node_type) return null;
@@ -254,16 +252,23 @@ const session_config = {
 					pasted_json.nodes['node_text_' + i] = {
 						id: 'node_text_' + i,
 						type: 'text',
-						layout: 2,
+						layout: 4,
 						content: { text: '', annotations: [] }
+					};
+					pasted_json.nodes['node_button_' + i] = {
+						id: 'node_button_' + i,
+						type: 'button',
+						layout: 1,
+						href: '',
+						target: '_self',
+						label: { text: '', annotations: [] }
 					};
 					pasted_json.nodes['node_' + i] = {
 						id: 'node_' + i,
-						type: 'feature',
-						layout: 1,
-						colorset: 0,
+						type: 'descriptive_media_card',
 						media: 'node_media_' + i,
-						body: ['node_text_' + i]
+						body: ['node_text_' + i],
+						buttons: ['node_button_' + i]
 					};
 				}
 				pasted_json.main_nodes.push('node_' + i);
@@ -291,7 +296,6 @@ const session_config = {
 	},
 	node_layouts: {
 		text: 5,
-		feature: 4,
 		decoration: 1,
 		nav_item: 2,
 		button: 2,
@@ -373,31 +377,7 @@ const session_config = {
 				focus_offset: 0
 			});
 		},
-		feature: function (tr) {
-			const new_feature_id = tr.build('new_feature', {
-				feature_image: {
-					id: 'feature_image',
-					type: 'image',
-					...MEDIA_DEFAULTS
-				},
-				body_text: {
-					id: 'body_text',
-					type: 'text',
-					layout: 2,
-					content: { text: '', annotations: [] }
-				},
-				new_feature: {
-					id: 'new_feature',
-					type: 'feature',
-					layout: 1,
-					colorset: 0,
-					media: 'feature_image',
-					body: ['body_text']
-				}
-			});
 
-			tr.insert_nodes([new_feature_id]);
-		},
 		four_columns_with_intro: function (tr) {
 			const intro_text_id = nanoid();
 			tr.create({

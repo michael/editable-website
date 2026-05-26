@@ -47,7 +47,7 @@ This step does not include:
 
 ## Presentation page setup
 
-Pages are being adapted into a presentation-style experience. The page body is constrained to slide-level content blocks: `hero` and `feature`. Each direct `page.body` block should be exactly one viewport tall and clip overflowing content so authors must fix overfull slides manually. Each slide includes a non-editable `SlideHeader` at the top; the slide content fills the remaining viewport height below it. The header help button opens a non-editable `HelpDialog`. In viewer mode, manual page scrolling is disabled so presentations feel like slideshows; navigation between slides happens through hash links / jump marks. The presentation shell explicitly handles hash changes so browser back/forward between same-page slide fragments scrolls to the matching slide even while manual scrolling is locked. In edit mode, normal page scrolling remains enabled so editors can see the full scrollable slide stack. Supporting node types required by those blocks and by shared site chrome remain available: `text`, `decoration`, `button`, `image`, `video`, nav/footer nodes, and annotation nodes. `decoration` is only available inside `feature.body`, not as a direct page slide.
+Pages are being adapted into a presentation-style experience. The page body is constrained to slide-level content blocks: `hero` and `four_columns_with_intro`. Each direct `page.body` block should be exactly one viewport tall and clip overflowing content so authors must fix overfull slides manually. Each slide includes a non-editable `SlideHeader` at the top; the slide content fills the remaining viewport height below it. The header help button opens a non-editable `HelpDialog`. In viewer mode, manual page scrolling is disabled so presentations feel like slideshows; navigation between slides happens through hash links / jump marks. The presentation shell explicitly handles hash changes so browser back/forward between same-page slide fragments scrolls to the matching slide even while manual scrolling is locked. In edit mode, normal page scrolling remains enabled so editors can see the full scrollable slide stack. Supporting node types required by those blocks and by shared site chrome remain available: `text`, `decoration`, `button`, `image`, `video`, nav/footer nodes, and annotation nodes. `decoration` is only available inside `four_columns_with_intro.intro`, not as a direct page slide.
 
 ## Body-node deep links
 
@@ -56,7 +56,7 @@ Link editing supports same-page deep links to direct children of `page.body`. Th
 Deep links are stored as pure fragment hrefs using the target node id:
 
 - `#hero_1`
-- `#feature_1`
+- `#four_columns_1`
 
 Svedit already renders nodes with DOM ids matching their node ids, so no additional target marker data model is required. Persisted links continue to use the existing `href` string fields on link annotations and link-ish nodes.
 
@@ -498,7 +498,7 @@ presentation URL        presentation document
 ┌──────────────┐      ┌──────────────────────┐
 │ /page_234    │─────▶│ page_234             │
 └──────────────┘      │ hero_1               │
-                      │ feature_1            │
+                      │ four_columns_1       │
                       │ image_1              │
                       │ link_annotation_1    │
                       │ ...                  │
@@ -547,12 +547,12 @@ There are two media node types: `image` and `video`. Each has the same visual pr
 
 ```json
 {
-    "id": "feature_1_image",
+    "id": "media_1",
     "type": "image",
     "src": "c4b519da4c0a6512b5d9519aac0d9df7fab9152a6df109515456ada4702fabdb.webp",
     "width": 1600,
     "height": 900,
-    "alt": "Feature image",
+    "alt": "Image",
     "scale": 1.0,
     "focal_point_x": 0.5,
     "focal_point_y": 0.5,
@@ -585,7 +585,6 @@ Container nodes that currently have an `image` property referencing only `["imag
 
 - `gallery_item.image` → `gallery_item.media`
 - `figure.image` → `figure.media`
-- `feature.image` → `feature.media`
 - `link_collection_item.image` → `link_collection_item.media`
 - `nav.logo` and `footer.logo` — **stay as `logo`**, but widen to `["image", "video"]`
 

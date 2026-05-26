@@ -21,18 +21,18 @@ This step adapts the page body into a presentation-style sequence.
 
 ### Goal
 
-Make direct `page.body` blocks behave like full-window slides while limiting page body block types to `hero` and `feature`.
+Make direct `page.body` blocks behave like full-window slides while limiting page body block types to `hero` and `four_columns_with_intro`.
 
 ### Scope
 
-- Restrict the `page.body` schema to `hero` and `feature`, with `hero` as the default inserted node.
+- Restrict the `page.body` schema to `hero` and `four_columns_with_intro`, with `hero` as the default inserted node.
 - Remove obsolete page body block inserters and layouts from the session config.
-- Keep supporting node types required by `hero`, `feature`, media, and annotations, including `decoration` inside `feature.body`.
-- Make `Hero.svelte` and `Feature.svelte` render each node as an exact viewport-height slide with overflow clipped.
+- Keep supporting node types required by `hero`, `four_columns_with_intro`, media, and annotations, including `decoration` inside `four_columns_with_intro.intro`.
+- Make `Hero.svelte` and `FourColumnsWithIntro.svelte` render each node as an exact viewport-height slide with overflow clipped.
 - Add a shared non-editable `SlideHeader` rendered at the top of every slide, with slide content filling the remaining viewport height.
 - Add a non-editable `HelpDialog` opened from the slide header help button.
 - Disable manual page scrolling in viewer mode while keeping hash-link slide jumps, same-page hash history back/forward, and edit-mode scrolling available.
-- Trim the demo page body to its existing hero and feature blocks.
+- Trim the demo page body to its hero and four-column blocks.
 - Update new-page scaffolding so new pages start with a hero instead of a prose block.
 
 ## Next implementation draft — body-node deep links

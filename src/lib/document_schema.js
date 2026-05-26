@@ -8,7 +8,7 @@ export const document_schema = define_document_schema({
 		properties: {
 			body: {
 				type: 'node_array',
-				node_types: ['hero', 'feature', 'four_columns_with_intro'],
+				node_types: ['hero', 'four_columns_with_intro'],
 				default_node_type: 'hero'
 			}
 		}
@@ -173,23 +173,6 @@ export const document_schema = define_document_schema({
 				type: 'node',
 				node_types: ['image', 'video'],
 				default_node_type: 'image'
-			}
-		}
-	},
-	feature: {
-		kind: 'block',
-		properties: {
-			layout: { type: 'integer', default: 1 },
-			colorset: { type: 'integer', default: 0 },
-			media: {
-				type: 'node',
-				node_types: ['image', 'video'],
-				default_node_type: 'image'
-			},
-			body: {
-				type: 'node_array',
-				node_types: ['text', 'decoration'],
-				default_node_type: 'text'
 			}
 		}
 	},

@@ -12,9 +12,8 @@ const FULL_DOC = {
 			"type": "page",
 			"body": [
 				"hero_1",
-				"RtYpQwXsZvNmKjHgFdSaLe",
-				"YTMHBcPkYXJMRUnuSAhrTDE",
-				"UBNYngEBJYtDWgeabtDJqWW"
+				"four_columns_1",
+				"cta_hero_1"
 			]
 		},
 		"hero_1": {
@@ -31,279 +30,277 @@ const FULL_DOC = {
 				"annotations": []
 			},
 			"buttons": [
-				"ccHVKDeyhrRVfKZCpXvxhac"
+				"hero_button_1"
 			]
 		},
-		"ccHVKDeyhrRVfKZCpXvxhac": {
-			"id": "ccHVKDeyhrRVfKZCpXvxhac",
+		"hero_button_1": {
+			"id": "hero_button_1",
 			"type": "button",
 			"layout": 1,
-			"href": "#RtYpQwXsZvNmKjHgFdSaLe",
+			"href": "#four_columns_1",
 			"target": "_self",
 			"label": {
 				"text": "↓",
 				"annotations": []
 			}
 		},
-		"RtYpQwXsZvNmKjHgFdSaLe": {
-			"id": "RtYpQwXsZvNmKjHgFdSaLe",
-			"type": "feature",
-			"layout": 1,
-			"colorset": 0,
-			"media": "VbNcMxZaQwErTyUiOpLkJh",
-			"body": [
-				"uqZnrCRbzCkBWmYNQYkFePY",
-				"WsXcDfVgBhNjMkLqAzPeRt",
-				"ywTQktXzgyRqzsUNXjZztQw",
-				"WjasMkTrmjdrXTsDgeUHQap",
-				"DxBvNYzBgktMyKjKkKyYcAN"
+		"four_columns_1": {
+			"id": "four_columns_1",
+			"type": "four_columns_with_intro",
+			"intro": [
+				"four_columns_intro_1"
+			],
+			"columns": [
+				"descriptive_media_card_1",
+				"descriptive_media_card_2",
+				"descriptive_media_card_3",
+				"descriptive_media_card_4"
 			]
 		},
-		"VbNcMxZaQwErTyUiOpLkJh": {
-			"id": "VbNcMxZaQwErTyUiOpLkJh",
+		"four_columns_intro_1": {
+			"id": "four_columns_intro_1",
+			"type": "text",
+			"layout": 1,
+			"content": {
+				"text": "Erfahren Sie, wie der gezielte Einsatz von künstlicher Intelligenz Ihr Unternehmen nachhaltig stärkt, indem herkömmliche Arbeitsabläufe durch die Digitalisierung von Backprozessen effizienter, präziser und zukunftssicher gestaltet werden.",
+				"annotations": []
+			}
+		},
+		"descriptive_media_card_1": {
+			"id": "descriptive_media_card_1",
+			"type": "descriptive_media_card",
+			"media": "descriptive_media_card_1_media",
+			"body": [
+				"descriptive_media_card_1_title",
+				"descriptive_media_card_1_body"
+			],
+			"buttons": [
+				"descriptive_media_card_1_button"
+			]
+		},
+		"descriptive_media_card_1_media": {
+			"id": "descriptive_media_card_1_media",
 			"type": "image",
 			"src": "cmde.webp",
 			"mime_type": "image/webp",
-			"width": 192,
-			"height": 256,
-			"alt": "Feature image",
-			"scale": 1,
-			"focal_point_x": 0.5329817181174089,
-			"focal_point_y": 0.47301940896272265,
-			"object_fit": "cover"
-		},
-		"uqZnrCRbzCkBWmYNQYkFePY": {
-			"id": "uqZnrCRbzCkBWmYNQYkFePY",
-			"type": "text",
-			"layout": 5,
-			"content": {
-				"text": "Editing",
-				"annotations": []
-			}
-		},
-		"WsXcDfVgBhNjMkLqAzPeRt": {
-			"id": "WsXcDfVgBhNjMkLqAzPeRt",
-			"type": "text",
-			"layout": 2,
-			"content": {
-				"text": "This is Editable Website",
-				"annotations": []
-			}
-		},
-		"ywTQktXzgyRqzsUNXjZztQw": {
-			"id": "ywTQktXzgyRqzsUNXjZztQw",
-			"type": "text",
-			"layout": 1,
-			"content": {
-				"text": "Press ⌘ / Ctrl + e to enter edit mode.\nClick where you want to edit.\nMove around with the arrow keys.\nChange anything you see!",
-				"annotations": [
-					{
-						"start_offset": 6,
-						"end_offset": 18,
-						"node_id": "RezNUsxYmfpmFMezpgEbqYu"
-					}
-				]
-			}
-		},
-		"RezNUsxYmfpmFMezpgEbqYu": {
-			"id": "RezNUsxYmfpmFMezpgEbqYu",
-			"type": "strong"
-		},
-		"WjasMkTrmjdrXTsDgeUHQap": {
-			"id": "WjasMkTrmjdrXTsDgeUHQap",
-			"type": "text",
-			"layout": 1,
-			"content": {
-				"text": "Bold, italics and links with ⌘ / Ctrl + b, i and k\nUndo with ⌘ / Ctrl + z\nSave changes with ⌘ / Ctrl + s\n(On this example page, changes are not persisted. On a real site, a logged in user would have their changes persisted to a database.)",
-				"annotations": [
-					{
-						"start_offset": 29,
-						"end_offset": 41,
-						"node_id": "NhhsYbqTRzPtpQcHFUgwFhP"
-					},
-					{
-						"start_offset": 43,
-						"end_offset": 45,
-						"node_id": "ypAZzWFdhamCaTMKmZMZPMm"
-					},
-					{
-						"start_offset": 49,
-						"end_offset": 50,
-						"node_id": "wuyFjXptXyMvgYKUcvtTggC"
-					},
-					{
-						"start_offset": 61,
-						"end_offset": 73,
-						"node_id": "ZWDXzUmKJbqDwJbNTbhEtWQ"
-					},
-					{
-						"start_offset": 92,
-						"end_offset": 104,
-						"node_id": "zqyQQtSbzxtdTTsVTYuuXEh"
-					},
-					{
-						"start_offset": 105,
-						"end_offset": 238,
-						"node_id": "CUTpvupqUbXQDyMjBczwfCj"
-					},
-					{
-						"start_offset": 0,
-						"end_offset": 4,
-						"node_id": "PYHXbxRMREHBpAqxbdsUXzP"
-					},
-					{
-						"start_offset": 6,
-						"end_offset": 13,
-						"node_id": "djTpcsEQTzfGMSRctKenpWt"
-					},
-					{
-						"start_offset": 18,
-						"end_offset": 23,
-						"node_id": "eUteADFhxtenJraxpeprgHr"
-					}
-				]
-			}
-		},
-		"NhhsYbqTRzPtpQcHFUgwFhP": {
-			"id": "NhhsYbqTRzPtpQcHFUgwFhP",
-			"type": "strong"
-		},
-		"ypAZzWFdhamCaTMKmZMZPMm": {
-			"id": "ypAZzWFdhamCaTMKmZMZPMm",
-			"type": "strong"
-		},
-		"wuyFjXptXyMvgYKUcvtTggC": {
-			"id": "wuyFjXptXyMvgYKUcvtTggC",
-			"type": "strong"
-		},
-		"ZWDXzUmKJbqDwJbNTbhEtWQ": {
-			"id": "ZWDXzUmKJbqDwJbNTbhEtWQ",
-			"type": "strong"
-		},
-		"zqyQQtSbzxtdTTsVTYuuXEh": {
-			"id": "zqyQQtSbzxtdTTsVTYuuXEh",
-			"type": "strong"
-		},
-		"CUTpvupqUbXQDyMjBczwfCj": {
-			"id": "CUTpvupqUbXQDyMjBczwfCj",
-			"type": "emphasis"
-		},
-		"PYHXbxRMREHBpAqxbdsUXzP": {
-			"id": "PYHXbxRMREHBpAqxbdsUXzP",
-			"type": "strong"
-		},
-		"djTpcsEQTzfGMSRctKenpWt": {
-			"id": "djTpcsEQTzfGMSRctKenpWt",
-			"type": "emphasis"
-		},
-		"eUteADFhxtenJraxpeprgHr": {
-			"id": "eUteADFhxtenJraxpeprgHr",
-			"type": "link",
-			"href": "#",
-			"target": "_self"
-		},
-		"DxBvNYzBgktMyKjKkKyYcAN": {
-			"id": "DxBvNYzBgktMyKjKkKyYcAN",
-			"type": "text",
-			"layout": 1,
-			"content": {
-				"text": "Looking for the admin panel? There isn't any! It's just you, and your content.",
-				"annotations": []
-			}
-		},
-		"YTMHBcPkYXJMRUnuSAhrTDE": {
-			"id": "YTMHBcPkYXJMRUnuSAhrTDE",
-			"type": "feature",
-			"layout": 2,
-			"colorset": 0,
-			"media": "hqrrTdEbTPaqzEcYMczhBZb",
-			"body": [
-				"pCjecUjAFDGgGpgquwGrCdp",
-				"qDAyeabdhVEXjBWXyyqfUPb",
-				"QVXhuysTRgRyQHVQnfTVCpV",
-				"NjNteBhckwxGAUfbYRMGrDz"
-			]
-		},
-		"hqrrTdEbTPaqzEcYMczhBZb": {
-			"id": "hqrrTdEbTPaqzEcYMczhBZb",
-			"type": "image",
-			"src": "michael.webp",
-			"mime_type": "image/webp",
-			"width": 192,
-			"height": 256,
-			"alt": "Feature image",
+			"width": 768,
+			"height": 1024,
+			"alt": "Wissen sichern",
 			"scale": 1,
 			"focal_point_x": 0.5,
 			"focal_point_y": 0.5,
 			"object_fit": "cover"
 		},
-		"pCjecUjAFDGgGpgquwGrCdp": {
-			"id": "pCjecUjAFDGgGpgquwGrCdp",
+		"descriptive_media_card_1_title": {
+			"id": "descriptive_media_card_1_title",
 			"type": "text",
-			"layout": 2,
+			"layout": 4,
 			"content": {
-				"text": "Hello, I’m Michael",
+				"text": "Wissen sichern",
 				"annotations": []
 			}
 		},
-		"qDAyeabdhVEXjBWXyyqfUPb": {
-			"id": "qDAyeabdhVEXjBWXyyqfUPb",
+		"descriptive_media_card_1_body": {
+			"id": "descriptive_media_card_1_body",
 			"type": "text",
 			"layout": 1,
 			"content": {
-				"text": "Since 2011 I’ve been taming web browsers to behave correctly and predictably when editing rich text.",
-				"annotations": [
-					{
-						"start_offset": 21,
-						"end_offset": 40,
-						"node_id": "gnbpgBsBYZqEwRxqRZSMHdd"
-					}
-				]
-			}
-		},
-		"gnbpgBsBYZqEwRxqRZSMHdd": {
-			"id": "gnbpgBsBYZqEwRxqRZSMHdd",
-			"type": "link",
-			"href": "https://letsken.com/michael/how-to-implement-a-web-based-rich-text-editor-in-2023",
-			"target": "_blank"
-		},
-		"QVXhuysTRgRyQHVQnfTVCpV": {
-			"id": "QVXhuysTRgRyQHVQnfTVCpV",
-			"type": "text",
-			"layout": 1,
-			"content": {
-				"text": "I want you to be able to launch websites that anyone can edit. No more calls asking you to update someone’s WordPress site! They’ll be able to do it themselves.",
+				"text": "• Wissen aus der Backstube\n• Rezepte\n• Traditionelles Handwerk",
 				"annotations": []
 			}
 		},
-		"NjNteBhckwxGAUfbYRMGrDz": {
-			"id": "NjNteBhckwxGAUfbYRMGrDz",
-			"type": "text",
+		"descriptive_media_card_1_button": {
+			"id": "descriptive_media_card_1_button",
+			"type": "button",
 			"layout": 1,
-			"content": {
-				"text": "Most CMSs are too complex for clients and too restrictive for developers. Change every pixel of your site, create new content types, or integrate 3rd party data. Everything you can do with Svelte, you can do with Editable Website.",
+			"href": "#cta_hero_1",
+			"target": "_self",
+			"label": {
+				"text": "Auswählen",
 				"annotations": []
 			}
 		},
-		"UBNYngEBJYtDWgeabtDJqWW": {
-			"id": "UBNYngEBJYtDWgeabtDJqWW",
+		"descriptive_media_card_2": {
+			"id": "descriptive_media_card_2",
+			"type": "descriptive_media_card",
+			"media": "descriptive_media_card_2_media",
+			"body": [
+				"descriptive_media_card_2_title",
+				"descriptive_media_card_2_body"
+			],
+			"buttons": [
+				"descriptive_media_card_2_button"
+			]
+		},
+		"descriptive_media_card_2_media": {
+			"id": "descriptive_media_card_2_media",
+			"type": "image",
+			"src": "michael.webp",
+			"mime_type": "image/webp",
+			"width": 1431,
+			"height": 1908,
+			"alt": "Alte Backöfen digitalisieren",
+			"scale": 1,
+			"focal_point_x": 0.5,
+			"focal_point_y": 0.5,
+			"object_fit": "cover"
+		},
+		"descriptive_media_card_2_title": {
+			"id": "descriptive_media_card_2_title",
+			"type": "text",
+			"layout": 4,
+			"content": {
+				"text": "Alte Backöfen digitalisieren",
+				"annotations": []
+			}
+		},
+		"descriptive_media_card_2_body": {
+			"id": "descriptive_media_card_2_body",
+			"type": "text",
+			"layout": 1,
+			"content": {
+				"text": "• Nachrüsten\n• Sensordaten\n• Prozessoptimierung",
+				"annotations": []
+			}
+		},
+		"descriptive_media_card_2_button": {
+			"id": "descriptive_media_card_2_button",
+			"type": "button",
+			"layout": 1,
+			"href": "#cta_hero_1",
+			"target": "_self",
+			"label": {
+				"text": "Auswählen",
+				"annotations": []
+			}
+		},
+		"descriptive_media_card_3": {
+			"id": "descriptive_media_card_3",
+			"type": "descriptive_media_card",
+			"media": "descriptive_media_card_3_media",
+			"body": [
+				"descriptive_media_card_3_title",
+				"descriptive_media_card_3_body"
+			],
+			"buttons": [
+				"descriptive_media_card_3_button"
+			]
+		},
+		"descriptive_media_card_3_media": {
+			"id": "descriptive_media_card_3_media",
+			"type": "image",
+			"src": "colbourns.webp",
+			"mime_type": "image/webp",
+			"width": 2890,
+			"height": 1790,
+			"alt": "Backfehler vermeiden",
+			"scale": 1,
+			"focal_point_x": 0.5,
+			"focal_point_y": 0.5,
+			"object_fit": "cover"
+		},
+		"descriptive_media_card_3_title": {
+			"id": "descriptive_media_card_3_title",
+			"type": "text",
+			"layout": 4,
+			"content": {
+				"text": "Backfehler vermeiden",
+				"annotations": []
+			}
+		},
+		"descriptive_media_card_3_body": {
+			"id": "descriptive_media_card_3_body",
+			"type": "text",
+			"layout": 1,
+			"content": {
+				"text": "• Vernetzung von Daten\n• Frühwarnsystem\n• Handlungsableitungen",
+				"annotations": []
+			}
+		},
+		"descriptive_media_card_3_button": {
+			"id": "descriptive_media_card_3_button",
+			"type": "button",
+			"layout": 1,
+			"href": "#cta_hero_1",
+			"target": "_self",
+			"label": {
+				"text": "Auswählen",
+				"annotations": []
+			}
+		},
+		"descriptive_media_card_4": {
+			"id": "descriptive_media_card_4",
+			"type": "descriptive_media_card",
+			"media": "descriptive_media_card_4_media",
+			"body": [
+				"descriptive_media_card_4_title",
+				"descriptive_media_card_4_body"
+			],
+			"buttons": [
+				"descriptive_media_card_4_button"
+			]
+		},
+		"descriptive_media_card_4_media": {
+			"id": "descriptive_media_card_4_media",
+			"type": "image",
+			"src": "tomorrow-vc.webp",
+			"mime_type": "image/webp",
+			"width": 1746,
+			"height": 1616,
+			"alt": "Intelligenter Zugriff auf Wissen",
+			"scale": 1,
+			"focal_point_x": 0.5,
+			"focal_point_y": 0.5,
+			"object_fit": "cover"
+		},
+		"descriptive_media_card_4_title": {
+			"id": "descriptive_media_card_4_title",
+			"type": "text",
+			"layout": 4,
+			"content": {
+				"text": "Intelligenter Zugriff auf Wissen",
+				"annotations": []
+			}
+		},
+		"descriptive_media_card_4_body": {
+			"id": "descriptive_media_card_4_body",
+			"type": "text",
+			"layout": 1,
+			"content": {
+				"text": "• Chatbot\n• Wissen auf Knopfdruck\n• Intelligente Abfragen",
+				"annotations": []
+			}
+		},
+		"descriptive_media_card_4_button": {
+			"id": "descriptive_media_card_4_button",
+			"type": "button",
+			"layout": 1,
+			"href": "#cta_hero_1",
+			"target": "_self",
+			"label": {
+				"text": "Auswählen",
+				"annotations": []
+			}
+		},
+		"cta_hero_1": {
+			"id": "cta_hero_1",
 			"type": "hero",
+			"layout": 3,
 			"colorset": 0,
 			"title": {
 				"text": "I love it! How can I get it?",
 				"annotations": []
 			},
 			"description": {
-				"text": "This is an an initial preview of Editable Website. There’s more to do before you can use it in production. Be the first to hear when it’s ready:",
+				"text": "This is an initial preview of Editable Website. There’s more to do before you can use it in production. Be the first to hear when it’s ready:",
 				"annotations": []
 			},
 			"buttons": [
-				"PvpNcGKnqTTBbvbRZeDUYSN"
-			],
-			"layout": 3
+				"cta_button_1"
+			]
 		},
-		"PvpNcGKnqTTBbvbRZeDUYSN": {
-			"id": "PvpNcGKnqTTBbvbRZeDUYSN",
+		"cta_button_1": {
+			"id": "cta_button_1",
 			"type": "button",
 			"layout": 1,
 			"href": "https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform?usp=dialog",
@@ -315,8 +312,6 @@ const FULL_DOC = {
 		}
 	}
 };
-
-
 
 const page_nodes_list = traverse('page_1', document_schema, FULL_DOC.nodes);
 const page_nodes = {};
