@@ -8,7 +8,7 @@ export const document_schema = define_document_schema({
 		properties: {
 			body: {
 				type: 'node_array',
-				node_types: ['hero', 'feature'],
+				node_types: ['hero', 'feature', 'four_columns_with_intro'],
 				default_node_type: 'hero'
 			}
 		}
@@ -190,6 +190,41 @@ export const document_schema = define_document_schema({
 				type: 'node_array',
 				node_types: ['text', 'decoration'],
 				default_node_type: 'text'
+			}
+		}
+	},
+	four_columns_with_intro: {
+		kind: 'block',
+		properties: {
+			intro: {
+				type: 'node_array',
+				node_types: ['text', 'decoration'],
+				default_node_type: 'text'
+			},
+			columns: {
+				type: 'node_array',
+				node_types: ['descriptive_media_card'],
+				default_node_type: 'descriptive_media_card'
+			}
+		}
+	},
+	descriptive_media_card: {
+		kind: 'block',
+		properties: {
+			media: {
+				type: 'node',
+				node_types: ['image', 'video'],
+				default_node_type: 'image'
+			},
+			body: {
+				type: 'node_array',
+				node_types: ['text'],
+				default_node_type: 'text'
+			},
+			buttons: {
+				type: 'node_array',
+				node_types: ['button'],
+				default_node_type: 'button'
 			}
 		}
 	},

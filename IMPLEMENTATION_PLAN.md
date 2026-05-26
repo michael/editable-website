@@ -2,6 +2,19 @@
 
 This document tracks what to implement next. One step at a time. All implementation must conform to the design decisions in [ARCHITECTURE.md](ARCHITECTURE.md) — if a conflict arises, update the architecture first, then implement.
 
+## Next implementation draft — four columns with intro
+
+### Goal
+
+Add a reusable `four_columns_with_intro` body block for sections with optional intro content and four descriptive media cards.
+
+### Scope
+
+- Add `four_columns_with_intro` to the page body schema and component registry.
+- Add `descriptive_media_card` as the child node type for the block's `columns` array.
+- Give each card a fixed 4:3 `media` property, a `body` text-node array, and a fixed bottom `buttons` area represented as a one-item node array.
+- Add inserters that create one intro text node and four default descriptive media cards.
+
 ## Current implementation draft — presentation page setup
 
 This step adapts the page body into a presentation-style sequence.

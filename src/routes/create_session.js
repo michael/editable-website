@@ -35,6 +35,8 @@ import FooterLink from './components/FooterLink.svelte';
 
 import Text from './components/Text.svelte';
 import Feature from './components/Feature.svelte';
+import FourColumnsWithIntro from './components/FourColumnsWithIntro.svelte';
+import DescriptiveMediaCard from './components/DescriptiveMediaCard.svelte';
 import Decoration from './components/Decoration.svelte';
 import Hero from './components/Hero.svelte';
 import Button from './components/Button.svelte';
@@ -65,6 +67,48 @@ function select_inserted_label(tr) {
 		anchor_offset: 0,
 		focus_offset: 0
 	});
+}
+
+function empty_annotated_text() {
+	return { text: '', annotations: [] };
+}
+
+function create_descriptive_media_card(tr) {
+	const media_id = nanoid();
+	tr.create({
+		id: media_id,
+		type: 'image',
+		...MEDIA_DEFAULTS
+	});
+
+	const body_text_id = nanoid();
+	tr.create({
+		id: body_text_id,
+		type: 'text',
+		layout: 4,
+		content: empty_annotated_text()
+	});
+
+	const button_id = nanoid();
+	tr.create({
+		id: button_id,
+		type: 'button',
+		layout: 1,
+		href: '',
+		target: '_self',
+		label: empty_annotated_text()
+	});
+
+	const card_id = nanoid();
+	tr.create({
+		id: card_id,
+		type: 'descriptive_media_card',
+		media: media_id,
+		body: [body_text_id],
+		buttons: [button_id]
+	});
+
+	return card_id;
 }
 
 /**
@@ -143,6 +187,8 @@ const session_config = {
 		Image,
 		Video,
 		Feature,
+		FourColumnsWithIntro,
+		DescriptiveMediaCard,
 		Decoration,
 		Strong,
 		Emphasis,
@@ -351,6 +397,40 @@ const session_config = {
 			});
 
 			tr.insert_nodes([new_feature_id]);
+		},
+		four_columns_with_intro: function (tr) {
+			const intro_text_id = nanoid();
+			tr.create({
+				id: intro_text_id,
+				type: 'text',
+				layout: 1,
+				content: empty_annotated_text()
+			});
+
+			const column_ids = [];
+			for (let i = 0; i < 4; i++) {
+				column_ids.push(create_descriptive_media_card(tr));
+			}
+
+			const section_id = nanoid();
+			tr.create({
+				id: section_id,
+				type: 'four_columns_with_intro',
+				intro: [intro_text_id],
+				columns: column_ids
+			});
+
+			tr.insert_nodes([section_id]);
+		},
+		descriptive_media_card: function (tr) {
+			const card_id = create_descriptive_media_card(tr);
+			tr.insert_nodes([card_id]);
+			tr.set_selection({
+				type: 'node',
+				path: [...tr.selection.path],
+				anchor_offset: tr.selection.focus_offset,
+				focus_offset: tr.selection.focus_offset
+			});
 		},
 		decoration: function (tr) {
 			const new_decoration_id = tr.build('new_decoration', {

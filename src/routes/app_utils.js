@@ -135,17 +135,20 @@ export function get_closest_switchable_layout(session, session_config) {
 
 	const { full_path, start_path } = paths;
 
-	// Walk up checking each node for a switchable layout property
+	// Walk up checking each node array for a switchable layout property.
 	let path = start_path;
 	while (path && path.length >= 2) {
-		const node_index = get_node_index_at(full_path, path);
-		if (node_index !== null) {
-			const node = session.get([...path, node_index]);
-			if (node?.layout && session_config.node_layouts?.[node.type] > 1) {
-				return { node, node_array_path: path, node_index };
+		const node_array_schema = session.inspect(path);
+		if (node_array_schema?.type === 'node_array') {
+			const node_index = get_node_index_at(full_path, path);
+			if (node_index !== null && Number.isInteger(node_index)) {
+				const node = session.get([...path, node_index]);
+				if (node?.layout && session_config.node_layouts?.[node.type] > 1) {
+					return { node, node_array_path: path, node_index };
+				}
 			}
 		}
-		// Move up two segments (node index + property name)
+		// Move up two segments (node index/property name or node property/property name)
 		path = path.slice(0, -2);
 	}
 
