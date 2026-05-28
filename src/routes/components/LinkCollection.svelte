@@ -20,14 +20,20 @@
 {#snippet intro()}
 	{@const intro_padding = has_intro ? 'pt-10 sm:pt-14 md:pt-16 lg:pt-20 pb-2 sm:pb-3 md:pb-5 lg:pb-7' : 'pt-10 sm:pt-14 md:pt-16 lg:pt-20'}
 	<div class="{TW_PAGE_PADDING_X} max-w-4xl lg:text-lg {intro_padding}">
-		<NodeArrayProperty class="ew-intro flex flex-col gap-5 md:gap-8 {heading_spacing}" path={[...path, 'intro']} />
+		<NodeArrayProperty
+			class="ew-intro flex flex-col gap-5 md:gap-8 {heading_spacing}{!has_intro ? ' empty' : ''}"
+			path={[...path, 'intro']}
+		/>
 	</div>
 {/snippet}
 
 {#snippet outro()}
 	{@const outro_padding = has_outro ? 'pt-2 sm:pt-3 md:pt-4 lg:pt-6 pb-20 sm:pb-24 md:pb-28 lg:pb-32' : 'pb-20 sm:pb-24 md:pb-28 lg:pb-32'}
 	<div class="{TW_PAGE_PADDING_X} max-w-4xl lg:text-lg {outro_padding}">
-		<NodeArrayProperty class="ew-intro flex flex-col gap-5 md:gap-8 {heading_spacing}" path={[...path, 'outro']} />
+		<NodeArrayProperty
+			class="ew-outro flex flex-col gap-5 md:gap-8 {heading_spacing}{!has_outro ? ' empty' : ''}"
+			path={[...path, 'outro']}
+		/>
 	</div>
 {/snippet}
 
@@ -50,8 +56,12 @@
 
 
 <style>
-	/* HACK: When intro or outro is empty, prevent the empty node placeholder from taking up vertical space */
-	:global(.ew-intro .node.empty-node-array, .ew-outro .node.empty-node-array) {
-		min-height: 0 !important;
+	/* When intro or outro is empty, keep the placeholder visible without affecting layout. */
+	:global(.ew-intro.empty, .ew-outro.empty) {
+		position: relative;
+	}
+
+	:global(.ew-intro.empty .empty-node-placeholder, .ew-outro.empty .empty-node-placeholder) {
+		position: absolute;
 	}
 </style>

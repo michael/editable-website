@@ -29,7 +29,7 @@
 					placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
 				/>
 				<NodeArrayProperty
-					class="[--row:1] hero-buttons flex flex-wrap items-center justify-center gap-4 mt-10{!has_buttons ? ' empty' : ''}"
+					class="[--row:1] hero-buttons flex flex-wrap items-center justify-center gap-4{has_buttons ? ' mt-10' : ' empty'}"
 					path={[...path, 'buttons']}
 				/>
 			</div>
@@ -54,7 +54,7 @@
 					placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
 				/>
 				<NodeArrayProperty
-					class="[--row:1] hero-buttons flex flex-wrap items-center gap-4 mt-10{!has_buttons ? ' empty' : ''}"
+					class="[--row:1] hero-buttons flex flex-wrap items-center gap-4{has_buttons ? ' mt-10' : ' empty'}"
 					path={[...path, 'buttons']}
 				/>
 			</div>
@@ -79,7 +79,7 @@
 					placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
 				/>
 				<NodeArrayProperty
-					class="[--row:1] hero-buttons flex flex-wrap items-center justify-center gap-4 mt-10{!has_buttons ? ' empty' : ''}"
+					class="[--row:1] hero-buttons flex flex-wrap items-center justify-center gap-4{has_buttons ? ' mt-10' : ' empty'}"
 					path={[...path, 'buttons']}
 				/>
 			</div>
@@ -106,7 +106,7 @@
 						placeholder="A supporting sentence that adds context and draws visitors in. Keep it clear, concise, and compelling."
 					/>
 					<NodeArrayProperty
-						class="[--row:1] hero-buttons flex flex-wrap items-center gap-4 mt-10{!has_buttons ? ' empty' : ''}"
+						class="[--row:1] hero-buttons flex flex-wrap items-center gap-4{has_buttons ? ' mt-10' : ' empty'}"
 						path={[...path, 'buttons']}
 					/>
 				</div>
@@ -121,9 +121,22 @@
 </Node>
 
 <style>
-	/* When buttons array is empty, prevent the empty node placeholder from taking up vertical space */
-	:global(.hero-buttons.empty .node.empty-node-array) {
-		position: absolute !important;
+	/* When buttons are empty, keep the placeholder visible without affecting layout. */
+	:global(.hero-buttons.empty) {
+		position: relative;
+	}
+
+	:global(.hero-buttons.empty .empty-node-placeholder) {
+		position: absolute;
+		top: 2.5rem;
+		right: auto;
+		bottom: auto;
+		left: 0;
+		width: 24px;
+	}
+
+	:global(.hero-buttons.empty.justify-center .empty-node-placeholder) {
+		left: calc(50% - 12px);
 	}
 
 	:global(.ew-hero h1) {

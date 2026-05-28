@@ -1,5 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
+	import { serialize_path } from 'svedit';
 
 	const svedit = getContext('svedit');
 
@@ -51,7 +52,7 @@
 	);
 
 	// Anchor name for overlay handles to position against
-	let anchor_name = $derived(`--viewbox-${path.join('-')}-${media_property}`);
+	let anchor_name = $derived(`--viewbox-${serialize_path(path)}-${media_property}`);
 </script>
 
 <div

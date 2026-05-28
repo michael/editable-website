@@ -64,6 +64,15 @@ function get_media_type(file) {
 	return 'image';
 }
 
+function select_inserted_label(tr) {
+	tr.set_selection({
+		type: 'text',
+		path: [...tr.selection.path, tr.selection.focus_offset - 1, 'label'],
+		anchor_offset: 0,
+		focus_offset: 0
+	});
+}
+
 /**
  * Replace a media node at the given path with a new file.
  * Reused by handle_media_paste and the toolbar's replace-image button.
@@ -153,16 +162,14 @@ const session_config = {
 		Link
 	},
 	replace_media,
-	handle_property_deletion: (session, path) => {
-		const property_definition = session.inspect(path);
+	handle_property_deletion: (tr, path) => {
+		const property_definition = tr.inspect(path);
 		if (property_definition?.type !== 'node') return;
 
-		const target_node = session.get(path);
+		const target_node = tr.get(path);
 		if (target_node?.type !== 'image' && target_node?.type !== 'video') return;
 
-		const tr = session.tr;
 		set_properties(tr, [target_node.id], MEDIA_DEFAULTS);
-		session.apply(tr);
 	},
 	handle_media_paste: async (session, pasted_media) => {
 		if (session.selection.type === 'property') {
@@ -435,13 +442,7 @@ const session_config = {
 			});
 
 			tr.insert_nodes([new_nav_item_id]);
-			// NOTE: Relies on insert_nodes selecting the newly inserted node(s)
-			// tr.set_selection({
-			//   type: 'text',
-			//   path: [...tr.selection.path, tr.selection.focus_offset - 1 , 'content'],
-			//   anchor_offset: 0,
-			//   focus_offset: 0
-			// });
+			select_inserted_label(tr);
 		},
 		hero: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_hero_id = tr.build('new_hero', {
@@ -466,6 +467,7 @@ const session_config = {
 			});
 
 			tr.insert_nodes([new_button_id]);
+			select_inserted_label(tr);
 		},
 		footer_link: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_footer_link_id = tr.build('new_footer_link', {
@@ -476,13 +478,7 @@ const session_config = {
 			});
 
 			tr.insert_nodes([new_footer_link_id]);
-			// NOTE: Relies on insert_nodes selecting the newly inserted node(s)
-			// tr.set_selection({
-			//   type: 'text',
-			//   path: [...tr.selection.path, tr.selection.focus_offset - 1 , 'content'],
-			//   anchor_offset: 0,
-			//   focus_offset: 0
-			// });
+			select_inserted_label(tr);
 		},
 		footer_link_column: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_footer_link_column_id = tr.build('new_footer_link_column', {
