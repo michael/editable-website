@@ -2,8 +2,8 @@
  * Build the full path (including selected node index) and the starting
  * node_array path for walking up the tree from the current selection.
  *
- * For node selections the index lives in anchor_offset, not in the path.
- * For text/property selections the path already contains all indices.
+ * For node selections the selected node index is the lower edge of the
+ * selection range. For text/property selections the path already contains all indices.
  *
  * @param {import('svedit').Session} session
  * @returns {{ full_path: (string|number)[], start_path: (string|number)[] } | null}
@@ -12,11 +12,15 @@ function get_ancestor_walk_paths(session) {
 	if (!session.selection) return null;
 
 	if (session.selection.type === 'node') {
-		// For collapsed node selections (node caret), skip
-		if (session.selection.anchor_offset === session.selection.focus_offset) return null;
-		// E.g. path ['p1', 'body'], anchor_offset 2 -> full_path ['p1', 'body', 2]
+		const start = Math.min(session.selection.anchor_offset, session.selection.focus_offset);
+		const end = Math.max(session.selection.anchor_offset, session.selection.focus_offset);
+
+		// Only walk from a single selected node. Multi-node selections do not
+		// identify one unambiguous node whose type/layout should change.
+		if (end - start !== 1) return null;
+
 		return {
-			full_path: [...session.selection.path, session.selection.anchor_offset],
+			full_path: [...session.selection.path, start],
 			start_path: session.selection.path
 		};
 	}
