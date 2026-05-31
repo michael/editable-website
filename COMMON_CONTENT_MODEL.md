@@ -4,80 +4,24 @@ The Common Content Model (CCM) describes the portable content schema used by Edi
 
 This write-up is AI-assisted and currently a work in progress. Its purpose is to support discussion about the content model with Editable Website users.
 
-## Type index
+## Contents
 
-### Nodes
-
-- [`text`](#node-text)
-- [`image`](#node-image)
-- [`video`](#node-video)
-- [`button`](#node-button)
-- [`supporting_media`](#node-supporting_media)
-- [`page`](#node-page)
-- [`hero`](#node-hero)
-- [`prose`](#node-prose)
-- [`gallery`](#node-gallery)
-- [`gallery_item`](#node-gallery_item)
-- [`titled_gallery`](#node-titled_gallery)
-- [`titled_gallery_item`](#node-titled_gallery_item)
-- [`descriptive_gallery`](#node-descriptive_gallery)
-- [`descriptive_gallery_item`](#node-descriptive_gallery_item)
-
-### Annotations
-
-- [`strong`](#annotation-strong)
-- [`emphasis`](#annotation-emphasis)
-- [`highlight`](#annotation-highlight)
-- [`link`](#annotation-link)
+- [Core conventions](#core-conventions)
+- [Svedit primitives](#svedit-primitives)
+- [Nodes](#nodes): [`text`](#node-text) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`page`](#node-page) · [`hero`](#node-hero) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
+- [Annotations](#annotations): [`strong`](#annotation-strong) · [`emphasis`](#annotation-emphasis) · [`highlight`](#annotation-highlight) · [`link`](#annotation-link)
 
 ## Core conventions
 
-A document is a graph of nodes stored by id. Each node has at least:
+A document is a graph of nodes stored by id. Each node has an `id`, a `type`, and type-specific properties. Node references are stored as ids.
 
-| Field  | Type     | Meaning                                              |
-| ------ | -------- | ---------------------------------------------------- |
-| `id`   | `string` | Stable node id used for references from other nodes. |
-| `type` | `string` | Node type name, such as `page`, `prose`, or `text`.  |
+## Svedit primitives
 
-Node references are stored as ids. A `node` property stores one node id, while a `node_array` property stores an ordered array of node ids.
+The CCM uses Svedit schema primitives such as `string`, `integer`, `number`, `annotated_text`, `node`, and `node_array`. See the [Svedit schema documentation](https://github.com/michael/svedit#schema) for the underlying data type definitions.
 
-## Property types
+In this document, `node` means a reference to one node id, `node_array` means an ordered list of node ids, and `annotated_text` means editable rich text with optional annotation ranges.
 
-| Type             | JSON shape              | Meaning                               |
-| ---------------- | ----------------------- | ------------------------------------- |
-| `string`         | `string`                | Plain string value.                   |
-| `integer`        | `number`                | Whole-number value.                   |
-| `number`         | `number`                | Numeric value, including decimals.    |
-| `annotated_text` | `{ text, annotations }` | Text plus optional range annotations. |
-| `node`           | `string`                | Reference to a single node id.        |
-| `node_array`     | `string[]`              | Ordered references to child node ids. |
-
-## Annotated text
-
-Annotated text is represented as:
-
-```json
-{
-	"text": "Text with emphasis",
-	"annotations": [
-		{
-			"start_offset": 10,
-			"end_offset": 18,
-			"node_id": "annotation_1"
-		}
-	]
-}
-```
-
-| Field          | Type      | Meaning                                                                        |
-| -------------- | --------- | ------------------------------------------------------------------------------ |
-| `text`         | `string`  | The editable text content.                                                     |
-| `annotations`  | `array`   | Ranges that reference annotation nodes.                                        |
-| `start_offset` | `integer` | Start character offset, inclusive.                                             |
-| `end_offset`   | `integer` | End character offset, exclusive.                                               |
-| `node_id`      | `string`  | Id of an annotation node such as `strong`, `emphasis`, `highlight`, or `link`. |
-
-Each annotated text property defines whether newlines are allowed and which annotation node types may be used.
+## Nodes
 
 ## Node: `text`
 
@@ -255,6 +199,8 @@ Editable Website does not define chronological post types in the core model. Art
 | `description` | `annotated_text` | None    | `emphasis`, `highlight`, `link`  | Required item description. Newlines are allowed.               |
 | `href`        | `string`         | None    | N/A                              | Optional link destination. Empty means the item is not linked. |
 | `target`      | `string`         | `_self` | N/A                              | Link target, such as `_self` or `_blank`.                      |
+
+## Annotations
 
 ## Annotation: `strong`
 
