@@ -4,6 +4,32 @@ The Common Content Model (CCM) describes the portable content schema used by Edi
 
 This write-up is AI-assisted and currently a work in progress. Its purpose is to support discussion about the content model with Editable Website users.
 
+## Type index
+
+### Nodes
+
+- [`text`](#node-text)
+- [`image`](#node-image)
+- [`video`](#node-video)
+- [`button`](#node-button)
+- [`supporting_media`](#node-supporting_media)
+- [`page`](#node-page)
+- [`hero`](#node-hero)
+- [`prose`](#node-prose)
+- [`gallery`](#node-gallery)
+- [`gallery_item`](#node-gallery_item)
+- [`titled_gallery`](#node-titled_gallery)
+- [`titled_gallery_item`](#node-titled_gallery_item)
+- [`descriptive_gallery`](#node-descriptive_gallery)
+- [`descriptive_gallery_item`](#node-descriptive_gallery_item)
+
+### Annotations
+
+- [`strong`](#annotation-strong)
+- [`emphasis`](#annotation-emphasis)
+- [`highlight`](#annotation-highlight)
+- [`link`](#annotation-link)
+
 ## Core conventions
 
 A document is a graph of nodes stored by id. Each node has at least:
@@ -52,6 +78,57 @@ Annotated text is represented as:
 | `node_id`      | `string`  | Id of an annotation node such as `strong`, `emphasis`, `highlight`, or `link`. |
 
 Each annotated text property defines whether newlines are allowed and which annotation node types may be used.
+
+## Node: `text`
+
+`text` is a block of annotated textual content inside `prose`.
+
+| Property  | Type             | Default | Allowed annotation types                  | Meaning                                   |
+| --------- | ---------------- | ------- | ----------------------------------------- | ----------------------------------------- |
+| `layout`  | `integer`        | `1`     | `1`, `2`, `3`, `4`, `5`                   | Text role and rendered element.           |
+| `content` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
+
+### Text layouts
+
+| Value | Rendered role | Meaning                                                        |
+| ----- | ------------- | -------------------------------------------------------------- |
+| `1`   | Paragraph     | Normal body copy.                                              |
+| `2`   | Heading 1     | Primary heading.                                               |
+| `3`   | Heading 2     | Secondary heading.                                             |
+| `4`   | Heading 3     | Tertiary heading.                                              |
+| `5`   | Eyebrow       | Small uppercase label rendered before nearby headings or copy. |
+
+## Node: `image`
+
+`image` stores an image asset and its display controls.
+
+| Property        | Type      | Default | Meaning                                                             |
+| --------------- | --------- | ------- | ------------------------------------------------------------------- |
+| `src`           | `string`  | None    | Asset id or temporary blob URL before save.                         |
+| `mime_type`     | `string`  | None    | MIME type, such as `image/webp`, `image/jpeg`, or `image/svg+xml`.  |
+| `width`         | `integer` | None    | Intrinsic image width in pixels.                                    |
+| `height`        | `integer` | None    | Intrinsic image height in pixels.                                   |
+| `alt`           | `string`  | None    | Alternative text.                                                   |
+| `focal_point_x` | `number`  | `0`     | Horizontal focal point as a normalized value, typically `0` to `1`. |
+| `focal_point_y` | `number`  | `0`     | Vertical focal point as a normalized value, typically `0` to `1`.   |
+| `scale`         | `number`  | `1.0`   | Display scale applied inside the media frame.                       |
+| `object_fit`    | `string`  | `cover` | CSS object-fit behavior, such as `cover` or `contain`.              |
+
+## Node: `video`
+
+`video` stores a video asset and uses the same display controls as `image`.
+
+| Property        | Type      | Default | Meaning                                                             |
+| --------------- | --------- | ------- | ------------------------------------------------------------------- |
+| `src`           | `string`  | None    | Asset id or temporary blob URL before save.                         |
+| `mime_type`     | `string`  | None    | MIME type, such as `video/mp4` or `video/webm`.                     |
+| `width`         | `integer` | None    | Intrinsic video width in pixels.                                    |
+| `height`        | `integer` | None    | Intrinsic video height in pixels.                                   |
+| `alt`           | `string`  | None    | Accessible label for the video.                                     |
+| `focal_point_x` | `number`  | `0`     | Horizontal focal point as a normalized value, typically `0` to `1`. |
+| `focal_point_y` | `number`  | `0`     | Vertical focal point as a normalized value, typically `0` to `1`.   |
+| `scale`         | `number`  | `1.0`   | Display scale applied inside the media frame.                       |
+| `object_fit`    | `string`  | `cover` | CSS object-fit behavior, such as `cover` or `contain`.              |
 
 ## Node: `page`
 
@@ -104,25 +181,6 @@ Each annotated text property defines whether newlines are allowed and which anno
 | `1`   | Left-aligned prose.  |
 | `2`   | Centered prose.      |
 | `3`   | Right-aligned prose. |
-
-## Node: `text`
-
-`text` is a block of annotated textual content inside `prose`.
-
-| Property  | Type             | Default | Allowed annotation types                  | Meaning                                   |
-| --------- | ---------------- | ------- | ----------------------------------------- | ----------------------------------------- |
-| `layout`  | `integer`        | `1`     | `1`, `2`, `3`, `4`, `5`                   | Text role and rendered element.           |
-| `content` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
-
-### Text layouts
-
-| Value | Rendered role | Meaning                                                        |
-| ----- | ------------- | -------------------------------------------------------------- |
-| `1`   | Paragraph     | Normal body copy.                                              |
-| `2`   | Heading 1     | Primary heading.                                               |
-| `3`   | Heading 2     | Secondary heading.                                             |
-| `4`   | Heading 3     | Tertiary heading.                                              |
-| `5`   | Eyebrow       | Small uppercase label rendered before nearby headings or copy. |
 
 ## Node: `supporting_media`
 
@@ -197,38 +255,6 @@ Editable Website does not define chronological post types in the core model. Art
 | `description` | `annotated_text` | None    | `emphasis`, `highlight`, `link`  | Required item description. Newlines are allowed.               |
 | `href`        | `string`         | None    | N/A                              | Optional link destination. Empty means the item is not linked. |
 | `target`      | `string`         | `_self` | N/A                              | Link target, such as `_self` or `_blank`.                      |
-
-## Node: `image`
-
-`image` stores an image asset and its display controls.
-
-| Property        | Type      | Default | Meaning                                                             |
-| --------------- | --------- | ------- | ------------------------------------------------------------------- |
-| `src`           | `string`  | None    | Asset id or temporary blob URL before save.                         |
-| `mime_type`     | `string`  | None    | MIME type, such as `image/webp`, `image/jpeg`, or `image/svg+xml`.  |
-| `width`         | `integer` | None    | Intrinsic image width in pixels.                                    |
-| `height`        | `integer` | None    | Intrinsic image height in pixels.                                   |
-| `alt`           | `string`  | None    | Alternative text.                                                   |
-| `focal_point_x` | `number`  | `0`     | Horizontal focal point as a normalized value, typically `0` to `1`. |
-| `focal_point_y` | `number`  | `0`     | Vertical focal point as a normalized value, typically `0` to `1`.   |
-| `scale`         | `number`  | `1.0`   | Display scale applied inside the media frame.                       |
-| `object_fit`    | `string`  | `cover` | CSS object-fit behavior, such as `cover` or `contain`.              |
-
-## Node: `video`
-
-`video` stores a video asset and uses the same display controls as `image`.
-
-| Property        | Type      | Default | Meaning                                                             |
-| --------------- | --------- | ------- | ------------------------------------------------------------------- |
-| `src`           | `string`  | None    | Asset id or temporary blob URL before save.                         |
-| `mime_type`     | `string`  | None    | MIME type, such as `video/mp4` or `video/webm`.                     |
-| `width`         | `integer` | None    | Intrinsic video width in pixels.                                    |
-| `height`        | `integer` | None    | Intrinsic video height in pixels.                                   |
-| `alt`           | `string`  | None    | Accessible label for the video.                                     |
-| `focal_point_x` | `number`  | `0`     | Horizontal focal point as a normalized value, typically `0` to `1`. |
-| `focal_point_y` | `number`  | `0`     | Vertical focal point as a normalized value, typically `0` to `1`.   |
-| `scale`         | `number`  | `1.0`   | Display scale applied inside the media frame.                       |
-| `object_fit`    | `string`  | `cover` | CSS object-fit behavior, such as `cover` or `contain`.              |
 
 ## Annotation: `strong`
 
