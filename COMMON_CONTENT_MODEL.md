@@ -6,9 +6,13 @@ This write-up is AI-assisted and currently a work in progress. Its purpose is to
 
 A document is a graph of nodes stored by id. Each node has an `id`, a `type`, and type-specific properties. The CCM uses Svedit schema primitives such as `string`, `integer`, `number`, `annotated_text`, `node`, and `node_array`; see the [Svedit schema documentation](https://github.com/michael/svedit#schema) for the underlying data type definitions.
 
-Node types: [`text`](#node-text) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`page`](#node-page) · [`hero`](#node-hero) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
+**Node types**
 
-Annotation types: [`strong`](#annotation-strong) · [`emphasis`](#annotation-emphasis) · [`highlight`](#annotation-highlight) · [`link`](#annotation-link)
+[`text`](#node-text) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`page`](#node-page) · [`hero`](#node-hero) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
+
+**Annotation types**
+
+[`strong`](#annotation-strong) · [`emphasis`](#annotation-emphasis) · [`highlight`](#annotation-highlight) · [`link`](#annotation-link)
 
 ## Node: `text`
 
