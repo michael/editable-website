@@ -4,24 +4,11 @@ The Common Content Model (CCM) describes the portable content schema used by Edi
 
 This write-up is AI-assisted and currently a work in progress. Its purpose is to support discussion about the content model with Editable Website users.
 
-## Contents
+A document is a graph of nodes stored by id. Each node has an `id`, a `type`, and type-specific properties. The CCM uses Svedit schema primitives such as `string`, `integer`, `number`, `annotated_text`, `node`, and `node_array`; see the [Svedit schema documentation](https://github.com/michael/svedit#schema) for the underlying data type definitions.
 
-- [Core conventions](#core-conventions)
-- [Svedit primitives](#svedit-primitives)
-- [Nodes](#nodes): [`text`](#node-text) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`page`](#node-page) · [`hero`](#node-hero) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
-- [Annotations](#annotations): [`strong`](#annotation-strong) · [`emphasis`](#annotation-emphasis) · [`highlight`](#annotation-highlight) · [`link`](#annotation-link)
+Node types: [`text`](#node-text) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`page`](#node-page) · [`hero`](#node-hero) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
 
-## Core conventions
-
-A document is a graph of nodes stored by id. Each node has an `id`, a `type`, and type-specific properties. Node references are stored as ids.
-
-## Svedit primitives
-
-The CCM uses Svedit schema primitives such as `string`, `integer`, `number`, `annotated_text`, `node`, and `node_array`. See the [Svedit schema documentation](https://github.com/michael/svedit#schema) for the underlying data type definitions.
-
-In this document, `node` means a reference to one node id, `node_array` means an ordered list of node ids, and `annotated_text` means editable rich text with optional annotation ranges.
-
-## Nodes
+Annotation types: [`strong`](#annotation-strong) · [`emphasis`](#annotation-emphasis) · [`highlight`](#annotation-highlight) · [`link`](#annotation-link)
 
 ## Node: `text`
 
@@ -199,8 +186,6 @@ Editable Website does not define chronological post types in the core model. Art
 | `description` | `annotated_text` | None    | `emphasis`, `highlight`, `link`  | Required item description. Newlines are allowed.               |
 | `href`        | `string`         | None    | N/A                              | Optional link destination. Empty means the item is not linked. |
 | `target`      | `string`         | `_self` | N/A                              | Link target, such as `_self` or `_blank`.                      |
-
-## Annotations
 
 ## Annotation: `strong`
 
