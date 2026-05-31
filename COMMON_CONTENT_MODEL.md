@@ -185,25 +185,13 @@ A gallery is a collection of media-first items. Layouts may render those items a
 
 `strong` marks an annotated text range as strongly emphasized.
 
-| Property | Type | Default | Meaning                            |
-| -------- | ---- | ------- | ---------------------------------- |
-| N/A      | N/A  | N/A     | This annotation has no properties. |
-
 ## Annotation: `emphasis`
 
 `emphasis` marks an annotated text range as emphasized.
 
-| Property | Type | Default | Meaning                            |
-| -------- | ---- | ------- | ---------------------------------- |
-| N/A      | N/A  | N/A     | This annotation has no properties. |
-
 ## Annotation: `highlight`
 
 `highlight` marks an annotated text range as highlighted.
-
-| Property | Type | Default | Meaning                            |
-| -------- | ---- | ------- | ---------------------------------- |
-| N/A      | N/A  | N/A     | This annotation has no properties. |
 
 ## Annotation: `link`
 
