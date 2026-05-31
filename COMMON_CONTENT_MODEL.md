@@ -68,11 +68,10 @@ Each annotated text property defines whether newlines are allowed and which anno
 
 `prose` is a section of editorial content. It contains an ordered flow of text and optional decorative media.
 
-| Property   | Type         | Default | Allowed node types   | Meaning                                                        |
-| ---------- | ------------ | ------- | -------------------- | -------------------------------------------------------------- |
-| `layout`   | `integer`    | `1`     | `1`, `2`, `3`        | Horizontal alignment and width treatment.                      |
-| `colorset` | `integer`    | `0`     | Theme-defined        | Visual color theme index. `0` means the default page colorset. |
-| `content`  | `node_array` | `text`  | `text`, `decoration` | Ordered prose children.                                        |
+| Property  | Type         | Default | Allowed node types   | Meaning                                   |
+| --------- | ------------ | ------- | -------------------- | ----------------------------------------- |
+| `layout`  | `integer`    | `1`     | `1`, `2`, `3`        | Horizontal alignment and width treatment. |
+| `content` | `node_array` | `text`  | `text`, `decoration` | Ordered prose children.                   |
 
 ### Prose layouts
 
@@ -117,11 +116,10 @@ A gallery is a collection of media-first items. Layouts may render those items a
 
 `gallery` is used when each item only needs media. If every item also needs a title, use `titled_gallery` instead.
 
-| Property   | Type         | Default        | Allowed node types | Meaning                                                        |
-| ---------- | ------------ | -------------- | ------------------ | -------------------------------------------------------------- |
-| `layout`   | `integer`    | `1`            | Theme-defined      | Visual arrangement of the gallery items.                       |
-| `colorset` | `integer`    | `0`            | Theme-defined      | Visual color theme index. `0` means the default page colorset. |
-| `items`    | `node_array` | `gallery_item` | `gallery_item`     | Ordered media-first items.                                     |
+| Property | Type         | Default        | Allowed node types | Meaning                                  |
+| -------- | ------------ | -------------- | ------------------ | ---------------------------------------- |
+| `layout` | `integer`    | `1`            | Theme-defined      | Visual arrangement of the gallery items. |
+| `items`  | `node_array` | `gallery_item` | `gallery_item`     | Ordered media-first items.               |
 
 ## Node: `gallery_item`
 
@@ -135,11 +133,10 @@ A gallery is a collection of media-first items. Layouts may render those items a
 
 `titled_gallery` is a gallery whose items each have media and a title. Items may optionally link somewhere, but linking is behavior, not the defining content structure.
 
-| Property   | Type         | Default               | Allowed node types    | Meaning                                                        |
-| ---------- | ------------ | --------------------- | --------------------- | -------------------------------------------------------------- |
-| `layout`   | `integer`    | `1`                   | Theme-defined         | Visual arrangement of the titled gallery items.                |
-| `colorset` | `integer`    | `0`                   | Theme-defined         | Visual color theme index. `0` means the default page colorset. |
-| `items`    | `node_array` | `titled_gallery_item` | `titled_gallery_item` | Ordered media-and-title items.                                 |
+| Property | Type         | Default               | Allowed node types    | Meaning                                         |
+| -------- | ------------ | --------------------- | --------------------- | ----------------------------------------------- |
+| `layout` | `integer`    | `1`                   | Theme-defined         | Visual arrangement of the titled gallery items. |
+| `items`  | `node_array` | `titled_gallery_item` | `titled_gallery_item` | Ordered media-and-title items.                  |
 
 ## Node: `titled_gallery_item`
 
