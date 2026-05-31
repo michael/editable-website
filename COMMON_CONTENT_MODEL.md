@@ -2,6 +2,8 @@
 
 The Common Content Model (CCM) describes the portable content schema used by Editable Website. It aims to cover 80%+ of the content structures most websites need.
 
+This write-up is AI-assisted and currently a work in progress. Its purpose is to support discussion about the content model with Editable Website users.
+
 ## Core conventions
 
 A document is a graph of nodes stored by id. Each node has at least:
