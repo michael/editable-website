@@ -1,4 +1,4 @@
-# Common content model
+# Common Content Model
 
 The Common Content Model (CCM) describes the portable content schema used by Editable Website. It aims to cover 80%+ of the content structures most websites need.
 
@@ -55,14 +55,14 @@ Each annotated text property defines whether newlines are allowed and which anno
 
 `page` is the document root. It stores page metadata, shared chrome references, and an ordered body of content blocks.
 
-| Property      | Type             | Default  | Allowed node types                   | Meaning                                                                                                                         |
-| ------------- | ---------------- | -------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
-| `title`       | `annotated_text` | None     | No annotations                       | Page title used for head metadata and editable search-result preview. Newlines are not allowed.                                 |
-| `description` | `annotated_text` | None     | No annotations                       | Page description used for head metadata and editable search-result preview. Newlines are allowed.                               |
-| `image`       | `node`           | `image`  | `image`                              | Preview image used for page metadata. The `image` node is documented below because it is also used by `prose` via `decoration`. |
-| `body`        | `node_array`     | `prose`  | `prose`, `gallery`, `titled_gallery` | Ordered page body blocks. The current app supports additional body block types, but they are outside this initial CCM scope.    |
-| `nav`         | `node`           | `nav`    | Out of scope                         | Shared navigation reference. Not specified in this draft.                                                                       |
-| `footer`      | `node`           | `footer` | Out of scope                         | Shared footer reference. Not specified in this draft.                                                                           |
+| Property      | Type             | Default  | Allowed node types                                          | Meaning                                                                                                                         |
+| ------------- | ---------------- | -------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `title`       | `annotated_text` | None     | No annotations                                              | Page title used for head metadata and editable search-result preview. Newlines are not allowed.                                 |
+| `description` | `annotated_text` | None     | No annotations                                              | Page description used for head metadata and editable search-result preview. Newlines are allowed.                               |
+| `image`       | `node`           | `image`  | `image`                                                     | Preview image used for page metadata. The `image` node is documented below because it is also used by `prose` via `decoration`. |
+| `body`        | `node_array`     | `prose`  | `prose`, `gallery`, `titled_gallery`, `descriptive_gallery` | Ordered page body blocks. The current app supports additional body block types, but they are outside this initial CCM scope.    |
+| `nav`         | `node`           | `nav`    | Out of scope                                                | Shared navigation reference. Not specified in this draft.                                                                       |
+| `footer`      | `node`           | `footer` | Out of scope                                                | Shared footer reference. Not specified in this draft.                                                                           |
 
 ## Node: `prose`
 
@@ -148,6 +148,29 @@ A gallery is a collection of media-first items. Layouts may render those items a
 | `title`  | `annotated_text` | None    | `emphasis`, `highlight`          | Required item title. Newlines are not allowed.                 |
 | `href`   | `string`         | None    | N/A                              | Optional link destination. Empty means the item is not linked. |
 | `target` | `string`         | `_self` | N/A                              | Link target, such as `_self` or `_blank`.                      |
+
+## Node: `descriptive_gallery`
+
+`descriptive_gallery` is a gallery whose items each have media, a title, and a description. Items may optionally link somewhere, but linking is behavior, not the defining content structure.
+
+| Property | Type         | Default                    | Allowed node types         | Meaning                                              |
+| -------- | ------------ | -------------------------- | -------------------------- | ---------------------------------------------------- |
+| `layout` | `integer`    | `1`                        | Theme-defined              | Visual arrangement of the descriptive gallery items. |
+| `items`  | `node_array` | `descriptive_gallery_item` | `descriptive_gallery_item` | Ordered media-title-description items.               |
+
+## Node: `descriptive_gallery_item`
+
+`descriptive_gallery_item` is a media-first item with a required title and description. It may be rendered as a card, tile, carousel slide, or list row depending on the parent gallery layout.
+
+Editable Website does not define chronological post types in the core model. Article, project, product, or resource listings can be modeled with galleries. If structured metadata is not needed, compact metadata can be included in the title or description. Apps that need structured fields such as date, category, author, or reading time should extend the model.
+
+| Property      | Type             | Default | Allowed node or annotation types | Meaning                                                        |
+| ------------- | ---------------- | ------- | -------------------------------- | -------------------------------------------------------------- |
+| `media`       | `node`           | `image` | `image`, `video`                 | Media shown by the item.                                       |
+| `title`       | `annotated_text` | None    | `emphasis`, `highlight`          | Required item title. Newlines are not allowed.                 |
+| `description` | `annotated_text` | None    | `emphasis`, `highlight`, `link`  | Required item description. Newlines are allowed.               |
+| `href`        | `string`         | None    | N/A                              | Optional link destination. Empty means the item is not linked. |
+| `target`      | `string`         | `_self` | N/A                              | Link target, such as `_self` or `_blank`.                      |
 
 ## Node: `image`
 
