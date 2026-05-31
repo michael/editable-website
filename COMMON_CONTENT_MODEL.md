@@ -57,23 +57,45 @@ Each annotated text property defines whether newlines are allowed and which anno
 
 `page` is the document root. It stores page metadata, shared chrome references, and an ordered body of content blocks.
 
-| Property      | Type             | Default  | Allowed node types                                          | Meaning                                                                                                                         |
-| ------------- | ---------------- | -------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `title`       | `annotated_text` | None     | No annotations                                              | Page title used for head metadata and editable search-result preview. Newlines are not allowed.                                 |
-| `description` | `annotated_text` | None     | No annotations                                              | Page description used for head metadata and editable search-result preview. Newlines are allowed.                               |
-| `image`       | `node`           | `image`  | `image`                                                     | Preview image used for page metadata. The `image` node is documented below because it is also used by `prose` via `decoration`. |
-| `body`        | `node_array`     | `prose`  | `prose`, `gallery`, `titled_gallery`, `descriptive_gallery` | Ordered page body blocks. The current app supports additional body block types, but they are outside this initial CCM scope.    |
-| `nav`         | `node`           | `nav`    | Out of scope                                                | Shared navigation reference. Not specified in this draft.                                                                       |
-| `footer`      | `node`           | `footer` | Out of scope                                                | Shared footer reference. Not specified in this draft.                                                                           |
+| Property      | Type             | Default  | Allowed node types                                                  | Meaning                                                                                                                               |
+| ------------- | ---------------- | -------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`       | `annotated_text` | None     | No annotations                                                      | Page title used for head metadata and editable search-result preview. Newlines are not allowed.                                       |
+| `description` | `annotated_text` | None     | No annotations                                                      | Page description used for head metadata and editable search-result preview. Newlines are allowed.                                     |
+| `image`       | `node`           | `image`  | `image`                                                             | Preview image used for page metadata. The `image` node is documented below because it is also used by `prose` via `supporting_media`. |
+| `body`        | `node_array`     | `prose`  | `hero`, `prose`, `gallery`, `titled_gallery`, `descriptive_gallery` | Ordered page body blocks. The current app supports additional body block types, but they are outside this initial CCM scope.          |
+| `nav`         | `node`           | `nav`    | Out of scope                                                        | Shared navigation reference. Not specified in this draft.                                                                             |
+| `footer`      | `node`           | `footer` | Out of scope                                                        | Shared footer reference. Not specified in this draft.                                                                                 |
+
+## Node: `hero`
+
+`hero` is a high-emphasis introductory section. It is intentionally more structured than `prose` so layouts can preserve a clear visual hierarchy: one title, one supporting description, and one action area.
+
+| Property      | Type             | Default  | Allowed node or annotation types          | Meaning                                                                                     |
+| ------------- | ---------------- | -------- | ----------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `layout`      | `integer`        | `1`      | Theme-defined                             | Visual arrangement of the hero content.                                                     |
+| `title`       | `annotated_text` | None     | `strong`, `emphasis`, `highlight`, `link` | Required primary hero statement. Newlines are not allowed.                                  |
+| `description` | `annotated_text` | None     | `strong`, `emphasis`, `highlight`, `link` | Supporting hero copy. Kept as a single text property so layouts can reason about hierarchy. |
+| `buttons`     | `node_array`     | `button` | `button`                                  | Optional action group. An empty array means the hero has no buttons.                        |
+
+## Node: `button`
+
+`button` is a call-to-action link, usually rendered inside a hero or other action group.
+
+| Property | Type             | Default | Allowed annotation types | Meaning                                   |
+| -------- | ---------------- | ------- | ------------------------ | ----------------------------------------- |
+| `layout` | `integer`        | `1`     | Theme-defined            | Visual button style.                      |
+| `label`  | `annotated_text` | None    | No annotations           | Button label. Newlines are not allowed.   |
+| `href`   | `string`         | None    | N/A                      | Link destination.                         |
+| `target` | `string`         | `_self` | N/A                      | Link target, such as `_self` or `_blank`. |
 
 ## Node: `prose`
 
-`prose` is a section of editorial content. It contains an ordered flow of text and optional decorative media.
+`prose` is a text-first editorial section. It primarily contains headings and paragraphs, and may include supporting media that illustrates or visually enriches nearby text.
 
-| Property  | Type         | Default | Allowed node types   | Meaning                                   |
-| --------- | ------------ | ------- | -------------------- | ----------------------------------------- |
-| `layout`  | `integer`    | `1`     | `1`, `2`, `3`        | Horizontal alignment and width treatment. |
-| `content` | `node_array` | `text`  | `text`, `decoration` | Ordered prose children.                   |
+| Property  | Type         | Default | Allowed node types         | Meaning                                   |
+| --------- | ------------ | ------- | -------------------------- | ----------------------------------------- |
+| `layout`  | `integer`    | `1`     | `1`, `2`, `3`              | Horizontal alignment and width treatment. |
+| `content` | `node_array` | `text`  | `text`, `supporting_media` | Ordered prose children.                   |
 
 ### Prose layouts
 
@@ -102,15 +124,17 @@ Each annotated text property defines whether newlines are allowed and which anno
 | `4`   | Heading 3     | Tertiary heading.                                              |
 | `5`   | Eyebrow       | Small uppercase label rendered before nearby headings or copy. |
 
-## Node: `decoration`
+## Node: `supporting_media`
 
-`decoration` is a decorative media block inside `prose`. It references either an `image` or `video` node and can be sized independently from text.
+`supporting_media` is media placed inside a `prose` flow to support, illustrate, or visually enrich nearby text. It references either an `image` or `video` node and can be sized independently from text.
+
+Implementation note: this node is currently called `decoration` in the app schema. The next schema refactor should rename it to `supporting_media`.
 
 | Property             | Type      | Default | Allowed node types | Meaning                                                                                       |
 | -------------------- | --------- | ------- | ------------------ | --------------------------------------------------------------------------------------------- |
 | `media_max_width`    | `integer` | `0`     | N/A                | Optional maximum display width for the media. `0` means no explicit maximum.                  |
 | `media_aspect_ratio` | `number`  | `0`     | N/A                | Optional display aspect ratio. `0` means use the media's natural ratio or component fallback. |
-| `media`              | `node`    | `image` | `image`, `video`   | Media displayed by the decoration.                                                            |
+| `media`              | `node`    | `image` | `image`, `video`   | Media displayed by the supporting media node.                                                 |
 
 ## Node: `gallery`
 
