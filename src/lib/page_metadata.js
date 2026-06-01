@@ -79,7 +79,7 @@ export function extract_page_metadata(page_doc) {
 	const body_node_ids = collect_page_body_node_ids(page_doc);
 	const page_root = page_doc.nodes[page_doc.document_id];
 	const explicit_image_node =
-		typeof page_root?.image === 'string' ? page_doc.nodes[page_root.image] ?? null : null;
+		typeof page_root?.image === 'string' ? (page_doc.nodes[page_root.image] ?? null) : null;
 
 	let explicit_title = extract_plain_text(page_root?.title);
 	let explicit_description = extract_plain_text(page_root?.description);
@@ -128,7 +128,7 @@ export function extract_page_metadata(page_doc) {
 			}
 		}
 
-		if (node.type === 'link_collection_item') {
+		if (node.type === 'descriptive_gallery_item') {
 			const item_title = extract_plain_text(node.title);
 			if (!fallback_title && item_title) {
 				fallback_title = item_title;

@@ -133,7 +133,7 @@ Implementation note: this node is currently called `decoration` in the app schem
 
 A gallery is a collection of media-first items. Layouts may render those items as grids, mosaics, carousels, or lists.
 
-`gallery` is used when each item only needs media. If every item also needs a title, use `titled_gallery` instead.
+`gallery` is used when each item only needs media. Items may optionally link somewhere, but linking is behavior, not the defining content structure. If every item also needs a title, use `titled_gallery` instead.
 
 | Property | Type         | Default        | Allowed node types | Meaning                                  |
 | -------- | ------------ | -------------- | ------------------ | ---------------------------------------- |
@@ -144,9 +144,11 @@ A gallery is a collection of media-first items. Layouts may render those items a
 
 `gallery_item` is a media-only item inside `gallery`.
 
-| Property | Type   | Default | Allowed node types | Meaning                  |
-| -------- | ------ | ------- | ------------------ | ------------------------ |
-| `media`  | `node` | `image` | `image`, `video`   | Media shown by the item. |
+| Property | Type     | Default | Allowed node types | Meaning                                                        |
+| -------- | -------- | ------- | ------------------ | -------------------------------------------------------------- |
+| `media`  | `node`   | `image` | `image`, `video`   | Media shown by the item.                                       |
+| `href`   | `string` | None    | N/A                | Optional link destination. Empty means the item is not linked. |
+| `target` | `string` | `_self` | N/A                | Link target, such as `_self` or `_blank`.                      |
 
 ## Node: `titled_gallery`
 

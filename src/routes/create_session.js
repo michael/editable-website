@@ -37,8 +37,8 @@ import Prose from './components/Prose.svelte';
 import Text from './components/Text.svelte';
 import Gallery from './components/Gallery.svelte';
 import GalleryItem from './components/GalleryItem.svelte';
-import LinkCollection from './components/LinkCollection.svelte';
-import LinkCollectionItem from './components/LinkCollectionItem.svelte';
+import DescriptiveGallery from './components/DescriptiveGallery.svelte';
+import DescriptiveGalleryItem from './components/DescriptiveGalleryItem.svelte';
 import Figure from './components/Figure.svelte';
 import Decoration from './components/Decoration.svelte';
 import Feature from './components/Feature.svelte';
@@ -154,8 +154,8 @@ const session_config = {
 		Feature,
 		Gallery,
 		GalleryItem,
-		LinkCollection,
-		LinkCollectionItem,
+		DescriptiveGallery,
+		DescriptiveGalleryItem,
 		Strong,
 		Emphasis,
 		Highlight,
@@ -525,6 +525,8 @@ const session_config = {
 				const gallery_item = {
 					id: nanoid(),
 					type: 'gallery_item',
+					href: '',
+					target: '_self',
 					media: gallery_item_image.id
 				};
 				tr.create(gallery_item);
@@ -566,6 +568,8 @@ const session_config = {
 			const new_gallery_item = {
 				id: nanoid(),
 				type: 'gallery_item',
+				href: '',
+				target: '_self',
 				media: gallery_item_image.id
 			};
 			tr.create(new_gallery_item);
@@ -578,18 +582,8 @@ const session_config = {
 			});
 		},
 
-		link_collection: function (tr) {
-			// Create intro text
-			const intro_text = {
-				id: nanoid(),
-				type: 'text',
-				layout: 2,
-				content: { text: '', annotations: [] }
-			};
-			tr.create(intro_text);
-
-			// Create link collection items
-			const new_link_collection_items = [];
+		descriptive_gallery: function (tr) {
+			const items = [];
 			for (let i = 0; i < 3; i++) {
 				const image_id = nanoid();
 				const image = {
@@ -598,43 +592,30 @@ const session_config = {
 					...MEDIA_DEFAULTS
 				};
 				tr.create(image);
-				const link_collection_item = {
-						id: nanoid(),
-						type: 'link_collection_item',
-						href: '',
-						target: '_self',
-						media: image_id,
-						preline: { text: '', annotations: [] },
-						title: { text: '', annotations: [] },
-						description: { text: '', annotations: [] }
-					};
-				tr.create(link_collection_item);
-				new_link_collection_items.push(link_collection_item.id);
+				const descriptive_gallery_item = {
+					id: nanoid(),
+					type: 'descriptive_gallery_item',
+					href: '',
+					target: '_self',
+					media: image_id,
+					title: { text: '', annotations: [] },
+					description: { text: '', annotations: [] }
+				};
+				tr.create(descriptive_gallery_item);
+				items.push(descriptive_gallery_item.id);
 			}
 
-			// Create outro text
-			const outro_text = {
+			const descriptive_gallery = {
 				id: nanoid(),
-				type: 'text',
+				type: 'descriptive_gallery',
 				layout: 1,
-				content: { text: '', annotations: [] }
+				items
 			};
-			tr.create(outro_text);
-
-			const new_link_collection = {
-				id: nanoid(),
-				type: 'link_collection',
-				layout: 1,
-				colorset: 0,
-				intro: [intro_text.id],
-				link_collection_items: new_link_collection_items,
-				outro: [outro_text.id]
-			};
-			tr.create(new_link_collection);
-			tr.insert_nodes([new_link_collection.id]);
+			tr.create(descriptive_gallery);
+			tr.insert_nodes([descriptive_gallery.id]);
 		},
 
-		link_collection_item: function (tr) {
+		descriptive_gallery_item: function (tr) {
 			const image_id = nanoid();
 			const image = {
 				id: image_id,
@@ -642,18 +623,17 @@ const session_config = {
 				...MEDIA_DEFAULTS
 			};
 			tr.create(image);
-			const new_link_collection_item = {
+			const descriptive_gallery_item = {
 				id: nanoid(),
-				type: 'link_collection_item',
+				type: 'descriptive_gallery_item',
 				href: '',
 				target: '_self',
 				media: image_id,
-				preline: { text: '', annotations: [] },
 				title: { text: '', annotations: [] },
 				description: { text: '', annotations: [] }
 			};
-			tr.create(new_link_collection_item);
-			tr.insert_nodes([new_link_collection_item.id]);
+			tr.create(descriptive_gallery_item);
+			tr.insert_nodes([descriptive_gallery_item.id]);
 			tr.set_selection({
 				type: 'node',
 				path: [...tr.selection.path],

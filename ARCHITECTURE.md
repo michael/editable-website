@@ -677,7 +677,7 @@ Container nodes that currently have an `image` property referencing only `["imag
 - `gallery_item.image` → `gallery_item.media`
 - `figure.image` → `figure.media`
 - `feature.image` → `feature.media`
-- `link_collection_item.image` → `link_collection_item.media`
+- `descriptive_gallery_item.media` accepts `image` or `video`
 - `nav.logo` and `footer.logo` — **stay as `logo`**, but widen to `["image", "video"]`
 
 Each of these becomes:
