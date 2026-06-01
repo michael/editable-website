@@ -427,6 +427,8 @@ const FULL_DOC = {
         "wtvHDBrCzJVgacTaJqAwNJk": {
             "id": "wtvHDBrCzJVgacTaJqAwNJk",
             "type": "gallery_item",
+            "href": "",
+            "target": "_self",
             "media": "jEhPHUyzqvpNeSHYfKCkYgS"
         },
         "ZjdBYZdXQedwuTdVFGHdDEj": {
@@ -445,6 +447,8 @@ const FULL_DOC = {
         "TQRANBXMrzXXZTtzxAYhhZf": {
             "id": "TQRANBXMrzXXZTtzxAYhhZf",
             "type": "gallery_item",
+            "href": "",
+            "target": "_self",
             "media": "ZjdBYZdXQedwuTdVFGHdDEj"
         },
         "UGfbRKEMbGwgcUjhpgXausS": {
@@ -463,6 +467,8 @@ const FULL_DOC = {
         "HtSTZfjTcDSkttVaTUKMYAj": {
             "id": "HtSTZfjTcDSkttVaTUKMYAj",
             "type": "gallery_item",
+            "href": "",
+            "target": "_self",
             "media": "UGfbRKEMbGwgcUjhpgXausS"
         },
         "cMtzexVuqMWFgEpxhYjRQFq": {
@@ -617,7 +623,7 @@ const FULL_DOC = {
             "type": "text",
             "layout": 5,
             "content": {
-                "text": "Links",
+                "text": "Examples",
                 "annotations": []
             }
         },
@@ -626,7 +632,7 @@ const FULL_DOC = {
             "type": "text",
             "layout": 2,
             "content": {
-                "text": "Link to other pages",
+                "text": "Descriptive galleries",
                 "annotations": []
             }
         },
@@ -639,14 +645,8 @@ const FULL_DOC = {
             "type": "text",
             "layout": 1,
             "content": {
-                "text": "Click on one of the cards below.\nA link preview appears at the bottom.\nClick “EDIT” or press ⌘ / Ctrl + k to bring up the link editor.",
-                "annotations": [
-                    {
-                        "start_offset": 93,
-                        "end_offset": 105,
-                        "node_id": "XDMsYPfWXKqvhCMsEDWfDnx"
-                    }
-                ]
+                "text": "Use descriptive galleries for visual collections where every item has media, a title, and a description.",
+                "annotations": []
             }
         },
         "nprCMwYvJvUEmRaHBsxfgUd": {
@@ -664,14 +664,10 @@ const FULL_DOC = {
         },
         "JUmgwJDKqdxVxJeBHkBdjVq": {
             "id": "JUmgwJDKqdxVxJeBHkBdjVq",
-            "type": "link_collection_item",
+            "type": "descriptive_gallery_item",
             "href": "https://gluecksmaurer.de",
             "target": "_blank",
             "media": "nprCMwYvJvUEmRaHBsxfgUd",
-            "preline": {
-                "text": "Real estate",
-                "annotations": []
-            },
             "title": {
                 "text": "Glücksmaurer",
                 "annotations": []
@@ -681,8 +677,8 @@ const FULL_DOC = {
                 "annotations": []
             }
         },
-        "link_collection_item_2_image": {
-            "id": "link_collection_item_2_image",
+        "descriptive_gallery_item_2_image": {
+            "id": "descriptive_gallery_item_2_image",
             "type": "image",
             "src": "colbourns.webp",
             "mime_type": "image/png",
@@ -694,16 +690,12 @@ const FULL_DOC = {
             "focal_point_y": 0.5,
             "object_fit": "cover"
         },
-        "link_collection_item_2": {
-            "id": "link_collection_item_2",
-            "type": "link_collection_item",
+        "descriptive_gallery_item_2": {
+            "id": "descriptive_gallery_item_2",
+            "type": "descriptive_gallery_item",
             "href": "https://colbourns.com",
             "target": "_blank",
-            "media": "link_collection_item_2_image",
-            "preline": {
-                "text": "Flooring design",
-                "annotations": []
-            },
+            "media": "descriptive_gallery_item_2_image",
             "title": {
                 "text": "Colbourns",
                 "annotations": []
@@ -728,14 +720,10 @@ const FULL_DOC = {
         },
         "YnBCBuemwpaUxQwHrFJNgMW": {
             "id": "YnBCBuemwpaUxQwHrFJNgMW",
-            "type": "link_collection_item",
+            "type": "descriptive_gallery_item",
             "href": "https://tomorrow.vc",
             "target": "_blank",
             "media": "ReRqxYxMdAUVaMuudfJhzsS",
-            "preline": {
-                "text": "Venture capital",
-                "annotations": []
-            },
             "title": {
                 "text": "Visionaries Tomorrow",
                 "annotations": []
@@ -766,22 +754,33 @@ const FULL_DOC = {
                 ]
             }
         },
-        "jLnPqRsTuVwXyZaBcDeFg": {
-            "id": "jLnPqRsTuVwXyZaBcDeFg",
-            "type": "link_collection",
+        "descriptive_gallery_intro": {
+            "id": "descriptive_gallery_intro",
+            "type": "prose",
             "layout": 1,
             "colorset": 0,
-            "intro": [
+            "content": [
                 "FMmrrRxdfRzhujVmergnVxA",
                 "AjbSGnXVcWpHBurCTrKxYSs",
                 "VdjTDrdPmtXRuYKNUMeRmKK"
-            ],
-            "link_collection_items": [
+            ]
+        },
+        "jLnPqRsTuVwXyZaBcDeFg": {
+            "id": "jLnPqRsTuVwXyZaBcDeFg",
+            "type": "descriptive_gallery",
+            "layout": 1,
+            "items": [
                 "JUmgwJDKqdxVxJeBHkBdjVq",
-                "link_collection_item_2",
+                "descriptive_gallery_item_2",
                 "YnBCBuemwpaUxQwHrFJNgMW"
-            ],
-            "outro": [
+            ]
+        },
+        "descriptive_gallery_outro": {
+            "id": "descriptive_gallery_outro",
+            "type": "prose",
+            "layout": 1,
+            "colorset": 0,
+            "content": [
                 "kZQHRTYyJtbmsJfnXaRgVtZ"
             ]
         },
@@ -1182,7 +1181,7 @@ const FULL_DOC = {
             "href": "/#jLnPqRsTuVwXyZaBcDeFg",
             "target": "_self",
             "label": {
-                "text": "Links",
+                "text": "Examples",
                 "annotations": []
             }
         },
@@ -1310,7 +1309,9 @@ const FULL_DOC = {
                 "RtYpQwXsZvNmKjHgFdSaLe",
                 "xKmNqPrStVwYzAbCdEfGh",
                 "BPdekRaDEUcQZqtEwPwBvyu",
+                "descriptive_gallery_intro",
                 "jLnPqRsTuVwXyZaBcDeFg",
+                "descriptive_gallery_outro",
                 "XVJGXtwnQMvcrcuByAtcWNa",
                 "YTMHBcPkYXJMRUnuSAhrTDE",
                 "UBNYngEBJYtDWgeabtDJqWW",
