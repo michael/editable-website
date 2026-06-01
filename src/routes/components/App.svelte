@@ -268,7 +268,7 @@
 
 	class SaveCommand extends Command {
 		is_enabled() {
-			return is_admin_mode;
+			return editable;
 		}
 
 		async execute() {
