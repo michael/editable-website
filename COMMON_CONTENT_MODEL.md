@@ -193,6 +193,47 @@ Editable Website does not define chronological post types in the core model. Art
 | `href`        | `string`         | None    | N/A                              | Optional link destination. Empty means the item is not linked. |
 | `target`      | `string`         | `_self` | N/A                              | Link target, such as `_self` or `_blank`.                      |
 
+## Node: `listing`
+
+`listing` is a collection of text-first items arranged as rows. A classic listing item has a title on the left and an optional meta field on the right. Items may optionally link somewhere, but linking is behavior, not the defining content structure.
+
+| Property | Type         | Default        | Allowed node types | Meaning                                  |
+| -------- | ------------ | -------------- | ------------------ | ---------------------------------------- |
+| `layout` | `integer`    | `1`            | Theme-defined      | Visual arrangement of the listing items. |
+| `items`  | `node_array` | `listing_item` | `listing_item`     | Ordered title-and-meta listing items.    |
+
+## Node: `listing_item`
+
+`listing_item` is a text-first row with a required title and an optional meta field. It is intended for classic lists where the title sits on the left and meta information, if present, sits on the right.
+
+| Property | Type             | Default | Allowed node or annotation types | Meaning                                                                            |
+| -------- | ---------------- | ------- | -------------------------------- | ---------------------------------------------------------------------------------- |
+| `title`  | `annotated_text` | None    | `emphasis`, `highlight`, `link`  | Required item title. Newlines are not allowed.                                     |
+| `meta`   | `annotated_text` | None    | `emphasis`, `highlight`          | Optional item metadata, typically rendered on the right. Newlines are not allowed. |
+| `href`   | `string`         | None    | N/A                              | Optional link destination. Empty means the item is not linked.                     |
+| `target` | `string`         | `_self` | N/A                              | Link target, such as `_self` or `_blank`.                                          |
+
+## Node: `descriptive_listing`
+
+`descriptive_listing` is a collection of text-first items arranged as rows. Each item has a title and description, plus an optional meta field. Items may optionally link somewhere, but linking is behavior, not the defining content structure.
+
+| Property | Type         | Default                    | Allowed node types         | Meaning                                              |
+| -------- | ------------ | -------------------------- | -------------------------- | ---------------------------------------------------- |
+| `layout` | `integer`    | `1`                        | Theme-defined              | Visual arrangement of the descriptive listing items. |
+| `items`  | `node_array` | `descriptive_listing_item` | `descriptive_listing_item` | Ordered title-description-meta listing items.        |
+
+## Node: `descriptive_listing_item`
+
+`descriptive_listing_item` is a text-first row with a required title and description, plus an optional meta field. It is intended for list layouts where the title and description are grouped on the left and the meta field, if present, sits on the right.
+
+| Property      | Type             | Default | Allowed node or annotation types | Meaning                                                                            |
+| ------------- | ---------------- | ------- | -------------------------------- | ---------------------------------------------------------------------------------- |
+| `title`       | `annotated_text` | None    | `emphasis`, `highlight`, `link`  | Required item title. Newlines are not allowed.                                     |
+| `description` | `annotated_text` | None    | `emphasis`, `highlight`, `link`  | Required item description. Newlines are allowed.                                   |
+| `meta`        | `annotated_text` | None    | `emphasis`, `highlight`          | Optional item metadata, typically rendered on the right. Newlines are not allowed. |
+| `href`        | `string`         | None    | N/A                              | Optional link destination. Empty means the item is not linked.                     |
+| `target`      | `string`         | `_self` | N/A                              | Link target, such as `_self` or `_blank`.                                          |
+
 ## Annotation: `strong`
 
 `strong` marks an annotated text range as strongly emphasized.
