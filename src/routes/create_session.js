@@ -39,6 +39,8 @@ import Gallery from './components/Gallery.svelte';
 import GalleryItem from './components/GalleryItem.svelte';
 import DescriptiveGallery from './components/DescriptiveGallery.svelte';
 import DescriptiveGalleryItem from './components/DescriptiveGalleryItem.svelte';
+import DescriptiveListing from './components/DescriptiveListing.svelte';
+import DescriptiveListingItem from './components/DescriptiveListingItem.svelte';
 import Figure from './components/Figure.svelte';
 import Decoration from './components/Decoration.svelte';
 import Feature from './components/Feature.svelte';
@@ -112,7 +114,7 @@ async function replace_media(session, path, file, blob_url) {
 			src: blob_url,
 			mime_type: file.type,
 			width: dims.width,
-			height: dims.height,
+			height: dims.height
 		};
 		tr.create(new_node);
 		const parent_path = path.slice(0, -1);
@@ -156,6 +158,8 @@ const session_config = {
 		GalleryItem,
 		DescriptiveGallery,
 		DescriptiveGalleryItem,
+		DescriptiveListing,
+		DescriptiveListingItem,
 		Strong,
 		Emphasis,
 		Highlight,
@@ -175,7 +179,12 @@ const session_config = {
 		if (session.selection.type === 'property') {
 			const node = session.get(session.selection.path);
 			if (node.type === 'image' || node.type === 'video') {
-				await replace_media(session, session.selection.path, pasted_media[0].blob, pasted_media[0].data_url);
+				await replace_media(
+					session,
+					session.selection.path,
+					pasted_media[0].blob,
+					pasted_media[0].data_url
+				);
 			}
 			return null;
 		} else {
@@ -383,13 +392,13 @@ const session_config = {
 					content: { text: '', annotations: [] }
 				},
 				new_feature: {
-						id: 'new_feature',
-						type: 'feature',
-						layout: 1,
-						colorset: 0,
-						media: 'feature_image',
-						body: ['body_text']
-					}
+					id: 'new_feature',
+					type: 'feature',
+					layout: 1,
+					colorset: 0,
+					media: 'feature_image',
+					body: ['body_text']
+				}
 			});
 
 			tr.insert_nodes([new_feature_id]);
@@ -613,6 +622,52 @@ const session_config = {
 			};
 			tr.create(descriptive_gallery_item);
 			tr.insert_nodes([descriptive_gallery_item.id]);
+			tr.set_selection({
+				type: 'node',
+				path: [...tr.selection.path],
+				anchor_offset: tr.selection.focus_offset,
+				focus_offset: tr.selection.focus_offset
+			});
+		},
+
+		descriptive_listing: function (tr) {
+			const items = [];
+			for (let i = 0; i < 4; i++) {
+				const descriptive_listing_item = {
+					id: nanoid(),
+					type: 'descriptive_listing_item',
+					href: '',
+					target: '_self',
+					title: { text: '', annotations: [] },
+					description: { text: '', annotations: [] },
+					meta: { text: '', annotations: [] }
+				};
+				tr.create(descriptive_listing_item);
+				items.push(descriptive_listing_item.id);
+			}
+
+			const descriptive_listing = {
+				id: nanoid(),
+				type: 'descriptive_listing',
+				layout: 1,
+				items
+			};
+			tr.create(descriptive_listing);
+			tr.insert_nodes([descriptive_listing.id]);
+		},
+
+		descriptive_listing_item: function (tr) {
+			const descriptive_listing_item = {
+				id: nanoid(),
+				type: 'descriptive_listing_item',
+				href: '',
+				target: '_self',
+				title: { text: '', annotations: [] },
+				description: { text: '', annotations: [] },
+				meta: { text: '', annotations: [] }
+			};
+			tr.create(descriptive_listing_item);
+			tr.insert_nodes([descriptive_listing_item.id]);
 			tr.set_selection({
 				type: 'node',
 				path: [...tr.selection.path],
