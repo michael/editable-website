@@ -18,7 +18,7 @@
 		if (!href) return null;
 
 		const api_module = await import('$lib/api.remote.js');
-		return await api_module.get_internal_link_preview(href).run();
+		return await api_module.get_internal_link_preview(href);
 	});
 
 	function handle_edit() {
@@ -61,11 +61,15 @@
 </script>
 
 <div
-	class="link-preview absolute z-30 mt-1 pointer-events-auto"
-	style="position-anchor: --{serialize_path(path)}; position-area: block-end span-all; justify-self: anchor-center;"
+	class="link-preview pointer-events-auto absolute z-30 mt-1"
+	style="position-anchor: --{serialize_path(
+		path
+	)}; position-area: block-end span-all; justify-self: anchor-center;"
 >
 	{#if node.href}
-		<div class="bg-(--background) text-(--foreground) border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)]">
+		<div
+			class="border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] bg-(--background) text-(--foreground)"
+		>
 			<div class="flex items-center gap-3 px-3 py-2">
 				<a
 					{...{
@@ -73,20 +77,20 @@
 						target: '_blank',
 						rel: 'noopener noreferrer'
 					}}
-					class="text-sm text-(--foreground) max-w-70 truncate hover:underline outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+					class="max-w-70 truncate text-sm text-(--foreground) outline-1 outline-transparent hover:underline focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 				>
 					{node.href}
 				</a>
 				<button
 					type="button"
-					class="text-sm text-(--svedit-editing-stroke) cursor-pointer shrink-0 hover:opacity-80 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+					class="shrink-0 cursor-pointer text-sm text-(--svedit-editing-stroke) outline-1 outline-transparent hover:opacity-80 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 					onclick={handle_edit}
 				>
 					EDIT
 				</button>
 				<button
 					type="button"
-					class="text-sm text-(--svedit-editing-stroke) cursor-pointer shrink-0 hover:opacity-80 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+					class="shrink-0 cursor-pointer text-sm text-(--svedit-editing-stroke) outline-1 outline-transparent hover:opacity-80 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 					onclick={handle_remove}
 				>
 					REMOVE
@@ -94,9 +98,13 @@
 			</div>
 
 			{#if internal_page_href}
-				<div class="border-t border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] px-3 py-3">
+				<div
+					class="border-t border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] px-3 py-3"
+				>
 					{#await page_preview}
-						<div class="text-sm text-[color-mix(in_oklch,var(--foreground)_72%,transparent)]">Loading page preview…</div>
+						<div class="text-sm text-[color-mix(in_oklch,var(--foreground)_72%,transparent)]">
+							Loading page preview…
+						</div>
 					{:then resolved_page_preview}
 						{#if resolved_page_preview}
 							<div class="flex items-center gap-3">
@@ -108,13 +116,15 @@
 									</div>
 								{/if}
 								<div class="min-w-0">
-									<div class="text-sm font-semibold text-(--foreground) truncate">
+									<div class="truncate text-sm font-semibold text-(--foreground)">
 										{resolved_page_preview.title}
 									</div>
 								</div>
 							</div>
 						{:else}
-							<div class="text-sm text-[color-mix(in_oklch,var(--foreground)_72%,transparent)]">No matching page.</div>
+							<div class="text-sm text-[color-mix(in_oklch,var(--foreground)_72%,transparent)]">
+								No matching page.
+							</div>
 						{/if}
 					{:catch err}
 						<div class="text-sm text-[color-mix(in_oklch,var(--foreground)_72%,transparent)]">
@@ -127,7 +137,7 @@
 	{:else}
 		<button
 			type="button"
-			class="bg-(--background) border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] text-(--svedit-editing-stroke) text-sm px-12 py-2 cursor-pointer hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))]"
+			class="cursor-pointer border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] bg-(--background) px-12 py-2 text-sm text-(--svedit-editing-stroke) hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))]"
 			onclick={handle_edit}
 		>
 			CREATE LINK
