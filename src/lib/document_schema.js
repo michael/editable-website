@@ -229,19 +229,9 @@ export const document_schema = define_document_schema({
 		properties: {
 			layout: { type: 'integer', default: 1 },
 			colorset: { type: 'integer', default: 0 },
-			intro: {
-				type: 'node_array',
-				node_types: ['text', 'decoration'],
-				default_node_type: 'text'
-			},
 			gallery_items: {
 				type: 'node_array',
 				node_types: ['gallery_item']
-			},
-			outro: {
-				type: 'node_array',
-				node_types: ['text', 'decoration'],
-				default_node_type: 'text'
 			}
 		}
 	},

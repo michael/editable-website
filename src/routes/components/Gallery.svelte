@@ -7,8 +7,6 @@
 	const svedit = getContext('svedit');
 	let node = $derived(svedit.session.get(path));
 	let colorset_class = $derived(node.colorset ? `ew-colorset-${node.colorset}` : '');
-	let has_intro = $derived(node.intro && node.intro.length > 0);
-	let has_outro = $derived(node.outro && node.outro.length > 0);
 	let grid_layout = $derived.by(get_grid_layout);
 
 
@@ -48,47 +46,14 @@
 	`;
 </script>
 
-{#snippet intro()}
-	{@const intro_padding = has_intro ? 'pt-10 sm:pt-14 md:pt-16 lg:pt-20 pb-2 sm:pb-3 md:pb-5 lg:pb-7' : 'pt-10 sm:pt-14 md:pt-16 lg:pt-20'}
-	<div class="{TW_PAGE_PADDING_X} max-w-4xl lg:text-lg {intro_padding}">
-		<NodeArrayProperty
-			class="ew-intro flex flex-col gap-5 md:gap-8 {heading_spacing}{!has_intro ? ' empty' : ''}"
-			path={[...path, 'intro']}
-		/>
-	</div>
-{/snippet}
-
-{#snippet outro()}
-	{@const outro_padding = has_outro ? 'pt-5 sm:pt-7 md:pt-10 lg:pt-14 pb-10 sm:pb-14 md:pb-16 lg:pb-20' : 'pb-2.5 sm:pb-3.5 md:pb-5 lg:pb-7'}
-	<div class="{TW_PAGE_PADDING_X} max-w-4xl lg:text-lg {outro_padding}">
-		<NodeArrayProperty
-			class="ew-outro flex flex-col gap-5 md:gap-8 {heading_spacing}{!has_outro ? ' empty' : ''}"
-			path={[...path, 'outro']}
-		/>
-	</div>
-{/snippet}
-
 <Node {path}>
 	<div class="bg-(--background) text-(--foreground) {colorset_class}">
 		<div class="{TW_LIMITER} w-full ">
 			<div>
-				{@render intro()}
 				<div class="{TW_PAGE_PADDING_X} py-2.5 sm:py-3.5 md:py-5 lg:py-7">
 					<NodeArrayProperty class="flex flex-col gap-5 sm:gap-7 md:gap-10 lg:gap-14 {grid_layout}" path={[...path, 'gallery_items']} />
 				</div>
-				{@render outro()}
 			</div>
 		</div>
 	</div>
 </Node>
-
-<style>
-	/* When intro or outro is empty, keep the placeholder visible without affecting layout. */
-	:global(.ew-intro.empty, .ew-outro.empty) {
-		position: relative;
-	}
-
-	:global(.ew-intro.empty .empty-node-placeholder, .ew-outro.empty .empty-node-placeholder) {
-		position: absolute;
-	}
-</style>
