@@ -504,17 +504,7 @@ const session_config = {
 		},
 
 		gallery: function (tr) {
-			// Create intro text
-			const intro_text = {
-				id: nanoid(),
-				type: 'text',
-				layout: 2,
-				content: { text: '', annotations: [] }
-			};
-			tr.create(intro_text);
-
-			// Create gallery items
-			const new_gallery_items = [];
+			const gallery_items = [];
 			for (let i = 0; i < 6; i++) {
 				const gallery_item_image = {
 					id: nanoid(),
@@ -530,29 +520,18 @@ const session_config = {
 					media: gallery_item_image.id
 				};
 				tr.create(gallery_item);
-				new_gallery_items.push(gallery_item.id);
+				gallery_items.push(gallery_item.id);
 			}
 
-			// Create outro text
-			const outro_text = {
-				id: nanoid(),
-				type: 'text',
-				layout: 1,
-				content: { text: '', annotations: [] }
-			};
-			tr.create(outro_text);
-
-			const new_gallery = {
+			const gallery = {
 				id: nanoid(),
 				type: 'gallery',
 				layout: 1,
 				colorset: 0,
-				intro: [intro_text.id],
-				gallery_items: new_gallery_items,
-				outro: [outro_text.id]
+				gallery_items
 			};
-			tr.create(new_gallery);
-			tr.insert_nodes([new_gallery.id]);
+			tr.create(gallery);
+			tr.insert_nodes([gallery.id]);
 		},
 		gallery_item: function (tr) {
 			const gallery_item_image = {

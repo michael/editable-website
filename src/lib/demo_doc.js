@@ -470,13 +470,11 @@ const FULL_DOC = {
             "type": "gallery",
             "layout": 1,
             "colorset": 0,
-            "intro": [],
             "gallery_items": [
                 "wtvHDBrCzJVgacTaJqAwNJk",
                 "TQRANBXMrzXXZTtzxAYhhZf",
                 "HtSTZfjTcDSkttVaTUKMYAj"
-            ],
-            "outro": []
+            ]
         },
         "SXKmbzRCwPeAYSnXfXFXHBd": {
             "id": "SXKmbzRCwPeAYSnXfXFXHBd",
