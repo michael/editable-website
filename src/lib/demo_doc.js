@@ -765,6 +765,117 @@ const FULL_DOC = {
                 "kZQHRTYyJtbmsJfnXaRgVtZ"
             ]
         },
+        "descriptive_listing_intro_heading": {
+            "id": "descriptive_listing_intro_heading",
+            "type": "text",
+            "layout": 2,
+            "content": {
+                "text": "How people are using it",
+                "annotations": []
+            }
+        },
+        "descriptive_listing_intro_text": {
+            "id": "descriptive_listing_intro_text",
+            "type": "text",
+            "layout": 1,
+            "content": {
+                "text": "A descriptive listing works well for resumes, case studies, changelogs, or compact timelines with a bit more context.",
+                "annotations": []
+            }
+        },
+        "descriptive_listing_intro": {
+            "id": "descriptive_listing_intro",
+            "type": "prose",
+            "layout": 1,
+            "colorset": 0,
+            "content": [
+                "descriptive_listing_intro_heading",
+                "descriptive_listing_intro_text"
+            ]
+        },
+        "descriptive_listing_item_1": {
+            "id": "descriptive_listing_item_1",
+            "type": "descriptive_listing_item",
+            "href": "https://github.com/michael/editable-website",
+            "target": "_blank",
+            "title": {
+                "text": "Editable Website",
+                "annotations": []
+            },
+            "description": {
+                "text": "Live in-place editing for SvelteKit sites.",
+                "annotations": []
+            },
+            "meta": {
+                "text": "Open source",
+                "annotations": []
+            }
+        },
+        "descriptive_listing_item_2": {
+            "id": "descriptive_listing_item_2",
+            "type": "descriptive_listing_item",
+            "href": "",
+            "target": "_self",
+            "title": {
+                "text": "Studio profile",
+                "annotations": []
+            },
+            "description": {
+                "text": "A one-page studio site edited in the layout.",
+                "annotations": []
+            },
+            "meta": {
+                "text": "Client site",
+                "annotations": []
+            }
+        },
+        "descriptive_listing_item_3": {
+            "id": "descriptive_listing_item_3",
+            "type": "descriptive_listing_item",
+            "href": "",
+            "target": "_self",
+            "title": {
+                "text": "Project changelog",
+                "annotations": []
+            },
+            "description": {
+                "text": "Release notes with compact summaries and dates.",
+                "annotations": []
+            },
+            "meta": {
+                "text": "Weekly",
+                "annotations": []
+            }
+        },
+        "descriptive_listing_item_4": {
+            "id": "descriptive_listing_item_4",
+            "type": "descriptive_listing_item",
+            "href": "",
+            "target": "_self",
+            "title": {
+                "text": "Experience timeline",
+                "annotations": []
+            },
+            "description": {
+                "text": "A compact resume-style timeline.",
+                "annotations": []
+            },
+            "meta": {
+                "text": "2018–Now",
+                "annotations": []
+            }
+        },
+        "descriptive_listing_block": {
+            "id": "descriptive_listing_block",
+            "type": "descriptive_listing",
+            "layout": 1,
+            "items": [
+                "descriptive_listing_item_1",
+                "descriptive_listing_item_2",
+                "descriptive_listing_item_3",
+                "descriptive_listing_item_4"
+            ]
+        },
         "AQHAsyghanqZPmyutAJZBxM": {
             "id": "AQHAsyghanqZPmyutAJZBxM",
             "type": "text",
@@ -1269,6 +1380,8 @@ const FULL_DOC = {
                 "dyRWExwbkfuqKyDupbEqaec",
                 "BPdekRaDEUcQZqtEwPwBvyu",
                 "FUeFBwWRRuSJMVAhgxThQqj",
+                "descriptive_listing_intro",
+                "descriptive_listing_block",
                 "descriptive_gallery_intro",
                 "jLnPqRsTuVwXyZaBcDeFg",
                 "descriptive_gallery_outro",

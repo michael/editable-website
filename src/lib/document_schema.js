@@ -24,7 +24,15 @@ export const document_schema = define_document_schema({
 			},
 			body: {
 				type: 'node_array',
-				node_types: ['prose', 'figure', 'gallery', 'feature', 'descriptive_gallery', 'hero'],
+				node_types: [
+					'prose',
+					'figure',
+					'gallery',
+					'feature',
+					'descriptive_gallery',
+					'descriptive_listing',
+					'hero'
+				],
 				default_node_type: 'prose'
 			},
 			nav: {
@@ -276,6 +284,38 @@ export const document_schema = define_document_schema({
 				type: 'annotated_text',
 				node_types: MINIMAL_ANNOTATIONS,
 				allow_newlines: true
+			}
+		}
+	},
+	descriptive_listing: {
+		kind: 'block',
+		properties: {
+			layout: { type: 'integer', default: 1 },
+			items: {
+				type: 'node_array',
+				node_types: ['descriptive_listing_item']
+			}
+		}
+	},
+	descriptive_listing_item: {
+		kind: 'block',
+		properties: {
+			href: { type: 'string' },
+			target: { type: 'string', default: '_self' },
+			title: {
+				type: 'annotated_text',
+				node_types: MINIMAL_ANNOTATIONS,
+				allow_newlines: false
+			},
+			description: {
+				type: 'annotated_text',
+				node_types: MINIMAL_ANNOTATIONS,
+				allow_newlines: true
+			},
+			meta: {
+				type: 'annotated_text',
+				node_types: MINIMAL_ANNOTATIONS,
+				allow_newlines: false
 			}
 		}
 	},
