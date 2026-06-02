@@ -819,7 +819,7 @@ const FULL_DOC = {
 			type: 'text',
 			layout: 1,
 			content: {
-				text: 'The source code is not only available for this site, but for all the foundation it is built on:',
+				text: 'The source code is not only available for this site, but for all the foundations it is built on:',
 				annotations: []
 			}
 		},
