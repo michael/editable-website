@@ -48,6 +48,7 @@ import Figure from './components/Figure.svelte';
 import Decoration from './components/Decoration.svelte';
 import Feature from './components/Feature.svelte';
 import Hero from './components/Hero.svelte';
+import MediaHero from './components/MediaHero.svelte';
 import Button from './components/Button.svelte';
 import Image from './components/Image.svelte';
 import Video from './components/Video.svelte';
@@ -149,6 +150,7 @@ const session_config = {
 		FooterLinkColumn,
 		FooterLink,
 		Hero,
+		MediaHero,
 		Button,
 		Prose,
 		Text,
@@ -271,7 +273,8 @@ const session_config = {
 		gallery: 4,
 		nav_item: 2,
 		button: 2,
-		hero: 4
+		hero: 4,
+		media_hero: 1
 	},
 
 	/**
@@ -473,6 +476,27 @@ const session_config = {
 			});
 
 			tr.insert_nodes([new_hero_id]);
+		},
+		media_hero: function (tr, content = { text: '', annotations: [] }, layout = 1) {
+			const new_media_hero_id = tr.build('new_media_hero', {
+				media_hero_image: {
+					id: 'media_hero_image',
+					type: 'image',
+					...MEDIA_DEFAULTS
+				},
+				new_media_hero: {
+					id: 'new_media_hero',
+					type: 'media_hero',
+					layout,
+					colorset: 0,
+					title: { text: '', annotations: [] },
+					description: { text: '', annotations: [] },
+					buttons: [],
+					media: 'media_hero_image'
+				}
+			});
+
+			tr.insert_nodes([new_media_hero_id]);
 		},
 		button: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_button_id = tr.build('new_button', {

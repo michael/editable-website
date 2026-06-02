@@ -32,7 +32,8 @@ export const document_schema = define_document_schema({
 					'descriptive_gallery',
 					'descriptive_listing',
 					'accordion',
-					'hero'
+					'hero',
+					'media_hero'
 				],
 				default_node_type: 'prose'
 			},
@@ -144,6 +145,33 @@ export const document_schema = define_document_schema({
 				type: 'node_array',
 				node_types: ['button'],
 				default_node_type: 'button'
+			}
+		}
+	},
+	media_hero: {
+		kind: 'block',
+		properties: {
+			layout: { type: 'integer', default: 1 },
+			colorset: { type: 'integer', default: 0 },
+			title: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: false
+			},
+			description: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: false
+			},
+			buttons: {
+				type: 'node_array',
+				node_types: ['button'],
+				default_node_type: 'button'
+			},
+			media: {
+				type: 'node',
+				node_types: ['image', 'video'],
+				default_node_type: 'image'
 			}
 		}
 	},
