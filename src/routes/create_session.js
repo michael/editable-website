@@ -18,7 +18,8 @@ import {
 	ToggleLinkCommand,
 	EditLinkCommand,
 	ReplaceMediaCommand,
-	EditImageCommand
+	EditImageCommand,
+	ToggleAccordionCommand
 } from './commands.svelte.js';
 // Command imported from 'svedit' above
 
@@ -297,6 +298,7 @@ const session_config = {
 			cycle_layout_previous: new CycleLayoutCommand('previous', context),
 			cycle_node_type_next: new CycleNodeTypeCommand('next', context),
 			cycle_node_type_previous: new CycleNodeTypeCommand('previous', context),
+			toggle_accordion: new ToggleAccordionCommand(context),
 			toggle_link: new ToggleLinkCommand(context),
 			edit_link: new EditLinkCommand(context),
 			edit_image: new EditImageCommand(context),
@@ -322,6 +324,7 @@ const session_config = {
 			'ctrl+shift+arrowleft': [commands.cycle_layout_previous],
 			'ctrl+shift+arrowdown': [commands.cycle_node_type_next],
 			'ctrl+shift+arrowup': [commands.cycle_node_type_previous],
+			tab: [commands.toggle_accordion],
 
 			'meta+k,ctrl+k': [commands.edit_link, commands.toggle_link],
 			'ctrl+shift+c': [commands.cycle_colorset]
