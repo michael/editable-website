@@ -74,7 +74,7 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 | `title`       | `annotated_text` | None     | No annotations                                                      | Page title used for head metadata and editable search-result preview. Newlines are not allowed.                                       |
 | `description` | `annotated_text` | None     | No annotations                                                      | Page description used for head metadata and editable search-result preview. Newlines are allowed.                                     |
 | `image`       | `node`           | `image`  | `image`                                                             | Preview image used for page metadata. The `image` node is documented below because it is also used by `prose` via `supporting_media`. |
-| `body`        | `node_array`     | `prose`  | `hero`, `prose`, `gallery`, `titled_gallery`, `descriptive_gallery` | Ordered page body blocks. The current app supports additional body block types, but they are outside this initial CCM scope.          |
+| `body`        | `node_array`     | `prose`  | `hero`, `media_hero`, `prose`, `gallery`, `titled_gallery`, `descriptive_gallery` | Ordered page body blocks. The current app supports additional body block types, but they are outside this initial CCM scope.          |
 | `nav`         | `node`           | `nav`    | Out of scope                                                        | Shared navigation reference. Not specified in this draft.                                                                             |
 | `footer`      | `node`           | `footer` | Out of scope                                                        | Shared footer reference. Not specified in this draft.                                                                                 |
 
@@ -88,6 +88,18 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 | `title`       | `annotated_text` | None     | `strong`, `emphasis`, `highlight`, `link` | Required primary hero statement. Newlines are not allowed.                                  |
 | `description` | `annotated_text` | None     | `strong`, `emphasis`, `highlight`, `link` | Supporting hero copy. Kept as a single text property so layouts can reason about hierarchy. |
 | `buttons`     | `node_array`     | `button` | `button`                                  | Optional action group. An empty array means the hero has no buttons.                        |
+
+## Node: `media_hero`
+
+`media_hero` is a high-emphasis introductory section with a large media region integrated into the layout. In the default layout, the title, description, and optional buttons appear first, followed by a large image or video that fills the remaining space so the full composition reaches the height of the viewport.
+
+| Property      | Type             | Default  | Allowed node or annotation types          | Meaning                                                                                          |
+| ------------- | ---------------- | -------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `layout`      | `integer`        | `1`      | Theme-defined                             | Visual arrangement of the media hero content.                                                    |
+| `title`       | `annotated_text` | None     | `strong`, `emphasis`, `highlight`, `link` | Required primary media hero statement. Newlines are not allowed.                                 |
+| `description` | `annotated_text` | None     | `strong`, `emphasis`, `highlight`, `link` | Supporting media hero copy. Kept as a single text property so layouts can reason about hierarchy. |
+| `buttons`     | `node_array`     | `button` | `button`                                  | Optional action group. An empty array means the media hero has no buttons.                       |
+| `media`       | `node`           | `image`  | `image`, `video`                          | Large hero media region that completes the viewport-height composition.                          |
 
 ## Node: `button`
 
