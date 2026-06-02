@@ -68,10 +68,10 @@ function get_media_type(file) {
 	return 'image';
 }
 
-function select_inserted_label(tr) {
+function select_inserted_text_property(tr, property_name = 'label') {
 	tr.set_selection({
 		type: 'text',
-		path: [...tr.selection.path, tr.selection.focus_offset - 1, 'label'],
+		path: [...tr.selection.path, tr.selection.focus_offset - 1, property_name],
 		anchor_offset: 0,
 		focus_offset: 0
 	});
@@ -455,7 +455,7 @@ const session_config = {
 			});
 
 			tr.insert_nodes([new_nav_item_id]);
-			select_inserted_label(tr);
+			select_inserted_text_property(tr);
 		},
 		hero: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_hero_id = tr.build('new_hero', {
@@ -480,7 +480,7 @@ const session_config = {
 			});
 
 			tr.insert_nodes([new_button_id]);
-			select_inserted_label(tr);
+			select_inserted_text_property(tr);
 		},
 		footer_link: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_footer_link_id = tr.build('new_footer_link', {
@@ -491,7 +491,7 @@ const session_config = {
 			});
 
 			tr.insert_nodes([new_footer_link_id]);
-			select_inserted_label(tr);
+			select_inserted_text_property(tr);
 		},
 		footer_link_column: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_footer_link_column_id = tr.build('new_footer_link_column', {
@@ -704,12 +704,6 @@ const session_config = {
 			};
 			tr.create(accordion);
 			tr.insert_nodes([accordion.id]);
-			tr.set_selection({
-				type: 'node',
-				path: [...tr.selection.path],
-				anchor_offset: tr.selection.focus_offset,
-				focus_offset: tr.selection.focus_offset
-			});
 		},
 
 		accordion_item: function (tr) {
@@ -729,12 +723,7 @@ const session_config = {
 			};
 			tr.create(accordion_item);
 			tr.insert_nodes([accordion_item.id]);
-			tr.set_selection({
-				type: 'node',
-				path: [...tr.selection.path],
-				anchor_offset: tr.selection.focus_offset,
-				focus_offset: tr.selection.focus_offset
-			});
+			select_inserted_text_property(tr, 'title');
 		}
 	}
 };
