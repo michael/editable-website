@@ -31,6 +31,7 @@ export const document_schema = define_document_schema({
 					'feature',
 					'descriptive_gallery',
 					'descriptive_listing',
+					'accordion',
 					'hero'
 				],
 				default_node_type: 'prose'
@@ -316,6 +317,30 @@ export const document_schema = define_document_schema({
 				type: 'annotated_text',
 				node_types: MINIMAL_ANNOTATIONS,
 				allow_newlines: false
+			}
+		}
+	},
+	accordion: {
+		kind: 'block',
+		properties: {
+			items: {
+				type: 'node_array',
+				node_types: ['accordion_item']
+			}
+		}
+	},
+	accordion_item: {
+		kind: 'block',
+		properties: {
+			title: {
+				type: 'annotated_text',
+				node_types: MINIMAL_ANNOTATIONS,
+				allow_newlines: false
+			},
+			body: {
+				type: 'node_array',
+				node_types: ['text', 'decoration'],
+				default_node_type: 'text'
 			}
 		}
 	},

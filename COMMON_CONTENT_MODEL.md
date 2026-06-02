@@ -129,6 +129,23 @@ Implementation note: this node is currently called `decoration` in the app schem
 | `media_aspect_ratio` | `number`  | `0`     | N/A                | Optional display aspect ratio. `0` means use the media's natural ratio or component fallback. |
 | `media`              | `node`    | `image` | `image`, `video`   | Media displayed by the supporting media node.                                                 |
 
+## Node: `accordion`
+
+`accordion` is a collapsible collection of accordion items.
+
+| Property | Type         | Default          | Allowed node types | Meaning                          |
+| -------- | ------------ | ---------------- | ------------------ | -------------------------------- |
+| `items`  | `node_array` | `accordion_item` | `accordion_item`   | Ordered collapsible child items. |
+
+## Node: `accordion_item`
+
+`accordion_item` is a collapsible content block with a single title and a rich body. The title acts as the heading of the collapsible. The body accepts the same child nodes as `prose`, allowing a couple of paragraphs and optional supporting media inside the expanded content.
+
+| Property | Type             | Default | Allowed node or annotation types | Meaning                                                              |
+| -------- | ---------------- | ------- | -------------------------------- | -------------------------------------------------------------------- |
+| `title`  | `annotated_text` | None    | `emphasis`, `highlight`, `link`  | Required heading of the collapsible. Newlines are not allowed.       |
+| `body`   | `node_array`     | `text`  | `text`, `supporting_media`       | Expandable rich body content, using the same child nodes as `prose`. |
+
 ## Node: `gallery`
 
 A gallery is a collection of media-first items. Layouts may render those items as grids, mosaics, carousels, or lists.

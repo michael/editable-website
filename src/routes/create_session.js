@@ -41,6 +41,8 @@ import DescriptiveGallery from './components/DescriptiveGallery.svelte';
 import DescriptiveGalleryItem from './components/DescriptiveGalleryItem.svelte';
 import DescriptiveListing from './components/DescriptiveListing.svelte';
 import DescriptiveListingItem from './components/DescriptiveListingItem.svelte';
+import Accordion from './components/Accordion.svelte';
+import AccordionItem from './components/AccordionItem.svelte';
 import Figure from './components/Figure.svelte';
 import Decoration from './components/Decoration.svelte';
 import Feature from './components/Feature.svelte';
@@ -160,6 +162,8 @@ const session_config = {
 		DescriptiveGalleryItem,
 		DescriptiveListing,
 		DescriptiveListingItem,
+		Accordion,
+		AccordionItem,
 		Strong,
 		Emphasis,
 		Highlight,
@@ -668,6 +672,63 @@ const session_config = {
 			};
 			tr.create(descriptive_listing_item);
 			tr.insert_nodes([descriptive_listing_item.id]);
+			tr.set_selection({
+				type: 'node',
+				path: [...tr.selection.path],
+				anchor_offset: tr.selection.focus_offset,
+				focus_offset: tr.selection.focus_offset
+			});
+		},
+
+		accordion: function (tr) {
+			const body_text = {
+				id: nanoid(),
+				type: 'text',
+				layout: 1,
+				content: { text: '', annotations: [] }
+			};
+			tr.create(body_text);
+
+			const accordion_item = {
+				id: nanoid(),
+				type: 'accordion_item',
+				title: { text: '', annotations: [] },
+				body: [body_text.id]
+			};
+			tr.create(accordion_item);
+
+			const accordion = {
+				id: nanoid(),
+				type: 'accordion',
+				items: [accordion_item.id]
+			};
+			tr.create(accordion);
+			tr.insert_nodes([accordion.id]);
+			tr.set_selection({
+				type: 'node',
+				path: [...tr.selection.path],
+				anchor_offset: tr.selection.focus_offset,
+				focus_offset: tr.selection.focus_offset
+			});
+		},
+
+		accordion_item: function (tr) {
+			const body_text = {
+				id: nanoid(),
+				type: 'text',
+				layout: 1,
+				content: { text: '', annotations: [] }
+			};
+			tr.create(body_text);
+
+			const accordion_item = {
+				id: nanoid(),
+				type: 'accordion_item',
+				title: { text: '', annotations: [] },
+				body: [body_text.id]
+			};
+			tr.create(accordion_item);
+			tr.insert_nodes([accordion_item.id]);
 			tr.set_selection({
 				type: 'node',
 				path: [...tr.selection.path],
