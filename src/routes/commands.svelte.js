@@ -1,13 +1,18 @@
-import { Command, is_selection_collapsed } from 'svedit';
-import { get_closest_switchable_layout, get_colorset_node, get_closest_switchable_type } from './app_utils.js';
-
+import { Command, is_selection_collapsed, serialize_path } from 'svedit';
+import {
+	get_closest_switchable_layout,
+	get_colorset_node,
+	get_closest_switchable_type
+} from './app_utils.js';
 
 /**
  * Command that cycles through available layouts for a node.
  * Direction can be 'next' or 'previous'.
  */
 export class CycleLayoutCommand extends Command {
-	closest_switchable_layout = $derived(get_closest_switchable_layout(this.context.session, this.context.session.config));
+	closest_switchable_layout = $derived(
+		get_closest_switchable_layout(this.context.session, this.context.session.config)
+	);
 
 	constructor(direction, context) {
 		super(context);
@@ -210,6 +215,28 @@ export class ToggleLinkCommand extends Command {
 	}
 }
 
+export class ToggleAccordionCommand extends Command {
+	is_enabled() {
+		const session = this.context.session;
+		if (!session.selection) return false;
+		const path = session.selection.path;
+		const property_definition = session.inspect(path);
+
+		if (property_definition?.type === 'annotated_text' && property_definition.name === 'title') {
+			const owning_node = session.get(path.slice(0, -1));
+			return owning_node.type === 'accordion_item';
+		}
+	}
+
+	execute() {
+		const path_key = serialize_path(this.context.session.selection.path.slice(0, -1));
+		const details = document.querySelector(`[data-path="${path_key}"] details`);
+		if (details instanceof HTMLDetailsElement) {
+			details.open = !details.open;
+		}
+	}
+}
+
 /**
  * Command that opens the edit link dialog for link-ish nodes (nodes with href property).
  */
@@ -248,7 +275,10 @@ export class EditLinkCommand extends Command {
 			const { session } = this.context;
 			// Select the parent node if a property is selected (but not for annotation links)
 			const active_link = session.active_annotation('link');
-			if (!active_link && (session.selection?.type === 'text' || session.selection?.type === 'property')) {
+			if (
+				!active_link &&
+				(session.selection?.type === 'text' || session.selection?.type === 'property')
+			) {
 				session.select_parent();
 			}
 			// Wait for selection change to settle before showing prompt
