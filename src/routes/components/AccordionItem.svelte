@@ -32,7 +32,7 @@
 				</div>
 				<button
 					type="button"
-					class="pointer-events-auto shrink-0 text-[color-mix(in_oklch,var(--foreground)_60%,transparent)] outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
+					class="pointer-events-auto flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center text-[color-mix(in_oklch,var(--foreground)_60%,transparent)] outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 					aria-label="Toggle accordion item"
 					onclick={toggle_details}
 				>
