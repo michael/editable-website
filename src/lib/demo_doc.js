@@ -8,18 +8,18 @@ import { document_schema } from '$lib/document_schema.js';
 const FULL_DOC = {
 	document_id: 'page_1',
 	nodes: {
-		page_image_1: {
-			id: 'page_image_1',
+		vMaUqeqBAVSyPgDpnxWWPCK: {
+			id: 'vMaUqeqBAVSyPgDpnxWWPCK',
 			type: 'image',
-			src: '',
-			mime_type: '',
-			width: 0,
-			height: 0,
-			alt: '',
+			src: 'logo.svg',
+			mime_type: 'image/svg+xml',
+			width: 100,
+			height: 100,
+			alt: 'Logo',
 			scale: 1,
 			focal_point_x: 0.5,
 			focal_point_y: 0.5,
-			object_fit: 'contain'
+			object_fit: 'cover'
 		},
 		ccHVKDeyhrRVfKZCpXvxhac: {
 			id: 'ccHVKDeyhrRVfKZCpXvxhac',
@@ -751,171 +751,6 @@ const FULL_DOC = {
 			colorset: 0,
 			content: ['kZQHRTYyJtbmsJfnXaRgVtZ']
 		},
-		descriptive_listing_intro_heading: {
-			id: 'descriptive_listing_intro_heading',
-			type: 'text',
-			layout: 2,
-			content: {
-				text: 'How people are using it',
-				annotations: []
-			}
-		},
-		descriptive_listing_intro_text: {
-			id: 'descriptive_listing_intro_text',
-			type: 'text',
-			layout: 1,
-			content: {
-				text: 'A descriptive listing works well for resumes, case studies, changelogs, or compact timelines with a bit more context.',
-				annotations: []
-			}
-		},
-		descriptive_listing_intro: {
-			id: 'descriptive_listing_intro',
-			type: 'prose',
-			layout: 1,
-			colorset: 0,
-			content: ['descriptive_listing_intro_heading', 'descriptive_listing_intro_text']
-		},
-		descriptive_listing_item_1: {
-			id: 'descriptive_listing_item_1',
-			type: 'descriptive_listing_item',
-			href: 'https://github.com/michael/editable-website',
-			target: '_blank',
-			title: {
-				text: 'Editable Website',
-				annotations: []
-			},
-			description: {
-				text: 'Live in-place editing for SvelteKit sites.',
-				annotations: []
-			},
-			meta: {
-				text: 'Open source',
-				annotations: []
-			}
-		},
-		descriptive_listing_item_2: {
-			id: 'descriptive_listing_item_2',
-			type: 'descriptive_listing_item',
-			href: '',
-			target: '_self',
-			title: {
-				text: 'Studio profile',
-				annotations: []
-			},
-			description: {
-				text: 'A one-page studio site edited in the layout.',
-				annotations: []
-			},
-			meta: {
-				text: 'Client site',
-				annotations: []
-			}
-		},
-		descriptive_listing_item_3: {
-			id: 'descriptive_listing_item_3',
-			type: 'descriptive_listing_item',
-			href: '',
-			target: '_self',
-			title: {
-				text: 'Project changelog',
-				annotations: []
-			},
-			description: {
-				text: 'Release notes with compact summaries and dates.',
-				annotations: []
-			},
-			meta: {
-				text: 'Weekly',
-				annotations: []
-			}
-		},
-		descriptive_listing_item_4: {
-			id: 'descriptive_listing_item_4',
-			type: 'descriptive_listing_item',
-			href: '',
-			target: '_self',
-			title: {
-				text: 'Experience timeline',
-				annotations: []
-			},
-			description: {
-				text: 'A compact resume-style timeline.',
-				annotations: []
-			},
-			meta: {
-				text: '2018–Now',
-				annotations: []
-			}
-		},
-		descriptive_listing_block: {
-			id: 'descriptive_listing_block',
-			type: 'descriptive_listing',
-			layout: 1,
-			items: [
-				'descriptive_listing_item_1',
-				'descriptive_listing_item_2',
-				'descriptive_listing_item_3',
-				'descriptive_listing_item_4'
-			]
-		},
-		accordion_intro_heading: {
-			id: 'accordion_intro_heading',
-			type: 'text',
-			layout: 2,
-			content: {
-				text: 'Accordions',
-				annotations: []
-			}
-		},
-		accordion_intro_text: {
-			id: 'accordion_intro_text',
-			type: 'text',
-			layout: 1,
-			content: {
-				text: 'Use accordions when a section should stay compact until someone chooses to expand it.',
-				annotations: []
-			}
-		},
-		accordion_intro: {
-			id: 'accordion_intro',
-			type: 'prose',
-			layout: 1,
-			colorset: 0,
-			content: ['accordion_intro_heading', 'accordion_intro_text']
-		},
-		accordion_body_text_1: {
-			id: 'accordion_body_text_1',
-			type: 'text',
-			layout: 1,
-			content: {
-				text: 'The browser handles the expanding and collapsing behavior directly through the native details element.',
-				annotations: []
-			}
-		},
-		accordion_body_text_2: {
-			id: 'accordion_body_text_2',
-			type: 'text',
-			layout: 1,
-			content: {
-				text: 'That keeps the interaction simple and avoids extra JavaScript for a very common UI pattern.',
-				annotations: []
-			}
-		},
-		accordion_item_example: {
-			id: 'accordion_item_example',
-			type: 'accordion_item',
-			title: {
-				text: 'Why use an accordion here?',
-				annotations: []
-			},
-			body: ['accordion_body_text_1', 'accordion_body_text_2']
-		},
-		accordion_example: {
-			id: 'accordion_example',
-			type: 'accordion',
-			items: ['accordion_item_example']
-		},
 		AQHAsyghanqZPmyutAJZBxM: {
 			id: 'AQHAsyghanqZPmyutAJZBxM',
 			type: 'text',
@@ -979,25 +814,13 @@ const FULL_DOC = {
 				]
 			}
 		},
-		hpXfpDueZmgNjRfMUBREPnh: {
-			id: 'hpXfpDueZmgNjRfMUBREPnh',
-			type: 'link',
-			href: 'https://github.com/michael/editable-website',
-			target: '_blank'
-		},
 		EsVdYMdJuVqGfqpQmMBCtap: {
 			id: 'EsVdYMdJuVqGfqpQmMBCtap',
 			type: 'text',
 			layout: 1,
 			content: {
-				text: 'Take a look at the source code for this site.',
-				annotations: [
-					{
-						start_offset: 19,
-						end_offset: 30,
-						node_id: 'hpXfpDueZmgNjRfMUBREPnh'
-					}
-				]
+				text: 'The source code is not only available for this site, but for all the foundation it is built on:',
+				annotations: []
 			}
 		},
 		XVJGXtwnQMvcrcuByAtcWNa: {
@@ -1006,6 +829,240 @@ const FULL_DOC = {
 			layout: 1,
 			colorset: 0,
 			content: ['AQHAsyghanqZPmyutAJZBxM', 'PscvEBWBfhraXpPKjPPkCMC', 'EsVdYMdJuVqGfqpQmMBCtap']
+		},
+		BGYgxNUSXuDtBqxrKfExJnw: {
+			id: 'BGYgxNUSXuDtBqxrKfExJnw',
+			type: 'descriptive_listing_item',
+			href: 'https://github.com/michael/editable-website',
+			target: '_blank',
+			title: {
+				text: 'Editable Website',
+				annotations: []
+			},
+			description: {
+				text: 'CMS-free editable websites with Svelte',
+				annotations: []
+			},
+			meta: {
+				text: 'Source available',
+				annotations: []
+			}
+		},
+		DEKuXmWSgnDZEhRgHGptcZJ: {
+			id: 'DEKuXmWSgnDZEhRgHGptcZJ',
+			type: 'descriptive_listing_item',
+			href: 'https://github.com/michael/svedit',
+			target: '_blank',
+			title: {
+				text: 'Svedit',
+				annotations: []
+			},
+			description: {
+				text: 'A tiny library for building editable websites in Svelte',
+				annotations: []
+			},
+			meta: {
+				text: 'MIT licensed',
+				annotations: []
+			}
+		},
+		NpbErTcbBZKBxShfRaFXzct: {
+			id: 'NpbErTcbBZKBxShfRaFXzct',
+			type: 'descriptive_listing_item',
+			href: 'https://github.com/sveltejs/svelte',
+			target: '_blank',
+			title: {
+				text: 'Svelte',
+				annotations: []
+			},
+			description: {
+				text: 'Web development for the rest of us',
+				annotations: []
+			},
+			meta: {
+				text: 'MIT licensed',
+				annotations: []
+			}
+		},
+		fmxXNqJPJNkTZpAtwKSHxWb: {
+			id: 'fmxXNqJPJNkTZpAtwKSHxWb',
+			type: 'descriptive_listing',
+			layout: 1,
+			items: ['BGYgxNUSXuDtBqxrKfExJnw', 'DEKuXmWSgnDZEhRgHGptcZJ', 'NpbErTcbBZKBxShfRaFXzct']
+		},
+		aGDtGMKVpxQTPjshDNXaeqf: {
+			id: 'aGDtGMKVpxQTPjshDNXaeqf',
+			type: 'text',
+			layout: 2,
+			content: {
+				text: 'Frequently Asked Questions',
+				annotations: []
+			}
+		},
+		xEphsDndbNejaRnnPRBwvBK: {
+			id: 'xEphsDndbNejaRnnPRBwvBK',
+			type: 'prose',
+			layout: 1,
+			colorset: 0,
+			content: ['aGDtGMKVpxQTPjshDNXaeqf']
+		},
+		PgFkSEuFXmXvecwFNksBFfw: {
+			id: 'PgFkSEuFXmXvecwFNksBFfw',
+			type: 'text',
+			layout: 1,
+			content: {
+				text: 'The editing infrastructure (Svedit) becomes an integral part of your website (at runtime). As a developer, all you do is define content types (e.g. Figure) and implement components (e.g. Figure.svelte) — they are editable by default.',
+				annotations: []
+			}
+		},
+		DerFSxwnBjUZXfsePjKbYPd: {
+			id: 'DerFSxwnBjUZXfsePjKbYPd',
+			type: 'accordion_item',
+			title: {
+				text: 'How is this different to using a CMS?',
+				annotations: []
+			},
+			body: ['PgFkSEuFXmXvecwFNksBFfw']
+		},
+		fWGAzktgaAYgCnbjDDNZqZt: {
+			id: 'fWGAzktgaAYgCnbjDDNZqZt',
+			type: 'text',
+			content: {
+				text: 'There is experimental support for mobile editing — it works in principle. The current focus is on desktop UX, but mobile editing will improve over time.',
+				annotations: []
+			},
+			layout: 1
+		},
+		BfXmkWHjhSWZGMaKGxhSAXu: {
+			id: 'BfXmkWHjhSWZGMaKGxhSAXu',
+			type: 'accordion_item',
+			title: {
+				text: 'Is mobile editing supported?',
+				annotations: []
+			},
+			body: ['fWGAzktgaAYgCnbjDDNZqZt']
+		},
+		wdKfHzXjUysbpyHBKWnjHPp: {
+			id: 'wdKfHzXjUysbpyHBKWnjHPp',
+			type: 'text',
+			layout: 1,
+			content: {
+				text: "All content lives in a single data/ directory — an SQLite database (db.sqlite3) and uploaded assets (assets/). Locally this defaults to ./data. On Fly.io it's a persistent volume at /data. To back up your site, copy this directory.",
+				annotations: []
+			}
+		},
+		rmMwFFdvFZzxzdsaQtZvdKH: {
+			id: 'rmMwFFdvFZzxzdsaQtZvdKH',
+			type: 'accordion_item',
+			title: {
+				text: 'Where is the data stored?',
+				annotations: []
+			},
+			body: ['wdKfHzXjUysbpyHBKWnjHPp']
+		},
+		ahabwjAyHuBbTNMJacqWupQ: {
+			id: 'ahabwjAyHuBbTNMJacqWupQ',
+			type: 'text',
+			layout: 1,
+			content: {
+				text: 'Editable Website is a foundational, AI-agnostic tool. That said, it makes perfect sense to utilize AI workflows to help building your custom site. Think prompts like "Create a hero block type with title + description and optional CTA buttons" and "Implement Hero.svelte with 5 distinct layout variations".',
+				annotations: []
+			}
+		},
+		EjhqKzYMTknJuyFwbhJzyCA: {
+			id: 'EjhqKzYMTknJuyFwbhJzyCA',
+			type: 'accordion_item',
+			title: {
+				text: 'How about AI?',
+				annotations: []
+			},
+			body: ['ahabwjAyHuBbTNMJacqWupQ']
+		},
+		vuEMUDFAUnxSBXvsvDsYDZe: {
+			id: 'vuEMUDFAUnxSBXvsvDsYDZe',
+			type: 'text',
+			layout: 1,
+			content: {
+				text: "Editable Website is modular and you can and should reuse code across projects. However, I purposely don't want to establish a community maintained plugin repository. I want to encourage you to own all your code, for the benefit of simplicity, safety, and control. Share code snippets, not plugins.",
+				annotations: []
+			}
+		},
+		PeFCTQcmaYpxvjGMrfvgGeW: {
+			id: 'PeFCTQcmaYpxvjGMrfvgGeW',
+			type: 'accordion_item',
+			title: {
+				text: 'Plugins?',
+				annotations: []
+			},
+			body: ['vuEMUDFAUnxSBXvsvDsYDZe']
+		},
+		ZdwnbaVUbAPYzCZQhyJAYBr: {
+			id: 'ZdwnbaVUbAPYzCZQhyJAYBr',
+			type: 'text',
+			layout: 1,
+			content: {
+				text: 'Editable Website runs on any VPS. All you need is Node.js and SQLite. The repository includes a Dockerfile and fly.toml for one-command deployment to Fly.io — see Deploying to Fly.io above. The same Dockerfile works with any platform that supports Docker.',
+				annotations: []
+			}
+		},
+		tTTVGQvjNrfJsKHXSWaSDeE: {
+			id: 'tTTVGQvjNrfJsKHXSWaSDeE',
+			type: 'accordion_item',
+			title: {
+				text: 'Hosting?',
+				annotations: []
+			},
+			body: ['ZdwnbaVUbAPYzCZQhyJAYBr']
+		},
+		prwbeXWyKVSsJXMPndjHYRS: {
+			id: 'prwbeXWyKVSsJXMPndjHYRS',
+			type: 'text',
+			layout: 1,
+			content: {
+				text: "There's no point for static builds with Editable Website. The whole idea is that users edit content live, without having to wait for a rebuild to finish. SQLite is fast. Very fast. Web-optimized images are generated client-side before upload: resizing happens in the browser via canvas and toBlob(), and WebP encoding is done with @jsquash/webp. It still makes sense to enable a proxy for images, so they can be delivered from a CDN.",
+				annotations: []
+			}
+		},
+		gftTVYqqYFbsTAkfMJKbhzH: {
+			id: 'gftTVYqqYFbsTAkfMJKbhzH',
+			type: 'accordion_item',
+			title: {
+				text: 'Static builds?',
+				annotations: []
+			},
+			body: ['prwbeXWyKVSsJXMPndjHYRS']
+		},
+		VmvAPSsWYbVnekGqYyEKPUG: {
+			id: 'VmvAPSsWYbVnekGqYyEKPUG',
+			type: 'text',
+			layout: 1,
+			content: {
+				text: "Editable Website will at least be source-available. There will likely be an affordable one-time registration fee (per domain) for personal use, and a fair fee for commercial projects. I'm still working on the details. If you’re open to discussion, join the technical preview.",
+				annotations: []
+			}
+		},
+		gYpxwQwkQNNWWvYbTWBrAfx: {
+			id: 'gYpxwQwkQNNWWvYbTWBrAfx',
+			type: 'accordion_item',
+			title: {
+				text: 'License?',
+				annotations: []
+			},
+			body: ['VmvAPSsWYbVnekGqYyEKPUG']
+		},
+		BBExBsmaSTXMZdcxMsYngwg: {
+			id: 'BBExBsmaSTXMZdcxMsYngwg',
+			type: 'accordion',
+			items: [
+				'DerFSxwnBjUZXfsePjKbYPd',
+				'BfXmkWHjhSWZGMaKGxhSAXu',
+				'rmMwFFdvFZzxzdsaQtZvdKH',
+				'EjhqKzYMTknJuyFwbhJzyCA',
+				'PeFCTQcmaYpxvjGMrfvgGeW',
+				'tTTVGQvjNrfJsKHXSWaSDeE',
+				'gftTVYqqYFbsTAkfMJKbhzH',
+				'gYpxwQwkQNNWWvYbTWBrAfx'
+			]
 		},
 		hqrrTdEbTPaqzEcYMczhBZb: {
 			id: 'hqrrTdEbTPaqzEcYMczhBZb',
@@ -1390,7 +1447,7 @@ const FULL_DOC = {
 				text: 'SvelteKit template for building CMS-free editable websites. Site owners can edit content directly in the layout - no CMS needed.',
 				annotations: []
 			},
-			image: 'page_image_1',
+			image: 'vMaUqeqBAVSyPgDpnxWWPCK',
 			body: [
 				'hero_1',
 				'RtYpQwXsZvNmKjHgFdSaLe',
@@ -1398,14 +1455,13 @@ const FULL_DOC = {
 				'dyRWExwbkfuqKyDupbEqaec',
 				'BPdekRaDEUcQZqtEwPwBvyu',
 				'FUeFBwWRRuSJMVAhgxThQqj',
-				'descriptive_listing_intro',
-				'descriptive_listing_block',
-				'accordion_intro',
-				'accordion_example',
 				'descriptive_gallery_intro',
 				'jLnPqRsTuVwXyZaBcDeFg',
 				'descriptive_gallery_outro',
 				'XVJGXtwnQMvcrcuByAtcWNa',
+				'fmxXNqJPJNkTZpAtwKSHxWb',
+				'xEphsDndbNejaRnnPRBwvBK',
+				'BBExBsmaSTXMZdcxMsYngwg',
 				'YTMHBcPkYXJMRUnuSAhrTDE',
 				'UBNYngEBJYtDWgeabtDJqWW',
 				'wmrbpSFAFUmMRPDumcjKqpF'
