@@ -840,7 +840,7 @@ const FULL_DOC = {
 				annotations: []
 			},
 			description: {
-				text: 'CMS-free editable websites with Svelte',
+				text: 'CMS-free editable websites with Svelte ★1.7k+',
 				annotations: []
 			},
 			meta: {
@@ -858,7 +858,7 @@ const FULL_DOC = {
 				annotations: []
 			},
 			description: {
-				text: 'A tiny library for building editable websites in Svelte',
+				text: 'A tiny library for building editable websites in Svelte ★600+',
 				annotations: []
 			},
 			meta: {
@@ -876,7 +876,7 @@ const FULL_DOC = {
 				annotations: []
 			},
 			description: {
-				text: 'Web development for the rest of us',
+				text: 'Web development for the rest of us ★86.7k+',
 				annotations: []
 			},
 			meta: {
