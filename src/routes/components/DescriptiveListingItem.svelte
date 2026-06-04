@@ -7,7 +7,7 @@
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
 	let render_as_link = $derived(!svedit.editable && node.href);
-	let show_title_underline = $derived(!svedit.editable && !!node.href);
+	let show_title_underline = $derived(!!node.href);
 	let display_meta = $derived(svedit.editable || !!node.meta?.text?.trim());
 </script>
 
@@ -23,7 +23,7 @@
 			<div class="min-w-0 flex-1">
 				<AnnotatedTextProperty
 					class="{show_title_underline
-						? 'underline decoration-1 underline-offset-[0.12em]'
+						? 'underline decoration-2 decoration-(--foreground) underline-offset-2'
 						: ''} font-serif text-2xl text-balance text-(--foreground)"
 					path={[...path, 'title']}
 					placeholder="Title"
