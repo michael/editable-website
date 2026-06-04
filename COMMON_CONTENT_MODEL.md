@@ -8,7 +8,7 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 
 **Node types**
 
-[`text`](#node-text) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`page`](#node-page) · [`hero`](#node-hero) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
+[`text`](#node-text) · [`list`](#node-list) · [`list_item`](#node-list_item) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`page`](#node-page) · [`hero`](#node-hero) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
 
 **Annotation types**
 
@@ -32,6 +32,32 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 | `3`   | Heading 2     | Secondary heading.                                             |
 | `4`   | Heading 3     | Tertiary heading.                                              |
 | `5`   | Eyebrow       | Small uppercase label rendered before nearby headings or copy. |
+
+## Node: `list_item`
+
+`list_item` is a single list row inside `list`.
+
+| Property  | Type             | Default | Allowed annotation types                  | Meaning                                            |
+| --------- | ---------------- | ------- | ----------------------------------------- | -------------------------------------------------- |
+| `content` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Editable list item text. Newlines are not allowed. |
+
+## Node: `list`
+
+`list` is a structured list block for editorial flows such as `prose` or accordion bodies.
+
+| Property     | Type         | Default     | Allowed node types | Meaning                               |
+| ------------ | ------------ | ----------- | ------------------ | ------------------------------------- |
+| `layout`     | `integer`    | `1`         | `1`, `2`, `3`, `4` | Marker style for the rendered list.   |
+| `list_items` | `node_array` | `list_item` | `list_item`        | Ordered list items owned by the list. |
+
+### List layouts
+
+| Value | Meaning                  |
+| ----- | ------------------------ |
+| `1`   | Dash markers.            |
+| `2`   | Checkmark markers.       |
+| `3`   | Zero-padded numbering.   |
+| `4`   | Lowercase latin letters. |
 
 ## Node: `image`
 
@@ -119,7 +145,7 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 | Property  | Type         | Default | Allowed node types         | Meaning                                   |
 | --------- | ------------ | ------- | -------------------------- | ----------------------------------------- |
 | `layout`  | `integer`    | `1`     | `1`, `2`, `3`              | Horizontal alignment and width treatment. |
-| `content` | `node_array` | `text`  | `text`, `supporting_media` | Ordered prose children.                   |
+| `content` | `node_array` | `text`  | `text`, `list`, `supporting_media` | Ordered prose children.                   |
 
 ### Prose layouts
 
@@ -156,7 +182,7 @@ Implementation note: this node is currently called `decoration` in the app schem
 | Property | Type             | Default | Allowed node or annotation types | Meaning                                                              |
 | -------- | ---------------- | ------- | -------------------------------- | -------------------------------------------------------------------- |
 | `title`  | `annotated_text` | None    | `emphasis`, `highlight`, `link`  | Required heading of the collapsible. Newlines are not allowed.       |
-| `body`   | `node_array`     | `text`  | `text`, `supporting_media`       | Expandable rich body content, using the same child nodes as `prose`. |
+| `body`   | `node_array`     | `text`  | `text`, `list`, `supporting_media` | Expandable rich body content, using the same child nodes as `prose`. |
 
 ## Node: `gallery`
 
