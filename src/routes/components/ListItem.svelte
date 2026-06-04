@@ -40,7 +40,7 @@
 
 <Node {path}>
 	<div class="grid grid-cols-[2rem_minmax(0,1fr)] gap-3 py-1" role="listitem">
-		<div class="select-none text-right font-mono text-sm leading-7 text-[color-mix(in_oklch,var(--foreground)_60%,transparent)]" aria-hidden="true">
+		<div contenteditable="false" class="select-none text-right font-mono text-sm leading-7 text-[color-mix(in_oklch,var(--foreground)_60%,transparent)]" aria-hidden="true">
 			{marker}
 		</div>
 		<AnnotatedTextProperty
