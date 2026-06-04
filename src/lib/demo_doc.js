@@ -514,7 +514,7 @@ const FULL_DOC = {
 		},
 		jkPsBvJwtqCCjUDuByzxAHs: {
 			id: 'jkPsBvJwtqCCjUDuByzxAHs',
-			type: 'decoration',
+			type: 'supporting_media',
 			media: 'BnRyDkxJpWyxgsmdAaqBZpc',
 			media_max_width: 392,
 			media_aspect_ratio: 2.469
@@ -553,7 +553,7 @@ const FULL_DOC = {
 		},
 		SDzUcrBBPfRZkGUestSfCrV: {
 			id: 'SDzUcrBBPfRZkGUestSfCrV',
-			type: 'decoration',
+			type: 'supporting_media',
 			media: 'MJvxnendhrvWGYYgwbypGzf',
 			media_max_width: 0,
 			media_aspect_ratio: 4.801
