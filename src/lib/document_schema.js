@@ -195,7 +195,7 @@ export const document_schema = define_document_schema({
 			colorset: { type: 'integer', default: 0 },
 			content: {
 				type: 'node_array',
-				node_types: ['text', 'decoration'],
+				node_types: ['text', 'list', 'decoration'],
 				default_node_type: 'text'
 			}
 		}
@@ -208,6 +208,27 @@ export const document_schema = define_document_schema({
 				type: 'annotated_text',
 				node_types: ALL_ANNOTATIONS,
 				allow_newlines: true
+			}
+		}
+	},
+	list_item: {
+		kind: 'text',
+		properties: {
+			content: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: false
+			}
+		}
+	},
+	list: {
+		kind: 'block',
+		properties: {
+			layout: { type: 'integer', default: 1 },
+			list_items: {
+				type: 'node_array',
+				node_types: ['list_item'],
+				default_node_type: 'list_item'
 			}
 		}
 	},
@@ -367,7 +388,7 @@ export const document_schema = define_document_schema({
 			},
 			body: {
 				type: 'node_array',
-				node_types: ['text', 'decoration'],
+				node_types: ['text', 'list', 'decoration'],
 				default_node_type: 'text'
 			}
 		}
@@ -384,7 +405,7 @@ export const document_schema = define_document_schema({
 			},
 			body: {
 				type: 'node_array',
-				node_types: ['text', 'decoration'],
+				node_types: ['text', 'decoration', 'list'],
 				default_node_type: 'text'
 			}
 		}

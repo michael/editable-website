@@ -51,6 +51,8 @@ Editable Website is a SvelteKit application that lets site owners edit content d
 
 The production architecture is database-backed and supports multiple pages, but the project must also continue to support static preview/local development mode (for example `VERCEL=1`) where the app falls back to the demo document. In that mode, only the `/` route needs to work, multi-page features are disabled, authentication is disabled, and code paths must avoid hard dependencies on server-only runtime features that would break static deployments.
 
+The content model includes a reusable `list` block for text flows. `prose.content` and `accordion_item.body` may contain `text`, `list`, and supporting media nodes. Each `list` owns a `list_items` node array of `list_item` nodes, and each `list_item` owns a single-line annotated text `content` property. The `list.layout` integer controls marker style so the existing layout-cycling flow can switch between unordered and ordered variants without changing node type.
+
 In full runtime mode, Editable Website also supports a simple owner-only admin authentication model. Whoever knows the admin password can unlock editing and private page-management features. This is intentionally not a multi-user system — there is no user database, no roles, and no per-user ownership model. Authentication exists only to distinguish between:
 
 1. **Admin mode** — authenticated with the configured admin password, can edit and save, browse drafts, create pages, delete pages, and use the full page browser

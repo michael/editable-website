@@ -36,6 +36,8 @@ import FooterLink from './components/FooterLink.svelte';
 
 import Prose from './components/Prose.svelte';
 import Text from './components/Text.svelte';
+import List from './components/List.svelte';
+import ListItem from './components/ListItem.svelte';
 import Gallery from './components/Gallery.svelte';
 import GalleryItem from './components/GalleryItem.svelte';
 import DescriptiveGallery from './components/DescriptiveGallery.svelte';
@@ -154,6 +156,8 @@ const session_config = {
 		Button,
 		Prose,
 		Text,
+		List,
+		ListItem,
 		Image,
 		Video,
 		Figure,
@@ -262,11 +266,21 @@ const session_config = {
 					5: 'p'
 				}[node.layout] ?? 'p';
 			return `<${tag_name}>${node.content.text}</${tag_name}>\n`;
-		}
+		},
+		list: (node, session, html_exporters) => {
+			let html = '<ul>\n';
+			for (const list_item_id of node.list_items) {
+				html += html_exporters.list_item(session.get(list_item_id));
+			}
+			return `${html}</ul>\n`;
+		},
+		list_item: (node) => `<li>${node.content.text}</li>\n`
 	},
 	node_layouts: {
 		prose: 3,
 		text: 5,
+		list: 4,
+		list_item: 1,
 		figure: 1,
 		decoration: 1,
 		feature: 4,
@@ -381,6 +395,44 @@ const session_config = {
 			tr.create(new_text);
 			tr.insert_nodes([new_text.id]);
 			// NOTE: Relies on insert_nodes selecting the newly inserted node(s)
+			tr.set_selection({
+				type: 'text',
+				path: [...tr.selection.path, tr.selection.focus_offset - 1, 'content'],
+				anchor_offset: 0,
+				focus_offset: 0
+			});
+		},
+		list: function (tr) {
+			const new_list_item = {
+				id: nanoid(),
+				type: 'list_item',
+				content: { text: '', annotations: [] }
+			};
+			tr.create(new_list_item);
+
+			const new_list = {
+				id: nanoid(),
+				type: 'list',
+				layout: 1,
+				list_items: [new_list_item.id]
+			};
+			tr.create(new_list);
+			tr.insert_nodes([new_list.id]);
+			tr.set_selection({
+				type: 'text',
+				path: [...tr.selection.path, tr.selection.focus_offset - 1, 'list_items', 0, 'content'],
+				anchor_offset: 0,
+				focus_offset: 0
+			});
+		},
+		list_item: function (tr, content = { text: '', annotations: [] }) {
+			const new_list_item = {
+				id: nanoid(),
+				type: 'list_item',
+				content
+			};
+			tr.create(new_list_item);
+			tr.insert_nodes([new_list_item.id]);
 			tr.set_selection({
 				type: 'text',
 				path: [...tr.selection.path, tr.selection.focus_offset - 1, 'content'],

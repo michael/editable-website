@@ -99,7 +99,7 @@ export function extract_page_metadata(page_doc) {
 			first_video_node = node;
 		}
 
-		if (node.type === 'text') {
+		if (node.type === 'text' || node.type === 'list_item') {
 			const text = extract_plain_text(node.content);
 			if (!text) continue;
 
