@@ -195,7 +195,7 @@ export const document_schema = define_document_schema({
 			colorset: { type: 'integer', default: 0 },
 			content: {
 				type: 'node_array',
-				node_types: ['text', 'list', 'decoration'],
+				node_types: ['text', 'list', 'supporting_media'],
 				default_node_type: 'text'
 			}
 		}
@@ -270,7 +270,7 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
-	decoration: {
+	supporting_media: {
 		kind: 'block',
 		properties: {
 			media_max_width: { type: 'integer', default: 0 },
@@ -388,7 +388,7 @@ export const document_schema = define_document_schema({
 			},
 			body: {
 				type: 'node_array',
-				node_types: ['text', 'list', 'decoration'],
+				node_types: ['text', 'list', 'supporting_media'],
 				default_node_type: 'text'
 			}
 		}
@@ -405,7 +405,7 @@ export const document_schema = define_document_schema({
 			},
 			body: {
 				type: 'node_array',
-				node_types: ['text', 'decoration', 'list'],
+				node_types: ['text', 'supporting_media', 'list'],
 				default_node_type: 'text'
 			}
 		}

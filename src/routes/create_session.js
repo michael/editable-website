@@ -47,7 +47,7 @@ import DescriptiveListingItem from './components/DescriptiveListingItem.svelte';
 import Accordion from './components/Accordion.svelte';
 import AccordionItem from './components/AccordionItem.svelte';
 import Figure from './components/Figure.svelte';
-import Decoration from './components/Decoration.svelte';
+import SupportingMedia from './components/SupportingMedia.svelte';
 import Feature from './components/Feature.svelte';
 import Hero from './components/Hero.svelte';
 import MediaHero from './components/MediaHero.svelte';
@@ -161,7 +161,7 @@ const session_config = {
 		Image,
 		Video,
 		Figure,
-		Decoration,
+		SupportingMedia,
 		Feature,
 		Gallery,
 		GalleryItem,
@@ -282,7 +282,7 @@ const session_config = {
 		list: 4,
 		list_item: 1,
 		figure: 1,
-		decoration: 1,
+		supporting_media: 1,
 		feature: 4,
 		gallery: 5,
 		nav_item: 2,
@@ -488,21 +488,21 @@ const session_config = {
 			//   focus_offset: 0
 			// });
 		},
-		decoration: function (tr, content = { text: '', annotations: [] }, layout = 1) {
-			const new_decoration_id = tr.build('new_decoration', {
+		supporting_media: function (tr, content = { text: '', annotations: [] }, layout = 1) {
+			const new_supporting_media_id = tr.build('new_supporting_media', {
 				image_one: {
 					id: 'image_one',
 					type: 'image',
 					...MEDIA_DEFAULTS
 				},
-				new_decoration: {
-					id: 'new_decoration',
-					type: 'decoration',
+				new_supporting_media: {
+					id: 'new_supporting_media',
+					type: 'supporting_media',
 					media: 'image_one'
 				}
 			});
 
-			tr.insert_nodes([new_decoration_id]);
+			tr.insert_nodes([new_supporting_media_id]);
 		},
 		nav_item: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_nav_item_id = tr.build('new_nav_item', {

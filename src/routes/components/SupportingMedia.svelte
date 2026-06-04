@@ -20,6 +20,6 @@
 
 <Node {path}>
 	<SizableViewbox {path} class={is_centered ? 'mx-auto' : ''} style="border-radius: var(--image-border-radius)">
-		<MediaProperty class="decoration-media" path={[...path, 'media']} />
+		<MediaProperty class="supporting-media" path={[...path, 'media']} />
 	</SizableViewbox>
 </Node>
