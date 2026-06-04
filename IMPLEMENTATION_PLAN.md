@@ -2,6 +2,28 @@
 
 This document tracks what to implement next. One step at a time. All implementation must conform to the design decisions in [ARCHITECTURE.md](ARCHITECTURE.md) — if a conflict arises, update the architecture first, then implement.
 
+## Next implementation draft — list node
+
+### Goal
+
+Add a reusable `list` node that can appear anywhere regular `text` nodes can appear in rich text flows.
+
+### Scope
+
+- Add `list` and `list_item` node types to the document schema.
+- `list` owns a `list_items` node array containing only `list_item` nodes and has a switchable `layout` property for marker style.
+- `list_item` owns editable annotated text content using the same annotations as `text`, without newlines.
+- Allow `list` inside `prose.content` and `accordion_item.body`, while keeping `text` as the default inserted node type.
+- Add `List.svelte` and `ListItem.svelte`, styled consistently with the existing app.
+- Register both components and add `list` / `list_item` inserters.
+- Add `list` to `node_layouts` so the existing layout cycling command can switch list marker styles.
+
+### Validation
+
+- Verify cycling node type can switch text-compatible slots between `text` and `list`.
+- Verify inserted lists start with one editable list item.
+- Verify pressing Enter inside a list inserts a new `list_item` and focuses it.
+
 ## Next implementation draft — admin authentication
 
 This step adds simple owner authentication for editing and private page-management features.
