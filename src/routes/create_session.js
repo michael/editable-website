@@ -270,7 +270,7 @@ const session_config = {
 		figure: 1,
 		decoration: 1,
 		feature: 4,
-		gallery: 4,
+		gallery: 5,
 		nav_item: 2,
 		button: 2,
 		hero: 4,

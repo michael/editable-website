@@ -34,6 +34,11 @@
 	     	[--row:1]
 				grid grid-cols-1 md:grid-cols-2
 				**:[.image-wrapper]:aspect-[2/1]
+   		`,
+			5: `
+	     	[--row:1]
+				grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5
+				**:[.image-wrapper]:aspect-[2/1]
    		`
 		};
 
