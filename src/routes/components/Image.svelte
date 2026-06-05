@@ -2,7 +2,7 @@
 	import { ASSET_BASE, VARIANT_WIDTHS } from '$lib/config.js';
 
 	/** @type {{ node: any }} */
-	let { node } = $props();
+	let { node, sizes } = $props();
 
 	// Determine if src is a blob URL (unsaved), a saved asset id, or empty
 	let is_blob = $derived(node.src?.startsWith('blob:'));
@@ -63,7 +63,8 @@
 		contenteditable="false"
 		src={display_src}
 		srcset={srcset || undefined}
-		sizes={srcset ? '50vw' : undefined}
+		sizes={srcset ? "auto" : undefined}
+		loading="lazy"
 		alt={node.alt}
 		width={node.width}
 		height={node.height}
@@ -77,6 +78,4 @@
 		height: 100%;
 		transform-origin: center center;
 	}
-
-
 </style>
