@@ -1308,7 +1308,7 @@ In `hooks.server.js`, on every request:
 
 ## SizableViewbox (user-controlled media sizing)
 
-Some media placements need **user-controlled sizing** — the user should be able to set both the width and aspect ratio of the container, with the constraint that it never overflows its parent. This applies to inline decorations in prose content, footer logos, and potentially other contexts where the layout doesn't define the container dimensions.
+Some media placements need **user-controlled sizing** — the user should be able to set both the width and aspect ratio of the container, with the constraint that it never overflows its parent. This applies to inline supporting media in prose content, footer logos, and potentially other contexts where the layout doesn't define the container dimensions.
 
 ### Design
 
@@ -1334,7 +1334,7 @@ These contexts use `MediaProperty` wrapped in a **`SizableViewbox`** component. 
 └──────────────────────────────────────────────────────────────┘
 ```
 
-For example, `Decoration.svelte` handles centering itself based on the parent prose layout:
+For example, `SupportingMedia.svelte` handles centering itself based on the parent prose layout:
 
 ```svelte
 <div style:margin={is_centered ? '0 auto' : undefined}>
@@ -1356,10 +1356,10 @@ And `Footer.svelte` uses it for the logo with a different media property name:
 
 The sizing properties follow a naming convention based on the media property they control: `{media_property}_max_width` and `{media_property}_aspect_ratio`. This allows multiple sizable viewboxes on the same node type with different media properties.
 
-For `decoration` (media property is `media`):
+For `supporting_media` (media property is `media`):
 
 ```
-decoration: {
+supporting_media: {
     kind: 'block',
     properties: {
         media_max_width: { type: 'integer', default: 0 },
@@ -1390,7 +1390,7 @@ footer: {
 
 `SizableViewbox.svelte` wraps its children (a `MediaProperty`) in a `<div>` styled with `max-width` and `aspect-ratio` from the node's properties. It accepts:
 
-- **`path`** — the node path (e.g. the decoration or footer node)
+- **`path`** — the node path (e.g. the supporting media or footer node)
 - **`media_property`** — the name of the media property on that node (default: `'media'`). The component derives field names as `{media_property}_max_width` and `{media_property}_aspect_ratio`, and reads the media node from `[...path, media_property]` to get intrinsic dimensions for the natural aspect ratio fallback.
 - **`placeholder_aspect_ratio`** — used when `{prop}_aspect_ratio` is `0` and the media has no intrinsic dimensions (default: `16/9`)
 
