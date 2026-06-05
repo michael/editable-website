@@ -2,7 +2,7 @@
 	import { ASSET_BASE, VARIANT_WIDTHS } from '$lib/config.js';
 
 	/** @type {{ node: any }} */
-	let { node, sizes } = $props();
+	let { node } = $props();
 
 	// Determine if src is a blob URL (unsaved), a saved asset id, or empty
 	let is_blob = $derived(node.src?.startsWith('blob:'));
