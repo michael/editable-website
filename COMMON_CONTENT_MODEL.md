@@ -159,7 +159,7 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 
 `supporting_media` is media placed inside a `prose` flow to support, illustrate, or visually enrich nearby text. It references either an `image` or `video` node and can be sized independently from text.
 
-Implementation note: this node is currently called `decoration` in the app schema. The next schema refactor should rename it to `supporting_media`.
+
 
 | Property             | Type      | Default | Allowed node types | Meaning                                                                                       |
 | -------------------- | --------- | ------- | ------------------ | --------------------------------------------------------------------------------------------- |
