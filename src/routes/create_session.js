@@ -52,6 +52,7 @@ import Feature from './components/Feature.svelte';
 import Hero from './components/Hero.svelte';
 import MediaHero from './components/MediaHero.svelte';
 import Button from './components/Button.svelte';
+import ButtonGroup from './components/ButtonGroup.svelte';
 import Image from './components/Image.svelte';
 import Video from './components/Video.svelte';
 
@@ -154,6 +155,7 @@ const session_config = {
 		Hero,
 		MediaHero,
 		Button,
+		ButtonGroup,
 		Prose,
 		Text,
 		List,
@@ -560,6 +562,21 @@ const session_config = {
 
 			tr.insert_nodes([new_button_id]);
 			select_inserted_text_property(tr);
+		},
+		button_group: function (tr) {
+			const new_button = {
+				id: nanoid(),
+				type: 'button'
+			};
+			tr.create(new_button);
+
+			const new_button_group = {
+				id: nanoid(),
+				type: 'button_group',
+				buttons: [new_button.id]
+			};
+			tr.create(new_button_group);
+			tr.insert_nodes([new_button_group.id]);
 		},
 		footer_link: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_footer_link_id = tr.build('new_footer_link', {

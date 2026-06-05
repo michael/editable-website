@@ -188,6 +188,16 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
+	button_group: {
+		kind: 'block',
+		properties: {
+			buttons: {
+				type: 'node_array',
+				node_types: ['button'],
+				default_node_type: 'button'
+			}
+		}
+	},
 	prose: {
 		kind: 'block',
 		properties: {
@@ -195,7 +205,7 @@ export const document_schema = define_document_schema({
 			colorset: { type: 'integer', default: 0 },
 			content: {
 				type: 'node_array',
-				node_types: ['text', 'list', 'supporting_media'],
+				node_types: ['text', 'list', 'supporting_media', 'button_group'],
 				default_node_type: 'text'
 			}
 		}
@@ -388,7 +398,7 @@ export const document_schema = define_document_schema({
 			},
 			body: {
 				type: 'node_array',
-				node_types: ['text', 'list', 'supporting_media'],
+				node_types: ['text', 'list', 'supporting_media', 'button_group'],
 				default_node_type: 'text'
 			}
 		}
@@ -405,7 +415,7 @@ export const document_schema = define_document_schema({
 			},
 			body: {
 				type: 'node_array',
-				node_types: ['text', 'supporting_media', 'list'],
+				node_types: ['text', 'supporting_media', 'list', 'button_group'],
 				default_node_type: 'text'
 			}
 		}

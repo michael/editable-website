@@ -24,6 +24,19 @@ Add a reusable `list` node that can appear anywhere regular `text` nodes can app
 - Verify inserted lists start with one editable list item.
 - Verify pressing Enter inside a list inserts a new `list_item` and focuses it.
 
+## Next implementation draft — button group
+
+### Goal
+
+Add a reusable `button_group` block that can be inserted into `prose.content`, `accordion_item.body`, and `feature.body`.
+
+### Scope
+
+- Add a `button_group` block with a `buttons` node array containing only `button` nodes.
+- Allow `button_group` inside `prose.content`, `accordion_item.body`, and `feature.body`, while keeping `text` as the default inserted node type in those flows.
+- Add `ButtonGroup.svelte` and style the button row like the existing hero button rows.
+- Register the new component and inserter.
+
 ## Next implementation draft — admin authentication
 
 This step adds simple owner authentication for editing and private page-management features.
