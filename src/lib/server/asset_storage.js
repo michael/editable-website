@@ -145,10 +145,11 @@ export async function delete_asset(asset_id) {
  * Create a Node.js ReadStream for an original asset.
  *
  * @param {string} asset_id
+ * @param {{ start?: number, end?: number }} [options]
  * @returns {import('node:fs').ReadStream}
  */
-export function create_asset_read_stream(asset_id) {
-	return createReadStream(asset_path(asset_id));
+export function create_asset_read_stream(asset_id, options = {}) {
+	return createReadStream(asset_path(asset_id), options);
 }
 
 /**
@@ -156,10 +157,11 @@ export function create_asset_read_stream(asset_id) {
  *
  * @param {string} asset_id
  * @param {number} width
+ * @param {{ start?: number, end?: number }} [options]
  * @returns {import('node:fs').ReadStream}
  */
-export function create_variant_read_stream(asset_id, width) {
-	return createReadStream(variant_path(asset_id, width));
+export function create_variant_read_stream(asset_id, width, options = {}) {
+	return createReadStream(variant_path(asset_id, width), options);
 }
 
 /**

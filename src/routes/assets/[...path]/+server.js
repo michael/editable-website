@@ -41,8 +41,47 @@ function short_filename(asset_id, ext) {
 	return `${asset_id.slice(0, 8)}${ext}`;
 }
 
+/**
+ * Parse a single HTTP byte range header.
+ *
+ * @param {string | null} range_header
+ * @param {number} size
+ * @returns {{ start: number, end: number } | null}
+ */
+function parse_byte_range(range_header, size) {
+	if (!range_header) return null;
+
+	const match = range_header.trim().match(/^bytes=(\d*)-(\d*)$/);
+	if (!match) return null;
+
+	const start_str = match[1];
+	const end_str = match[2];
+
+	// Suffix range: bytes=-500
+	if (!start_str && end_str) {
+		const suffix_length = Number(end_str);
+		if (!Number.isInteger(suffix_length) || suffix_length <= 0) return null;
+		const start = Math.max(size - suffix_length, 0);
+		return { start, end: size - 1 };
+	}
+
+	if (!start_str) return null;
+
+	const start = Number(start_str);
+	if (!Number.isInteger(start) || start < 0 || start >= size) return null;
+
+	let end = size - 1;
+	if (end_str) {
+		end = Number(end_str);
+		if (!Number.isInteger(end) || end < start) return null;
+		end = Math.min(end, size - 1);
+	}
+
+	return { start, end };
+}
+
 /** @type {import('./$types').RequestHandler} */
-export async function GET({ params }) {
+export async function GET({ params, request }) {
 	const path = params.path;
 
 	if (!path) {
@@ -98,19 +137,51 @@ export async function GET({ params }) {
 	const ext = extname(asset_id);
 	const mime_type = EXT_TO_MIME[ext] || 'application/octet-stream';
 	const size = await asset_size(asset_id);
-	const stream = create_asset_read_stream(asset_id);
+	const range_header = request.headers.get('range');
+	const is_video = mime_type.startsWith('video/');
+	const byte_range = is_video ? parse_byte_range(range_header, size) : null;
 
 	const headers = {
 		'Content-Type': mime_type,
-		'Content-Length': String(size),
 		'Cache-Control': 'public, max-age=31536000, immutable',
 		'Content-Disposition': `inline; filename="${short_filename(asset_id, ext)}"`
 	};
 
 	// Video files need range request support for seeking
-	if (mime_type.startsWith('video/')) {
+	if (is_video) {
 		headers['Accept-Ranges'] = 'bytes';
 	}
 
-	return new Response(to_web_stream(stream), { headers });
+	if (range_header && is_video) {
+		if (!byte_range) {
+			return new Response(null, {
+				status: 416,
+				headers: {
+					...headers,
+					'Content-Range': `bytes */${size}`
+				}
+			});
+		}
+
+		const { start, end } = byte_range;
+		const stream = create_asset_read_stream(asset_id, { start, end });
+		const partial_size = end - start + 1;
+
+		return new Response(to_web_stream(stream), {
+			status: 206,
+			headers: {
+				...headers,
+				'Content-Length': String(partial_size),
+				'Content-Range': `bytes ${start}-${end}/${size}`
+			}
+		});
+	}
+
+	const stream = create_asset_read_stream(asset_id);
+	return new Response(to_web_stream(stream), {
+		headers: {
+			...headers,
+			'Content-Length': String(size)
+		}
+	});
 }
