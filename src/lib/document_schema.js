@@ -27,6 +27,7 @@ export const document_schema = define_document_schema({
 				node_types: [
 					'prose',
 					'figure',
+					'captioned_figure',
 					'gallery',
 					'feature',
 					'descriptive_gallery',
@@ -277,6 +278,21 @@ export const document_schema = define_document_schema({
 				type: 'node',
 				node_types: ['image', 'video'],
 				default_node_type: 'image'
+			}
+		}
+	},
+	captioned_figure: {
+		kind: 'block',
+		properties: {
+			media: {
+				type: 'node',
+				node_types: ['image', 'video'],
+				default_node_type: 'image'
+			},
+			caption: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: false
 			}
 		}
 	},
