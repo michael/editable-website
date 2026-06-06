@@ -279,7 +279,7 @@ const session_config = {
 		list_item: (node) => `<li>${node.content.text}</li>\n`
 	},
 	node_layouts: {
-		prose: 3,
+		prose: 4,
 		text: 5,
 		list: 4,
 		list_item: 1,
