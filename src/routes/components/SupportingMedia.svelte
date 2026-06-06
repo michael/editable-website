@@ -15,7 +15,7 @@
 	// path is like ['body', index, 'content', index] — the Prose node is at path[0..2]
 	let prose_path = $derived(path.slice(0, -2));
 	let prose_node = $derived(svedit.session.get(prose_path));
-	let is_centered = $derived(prose_node?.type === 'prose' && prose_node?.layout === 2);
+	let is_centered = $derived(prose_node?.type === 'prose' && prose_node?.layout === 4);
 </script>
 
 <Node {path}>

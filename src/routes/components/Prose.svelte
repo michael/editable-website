@@ -61,7 +61,7 @@
 {#snippet layout_4()}
 	<div class="{TW_LIMITER}">
 		<div class="py-10 sm:py-14 md:py-16 lg:py-28">
-			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-4xl text-center">
+			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-4xl text-center text-balance">
 				{@render content()}
 			</div>
 		</div>
