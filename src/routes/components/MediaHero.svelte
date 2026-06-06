@@ -38,7 +38,10 @@
 					path={[...path, 'buttons']}
 				/>
 			</div>
-			<div class="mt-10 md:mt-14 lg:mt-16 w-full aspect-video overflow-hidden">
+			<div
+				style:border-radius="var(--image-border-radius)"
+				class="mt-10 md:mt-14 lg:mt-16 w-full aspect-video overflow-hidden"
+			>
 				<MediaProperty path={[...path, 'media']} />
 			</div>
 			<div class="flex-1 min-h-0"></div>
