@@ -398,7 +398,7 @@ export const document_schema = define_document_schema({
 			},
 			body: {
 				type: 'node_array',
-				node_types: ['text', 'list', 'supporting_media', 'button_group'],
+				node_types: ['text', 'list', 'button_group', 'supporting_media'],
 				default_node_type: 'text'
 			}
 		}
