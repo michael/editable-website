@@ -47,6 +47,7 @@ import DescriptiveListingItem from './components/DescriptiveListingItem.svelte';
 import Accordion from './components/Accordion.svelte';
 import AccordionItem from './components/AccordionItem.svelte';
 import Figure from './components/Figure.svelte';
+import CaptionedFigure from './components/CaptionedFigure.svelte';
 import SupportingMedia from './components/SupportingMedia.svelte';
 import Feature from './components/Feature.svelte';
 import Hero from './components/Hero.svelte';
@@ -163,6 +164,7 @@ const session_config = {
 		Image,
 		Video,
 		Figure,
+		CaptionedFigure,
 		SupportingMedia,
 		Feature,
 		Gallery,
@@ -284,6 +286,7 @@ const session_config = {
 		list: 4,
 		list_item: 1,
 		figure: 1,
+		captioned_figure: 1,
 		supporting_media: 1,
 		feature: 4,
 		gallery: 5,
@@ -489,6 +492,23 @@ const session_config = {
 			//   anchor_offset: 0,
 			//   focus_offset: 0
 			// });
+		},
+		captioned_figure: function (tr, content = { text: '', annotations: [] }, layout = 1) {
+			const new_captioned_figure_id = tr.build('new_captioned_figure', {
+				image_one: {
+					id: 'image_one',
+					type: 'image',
+					...MEDIA_DEFAULTS
+				},
+				new_captioned_figure: {
+					id: 'new_captioned_figure',
+					type: 'captioned_figure',
+					media: 'image_one',
+					caption: { text: '', annotations: [] }
+				}
+			});
+
+			tr.insert_nodes([new_captioned_figure_id]);
 		},
 		supporting_media: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_supporting_media_id = tr.build('new_supporting_media', {

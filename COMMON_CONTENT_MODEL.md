@@ -8,7 +8,7 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 
 **Node types**
 
-[`text`](#node-text) · [`list`](#node-list) · [`list_item`](#node-list_item) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`page`](#node-page) · [`hero`](#node-hero) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
+[`text`](#node-text) · [`list`](#node-list) · [`list_item`](#node-list_item) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`captioned_figure`](#node-captioned_figure) · [`page`](#node-page) · [`hero`](#node-hero) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
 
 **Annotation types**
 
@@ -91,6 +91,15 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 | `scale`         | `number`  | `1.0`   | Display scale applied inside the media frame.                       |
 | `object_fit`    | `string`  | `cover` | CSS object-fit behavior, such as `cover` or `contain`.              |
 
+## Node: `captioned_figure`
+
+`captioned_figure` is a media block with a single caption rendered below the media. It is useful when the image or video needs a brief explanatory line in a small font.
+
+| Property  | Type             | Default | Allowed node or annotation types         | Meaning                                               |
+| --------- | ---------------- | ------- | ---------------------------------------- | ----------------------------------------------------- |
+| `media`   | `node`           | `image` | `image`, `video`                         | Media displayed by the captioned figure.              |
+| `caption` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Short caption rendered below the media. Newlines are not allowed. |
+
 ## Node: `page`
 
 `page` is the document root. It stores page metadata, shared chrome references, and an ordered body of content blocks.
@@ -100,7 +109,7 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 | `title`       | `annotated_text` | None     | No annotations                                                      | Page title used for head metadata and editable search-result preview. Newlines are not allowed.                                       |
 | `description` | `annotated_text` | None     | No annotations                                                      | Page description used for head metadata and editable search-result preview. Newlines are allowed.                                     |
 | `image`       | `node`           | `image`  | `image`                                                             | Preview image used for page metadata. The `image` node is documented below because it is also used by `prose` via `supporting_media`. |
-| `body`        | `node_array`     | `prose`  | `hero`, `media_hero`, `prose`, `gallery`, `titled_gallery`, `descriptive_gallery` | Ordered page body blocks. The current app supports additional body block types, but they are outside this initial CCM scope.          |
+| `body`        | `node_array`     | `prose`  | `hero`, `media_hero`, `prose`, `figure`, `captioned_figure`, `gallery`, `titled_gallery`, `descriptive_gallery` | Ordered page body blocks. The current app supports additional body block types, but they are outside this initial CCM scope.          |
 | `nav`         | `node`           | `nav`    | Out of scope                                                        | Shared navigation reference. Not specified in this draft.                                                                             |
 | `footer`      | `node`           | `footer` | Out of scope                                                        | Shared footer reference. Not specified in this draft.                                                                                 |
 
