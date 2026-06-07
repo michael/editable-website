@@ -2,6 +2,20 @@
 
 This document tracks what to implement next. One step at a time. All implementation must conform to the design decisions in [ARCHITECTURE.md](ARCHITECTURE.md) — if a conflict arises, update the architecture first, then implement.
 
+## Next implementation draft — preformatted node
+
+### Goal
+
+Add a reusable `preformatted` node for fixed-width content that preserves spacing and newlines.
+
+### Scope
+
+- Add a `preformatted` node type to the document schema.
+- `preformatted` owns a single `content` property using the same `annotated_text` storage shape as regular text.
+- Allow no annotations in `preformatted.content`.
+- Allow newlines in `preformatted.content`.
+- Add the node to the Common Content Model documentation and demo document.
+
 ## Next implementation draft — list node
 
 ### Goal

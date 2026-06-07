@@ -16,7 +16,7 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="block border-b border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] py-4 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) sm:py-5 md:py-6"
+		class="block border-b border-[color-mix(in_oklch,var(--foreground)_7%,transparent)] py-4 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) sm:py-5 md:py-6"
 		use:reveal
 	>
 		<div class="flex items-center justify-between gap-6">

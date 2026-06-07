@@ -2,6 +2,7 @@ import { define_document_schema } from 'svedit';
 
 const ALL_ANNOTATIONS = ['strong', 'emphasis', 'highlight', 'link'];
 const MINIMAL_ANNOTATIONS = ['emphasis', 'highlight'];
+const NO_ANNOTATIONS = [];
 
 export const document_schema = define_document_schema({
 	page: {
@@ -35,7 +36,8 @@ export const document_schema = define_document_schema({
 					'descriptive_listing',
 					'accordion',
 					'hero',
-					'media_hero'
+					'media_hero',
+					'preformatted'
 				],
 				default_node_type: 'prose'
 			},
@@ -231,6 +233,16 @@ export const document_schema = define_document_schema({
 				type: 'node_array',
 				node_types: ['text', 'list', 'supporting_media', 'button_group'],
 				default_node_type: 'text'
+			}
+		}
+	},
+	preformatted: {
+		kind: 'block',
+		properties: {
+			content: {
+				type: 'annotated_text',
+				node_types: NO_ANNOTATIONS,
+				allow_newlines: true
 			}
 		}
 	},

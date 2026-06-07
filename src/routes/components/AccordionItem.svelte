@@ -8,7 +8,7 @@
 
 <Node class="ew-accordion-item" {path}>
 	<details
-		class="border-b border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] py-4 sm:py-5 md:py-6"
+		class="border-b border-[color-mix(in_oklch,var(--foreground)_7%,transparent)] py-4 sm:py-5 md:py-6"
 	>
 		<summary
 			class="list-none outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"

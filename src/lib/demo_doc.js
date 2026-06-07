@@ -190,6 +190,14 @@ const FULL_DOC = {
 				annotations: []
 			}
 		},
+		preformatted_example: {
+			id: 'preformatted_example',
+			type: 'preformatted',
+			content: {
+				text: 'const greeting = "Hello, world!"\n\n+----+----+\n|  /\\|    |\n| /  \\    |\n+----+----+',
+				annotations: []
+			}
+		},
 		RtYpQwXsZvNmKjHgFdSaLe: {
 			id: 'RtYpQwXsZvNmKjHgFdSaLe',
 			type: 'feature',
@@ -1708,6 +1716,7 @@ const FULL_DOC = {
 				'prose_grid_1',
 				'xEphsDndbNejaRnnPRBwvBK',
 				'BBExBsmaSTXMZdcxMsYngwg',
+				'preformatted_example',
 				'YTMHBcPkYXJMRUnuSAhrTDE',
 				'UBNYngEBJYtDWgeabtDJqWW',
 				'wmrbpSFAFUmMRPDumcjKqpF'

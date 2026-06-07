@@ -67,7 +67,7 @@
 
 <dialog
 	bind:this={dialog_ref}
-	class="create-link-dialog absolute z-40 mt-1 m-0 bg-(--background) text-(--foreground) p-0 shadow-xl overflow-visible max-h-90 border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)]"
+	class="create-link-dialog absolute z-40 mt-1 m-0 bg-(--background) text-(--foreground) p-0 shadow-xl overflow-visible max-h-90 border border-[color-mix(in_oklch,var(--foreground)_7%,transparent)]"
 	style="position-anchor: --selection-highlight; position-area: block-end span-all; justify-self: anchor-center;"
 	onclick={handle_backdrop_click}
 >
@@ -79,13 +79,13 @@
 					type="url"
 					bind:value={href_input_value}
 					placeholder="https://example.com"
-					class="create-link-input w-72 min-w-0 flex-1 border border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:border-[var(--svedit-editing-stroke)] focus:outline-none focus:ring-0 focus:shadow-none"
+					class="create-link-input w-72 min-w-0 flex-1 border border-[color-mix(in_oklch,var(--foreground)_7%,transparent)] bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:border-[var(--svedit-editing-stroke)] focus:outline-none focus:ring-0 focus:shadow-none"
 					onkeydown={handle_keydown}
 				/>
 				{#if app.has_backend}
 					<button
 						type="button"
-						class="shrink-0 cursor-pointer border border-l-transparent border-[color-mix(in_oklch,var(--foreground)_18%,transparent)] px-3 text-(--svedit-editing-stroke) hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))] focus:border-[var(--svedit-editing-stroke)] focus:outline-none focus:ring-0 focus:shadow-none"
+						class="shrink-0 cursor-pointer border border-l-transparent border-[color-mix(in_oklch,var(--foreground)_7%,transparent)] px-3 text-(--svedit-editing-stroke) hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))] focus:border-[var(--svedit-editing-stroke)] focus:outline-none focus:ring-0 focus:shadow-none"
 						title="Select page"
 						aria-label="Select page"
 						onclick={() => {

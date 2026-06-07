@@ -54,7 +54,7 @@
     	<Footer path={[...path, 'footer']}/>
     </div>
     {#if svedit.editable}
-    	<div class="border-t border-(--foreground)/10 bg-(--background) text-(--foreground)">
+    	<div class="border-t border-(--foreground)/10 bg-[color-mix(in_oklch,var(--foreground)_1%,transparent)] text-(--foreground)">
     		<div class="{TW_LIMITER}">
     			<div class="{TW_PAGE_PADDING_X} py-12 md:py-16 flex flex-col gap-6">
     				<div contenteditable="false" class="text-xs uppercase tracking-widest opacity-60 max-w-2xl text-left">How should this page be displayed in a search result?</div>

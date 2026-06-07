@@ -25,6 +25,14 @@
 	font-display: swap;
 }
 
+@font-face {
+	font-family: 'Departure Mono';
+	src: url('/fonts/DepartureMono-Regular.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
 :root {
 	/* Website colors */
 	--background: oklch(1 0 0);
@@ -47,7 +55,7 @@
 @theme {
 	--font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
 	--font-serif: 'Libertinos Serif Display', ui-serif, Georgia, serif;
-	--font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+	--font-mono: 'Departure Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 }
 
 @layer utilities {
