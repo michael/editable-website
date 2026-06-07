@@ -29,7 +29,7 @@
 					placeholder="Title"
 				/>
 				<AnnotatedTextProperty
-					class="block pt-0.5 text-base text-[color-mix(in_oklch,var(--foreground)_50%,transparent)]"
+					class="block pt-1 text-sm sm:text-base"
 					path={[...path, 'description']}
 					placeholder="Description"
 				/>
@@ -38,7 +38,7 @@
 			{#if display_meta}
 				<div class="min-w-0 shrink-0 self-center text-right">
 					<AnnotatedTextProperty
-						class="block text-base text-[color-mix(in_oklch,var(--foreground)_50%,transparent)]"
+						class="block text-sm sm:text-base"
 						path={[...path, 'meta']}
 						placeholder="Meta"
 					/>
