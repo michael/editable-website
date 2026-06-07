@@ -963,25 +963,13 @@ const FULL_DOC = {
 				annotations: []
 			}
 		},
-		TVyESfztZumECtycUHKFbFs: {
-			id: 'TVyESfztZumECtycUHKFbFs',
-			type: 'link',
-			href: 'https://github.com/michael/editable-website',
-			target: '_self'
-		},
 		ARpQvUnSMPCTHeFZYYNCFmP: {
 			id: 'ARpQvUnSMPCTHeFZYYNCFmP',
 			type: 'text',
 			layout: 1,
 			content: {
-				text: 'The source code is publicly available on Github.',
-				annotations: [
-					{
-						start_offset: 41,
-						end_offset: 47,
-						node_id: 'TVyESfztZumECtycUHKFbFs'
-					}
-				]
+				text: 'Setup a website in minutes. Spend the next hour customizing it.',
+				annotations: []
 			}
 		},
 		prose_grid_free_button: {
@@ -1108,7 +1096,7 @@ const FULL_DOC = {
 			type: 'text',
 			layout: 1,
 			content: {
-				text: 'Each license is purchased once and valid for a single domain. No time limit.',
+				text: 'Each license is purchased once and valid indefinitely for a single domain.',
 				annotations: []
 			}
 		},
