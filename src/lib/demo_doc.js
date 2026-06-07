@@ -1053,7 +1053,7 @@ const FULL_DOC = {
 			type: 'button',
 			layout: 1,
 			href: 'https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform',
-			target: '_self',
+			target: '_blank',
 			label: {
 				text: 'Purchase',
 				annotations: []
@@ -1117,7 +1117,7 @@ const FULL_DOC = {
 			type: 'button',
 			layout: 1,
 			href: 'https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform',
-			target: '_self',
+			target: '_blank',
 			label: {
 				text: 'Purchase',
 				annotations: []
