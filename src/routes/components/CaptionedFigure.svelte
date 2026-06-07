@@ -21,7 +21,7 @@
 			</div>
 			<AnnotatedTextProperty
 				tag="figcaption"
-				class="mt-4 text-sm leading-6"
+				class="mt-4 text-sm sm:text-base leading-6"
 				path={[...path, 'caption']}
 				placeholder="Caption"
 			/>
