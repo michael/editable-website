@@ -88,10 +88,10 @@ Aim for specific, human-readable copy rather than keywords."
 	.page {
 		--row: 0;
 	}
-  :global {
+  /*:global {
     .body-node-array {
       display: grid;
       grid-template-columns: 1fr;
     }
-  }
+  }*/
 </style>
