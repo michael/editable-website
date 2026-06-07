@@ -388,13 +388,29 @@ const session_config = {
 			};
 			tr.create(new_prose);
 			tr.insert_nodes([new_prose.id]);
-			// NOTE: Relies on insert_nodes selecting the newly inserted node(s)
-			// tr.set_selection({
-			// 	type: 'text',
-			// 	path: [...tr.selection.path, tr.selection.focus_offset - 1, 'content', 0, 'content'],
-			// 	anchor_offset: 0,
-			// 	focus_offset: 0
-			// });
+		},
+		prose_grid_item: function (tr) {
+			const new_heading = {
+				id: nanoid(),
+				type: 'text',
+				layout: 2,
+				content: { text: '', annotations: [] }
+			};
+			tr.create(new_heading);
+			const new_paragraph = {
+				id: nanoid(),
+				type: 'text',
+				layout: 1,
+				content: { text: '', annotations: [] }
+			};
+			tr.create(new_paragraph);
+			const new_prose_grid_item = {
+				id: nanoid(),
+				type: 'prose_grid_item',
+				content: [new_heading.id, new_paragraph.id]
+			};
+			tr.create(new_prose_grid_item);
+			tr.insert_nodes([new_prose_grid_item.id]);
 		},
 		prose_grid: function (tr) {
 			const new_prose_grid_item = {
