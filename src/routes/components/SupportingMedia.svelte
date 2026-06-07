@@ -1,21 +1,14 @@
-<script module>
-	export const LAYOUT_COUNT = 1;
-</script>
-
 <script>
 	import { getContext } from 'svelte';
 	import { Node } from 'svedit';
 	import MediaProperty from './MediaProperty.svelte';
 	import SizableViewbox from './SizableViewbox.svelte';
 
-	const svedit = getContext('svedit');
+	const prose = getContext('prose');
 	let { path } = $props();
 
-	// Read the parent Prose node's layout to determine alignment
-	// path is like ['body', index, 'content', index] — the Prose node is at path[0..2]
-	let prose_path = $derived(path.slice(0, -2));
-	let prose_node = $derived(svedit.session.get(prose_path));
-	let is_centered = $derived(prose_node?.type === 'prose' && prose_node?.layout === 4);
+	// The Prose or ProseGridItem node's layout determines alignment
+	let is_centered = $derived(prose.is_centered);
 </script>
 
 <Node {path}>

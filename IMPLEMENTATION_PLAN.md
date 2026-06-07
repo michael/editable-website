@@ -24,20 +24,20 @@ Add a reusable `list` node that can appear anywhere regular `text` nodes can app
 - Verify inserted lists start with one editable list item.
 - Verify pressing Enter inside a list inserts a new `list_item` and focuses it.
 
-## Next implementation draft — captioned figure
+## Next implementation draft — prose grid
 
 ### Goal
 
-Add a reusable `captioned_figure` block that renders media with a single caption below it.
+Add a reusable `prose_grid` block that arranges `prose` blocks in columns.
 
 ### Scope
 
-- Add a `captioned_figure` block with a `media` node and a single annotated `caption` property.
-- Allow `captioned_figure` inside page body content.
-- Add `CaptionedFigure.svelte` by copying the existing `Figure` layout and rendering the caption below the media.
+- Add a `prose_grid` block with an `items` node array containing only `prose` nodes.
+- Allow `prose_grid` inside page body content.
+- Add `ProseGrid.svelte` using the same column-count-driven layout pattern as `Footer.svelte`.
 - Register the new component and inserter.
 
-## Next implementation draft — button group
+## Next implementation draft — captioned figure
 
 This step adds simple owner authentication for editing and private page-management features.
 

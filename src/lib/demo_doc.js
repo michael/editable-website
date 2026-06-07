@@ -890,6 +890,262 @@ const FULL_DOC = {
 			layout: 1,
 			items: ['BGYgxNUSXuDtBqxrKfExJnw', 'DEKuXmWSgnDZEhRgHGptcZJ', 'NpbErTcbBZKBxShfRaFXzct']
 		},
+		qCsyJmxeVPfzjuWrCbSDFFR: {
+			id: 'qCsyJmxeVPfzjuWrCbSDFFR',
+			type: 'text',
+			layout: 2,
+			content: {
+				text: 'Early-Access pricing',
+				annotations: []
+			}
+		},
+		nHaWhmFqqDCzKjYfAYWzeAs: {
+			id: 'nHaWhmFqqDCzKjYfAYWzeAs',
+			type: 'list_item',
+			content: {
+				text: 'Includes all code and the right to modify it',
+				annotations: []
+			}
+		},
+		gfzZchrRysGcDEeXxAscCzg: {
+			id: 'gfzZchrRysGcDEeXxAscCzg',
+			type: 'list_item',
+			content: {
+				text: 'No subscription',
+				annotations: []
+			}
+		},
+		hhauqXDVvpScWyhmrsmvrqe: {
+			id: 'hhauqXDVvpScWyhmrsmvrqe',
+			type: 'list_item',
+			content: {
+				text: 'No hidden costs',
+				annotations: []
+			}
+		},
+		eJjQwDAYHqfcegtbNPTtQSJ: {
+			id: 'eJjQwDAYHqfcegtbNPTtQSJ',
+			type: 'list',
+			layout: 2,
+			list_items: ['nHaWhmFqqDCzKjYfAYWzeAs', 'gfzZchrRysGcDEeXxAscCzg', 'hhauqXDVvpScWyhmrsmvrqe']
+		},
+		eRkNrkcQvspQsPtkDtuqekV: {
+			id: 'eRkNrkcQvspQsPtkDtuqekV',
+			type: 'prose',
+			layout: 1,
+			colorset: 0,
+			content: ['qCsyJmxeVPfzjuWrCbSDFFR', 'eJjQwDAYHqfcegtbNPTtQSJ']
+		},
+		jzMUAkKquWACdzyTFtgyxdV: {
+			id: 'jzMUAkKquWACdzyTFtgyxdV',
+			type: 'text',
+			layout: 5,
+			content: {
+				text: 'PRE-LAUNCH',
+				annotations: []
+			}
+		},
+		prose_grid_free_title: {
+			id: 'prose_grid_free_title',
+			type: 'text',
+			layout: 3,
+			content: {
+				text: 'Free',
+				annotations: []
+			}
+		},
+		prose_grid_free_description: {
+			id: 'prose_grid_free_description',
+			type: 'text',
+			layout: 1,
+			content: {
+				text: 'Install Editable Website and start developing.',
+				annotations: []
+			}
+		},
+		TVyESfztZumECtycUHKFbFs: {
+			id: 'TVyESfztZumECtycUHKFbFs',
+			type: 'link',
+			href: 'https://github.com/michael/editable-website',
+			target: '_self'
+		},
+		ARpQvUnSMPCTHeFZYYNCFmP: {
+			id: 'ARpQvUnSMPCTHeFZYYNCFmP',
+			type: 'text',
+			layout: 1,
+			content: {
+				text: 'The source code is publicly available on Github.',
+				annotations: [
+					{
+						start_offset: 41,
+						end_offset: 47,
+						node_id: 'TVyESfztZumECtycUHKFbFs'
+					}
+				]
+			}
+		},
+		prose_grid_free_button: {
+			id: 'prose_grid_free_button',
+			type: 'button',
+			layout: 1,
+			href: 'https://github.com/michael/editable-website#getting-started',
+			target: '_blank',
+			label: {
+				text: 'Install',
+				annotations: []
+			}
+		},
+		prose_grid_free_action: {
+			id: 'prose_grid_free_action',
+			type: 'button_group',
+			buttons: ['prose_grid_free_button']
+		},
+		prose_grid_free: {
+			id: 'prose_grid_free',
+			type: 'prose_grid_item',
+			colorset: 0,
+			content: [
+				'jzMUAkKquWACdzyTFtgyxdV',
+				'prose_grid_free_title',
+				'prose_grid_free_description',
+				'ARpQvUnSMPCTHeFZYYNCFmP',
+				'prose_grid_free_action'
+			]
+		},
+		aPYQncYTyzFJSDAcGejvvQV: {
+			id: 'aPYQncYTyzFJSDAcGejvvQV',
+			type: 'text',
+			layout: 5,
+			content: {
+				text: 'PERSONAL',
+				annotations: []
+			}
+		},
+		prose_grid_supergrok_title: {
+			id: 'prose_grid_supergrok_title',
+			type: 'text',
+			layout: 3,
+			content: {
+				text: '€99',
+				annotations: []
+			}
+		},
+		prose_grid_supergrok_description: {
+			id: 'prose_grid_supergrok_description',
+			type: 'text',
+			layout: 1,
+			content: {
+				text: 'Per domain. Once you launched.',
+				annotations: []
+			}
+		},
+		prose_grid_supergrok_features: {
+			id: 'prose_grid_supergrok_features',
+			type: 'text',
+			layout: 1,
+			content: {
+				text: 'For personal use or businesses with less than 150,000 USD in annual revenue.',
+				annotations: []
+			}
+		},
+		prose_grid_supergrok_button: {
+			id: 'prose_grid_supergrok_button',
+			type: 'button',
+			layout: 1,
+			href: 'https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform',
+			target: '_self',
+			label: {
+				text: 'Purchase',
+				annotations: []
+			}
+		},
+		prose_grid_supergrok_action: {
+			id: 'prose_grid_supergrok_action',
+			type: 'button_group',
+			buttons: ['prose_grid_supergrok_button']
+		},
+		prose_grid_supergrok: {
+			id: 'prose_grid_supergrok',
+			type: 'prose_grid_item',
+			colorset: 0,
+			content: [
+				'aPYQncYTyzFJSDAcGejvvQV',
+				'prose_grid_supergrok_title',
+				'prose_grid_supergrok_description',
+				'prose_grid_supergrok_features',
+				'prose_grid_supergrok_action'
+			]
+		},
+		XqzKZKnYXApBFkcctNNhRxJ: {
+			id: 'XqzKZKnYXApBFkcctNNhRxJ',
+			type: 'text',
+			layout: 5,
+			content: {
+				text: 'COMMERCIAL',
+				annotations: []
+			}
+		},
+		TKTWNunjBnaxgXZkTGbuJjS: {
+			id: 'TKTWNunjBnaxgXZkTGbuJjS',
+			type: 'text',
+			layout: 3,
+			content: {
+				text: '€299',
+				annotations: []
+			}
+		},
+		FVgAWAdnYubUEueFrfRYypd: {
+			id: 'FVgAWAdnYubUEueFrfRYypd',
+			type: 'text',
+			layout: 1,
+			content: {
+				text: 'For each Editable Website you launch for a client.',
+				annotations: []
+			}
+		},
+		UkXDdahkUkkPEsXntcmBebK: {
+			id: 'UkXDdahkUkkPEsXntcmBebK',
+			type: 'text',
+			layout: 1,
+			content: {
+				text: 'Each license is purchased once and valid for a single domain. No time limit.',
+				annotations: []
+			}
+		},
+		prose_grid_expert_button: {
+			id: 'prose_grid_expert_button',
+			type: 'button',
+			layout: 1,
+			href: 'https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform',
+			target: '_self',
+			label: {
+				text: 'Purchase',
+				annotations: []
+			}
+		},
+		prose_grid_expert_action: {
+			id: 'prose_grid_expert_action',
+			type: 'button_group',
+			buttons: ['prose_grid_expert_button']
+		},
+		prose_grid_expert: {
+			id: 'prose_grid_expert',
+			type: 'prose_grid_item',
+			colorset: 0,
+			content: [
+				'XqzKZKnYXApBFkcctNNhRxJ',
+				'TKTWNunjBnaxgXZkTGbuJjS',
+				'FVgAWAdnYubUEueFrfRYypd',
+				'UkXDdahkUkkPEsXntcmBebK',
+				'prose_grid_expert_action'
+			]
+		},
+		prose_grid_1: {
+			id: 'prose_grid_1',
+			type: 'prose_grid',
+			layout: 2,
+			items: ['prose_grid_free', 'prose_grid_supergrok', 'prose_grid_expert']
+		},
 		aGDtGMKVpxQTPjshDNXaeqf: {
 			id: 'aGDtGMKVpxQTPjshDNXaeqf',
 			type: 'text',
@@ -1460,6 +1716,8 @@ const FULL_DOC = {
 				'descriptive_gallery_outro',
 				'XVJGXtwnQMvcrcuByAtcWNa',
 				'fmxXNqJPJNkTZpAtwKSHxWb',
+				'eRkNrkcQvspQsPtkDtuqekV',
+				'prose_grid_1',
 				'xEphsDndbNejaRnnPRBwvBK',
 				'BBExBsmaSTXMZdcxMsYngwg',
 				'YTMHBcPkYXJMRUnuSAhrTDE',

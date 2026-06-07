@@ -2,11 +2,10 @@
 	import { getContext } from 'svelte';
 	import { Node, NodeArrayProperty } from 'svedit';
 
-	const svedit = getContext('svedit');
+	const prose = getContext('prose');
 	let { path } = $props();
-	let prose_path = $derived(path.slice(0, -2));
-	let prose_node = $derived(svedit.session.get(prose_path));
-	let is_centered = $derived(prose_node?.type === 'prose' && prose_node?.layout === 4);
+	// The Prose or ProseGridItem node's layout determines alignment
+	let is_centered = $derived(prose.is_centered);
 </script>
 
 <Node class="ew-button-group" {path}>

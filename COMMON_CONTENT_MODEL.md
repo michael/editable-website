@@ -8,7 +8,7 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 
 **Node types**
 
-[`text`](#node-text) · [`list`](#node-list) · [`list_item`](#node-list_item) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`captioned_figure`](#node-captioned_figure) · [`page`](#node-page) · [`hero`](#node-hero) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
+[`text`](#node-text) · [`list`](#node-list) · [`list_item`](#node-list_item) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`captioned_figure`](#node-captioned_figure) · [`page`](#node-page) · [`hero`](#node-hero) · [`prose_grid`](#node-prose_grid) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
 
 **Annotation types**
 
@@ -147,22 +147,42 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 | `href`   | `string`         | None    | N/A                      | Link destination.                         |
 | `target` | `string`         | `_self` | N/A                      | Link target, such as `_self` or `_blank`. |
 
+## Node: `prose_grid`
+
+`prose_grid` is a grid of prose blocks arranged as columns on larger screens.
+
+| Property | Type         | Default | Allowed node types | Meaning                          |
+| -------- | ------------ | ------- | ------------------ | -------------------------------- |
+| `layout` | `integer`    | `1`     | `1`, `2`           | Text alignment for the grid.     |
+| `items`  | `node_array` | `prose_grid_item` | `prose_grid_item` | Ordered grid items.              |
+
+## Node: `prose_grid_item`
+
+`prose_grid_item` is a prose block used as a child of `prose_grid`. It uses the same internal content structure as `prose`, but its own layout is limited to left-aligned or centered text.
+
+| Property  | Type         | Default | Allowed node types         | Meaning                                    |
+| --------- | ------------ | ------- | -------------------------- | ------------------------------------------ |
+| `layout`  | `integer`    | `1`     | `1`, `2`                    | Text alignment within the grid item.       |
+| `colorset` | `integer`   | `0`     | Theme-defined              | Optional color treatment.                  |
+| `content` | `node_array` | `text`  | `text`, `list`, `supporting_media`, `button_group` | Ordered prose children. |
+
 ## Node: `prose`
 
 `prose` is a text-first editorial section. It primarily contains headings and paragraphs, and may include supporting media that illustrates or visually enriches nearby text.
 
 | Property  | Type         | Default | Allowed node types         | Meaning                                   |
 | --------- | ------------ | ------- | -------------------------- | ----------------------------------------- |
-| `layout`  | `integer`    | `1`     | `1`, `2`, `3`              | Horizontal alignment and width treatment. |
+| `layout`  | `integer`    | `1`     | `1`, `2`, `3`, `4`         | Horizontal alignment and width treatment. |
 | `content` | `node_array` | `text`  | `text`, `list`, `supporting_media` | Ordered prose children.                   |
 
 ### Prose layouts
 
 | Value | Meaning              |
 | ----- | -------------------- |
-| `1`   | Left-aligned prose.  |
-| `2`   | Centered prose.      |
-| `3`   | Right-aligned prose. |
+| `1`   | Left-aligned prose.   |
+| `2`   | Center-oriented prose |
+| `3`   | Right-aligned prose.  |
+| `4`   | Centered prose.       |
 
 ## Node: `supporting_media`
 
