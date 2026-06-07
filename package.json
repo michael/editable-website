@@ -18,8 +18,8 @@
 		"@eslint/compat": "^2.0.3",
 		"@eslint/js": "^10.0.1",
 		"@sveltejs/adapter-auto": "^7.0.1",
-		"@sveltejs/kit": "^2.55.0",
-		"@sveltejs/vite-plugin-svelte": "^7.0.0",
+		"@sveltejs/kit": "^2.63.0",
+		"@sveltejs/vite-plugin-svelte": "^7.1.2",
 		"@tailwindcss/forms": "^0.5.11",
 		"@tailwindcss/vite": "^4.2.2",
 		"@types/node": "^25",
@@ -30,14 +30,13 @@
 		"prettier": "^3.8.1",
 		"prettier-plugin-svelte": "^3.5.1",
 		"prettier-plugin-tailwindcss": "^0.7.2",
-		"svelte": "^5.53.12",
-		"svelte-check": "^4.4.5",
+		"svelte": "^5.56.2",
+		"svelte-check": "^4.6.0",
 		"tailwindcss": "^4.2.2",
 		"typescript": "^5.9.3",
 		"vite": "^8.0.1"
 	},
 	"dependencies": {
-
 		"@jsquash/webp": "^1.5.0",
 		"@sveltejs/adapter-node": "^5.5.4",
 		"nanoid": "^5.1.6",
