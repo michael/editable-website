@@ -35,6 +35,8 @@ import FooterLinkColumn from './components/FooterLinkColumn.svelte';
 import FooterLink from './components/FooterLink.svelte';
 
 import Prose from './components/Prose.svelte';
+import ProseGrid from './components/ProseGrid.svelte';
+import ProseGridItem from './components/ProseGridItem.svelte';
 import Text from './components/Text.svelte';
 import List from './components/List.svelte';
 import ListItem from './components/ListItem.svelte';
@@ -158,6 +160,8 @@ const session_config = {
 		Button,
 		ButtonGroup,
 		Prose,
+		ProseGrid,
+		ProseGridItem,
 		Text,
 		List,
 		ListItem,
@@ -282,6 +286,8 @@ const session_config = {
 	},
 	node_layouts: {
 		prose: 4,
+		prose_grid: 2,
+		prose_grid_item: 1,
 		text: 5,
 		list: 4,
 		list_item: 1,
@@ -389,6 +395,24 @@ const session_config = {
 			// 	anchor_offset: 0,
 			// 	focus_offset: 0
 			// });
+		},
+		prose_grid: function (tr) {
+			const new_prose_grid_item = {
+				id: nanoid(),
+				type: 'prose_grid_item',
+				colorset: 0,
+				content: []
+			};
+			tr.create(new_prose_grid_item);
+
+			const new_prose_grid = {
+				id: nanoid(),
+				type: 'prose_grid',
+				layout: 1,
+				items: [new_prose_grid_item.id]
+			};
+			tr.create(new_prose_grid);
+			tr.insert_nodes([new_prose_grid.id]);
 		},
 		text: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_text = {

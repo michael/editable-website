@@ -1,5 +1,5 @@
 <script>
-	import { getContext } from 'svelte';
+	import { getContext, setContext } from 'svelte';
 	import { Node, NodeArrayProperty } from 'svedit';
 	import { TW_PAGE_PADDING_X, TW_MOBILE_LEFT_INSET, TW_LIMITER } from '../tailwind_theme.js';
 
@@ -8,6 +8,12 @@
 	let node = $derived(svedit.session.get(path));
 	let layout = $derived(node.layout || 1);
 	let colorset_class = $derived(node.colorset ? `ew-colorset-${node.colorset}` : '');
+
+	setContext('prose', {
+		get is_centered() {
+			return layout === 4;
+		},
+	});
 
 	const heading_spacing = `
 		[&>div:has(h1)~div>h1]:pt-8

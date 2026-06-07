@@ -26,6 +26,7 @@ export const document_schema = define_document_schema({
 				type: 'node_array',
 				node_types: [
 					'prose',
+					'prose_grid',
 					'figure',
 					'captioned_figure',
 					'gallery',
@@ -196,6 +197,28 @@ export const document_schema = define_document_schema({
 				type: 'node_array',
 				node_types: ['button'],
 				default_node_type: 'button'
+			}
+		}
+	},
+	prose_grid: {
+		kind: 'block',
+		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
+			items: {
+				type: 'node_array',
+				node_types: ['prose_grid_item'],
+				default_node_type: 'prose_grid_item'
+			}
+		}
+	},
+	prose_grid_item: {
+		kind: 'block',
+		properties: {
+			colorset: { type: 'integer', default: 0 },
+			content: {
+				type: 'node_array',
+				node_types: ['text', 'list', 'supporting_media', 'button_group'],
+				default_node_type: 'text'
 			}
 		}
 	},
