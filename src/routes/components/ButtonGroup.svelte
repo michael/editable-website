@@ -5,7 +5,7 @@
 	const prose = getContext('prose');
 	let { path } = $props();
 	// The Prose or ProseGridItem node's layout determines alignment
-	let is_centered = $derived(prose.is_centered);
+	let is_centered = $derived(prose?.is_centered);
 </script>
 
 <Node class="ew-button-group" {path}>
