@@ -37,6 +37,7 @@ import FooterLink from './components/FooterLink.svelte';
 import Prose from './components/Prose.svelte';
 import ProseGrid from './components/ProseGrid.svelte';
 import ProseGridItem from './components/ProseGridItem.svelte';
+import Preformatted from './components/Preformatted.svelte';
 import Text from './components/Text.svelte';
 import List from './components/List.svelte';
 import ListItem from './components/ListItem.svelte';
@@ -162,6 +163,7 @@ const session_config = {
 		Prose,
 		ProseGrid,
 		ProseGridItem,
+		Preformatted,
 		Text,
 		List,
 		ListItem,
@@ -275,6 +277,7 @@ const session_config = {
 				}[node.layout] ?? 'p';
 			return `<${tag_name}>${node.content.text}</${tag_name}>\n`;
 		},
+		preformatted: (node) => `<pre>${node.content.text}</pre>\n`,
 		list: (node, session, html_exporters) => {
 			let html = '<ul>\n';
 			for (const list_item_id of node.list_items) {
@@ -289,6 +292,7 @@ const session_config = {
 		prose_grid: 2,
 		prose_grid_item: 1,
 		text: 5,
+		preformatted: 1,
 		list: 4,
 		list_item: 1,
 		figure: 1,
@@ -440,6 +444,21 @@ const session_config = {
 			tr.create(new_text);
 			tr.insert_nodes([new_text.id]);
 			// NOTE: Relies on insert_nodes selecting the newly inserted node(s)
+			tr.set_selection({
+				type: 'text',
+				path: [...tr.selection.path, tr.selection.focus_offset - 1, 'content'],
+				anchor_offset: 0,
+				focus_offset: 0
+			});
+		},
+		preformatted: function (tr, content = { text: '', annotations: [] }) {
+			const new_preformatted = {
+				id: nanoid(),
+				type: 'preformatted',
+				content: { ...content, annotations: [] }
+			};
+			tr.create(new_preformatted);
+			tr.insert_nodes([new_preformatted.id]);
 			tr.set_selection({
 				type: 'text',
 				path: [...tr.selection.path, tr.selection.focus_offset - 1, 'content'],

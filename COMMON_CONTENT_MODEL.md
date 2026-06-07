@@ -8,7 +8,7 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 
 **Node types**
 
-[`text`](#node-text) · [`list`](#node-list) · [`list_item`](#node-list_item) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`captioned_figure`](#node-captioned_figure) · [`page`](#node-page) · [`hero`](#node-hero) · [`prose_grid`](#node-prose_grid) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
+[`text`](#node-text) · [`list`](#node-list) · [`list_item`](#node-list_item) · [`preformatted`](#node-preformatted) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`captioned_figure`](#node-captioned_figure) · [`page`](#node-page) · [`hero`](#node-hero) · [`prose_grid`](#node-prose_grid) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
 
 **Annotation types**
 
@@ -40,6 +40,14 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 | Property  | Type             | Default | Allowed annotation types                  | Meaning                                            |
 | --------- | ---------------- | ------- | ----------------------------------------- | -------------------------------------------------- |
 | `content` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Editable list item text. Newlines are not allowed. |
+
+## Node: `preformatted`
+
+`preformatted` is a monospaced block for content that should preserve spacing and line breaks exactly as entered. It is useful for ASCII art, technical illustrations, logs, and similar fixed-width content. It accepts the same `annotated_text` storage shape as regular text, but no annotations are allowed.
+
+| Property  | Type             | Default | Allowed annotation types | Meaning                                                               |
+| --------- | ---------------- | ------- | ------------------------ | --------------------------------------------------------------------- |
+| `content` | `annotated_text` | None    | No annotations           | Preserved text content. Newlines are allowed.                         |
 
 ## Node: `list`
 
