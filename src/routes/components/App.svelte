@@ -294,9 +294,8 @@
 			]);
 
 			/** @type {any} */
-			const persist_document = api_module.save_document;
-			/** @type {any} */
-			const get_document = api_module.get_document;
+			const save_document = api_module.save_document;
+
 			const {
 				collect_blob_urls,
 				wait_for_processing,
@@ -347,7 +346,7 @@
 				}
 
 				/** @type {{ ok: boolean, document_id?: string, slug?: string, created?: boolean }} */
-				const result = await persist_document({
+				const result = await save_document({
 					...doc_json,
 					create: current_is_new
 				});
@@ -370,21 +369,16 @@
 				session.selection = null;
 				this.context.editable = false;
 
-				if (result?.created && result.document_id && result.slug) {
-					try {
-						await get_document(result.slug).run();
-						current_is_new = false;
-						invalidate_page_browser_data();
-						await goto(resolve(`/${result.slug}`), { replaceState: true });
-						return;
-					} catch (read_back_err) {
-						console.error('Created page could not be read back yet:', read_back_err);
-						alert('The page was saved, but it is not readable yet. Staying on /new so you do not get sent to a missing page.');
-					}
-				}
-
 				invalidate_page_browser_data();
 
+				// When a new document has been created, return and redirect to the new url
+				if (result?.created && result.document_id && result.slug) {
+					current_is_new = false;
+					await goto(resolve(`/${result.slug}`), { replaceState: true });
+					return;
+				}
+
+				// Display "saved" message only if saving took longer than 3 seconds
 				if (Date.now() - save_start > 3000) {
 					save_progress_message = 'Successfully saved';
 					save_progress_done = true;
@@ -487,7 +481,7 @@
 	ontouchcancel={handle_mobile_touchend}
 />
 
-<div class="demo-wrapper antialiased" bind:this={app_el}>
+<div class="antialiased" bind:this={app_el}>
 	<Toolbar
 		{session}
 		{app_commands}
