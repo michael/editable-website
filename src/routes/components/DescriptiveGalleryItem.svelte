@@ -29,7 +29,7 @@
 			<AnnotatedTextProperty
 				class="{!svedit.editable
 					? 'title-underline'
-					: ''} inline font-serif text-2xl text-balance text-(--foreground) lg:text-3xl"
+					: ''} font-serif text-2xl text-balance text-(--foreground) lg:text-3xl"
 				path={[...path, 'title']}
 				placeholder="Title"
 			/>
