@@ -23,7 +23,7 @@
 			<div class="min-w-0 flex-1">
 				<AnnotatedTextProperty
 					class="{show_title_underline
-						? 'underline decoration-2 decoration-(--foreground) underline-offset-2'
+						? 'underline'
 						: ''} font-serif text-2xl text-balance text-(--foreground)"
 					path={[...path, 'title']}
 					placeholder="Title"

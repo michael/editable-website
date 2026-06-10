@@ -16,9 +16,6 @@
 			target={render_as_link ? node.target : undefined}
 			class="outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 			class:hover:underline={render_as_link}
-			class:hover:decoration-2={render_as_link}
-			class:hover:decoration-(--foreground)={render_as_link}
-			class:hover:underline-offset-2={render_as_link}
 		>
 			<AnnotatedTextProperty class="inline" path={[...path, 'label']} placeholder="Label" />
 		</svelte:element>
