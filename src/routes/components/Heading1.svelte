@@ -1,15 +1,14 @@
 <script>
-	import { Node, AnnotatedTextProperty } from 'svedit';
+	import { Node } from 'svedit';
+	import Display from './Display.svelte';
 	import { reveal } from '../reveal.js';
 
 	let { path } = $props();
 </script>
 
-<Node {path}>
+<Node class="ew-heading-1" {path}>
 	<div use:reveal>
-		<AnnotatedTextProperty
-			tag="h1"
-			class="ew-h1 font-serif text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground)"
+		<Display
 			path={[...path, 'content']}
 			placeholder="Heading 1"
 		/>

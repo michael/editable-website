@@ -1,5 +1,6 @@
 <script>
-	import { Node, AnnotatedTextProperty } from 'svedit';
+	import { Node } from 'svedit';
+	import Label from './Label.svelte';
 	import { reveal } from '../reveal.js';
 
 	let { path } = $props();
@@ -7,9 +8,7 @@
 
 <Node {path}>
 	<div use:reveal>
-		<AnnotatedTextProperty
-			tag="span"
-			class="ew-eyebrow leading-loose block text-xs md:text-sm uppercase tracking-widest text-[color-mix(in_oklch,var(--foreground)_60%,transparent)]"
+		<Label
 			path={[...path, 'content']}
 			placeholder="Kicker"
 		/>
