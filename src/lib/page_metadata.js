@@ -1,7 +1,7 @@
 import { ASSET_BASE } from '$lib/config.js';
 import { collect_node_ids_in_order } from '$lib/document_graph.js';
 
-const TEXT_NODE_TYPES = ['paragraph', 'lead', 'heading_1', 'heading_2', 'kicker', 'heading_3'];
+const TEXT_NODE_TYPES = ['paragraph', 'note', 'lead', 'heading_1', 'heading_2', 'kicker', 'heading_3'];
 const TITLE_NODE_TYPES = ['heading_1', 'heading_2', 'heading_3'];
 
 // Shared helpers for extracting page-level metadata from a page document.

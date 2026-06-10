@@ -15,6 +15,19 @@ Add a reusable `lead` text node for large introductory copy.
 - Add `Lead.svelte` and a shared `Large.svelte` typographic primitive.
 - Register `lead` in the session config with inserter, HTML exporter, and node layout support.
 
+## Next implementation draft — note text node
+
+### Goal
+
+Add a reusable `note` text node for smaller supplementary copy.
+
+### Scope
+
+- Add `note` to the document schema and text-node type lists.
+- Allow `note` anywhere the rich text model accepts text nodes.
+- Add `Note.svelte` and a shared `Small.svelte` typographic primitive.
+- Register `note` in the session config with inserter, HTML exporter, and node layout support.
+
 ## Next implementation draft — preformatted node
 
 ### Goal

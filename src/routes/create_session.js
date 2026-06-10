@@ -39,6 +39,7 @@ import ProseGridItem from './components/ProseGridItem.svelte';
 import Preformatted from './components/Preformatted.svelte';
 import Paragraph from './components/Paragraph.svelte';
 import Lead from './components/Lead.svelte';
+import Note from './components/Note.svelte';
 import Heading1 from './components/Heading1.svelte';
 import Heading2 from './components/Heading2.svelte';
 import Heading3 from './components/Heading3.svelte';
@@ -186,6 +187,7 @@ const session_config = {
 		Preformatted,
 		Paragraph,
 		Lead,
+		Note,
 		Heading1,
 		Heading2,
 		Heading3,
@@ -292,6 +294,7 @@ const session_config = {
 			return html;
 		},
 		paragraph: (node) => `<p>${node.content.text}</p>\n`,
+		note: (node) => `<p>${node.content.text}</p>\n`,
 		lead: (node) => `<p>${node.content.text}</p>\n`,
 		heading_1: (node) => `<h1>${node.content.text}</h1>\n`,
 		heading_2: (node) => `<h2>${node.content.text}</h2>\n`,
@@ -312,6 +315,7 @@ const session_config = {
 		prose_grid: 2,
 		prose_grid_item: 1,
 		paragraph: 1,
+		note: 1,
 		lead: 1,
 		heading_1: 1,
 		heading_2: 1,
@@ -495,6 +499,9 @@ const session_config = {
 		},
 		paragraph: function (tr, content = { text: '', annotations: [] }) {
 			insert_text_node(tr, 'paragraph', content);
+		},
+		note: function (tr, content = { text: '', annotations: [] }) {
+			insert_text_node(tr, 'note', content);
 		},
 		lead: function (tr, content = { text: '', annotations: [] }) {
 			insert_text_node(tr, 'lead', content);

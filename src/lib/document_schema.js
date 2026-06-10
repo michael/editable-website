@@ -3,9 +3,9 @@ import { define_document_schema } from 'svedit';
 const ALL_ANNOTATIONS = ['strong', 'emphasis', 'highlight', 'link'];
 const MINIMAL_ANNOTATIONS = ['emphasis', 'highlight'];
 const NO_ANNOTATIONS = [];
-const TEXT_NODE_TYPES = ['paragraph', 'lead', 'heading_1', 'heading_2', 'kicker', 'heading_3'];
+const TEXT_NODE_TYPES = ['paragraph', 'note', 'lead', 'heading_1', 'heading_2', 'kicker', 'heading_3'];
 const RICH_CONTENT_NODE_TYPES = [...TEXT_NODE_TYPES, 'list', 'supporting_media', 'button_group'];
-const RICH_CONTENT_NODE_TYPES_WITHOUT_HEADINGS = ['paragraph', 'lead', 'list', 'supporting_media', 'button_group'];
+const RICH_CONTENT_NODE_TYPES_WITHOUT_HEADINGS = ['paragraph', 'note', 'lead', 'list', 'supporting_media', 'button_group'];
 
 export const document_schema = define_document_schema({
 	page: {
@@ -250,6 +250,16 @@ export const document_schema = define_document_schema({
 		}
 	},
 	paragraph: {
+		kind: 'text',
+		properties: {
+			content: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: true
+			}
+		}
+	},
+	note: {
 		kind: 'text',
 		properties: {
 			content: {
