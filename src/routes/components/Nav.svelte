@@ -60,7 +60,7 @@
 	-->
 	{#if svedit.editable}
 		<div class="{TW_LIMITER} overflow-x-auto overflow-y-hidden relative">
-			<div class="flex items-stretch lg:text-sm min-w-full">
+			<div class="flex items-stretch text-sm min-w-full">
 				{@render logo()}
 				<div class="flex-1"></div>
 				<NodeArrayProperty class="nav-items flex items-stretch shrink-0 gap-x-2 sm:gap-x-4 py-3 pr-5 sm:pr-7 md:pr-10 lg:pr-14 min-w-max" path={[...path, 'nav_items']} />
@@ -68,7 +68,7 @@
 		</div>
 	{:else}
 		<div class="{TW_LIMITER} overflow-x-auto overflow-y-hidden relative">
-			<div class="flex items-stretch lg:text-sm min-w-full">
+			<div class="flex items-stretch text-sm min-w-full">
 				{@render logo()}
 				<div class="flex-1"></div>
 				<NodeArrayProperty class="nav-items hidden md:flex items-stretch shrink-0 gap-x-2 sm:gap-x-4 py-3 {TW_PAGE_PADDING_X}" path={[...path, 'nav_items']} />

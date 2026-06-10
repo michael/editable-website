@@ -5,7 +5,7 @@
 
 <AnnotatedTextProperty
 	{tag}
-	class="{css_class} ew-display font-serif text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground)"
+	class="{css_class} ew-display text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground)"
 	{path}
 	{placeholder}
 />

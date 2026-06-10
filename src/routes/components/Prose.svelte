@@ -74,7 +74,7 @@
 	</div>
 {/snippet}
 
-<Node class="ew-prose lg:text-lg layout-{layout} bg-(--background) text-(--foreground) {colorset_class}" {path}>
+<Node class="ew-prose layout-{layout} bg-(--background) text-(--foreground) {colorset_class}" {path}>
 	{@const layouts = [layout_1, layout_2, layout_3, layout_4]}
 	{@render layouts[layout - 1]()}
 </Node>

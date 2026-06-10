@@ -1,6 +1,7 @@
 <script>
 	import { getContext } from 'svelte';
-	import { Node, AnnotatedTextProperty, NodeArrayProperty } from 'svedit';
+	import { Node, NodeArrayProperty } from 'svedit';
+	import Title from './Title.svelte';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
@@ -17,8 +18,7 @@
 		>
 			<div class="flex items-center justify-between gap-4">
 				<div class="min-w-0">
-					<AnnotatedTextProperty
-						class="inline font-serif text-2xl text-balance text-(--foreground)"
+					<Title
 						path={[...path, 'title']}
 						placeholder="Title"
 					/>

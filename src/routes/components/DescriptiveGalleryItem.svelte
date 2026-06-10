@@ -1,7 +1,9 @@
 <script>
 	import { getContext } from 'svelte';
-	import { Node, AnnotatedTextProperty } from 'svedit';
+	import { Node } from 'svedit';
 	import MediaProperty from './MediaProperty.svelte';
+	import Base from './Base.svelte';
+	import Small from './Small.svelte';
 	import { reveal } from '../reveal.js';
 
 	const svedit = getContext('svedit');
@@ -25,36 +27,17 @@
 		>
 			<MediaProperty path={[...path, 'media']} />
 		</div>
-		<div class="pt-5">
-			<AnnotatedTextProperty
-				class="{!svedit.editable
-					? 'title-underline'
-					: ''} font-serif text-2xl text-balance text-(--foreground) lg:text-3xl"
+		<div class="pt-4">
+			<Base
+				class={node.href ? "underline underline-offset-2 transition-all duration-500 ease-in-out decoration-(--foreground)/15 group-hover:decoration-(--foreground)" : ""}
 				path={[...path, 'title']}
 				placeholder="Title"
 			/>
-			<AnnotatedTextProperty
-				class="block pt-3 text-balance"
+			<Small
+				class="text-(--foreground)/50 pt-1"
 				path={[...path, 'description']}
 				placeholder="Description"
 			/>
 		</div>
 	</svelte:element>
 </Node>
-
-<style>
-	:global(.title-underline) {
-		display: inline;
-		background: linear-gradient(to left, var(--foreground), var(--foreground));
-		background-size: 0 2px;
-		background-position:
-			0 100%,
-			100% 100%;
-		background-repeat: no-repeat;
-		transition: background-size cubic-bezier(0.8, 0, 0.2, 1) 0.4s;
-	}
-
-	:global(.group:hover .title-underline) {
-		background-size: 100% 2px;
-	}
-</style>

@@ -6,7 +6,7 @@
 
 <AnnotatedTextProperty
 	{tag}
-	class="{css_class} ew-headline font-serif text-2xl md:text-3xl lg:text-4xl text-balance text-(--foreground)"
+	class="{css_class} ew-headline text-2xl md:text-3xl lg:text-4xl text-balance text-(--foreground)"
 	{path}
 	{placeholder}
 />

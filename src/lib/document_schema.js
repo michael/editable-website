@@ -3,7 +3,7 @@ import { define_document_schema } from 'svedit';
 const ALL_ANNOTATIONS = ['strong', 'emphasis', 'highlight', 'link'];
 const MINIMAL_ANNOTATIONS = ['emphasis', 'highlight'];
 const NO_ANNOTATIONS = [];
-const TEXT_NODE_TYPES = ['paragraph', 'note', 'lead', 'heading_1', 'heading_2', 'kicker', 'heading_3'];
+const TEXT_NODE_TYPES = ['paragraph', 'heading_1', 'heading_2', 'heading_3', 'note', 'lead', 'kicker'];
 const RICH_CONTENT_NODE_TYPES = [...TEXT_NODE_TYPES, 'list', 'supporting_media', 'button_group'];
 const RICH_CONTENT_NODE_TYPES_WITHOUT_HEADINGS = ['paragraph', 'note', 'lead', 'list', 'supporting_media', 'button_group'];
 
