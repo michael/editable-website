@@ -21,7 +21,6 @@ import {
 	EditImageCommand,
 	ToggleAccordionCommand
 } from './commands.svelte.js';
-// Command imported from 'svedit' above
 
 // System components
 import Overlays from './components/Overlays.svelte';
@@ -417,22 +416,66 @@ const session_config = {
 			tr.insert_nodes([new_prose_grid_item.id]);
 		},
 		prose_grid: function (tr) {
-			const new_prose_grid_item = {
-				id: nanoid(),
-				type: 'prose_grid_item',
-				colorset: 0,
-				content: []
-			};
-			tr.create(new_prose_grid_item);
-
-			const new_prose_grid = {
-				id: nanoid(),
-				type: 'prose_grid',
-				layout: 1,
-				items: [new_prose_grid_item.id]
-			};
-			tr.create(new_prose_grid);
-			tr.insert_nodes([new_prose_grid.id]);
+			const new_prose_grid_id = tr.build('new_prose_grid', {
+				title_1: {
+					id: 'title_1',
+					type: 'text',
+					layout: 2,
+					content: { text: '', annotations: [] }
+				},
+				title_2: {
+					id: 'title_2',
+					type: 'text',
+					layout: 2,
+					content: { text: '', annotations: [] }
+				},
+				title_3: {
+					id: 'title_3',
+					type: 'text',
+					layout: 2,
+					content: { text: '', annotations: [] }
+				},
+				paragraph_1: {
+					id: 'paragraph_1',
+					type: 'text',
+					layout: 1,
+					content: { text: '', annotations: [] }
+				},
+				paragraph_2: {
+					id: 'paragraph_2',
+					type: 'text',
+					layout: 1,
+					content: { text: '', annotations: [] }
+				},
+				paragraph_3: {
+					id: 'paragraph_3',
+					type: 'text',
+					layout: 1,
+					content: { text: '', annotations: [] }
+				},
+				prose_grid_item_1: {
+					id: "prose_grid_item_1",
+					type: 'prose_grid_item',
+					content: ['title_1', 'paragraph_1']
+				},
+				prose_grid_item_2: {
+					id: "prose_grid_item_2",
+					type: 'prose_grid_item',
+					content: ['title_2', 'paragraph_2']
+				},
+				prose_grid_item_3: {
+					id: "prose_grid_item_3",
+					type: 'prose_grid_item',
+					content: ['title_3', 'paragraph_3']
+				},
+				new_prose_grid: {
+					id: 'new_prose_grid',
+					type: 'prose_grid',
+					layout: 1,
+					items: ['prose_grid_item_1', 'prose_grid_item_2', 'prose_grid_item_3'],
+				}
+			});
+			tr.insert_nodes([new_prose_grid_id]);
 		},
 		text: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_text = {
