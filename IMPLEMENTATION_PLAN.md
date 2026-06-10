@@ -2,6 +2,19 @@
 
 This document tracks what to implement next. One step at a time. All implementation must conform to the design decisions in [ARCHITECTURE.md](ARCHITECTURE.md) — if a conflict arises, update the architecture first, then implement.
 
+## Next implementation draft — lead text node
+
+### Goal
+
+Add a reusable `lead` text node for large introductory copy.
+
+### Scope
+
+- Add `lead` to the document schema and text-node type lists.
+- Allow `lead` anywhere the rich text model accepts text nodes.
+- Add `Lead.svelte` and a shared `Large.svelte` typographic primitive.
+- Register `lead` in the session config with inserter, HTML exporter, and node layout support.
+
 ## Next implementation draft — preformatted node
 
 ### Goal
