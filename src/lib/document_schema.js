@@ -3,6 +3,8 @@ import { define_document_schema } from 'svedit';
 const ALL_ANNOTATIONS = ['strong', 'emphasis', 'highlight', 'link'];
 const MINIMAL_ANNOTATIONS = ['emphasis', 'highlight'];
 const NO_ANNOTATIONS = [];
+const TEXT_NODE_TYPES = ['paragraph', 'heading_1', 'heading_2', 'kicker', 'heading_3'];
+const RICH_CONTENT_NODE_TYPES = [...TEXT_NODE_TYPES, 'list', 'supporting_media', 'button_group'];
 
 export const document_schema = define_document_schema({
 	page: {
@@ -219,8 +221,8 @@ export const document_schema = define_document_schema({
 			colorset: { type: 'integer', default: 0 },
 			content: {
 				type: 'node_array',
-				node_types: ['text', 'list', 'supporting_media', 'button_group'],
-				default_node_type: 'text'
+				node_types: RICH_CONTENT_NODE_TYPES,
+				default_node_type: 'paragraph'
 			}
 		}
 	},
@@ -231,8 +233,8 @@ export const document_schema = define_document_schema({
 			colorset: { type: 'integer', default: 0 },
 			content: {
 				type: 'node_array',
-				node_types: ['text', 'list', 'supporting_media', 'button_group'],
-				default_node_type: 'text'
+				node_types: RICH_CONTENT_NODE_TYPES,
+				default_node_type: 'paragraph'
 			}
 		}
 	},
@@ -246,10 +248,49 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
-	text: {
+	paragraph: {
 		kind: 'text',
 		properties: {
-			layout: { type: 'integer', default: 1 },
+			content: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: true
+			}
+		}
+	},
+	heading_1: {
+		kind: 'text',
+		properties: {
+			content: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: true
+			}
+		}
+	},
+	heading_2: {
+		kind: 'text',
+		properties: {
+			content: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: true
+			}
+		}
+	},
+	kicker: {
+		kind: 'text',
+		properties: {
+			content: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: true
+			}
+		}
+	},
+	heading_3: {
+		kind: 'text',
+		properties: {
 			content: {
 				type: 'annotated_text',
 				node_types: ALL_ANNOTATIONS,
@@ -449,8 +490,8 @@ export const document_schema = define_document_schema({
 			},
 			body: {
 				type: 'node_array',
-				node_types: ['text', 'list', 'button_group', 'supporting_media'],
-				default_node_type: 'text'
+				node_types: RICH_CONTENT_NODE_TYPES,
+				default_node_type: 'paragraph'
 			}
 		}
 	},
@@ -466,8 +507,8 @@ export const document_schema = define_document_schema({
 			},
 			body: {
 				type: 'node_array',
-				node_types: ['text', 'supporting_media', 'list', 'button_group'],
-				default_node_type: 'text'
+				node_types: RICH_CONTENT_NODE_TYPES,
+				default_node_type: 'paragraph'
 			}
 		}
 	},

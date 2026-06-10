@@ -1,6 +1,9 @@
 import { ASSET_BASE } from '$lib/config.js';
 import { collect_node_ids_in_order } from '$lib/document_graph.js';
 
+const TEXT_NODE_TYPES = ['paragraph', 'heading_1', 'heading_2', 'kicker', 'heading_3'];
+const TITLE_NODE_TYPES = ['heading_1', 'heading_2', 'heading_3'];
+
 // Shared helpers for extracting page-level metadata from a page document.
 
 /**
@@ -99,11 +102,11 @@ export function extract_page_metadata(page_doc) {
 			first_video_node = node;
 		}
 
-		if (node.type === 'text' || node.type === 'list_item') {
+		if (TEXT_NODE_TYPES.includes(node.type) || node.type === 'list_item') {
 			const text = extract_plain_text(node.content);
 			if (!text) continue;
 
-			if (!heading_title && (node.layout === 2 || node.layout === 3 || node.layout === 4)) {
+			if (!heading_title && TITLE_NODE_TYPES.includes(node.type)) {
 				heading_title = text;
 			}
 

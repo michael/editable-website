@@ -8,30 +8,51 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 
 **Node types**
 
-[`text`](#node-text) · [`list`](#node-list) · [`list_item`](#node-list_item) · [`preformatted`](#node-preformatted) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`captioned_figure`](#node-captioned_figure) · [`page`](#node-page) · [`hero`](#node-hero) · [`prose_grid`](#node-prose_grid) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
+[`paragraph`](#node-paragraph) · [`heading_1`](#node-heading_1) · [`heading_2`](#node-heading_2) · [`kicker`](#node-kicker) · [`heading_3`](#node-heading_3) · [`list`](#node-list) · [`list_item`](#node-list_item) · [`preformatted`](#node-preformatted) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`captioned_figure`](#node-captioned_figure) · [`page`](#node-page) · [`hero`](#node-hero) · [`prose_grid`](#node-prose_grid) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
 
 **Annotation types**
 
 [`strong`](#annotation-strong) · [`emphasis`](#annotation-emphasis) · [`highlight`](#annotation-highlight) · [`link`](#annotation-link)
 
-## Node: `text`
+## Node: `paragraph`
 
-`text` is a block of annotated textual content inside `prose`.
+`paragraph` is the default rich text node for body copy inside editorial flows such as `prose`, `prose_grid_item`, `feature`, and `accordion_item`.
 
 | Property  | Type             | Default | Allowed annotation types                  | Meaning                                   |
 | --------- | ---------------- | ------- | ----------------------------------------- | ----------------------------------------- |
-| `layout`  | `integer`        | `1`     | `1`, `2`, `3`, `4`, `5`                   | Text role and rendered element.           |
 | `content` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
 
-### Text layouts
+## Node: `heading_1`
 
-| Value | Rendered role | Meaning                                                        |
-| ----- | ------------- | -------------------------------------------------------------- |
-| `1`   | Paragraph     | Normal body copy.                                              |
-| `2`   | Heading 1     | Primary heading.                                               |
-| `3`   | Heading 2     | Secondary heading.                                             |
-| `4`   | Heading 3     | Tertiary heading.                                              |
-| `5`   | Eyebrow       | Small uppercase label rendered before nearby headings or copy. |
+`heading_1` is the primary editorial heading node.
+
+| Property  | Type             | Default | Allowed annotation types                  | Meaning                                   |
+| --------- | ---------------- | ------- | ----------------------------------------- | ----------------------------------------- |
+| `content` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
+
+## Node: `heading_2`
+
+`heading_2` is the secondary editorial heading node.
+
+| Property  | Type             | Default | Allowed annotation types                  | Meaning                                   |
+| --------- | ---------------- | ------- | ----------------------------------------- | ----------------------------------------- |
+| `content` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
+
+## Node: `kicker`
+
+`kicker` is a compact uppercase label rendered before nearby headings or body copy.
+
+| Property  | Type             | Default | Allowed annotation types                  | Meaning                                   |
+| --------- | ---------------- | ------- | ----------------------------------------- | ----------------------------------------- |
+| `content` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
+
+## Node: `heading_3`
+
+`heading_3` is the tertiary editorial heading node.
+
+| Property  | Type             | Default | Allowed annotation types                  | Meaning                                   |
+| --------- | ---------------- | ------- | ----------------------------------------- | ----------------------------------------- |
+| `content` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
 
 ## Node: `list_item`
 
@@ -172,7 +193,7 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 | --------- | ------------ | ------- | -------------------------- | ------------------------------------------ |
 | `layout`  | `integer`    | `1`     | `1`, `2`                    | Text alignment within the grid item.       |
 | `colorset` | `integer`   | `0`     | Theme-defined              | Optional color treatment.                  |
-| `content` | `node_array` | `text`  | `text`, `list`, `supporting_media`, `button_group` | Ordered prose children. |
+| `content` | `node_array` | `paragraph`  | `paragraph`, `heading_1`, `heading_2`, `kicker`, `heading_3`, `list`, `supporting_media`, `button_group` | Ordered prose children. |
 
 ## Node: `prose`
 
@@ -181,7 +202,7 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 | Property  | Type         | Default | Allowed node types         | Meaning                                   |
 | --------- | ------------ | ------- | -------------------------- | ----------------------------------------- |
 | `layout`  | `integer`    | `1`     | `1`, `2`, `3`, `4`         | Horizontal alignment and width treatment. |
-| `content` | `node_array` | `text`  | `text`, `list`, `supporting_media` | Ordered prose children.                   |
+| `content` | `node_array` | `paragraph`  | `paragraph`, `heading_1`, `heading_2`, `kicker`, `heading_3`, `list`, `supporting_media`, `button_group` | Ordered prose children.                   |
 
 ### Prose layouts
 
@@ -219,7 +240,7 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 | Property | Type             | Default | Allowed node or annotation types | Meaning                                                              |
 | -------- | ---------------- | ------- | -------------------------------- | -------------------------------------------------------------------- |
 | `title`  | `annotated_text` | None    | `emphasis`, `highlight`, `link`  | Required heading of the collapsible. Newlines are not allowed.       |
-| `body`   | `node_array`     | `text`  | `text`, `list`, `supporting_media` | Expandable rich body content, using the same child nodes as `prose`. |
+| `body`   | `node_array`     | `paragraph`  | `paragraph`, `heading_1`, `heading_2`, `kicker`, `heading_3`, `list`, `supporting_media`, `button_group` | Expandable rich body content, using the same child nodes as `prose`. |
 
 ## Node: `gallery`
 

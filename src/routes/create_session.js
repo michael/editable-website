@@ -37,7 +37,11 @@ import Prose from './components/Prose.svelte';
 import ProseGrid from './components/ProseGrid.svelte';
 import ProseGridItem from './components/ProseGridItem.svelte';
 import Preformatted from './components/Preformatted.svelte';
-import Text from './components/Text.svelte';
+import Paragraph from './components/Paragraph.svelte';
+import Heading1 from './components/Heading1.svelte';
+import Heading2 from './components/Heading2.svelte';
+import Heading3 from './components/Heading3.svelte';
+import Kicker from './components/Kicker.svelte';
 import List from './components/List.svelte';
 import ListItem from './components/ListItem.svelte';
 import Gallery from './components/Gallery.svelte';
@@ -80,6 +84,22 @@ function select_inserted_text_property(tr, property_name = 'label') {
 	tr.set_selection({
 		type: 'text',
 		path: [...tr.selection.path, tr.selection.focus_offset - 1, property_name],
+		anchor_offset: 0,
+		focus_offset: 0
+	});
+}
+
+function insert_text_node(tr, node_type, content = { text: '', annotations: [] }) {
+	const new_text = {
+		id: nanoid(),
+		type: node_type,
+		content
+	};
+	tr.create(new_text);
+	tr.insert_nodes([new_text.id]);
+	tr.set_selection({
+		type: 'text',
+		path: [...tr.selection.path, tr.selection.focus_offset - 1, 'content'],
 		anchor_offset: 0,
 		focus_offset: 0
 	});
@@ -163,7 +183,11 @@ const session_config = {
 		ProseGrid,
 		ProseGridItem,
 		Preformatted,
-		Text,
+		Paragraph,
+		Heading1,
+		Heading2,
+		Heading3,
+		Kicker,
 		List,
 		ListItem,
 		Image,
@@ -265,17 +289,11 @@ const session_config = {
 			html += '</div>\n';
 			return html;
 		},
-		text: (node) => {
-			const tag_name =
-				{
-					1: 'p',
-					2: 'h1',
-					3: 'h2',
-					4: 'h3',
-					5: 'p'
-				}[node.layout] ?? 'p';
-			return `<${tag_name}>${node.content.text}</${tag_name}>\n`;
-		},
+		paragraph: (node) => `<p>${node.content.text}</p>\n`,
+		heading_1: (node) => `<h1>${node.content.text}</h1>\n`,
+		heading_2: (node) => `<h2>${node.content.text}</h2>\n`,
+		kicker: (node) => `<p>${node.content.text}</p>\n`,
+		heading_3: (node) => `<h3>${node.content.text}</h3>\n`,
 		preformatted: (node) => `<pre>${node.content.text}</pre>\n`,
 		list: (node, session, html_exporters) => {
 			let html = '<ul>\n';
@@ -290,7 +308,11 @@ const session_config = {
 		prose: 4,
 		prose_grid: 2,
 		prose_grid_item: 1,
-		text: 5,
+		paragraph: 1,
+		heading_1: 1,
+		heading_2: 1,
+		kicker: 1,
+		heading_3: 1,
 		preformatted: 1,
 		list: 4,
 		list_item: 1,
@@ -370,15 +392,13 @@ const session_config = {
 		prose: function (tr) {
 			const new_heading = {
 				id: nanoid(),
-				type: 'text',
-				layout: 2,
+				type: 'heading_1',
 				content: { text: '', annotations: [] }
 			};
 			tr.create(new_heading);
 			const new_paragraph = {
 				id: nanoid(),
-				type: 'text',
-				layout: 1,
+				type: 'paragraph',
 				content: { text: '', annotations: [] }
 			};
 			tr.create(new_paragraph);
@@ -395,15 +415,13 @@ const session_config = {
 		prose_grid_item: function (tr) {
 			const new_heading = {
 				id: nanoid(),
-				type: 'text',
-				layout: 2,
+				type: 'heading_1',
 				content: { text: '', annotations: [] }
 			};
 			tr.create(new_heading);
 			const new_paragraph = {
 				id: nanoid(),
-				type: 'text',
-				layout: 1,
+				type: 'paragraph',
 				content: { text: '', annotations: [] }
 			};
 			tr.create(new_paragraph);
@@ -419,38 +437,32 @@ const session_config = {
 			const new_prose_grid_id = tr.build('new_prose_grid', {
 				title_1: {
 					id: 'title_1',
-					type: 'text',
-					layout: 2,
+					type: 'heading_1',
 					content: { text: '', annotations: [] }
 				},
 				title_2: {
 					id: 'title_2',
-					type: 'text',
-					layout: 2,
+					type: 'heading_1',
 					content: { text: '', annotations: [] }
 				},
 				title_3: {
 					id: 'title_3',
-					type: 'text',
-					layout: 2,
+					type: 'heading_1',
 					content: { text: '', annotations: [] }
 				},
 				paragraph_1: {
 					id: 'paragraph_1',
-					type: 'text',
-					layout: 1,
+					type: 'paragraph',
 					content: { text: '', annotations: [] }
 				},
 				paragraph_2: {
 					id: 'paragraph_2',
-					type: 'text',
-					layout: 1,
+					type: 'paragraph',
 					content: { text: '', annotations: [] }
 				},
 				paragraph_3: {
 					id: 'paragraph_3',
-					type: 'text',
-					layout: 1,
+					type: 'paragraph',
 					content: { text: '', annotations: [] }
 				},
 				prose_grid_item_1: {
@@ -477,22 +489,20 @@ const session_config = {
 			});
 			tr.insert_nodes([new_prose_grid_id]);
 		},
-		text: function (tr, content = { text: '', annotations: [] }, layout = 1) {
-			const new_text = {
-				id: nanoid(),
-				type: 'text',
-				layout,
-				content
-			};
-			tr.create(new_text);
-			tr.insert_nodes([new_text.id]);
-			// NOTE: Relies on insert_nodes selecting the newly inserted node(s)
-			tr.set_selection({
-				type: 'text',
-				path: [...tr.selection.path, tr.selection.focus_offset - 1, 'content'],
-				anchor_offset: 0,
-				focus_offset: 0
-			});
+		paragraph: function (tr, content = { text: '', annotations: [] }) {
+			insert_text_node(tr, 'paragraph', content);
+		},
+		heading_1: function (tr, content = { text: '', annotations: [] }) {
+			insert_text_node(tr, 'heading_1', content);
+		},
+		heading_2: function (tr, content = { text: '', annotations: [] }) {
+			insert_text_node(tr, 'heading_2', content);
+		},
+		kicker: function (tr, content = { text: '', annotations: [] }) {
+			insert_text_node(tr, 'kicker', content);
+		},
+		heading_3: function (tr, content = { text: '', annotations: [] }) {
+			insert_text_node(tr, 'heading_3', content);
 		},
 		preformatted: function (tr, content = { text: '', annotations: [] }) {
 			const new_preformatted = {
@@ -556,8 +566,7 @@ const session_config = {
 				},
 				body_text: {
 					id: 'body_text',
-					type: 'text',
-					layout: 2,
+					type: 'heading_1',
 					content: { text: '', annotations: [] }
 				},
 				new_feature: {
@@ -901,8 +910,7 @@ const session_config = {
 		accordion: function (tr) {
 			const body_text = {
 				id: nanoid(),
-				type: 'text',
-				layout: 1,
+				type: 'paragraph',
 				content: { text: '', annotations: [] }
 			};
 			tr.create(body_text);
@@ -927,8 +935,7 @@ const session_config = {
 		accordion_item: function (tr) {
 			const body_text = {
 				id: nanoid(),
-				type: 'text',
-				layout: 1,
+				type: 'paragraph',
 				content: { text: '', annotations: [] }
 			};
 			tr.create(body_text);
