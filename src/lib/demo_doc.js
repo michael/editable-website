@@ -186,14 +186,6 @@ const FULL_DOC = {
 				annotations: []
 			}
 		},
-		preformatted_example: {
-			id: 'preformatted_example',
-			type: 'preformatted',
-			content: {
-				text: 'const greeting = "Hello, world!"\n\n+----+----+\n|  /\\|    |\n| /  \\    |\n+----+----+',
-				annotations: []
-			}
-		},
 		RtYpQwXsZvNmKjHgFdSaLe: {
 			id: 'RtYpQwXsZvNmKjHgFdSaLe',
 			type: 'feature',
@@ -1273,6 +1265,14 @@ const FULL_DOC = {
 				'gYpxwQwkQNNWWvYbTWBrAfx'
 			]
 		},
+		preformatted_example: {
+			id: 'preformatted_example',
+			type: 'preformatted',
+			content: {
+				text: 'const greeting = "Hello, world!"\n\n+----+----+\n|  /\\|    |\n| /  \\    |\n+----+----+',
+				annotations: []
+			}
+		},
 		hqrrTdEbTPaqzEcYMczhBZb: {
 			id: 'hqrrTdEbTPaqzEcYMczhBZb',
 			type: 'image',
@@ -1343,8 +1343,32 @@ const FULL_DOC = {
 				'NjNteBhckwxGAUfbYRMGrDz'
 			]
 		},
-		PvpNcGKnqTTBbvbRZeDUYSN: {
-			id: 'PvpNcGKnqTTBbvbRZeDUYSN',
+		YTZAMHbVsWKDaZeNdSYpFaA: {
+			id: 'YTZAMHbVsWKDaZeNdSYpFaA',
+			type: 'kicker',
+			content: {
+				text: 'I love it',
+				annotations: []
+			}
+		},
+		BHRkpFHqdqFGzqJQUUqcHhR: {
+			id: 'BHRkpFHqdqFGzqJQUUqcHhR',
+			type: 'heading_1',
+			content: {
+				text: 'How can I get it?',
+				annotations: []
+			}
+		},
+		BNDQkNtJpdSNXUuDUwAmgYz: {
+			id: 'BNDQkNtJpdSNXUuDUwAmgYz',
+			type: 'paragraph',
+			content: {
+				text: 'This is an an initial preview of Editable Website. There’s more to do before you can use it in production. Be the first to hear when it’s ready:',
+				annotations: []
+			}
+		},
+		VMpZbtCEwxBqnnkMBUEsKGE: {
+			id: 'VMpZbtCEwxBqnnkMBUEsKGE',
 			type: 'button',
 			layout: 1,
 			href: 'https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform?usp=dialog',
@@ -1354,92 +1378,94 @@ const FULL_DOC = {
 				annotations: []
 			}
 		},
-		UBNYngEBJYtDWgeabtDJqWW: {
-			id: 'UBNYngEBJYtDWgeabtDJqWW',
-			type: 'hero',
-			colorset: 0,
-			title: {
-				text: 'I love it! How can I get it?',
-				annotations: []
-			},
-			description: {
-				text: 'This is an an initial preview of Editable Website. There’s more to do before you can use it in production. Be the first to hear when it’s ready:',
-				annotations: []
-			},
-			buttons: ['PvpNcGKnqTTBbvbRZeDUYSN'],
-			layout: 3
+		fxbPhZADdeyCbysuCSwHNcA: {
+			id: 'fxbPhZADdeyCbysuCSwHNcA',
+			type: 'button_group',
+			buttons: ['VMpZbtCEwxBqnnkMBUEsKGE']
 		},
-		ERqkusuryvGKBzKayXyhxXE: {
-			id: 'ERqkusuryvGKBzKayXyhxXE',
+		zBXuGXXYWMGbSdteMyNFhja: {
+			id: 'zBXuGXXYWMGbSdteMyNFhja',
+			type: 'prose',
+			layout: 4,
+			colorset: 0,
+			content: [
+				'YTZAMHbVsWKDaZeNdSYpFaA',
+				'BHRkpFHqdqFGzqJQUUqcHhR',
+				'BNDQkNtJpdSNXUuDUwAmgYz',
+				'fxbPhZADdeyCbysuCSwHNcA'
+			]
+		},
+		AfkGmkTkFBhUGQsSSSzAaWV: {
+			id: 'AfkGmkTkFBhUGQsSSSzAaWV',
 			type: 'link',
 			href: 'https://mutter.co',
 			target: '_blank'
 		},
-		XCdmKqAtyRNPKKRZJaNUfyX: {
-			id: 'XCdmKqAtyRNPKKRZJaNUfyX',
+		vCVXtBNMtzbVEuwrnhDGcCe: {
+			id: 'vCVXtBNMtzbVEuwrnhDGcCe',
 			type: 'link',
 			href: 'https://keybits.net',
 			target: '_blank'
 		},
-		yjdxqchTwgSjeTVgXeZhrrv: {
-			id: 'yjdxqchTwgSjeTVgXeZhrrv',
+		jdfSXyKXdGPQfUDqVrhGpew: {
+			id: 'jdfSXyKXdGPQfUDqVrhGpew',
 			type: 'link',
 			href: 'https://sonjastojanovic.com',
 			target: '_blank'
 		},
-		TPsjXxZhtuyfJQRytAVcRgJ: {
-			id: 'TPsjXxZhtuyfJQRytAVcRgJ',
+		yFZKjXVRgKtHqNrtFNfBeSS: {
+			id: 'yFZKjXVRgKtHqNrtFNfBeSS',
 			type: 'link',
 			href: 'https://trails-shop.at',
 			target: '_blank'
 		},
-		SUfVhRdtQwruDYJvgkETZxk: {
-			id: 'SUfVhRdtQwruDYJvgkETZxk',
+		NcjxywhftMGtnXhbGyvmcUy: {
+			id: 'NcjxywhftMGtnXhbGyvmcUy',
 			type: 'link',
 			href: 'https://postlmayrdesign.com',
 			target: '_blank'
 		},
-		amXvCtNxBsTJFzfeTCpdMsN: {
-			id: 'amXvCtNxBsTJFzfeTCpdMsN',
+		KKUfXFgJuXJrUSPyzMQrHcU: {
+			id: 'KKUfXFgJuXJrUSPyzMQrHcU',
 			type: 'link',
 			href: 'https://aufreiter.co',
 			target: '_blank'
 		},
-		PjwvEAbrZCxZFcqJqayVyhR: {
-			id: 'PjwvEAbrZCxZFcqJqayVyhR',
-			type: 'kicker',
+		SCYnDDYECpBzMNaNstUNtvW: {
+			id: 'SCYnDDYECpBzMNaNstUNtvW',
+			type: 'note',
 			content: {
 				text: 'Big thanks to Johannes Mutter for helping with concept, design, and engineering, Tom Atkins for support with positioning and copywriting, and Sonja Stojanovic for modelling and being the very first happy Editable Website user — followed by Trails, Postlmayr Design, Aufreiter Architektur, and many more.',
 				annotations: [
 					{
 						start_offset: 14,
 						end_offset: 29,
-						node_id: 'ERqkusuryvGKBzKayXyhxXE'
+						node_id: 'AfkGmkTkFBhUGQsSSSzAaWV'
 					},
 					{
 						start_offset: 81,
 						end_offset: 91,
-						node_id: 'XCdmKqAtyRNPKKRZJaNUfyX'
+						node_id: 'vCVXtBNMtzbVEuwrnhDGcCe'
 					},
 					{
 						start_offset: 142,
 						end_offset: 158,
-						node_id: 'yjdxqchTwgSjeTVgXeZhrrv'
+						node_id: 'jdfSXyKXdGPQfUDqVrhGpew'
 					},
 					{
 						start_offset: 240,
 						end_offset: 246,
-						node_id: 'TPsjXxZhtuyfJQRytAVcRgJ'
+						node_id: 'yFZKjXVRgKtHqNrtFNfBeSS'
 					},
 					{
 						start_offset: 248,
 						end_offset: 264,
-						node_id: 'SUfVhRdtQwruDYJvgkETZxk'
+						node_id: 'NcjxywhftMGtnXhbGyvmcUy'
 					},
 					{
 						start_offset: 266,
 						end_offset: 287,
-						node_id: 'amXvCtNxBsTJFzfeTCpdMsN'
+						node_id: 'KKUfXFgJuXJrUSPyzMQrHcU'
 					}
 				]
 			}
@@ -1447,9 +1473,9 @@ const FULL_DOC = {
 		wmrbpSFAFUmMRPDumcjKqpF: {
 			id: 'wmrbpSFAFUmMRPDumcjKqpF',
 			type: 'prose',
-			layout: 2,
+			layout: 4,
 			colorset: 0,
-			content: ['PjwvEAbrZCxZFcqJqayVyhR']
+			content: ['SCYnDDYECpBzMNaNstUNtvW']
 		},
 		nav_logo: {
 			id: 'nav_logo',
@@ -1637,7 +1663,7 @@ const FULL_DOC = {
 				annotations: []
 			},
 			footer_link_columns: ['fcSSWQUTYajjknPChgGsPZz', 'footer_column_2', 'footer_column_3'],
-			logo_max_width: 88,
+			logo_max_width: 40,
 			logo_aspect_ratio: 1
 		},
 		page_1: {
@@ -1670,7 +1696,7 @@ const FULL_DOC = {
 				'BBExBsmaSTXMZdcxMsYngwg',
 				'preformatted_example',
 				'YTMHBcPkYXJMRUnuSAhrTDE',
-				'UBNYngEBJYtDWgeabtDJqWW',
+				'zBXuGXXYWMGbSdteMyNFhja',
 				'wmrbpSFAFUmMRPDumcjKqpF'
 			],
 			nav: 'nav_1',

@@ -1,6 +1,7 @@
 <script>
 	import { getContext } from 'svelte';
 	import { AnnotatedTextProperty, NodeArrayProperty, Node } from 'svedit';
+	import Small from './Small.svelte';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 	import MediaProperty from './MediaProperty.svelte';
 	import SizableViewbox from './SizableViewbox.svelte';
@@ -17,7 +18,7 @@
 	);
 </script>
 
-<Node {path} class="lg:text-base">
+<Node {path} class="text-base text-(--foreground)/50">
 	<div class="{TW_LIMITER}">
 		<div class="flex flex-col items-center text-center lg:text-left lg:flex-row lg:items-start gap-8 lg:gap-12 py-10 lg:py-16 {TW_PAGE_PADDING_X}">
 			<div class="flex flex-col items-center lg:items-start lg:w-1/3">
@@ -30,7 +31,7 @@
 						<MediaProperty path={[...path, 'logo']} />
 					</svelte:element>
 				</SizableViewbox>
-				<AnnotatedTextProperty
+				<Small
 					class="mt-6 mb-0 lg:mb-0"
 					path={[...path, 'copyright']}
 					placeholder="© 2025 Company"
