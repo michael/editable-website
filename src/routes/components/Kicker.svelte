@@ -7,8 +7,9 @@
 </script>
 
 <Node {path}>
-	<div use:reveal>
+	<div use:reveal class="">
 		<Label
+			class="text-(--foreground)/50"
 			path={[...path, 'content']}
 			placeholder="Kicker"
 		/>

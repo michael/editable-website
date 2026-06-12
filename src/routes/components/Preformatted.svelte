@@ -7,7 +7,7 @@
 	<div class="mx-auto w-full max-w-7xl">
 		<div class="{TW_PAGE_PADDING_X} py-10 sm:py-14 md:py-16 lg:py-28 px-4 sm:px-5 md:px-6">
 			<div
-				class="font-mono antialiased text-sm p-4 lg:p-6 border border-[color-mix(in_oklch,var(--foreground)_7%,transparent)] bg-[color-mix(in_oklch,var(--foreground)_1%,transparent)]"
+				class="font-mono subpixel-antialiased text-sm p-3 lg:p-6 border border-[color-mix(in_oklch,var(--foreground)_7%,transparent)] bg-[color-mix(in_oklch,var(--foreground)_1%,transparent)]"
 				style:border-radius="var(--image-border-radius)"
 			>
 				<AnnotatedTextProperty

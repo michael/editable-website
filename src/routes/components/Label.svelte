@@ -5,7 +5,7 @@
 
 <AnnotatedTextProperty
 	{tag}
-	class="{css_class} ew-label font-mono leading-loose block text-xs md:text-sm uppercase tracking-widest text-[color-mix(in_oklch,var(--foreground)_60%,transparent)]"
+	class="{css_class} ew-label leading-loose text-sm tracking-widest uppercase"
 	{path}
 	{placeholder}
 />
