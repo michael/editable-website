@@ -101,7 +101,7 @@
 						{#each nav_items as _node_id, index (index)}
 							{@const item = svedit.session.get([...path, 'nav_items', index])}
 							<a
-								href={item.href ? resolve(item.href) : '#'}
+								href={item.href || '#'}
 								target={item.target}
 								class="text-3xl font-serif text-(--foreground) py-2 px-3 sm:px-5"
 								onclick={() => (mobile_menu_open = false)}
