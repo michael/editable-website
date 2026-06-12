@@ -6,7 +6,7 @@
 
 <AnnotatedTextProperty
 	{tag}
-	class="{css_class} ew-small leading-6 text-xs md:text-sm text-balance"
+	class="{css_class} ew-small leading-6 text-sm text-balance"
 	{path}
 	{placeholder}
 />

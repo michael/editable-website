@@ -7,7 +7,7 @@
 </script>
 
 <Node class="ew-note" {path}>
-	<div use:reveal class="text-[color-mix(in_oklch,var(--foreground)_40%,transparent)]">
+	<div use:reveal class="text-(--foreground)/50 [&_a]:text-(--foreground)">
 		<Small
 			path={[...path, 'content']}
 			placeholder="Note"

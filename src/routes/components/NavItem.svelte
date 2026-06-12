@@ -14,7 +14,7 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="nav-item-link text-(--foreground)/50 flex items-center justify-center w-full mx-3 sm:mx-4 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+		class="nav-item-link flex items-center justify-center w-full mx-3 sm:mx-4 hover:underline underline-offset-2 transition-all duration-500 ease-in-out decoration-transparent hover:decoration-(--foreground) hover:text-(--foreground) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 	>
 		<AnnotatedTextProperty
 			path={[...path, 'label']}
@@ -46,17 +46,3 @@
 		{@render layout_1()}
 	{/if}
 </Node>
-
-<style>
-	.nav-item-link {
-		background: linear-gradient(to left, var(--foreground), var(--foreground));
-		background-size: 0 1px;
-		background-position: 0 100%, 100% 100%;
-		background-repeat: no-repeat;
-		transition: background-size cubic-bezier(0.8, 0, 0.2, 1) 0.4s;
-	}
-
-	.nav-item-link:hover {
-		background-size: 100% 1px;
-	}
-</style>

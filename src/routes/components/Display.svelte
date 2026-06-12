@@ -5,7 +5,7 @@
 
 <AnnotatedTextProperty
 	{tag}
-	class="{css_class} ew-display text-3xl md:text-4xl lg:text-5xl text-balance text-(--foreground)"
+	class="{css_class} ew-display tracking-tight text-4xl lg:text-5xl text-balance"
 	{path}
 	{placeholder}
 />
