@@ -1,4 +1,5 @@
 import { define_document_schema } from 'svedit';
+import { MEDIA_DEFAULTS } from '$lib/config.js';
 
 const ALL_ANNOTATIONS = ['strong', 'emphasis', 'highlight', 'link'];
 const MINIMAL_ANNOTATIONS = ['emphasis', 'highlight'];
@@ -348,10 +349,10 @@ export const document_schema = define_document_schema({
 			width: { type: 'integer' },
 			height: { type: 'integer' },
 			alt: { type: 'string' },
-			focal_point_x: { type: 'number', default: 0 },
-			focal_point_y: { type: 'number', default: 0 },
-			scale: { type: 'number', default: 1.0 },
-			object_fit: { type: 'string', default: 'cover' }
+			focal_point_x: { type: 'number', default: MEDIA_DEFAULTS.focal_point_x },
+			focal_point_y: { type: 'number', default: MEDIA_DEFAULTS.focal_point_y },
+			scale: { type: 'number', default: MEDIA_DEFAULTS.scale },
+			object_fit: { type: 'string', default: MEDIA_DEFAULTS.object_fit }
 		}
 	},
 	video: {
@@ -362,10 +363,10 @@ export const document_schema = define_document_schema({
 			width: { type: 'integer' },
 			height: { type: 'integer' },
 			alt: { type: 'string' },
-			focal_point_x: { type: 'number', default: 0 },
-			focal_point_y: { type: 'number', default: 0 },
-			scale: { type: 'number', default: 1.0 },
-			object_fit: { type: 'string', default: 'cover' }
+			focal_point_x: { type: 'number', default: MEDIA_DEFAULTS.focal_point_x },
+			focal_point_y: { type: 'number', default: MEDIA_DEFAULTS.focal_point_y },
+			scale: { type: 'number', default: MEDIA_DEFAULTS.scale },
+			object_fit: { type: 'string', default: MEDIA_DEFAULTS.object_fit }
 		}
 	},
 	figure: {

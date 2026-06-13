@@ -2,6 +2,7 @@
 	import { getContext } from 'svelte';
 	import { resolve } from '$app/paths';
 	import { get_page_browser } from './page_browser_context.svelte.js';
+	import { is_node_subtree_empty } from '../app_utils.js';
 
 	let { session, app_commands, editable, focus_canvas } = $props();
 
@@ -41,6 +42,12 @@
 	);
 
 	let can_show_selection_tool_group = $derived(!!session.selection);
+	let cycle_node_state = $derived(session.commands.cycle_node_type_next?.cycle_node_state ?? null);
+	let should_pulse_cycle_type = $derived(
+		!session.commands.cycle_node_type_next?.disabled &&
+			cycle_node_state?.node &&
+			is_node_subtree_empty(session, cycle_node_state.node)
+	);
 
 	let file_input_ref = $state(null);
 
@@ -95,6 +102,7 @@
 	const TW_TOOLBAR_BTN = 'flex items-center justify-center size-9 rounded-full text-(--foreground) bg-(--background) border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] cursor-pointer pointer-events-auto shadow-sm transition-all duration-150 active:scale-95 active:translate-y-px outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1';
 	const TW_TOOLBAR_BTN_DISABLED = 'text-[color-mix(in_oklch,var(--background)_70%,var(--foreground))] border-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] !cursor-not-allowed shadow-none';
 	const TW_TOOLBAR_BTN_HOVER = 'hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] active:scale-95 active:translate-y-px';
+	const TW_TOOLBAR_BTN_PULSE = 'pulse';
 
 	function handle_btn_mousedown(event, command) {
 		event.preventDefault();
@@ -105,7 +113,7 @@
 
 <div class="fixed {TW_TOOLBAR_POSITION} {TW_TOOLBAR_LEFT} z-50">
 	<div class="overflow-x-auto">
-		<div class="py-2 px-0.5 flex items-center gap-1.5 sm:gap-3 w-max ml-auto">
+		<div class="px-2 py-2 flex items-center gap-1.5 sm:gap-3 w-max ml-auto">
 			{#if !editable}
 				<!-- Read mode: New page + Edit + Pages buttons -->
 				<div class="flex items-center gap-1">
@@ -332,7 +340,7 @@
 					<div class="flex items-center gap-1">
 						{#if is_node_caret && !session.commands.insert_default_node?.disabled}
 							<button
-								class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
+								class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_PULSE} {TW_TOOLBAR_BTN_HOVER}"
 								onmousedown={handle_insert_default_node_click}
 								title="Insert (↵)"
 								aria-label="Insert"
@@ -384,7 +392,7 @@
 						{#if can_show_cycle_tools}
 							<!-- Type: cycle to next node type -->
 							<button
-								class="{TW_TOOLBAR_BTN} {session.commands.cycle_node_type_next?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
+								class="{TW_TOOLBAR_BTN} {should_pulse_cycle_type ? TW_TOOLBAR_BTN_PULSE : ''} {session.commands.cycle_node_type_next?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
 								onmousedown={(e) => handle_btn_mousedown(e, session.commands.cycle_node_type_next)}
 								title="Cycle type (⌃ ⇧ ↓)"
 								disabled={session.commands.cycle_node_type_next?.disabled}
@@ -535,3 +543,41 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	:global(.pulse) {
+		position: relative;
+	}
+
+	:global(.pulse)::after {
+		animation: tool-pulse 2.4s ease-out infinite;
+		border: 2px solid var(--svedit-editing-stroke);
+		border-radius: 9999px;
+		content: '';
+		filter: blur(1px);
+		inset: -2px;
+		opacity: 0.62;
+		pointer-events: none;
+		position: absolute;
+	}
+
+	@keyframes tool-pulse {
+		0% {
+			opacity: 0.58;
+			transform: scale(1);
+		}
+
+		70%,
+		100% {
+			opacity: 0;
+			transform: scale(1.22);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		:global(.pulse)::after {
+			animation: none;
+			opacity: 0.5;
+		}
+	}
+</style>

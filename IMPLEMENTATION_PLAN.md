@@ -2,6 +2,33 @@
 
 This document tracks what to implement next. One step at a time. All implementation must conform to the design decisions in [ARCHITECTURE.md](ARCHITECTURE.md) — if a conflict arises, update the architecture first, then implement.
 
+## Next implementation draft — safer node type cycling
+
+### Goal
+
+Limit `CycleNodeTypeCommand` so it only offers destructive type switches while the selected node subtree is still empty, and preserves data for schema-equivalent switches once content exists.
+
+### Scope
+
+- Implement this only in `editable-website`.
+- Add `get_cycle_node_state(session)` in `src/routes/app_utils.js`, returning `{ node, node_array_path, node_index, available_types }` or `null`.
+- Keep the existing closest-switchable-node search behavior, but compute `available_types` from the containing `node_array` schema.
+- Treat a node subtree as empty only when every property is empty or equal to its schema/default value, including all child nodes reached through `node` and `node_array` properties.
+- For empty nodes, allow cycling to all other types in the containing `node_array`.
+- For non-empty nodes, allow cycling only to types whose property schema is exactly equivalent to the current node type's property schema.
+- Order `available_types` in cycle order relative to the current type, so `next` uses the first available type and `previous` uses the last available type.
+- Update `CycleNodeTypeCommand.is_enabled()` to require a cycle node state with at least one available type.
+- For empty-node switches, keep the existing inserter-based replacement behavior.
+- For non-empty schema-equivalent switches, replace the node root with a new id, carry over all property values, reuse referenced child nodes, and select the replacement node.
+
+### Validation
+
+- Verify an empty node can cycle to all other types allowed by its containing `node_array`.
+- Verify a node with any non-default data in its subtree can cycle only to schema-equivalent types.
+- Verify heading/text type switches preserve `content` and annotations.
+- Verify non-equivalent populated nodes do not offer destructive switches.
+- Verify undo/redo works for both empty replacement and schema-equivalent replacement.
+
 ## Next implementation draft — lead text node
 
 ### Goal
