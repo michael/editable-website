@@ -5,6 +5,7 @@ const TEXT_NODE_TYPES = [
 	'paragraph',
 	'paragraph_sm',
 	'paragraph_lg',
+	'paragraph_xl',
 	'heading_1',
 	'heading_2',
 	'heading_3'

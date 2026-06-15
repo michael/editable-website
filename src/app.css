@@ -104,14 +104,8 @@
 
 /* ParagraphXL, ... */
 @utility body-xl {
-	@apply font-sans text-lg;
+	@apply font-sans text-xl;
 }
-
-/* Paragraph2XL, ... */
-@utility body-2xl {
-	@apply text-xl lg:text-2xl;
-}
-
 
 /* EW-specific utils */
 /******************************************************************/

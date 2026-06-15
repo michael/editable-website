@@ -6,17 +6,19 @@ const MINIMAL_ANNOTATIONS = ['emphasis', 'highlight'];
 const NO_ANNOTATIONS = [];
 const TEXT_NODE_TYPES = [
 	'paragraph',
-	'paragraph_sm',
 	'heading_1',
 	'heading_2',
 	'heading_3',
-	'paragraph_lg'
+	'paragraph_sm',
+	'paragraph_lg',
+	'paragraph_xl'
 ];
 const RICH_CONTENT_NODE_TYPES = [...TEXT_NODE_TYPES, 'list', 'supporting_media', 'button_group'];
 const RICH_CONTENT_NODE_TYPES_WITHOUT_HEADINGS = [
 	'paragraph',
 	'paragraph_sm',
 	'paragraph_lg',
+	'paragraph_xl',
 	'list',
 	'supporting_media',
 	'button_group'
@@ -294,6 +296,17 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
+	paragraph_xl: {
+		kind: 'text',
+		properties: {
+			content: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: true
+			}
+		}
+	},
+
 	heading_1: {
 		kind: 'text',
 		properties: {

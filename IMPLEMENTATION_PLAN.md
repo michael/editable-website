@@ -42,6 +42,19 @@ Add a reusable `paragraph_lg` text node for large introductory copy.
 - Add `ParagraphLG.svelte` and a shared `Large.svelte` typographic primitive.
 - Register `paragraph_lg` in the session config with inserter, HTML exporter, and node layout support.
 
+## Next implementation draft — paragraph_xl text node
+
+### Goal
+
+Add a reusable `paragraph_xl` text node for larger introductory copy.
+
+### Scope
+
+- Add `paragraph_xl` to the document schema and text-node type lists.
+- Allow `paragraph_xl` anywhere the rich text model accepts text nodes.
+- Add `ParagraphXL.svelte` using the existing large typographic utility class.
+- Register `paragraph_xl` in the session config with inserter, HTML exporter, and node layout support.
+
 ## Next implementation draft — paragraph_sm text node
 
 ### Goal

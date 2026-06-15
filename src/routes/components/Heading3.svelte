@@ -11,7 +11,7 @@
 			tag='h4'
 			class="display-5"
 			path={[...path, 'content']}
-			placeholder='Heading 2'
+			placeholder='Heading 3'
 		/>
 	</div>
 </Node>

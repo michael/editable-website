@@ -39,6 +39,7 @@ import ProseGridItem from './components/ProseGridItem.svelte';
 import Preformatted from './components/Preformatted.svelte';
 import Paragraph from './components/Paragraph.svelte';
 import ParagraphLG from './components/ParagraphLG.svelte';
+import ParagraphXL from './components/ParagraphXL.svelte';
 import ParagraphSM from './components/ParagraphSM.svelte';
 import Heading1 from './components/Heading1.svelte';
 import Heading2 from './components/Heading2.svelte';
@@ -186,6 +187,7 @@ const session_config = {
 		preformatted: Preformatted,
 		paragraph: Paragraph,
 		paragraph_lg: ParagraphLG,
+		paragraph_xl: ParagraphXL,
 		paragraph_sm: ParagraphSM,
 		heading_1: Heading1,
 		heading_2: Heading2,
@@ -294,6 +296,7 @@ const session_config = {
 		paragraph: (node) => `<p>${node.content.text}</p>\n`,
 		paragraph_sm: (node) => `<p>${node.content.text}</p>\n`,
 		paragraph_lg: (node) => `<p>${node.content.text}</p>\n`,
+		paragraph_xl: (node) => `<p>${node.content.text}</p>\n`,
 		heading_1: (node) => `<h1>${node.content.text}</h1>\n`,
 		heading_2: (node) => `<h2>${node.content.text}</h2>\n`,
 		heading_3: (node) => `<h3>${node.content.text}</h3>\n`,
@@ -314,6 +317,7 @@ const session_config = {
 		paragraph: 1,
 		paragraph_sm: 1,
 		paragraph_lg: 1,
+		paragraph_xl: 1,
 		heading_1: 1,
 		heading_2: 1,
 		heading_3: 1,
@@ -501,6 +505,9 @@ const session_config = {
 		},
 		paragraph_lg: function (tr, content = { text: '', annotations: [] }) {
 			insert_text_node(tr, 'paragraph_lg', content);
+		},
+		paragraph_xl: function (tr, content = { text: '', annotations: [] }) {
+			insert_text_node(tr, 'paragraph_xl', content);
 		},
 		heading_1: function (tr, content = { text: '', annotations: [] }) {
 			insert_text_node(tr, 'heading_1', content);
