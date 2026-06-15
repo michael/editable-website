@@ -165,53 +165,53 @@ const session_config = {
 	// Custom ID generator function
 	generate_id: nanoid,
 	// Provide definitions/overrides for system native components,
-	// such as NodeCursorTrap or Overlays
+	// such as node_gap, node_gap_markers, node_selection_markers, or overlays
 	system_components: {
-		Overlays
+		overlays: Overlays
 	},
 	// Registry of components for each node type
 	node_components: {
-		Page,
-		Nav,
-		NavItem,
-		Footer,
-		FooterLinkColumn,
-		FooterLink,
-		Hero,
-		MediaHero,
-		Button,
-		ButtonGroup,
-		Prose,
-		ProseGrid,
-		ProseGridItem,
-		Preformatted,
-		Paragraph,
-		Lead,
-		Note,
-		Heading1,
-		Heading2,
-		Heading3,
-		Kicker,
-		List,
-		ListItem,
-		Image,
-		Video,
-		Figure,
-		CaptionedFigure,
-		SupportingMedia,
-		Feature,
-		Gallery,
-		GalleryItem,
-		DescriptiveGallery,
-		DescriptiveGalleryItem,
-		DescriptiveListing,
-		DescriptiveListingItem,
-		Accordion,
-		AccordionItem,
-		Strong,
-		Emphasis,
-		Highlight,
-		Link
+		page: Page,
+		nav: Nav,
+		nav_item: NavItem,
+		footer: Footer,
+		footer_link_column: FooterLinkColumn,
+		footer_link: FooterLink,
+		hero: Hero,
+		media_hero: MediaHero,
+		button: Button,
+		button_group: ButtonGroup,
+		prose: Prose,
+		prose_grid: ProseGrid,
+		prose_grid_item: ProseGridItem,
+		preformatted: Preformatted,
+		paragraph: Paragraph,
+		lead: Lead,
+		note: Note,
+		heading_1: Heading1,
+		heading_2: Heading2,
+		heading_3: Heading3,
+		kicker: Kicker,
+		list: List,
+		list_item: ListItem,
+		image: Image,
+		video: Video,
+		figure: Figure,
+		captioned_figure: CaptionedFigure,
+		supporting_media: SupportingMedia,
+		feature: Feature,
+		gallery: Gallery,
+		gallery_item: GalleryItem,
+		descriptive_gallery: DescriptiveGallery,
+		descriptive_gallery_item: DescriptiveGalleryItem,
+		descriptive_listing: DescriptiveListing,
+		descriptive_listing_item: DescriptiveListingItem,
+		accordion: Accordion,
+		accordion_item: AccordionItem,
+		strong: Strong,
+		emphasis: Emphasis,
+		highlight: Highlight,
+		link: Link
 	},
 	replace_media,
 	handle_property_deletion: (tr, path) => {
@@ -474,17 +474,17 @@ const session_config = {
 					content: { text: '', annotations: [] }
 				},
 				prose_grid_item_1: {
-					id: "prose_grid_item_1",
+					id: 'prose_grid_item_1',
 					type: 'prose_grid_item',
 					content: ['title_1', 'paragraph_1']
 				},
 				prose_grid_item_2: {
-					id: "prose_grid_item_2",
+					id: 'prose_grid_item_2',
 					type: 'prose_grid_item',
 					content: ['title_2', 'paragraph_2']
 				},
 				prose_grid_item_3: {
-					id: "prose_grid_item_3",
+					id: 'prose_grid_item_3',
 					type: 'prose_grid_item',
 					content: ['title_3', 'paragraph_3']
 				},
@@ -492,7 +492,7 @@ const session_config = {
 					id: 'new_prose_grid',
 					type: 'prose_grid',
 					layout: 1,
-					items: ['prose_grid_item_1', 'prose_grid_item_2', 'prose_grid_item_3'],
+					items: ['prose_grid_item_1', 'prose_grid_item_2', 'prose_grid_item_3']
 				}
 			});
 			tr.insert_nodes([new_prose_grid_id]);

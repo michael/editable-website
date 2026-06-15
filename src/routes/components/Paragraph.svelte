@@ -1,6 +1,6 @@
 <script>
 	import { Node } from 'svedit';
-	import Base from './Base.svelte';
+	import { AnnotatedTextProperty } from 'svedit';
 	import { reveal } from '../reveal.js';
 
 	let { path } = $props();
@@ -8,6 +8,11 @@
 
 <Node {path}>
 	<div use:reveal>
-		<Base tag="p" path={[...path, 'content']} placeholder="Paragraph" />
+		<AnnotatedTextProperty
+			tag='p'
+			class="body-base"
+			path={[...path, 'content']}
+			placeholder='Paragraph'
+		/>
 	</div>
 </Node>
