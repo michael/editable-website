@@ -1,6 +1,5 @@
 <script>
-	import { Node } from 'svedit';
-	import Title from './Title.svelte';
+	import { Node, AnnotatedTextProperty } from 'svedit';
 	import { reveal } from '../reveal.js';
 
 	let { path } = $props();
@@ -8,9 +7,11 @@
 
 <Node class="ew-heading-3" {path}>
 	<div use:reveal>
-		<Title
+		<AnnotatedTextProperty
+			tag='h4'
+			class="display-5"
 			path={[...path, 'content']}
-			placeholder="Heading 3"
+			placeholder='Heading 2'
 		/>
 	</div>
 </Node>

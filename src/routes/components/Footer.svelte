@@ -1,7 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
 	import { AnnotatedTextProperty, NodeArrayProperty, Node } from 'svedit';
-	import Small from './Small.svelte';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 	import MediaProperty from './MediaProperty.svelte';
 	import SizableViewbox from './SizableViewbox.svelte';
@@ -31,10 +30,10 @@
 						<MediaProperty path={[...path, 'logo']} />
 					</svelte:element>
 				</SizableViewbox>
-				<Small
-					class="text-(--foreground)/50 mt-6 mb-0 lg:mb-0"
+				<AnnotatedTextProperty
+					class="body-sm text-(--foreground)/50 mt-6 mb-0 lg:mb-0"
 					path={[...path, 'copyright']}
-					placeholder="© 2025 Company"
+					placeholder='© 2025 Your company'
 				/>
 			</div>
 			<NodeArrayProperty
