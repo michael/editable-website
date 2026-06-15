@@ -52,7 +52,7 @@
 	</div>
 {/snippet}
 
-<Node class="ew-prose-grid-item lg:text-lg bg-(--background) text-(--foreground) {colorset_class}" {path}>
+<Node class="ew-prose-grid-item bg-(--background) text-(--foreground) {colorset_class}" {path}>
 	{@const layouts = [layout_1, layout_2]}
 	{@render layouts[layout - 1]()}
 </Node>

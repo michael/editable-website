@@ -1,8 +1,12 @@
 import { define_document_schema } from 'svedit';
+import { MEDIA_DEFAULTS } from '$lib/config.js';
 
 const ALL_ANNOTATIONS = ['strong', 'emphasis', 'highlight', 'link'];
 const MINIMAL_ANNOTATIONS = ['emphasis', 'highlight'];
 const NO_ANNOTATIONS = [];
+const TEXT_NODE_TYPES = ['paragraph', 'heading_1', 'heading_2', 'heading_3', 'note', 'lead', 'kicker'];
+const RICH_CONTENT_NODE_TYPES = [...TEXT_NODE_TYPES, 'list', 'supporting_media', 'button_group'];
+const RICH_CONTENT_NODE_TYPES_WITHOUT_HEADINGS = ['paragraph', 'note', 'lead', 'list', 'supporting_media', 'button_group'];
 
 export const document_schema = define_document_schema({
 	page: {
@@ -219,8 +223,8 @@ export const document_schema = define_document_schema({
 			colorset: { type: 'integer', default: 0 },
 			content: {
 				type: 'node_array',
-				node_types: ['text', 'list', 'supporting_media', 'button_group'],
-				default_node_type: 'text'
+				node_types: RICH_CONTENT_NODE_TYPES,
+				default_node_type: 'paragraph'
 			}
 		}
 	},
@@ -231,8 +235,8 @@ export const document_schema = define_document_schema({
 			colorset: { type: 'integer', default: 0 },
 			content: {
 				type: 'node_array',
-				node_types: ['text', 'list', 'supporting_media', 'button_group'],
-				default_node_type: 'text'
+				node_types: RICH_CONTENT_NODE_TYPES,
+				default_node_type: 'paragraph'
 			}
 		}
 	},
@@ -246,10 +250,69 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
-	text: {
+	paragraph: {
 		kind: 'text',
 		properties: {
-			layout: { type: 'integer', default: 1 },
+			content: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: true
+			}
+		}
+	},
+	note: {
+		kind: 'text',
+		properties: {
+			content: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: true
+			}
+		}
+	},
+	lead: {
+		kind: 'text',
+		properties: {
+			content: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: true
+			}
+		}
+	},
+	heading_1: {
+		kind: 'text',
+		properties: {
+			content: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: true
+			}
+		}
+	},
+	heading_2: {
+		kind: 'text',
+		properties: {
+			content: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: true
+			}
+		}
+	},
+	kicker: {
+		kind: 'text',
+		properties: {
+			content: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: true
+			}
+		}
+	},
+	heading_3: {
+		kind: 'text',
+		properties: {
 			content: {
 				type: 'annotated_text',
 				node_types: ALL_ANNOTATIONS,
@@ -286,10 +349,10 @@ export const document_schema = define_document_schema({
 			width: { type: 'integer' },
 			height: { type: 'integer' },
 			alt: { type: 'string' },
-			focal_point_x: { type: 'number', default: 0 },
-			focal_point_y: { type: 'number', default: 0 },
-			scale: { type: 'number', default: 1.0 },
-			object_fit: { type: 'string', default: 'cover' }
+			focal_point_x: { type: 'number', default: MEDIA_DEFAULTS.focal_point_x },
+			focal_point_y: { type: 'number', default: MEDIA_DEFAULTS.focal_point_y },
+			scale: { type: 'number', default: MEDIA_DEFAULTS.scale },
+			object_fit: { type: 'string', default: MEDIA_DEFAULTS.object_fit }
 		}
 	},
 	video: {
@@ -300,10 +363,10 @@ export const document_schema = define_document_schema({
 			width: { type: 'integer' },
 			height: { type: 'integer' },
 			alt: { type: 'string' },
-			focal_point_x: { type: 'number', default: 0 },
-			focal_point_y: { type: 'number', default: 0 },
-			scale: { type: 'number', default: 1.0 },
-			object_fit: { type: 'string', default: 'cover' }
+			focal_point_x: { type: 'number', default: MEDIA_DEFAULTS.focal_point_x },
+			focal_point_y: { type: 'number', default: MEDIA_DEFAULTS.focal_point_y },
+			scale: { type: 'number', default: MEDIA_DEFAULTS.scale },
+			object_fit: { type: 'string', default: MEDIA_DEFAULTS.object_fit }
 		}
 	},
 	figure: {
@@ -449,8 +512,8 @@ export const document_schema = define_document_schema({
 			},
 			body: {
 				type: 'node_array',
-				node_types: ['text', 'list', 'button_group', 'supporting_media'],
-				default_node_type: 'text'
+				node_types: RICH_CONTENT_NODE_TYPES_WITHOUT_HEADINGS,
+				default_node_type: 'paragraph'
 			}
 		}
 	},
@@ -466,8 +529,8 @@ export const document_schema = define_document_schema({
 			},
 			body: {
 				type: 'node_array',
-				node_types: ['text', 'supporting_media', 'list', 'button_group'],
-				default_node_type: 'text'
+				node_types: RICH_CONTENT_NODE_TYPES,
+				default_node_type: 'paragraph'
 			}
 		}
 	},

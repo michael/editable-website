@@ -50,6 +50,144 @@ function get_node_index_at(full_path, ancestor_path) {
 }
 
 /**
+ * Get the built-in empty/default value for a property definition.
+ *
+ * @param {object} property_definition
+ * @returns {any}
+ */
+function get_property_default(property_definition) {
+	if ('default' in property_definition) return structuredClone(property_definition.default);
+
+	if (property_definition.type === 'string') return '';
+	if (property_definition.type === 'integer') return 0;
+	if (property_definition.type === 'number') return 0;
+	if (property_definition.type === 'boolean') return false;
+	if (property_definition.type === 'annotated_text') return { text: '', annotations: [] };
+	if (property_definition.type === 'node_array') return [];
+	if (
+		property_definition.type === 'string_array' ||
+		property_definition.type === 'number_array' ||
+		property_definition.type === 'boolean_array' ||
+		property_definition.type === 'integer_array'
+	) {
+		return [];
+	}
+
+	return undefined;
+}
+
+/**
+ * Compare schema/value objects deeply. Object key order is ignored, array order is not.
+ *
+ * @param {any} left
+ * @param {any} right
+ * @returns {boolean}
+ */
+function are_values_equal(left, right) {
+	if (Object.is(left, right)) return true;
+	if (typeof left !== typeof right) return false;
+	if (left === null || right === null) return false;
+
+	if (Array.isArray(left) || Array.isArray(right)) {
+		if (!Array.isArray(left) || !Array.isArray(right)) return false;
+		if (left.length !== right.length) return false;
+		return left.every((value, index) => are_values_equal(value, right[index]));
+	}
+
+	if (typeof left === 'object') {
+		const left_keys = Object.keys(left);
+		const right_keys = Object.keys(right);
+		if (left_keys.length !== right_keys.length) return false;
+		return left_keys.every(
+			(key) => Object.hasOwn(right, key) && are_values_equal(left[key], right[key])
+		);
+	}
+
+	return false;
+}
+
+/**
+ * Check if a primitive or custom extra value is empty without schema context.
+ *
+ * @param {any} value
+ * @returns {boolean}
+ */
+function is_empty_literal(value) {
+	if (value === undefined || value === null || value === '') return true;
+	if (Array.isArray(value)) return value.length === 0;
+	return false;
+}
+
+/**
+ * Check if a property value is empty/default, recursing through child nodes.
+ *
+ * @param {import('svedit').Session} session
+ * @param {object} property_definition
+ * @param {any} value
+ * @returns {boolean}
+ */
+function is_property_value_empty(session, property_definition, value) {
+	if (property_definition.type === 'node') {
+		if (is_empty_literal(value)) return true;
+		const child_node = session.get(value);
+		return child_node ? is_node_subtree_empty(session, child_node) : false;
+	}
+
+	if (property_definition.type === 'node_array') {
+		if (!Array.isArray(value)) return false;
+		return value.every((node_id) => {
+			const child_node = session.get(node_id);
+			return child_node ? is_node_subtree_empty(session, child_node) : false;
+		});
+	}
+
+	const property_default = get_property_default(property_definition);
+	return are_values_equal(value, property_default) || is_empty_literal(value);
+}
+
+/**
+ * Check whether a node and all descendants contain only empty/default values.
+ *
+ * @param {import('svedit').Session} session
+ * @param {object} node
+ * @returns {boolean}
+ */
+export function is_node_subtree_empty(session, node) {
+	const node_schema = session.schema[node.type];
+	if (!node_schema) return false;
+
+	for (const [property_name, property_definition] of Object.entries(node_schema.properties)) {
+		if (!is_property_value_empty(session, property_definition, node[property_name])) return false;
+	}
+
+	for (const property_name of Object.keys(node)) {
+		if (property_name === 'id' || property_name === 'type') continue;
+		if (Object.hasOwn(node_schema.properties, property_name)) continue;
+		if (!is_empty_literal(node[property_name])) return false;
+	}
+
+	return true;
+}
+
+/**
+ * Check whether two node types have exactly equivalent property schemas.
+ *
+ * @param {object} schema
+ * @param {string} source_type
+ * @param {string} target_type
+ * @returns {boolean}
+ */
+function have_same_property_schema(schema, source_type, target_type) {
+	const source_properties = schema[source_type]?.properties;
+	const target_properties = schema[target_type]?.properties;
+	return (
+		!!source_properties &&
+		!!target_properties &&
+		are_values_equal(source_properties, target_properties)
+	);
+}
+
+/**
  * Find the closest ancestor node whose type can be switched
  * (lives in a node_array with multiple node_types).
  *
@@ -84,6 +222,39 @@ export function get_closest_switchable_type(session) {
 	}
 
 	return null;
+}
+
+/**
+ * Get the current cycle node state, including compatible target types.
+ *
+ * @param {import('svedit').Session} session - The session instance
+ * @returns {{ node: object, node_array_path: (string|number)[], node_index: number, available_types: string[] } | null}
+ */
+export function get_cycle_node_state(session) {
+	const closest_switchable_type = get_closest_switchable_type(session);
+	if (!closest_switchable_type) return null;
+
+	const { node, node_array_path } = closest_switchable_type;
+	const node_array_schema = session.inspect(node_array_path);
+	const node_types = node_array_schema?.node_types ?? [];
+	const current_type_index = node_types.indexOf(node.type);
+
+	if (current_type_index === -1) {
+		return { ...closest_switchable_type, available_types: [] };
+	}
+
+	const cycle_ordered_types = [
+		...node_types.slice(current_type_index + 1),
+		...node_types.slice(0, current_type_index)
+	];
+	const node_is_empty = is_node_subtree_empty(session, node);
+	const available_types = node_is_empty
+		? cycle_ordered_types
+		: cycle_ordered_types.filter((node_type) =>
+				have_same_property_schema(session.schema, node.type, node_type)
+			);
+
+	return { ...closest_switchable_type, available_types };
 }
 
 /**

@@ -38,7 +38,7 @@ const FULL_DOC = {
 			layout: 1,
 			colorset: 0,
 			title: {
-				text: 'Imagine you could edit ✍️ your website live on the page',
+				text: 'Imagine you could edit your website live on the page',
 				annotations: []
 			},
 			description: {
@@ -62,8 +62,7 @@ const FULL_DOC = {
 		},
 		WsXcDfVgBhNjMkLqAzPeRt: {
 			id: 'WsXcDfVgBhNjMkLqAzPeRt',
-			type: 'text',
-			layout: 2,
+			type: 'heading_1',
 			content: {
 				text: 'This is Editable Website',
 				annotations: []
@@ -75,8 +74,7 @@ const FULL_DOC = {
 		},
 		ywTQktXzgyRqzsUNXjZztQw: {
 			id: 'ywTQktXzgyRqzsUNXjZztQw',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'Press ⌘ / Ctrl + e to enter edit mode.\nClick where you want to edit.\nMove around with the arrow keys.\nChange anything you see!',
 				annotations: [
@@ -128,8 +126,7 @@ const FULL_DOC = {
 		},
 		WjasMkTrmjdrXTsDgeUHQap: {
 			id: 'WjasMkTrmjdrXTsDgeUHQap',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'Bold, italics and links with ⌘ / Ctrl + b, i and k\nUndo with ⌘ / Ctrl + z\nSave changes with ⌘ / Ctrl + s\n(On this example page, changes are not persisted. On a real site, a logged in user would have their changes persisted to a database.)',
 				annotations: [
@@ -183,18 +180,9 @@ const FULL_DOC = {
 		},
 		DxBvNYzBgktMyKjKkKyYcAN: {
 			id: 'DxBvNYzBgktMyKjKkKyYcAN',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: "Looking for the admin panel? There isn't any! It's just you, and your content.",
-				annotations: []
-			}
-		},
-		preformatted_example: {
-			id: 'preformatted_example',
-			type: 'preformatted',
-			content: {
-				text: 'const greeting = "Hello, world!"\n\n+----+----+\n|  /\\|    |\n| /  \\    |\n+----+----+',
 				annotations: []
 			}
 		},
@@ -213,8 +201,7 @@ const FULL_DOC = {
 		},
 		heading_1: {
 			id: 'heading_1',
-			type: 'text',
-			layout: 2,
+			type: 'heading_1',
 			content: {
 				text: 'Build with blocks',
 				annotations: []
@@ -226,8 +213,7 @@ const FULL_DOC = {
 		},
 		fuxtxNCceDRcdbcHhtqsYwJ: {
 			id: 'fuxtxNCceDRcdbcHhtqsYwJ',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'In edit mode the dashed gaps let you add blocks.',
 				annotations: [
@@ -253,8 +239,7 @@ const FULL_DOC = {
 		},
 		dAEBKADbvfeaBMhNWgTjKNC: {
 			id: 'dAEBKADbvfeaBMhNWgTjKNC',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'Select the dashed gap below this paragraph to see a flashing purple cursor.\nPress Enter to add a block.\nChange text styles (paragraph > heading etc) with Ctrl + Shift + Right.',
 				annotations: [
@@ -294,8 +279,7 @@ const FULL_DOC = {
 		},
 		dKDJFxDKresxkjMUZYKNuKn: {
 			id: 'dKDJFxDKresxkjMUZYKNuKn',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'Select one of the full width dashed gap to see a flashing purple cursor.\nPress Enter to create a new top-level block.\nCtrl + Shift + Down cycles through block types.\nAgain Ctrl + Shift + Right lets you flip through available layouts.',
 				annotations: [
@@ -328,8 +312,7 @@ const FULL_DOC = {
 		},
 		dwMqDGUwHVvVkdzahPEWDuR: {
 			id: 'dwMqDGUwHVvVkdzahPEWDuR',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'To move blocks, drag from a dashed gap to select multiple, then cut and paste like usual.',
 				annotations: [
@@ -351,8 +334,7 @@ const FULL_DOC = {
 		},
 		smJYScwGbZgRVDAJWhNGxvG: {
 			id: 'smJYScwGbZgRVDAJWhNGxvG',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'Pro tip: Press Esc to select the parent block. Useful when editing text but wanting to change the parent layout.',
 				annotations: [
@@ -385,8 +367,7 @@ const FULL_DOC = {
 		},
 		BYutsagSAYkASwkavQyDQmQ: {
 			id: 'BYutsagSAYkASwkavQyDQmQ',
-			type: 'text',
-			layout: 2,
+			type: 'heading_1',
 			content: {
 				text: 'Add images and videos',
 				annotations: []
@@ -394,8 +375,7 @@ const FULL_DOC = {
 		},
 		QddnajJYxeeEHzmcnqmYptQ: {
 			id: 'QddnajJYxeeEHzmcnqmYptQ',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'Open a folder on your computer that has some images.\nSelect one and copy it to the clipboard.\nSelect the placeholder below and paste it.\nTo replace an image, select it first, then paste the new one on top.',
 				annotations: []
@@ -489,8 +469,7 @@ const FULL_DOC = {
 		},
 		HxzrRGAgJBrCzDyNfKrBJmz: {
 			id: 'HxzrRGAgJBrCzDyNfKrBJmz',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'You can even paste several images at once.\nSelect three or four from your computer and copy to the clipboard.\nNow select a vertical dashed area before or after an image above.\nPaste and all the images will be added in one go.',
 				annotations: [
@@ -533,8 +512,7 @@ const FULL_DOC = {
 		},
 		KHMMaadDrWWNHjjFtuFGfhV: {
 			id: 'KHMMaadDrWWNHjjFtuFGfhV',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: "When you add images in the text flow, like the one above, you'll be able to change its size using the handles at the edges of the image.",
 				annotations: [
@@ -580,8 +558,7 @@ const FULL_DOC = {
 		},
 		advPeCwNKJMnqHEhGCsBNpk: {
 			id: 'advPeCwNKJMnqHEhGCsBNpk',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'You can even paste short video clips onto any media placeholder. Currently .mp4 , .webm, and of course .gif are supported.',
 				annotations: [
@@ -618,8 +595,7 @@ const FULL_DOC = {
 		},
 		AjbSGnXVcWpHBurCTrKxYSs: {
 			id: 'AjbSGnXVcWpHBurCTrKxYSs',
-			type: 'text',
-			layout: 2,
+			type: 'heading_1',
 			content: {
 				text: 'Link to other pages',
 				annotations: []
@@ -627,8 +603,7 @@ const FULL_DOC = {
 		},
 		VdjTDrdPmtXRuYKNUMeRmKK: {
 			id: 'VdjTDrdPmtXRuYKNUMeRmKK',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'Click on one of the cards below.\nA link preview appears at the bottom.\nClick “EDIT” or press ⌘ / Ctrl + k to bring up the link editor.',
 				annotations: []
@@ -739,8 +714,7 @@ const FULL_DOC = {
 		},
 		kZQHRTYyJtbmsJfnXaRgVtZ: {
 			id: 'kZQHRTYyJtbmsJfnXaRgVtZ',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'The cards above are links to examples of live in-place editable websites Johannes Mutter and I have already launched using this technology. You can see that any design is possible — it’s just HTML and CSS.',
 				annotations: [
@@ -761,8 +735,7 @@ const FULL_DOC = {
 		},
 		AQHAsyghanqZPmyutAJZBxM: {
 			id: 'AQHAsyghanqZPmyutAJZBxM',
-			type: 'text',
-			layout: 2,
+			type: 'heading_1',
 			content: {
 				text: 'How does this work?',
 				annotations: []
@@ -794,8 +767,7 @@ const FULL_DOC = {
 		},
 		PscvEBWBfhraXpPKjPPkCMC: {
 			id: 'PscvEBWBfhraXpPKjPPkCMC',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'This site is powered by Svelte and Svedit — an open source rich text editor I’ve created. Editable Website builds on SvelteKit and SQLite to enable full websites with multiple pages and a persistent backend where only an admin can make changes.',
 				annotations: [
@@ -824,8 +796,7 @@ const FULL_DOC = {
 		},
 		EsVdYMdJuVqGfqpQmMBCtap: {
 			id: 'EsVdYMdJuVqGfqpQmMBCtap',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'The source code is not only available for this site, but for all the foundations it is built on:',
 				annotations: []
@@ -900,8 +871,7 @@ const FULL_DOC = {
 		},
 		qCsyJmxeVPfzjuWrCbSDFFR: {
 			id: 'qCsyJmxeVPfzjuWrCbSDFFR',
-			type: 'text',
-			layout: 2,
+			type: 'heading_1',
 			content: {
 				text: 'Early-Access pricing',
 				annotations: []
@@ -946,8 +916,7 @@ const FULL_DOC = {
 		},
 		jzMUAkKquWACdzyTFtgyxdV: {
 			id: 'jzMUAkKquWACdzyTFtgyxdV',
-			type: 'text',
-			layout: 5,
+			type: 'kicker',
 			content: {
 				text: 'PRE-LAUNCH',
 				annotations: []
@@ -955,8 +924,7 @@ const FULL_DOC = {
 		},
 		prose_grid_free_title: {
 			id: 'prose_grid_free_title',
-			type: 'text',
-			layout: 3,
+			type: 'heading_2',
 			content: {
 				text: 'Free',
 				annotations: []
@@ -964,8 +932,7 @@ const FULL_DOC = {
 		},
 		prose_grid_free_description: {
 			id: 'prose_grid_free_description',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'Install Editable Website and start developing.',
 				annotations: []
@@ -973,8 +940,7 @@ const FULL_DOC = {
 		},
 		ARpQvUnSMPCTHeFZYYNCFmP: {
 			id: 'ARpQvUnSMPCTHeFZYYNCFmP',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'Setup a website in minutes. Spend the next hour customizing it.',
 				annotations: []
@@ -1010,8 +976,7 @@ const FULL_DOC = {
 		},
 		aPYQncYTyzFJSDAcGejvvQV: {
 			id: 'aPYQncYTyzFJSDAcGejvvQV',
-			type: 'text',
-			layout: 5,
+			type: 'kicker',
 			content: {
 				text: 'PERSONAL',
 				annotations: []
@@ -1019,8 +984,7 @@ const FULL_DOC = {
 		},
 		prose_grid_supergrok_title: {
 			id: 'prose_grid_supergrok_title',
-			type: 'text',
-			layout: 3,
+			type: 'heading_2',
 			content: {
 				text: '€99',
 				annotations: []
@@ -1028,8 +992,7 @@ const FULL_DOC = {
 		},
 		prose_grid_supergrok_description: {
 			id: 'prose_grid_supergrok_description',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'Per domain. Once you launched.',
 				annotations: []
@@ -1037,8 +1000,7 @@ const FULL_DOC = {
 		},
 		prose_grid_supergrok_features: {
 			id: 'prose_grid_supergrok_features',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'For personal use or businesses with less than 150,000 USD in annual revenue.',
 				annotations: []
@@ -1074,8 +1036,7 @@ const FULL_DOC = {
 		},
 		XqzKZKnYXApBFkcctNNhRxJ: {
 			id: 'XqzKZKnYXApBFkcctNNhRxJ',
-			type: 'text',
-			layout: 5,
+			type: 'kicker',
 			content: {
 				text: 'COMMERCIAL',
 				annotations: []
@@ -1083,8 +1044,7 @@ const FULL_DOC = {
 		},
 		TKTWNunjBnaxgXZkTGbuJjS: {
 			id: 'TKTWNunjBnaxgXZkTGbuJjS',
-			type: 'text',
-			layout: 3,
+			type: 'heading_2',
 			content: {
 				text: '€299',
 				annotations: []
@@ -1092,8 +1052,7 @@ const FULL_DOC = {
 		},
 		FVgAWAdnYubUEueFrfRYypd: {
 			id: 'FVgAWAdnYubUEueFrfRYypd',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'For each Editable Website you launch for a client.',
 				annotations: []
@@ -1101,8 +1060,7 @@ const FULL_DOC = {
 		},
 		UkXDdahkUkkPEsXntcmBebK: {
 			id: 'UkXDdahkUkkPEsXntcmBebK',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'Each license is purchased once and valid indefinitely for a single domain.',
 				annotations: []
@@ -1144,8 +1102,7 @@ const FULL_DOC = {
 		},
 		aGDtGMKVpxQTPjshDNXaeqf: {
 			id: 'aGDtGMKVpxQTPjshDNXaeqf',
-			type: 'text',
-			layout: 2,
+			type: 'heading_1',
 			content: {
 				text: 'Frequently Asked Questions',
 				annotations: []
@@ -1160,8 +1117,7 @@ const FULL_DOC = {
 		},
 		PgFkSEuFXmXvecwFNksBFfw: {
 			id: 'PgFkSEuFXmXvecwFNksBFfw',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'The editing infrastructure (Svedit) becomes an integral part of your website (at runtime). As a developer, all you do is define content types (e.g. Figure) and implement components (e.g. Figure.svelte) — they are editable by default.',
 				annotations: []
@@ -1178,12 +1134,11 @@ const FULL_DOC = {
 		},
 		fWGAzktgaAYgCnbjDDNZqZt: {
 			id: 'fWGAzktgaAYgCnbjDDNZqZt',
-			type: 'text',
+			type: 'paragraph',
 			content: {
 				text: 'There is experimental support for mobile editing — it works in principle. The current focus is on desktop UX, but mobile editing will improve over time.',
 				annotations: []
-			},
-			layout: 1
+			}
 		},
 		BfXmkWHjhSWZGMaKGxhSAXu: {
 			id: 'BfXmkWHjhSWZGMaKGxhSAXu',
@@ -1196,8 +1151,7 @@ const FULL_DOC = {
 		},
 		wdKfHzXjUysbpyHBKWnjHPp: {
 			id: 'wdKfHzXjUysbpyHBKWnjHPp',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: "All content lives in a single data/ directory — an SQLite database (db.sqlite3) and uploaded assets (assets/). Locally this defaults to ./data. On Fly.io it's a persistent volume at /data. To back up your site, copy this directory.",
 				annotations: []
@@ -1214,8 +1168,7 @@ const FULL_DOC = {
 		},
 		ahabwjAyHuBbTNMJacqWupQ: {
 			id: 'ahabwjAyHuBbTNMJacqWupQ',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'Editable Website is a foundational, AI-agnostic tool. That said, it makes perfect sense to utilize AI workflows to help building your custom site. Think prompts like "Create a hero block type with title + description and optional CTA buttons" and "Implement Hero.svelte with 5 distinct layout variations".',
 				annotations: []
@@ -1232,8 +1185,7 @@ const FULL_DOC = {
 		},
 		vuEMUDFAUnxSBXvsvDsYDZe: {
 			id: 'vuEMUDFAUnxSBXvsvDsYDZe',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: "Editable Website is modular and you can and should reuse code across projects. However, I purposely don't want to establish a community maintained plugin repository. I want to encourage you to own all your code, for the benefit of simplicity, safety, and control. Share code snippets, not plugins.",
 				annotations: []
@@ -1250,8 +1202,7 @@ const FULL_DOC = {
 		},
 		ZdwnbaVUbAPYzCZQhyJAYBr: {
 			id: 'ZdwnbaVUbAPYzCZQhyJAYBr',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'Editable Website runs on any VPS. All you need is Node.js and SQLite. The repository includes a Dockerfile and fly.toml for one-command deployment to Fly.io — see Deploying to Fly.io above. The same Dockerfile works with any platform that supports Docker.',
 				annotations: []
@@ -1268,8 +1219,7 @@ const FULL_DOC = {
 		},
 		prwbeXWyKVSsJXMPndjHYRS: {
 			id: 'prwbeXWyKVSsJXMPndjHYRS',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: "There's no point for static builds with Editable Website. The whole idea is that users edit content live, without having to wait for a rebuild to finish. SQLite is fast. Very fast. Web-optimized images are generated client-side before upload: resizing happens in the browser via canvas and toBlob(), and WebP encoding is done with @jsquash/webp. It still makes sense to enable a proxy for images, so they can be delivered from a CDN.",
 				annotations: []
@@ -1286,8 +1236,7 @@ const FULL_DOC = {
 		},
 		VmvAPSsWYbVnekGqYyEKPUG: {
 			id: 'VmvAPSsWYbVnekGqYyEKPUG',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: "Editable Website will at least be source-available. There will likely be an affordable one-time registration fee (per domain) for personal use, and a fair fee for commercial projects. I'm still working on the details. If you’re open to discussion, join the technical preview.",
 				annotations: []
@@ -1316,6 +1265,14 @@ const FULL_DOC = {
 				'gYpxwQwkQNNWWvYbTWBrAfx'
 			]
 		},
+		preformatted_example: {
+			id: 'preformatted_example',
+			type: 'preformatted',
+			content: {
+				text: 'const greeting = "Hello, world!"\n\n+----+----+\n|  /\\|    |\n| /  \\    |\n+----+----+',
+				annotations: []
+			}
+		},
 		hqrrTdEbTPaqzEcYMczhBZb: {
 			id: 'hqrrTdEbTPaqzEcYMczhBZb',
 			type: 'image',
@@ -1331,8 +1288,7 @@ const FULL_DOC = {
 		},
 		pCjecUjAFDGgGpgquwGrCdp: {
 			id: 'pCjecUjAFDGgGpgquwGrCdp',
-			type: 'text',
-			layout: 2,
+			type: 'heading_1',
 			content: {
 				text: 'Hello, I’m Michael',
 				annotations: []
@@ -1346,8 +1302,7 @@ const FULL_DOC = {
 		},
 		qDAyeabdhVEXjBWXyyqfUPb: {
 			id: 'qDAyeabdhVEXjBWXyyqfUPb',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'Since 2011 I’ve been taming web browsers to behave correctly and predictably when editing rich text.',
 				annotations: [
@@ -1361,8 +1316,7 @@ const FULL_DOC = {
 		},
 		QVXhuysTRgRyQHVQnfTVCpV: {
 			id: 'QVXhuysTRgRyQHVQnfTVCpV',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'I want you to be able to launch websites that anyone can edit. No more calls asking you to update someone’s WordPress site! They’ll be able to do it themselves.',
 				annotations: []
@@ -1370,8 +1324,7 @@ const FULL_DOC = {
 		},
 		NjNteBhckwxGAUfbYRMGrDz: {
 			id: 'NjNteBhckwxGAUfbYRMGrDz',
-			type: 'text',
-			layout: 1,
+			type: 'paragraph',
 			content: {
 				text: 'Most CMSs are too complex for clients and too restrictive for developers. Change every pixel of your site, create new content types, or integrate 3rd party data. Everything you can do with Svelte, you can do with Editable Website.',
 				annotations: []
@@ -1390,8 +1343,32 @@ const FULL_DOC = {
 				'NjNteBhckwxGAUfbYRMGrDz'
 			]
 		},
-		PvpNcGKnqTTBbvbRZeDUYSN: {
-			id: 'PvpNcGKnqTTBbvbRZeDUYSN',
+		YTZAMHbVsWKDaZeNdSYpFaA: {
+			id: 'YTZAMHbVsWKDaZeNdSYpFaA',
+			type: 'kicker',
+			content: {
+				text: 'I love it',
+				annotations: []
+			}
+		},
+		BHRkpFHqdqFGzqJQUUqcHhR: {
+			id: 'BHRkpFHqdqFGzqJQUUqcHhR',
+			type: 'heading_1',
+			content: {
+				text: 'How can I get it?',
+				annotations: []
+			}
+		},
+		BNDQkNtJpdSNXUuDUwAmgYz: {
+			id: 'BNDQkNtJpdSNXUuDUwAmgYz',
+			type: 'paragraph',
+			content: {
+				text: 'This is an an initial preview of Editable Website. There’s more to do before you can use it in production. Be the first to hear when it’s ready:',
+				annotations: []
+			}
+		},
+		VMpZbtCEwxBqnnkMBUEsKGE: {
+			id: 'VMpZbtCEwxBqnnkMBUEsKGE',
 			type: 'button',
 			layout: 1,
 			href: 'https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform?usp=dialog',
@@ -1401,93 +1378,94 @@ const FULL_DOC = {
 				annotations: []
 			}
 		},
-		UBNYngEBJYtDWgeabtDJqWW: {
-			id: 'UBNYngEBJYtDWgeabtDJqWW',
-			type: 'hero',
-			colorset: 0,
-			title: {
-				text: 'I love it! How can I get it?',
-				annotations: []
-			},
-			description: {
-				text: 'This is an an initial preview of Editable Website. There’s more to do before you can use it in production. Be the first to hear when it’s ready:',
-				annotations: []
-			},
-			buttons: ['PvpNcGKnqTTBbvbRZeDUYSN'],
-			layout: 3
+		fxbPhZADdeyCbysuCSwHNcA: {
+			id: 'fxbPhZADdeyCbysuCSwHNcA',
+			type: 'button_group',
+			buttons: ['VMpZbtCEwxBqnnkMBUEsKGE']
 		},
-		ERqkusuryvGKBzKayXyhxXE: {
-			id: 'ERqkusuryvGKBzKayXyhxXE',
+		zBXuGXXYWMGbSdteMyNFhja: {
+			id: 'zBXuGXXYWMGbSdteMyNFhja',
+			type: 'prose',
+			layout: 4,
+			colorset: 0,
+			content: [
+				'YTZAMHbVsWKDaZeNdSYpFaA',
+				'BHRkpFHqdqFGzqJQUUqcHhR',
+				'BNDQkNtJpdSNXUuDUwAmgYz',
+				'fxbPhZADdeyCbysuCSwHNcA'
+			]
+		},
+		AfkGmkTkFBhUGQsSSSzAaWV: {
+			id: 'AfkGmkTkFBhUGQsSSSzAaWV',
 			type: 'link',
 			href: 'https://mutter.co',
 			target: '_blank'
 		},
-		XCdmKqAtyRNPKKRZJaNUfyX: {
-			id: 'XCdmKqAtyRNPKKRZJaNUfyX',
+		vCVXtBNMtzbVEuwrnhDGcCe: {
+			id: 'vCVXtBNMtzbVEuwrnhDGcCe',
 			type: 'link',
 			href: 'https://keybits.net',
 			target: '_blank'
 		},
-		yjdxqchTwgSjeTVgXeZhrrv: {
-			id: 'yjdxqchTwgSjeTVgXeZhrrv',
+		jdfSXyKXdGPQfUDqVrhGpew: {
+			id: 'jdfSXyKXdGPQfUDqVrhGpew',
 			type: 'link',
 			href: 'https://sonjastojanovic.com',
 			target: '_blank'
 		},
-		TPsjXxZhtuyfJQRytAVcRgJ: {
-			id: 'TPsjXxZhtuyfJQRytAVcRgJ',
+		yFZKjXVRgKtHqNrtFNfBeSS: {
+			id: 'yFZKjXVRgKtHqNrtFNfBeSS',
 			type: 'link',
 			href: 'https://trails-shop.at',
 			target: '_blank'
 		},
-		SUfVhRdtQwruDYJvgkETZxk: {
-			id: 'SUfVhRdtQwruDYJvgkETZxk',
+		NcjxywhftMGtnXhbGyvmcUy: {
+			id: 'NcjxywhftMGtnXhbGyvmcUy',
 			type: 'link',
 			href: 'https://postlmayrdesign.com',
 			target: '_blank'
 		},
-		amXvCtNxBsTJFzfeTCpdMsN: {
-			id: 'amXvCtNxBsTJFzfeTCpdMsN',
+		KKUfXFgJuXJrUSPyzMQrHcU: {
+			id: 'KKUfXFgJuXJrUSPyzMQrHcU',
 			type: 'link',
 			href: 'https://aufreiter.co',
 			target: '_blank'
 		},
-		PjwvEAbrZCxZFcqJqayVyhR: {
-			id: 'PjwvEAbrZCxZFcqJqayVyhR',
-			type: 'text',
-			layout: 5,
+		SCYnDDYECpBzMNaNstUNtvW: {
+			id: 'SCYnDDYECpBzMNaNstUNtvW',
+			type: 'note',
 			content: {
 				text: 'Big thanks to Johannes Mutter for helping with concept, design, and engineering, Tom Atkins for support with positioning and copywriting, and Sonja Stojanovic for modelling and being the very first happy Editable Website user — followed by Trails, Postlmayr Design, Aufreiter Architektur, and many more.',
 				annotations: [
 					{
 						start_offset: 14,
 						end_offset: 29,
-						node_id: 'ERqkusuryvGKBzKayXyhxXE'
+						node_id: 'AfkGmkTkFBhUGQsSSSzAaWV'
 					},
 					{
 						start_offset: 81,
 						end_offset: 91,
-						node_id: 'XCdmKqAtyRNPKKRZJaNUfyX'
+						node_id: 'vCVXtBNMtzbVEuwrnhDGcCe'
 					},
 					{
 						start_offset: 142,
 						end_offset: 158,
-						node_id: 'yjdxqchTwgSjeTVgXeZhrrv'
+						node_id: 'jdfSXyKXdGPQfUDqVrhGpew'
 					},
 					{
 						start_offset: 240,
 						end_offset: 246,
-						node_id: 'TPsjXxZhtuyfJQRytAVcRgJ'
+						node_id: 'yFZKjXVRgKtHqNrtFNfBeSS'
 					},
 					{
 						start_offset: 248,
 						end_offset: 264,
-						node_id: 'SUfVhRdtQwruDYJvgkETZxk'
+						node_id: 'NcjxywhftMGtnXhbGyvmcUy'
 					},
 					{
 						start_offset: 266,
 						end_offset: 287,
-						node_id: 'amXvCtNxBsTJFzfeTCpdMsN'
+						node_id: 'KKUfXFgJuXJrUSPyzMQrHcU'
 					}
 				]
 			}
@@ -1495,9 +1473,9 @@ const FULL_DOC = {
 		wmrbpSFAFUmMRPDumcjKqpF: {
 			id: 'wmrbpSFAFUmMRPDumcjKqpF',
 			type: 'prose',
-			layout: 2,
+			layout: 4,
 			colorset: 0,
-			content: ['PjwvEAbrZCxZFcqJqayVyhR']
+			content: ['SCYnDDYECpBzMNaNstUNtvW']
 		},
 		nav_logo: {
 			id: 'nav_logo',
@@ -1685,7 +1663,7 @@ const FULL_DOC = {
 				annotations: []
 			},
 			footer_link_columns: ['fcSSWQUTYajjknPChgGsPZz', 'footer_column_2', 'footer_column_3'],
-			logo_max_width: 88,
+			logo_max_width: 40,
 			logo_aspect_ratio: 1
 		},
 		page_1: {
@@ -1718,7 +1696,7 @@ const FULL_DOC = {
 				'BBExBsmaSTXMZdcxMsYngwg',
 				'preformatted_example',
 				'YTMHBcPkYXJMRUnuSAhrTDE',
-				'UBNYngEBJYtDWgeabtDJqWW',
+				'zBXuGXXYWMGbSdteMyNFhja',
 				'wmrbpSFAFUmMRPDumcjKqpF'
 			],
 			nav: 'nav_1',

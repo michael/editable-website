@@ -71,8 +71,7 @@ export function create_empty_doc(shared_documents) {
 			},
 			[heading_id]: {
 				id: heading_id,
-				type: 'text',
-				layout: 2,
+				type: 'heading_1',
 				content: {
 					text: '',
 					annotations: []
@@ -80,8 +79,7 @@ export function create_empty_doc(shared_documents) {
 			},
 			[paragraph_id]: {
 				id: paragraph_id,
-				type: 'text',
-				layout: 1,
+				type: 'paragraph',
 				content: {
 					text: '',
 					annotations: []

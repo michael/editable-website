@@ -91,7 +91,7 @@
 	</div>
 {/snippet}
 
-<Node class="ew-feature lg:text-lg bg-(--background) text-(--foreground) {colorset_class}" {path}>
+<Node class="ew-feature bg-(--background) text-(--foreground) {colorset_class}" {path}>
 	{@const layouts = [layout_1, layout_2, layout_3, layout_4]}
 	{@render layouts[node.layout - 1]()}
 </Node>

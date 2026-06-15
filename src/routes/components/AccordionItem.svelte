@@ -1,6 +1,7 @@
 <script>
 	import { getContext } from 'svelte';
-	import { Node, AnnotatedTextProperty, NodeArrayProperty } from 'svedit';
+	import { Node, NodeArrayProperty } from 'svedit';
+	import Base from './Base.svelte';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
@@ -8,7 +9,7 @@
 
 <Node class="ew-accordion-item" {path}>
 	<details
-		class="border-b border-[color-mix(in_oklch,var(--foreground)_7%,transparent)] py-4 sm:py-5 md:py-6"
+		class="border-b border-[color-mix(in_oklch,var(--foreground)_7%,transparent)] py-2 md:py-3"
 	>
 		<summary
 			class="list-none outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
@@ -17,8 +18,7 @@
 		>
 			<div class="flex items-center justify-between gap-4">
 				<div class="min-w-0">
-					<AnnotatedTextProperty
-						class="inline font-serif text-2xl text-balance text-(--foreground)"
+					<Base
 						path={[...path, 'title']}
 						placeholder="Title"
 					/>
@@ -39,7 +39,7 @@
 				</div>
 			</div>
 		</summary>
-		<div class="pt-3">
+		<div class="py-3">
 			<NodeArrayProperty class="flex flex-col gap-5 md:gap-8" path={[...path, 'body']} />
 		</div>
 	</details>
