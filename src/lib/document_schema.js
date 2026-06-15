@@ -5,18 +5,18 @@ const ALL_ANNOTATIONS = ['strong', 'emphasis', 'highlight', 'link'];
 const MINIMAL_ANNOTATIONS = ['emphasis', 'highlight'];
 const NO_ANNOTATIONS = [];
 const TEXT_NODE_TYPES = [
+	'paragraph_sm',
 	'paragraph',
+	'paragraph_lg',
+	'paragraph_xl',
 	'heading_1',
 	'heading_2',
 	'heading_3',
-	'paragraph_sm',
-	'paragraph_lg',
-	'paragraph_xl'
 ];
 const RICH_CONTENT_NODE_TYPES = [...TEXT_NODE_TYPES, 'list', 'supporting_media', 'button_group'];
 const RICH_CONTENT_NODE_TYPES_WITHOUT_HEADINGS = [
-	'paragraph',
 	'paragraph_sm',
+	'paragraph',
 	'paragraph_lg',
 	'paragraph_xl',
 	'list',
@@ -269,6 +269,7 @@ export const document_schema = define_document_schema({
 	paragraph: {
 		kind: 'text',
 		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'annotated_text',
 				node_types: ALL_ANNOTATIONS,
@@ -279,6 +280,7 @@ export const document_schema = define_document_schema({
 	paragraph_sm: {
 		kind: 'text',
 		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'annotated_text',
 				node_types: ALL_ANNOTATIONS,
@@ -289,6 +291,7 @@ export const document_schema = define_document_schema({
 	paragraph_lg: {
 		kind: 'text',
 		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'annotated_text',
 				node_types: ALL_ANNOTATIONS,
@@ -299,6 +302,7 @@ export const document_schema = define_document_schema({
 	paragraph_xl: {
 		kind: 'text',
 		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'annotated_text',
 				node_types: ALL_ANNOTATIONS,
@@ -310,6 +314,7 @@ export const document_schema = define_document_schema({
 	heading_1: {
 		kind: 'text',
 		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'annotated_text',
 				node_types: ALL_ANNOTATIONS,
@@ -320,6 +325,7 @@ export const document_schema = define_document_schema({
 	heading_2: {
 		kind: 'text',
 		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'annotated_text',
 				node_types: ALL_ANNOTATIONS,
@@ -331,6 +337,7 @@ export const document_schema = define_document_schema({
 	heading_3: {
 		kind: 'text',
 		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'annotated_text',
 				node_types: ALL_ANNOTATIONS,

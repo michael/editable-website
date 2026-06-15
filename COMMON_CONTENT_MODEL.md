@@ -18,57 +18,64 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 
 `paragraph` is the default rich text node for body copy inside editorial flows such as `prose`, `prose_grid_item`, `feature`, and `accordion_item`.
 
-| Property  | Type             | Default | Allowed annotation types                  | Meaning                                   |
-| --------- | ---------------- | ------- | ----------------------------------------- | ----------------------------------------- |
-| `content` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
+| Property  | Type             | Default | Allowed values | Allowed annotation types                  | Meaning                                   |
+| --------- | ---------------- | ------- | -------------- | ----------------------------------------- | ----------------------------------------- |
+| `layout`   | `integer`        | `1`     | `1`, `2`       | N/A                                       | Layout 1 is the standard body style. Layout 2 is muted secondary body copy. |
+| `content` | `annotated_text` | None    | N/A            | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
 
 ## Node: `paragraph_sm`
 
 `paragraph_sm` is a small editorial text node for supplementary copy inside rich text flows.
 
-| Property  | Type             | Default | Allowed annotation types                  | Meaning                                              |
-| --------- | ---------------- | ------- | ----------------------------------------- | ---------------------------------------------------- |
-| `content` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Editable small paragraph text. Newlines are allowed. |
+| Property  | Type             | Default | Allowed values | Allowed annotation types                  | Meaning                                              |
+| --------- | ---------------- | ------- | -------------- | ----------------------------------------- | ---------------------------------------------------- |
+| `layout`   | `integer`        | `1`     | `1`, `2`       | N/A                                       | Layout 1 is the standard body style. Layout 2 is muted secondary body copy. |
+| `content` | `annotated_text` | None    | N/A            | `strong`, `emphasis`, `highlight`, `link` | Editable small paragraph text. Newlines are allowed. |
 
 ## Node: `paragraph_lg`
 
 `paragraph_lg` is a larger editorial text node for introductory copy.
 
-| Property  | Type             | Default | Allowed annotation types                  | Meaning                                   |
-| --------- | ---------------- | ------- | ----------------------------------------- | ----------------------------------------- |
-| `content` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
+| Property  | Type             | Default | Allowed values | Allowed annotation types                  | Meaning                                   |
+| --------- | ---------------- | ------- | -------------- | ----------------------------------------- | ----------------------------------------- |
+| `layout`   | `integer`        | `1`     | `1`, `2`       | N/A                                       | Layout 1 is the standard body style. Layout 2 is muted secondary body copy. |
+| `content` | `annotated_text` | None    | N/A            | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
 
 ## Node: `paragraph_xl`
 
 `paragraph_xl` is a very large editorial text node for prominent introductory copy.
 
-| Property  | Type             | Default | Allowed annotation types                  | Meaning                                   |
-| --------- | ---------------- | ------- | ----------------------------------------- | ----------------------------------------- |
-| `content` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
+| Property  | Type             | Default | Allowed values | Allowed annotation types                  | Meaning                                   |
+| --------- | ---------------- | ------- | -------------- | ----------------------------------------- | ----------------------------------------- |
+| `layout`   | `integer`        | `1`     | `1`, `2`       | N/A                                       | Layout 1 is the standard body style. Layout 2 is muted secondary body copy. |
+| `content` | `annotated_text` | None    | N/A            | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
 
 ## Node: `heading_1`
 
 `heading_1` is the primary editorial heading node.
 
-| Property  | Type             | Default | Allowed annotation types                  | Meaning                                   |
-| --------- | ---------------- | ------- | ----------------------------------------- | ----------------------------------------- |
-| `content` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
+| Property  | Type             | Default | Allowed values | Allowed annotation types                  | Meaning                                   |
+| --------- | ---------------- | ------- | -------------- | ----------------------------------------- | ----------------------------------------- |
+| `layout`   | `integer`        | `1`     | `1`, `2`       | N/A                                       | Layout 1 is the standard heading style. Layout 2 is muted secondary copy. |
+| `content` | `annotated_text` | None    | N/A            | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
 
 ## Node: `heading_2`
 
 `heading_2` is the secondary editorial heading node.
 
-| Property  | Type             | Default | Allowed annotation types                  | Meaning                                   |
-| --------- | ---------------- | ------- | ----------------------------------------- | ----------------------------------------- |
-| `content` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
+| Property  | Type             | Default | Allowed values | Allowed annotation types                  | Meaning                                   |
+| --------- | ---------------- | ------- | -------------- | ----------------------------------------- | ----------------------------------------- |
+| `layout`   | `integer`        | `1`     | `1`, `2`       | N/A                                       | Layout 1 is the standard heading style. Layout 2 is muted secondary copy. |
+| `content` | `annotated_text` | None    | N/A            | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
 
 ## Node: `heading_3`
 
 `heading_3` is the tertiary editorial heading node.
 
-| Property  | Type             | Default | Allowed annotation types                  | Meaning                                   |
-| --------- | ---------------- | ------- | ----------------------------------------- | ----------------------------------------- |
-| `content` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
+| Property  | Type             | Default | Allowed values | Allowed annotation types                  | Meaning                                   |
+| --------- | ---------------- | ------- | -------------- | ----------------------------------------- | ----------------------------------------- |
+| `layout`   | `integer`        | `1`     | `1`, `2`       | N/A                                       | Layout 1 is the standard heading style. Layout 2 is muted secondary copy. |
+| `content` | `annotated_text` | None    | N/A            | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
 
 ## Node: `list_item`
 

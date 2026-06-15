@@ -91,10 +91,11 @@ function select_inserted_text_property(tr, property_name = 'label') {
 	});
 }
 
-function insert_text_node(tr, node_type, content = { text: '', annotations: [] }) {
+function insert_text_node(tr, node_type, content = { text: '', annotations: [] }, layout = 1) {
 	const new_text = {
 		id: nanoid(),
 		type: node_type,
+		layout,
 		content
 	};
 	tr.create(new_text);
@@ -314,13 +315,13 @@ const session_config = {
 		prose: 4,
 		prose_grid: 2,
 		prose_grid_item: 1,
-		paragraph: 1,
-		paragraph_sm: 1,
-		paragraph_lg: 1,
-		paragraph_xl: 1,
-		heading_1: 1,
-		heading_2: 1,
-		heading_3: 1,
+		paragraph: 2,
+		paragraph_sm: 2,
+		paragraph_lg: 2,
+		paragraph_xl: 2,
+		heading_1: 2,
+		heading_2: 2,
+		heading_3: 2,
 		preformatted: 1,
 		list: 4,
 		list_item: 1,
@@ -498,25 +499,25 @@ const session_config = {
 			tr.insert_nodes([new_prose_grid_id]);
 		},
 		paragraph: function (tr, content = { text: '', annotations: [] }) {
-			insert_text_node(tr, 'paragraph', content);
+			insert_text_node(tr, 'paragraph', content, 1);
 		},
 		paragraph_sm: function (tr, content = { text: '', annotations: [] }) {
-			insert_text_node(tr, 'paragraph_sm', content);
+			insert_text_node(tr, 'paragraph_sm', content, 1);
 		},
 		paragraph_lg: function (tr, content = { text: '', annotations: [] }) {
-			insert_text_node(tr, 'paragraph_lg', content);
+			insert_text_node(tr, 'paragraph_lg', content, 1);
 		},
 		paragraph_xl: function (tr, content = { text: '', annotations: [] }) {
-			insert_text_node(tr, 'paragraph_xl', content);
+			insert_text_node(tr, 'paragraph_xl', content, 1);
 		},
 		heading_1: function (tr, content = { text: '', annotations: [] }) {
-			insert_text_node(tr, 'heading_1', content);
+			insert_text_node(tr, 'heading_1', content, 1);
 		},
 		heading_2: function (tr, content = { text: '', annotations: [] }) {
-			insert_text_node(tr, 'heading_2', content);
+			insert_text_node(tr, 'heading_2', content, 1);
 		},
 		heading_3: function (tr, content = { text: '', annotations: [] }) {
-			insert_text_node(tr, 'heading_3', content);
+			insert_text_node(tr, 'heading_3', content, 1);
 		},
 		preformatted: function (tr, content = { text: '', annotations: [] }) {
 			const new_preformatted = {

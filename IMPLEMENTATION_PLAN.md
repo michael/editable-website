@@ -42,6 +42,18 @@ Add a reusable `paragraph_lg` text node for large introductory copy.
 - Add `ParagraphLG.svelte` and a shared `Large.svelte` typographic primitive.
 - Register `paragraph_lg` in the session config with inserter, HTML exporter, and node layout support.
 
+## Next implementation draft — paragraph layout toggle
+
+### Goal
+
+Add a second `paragraph` layout that renders muted secondary body copy.
+
+### Scope
+
+- Add a `layout` property to `paragraph` with values `1` and `2`.
+- Make `paragraph` layout 2 render with muted foreground styling.
+- Register `paragraph` as a two-layout node in the session config so the layout cycling command can switch between the two styles.
+
 ## Next implementation draft — paragraph_xl text node
 
 ### Goal

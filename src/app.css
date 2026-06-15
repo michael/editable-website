@@ -37,6 +37,7 @@
 	/* Website colors */
 	--background: oklch(1 0 0);
 	--foreground: oklch(0.25 0 0);
+	--foreground-color: var(--foreground);
 	--accent: oklch(0.25 0 0);
 	--accent-foreground: oklch(1 0 0);
 
