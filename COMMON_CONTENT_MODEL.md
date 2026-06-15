@@ -8,7 +8,7 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 
 **Node types**
 
-[`paragraph`](#node-paragraph) · [`note`](#node-note) · [`heading_1`](#node-heading_1) · [`heading_2`](#node-heading_2) · [`kicker`](#node-kicker) · [`heading_3`](#node-heading_3) · [`list`](#node-list) · [`list_item`](#node-list_item) · [`preformatted`](#node-preformatted) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`captioned_figure`](#node-captioned_figure) · [`page`](#node-page) · [`hero`](#node-hero) · [`prose_grid`](#node-prose_grid) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
+[`paragraph`](#node-paragraph) · [`paragraph_sm`](#node-paragraph_sm) · [`paragraph_lg`](#node-paragraph_lg) · [`heading_1`](#node-heading_1) · [`heading_2`](#node-heading_2) · [`kicker`](#node-kicker) · [`heading_3`](#node-heading_3) · [`list`](#node-list) · [`list_item`](#node-list_item) · [`preformatted`](#node-preformatted) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`captioned_figure`](#node-captioned_figure) · [`page`](#node-page) · [`hero`](#node-hero) · [`prose_grid`](#node-prose_grid) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
 
 **Annotation types**
 
@@ -22,13 +22,13 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 | --------- | ---------------- | ------- | ----------------------------------------- | ----------------------------------------- |
 | `content` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
 
-## Node: `note`
+## Node: `paragraph_sm`
 
-`note` is a small editorial text node for supplementary copy inside rich text flows.
+`paragraph_sm` is a small editorial text node for supplementary copy inside rich text flows.
 
-| Property  | Type             | Default | Allowed annotation types                  | Meaning                                     |
-| --------- | ---------------- | ------- | ----------------------------------------- | ------------------------------------------- |
-| `content` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Editable note text. Newlines are allowed.   |
+| Property  | Type             | Default | Allowed annotation types                  | Meaning                                              |
+| --------- | ---------------- | ------- | ----------------------------------------- | ---------------------------------------------------- |
+| `content` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Editable small paragraph text. Newlines are allowed. |
 
 ## Node: `heading_1`
 
@@ -74,9 +74,9 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 
 `preformatted` is a monospaced block for content that should preserve spacing and line breaks exactly as entered. It is useful for ASCII art, technical illustrations, logs, and similar fixed-width content. It accepts the same `annotated_text` storage shape as regular text, but no annotations are allowed.
 
-| Property  | Type             | Default | Allowed annotation types | Meaning                                                               |
-| --------- | ---------------- | ------- | ------------------------ | --------------------------------------------------------------------- |
-| `content` | `annotated_text` | None    | No annotations           | Preserved text content. Newlines are allowed.                         |
+| Property  | Type             | Default | Allowed annotation types | Meaning                                       |
+| --------- | ---------------- | ------- | ------------------------ | --------------------------------------------- |
+| `content` | `annotated_text` | None    | No annotations           | Preserved text content. Newlines are allowed. |
 
 ## Node: `list`
 
@@ -132,23 +132,23 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 
 `captioned_figure` is a media block with a single caption rendered below the media. It is useful when the image or video needs a brief explanatory line in a small font.
 
-| Property  | Type             | Default | Allowed node or annotation types         | Meaning                                               |
-| --------- | ---------------- | ------- | ---------------------------------------- | ----------------------------------------------------- |
-| `media`   | `node`           | `image` | `image`, `video`                         | Media displayed by the captioned figure.              |
+| Property  | Type             | Default | Allowed node or annotation types          | Meaning                                                           |
+| --------- | ---------------- | ------- | ----------------------------------------- | ----------------------------------------------------------------- |
+| `media`   | `node`           | `image` | `image`, `video`                          | Media displayed by the captioned figure.                          |
 | `caption` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Short caption rendered below the media. Newlines are not allowed. |
 
 ## Node: `page`
 
 `page` is the document root. It stores page metadata, shared chrome references, and an ordered body of content blocks.
 
-| Property      | Type             | Default  | Allowed node types                                                  | Meaning                                                                                                                               |
-| ------------- | ---------------- | -------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `title`       | `annotated_text` | None     | No annotations                                                      | Page title used for head metadata and editable search-result preview. Newlines are not allowed.                                       |
-| `description` | `annotated_text` | None     | No annotations                                                      | Page description used for head metadata and editable search-result preview. Newlines are allowed.                                     |
-| `image`       | `node`           | `image`  | `image`                                                             | Preview image used for page metadata. The `image` node is documented below because it is also used by `prose` via `supporting_media`. |
+| Property      | Type             | Default  | Allowed node types                                                                                              | Meaning                                                                                                                               |
+| ------------- | ---------------- | -------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`       | `annotated_text` | None     | No annotations                                                                                                  | Page title used for head metadata and editable search-result preview. Newlines are not allowed.                                       |
+| `description` | `annotated_text` | None     | No annotations                                                                                                  | Page description used for head metadata and editable search-result preview. Newlines are allowed.                                     |
+| `image`       | `node`           | `image`  | `image`                                                                                                         | Preview image used for page metadata. The `image` node is documented below because it is also used by `prose` via `supporting_media`. |
 | `body`        | `node_array`     | `prose`  | `hero`, `media_hero`, `prose`, `figure`, `captioned_figure`, `gallery`, `titled_gallery`, `descriptive_gallery` | Ordered page body blocks. The current app supports additional body block types, but they are outside this initial CCM scope.          |
-| `nav`         | `node`           | `nav`    | Out of scope                                                        | Shared navigation reference. Not specified in this draft.                                                                             |
-| `footer`      | `node`           | `footer` | Out of scope                                                        | Shared footer reference. Not specified in this draft.                                                                                 |
+| `nav`         | `node`           | `nav`    | Out of scope                                                                                                    | Shared navigation reference. Not specified in this draft.                                                                             |
+| `footer`      | `node`           | `footer` | Out of scope                                                                                                    | Shared footer reference. Not specified in this draft.                                                                                 |
 
 ## Node: `hero`
 
@@ -165,13 +165,13 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 
 `media_hero` is a high-emphasis introductory section with a large media region integrated into the layout. In the default layout, the title, description, and optional buttons appear first, followed by a large image or video that fills the remaining space so the full composition reaches the height of the viewport.
 
-| Property      | Type             | Default  | Allowed node or annotation types          | Meaning                                                                                          |
-| ------------- | ---------------- | -------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `layout`      | `integer`        | `1`      | Theme-defined                             | Visual arrangement of the media hero content.                                                    |
-| `title`       | `annotated_text` | None     | `strong`, `emphasis`, `highlight`, `link` | Required primary media hero statement. Newlines are not allowed.                                 |
+| Property      | Type             | Default  | Allowed node or annotation types          | Meaning                                                                                           |
+| ------------- | ---------------- | -------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `layout`      | `integer`        | `1`      | Theme-defined                             | Visual arrangement of the media hero content.                                                     |
+| `title`       | `annotated_text` | None     | `strong`, `emphasis`, `highlight`, `link` | Required primary media hero statement. Newlines are not allowed.                                  |
 | `description` | `annotated_text` | None     | `strong`, `emphasis`, `highlight`, `link` | Supporting media hero copy. Kept as a single text property so layouts can reason about hierarchy. |
-| `buttons`     | `node_array`     | `button` | `button`                                  | Optional action group. An empty array means the media hero has no buttons.                       |
-| `media`       | `node`           | `image`  | `image`, `video`                          | Large hero media region that completes the viewport-height composition.                          |
+| `buttons`     | `node_array`     | `button` | `button`                                  | Optional action group. An empty array means the media hero has no buttons.                        |
+| `media`       | `node`           | `image`  | `image`, `video`                          | Large hero media region that completes the viewport-height composition.                           |
 
 ## Node: `button`
 
@@ -188,34 +188,34 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 
 `prose_grid` is a grid of prose blocks arranged as columns on larger screens.
 
-| Property | Type         | Default | Allowed node types | Meaning                          |
-| -------- | ------------ | ------- | ------------------ | -------------------------------- |
-| `layout` | `integer`    | `1`     | `1`, `2`           | Text alignment for the grid.     |
-| `items`  | `node_array` | `prose_grid_item` | `prose_grid_item` | Ordered grid items.              |
+| Property | Type         | Default           | Allowed node types | Meaning                      |
+| -------- | ------------ | ----------------- | ------------------ | ---------------------------- |
+| `layout` | `integer`    | `1`               | `1`, `2`           | Text alignment for the grid. |
+| `items`  | `node_array` | `prose_grid_item` | `prose_grid_item`  | Ordered grid items.          |
 
 ## Node: `prose_grid_item`
 
 `prose_grid_item` is a prose block used as a child of `prose_grid`. It uses the same internal content structure as `prose`, but its own layout is limited to left-aligned or centered text.
 
-| Property  | Type         | Default | Allowed node types         | Meaning                                    |
-| --------- | ------------ | ------- | -------------------------- | ------------------------------------------ |
-| `layout`  | `integer`    | `1`     | `1`, `2`                    | Text alignment within the grid item.       |
-| `colorset` | `integer`   | `0`     | Theme-defined              | Optional color treatment.                  |
-| `content` | `node_array` | `paragraph`  | `paragraph`, `note`, `heading_1`, `heading_2`, `kicker`, `heading_3`, `list`, `supporting_media`, `button_group` | Ordered prose children. |
+| Property   | Type         | Default     | Allowed node types                                                                                                       | Meaning                              |
+| ---------- | ------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------ |
+| `layout`   | `integer`    | `1`         | `1`, `2`                                                                                                                 | Text alignment within the grid item. |
+| `colorset` | `integer`    | `0`         | Theme-defined                                                                                                            | Optional color treatment.            |
+| `content`  | `node_array` | `paragraph` | `paragraph`, `paragraph_sm`, `heading_1`, `heading_2`, `kicker`, `heading_3`, `list`, `supporting_media`, `button_group` | Ordered prose children.              |
 
 ## Node: `prose`
 
 `prose` is a text-first editorial section. It primarily contains headings and paragraphs, and may include supporting media that illustrates or visually enriches nearby text.
 
-| Property  | Type         | Default | Allowed node types         | Meaning                                   |
-| --------- | ------------ | ------- | -------------------------- | ----------------------------------------- |
-| `layout`  | `integer`    | `1`     | `1`, `2`, `3`, `4`         | Horizontal alignment and width treatment. |
-| `content` | `node_array` | `paragraph`  | `paragraph`, `note`, `heading_1`, `heading_2`, `kicker`, `heading_3`, `list`, `supporting_media`, `button_group` | Ordered prose children.                   |
+| Property  | Type         | Default     | Allowed node types                                                                                                       | Meaning                                   |
+| --------- | ------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------- |
+| `layout`  | `integer`    | `1`         | `1`, `2`, `3`, `4`                                                                                                       | Horizontal alignment and width treatment. |
+| `content` | `node_array` | `paragraph` | `paragraph`, `paragraph_sm`, `heading_1`, `heading_2`, `kicker`, `heading_3`, `list`, `supporting_media`, `button_group` | Ordered prose children.                   |
 
 ### Prose layouts
 
-| Value | Meaning              |
-| ----- | -------------------- |
+| Value | Meaning               |
+| ----- | --------------------- |
 | `1`   | Left-aligned prose.   |
 | `2`   | Center-oriented prose |
 | `3`   | Right-aligned prose.  |
@@ -224,8 +224,6 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 ## Node: `supporting_media`
 
 `supporting_media` is media placed inside a `prose` flow to support, illustrate, or visually enrich nearby text. It references either an `image` or `video` node and can be sized independently from text.
-
-
 
 | Property             | Type      | Default | Allowed node types | Meaning                                                                                       |
 | -------------------- | --------- | ------- | ------------------ | --------------------------------------------------------------------------------------------- |
@@ -245,10 +243,10 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 
 `accordion_item` is a collapsible content block with a single title and a rich body. The title acts as the heading of the collapsible. The body accepts the same child nodes as `prose`, allowing a couple of paragraphs and optional supporting media inside the expanded content.
 
-| Property | Type             | Default | Allowed node or annotation types | Meaning                                                              |
-| -------- | ---------------- | ------- | -------------------------------- | -------------------------------------------------------------------- |
-| `title`  | `annotated_text` | None    | `emphasis`, `highlight`, `link`  | Required heading of the collapsible. Newlines are not allowed.       |
-| `body`   | `node_array`     | `paragraph`  | `paragraph`, `note`, `heading_1`, `heading_2`, `kicker`, `heading_3`, `list`, `supporting_media`, `button_group` | Expandable rich body content, using the same child nodes as `prose`. |
+| Property | Type             | Default     | Allowed node or annotation types                                                                                         | Meaning                                                              |
+| -------- | ---------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
+| `title`  | `annotated_text` | None        | `emphasis`, `highlight`, `link`                                                                                          | Required heading of the collapsible. Newlines are not allowed.       |
+| `body`   | `node_array`     | `paragraph` | `paragraph`, `paragraph_sm`, `heading_1`, `heading_2`, `kicker`, `heading_3`, `list`, `supporting_media`, `button_group` | Expandable rich body content, using the same child nodes as `prose`. |
 
 ## Node: `gallery`
 

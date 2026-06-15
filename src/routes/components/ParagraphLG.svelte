@@ -1,16 +1,18 @@
 <script>
 	import { Node } from 'svedit';
-	import Large from './Large.svelte';
+	import { AnnotatedTextProperty } from 'svedit';
 	import { reveal } from '../reveal.js';
 
 	let { path } = $props();
 </script>
 
-<Node class="ew-lead" {path}>
+<Node class="ew-paragraph-lg" {path}>
 	<div use:reveal>
-		<Large
+		<AnnotatedTextProperty
+			tag='p'
+			class="body-lg"
 			path={[...path, 'content']}
-			placeholder="Lead"
+			placeholder='Large Paragraph'
 		/>
 	</div>
 </Node>

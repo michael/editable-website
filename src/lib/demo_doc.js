@@ -1433,7 +1433,7 @@ const FULL_DOC = {
 		},
 		SCYnDDYECpBzMNaNstUNtvW: {
 			id: 'SCYnDDYECpBzMNaNstUNtvW',
-			type: 'note',
+			type: 'paragraph_sm',
 			content: {
 				text: 'Big thanks to Johannes Mutter for helping with concept, design, and engineering, Tom Atkins for support with positioning and copywriting, and Sonja Stojanovic for modelling and being the very first happy Editable Website user — followed by Trails, Postlmayr Design, Aufreiter Architektur, and many more.',
 				annotations: [

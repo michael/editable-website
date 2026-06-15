@@ -38,8 +38,8 @@ import ProseGrid from './components/ProseGrid.svelte';
 import ProseGridItem from './components/ProseGridItem.svelte';
 import Preformatted from './components/Preformatted.svelte';
 import Paragraph from './components/Paragraph.svelte';
-import Lead from './components/Lead.svelte';
-import Note from './components/Note.svelte';
+import ParagraphLG from './components/ParagraphLG.svelte';
+import ParagraphSM from './components/ParagraphSM.svelte';
 import Heading1 from './components/Heading1.svelte';
 import Heading2 from './components/Heading2.svelte';
 import Heading3 from './components/Heading3.svelte';
@@ -186,8 +186,8 @@ const session_config = {
 		prose_grid_item: ProseGridItem,
 		preformatted: Preformatted,
 		paragraph: Paragraph,
-		lead: Lead,
-		note: Note,
+		paragraph_lg: ParagraphLG,
+		paragraph_sm: ParagraphSM,
 		heading_1: Heading1,
 		heading_2: Heading2,
 		heading_3: Heading3,
@@ -294,8 +294,8 @@ const session_config = {
 			return html;
 		},
 		paragraph: (node) => `<p>${node.content.text}</p>\n`,
-		note: (node) => `<p>${node.content.text}</p>\n`,
-		lead: (node) => `<p>${node.content.text}</p>\n`,
+		paragraph_sm: (node) => `<p>${node.content.text}</p>\n`,
+		paragraph_lg: (node) => `<p>${node.content.text}</p>\n`,
 		heading_1: (node) => `<h1>${node.content.text}</h1>\n`,
 		heading_2: (node) => `<h2>${node.content.text}</h2>\n`,
 		kicker: (node) => `<p>${node.content.text}</p>\n`,
@@ -315,8 +315,8 @@ const session_config = {
 		prose_grid: 2,
 		prose_grid_item: 1,
 		paragraph: 1,
-		note: 1,
-		lead: 1,
+		paragraph_sm: 1,
+		paragraph_lg: 1,
 		heading_1: 1,
 		heading_2: 1,
 		kicker: 1,
@@ -500,11 +500,11 @@ const session_config = {
 		paragraph: function (tr, content = { text: '', annotations: [] }) {
 			insert_text_node(tr, 'paragraph', content);
 		},
-		note: function (tr, content = { text: '', annotations: [] }) {
-			insert_text_node(tr, 'note', content);
+		paragraph_sm: function (tr, content = { text: '', annotations: [] }) {
+			insert_text_node(tr, 'paragraph_sm', content);
 		},
-		lead: function (tr, content = { text: '', annotations: [] }) {
-			insert_text_node(tr, 'lead', content);
+		paragraph_lg: function (tr, content = { text: '', annotations: [] }) {
+			insert_text_node(tr, 'paragraph_lg', content);
 		},
 		heading_1: function (tr, content = { text: '', annotations: [] }) {
 			insert_text_node(tr, 'heading_1', content);

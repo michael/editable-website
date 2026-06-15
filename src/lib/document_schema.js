@@ -4,9 +4,24 @@ import { MEDIA_DEFAULTS } from '$lib/config.js';
 const ALL_ANNOTATIONS = ['strong', 'emphasis', 'highlight', 'link'];
 const MINIMAL_ANNOTATIONS = ['emphasis', 'highlight'];
 const NO_ANNOTATIONS = [];
-const TEXT_NODE_TYPES = ['paragraph', 'heading_1', 'heading_2', 'heading_3', 'note', 'lead', 'kicker'];
+const TEXT_NODE_TYPES = [
+	'paragraph',
+	'paragraph_sm',
+	'heading_1',
+	'heading_2',
+	'heading_3',
+	'paragraph_lg',
+	'kicker'
+];
 const RICH_CONTENT_NODE_TYPES = [...TEXT_NODE_TYPES, 'list', 'supporting_media', 'button_group'];
-const RICH_CONTENT_NODE_TYPES_WITHOUT_HEADINGS = ['paragraph', 'note', 'lead', 'list', 'supporting_media', 'button_group'];
+const RICH_CONTENT_NODE_TYPES_WITHOUT_HEADINGS = [
+	'paragraph',
+	'paragraph_sm',
+	'paragraph_lg',
+	'list',
+	'supporting_media',
+	'button_group'
+];
 
 export const document_schema = define_document_schema({
 	page: {
@@ -260,7 +275,7 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
-	note: {
+	paragraph_sm: {
 		kind: 'text',
 		properties: {
 			content: {
@@ -270,7 +285,7 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
-	lead: {
+	paragraph_lg: {
 		kind: 'text',
 		properties: {
 			content: {

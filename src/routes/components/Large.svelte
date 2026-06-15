@@ -1,6 +1,6 @@
 <script>
 	import { AnnotatedTextProperty } from 'svedit';
-	let { path, tag = 'p', placeholder = 'Lead', class: css_class = '' } = $props();
+	let { path, tag = 'p', placeholder = 'ParagraphLG', class: css_class = '' } = $props();
 </script>
 
 <AnnotatedTextProperty
