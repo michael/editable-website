@@ -7,7 +7,6 @@ const TEXT_NODE_TYPES = [
 	'paragraph_lg',
 	'heading_1',
 	'heading_2',
-	'kicker',
 	'heading_3'
 ];
 const TITLE_NODE_TYPES = ['heading_1', 'heading_2', 'heading_3'];

@@ -916,7 +916,7 @@ const FULL_DOC = {
 		},
 		jzMUAkKquWACdzyTFtgyxdV: {
 			id: 'jzMUAkKquWACdzyTFtgyxdV',
-			type: 'kicker',
+			type: 'paragraph_sm',
 			content: {
 				text: 'PRE-LAUNCH',
 				annotations: []
@@ -976,7 +976,7 @@ const FULL_DOC = {
 		},
 		aPYQncYTyzFJSDAcGejvvQV: {
 			id: 'aPYQncYTyzFJSDAcGejvvQV',
-			type: 'kicker',
+			type: 'paragraph_sm',
 			content: {
 				text: 'PERSONAL',
 				annotations: []
@@ -1036,7 +1036,7 @@ const FULL_DOC = {
 		},
 		XqzKZKnYXApBFkcctNNhRxJ: {
 			id: 'XqzKZKnYXApBFkcctNNhRxJ',
-			type: 'kicker',
+			type: 'paragraph_sm',
 			content: {
 				text: 'COMMERCIAL',
 				annotations: []
@@ -1345,7 +1345,7 @@ const FULL_DOC = {
 		},
 		YTZAMHbVsWKDaZeNdSYpFaA: {
 			id: 'YTZAMHbVsWKDaZeNdSYpFaA',
-			type: 'kicker',
+			type: 'paragraph_sm',
 			content: {
 				text: 'I love it',
 				annotations: []

@@ -10,8 +10,7 @@ const TEXT_NODE_TYPES = [
 	'heading_1',
 	'heading_2',
 	'heading_3',
-	'paragraph_lg',
-	'kicker'
+	'paragraph_lg'
 ];
 const RICH_CONTENT_NODE_TYPES = [...TEXT_NODE_TYPES, 'list', 'supporting_media', 'button_group'];
 const RICH_CONTENT_NODE_TYPES_WITHOUT_HEADINGS = [
@@ -315,16 +314,7 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
-	kicker: {
-		kind: 'text',
-		properties: {
-			content: {
-				type: 'annotated_text',
-				node_types: ALL_ANNOTATIONS,
-				allow_newlines: true
-			}
-		}
-	},
+
 	heading_3: {
 		kind: 'text',
 		properties: {

@@ -43,7 +43,6 @@ import ParagraphSM from './components/ParagraphSM.svelte';
 import Heading1 from './components/Heading1.svelte';
 import Heading2 from './components/Heading2.svelte';
 import Heading3 from './components/Heading3.svelte';
-import Kicker from './components/Kicker.svelte';
 import List from './components/List.svelte';
 import ListItem from './components/ListItem.svelte';
 import Gallery from './components/Gallery.svelte';
@@ -191,7 +190,6 @@ const session_config = {
 		heading_1: Heading1,
 		heading_2: Heading2,
 		heading_3: Heading3,
-		kicker: Kicker,
 		list: List,
 		list_item: ListItem,
 		image: Image,
@@ -298,7 +296,6 @@ const session_config = {
 		paragraph_lg: (node) => `<p>${node.content.text}</p>\n`,
 		heading_1: (node) => `<h1>${node.content.text}</h1>\n`,
 		heading_2: (node) => `<h2>${node.content.text}</h2>\n`,
-		kicker: (node) => `<p>${node.content.text}</p>\n`,
 		heading_3: (node) => `<h3>${node.content.text}</h3>\n`,
 		preformatted: (node) => `<pre>${node.content.text}</pre>\n`,
 		list: (node, session, html_exporters) => {
@@ -319,7 +316,6 @@ const session_config = {
 		paragraph_lg: 1,
 		heading_1: 1,
 		heading_2: 1,
-		kicker: 1,
 		heading_3: 1,
 		preformatted: 1,
 		list: 4,
@@ -511,9 +507,6 @@ const session_config = {
 		},
 		heading_2: function (tr, content = { text: '', annotations: [] }) {
 			insert_text_node(tr, 'heading_2', content);
-		},
-		kicker: function (tr, content = { text: '', annotations: [] }) {
-			insert_text_node(tr, 'kicker', content);
 		},
 		heading_3: function (tr, content = { text: '', annotations: [] }) {
 			insert_text_node(tr, 'heading_3', content);
