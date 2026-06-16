@@ -21,31 +21,46 @@ const FULL_DOC = {
 			focal_point_y: 0.5,
 			object_fit: 'cover'
 		},
-		ccHVKDeyhrRVfKZCpXvxhac: {
-			id: 'ccHVKDeyhrRVfKZCpXvxhac',
-			type: 'button',
-			layout: 1,
-			href: '/#RtYpQwXsZvNmKjHgFdSaLe',
-			target: '_self',
-			label: {
-				text: '↓',
-				annotations: []
-			}
-		},
-		hero_1: {
-			id: 'hero_1',
-			type: 'hero',
-			layout: 1,
-			colorset: 0,
-			title: {
+		xjRSnwSbcTAaeNavUDAwrQq: {
+			id: 'xjRSnwSbcTAaeNavUDAwrQq',
+			type: 'heading_1',
+			content: {
 				text: 'Imagine you could edit your website live on the page',
 				annotations: []
 			},
-			description: {
+			layout: 1
+		},
+		GcUtrrnqbpxJJJuZvGyPfuk: {
+			id: 'GcUtrrnqbpxJJJuZvGyPfuk',
+			type: 'paragraph_xl',
+			layout: 2,
+			content: {
 				text: 'Dream no more…',
 				annotations: []
-			},
-			buttons: ['ccHVKDeyhrRVfKZCpXvxhac']
+			}
+		},
+		MHcsYrCNDUyJxpyfzRNtpFk: {
+			id: 'MHcsYrCNDUyJxpyfzRNtpFk',
+			type: 'button',
+			layout: 1,
+			href: 'https://github.com/michael/editable-website#getting-started',
+			target: '_blank',
+			label: {
+				text: 'Get started',
+				annotations: []
+			}
+		},
+		DpRXucgvAFRBDsVUJqSduSQ: {
+			id: 'DpRXucgvAFRBDsVUJqSduSQ',
+			type: 'button_group',
+			buttons: ['MHcsYrCNDUyJxpyfzRNtpFk']
+		},
+		gRpPsPcYyMPRSWWDXxvNGAF: {
+			id: 'gRpPsPcYyMPRSWWDXxvNGAF',
+			type: 'prose',
+			layout: 1,
+			colorset: 0,
+			content: ['xjRSnwSbcTAaeNavUDAwrQq', 'GcUtrrnqbpxJJJuZvGyPfuk', 'DpRXucgvAFRBDsVUJqSduSQ']
 		},
 		VbNcMxZaQwErTyUiOpLkJh: {
 			id: 'VbNcMxZaQwErTyUiOpLkJh',
@@ -1730,7 +1745,7 @@ const FULL_DOC = {
 			},
 			image: 'vMaUqeqBAVSyPgDpnxWWPCK',
 			body: [
-				'hero_1',
+				'gRpPsPcYyMPRSWWDXxvNGAF',
 				'RtYpQwXsZvNmKjHgFdSaLe',
 				'xKmNqPrStVwYzAbCdEfGh',
 				'dyRWExwbkfuqKyDupbEqaec',

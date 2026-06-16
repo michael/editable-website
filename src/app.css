@@ -63,29 +63,29 @@
 /* Typography system */
 /******************************************************************/
 
-/* Hero.title, ... */
+/* Display 1, ... */
 @utility display-1 {
-  @apply font-sans tracking-tight text-6xl lg:text-7xl text-balance;
+  @apply font-sans leading-tight tracking-tight text-6xl lg:text-7xl text-balance;
 }
 
-/* Hero.title, ... */
+/* Display 2, ... */
 @utility display-2 {
-  @apply font-sans tracking-tight text-5xl lg:text-6xl text-balance;
+  @apply font-sans leading-tight tracking-tight text-5xl lg:text-6xl text-balance;
 }
 
 /* E.g. Heading1 */
 @utility display-3 {
-  @apply font-sans tracking-tight text-4xl lg:text-5xl text-balance;
+  @apply font-sans leading-tight tracking-tight text-4xl lg:text-5xl text-balance;
 }
 
 /* E.g. Heading2 */
 @utility display-4 {
-  @apply font-sans tracking-tight text-3xl lg:text-4xl text-balance;
+  @apply font-sans leading-tight tracking-tight text-3xl lg:text-4xl text-balance;
 }
 
 /* E.g. Heading3, TitleGallery.title, ... */
 @utility display-5 {
-  @apply font-sans tracking-tight text-2xl lg:text-3xl text-balance;
+  @apply font-sans leading-tight tracking-tight text-2xl lg:text-3xl text-balance;
 }
 
 /* ParagraphSM, ListingItem.description, ... */

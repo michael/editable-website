@@ -58,8 +58,6 @@ import Figure from './components/Figure.svelte';
 import CaptionedFigure from './components/CaptionedFigure.svelte';
 import SupportingMedia from './components/SupportingMedia.svelte';
 import Feature from './components/Feature.svelte';
-import Hero from './components/Hero.svelte';
-import MediaHero from './components/MediaHero.svelte';
 import Button from './components/Button.svelte';
 import ButtonGroup from './components/ButtonGroup.svelte';
 import Image from './components/Image.svelte';
@@ -178,8 +176,6 @@ const session_config = {
 		footer: Footer,
 		footer_link_column: FooterLinkColumn,
 		footer_link: FooterLink,
-		hero: Hero,
-		media_hero: MediaHero,
 		button: Button,
 		button_group: ButtonGroup,
 		prose: Prose,
@@ -331,9 +327,7 @@ const session_config = {
 		feature: 4,
 		gallery: 5,
 		nav_item: 2,
-		button: 2,
-		hero: 4,
-		media_hero: 1
+		button: 2
 	},
 
 	/**
@@ -663,41 +657,7 @@ const session_config = {
 			tr.insert_nodes([new_nav_item_id]);
 			select_inserted_text_property(tr);
 		},
-		hero: function (tr, content = { text: '', annotations: [] }, layout = 1) {
-			const new_hero_id = tr.build('new_hero', {
-				new_hero: {
-					id: 'new_hero',
-					type: 'hero',
-					colorset: 0,
-					title: { text: '', annotations: [] },
-					description: { text: '', annotations: [] },
-					buttons: []
-				}
-			});
 
-			tr.insert_nodes([new_hero_id]);
-		},
-		media_hero: function (tr, content = { text: '', annotations: [] }, layout = 1) {
-			const new_media_hero_id = tr.build('new_media_hero', {
-				media_hero_image: {
-					id: 'media_hero_image',
-					type: 'image',
-					...MEDIA_DEFAULTS
-				},
-				new_media_hero: {
-					id: 'new_media_hero',
-					type: 'media_hero',
-					layout,
-					colorset: 0,
-					title: { text: '', annotations: [] },
-					description: { text: '', annotations: [] },
-					buttons: [],
-					media: 'media_hero_image'
-				}
-			});
-
-			tr.insert_nodes([new_media_hero_id]);
-		},
 		button: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_button_id = tr.build('new_button', {
 				new_button: {

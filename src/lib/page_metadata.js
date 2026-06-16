@@ -127,17 +127,6 @@ export function extract_page_metadata(page_doc) {
 			}
 		}
 
-		if (node.type === 'hero') {
-			const hero_title = extract_plain_text(node.title);
-			if (!fallback_title && hero_title) {
-				fallback_title = hero_title;
-			}
-
-			const hero_description = extract_plain_text(node.description);
-			if (!fallback_description && hero_description) {
-				fallback_description = hero_description;
-			}
-		}
 
 		if (node.type === 'descriptive_gallery_item') {
 			const item_title = extract_plain_text(node.title);

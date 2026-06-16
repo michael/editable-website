@@ -8,7 +8,7 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 
 **Node types**
 
-[`paragraph`](#node-paragraph) · [`paragraph_sm`](#node-paragraph_sm) · [`paragraph_lg`](#node-paragraph_lg) · [`paragraph_xl`](#node-paragraph_xl) · [`heading_1`](#node-heading_1) · [`heading_2`](#node-heading_2) · [`heading_3`](#node-heading_3) · [`list`](#node-list) · [`list_item`](#node-list_item) · [`preformatted`](#node-preformatted) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`captioned_figure`](#node-captioned_figure) · [`page`](#node-page) · [`hero`](#node-hero) · [`prose_grid`](#node-prose_grid) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
+[`paragraph`](#node-paragraph) · [`paragraph_sm`](#node-paragraph_sm) · [`paragraph_lg`](#node-paragraph_lg) · [`paragraph_xl`](#node-paragraph_xl) · [`heading_1`](#node-heading_1) · [`heading_2`](#node-heading_2) · [`heading_3`](#node-heading_3) · [`list`](#node-list) · [`list_item`](#node-list_item) · [`preformatted`](#node-preformatted) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`captioned_figure`](#node-captioned_figure) · [`page`](#node-page) · [`prose_grid`](#node-prose_grid) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
 
 **Annotation types**
 
@@ -161,36 +161,15 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 | `title`       | `annotated_text` | None     | No annotations                                                                                                  | Page title used for head metadata and editable search-result preview. Newlines are not allowed.                                       |
 | `description` | `annotated_text` | None     | No annotations                                                                                                  | Page description used for head metadata and editable search-result preview. Newlines are allowed.                                     |
 | `image`       | `node`           | `image`  | `image`                                                                                                         | Preview image used for page metadata. The `image` node is documented below because it is also used by `prose` via `supporting_media`. |
-| `body`        | `node_array`     | `prose`  | `hero`, `media_hero`, `prose`, `figure`, `captioned_figure`, `gallery`, `titled_gallery`, `descriptive_gallery` | Ordered page body blocks. The current app supports additional body block types, but they are outside this initial CCM scope.          |
+| `body`        | `node_array`     | `prose`  | `prose`, `figure`, `captioned_figure`, `gallery`, `titled_gallery`, `descriptive_gallery` | Ordered page body blocks. The current app supports additional body block types, but they are outside this initial CCM scope.          |
 | `nav`         | `node`           | `nav`    | Out of scope                                                                                                    | Shared navigation reference. Not specified in this draft.                                                                             |
 | `footer`      | `node`           | `footer` | Out of scope                                                                                                    | Shared footer reference. Not specified in this draft.                                                                                 |
 
-## Node: `hero`
 
-`hero` is a high-emphasis introductory section. It is intentionally more structured than `prose` so layouts can preserve a clear visual hierarchy: one title, one supporting description, and one action area.
-
-| Property      | Type             | Default  | Allowed node or annotation types          | Meaning                                                                                     |
-| ------------- | ---------------- | -------- | ----------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `layout`      | `integer`        | `1`      | Theme-defined                             | Visual arrangement of the hero content.                                                     |
-| `title`       | `annotated_text` | None     | `strong`, `emphasis`, `highlight`, `link` | Required primary hero statement. Newlines are not allowed.                                  |
-| `description` | `annotated_text` | None     | `strong`, `emphasis`, `highlight`, `link` | Supporting hero copy. Kept as a single text property so layouts can reason about hierarchy. |
-| `buttons`     | `node_array`     | `button` | `button`                                  | Optional action group. An empty array means the hero has no buttons.                        |
-
-## Node: `media_hero`
-
-`media_hero` is a high-emphasis introductory section with a large media region integrated into the layout. In the default layout, the title, description, and optional buttons appear first, followed by a large image or video that fills the remaining space so the full composition reaches the height of the viewport.
-
-| Property      | Type             | Default  | Allowed node or annotation types          | Meaning                                                                                           |
-| ------------- | ---------------- | -------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `layout`      | `integer`        | `1`      | Theme-defined                             | Visual arrangement of the media hero content.                                                     |
-| `title`       | `annotated_text` | None     | `strong`, `emphasis`, `highlight`, `link` | Required primary media hero statement. Newlines are not allowed.                                  |
-| `description` | `annotated_text` | None     | `strong`, `emphasis`, `highlight`, `link` | Supporting media hero copy. Kept as a single text property so layouts can reason about hierarchy. |
-| `buttons`     | `node_array`     | `button` | `button`                                  | Optional action group. An empty array means the media hero has no buttons.                        |
-| `media`       | `node`           | `image`  | `image`, `video`                          | Large hero media region that completes the viewport-height composition.                           |
 
 ## Node: `button`
 
-`button` is a call-to-action link, usually rendered inside a hero or other action group.
+`button` is a call-to-action link, usually rendered inside a button group.
 
 | Property | Type             | Default | Allowed annotation types | Meaning                                   |
 | -------- | ---------------- | ------- | ------------------------ | ----------------------------------------- |
