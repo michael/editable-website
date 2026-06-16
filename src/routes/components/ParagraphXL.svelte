@@ -15,7 +15,7 @@
 			tag='p'
 			class={`body-xl ${layout === 2 ? 'text-(--foreground)/50' : ''}`}
 			path={[...path, 'content']}
-			placeholder='Extra large paragraph'
+			placeholder='Extra Large Paragraph'
 		/>
 	</div>
 </Node>

@@ -105,7 +105,7 @@
 
 /* ParagraphXL, ... */
 @utility body-xl {
-	@apply font-sans text-xl;
+	@apply font-sans text-xl lg:text-2xl;
 }
 
 /* EW-specific utils */
