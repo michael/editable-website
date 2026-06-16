@@ -13,7 +13,7 @@
 	<div use:reveal>
 		<AnnotatedTextProperty
 			tag='h2'
-			class={`display-3 ${layout === 2 ? 'text-(--foreground-color)/50' : ''}`}
+			class={`display-3 ${layout === 2 ? 'text-(--foreground)/50' : ''}`}
 			path={[...path, 'content']}
 			placeholder='Heading 1'
 		/>

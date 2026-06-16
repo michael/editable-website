@@ -13,7 +13,7 @@
 	<div use:reveal>
 		<AnnotatedTextProperty
 			tag='p'
-			class={`body-xl ${layout === 2 ? 'text-(--foreground-color)/50' : ''}`}
+			class={`body-xl ${layout === 2 ? 'text-(--foreground)/50' : ''}`}
 			path={[...path, 'content']}
 			placeholder='Extra large paragraph'
 		/>

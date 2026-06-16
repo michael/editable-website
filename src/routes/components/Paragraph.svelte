@@ -13,7 +13,7 @@
 	<div use:reveal>
 		<AnnotatedTextProperty
 			tag='p'
-			class={`body-base ${layout === 2 ? 'text-(--foreground-color)/50' : ''}`}
+			class={`body-base ${layout === 2 ? 'text-(--foreground)/50' : ''}`}
 			path={[...path, 'content']}
 			placeholder='Paragraph'
 		/>
