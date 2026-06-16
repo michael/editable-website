@@ -35,11 +35,11 @@
 
 :root {
 	/* Website colors */
-	--background: oklch(1 0 0);
-	--foreground: oklch(0.25 0 0);
-	--foreground-color: var(--foreground);
-	--accent: oklch(0.25 0 0);
-	--accent-foreground: oklch(1 0 0);
+	--background: oklch(0 0 0);
+	--foreground: oklch(1 0 0);
+
+	--accent: oklch(1 0 0);
+	--accent-foreground: oklch(0 0 0);
 
 	/* Editor colors */
 	--svedit-brand: oklch(60% 0.22 283);
