@@ -44,6 +44,8 @@ import ParagraphSM from './components/ParagraphSM.svelte';
 import Heading1 from './components/Heading1.svelte';
 import Heading2 from './components/Heading2.svelte';
 import Heading3 from './components/Heading3.svelte';
+import Heading4 from './components/Heading4.svelte';
+import Heading5 from './components/Heading5.svelte';
 import List from './components/List.svelte';
 import ListItem from './components/ListItem.svelte';
 import Gallery from './components/Gallery.svelte';
@@ -189,6 +191,8 @@ const session_config = {
 		heading_1: Heading1,
 		heading_2: Heading2,
 		heading_3: Heading3,
+		heading_4: Heading4,
+		heading_5: Heading5,
 		list: List,
 		list_item: ListItem,
 		image: Image,
@@ -297,6 +301,8 @@ const session_config = {
 		heading_1: (node) => `<h1>${node.content.text}</h1>\n`,
 		heading_2: (node) => `<h2>${node.content.text}</h2>\n`,
 		heading_3: (node) => `<h3>${node.content.text}</h3>\n`,
+		heading_4: (node) => `<h4>${node.content.text}</h4>\n`,
+		heading_5: (node) => `<h5>${node.content.text}</h5>\n`,
 		preformatted: (node) => `<pre>${node.content.text}</pre>\n`,
 		list: (node, session, html_exporters) => {
 			let html = '<ul>\n';
@@ -318,6 +324,8 @@ const session_config = {
 		heading_1: 2,
 		heading_2: 2,
 		heading_3: 2,
+		heading_4: 2,
+		heading_5: 2,
 		preformatted: 1,
 		list: 4,
 		list_item: 1,
@@ -512,6 +520,12 @@ const session_config = {
 		},
 		heading_3: function (tr, content = { text: '', annotations: [] }) {
 			insert_text_node(tr, 'heading_3', content, 1);
+		},
+		heading_4: function (tr, content = { text: '', annotations: [] }) {
+			insert_text_node(tr, 'heading_4', content, 1);
+		},
+		heading_5: function (tr, content = { text: '', annotations: [] }) {
+			insert_text_node(tr, 'heading_5', content, 1);
 		},
 		preformatted: function (tr, content = { text: '', annotations: [] }) {
 			const new_preformatted = {

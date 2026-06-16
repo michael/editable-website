@@ -8,9 +8,11 @@ const TEXT_NODE_TYPES = [
 	'paragraph_xl',
 	'heading_1',
 	'heading_2',
-	'heading_3'
+	'heading_3',
+	'heading_4',
+	'heading_5'
 ];
-const TITLE_NODE_TYPES = ['heading_1', 'heading_2', 'heading_3'];
+const TITLE_NODE_TYPES = ['heading_1', 'heading_2', 'heading_3', 'heading_4', 'heading_5'];
 
 // Shared helpers for extracting page-level metadata from a page document.
 

@@ -8,7 +8,7 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 
 **Node types**
 
-[`paragraph`](#node-paragraph) · [`paragraph_sm`](#node-paragraph_sm) · [`paragraph_lg`](#node-paragraph_lg) · [`paragraph_xl`](#node-paragraph_xl) · [`heading_1`](#node-heading_1) · [`heading_2`](#node-heading_2) · [`heading_3`](#node-heading_3) · [`list`](#node-list) · [`list_item`](#node-list_item) · [`preformatted`](#node-preformatted) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`captioned_figure`](#node-captioned_figure) · [`page`](#node-page) · [`prose_grid`](#node-prose_grid) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
+[`paragraph`](#node-paragraph) · [`paragraph_sm`](#node-paragraph_sm) · [`paragraph_lg`](#node-paragraph_lg) · [`paragraph_xl`](#node-paragraph_xl) · [`heading_1`](#node-heading_1) · [`heading_2`](#node-heading_2) · [`heading_3`](#node-heading_3) · [`heading_4`](#node-heading_4) · [`heading_5`](#node-heading_5) · [`list`](#node-list) · [`list_item`](#node-list_item) · [`preformatted`](#node-preformatted) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`captioned_figure`](#node-captioned_figure) · [`page`](#node-page) · [`prose_grid`](#node-prose_grid) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
 
 **Annotation types**
 
@@ -71,6 +71,24 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 ## Node: `heading_3`
 
 `heading_3` is the tertiary editorial heading node.
+
+| Property  | Type             | Default | Allowed values | Allowed annotation types                  | Meaning                                   |
+| --------- | ---------------- | ------- | -------------- | ----------------------------------------- | ----------------------------------------- |
+| `layout`   | `integer`        | `1`     | `1`, `2`       | N/A                                       | Layout 1 is the standard heading style. Layout 2 is muted secondary copy. |
+| `content` | `annotated_text` | None    | N/A            | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
+
+## Node: `heading_4`
+
+`heading_4` is a lower-priority editorial heading node.
+
+| Property  | Type             | Default | Allowed values | Allowed annotation types                  | Meaning                                   |
+| --------- | ---------------- | ------- | -------------- | ----------------------------------------- | ----------------------------------------- |
+| `layout`   | `integer`        | `1`     | `1`, `2`       | N/A                                       | Layout 1 is the standard heading style. Layout 2 is muted secondary copy. |
+| `content` | `annotated_text` | None    | N/A            | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
+
+## Node: `heading_5`
+
+`heading_5` is the least prominent heading node.
 
 | Property  | Type             | Default | Allowed values | Allowed annotation types                  | Meaning                                   |
 | --------- | ---------------- | ------- | -------------- | ----------------------------------------- | ----------------------------------------- |
@@ -204,7 +222,7 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 | Property  | Type         | Default     | Allowed node types                                                                                                       | Meaning                                   |
 | --------- | ------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------- |
 | `layout`  | `integer`    | `1`         | `1`, `2`, `3`, `4`                                                                                                       | Horizontal alignment and width treatment. |
-| `content` | `node_array` | `paragraph` | `paragraph`, `paragraph_sm`, `heading_1`, `heading_2`, `heading_3`, `paragraph_lg`, `paragraph_xl`, `list`, `supporting_media`, `button_group` | Ordered prose children.                   |
+| `content` | `node_array` | `paragraph` | `paragraph`, `paragraph_sm`, `heading_1`, `heading_2`, `heading_3`, `heading_4`, `heading_5`, `paragraph_lg`, `paragraph_xl`, `list`, `supporting_media`, `button_group` | Ordered prose children.                   |
 
 ### Prose layouts
 
@@ -240,7 +258,7 @@ A document is a graph of nodes stored by id. Each node has an `id`, a `type`, an
 | Property | Type             | Default     | Allowed node or annotation types                                                                                         | Meaning                                                              |
 | -------- | ---------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
 | `title`  | `annotated_text` | None        | `emphasis`, `highlight`, `link`                                                                                          | Required heading of the collapsible. Newlines are not allowed.       |
-| `body`   | `node_array`     | `paragraph` | `paragraph`, `paragraph_sm`, `heading_1`, `heading_2`, `heading_3`, `paragraph_lg`, `paragraph_xl`, `list`, `supporting_media`, `button_group` | Expandable rich body content, using the same child nodes as `prose`. |
+| `body`   | `node_array`     | `paragraph` | `paragraph`, `paragraph_sm`, `heading_1`, `heading_2`, `heading_3`, `heading_4`, `heading_5`, `paragraph_lg`, `paragraph_xl`, `list`, `supporting_media`, `button_group` | Expandable rich body content, using the same child nodes as `prose`. |
 
 ## Node: `gallery`
 

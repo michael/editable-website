@@ -21,14 +21,14 @@ const FULL_DOC = {
 			focal_point_y: 0.5,
 			object_fit: 'cover'
 		},
-		xjRSnwSbcTAaeNavUDAwrQq: {
-			id: 'xjRSnwSbcTAaeNavUDAwrQq',
+		HyjHnPRuGUqPQYJQATcuKpP: {
+			id: 'HyjHnPRuGUqPQYJQATcuKpP',
 			type: 'heading_1',
+			layout: 1,
 			content: {
 				text: 'Imagine you could edit your website live on the page',
 				annotations: []
-			},
-			layout: 1
+			}
 		},
 		GcUtrrnqbpxJJJuZvGyPfuk: {
 			id: 'GcUtrrnqbpxJJJuZvGyPfuk',
@@ -46,7 +46,7 @@ const FULL_DOC = {
 			href: 'https://github.com/michael/editable-website#getting-started',
 			target: '_blank',
 			label: {
-				text: 'Get started',
+				text: 'Join the Technical Preview',
 				annotations: []
 			}
 		},
@@ -58,9 +58,9 @@ const FULL_DOC = {
 		gRpPsPcYyMPRSWWDXxvNGAF: {
 			id: 'gRpPsPcYyMPRSWWDXxvNGAF',
 			type: 'prose',
-			layout: 1,
+			layout: 4,
 			colorset: 0,
-			content: ['xjRSnwSbcTAaeNavUDAwrQq', 'GcUtrrnqbpxJJJuZvGyPfuk', 'DpRXucgvAFRBDsVUJqSduSQ']
+			content: ['HyjHnPRuGUqPQYJQATcuKpP', 'GcUtrrnqbpxJJJuZvGyPfuk', 'DpRXucgvAFRBDsVUJqSduSQ']
 		},
 		VbNcMxZaQwErTyUiOpLkJh: {
 			id: 'VbNcMxZaQwErTyUiOpLkJh',
@@ -75,9 +75,9 @@ const FULL_DOC = {
 			focal_point_y: 0.47301940896272265,
 			object_fit: 'cover'
 		},
-		WsXcDfVgBhNjMkLqAzPeRt: {
-			id: 'WsXcDfVgBhNjMkLqAzPeRt',
-			type: 'heading_1',
+		eVNBZTZDFEfcPNkrZdEQBHm: {
+			id: 'eVNBZTZDFEfcPNkrZdEQBHm',
+			type: 'heading_3',
 			layout: 1,
 			content: {
 				text: 'This is Editable Website',
@@ -88,8 +88,8 @@ const FULL_DOC = {
 			id: 'RezNUsxYmfpmFMezpgEbqYu',
 			type: 'strong'
 		},
-		ywTQktXzgyRqzsUNXjZztQw: {
-			id: 'ywTQktXzgyRqzsUNXjZztQw',
+		pmSDwGrMkaxGCDZMXambaYj: {
+			id: 'pmSDwGrMkaxGCDZMXambaYj',
 			type: 'paragraph',
 			layout: 1,
 			content: {
@@ -212,15 +212,15 @@ const FULL_DOC = {
 			colorset: 0,
 			media: 'VbNcMxZaQwErTyUiOpLkJh',
 			body: [
-				'WsXcDfVgBhNjMkLqAzPeRt',
-				'ywTQktXzgyRqzsUNXjZztQw',
+				'eVNBZTZDFEfcPNkrZdEQBHm',
+				'pmSDwGrMkaxGCDZMXambaYj',
 				'WjasMkTrmjdrXTsDgeUHQap',
 				'DxBvNYzBgktMyKjKkKyYcAN'
 			]
 		},
-		heading_1: {
-			id: 'heading_1',
-			type: 'heading_1',
+		SHqeNqxdQZRGsqJNWGqGAWQ: {
+			id: 'SHqeNqxdQZRGsqJNWGqGAWQ',
+			type: 'heading_3',
 			layout: 1,
 			content: {
 				text: 'Build with blocks',
@@ -382,7 +382,7 @@ const FULL_DOC = {
 			layout: 1,
 			colorset: 0,
 			content: [
-				'heading_1',
+				'SHqeNqxdQZRGsqJNWGqGAWQ',
 				'fuxtxNCceDRcdbcHhtqsYwJ',
 				'dAEBKADbvfeaBMhNWgTjKNC',
 				'dKDJFxDKresxkjMUZYKNuKn',
@@ -390,9 +390,9 @@ const FULL_DOC = {
 				'smJYScwGbZgRVDAJWhNGxvG'
 			]
 		},
-		BYutsagSAYkASwkavQyDQmQ: {
-			id: 'BYutsagSAYkASwkavQyDQmQ',
-			type: 'heading_1',
+		xBrhyJwxKVkSzRaMVRbdvje: {
+			id: 'xBrhyJwxKVkSzRaMVRbdvje',
+			type: 'heading_3',
 			layout: 1,
 			content: {
 				text: 'Add images and videos',
@@ -413,7 +413,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: ['BYutsagSAYkASwkavQyDQmQ', 'QddnajJYxeeEHzmcnqmYptQ']
+			content: ['xBrhyJwxKVkSzRaMVRbdvje', 'QddnajJYxeeEHzmcnqmYptQ']
 		},
 		jEhPHUyzqvpNeSHYfKCkYgS: {
 			id: 'jEhPHUyzqvpNeSHYfKCkYgS',
@@ -623,9 +623,9 @@ const FULL_DOC = {
 				'advPeCwNKJMnqHEhGCsBNpk'
 			]
 		},
-		AjbSGnXVcWpHBurCTrKxYSs: {
-			id: 'AjbSGnXVcWpHBurCTrKxYSs',
-			type: 'heading_1',
+		kaNFsWgzXAeHzAumhzCERYN: {
+			id: 'kaNFsWgzXAeHzAumhzCERYN',
+			type: 'heading_3',
 			layout: 1,
 			content: {
 				text: 'Link to other pages',
@@ -646,7 +646,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: ['AjbSGnXVcWpHBurCTrKxYSs', 'VdjTDrdPmtXRuYKNUMeRmKK']
+			content: ['kaNFsWgzXAeHzAumhzCERYN', 'VdjTDrdPmtXRuYKNUMeRmKK']
 		},
 		nprCMwYvJvUEmRaHBsxfgUd: {
 			id: 'nprCMwYvJvUEmRaHBsxfgUd',
@@ -766,9 +766,9 @@ const FULL_DOC = {
 			colorset: 0,
 			content: ['kZQHRTYyJtbmsJfnXaRgVtZ']
 		},
-		AQHAsyghanqZPmyutAJZBxM: {
-			id: 'AQHAsyghanqZPmyutAJZBxM',
-			type: 'heading_1',
+		QpMJFhtfKWpEhQHDRMtQkwU: {
+			id: 'QpMJFhtfKWpEhQHDRMtQkwU',
+			type: 'heading_3',
 			layout: 1,
 			content: {
 				text: 'How does this work?',
@@ -843,7 +843,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: ['AQHAsyghanqZPmyutAJZBxM', 'PscvEBWBfhraXpPKjPPkCMC', 'EsVdYMdJuVqGfqpQmMBCtap']
+			content: ['QpMJFhtfKWpEhQHDRMtQkwU', 'PscvEBWBfhraXpPKjPPkCMC', 'EsVdYMdJuVqGfqpQmMBCtap']
 		},
 		BGYgxNUSXuDtBqxrKfExJnw: {
 			id: 'BGYgxNUSXuDtBqxrKfExJnw',
@@ -905,9 +905,9 @@ const FULL_DOC = {
 			layout: 1,
 			items: ['BGYgxNUSXuDtBqxrKfExJnw', 'DEKuXmWSgnDZEhRgHGptcZJ', 'NpbErTcbBZKBxShfRaFXzct']
 		},
-		qCsyJmxeVPfzjuWrCbSDFFR: {
-			id: 'qCsyJmxeVPfzjuWrCbSDFFR',
-			type: 'heading_1',
+		XVuTuYNcPUGbSZVnWUBENct: {
+			id: 'XVuTuYNcPUGbSZVnWUBENct',
+			type: 'heading_3',
 			layout: 1,
 			content: {
 				text: 'Early-Access pricing',
@@ -949,7 +949,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: ['qCsyJmxeVPfzjuWrCbSDFFR', 'eJjQwDAYHqfcegtbNPTtQSJ']
+			content: ['XVuTuYNcPUGbSZVnWUBENct', 'eJjQwDAYHqfcegtbNPTtQSJ']
 		},
 		jzMUAkKquWACdzyTFtgyxdV: {
 			id: 'jzMUAkKquWACdzyTFtgyxdV',
@@ -1149,9 +1149,9 @@ const FULL_DOC = {
 			layout: 2,
 			items: ['prose_grid_free', 'prose_grid_supergrok', 'prose_grid_expert']
 		},
-		aGDtGMKVpxQTPjshDNXaeqf: {
-			id: 'aGDtGMKVpxQTPjshDNXaeqf',
-			type: 'heading_1',
+		bDmPWtwGGHPFhXWratpeTwr: {
+			id: 'bDmPWtwGGHPFhXWratpeTwr',
+			type: 'heading_3',
 			layout: 1,
 			content: {
 				text: 'Frequently Asked Questions',
@@ -1163,7 +1163,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: ['aGDtGMKVpxQTPjshDNXaeqf']
+			content: ['bDmPWtwGGHPFhXWratpeTwr']
 		},
 		PgFkSEuFXmXvecwFNksBFfw: {
 			id: 'PgFkSEuFXmXvecwFNksBFfw',
@@ -1224,7 +1224,7 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'Editable Website is a foundational, AI-agnostic tool. That said, it makes perfect sense to utilize AI workflows to help building your custom site. Think prompts like "Create a hero block type with title + description and optional CTA buttons" and "Implement Hero.svelte with 5 distinct layout variations".',
+				text: 'Editable Website is a foundational, AI-agnostic tool. That said, it makes perfect sense to utilize AI workflows to help building your custom site. Think prompts like "Create a paragraph block type with layout variants" and "Implement Paragraph.svelte with 2 layout modes".',
 				annotations: []
 			}
 		},
@@ -1344,9 +1344,9 @@ const FULL_DOC = {
 			focal_point_y: 0.5,
 			object_fit: 'cover'
 		},
-		pCjecUjAFDGgGpgquwGrCdp: {
-			id: 'pCjecUjAFDGgGpgquwGrCdp',
-			type: 'heading_1',
+		fCDBqmuBbFhsyUFdUxZKCar: {
+			id: 'fCDBqmuBbFhsyUFdUxZKCar',
+			type: 'heading_3',
 			layout: 1,
 			content: {
 				text: 'Hello, I’m Michael',
@@ -1399,24 +1399,15 @@ const FULL_DOC = {
 			colorset: 0,
 			media: 'hqrrTdEbTPaqzEcYMczhBZb',
 			body: [
-				'pCjecUjAFDGgGpgquwGrCdp',
+				'fCDBqmuBbFhsyUFdUxZKCar',
 				'qDAyeabdhVEXjBWXyyqfUPb',
 				'QVXhuysTRgRyQHVQnfTVCpV',
 				'NjNteBhckwxGAUfbYRMGrDz'
 			]
 		},
-		YTZAMHbVsWKDaZeNdSYpFaA: {
-			id: 'YTZAMHbVsWKDaZeNdSYpFaA',
-			type: 'paragraph_sm',
-			layout: 1,
-			content: {
-				text: 'I love it',
-				annotations: []
-			}
-		},
-		BHRkpFHqdqFGzqJQUUqcHhR: {
-			id: 'BHRkpFHqdqFGzqJQUUqcHhR',
-			type: 'heading_1',
+		tXfztBRXuxPMWQDqJxGSAXX: {
+			id: 'tXfztBRXuxPMWQDqJxGSAXX',
+			type: 'heading_3',
 			layout: 1,
 			content: {
 				text: 'How can I get it?',
@@ -1453,12 +1444,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 4,
 			colorset: 0,
-			content: [
-				'YTZAMHbVsWKDaZeNdSYpFaA',
-				'BHRkpFHqdqFGzqJQUUqcHhR',
-				'BNDQkNtJpdSNXUuDUwAmgYz',
-				'fxbPhZADdeyCbysuCSwHNcA'
-			]
+			content: ['tXfztBRXuxPMWQDqJxGSAXX', 'BNDQkNtJpdSNXUuDUwAmgYz', 'fxbPhZADdeyCbysuCSwHNcA']
 		},
 		AfkGmkTkFBhUGQsSSSzAaWV: {
 			id: 'AfkGmkTkFBhUGQsSSSzAaWV',

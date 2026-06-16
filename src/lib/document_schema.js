@@ -12,6 +12,8 @@ const TEXT_NODE_TYPES = [
 	'heading_1',
 	'heading_2',
 	'heading_3',
+	'heading_4',
+	'heading_5'
 ];
 const RICH_CONTENT_NODE_TYPES = [...TEXT_NODE_TYPES, 'list', 'supporting_media', 'button_group'];
 const RICH_CONTENT_NODE_TYPES_WITHOUT_HEADINGS = [
@@ -285,6 +287,28 @@ export const document_schema = define_document_schema({
 	},
 
 	heading_3: {
+		kind: 'text',
+		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
+			content: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: true
+			}
+		}
+	},
+	heading_4: {
+		kind: 'text',
+		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
+			content: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: true
+			}
+		}
+	},
+	heading_5: {
 		kind: 'text',
 		properties: {
 			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },

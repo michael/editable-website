@@ -12,8 +12,8 @@
 <Node class="ew-heading-1" {path}>
 	<div use:reveal>
 		<AnnotatedTextProperty
-			tag='h2'
-			class={`display-3 ${layout === 2 ? 'text-(--foreground)/50' : ''}`}
+			tag='h1'
+			class={`display-1 ${layout === 2 ? 'text-(--foreground)/50' : ''}`}
 			path={[...path, 'content']}
 			placeholder='Heading 1'
 		/>
