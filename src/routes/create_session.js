@@ -314,7 +314,7 @@ const session_config = {
 		list_item: (node) => `<li>${node.content.text}</li>\n`
 	},
 	node_layouts: {
-		prose: 4,
+		prose: 6,
 		prose_grid: 2,
 		prose_grid_item: 1,
 		paragraph: 2,

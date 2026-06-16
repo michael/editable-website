@@ -11,7 +11,7 @@
 
 	setContext('prose', {
 		get is_centered() {
-			return layout === 4;
+			return layout === 4 || layout === 6 ;
 		},
 	});
 
@@ -27,7 +27,7 @@
 	<NodeArrayProperty class="flex flex-col gap-5 md:gap-8 {heading_spacing}" path={[...path, 'content']} />
 {/snippet}
 
-<!-- Layout 1: Left-oriented -->
+<!-- Layout 1: Left-aligned -->
 {#snippet layout_1()}
 	<div class="{TW_LIMITER}">
 		<div class="py-10 sm:py-14 md:py-16 lg:py-28">
@@ -74,7 +74,32 @@
 	</div>
 {/snippet}
 
+
+
+<!-- Layout 5: Full width, left-oriented -->
+{#snippet layout_5()}
+	<div class="{TW_LIMITER}">
+		<div class="py-10 sm:py-14 md:py-16 lg:py-28">
+			<div class="{TW_PAGE_PADDING_X}">
+				{@render content()}
+			</div>
+		</div>
+	</div>
+{/snippet}
+
+
+<!-- Layout 6: Full width, centered -->
+{#snippet layout_6()}
+	<div class="{TW_LIMITER}">
+		<div class="py-10 sm:py-14 md:py-16 lg:py-28">
+			<div class="{TW_PAGE_PADDING_X} text-center text-balance">
+				{@render content()}
+			</div>
+		</div>
+	</div>
+{/snippet}
+
 <Node class="ew-prose layout-{layout} bg-(--background) text-(--foreground) {colorset_class}" {path}>
-	{@const layouts = [layout_1, layout_2, layout_3, layout_4]}
+	{@const layouts = [layout_1, layout_2, layout_3, layout_4, layout_5, layout_6]}
 	{@render layouts[layout - 1]()}
 </Node>
