@@ -1,3 +1,5 @@
+import { get_property_default } from 'svedit';
+
 /**
  * Build the full path (including selected node index) and the starting
  * node_array path for walking up the tree from the current selection.
@@ -49,32 +51,7 @@ function get_node_index_at(full_path, ancestor_path) {
 	return parseInt(String(full_path[ancestor_path.length]));
 }
 
-/**
- * Get the built-in empty/default value for a property definition.
- *
- * @param {object} property_definition
- * @returns {any}
- */
-function get_property_default(property_definition) {
-	if ('default' in property_definition) return structuredClone(property_definition.default);
 
-	if (property_definition.type === 'string') return '';
-	if (property_definition.type === 'integer') return 0;
-	if (property_definition.type === 'number') return 0;
-	if (property_definition.type === 'boolean') return false;
-	if (property_definition.type === 'annotated_text') return { text: '', annotations: [] };
-	if (property_definition.type === 'node_array') return [];
-	if (
-		property_definition.type === 'string_array' ||
-		property_definition.type === 'number_array' ||
-		property_definition.type === 'boolean_array' ||
-		property_definition.type === 'integer_array'
-	) {
-		return [];
-	}
-
-	return undefined;
-}
 
 /**
  * Compare schema/value objects deeply. Object key order is ignored, array order is not.
