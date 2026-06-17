@@ -1004,7 +1004,7 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 2,
 			content: {
-				text: 'Once. Per domain launched.',
+				text: 'Once. Per domain. When you launch.',
 				annotations: []
 			}
 		},
@@ -1078,7 +1078,7 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 2,
 			content: {
-				text: 'Once. Per domain launched.',
+				text: 'Once. Per domain. When you launch.',
 				annotations: []
 			}
 		},
