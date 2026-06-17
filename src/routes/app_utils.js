@@ -157,6 +157,7 @@ export function is_node_subtree_empty(session, node) {
 	if (!node_schema) return false;
 
 	for (const [property_name, property_definition] of Object.entries(node_schema.properties)) {
+		if (property_name === 'layout') continue;
 		if (!is_property_value_empty(session, property_definition, node[property_name])) return false;
 	}
 

@@ -13,7 +13,7 @@ Limit `CycleNodeTypeCommand` so it only offers destructive type switches while t
 - Implement this only in `editable-website`.
 - Add `get_cycle_node_state(session)` in `src/routes/app_utils.js`, returning `{ node, node_array_path, node_index, available_types }` or `null`.
 - Keep the existing closest-switchable-node search behavior, but compute `available_types` from the containing `node_array` schema.
-- Treat a node subtree as empty only when every property is empty or equal to its schema/default value, including all child nodes reached through `node` and `node_array` properties.
+- Treat a node subtree as empty only when every property is empty or equal to its schema/default value, including all child nodes reached through `node` and `node_array` properties, except `layout`, which is ignored for the emptiness check.
 - For empty nodes, allow cycling to all other types in the containing `node_array`.
 - For non-empty nodes, allow cycling only to types whose property schema is exactly equivalent to the current node type's property schema.
 - Order `available_types` in cycle order relative to the current type, so `next` uses the first available type and `previous` uses the last available type.
