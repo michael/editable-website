@@ -12,7 +12,7 @@
 			>
 				<AnnotatedTextProperty
 					tag='pre'
-					class="whitespace-pre! wrap-normal! overflow-x-auto!"
+					class="whitespace-pre! wrap-normal! overflow-x-auto! tab-2"
 					path={[...path, 'content']}
 					placeholder="Preformatted text"
 				/>
