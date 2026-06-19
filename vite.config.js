@@ -16,7 +16,7 @@ export default defineConfig({
 			},
 			// alias: {
 			// 	'svedit': '../svedit/src/lib/index.js',
-			// }
+			// },
 			compilerOptions: {
 				experimental: {
 					async: true

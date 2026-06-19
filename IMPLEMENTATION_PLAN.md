@@ -13,7 +13,7 @@ Limit `CycleNodeTypeCommand` so it only offers destructive type switches while t
 - Implement this only in `editable-website`.
 - Add `get_cycle_node_state(session)` in `src/routes/app_utils.js`, returning `{ node, node_array_path, node_index, available_types }` or `null`.
 - Keep the existing closest-switchable-node search behavior, but compute `available_types` from the containing `node_array` schema.
-- Treat a node subtree as empty only when every property is empty or equal to its schema/default value, including all child nodes reached through `node` and `node_array` properties.
+- Treat a node subtree as empty only when every property is empty or equal to its schema/default value, including all child nodes reached through `node` and `node_array` properties, except `layout`, which is ignored for the emptiness check.
 - For empty nodes, allow cycling to all other types in the containing `node_array`.
 - For non-empty nodes, allow cycling only to types whose property schema is exactly equivalent to the current node type's property schema.
 - Order `available_types` in cycle order relative to the current type, so `next` uses the first available type and `previous` uses the last available type.
@@ -29,31 +29,56 @@ Limit `CycleNodeTypeCommand` so it only offers destructive type switches while t
 - Verify non-equivalent populated nodes do not offer destructive switches.
 - Verify undo/redo works for both empty replacement and schema-equivalent replacement.
 
-## Next implementation draft — lead text node
+## Next implementation draft — paragraph_lg text node
 
 ### Goal
 
-Add a reusable `lead` text node for large introductory copy.
+Add a reusable `paragraph_lg` text node for large introductory copy.
 
 ### Scope
 
-- Add `lead` to the document schema and text-node type lists.
-- Allow `lead` anywhere the rich text model accepts text nodes.
-- Add `Lead.svelte` and a shared `Large.svelte` typographic primitive.
-- Register `lead` in the session config with inserter, HTML exporter, and node layout support.
+- Add `paragraph_lg` to the document schema and text-node type lists.
+- Allow `paragraph_lg` anywhere the rich text model accepts text nodes.
+- Add `ParagraphLG.svelte` and a shared `Large.svelte` typographic primitive.
+- Register `paragraph_lg` in the session config with inserter, HTML exporter, and node layout support.
 
-## Next implementation draft — note text node
+## Next implementation draft — paragraph layout toggle
 
 ### Goal
 
-Add a reusable `note` text node for smaller supplementary copy.
+Add a second `paragraph` layout that renders muted secondary body copy.
 
 ### Scope
 
-- Add `note` to the document schema and text-node type lists.
-- Allow `note` anywhere the rich text model accepts text nodes.
-- Add `Note.svelte` and a shared `Small.svelte` typographic primitive.
-- Register `note` in the session config with inserter, HTML exporter, and node layout support.
+- Add a `layout` property to `paragraph` with values `1` and `2`.
+- Make `paragraph` layout 2 render with muted foreground styling.
+- Register `paragraph` as a two-layout node in the session config so the layout cycling command can switch between the two styles.
+
+## Next implementation draft — paragraph_xl text node
+
+### Goal
+
+Add a reusable `paragraph_xl` text node for larger introductory copy.
+
+### Scope
+
+- Add `paragraph_xl` to the document schema and text-node type lists.
+- Allow `paragraph_xl` anywhere the rich text model accepts text nodes.
+- Add `ParagraphXL.svelte` using the existing large typographic utility class.
+- Register `paragraph_xl` in the session config with inserter, HTML exporter, and node layout support.
+
+## Next implementation draft — paragraph_sm text node
+
+### Goal
+
+Add a reusable `paragraph_sm` text node for smaller supplementary copy.
+
+### Scope
+
+- Add `paragraph_sm` to the document schema and text-node type lists.
+- Allow `paragraph_sm` anywhere the rich text model accepts text nodes.
+- Add `ParagraphSM.svelte` and a shared `Small.svelte` typographic primitive.
+- Register `paragraph_sm` in the session config with inserter, HTML exporter, and node layout support.
 
 ## Next implementation draft — preformatted node
 
@@ -676,7 +701,7 @@ Extend the page browser query to return, for each page:
 - extracted title
 - optional `preview_media_node`
 - current active slug for non-home pages
-The home page row must additionally be marked so the UI can:
+  The home page row must additionally be marked so the UI can:
 
 - display `/` as its URL
 - hide URL editing
@@ -724,15 +749,18 @@ Add focused helpers for:
 These operations must be atomic:
 
 #### First page save
+
 - create page row
 - create first active slug row
 
 #### Manual slug change
+
 - update slug rows
 - rewrite hrefs in all affected documents
 - update `document_refs` for rewritten documents
 
 #### Historical alias reclaim
+
 - remove alias from old owner
 - update target page active slug
 - rewrite hrefs in all affected documents
@@ -775,6 +803,7 @@ This step is done when all of the following are true:
 These older steps are kept in compact form as historical context. The durable source of truth is still [ARCHITECTURE.md](ARCHITECTURE.md); this section only captures how the current system got here and which high-level implementation moves were already made.
 
 ### Step 1 — database, seed data, and page rendering
+
 - Introduced SQLite-backed document persistence using `node:sqlite`
 - Added migrations + startup migration hook
 - Seeded:
@@ -786,6 +815,7 @@ These older steps are kept in compact form as historical context. The durable so
 - `/` renders `page_1` by loading the page document and stitching in shared nav/footer
 
 ### Step 2 — asset processing and upload
+
 - Added client-side image processing with WASM (`@jsquash/webp`, `@jsquash/resize`)
 - Added asset hashing, upload, variant generation, and asset serving
 - Established the `blob:` (unsaved) → asset id (saved) transition model
@@ -794,14 +824,17 @@ These older steps are kept in compact form as historical context. The durable so
 - Preserved the rule that all persisted media sources are local asset ids
 
 ### Step 3 — deployment / operationalization
+
 - Deployment planning existed for Fly.io / Node adapter / persistent storage
 - This is now mostly archival context; architecture is the canonical reference for storage/runtime assumptions
 
 ### Step 4 — media evolution
+
 - Added video node support and unified media handling direction
 - Introduced / documented `MediaControls`
 - Moved toward the `media` abstraction instead of hard-coded image-only thinking
 - The architecture now captures the final intended media model more reliably than the old step-by-step notes
+
 # Multi-page implementation analysis
 
 ## Goal
@@ -863,6 +896,7 @@ In `src/lib/api.remote.js`, `get_document` already accepts a `document_id`.
 This is a strong foundation for `/:page_id`.
 
 Current limitations:
+
 - no route yet passes arbitrary page ids
 - no helper exists to list page documents
 - no helper exists to create a brand-new page document id on first save
@@ -879,6 +913,7 @@ Current limitations:
 This aligns with the architecture and should remain unchanged.
 
 The multi-page work should **not** move away from:
+
 - page document + shared nav + shared footer composition
 
 ### 4. `/new` should be ephemeral and not create junk rows
@@ -897,12 +932,14 @@ This is preferable to eagerly inserting a draft page into the database.
 Today `save_document` just upserts the given document id.
 
 For `/new`, we need a server-side path that:
+
 - accepts the already-generated client page id
 - save the new page under that same id
 - preserve shared nav/footer references
 - return the final page id to the client
 
 So save needs to support:
+
 - **update existing page**
 - **create new page from transient draft**
 
@@ -919,6 +956,7 @@ It needs:
    Tree rooted at the current home page
 
 That means we need:
+
 - page listing
 - document reference analysis
 - reachability traversal
@@ -932,6 +970,7 @@ The architecture describes `document_refs`, but the current `save_document` impl
 This is a major gap.
 
 For a real sitemap/drafts implementation, we need:
+
 - internal page links extracted on save
 - `document_refs` updated on save for pages/nav/footer
 - a reachability algorithm that starts from:
@@ -941,6 +980,7 @@ For a real sitemap/drafts implementation, we need:
 ### 8. The drawer should load async-on-open, not up front
 
 That means:
+
 - do not fetch page browser data during normal page load
 - fetch only once the drawer is opened
 - probably cache while open / until page changes
@@ -980,18 +1020,21 @@ This keeps the editor implementation single-sourced.
 For `/new`, create a fresh transient page document on the client via a `create_empty_doc()` helper (or equivalent) that generates a new `page_id` / `document_id` using the existing nanoid setup.
 
 This means:
+
 - the root page node id and the document id are the same from the beginning
 - the id is unique immediately, even before the document is persisted
 - there is no need for a server roundtrip just to allocate a page id
 - the page is still ephemeral in the sense that it is only stored once the user saves
 
 On first save:
+
 - the client sends the already-generated document id
 - the server persists the document under that id
 - no root-id rewrite is needed during save
 - the client can navigate to `/${page_id}` after save (or continue there if already routed consistently)
 
 The transient document should still reference:
+
 - existing shared `nav`
 - existing shared `footer`
 
@@ -1004,7 +1047,9 @@ Instead of overloading current `save_document` too implicitly, define the API ar
 Two possible shapes:
 
 ### Option A — extend `save_document`
+
 Input:
+
 ```js
 {
   document_id,
@@ -1014,6 +1059,7 @@ Input:
 ```
 
 Behavior:
+
 - if `create === true`
   - assert that the provided document id does not already exist
   - persist as new page using that already-generated client id
@@ -1022,6 +1068,7 @@ Behavior:
   - normal update
 
 ### Option B — add `create_document` and keep `save_document`
+
 - `create_document(combined_doc)`
 - `save_document(combined_doc)`
 
@@ -1073,6 +1120,7 @@ This keeps the drawer UI simple and avoids doing graph analysis in the client.
 The drawer should not receive raw full documents.
 
 Instead, the server should summarize each page:
+
 - title
 - preview image
 
@@ -1083,6 +1131,7 @@ This keeps the drawer payload small and purpose-built.
 Use an on-the-fly extraction helper in `src/lib/server/`, used by `get_page_browser_data()`.
 
 ### Initial approach: no cache
+
 For the first implementation, do **not** cache page summaries in the database. Extract them on demand when building the page browser data. This keeps the system simpler:
 
 - no extra columns or companion summary table
@@ -1093,13 +1142,16 @@ For the first implementation, do **not** cache page summaries in the database. E
 If this later proves too costly, summaries can be cached on save (similar in spirit to `document_refs`), but that is a later optimization.
 
 ### Extraction scope
+
 Summary extraction should be **page-local only**:
+
 - inspect the page document / page body subtree
 - do **not** use shared nav or footer content for page summaries
 
 This avoids cases where many pages inherit the same logo or shared text as their summary.
 
 ### Title extraction strategy
+
 Use this fallback order:
 
 1. explicit `page.title` if present and non-empty
@@ -1110,6 +1162,7 @@ Use this fallback order:
 For now, “heading-like” means the heading-style `text` node layouts already used in the app (for example the larger heading layouts). The exact helper can stay implementation-specific as long as it follows this order.
 
 ### Preview-image extraction strategy
+
 Use this fallback order:
 
 1. explicit page preview field if one exists in the future
@@ -1119,7 +1172,9 @@ Use this fallback order:
 The drawer already has a good illustrated-page fallback, so `null` is acceptable.
 
 ### Why this is the right start
+
 The likely cost of summary extraction is low enough for now:
+
 - page counts are expected to stay modest
 - extraction can stop early once title + preview are found
 - this avoids premature complexity while still giving good summaries
@@ -1195,6 +1250,7 @@ This produces a deterministic, editor-friendly page browser:
 ## Phase 1 — backend support for multi-page documents
 
 ### 1.1 Add helper functions in server/data layer
+
 Introduce helpers in `src/lib/api.remote.js` or extracted server modules for:
 
 - `get_home_page_id()`
@@ -1203,17 +1259,17 @@ Introduce helpers in `src/lib/api.remote.js` or extracted server modules for:
 - maybe `upsert_split_documents(...)` extracted from current save logic
 
 ### 1.2 Extend save API for create-on-first-save
+
 Update `save_document` to accept a creation mode, likely:
 
 ```js
 {
-  document_id,
-  nodes,
-  create
+	(document_id, nodes, create);
 }
 ```
 
 Behavior:
+
 - if `create === true`
   - assert that the provided document id does not already exist
   - save the new page under that same client-generated id
@@ -1223,11 +1279,14 @@ Behavior:
   - current update behavior
 
 ### 1.3 Add page creation helpers
+
 Create a page factory for `/new`, likely in:
+
 - `src/lib/new_page.js`
-or nearby route helper
+  or nearby route helper
 
 It should expose a `create_empty_doc()` helper (or equivalent) that:
+
 - generates a fresh `page_id` using the existing nanoid utility
 - creates a fresh page document with:
   - `document_id = page_id`
@@ -1240,7 +1299,9 @@ This should be minimal but pleasant to edit immediately.
 ## Phase 2 — routing and shared page editor shell
 
 ### 2.1 Extract current page editor into a shared component
+
 Current `src/routes/+page.svelte` mixes:
+
 - document loading
 - app command setup
 - save flow
@@ -1248,14 +1309,17 @@ Current `src/routes/+page.svelte` mixes:
 - editor rendering
 
 Extract the reusable editor page shell into something like:
+
 - `src/routes/components/PageEditor.svelte`
 
 Inputs:
+
 - `initial_doc`
 - `is_new`
 - maybe `page_id`
 
 Responsibilities:
+
 - instantiate session
 - save command
 - toolbar
@@ -1264,30 +1328,39 @@ Responsibilities:
 - page drawer cache invalidation after save
 
 ### 2.2 Add `/[page_id]`
+
 Implemented:
+
 - `src/routes/[page_id]/+page.svelte`
 - `src/routes/[page_id]/+page.js`
 
 Current behavior:
+
 - loads the requested document via remote query
 - renders the shared `PageEditor`
 - returns a proper SvelteKit 404 when the page is not found
 
 ### 2.3 Update `/`
+
 Implemented:
+
 - `src/routes/+page.svelte` now reuses `PageEditor`
 - `src/routes/+page.js` loads the configured home page in full runtime mode
 
 Current behavior:
+
 - in full runtime mode, `/` loads the configured home page and renders it through the shared editor shell
 - in static/Vercel mode, `/` still falls back to `demo_doc`
 
 ### 2.4 Add `/new`
+
 Implemented:
+
 - `src/routes/new/+page.svelte`
 - `src/lib/new_page.js`
 
 Current behavior:
+
 - `/new` creates a transient page document locally via `create_empty_doc()`
 - the page id is generated on the client up front
 - the transient page is composed from the current shared nav/footer documents loaded from the database
@@ -1299,23 +1372,31 @@ Current behavior:
 ## Phase 3 — reference tracking and sitemap data
 
 ### 3.1 Actually maintain `document_refs`
+
 Implement server-side internal link extraction on save.
+
 ### 3.2 Implement reachability
+
 Add a server helper that:
+
 - reads `home_page_id`
 - traverses `document_refs`
 - treats page/nav/footer appropriately
 - builds reachable page set
 
 Important nuance:
+
 - nav/footer are shared documents and may contain links to pages
 - so the graph traversal should include links originating from them as well
 
 ### 3.3 Build browser query
+
 Add:
+
 - `get_page_browser_data()`
 
 It should:
+
 - list all page documents
 - compute drafts = all pages not reachable from the canonical home traversal
 - compute sitemap tree
@@ -1332,34 +1413,46 @@ So this query/helper layer should not just return a raw graph; it should return 
 ## Phase 4 — async drawer wiring
 
 ### 4.1 Turn `PagesDrawer.svelte` from mock to real async data
+
 Implemented:
+
 - `PagesDrawer.svelte` now loads real browser data from a dedicated query
 - loading is async-on-open
 - data is cached until invalidated by a save
 
 ### 4.2 Add loading and empty states
+
 Implemented:
+
 - loading state when first opened
 - empty drafts state
 - basic sitemap empty/misconfigured state
 
 ### 4.3 Add “New page” action
+
 Implemented:
+
 - the plus tile in drafts navigates to `/new`
 
 ### 4.4 Add page navigation
+
 Implemented:
+
 - draft and sitemap items navigate to `/${document_id}`
 
 ### 4.5 Add per-page drawer actions
+
 Implemented:
+
 - each draft and page row gets an anchored ellipsis menu
 - the menu supports `Open in new tab`
 - the menu supports `Delete`
 - the menu is dismissible with `Escape` or backdrop click
 
 ### 4.6 Add page deletion flow
+
 Implemented:
+
 - deleting a draft asks: `Are you sure you want to delete this draft?`
 - deleting a reachable page asks: `Are you sure you want to delete this page? You'll leave some dead links on the page.`
 - deleting a page removes the page document and its related `document_refs` / `asset_refs`
@@ -1368,6 +1461,7 @@ Implemented:
 - if the currently open page is deleted, navigate to `/`
 
 Note:
+
 - drawer-close-on-click can be refined later if needed
 - the drawer resize handle should render outside the drawer panel, centered on the top edge, so it visually floats above the sheet instead of taking space inside the drawer content area
 - while dragging, the drawer should be able to move all the way down to the bottom of the viewport
@@ -1397,16 +1491,20 @@ Note:
 ## Phase 5 — save flow integration and navigation correctness
 
 ### 5.1 Update SaveCommand in editor shell
+
 Current save flow assumes one persistent page.
 
 It should now:
+
 - detect `is_new`
 - call save API with `create: true` on first save
 - update client route to new page id after successful create
 - then continue normal saves as update
 
 ### 5.2 Ensure asset pipeline works identically for new pages
+
 No changes in overall asset flow:
+
 - process pending assets
 - upload before save
 - replace blob URLs in document copy
@@ -1415,11 +1513,14 @@ No changes in overall asset flow:
 Need to ensure first-save create path supports all of that.
 
 ### 5.3 Invalidate browser drawer data after saves
+
 When a page is created or links change:
+
 - drawer data becomes stale
 - need a simple invalidation strategy
 
 Initial simple solution:
+
 - when save succeeds, clear cached browser-data promise/state
 - next drawer open refetches
 
@@ -1438,6 +1539,7 @@ These constraints must be respected during implementation:
 ## Suggested file changes summary
 
 ### New or extracted files
+
 - `src/routes/[page_id]/+page.svelte`
 - `src/routes/new/+page.svelte`
 - `src/routes/components/PageEditor.svelte`
@@ -1446,6 +1548,7 @@ These constraints must be respected during implementation:
 - maybe `src/lib/server/page_summary.js`
 
 ### Updated files
+
 - `src/routes/+page.svelte`
 - `src/lib/api.remote.js`
 - `src/routes/components/PagesDrawer.svelte`
@@ -1469,15 +1572,18 @@ These constraints must be respected during implementation:
 ## Notes from PR #86 reference
 
 The referenced PR indicates there is prior art for:
+
 - dynamic page rendering/editing
 - sitemap
 - multi-page setup
 
 We should treat it as:
+
 - a source of ideas for route/data responsibilities
 - not something to mirror structurally
 
 Priority remains:
+
 - consistency with `ARCHITECTURE.md`
 - maintainable code in the current codebase
 - minimal disruption to the proven current save/split/asset flow
@@ -1501,6 +1607,7 @@ This step is complete when:
 ### Current status
 
 Completed:
+
 - shared editor extraction
 - `/`, `/new`, and `/:page_id` route wiring
 - client-generated-id create-on-first-save flow
@@ -1515,5 +1622,6 @@ Completed:
 - cancel button behavior, including returning from `/new` to `/`
 
 Still to verify / finish:
+
 - confirm `document_refs` and reachability behavior matches the canonical tree rules exactly across real edited content
 - keep `ARCHITECTURE.md` aligned with any behavior adjustments discovered during integration

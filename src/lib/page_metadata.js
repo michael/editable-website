@@ -1,8 +1,18 @@
 import { ASSET_BASE } from '$lib/config.js';
 import { collect_node_ids_in_order } from '$lib/document_graph.js';
 
-const TEXT_NODE_TYPES = ['paragraph', 'note', 'lead', 'heading_1', 'heading_2', 'kicker', 'heading_3'];
-const TITLE_NODE_TYPES = ['heading_1', 'heading_2', 'heading_3'];
+const TEXT_NODE_TYPES = [
+	'paragraph',
+	'paragraph_sm',
+	'paragraph_lg',
+	'paragraph_xl',
+	'heading_1',
+	'heading_2',
+	'heading_3',
+	'heading_4',
+	'heading_5'
+];
+const TITLE_NODE_TYPES = ['heading_1', 'heading_2', 'heading_3', 'heading_4', 'heading_5'];
 
 // Shared helpers for extracting page-level metadata from a page document.
 
@@ -119,17 +129,6 @@ export function extract_page_metadata(page_doc) {
 			}
 		}
 
-		if (node.type === 'hero') {
-			const hero_title = extract_plain_text(node.title);
-			if (!fallback_title && hero_title) {
-				fallback_title = hero_title;
-			}
-
-			const hero_description = extract_plain_text(node.description);
-			if (!fallback_description && hero_description) {
-				fallback_description = hero_description;
-			}
-		}
 
 		if (node.type === 'descriptive_gallery_item') {
 			const item_title = extract_plain_text(node.title);

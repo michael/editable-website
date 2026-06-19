@@ -38,12 +38,14 @@ import ProseGrid from './components/ProseGrid.svelte';
 import ProseGridItem from './components/ProseGridItem.svelte';
 import Preformatted from './components/Preformatted.svelte';
 import Paragraph from './components/Paragraph.svelte';
-import Lead from './components/Lead.svelte';
-import Note from './components/Note.svelte';
+import ParagraphLG from './components/ParagraphLG.svelte';
+import ParagraphXL from './components/ParagraphXL.svelte';
+import ParagraphSM from './components/ParagraphSM.svelte';
 import Heading1 from './components/Heading1.svelte';
 import Heading2 from './components/Heading2.svelte';
 import Heading3 from './components/Heading3.svelte';
-import Kicker from './components/Kicker.svelte';
+import Heading4 from './components/Heading4.svelte';
+import Heading5 from './components/Heading5.svelte';
 import List from './components/List.svelte';
 import ListItem from './components/ListItem.svelte';
 import Gallery from './components/Gallery.svelte';
@@ -58,8 +60,6 @@ import Figure from './components/Figure.svelte';
 import CaptionedFigure from './components/CaptionedFigure.svelte';
 import SupportingMedia from './components/SupportingMedia.svelte';
 import Feature from './components/Feature.svelte';
-import Hero from './components/Hero.svelte';
-import MediaHero from './components/MediaHero.svelte';
 import Button from './components/Button.svelte';
 import ButtonGroup from './components/ButtonGroup.svelte';
 import Image from './components/Image.svelte';
@@ -91,10 +91,11 @@ function select_inserted_text_property(tr, property_name = 'label') {
 	});
 }
 
-function insert_text_node(tr, node_type, content = { text: '', annotations: [] }) {
+function insert_text_node(tr, node_type, content = { text: '', annotations: [] }, layout = 1) {
 	const new_text = {
 		id: nanoid(),
 		type: node_type,
+		layout,
 		content
 	};
 	tr.create(new_text);
@@ -165,53 +166,53 @@ const session_config = {
 	// Custom ID generator function
 	generate_id: nanoid,
 	// Provide definitions/overrides for system native components,
-	// such as NodeCursorTrap or Overlays
+	// such as node_gap, node_gap_markers, node_selection_markers, or overlays
 	system_components: {
-		Overlays
+		overlays: Overlays
 	},
 	// Registry of components for each node type
 	node_components: {
-		Page,
-		Nav,
-		NavItem,
-		Footer,
-		FooterLinkColumn,
-		FooterLink,
-		Hero,
-		MediaHero,
-		Button,
-		ButtonGroup,
-		Prose,
-		ProseGrid,
-		ProseGridItem,
-		Preformatted,
-		Paragraph,
-		Lead,
-		Note,
-		Heading1,
-		Heading2,
-		Heading3,
-		Kicker,
-		List,
-		ListItem,
-		Image,
-		Video,
-		Figure,
-		CaptionedFigure,
-		SupportingMedia,
-		Feature,
-		Gallery,
-		GalleryItem,
-		DescriptiveGallery,
-		DescriptiveGalleryItem,
-		DescriptiveListing,
-		DescriptiveListingItem,
-		Accordion,
-		AccordionItem,
-		Strong,
-		Emphasis,
-		Highlight,
-		Link
+		page: Page,
+		nav: Nav,
+		nav_item: NavItem,
+		footer: Footer,
+		footer_link_column: FooterLinkColumn,
+		footer_link: FooterLink,
+		button: Button,
+		button_group: ButtonGroup,
+		prose: Prose,
+		prose_grid: ProseGrid,
+		prose_grid_item: ProseGridItem,
+		preformatted: Preformatted,
+		paragraph: Paragraph,
+		paragraph_lg: ParagraphLG,
+		paragraph_xl: ParagraphXL,
+		paragraph_sm: ParagraphSM,
+		heading_1: Heading1,
+		heading_2: Heading2,
+		heading_3: Heading3,
+		heading_4: Heading4,
+		heading_5: Heading5,
+		list: List,
+		list_item: ListItem,
+		image: Image,
+		video: Video,
+		figure: Figure,
+		captioned_figure: CaptionedFigure,
+		supporting_media: SupportingMedia,
+		feature: Feature,
+		gallery: Gallery,
+		gallery_item: GalleryItem,
+		descriptive_gallery: DescriptiveGallery,
+		descriptive_gallery_item: DescriptiveGalleryItem,
+		descriptive_listing: DescriptiveListing,
+		descriptive_listing_item: DescriptiveListingItem,
+		accordion: Accordion,
+		accordion_item: AccordionItem,
+		strong: Strong,
+		emphasis: Emphasis,
+		highlight: Highlight,
+		link: Link
 	},
 	replace_media,
 	handle_property_deletion: (tr, path) => {
@@ -294,12 +295,14 @@ const session_config = {
 			return html;
 		},
 		paragraph: (node) => `<p>${node.content.text}</p>\n`,
-		note: (node) => `<p>${node.content.text}</p>\n`,
-		lead: (node) => `<p>${node.content.text}</p>\n`,
+		paragraph_sm: (node) => `<p>${node.content.text}</p>\n`,
+		paragraph_lg: (node) => `<p>${node.content.text}</p>\n`,
+		paragraph_xl: (node) => `<p>${node.content.text}</p>\n`,
 		heading_1: (node) => `<h1>${node.content.text}</h1>\n`,
 		heading_2: (node) => `<h2>${node.content.text}</h2>\n`,
-		kicker: (node) => `<p>${node.content.text}</p>\n`,
 		heading_3: (node) => `<h3>${node.content.text}</h3>\n`,
+		heading_4: (node) => `<h4>${node.content.text}</h4>\n`,
+		heading_5: (node) => `<h5>${node.content.text}</h5>\n`,
 		preformatted: (node) => `<pre>${node.content.text}</pre>\n`,
 		list: (node, session, html_exporters) => {
 			let html = '<ul>\n';
@@ -311,16 +314,18 @@ const session_config = {
 		list_item: (node) => `<li>${node.content.text}</li>\n`
 	},
 	node_layouts: {
-		prose: 4,
+		prose: 6,
 		prose_grid: 2,
 		prose_grid_item: 1,
-		paragraph: 1,
-		note: 1,
-		lead: 1,
-		heading_1: 1,
-		heading_2: 1,
-		kicker: 1,
-		heading_3: 1,
+		paragraph: 2,
+		paragraph_sm: 2,
+		paragraph_lg: 2,
+		paragraph_xl: 2,
+		heading_1: 2,
+		heading_2: 2,
+		heading_3: 2,
+		heading_4: 2,
+		heading_5: 2,
 		preformatted: 1,
 		list: 4,
 		list_item: 1,
@@ -330,9 +335,7 @@ const session_config = {
 		feature: 4,
 		gallery: 5,
 		nav_item: 2,
-		button: 2,
-		hero: 4,
-		media_hero: 1
+		button: 2
 	},
 
 	/**
@@ -370,7 +373,7 @@ const session_config = {
 		// Define keymap binding keys to commands
 		const keymap = define_keymap({
 			'meta+a,ctrl+a': [commands.select_all],
-			enter: [commands.replace_media, commands.break_text_node, commands.insert_default_node],
+			enter: [commands.replace_media, commands.break_text_node, commands.add_new_line, commands.insert_default_node],
 			// In case of a node cursor, fall back to inserting a default node. This is needed
 			// because on iOS selecting a node cursor triggers auto capitalization (shift pressed)
 			'shift+enter': [commands.replace_media, commands.add_new_line, commands.insert_default_node],
@@ -474,17 +477,17 @@ const session_config = {
 					content: { text: '', annotations: [] }
 				},
 				prose_grid_item_1: {
-					id: "prose_grid_item_1",
+					id: 'prose_grid_item_1',
 					type: 'prose_grid_item',
 					content: ['title_1', 'paragraph_1']
 				},
 				prose_grid_item_2: {
-					id: "prose_grid_item_2",
+					id: 'prose_grid_item_2',
 					type: 'prose_grid_item',
 					content: ['title_2', 'paragraph_2']
 				},
 				prose_grid_item_3: {
-					id: "prose_grid_item_3",
+					id: 'prose_grid_item_3',
 					type: 'prose_grid_item',
 					content: ['title_3', 'paragraph_3']
 				},
@@ -492,31 +495,37 @@ const session_config = {
 					id: 'new_prose_grid',
 					type: 'prose_grid',
 					layout: 1,
-					items: ['prose_grid_item_1', 'prose_grid_item_2', 'prose_grid_item_3'],
+					items: ['prose_grid_item_1', 'prose_grid_item_2', 'prose_grid_item_3']
 				}
 			});
 			tr.insert_nodes([new_prose_grid_id]);
 		},
 		paragraph: function (tr, content = { text: '', annotations: [] }) {
-			insert_text_node(tr, 'paragraph', content);
+			insert_text_node(tr, 'paragraph', content, 1);
 		},
-		note: function (tr, content = { text: '', annotations: [] }) {
-			insert_text_node(tr, 'note', content);
+		paragraph_sm: function (tr, content = { text: '', annotations: [] }) {
+			insert_text_node(tr, 'paragraph_sm', content, 1);
 		},
-		lead: function (tr, content = { text: '', annotations: [] }) {
-			insert_text_node(tr, 'lead', content);
+		paragraph_lg: function (tr, content = { text: '', annotations: [] }) {
+			insert_text_node(tr, 'paragraph_lg', content, 1);
+		},
+		paragraph_xl: function (tr, content = { text: '', annotations: [] }) {
+			insert_text_node(tr, 'paragraph_xl', content, 1);
 		},
 		heading_1: function (tr, content = { text: '', annotations: [] }) {
-			insert_text_node(tr, 'heading_1', content);
+			insert_text_node(tr, 'heading_1', content, 1);
 		},
 		heading_2: function (tr, content = { text: '', annotations: [] }) {
-			insert_text_node(tr, 'heading_2', content);
-		},
-		kicker: function (tr, content = { text: '', annotations: [] }) {
-			insert_text_node(tr, 'kicker', content);
+			insert_text_node(tr, 'heading_2', content, 1);
 		},
 		heading_3: function (tr, content = { text: '', annotations: [] }) {
-			insert_text_node(tr, 'heading_3', content);
+			insert_text_node(tr, 'heading_3', content, 1);
+		},
+		heading_4: function (tr, content = { text: '', annotations: [] }) {
+			insert_text_node(tr, 'heading_4', content, 1);
+		},
+		heading_5: function (tr, content = { text: '', annotations: [] }) {
+			insert_text_node(tr, 'heading_5', content, 1);
 		},
 		preformatted: function (tr, content = { text: '', annotations: [] }) {
 			const new_preformatted = {
@@ -662,41 +671,7 @@ const session_config = {
 			tr.insert_nodes([new_nav_item_id]);
 			select_inserted_text_property(tr);
 		},
-		hero: function (tr, content = { text: '', annotations: [] }, layout = 1) {
-			const new_hero_id = tr.build('new_hero', {
-				new_hero: {
-					id: 'new_hero',
-					type: 'hero',
-					colorset: 0,
-					title: { text: '', annotations: [] },
-					description: { text: '', annotations: [] },
-					buttons: []
-				}
-			});
 
-			tr.insert_nodes([new_hero_id]);
-		},
-		media_hero: function (tr, content = { text: '', annotations: [] }, layout = 1) {
-			const new_media_hero_id = tr.build('new_media_hero', {
-				media_hero_image: {
-					id: 'media_hero_image',
-					type: 'image',
-					...MEDIA_DEFAULTS
-				},
-				new_media_hero: {
-					id: 'new_media_hero',
-					type: 'media_hero',
-					layout,
-					colorset: 0,
-					title: { text: '', annotations: [] },
-					description: { text: '', annotations: [] },
-					buttons: [],
-					media: 'media_hero_image'
-				}
-			});
-
-			tr.insert_nodes([new_media_hero_id]);
-		},
 		button: function (tr, content = { text: '', annotations: [] }, layout = 1) {
 			const new_button_id = tr.build('new_button', {
 				new_button: {

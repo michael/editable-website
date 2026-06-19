@@ -1,7 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
 	import { AnnotatedTextProperty, NodeArrayProperty, Node } from 'svedit';
-	import Small from './Small.svelte';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 	import MediaProperty from './MediaProperty.svelte';
 	import SizableViewbox from './SizableViewbox.svelte';
@@ -20,8 +19,8 @@
 
 <Node {path} class="text-sm text-(--foreground)">
 	<div class="{TW_LIMITER}">
-		<div class="flex flex-col items-center text-center lg:text-left lg:flex-row lg:items-start gap-8 lg:gap-12 py-10 lg:py-16 {TW_PAGE_PADDING_X}">
-			<div class="flex flex-col items-center lg:items-start lg:w-1/3">
+		<div class="flex flex-col items-center text-center lg:text-left lg:flex-row lg:items-stretch gap-8 lg:gap-12 py-10 lg:py-24 {TW_PAGE_PADDING_X}">
+			<div class="flex flex-col items-center lg:items-start lg:self-stretch lg:justify-between lg:w-1/3">
 				<SizableViewbox {path} media_property="logo" placeholder_aspect_ratio={1}>
 					<svelte:element
 						class="block w-full h-full outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:-outline-offset-1"
@@ -31,10 +30,10 @@
 						<MediaProperty path={[...path, 'logo']} />
 					</svelte:element>
 				</SizableViewbox>
-				<Small
-					class="text-(--foreground)/50 mt-6 mb-0 lg:mb-0"
+				<AnnotatedTextProperty
+					class="body-base text-(--foreground)/50 mt-6 mb-0 lg:mb-0"
 					path={[...path, 'copyright']}
-					placeholder="© 2025 Company"
+					placeholder='© 2025 Your company'
 				/>
 			</div>
 			<NodeArrayProperty

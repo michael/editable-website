@@ -4,9 +4,27 @@ import { MEDIA_DEFAULTS } from '$lib/config.js';
 const ALL_ANNOTATIONS = ['strong', 'emphasis', 'highlight', 'link'];
 const MINIMAL_ANNOTATIONS = ['emphasis', 'highlight'];
 const NO_ANNOTATIONS = [];
-const TEXT_NODE_TYPES = ['paragraph', 'heading_1', 'heading_2', 'heading_3', 'note', 'lead', 'kicker'];
+const TEXT_NODE_TYPES = [
+	'paragraph_sm',
+	'paragraph',
+	'paragraph_lg',
+	'paragraph_xl',
+	'heading_1',
+	'heading_2',
+	'heading_3',
+	'heading_4',
+	'heading_5'
+];
 const RICH_CONTENT_NODE_TYPES = [...TEXT_NODE_TYPES, 'list', 'supporting_media', 'button_group'];
-const RICH_CONTENT_NODE_TYPES_WITHOUT_HEADINGS = ['paragraph', 'note', 'lead', 'list', 'supporting_media', 'button_group'];
+const RICH_CONTENT_NODE_TYPES_WITHOUT_HEADINGS = [
+	'paragraph_sm',
+	'paragraph',
+	'paragraph_lg',
+	'paragraph_xl',
+	'list',
+	'supporting_media',
+	'button_group'
+];
 
 export const document_schema = define_document_schema({
 	page: {
@@ -39,8 +57,6 @@ export const document_schema = define_document_schema({
 					'descriptive_gallery',
 					'descriptive_listing',
 					'accordion',
-					'hero',
-					'media_hero',
 					'preformatted'
 				],
 				default_node_type: 'prose'
@@ -134,55 +150,7 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
-	hero: {
-		kind: 'block',
-		properties: {
-			layout: { type: 'integer', default: 1 },
-			colorset: { type: 'integer', default: 0 },
-			title: {
-				type: 'annotated_text',
-				node_types: ALL_ANNOTATIONS,
-				allow_newlines: false
-			},
-			description: {
-				type: 'annotated_text',
-				node_types: ALL_ANNOTATIONS,
-				allow_newlines: false
-			},
-			buttons: {
-				type: 'node_array',
-				node_types: ['button'],
-				default_node_type: 'button'
-			}
-		}
-	},
-	media_hero: {
-		kind: 'block',
-		properties: {
-			layout: { type: 'integer', default: 1 },
-			colorset: { type: 'integer', default: 0 },
-			title: {
-				type: 'annotated_text',
-				node_types: ALL_ANNOTATIONS,
-				allow_newlines: false
-			},
-			description: {
-				type: 'annotated_text',
-				node_types: ALL_ANNOTATIONS,
-				allow_newlines: false
-			},
-			buttons: {
-				type: 'node_array',
-				node_types: ['button'],
-				default_node_type: 'button'
-			},
-			media: {
-				type: 'node',
-				node_types: ['image', 'video'],
-				default_node_type: 'image'
-			}
-		}
-	},
+
 	button: {
 		kind: 'block',
 		properties: {
@@ -253,6 +221,7 @@ export const document_schema = define_document_schema({
 	paragraph: {
 		kind: 'text',
 		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'annotated_text',
 				node_types: ALL_ANNOTATIONS,
@@ -260,9 +229,10 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
-	note: {
+	paragraph_sm: {
 		kind: 'text',
 		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'annotated_text',
 				node_types: ALL_ANNOTATIONS,
@@ -270,9 +240,10 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
-	lead: {
+	paragraph_lg: {
 		kind: 'text',
 		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'annotated_text',
 				node_types: ALL_ANNOTATIONS,
@@ -280,9 +251,22 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
+	paragraph_xl: {
+		kind: 'text',
+		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
+			content: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: true
+			}
+		}
+	},
+
 	heading_1: {
 		kind: 'text',
 		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'annotated_text',
 				node_types: ALL_ANNOTATIONS,
@@ -293,6 +277,7 @@ export const document_schema = define_document_schema({
 	heading_2: {
 		kind: 'text',
 		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'annotated_text',
 				node_types: ALL_ANNOTATIONS,
@@ -300,19 +285,33 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
-	kicker: {
-		kind: 'text',
-		properties: {
-			content: {
-				type: 'annotated_text',
-				node_types: ALL_ANNOTATIONS,
-				allow_newlines: true
-			}
-		}
-	},
+
 	heading_3: {
 		kind: 'text',
 		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
+			content: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: true
+			}
+		}
+	},
+	heading_4: {
+		kind: 'text',
+		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
+			content: {
+				type: 'annotated_text',
+				node_types: ALL_ANNOTATIONS,
+				allow_newlines: true
+			}
+		}
+	},
+	heading_5: {
+		kind: 'text',
+		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'annotated_text',
 				node_types: ALL_ANNOTATIONS,

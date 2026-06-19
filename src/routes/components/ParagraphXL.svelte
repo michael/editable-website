@@ -9,13 +9,13 @@
 	let layout = $derived(node.layout || 1);
 </script>
 
-<Node class="ew-heading-3" {path}>
+<Node class="ew-paragraph-xl" {path}>
 	<div use:reveal>
 		<AnnotatedTextProperty
-			tag='h2'
-			class={`display-3 ${layout === 2 ? 'text-(--foreground)/50' : ''}`}
+			tag='p'
+			class={`body-xl ${layout === 2 ? 'text-(--foreground)/50' : ''}`}
 			path={[...path, 'content']}
-			placeholder='Heading 3'
+			placeholder='Extra Large Paragraph'
 		/>
 	</div>
 </Node>

@@ -32,22 +32,22 @@
 
 <!-- Layout 1: Left-aligned -->
 {#snippet layout_1()}
-	<div class="{TW_LIMITER}">
-		<div class="py-10 sm:py-14 md:py-16 lg:py-28">
-			<div class="max-w-4xl">
-				{@render content()}
-			</div>
+	<div class="py-10 sm:py-14 md:py-16 lg:py-28">
+		<div class="max-w-4xl">
+			{@render content()}
 		</div>
 	</div>
 {/snippet}
 
+
 <!-- Layout 2: Centered -->
 {#snippet layout_2()}
-	<div class="{TW_LIMITER}">
-		<div class="py-10 sm:py-14 md:py-16 lg:py-28">
-			<div class="mx-auto max-w-4xl text-center text-balance">
-				{@render content()}
-			</div>
+	<div
+		class="h-full py-10 px-8 border border-(--foreground)/7 bg-(--foreground)/5"
+		style:border-radius="var(--image-border-radius)"
+	>
+		<div class="text-center text-balance">
+			{@render content()}
 		</div>
 	</div>
 {/snippet}

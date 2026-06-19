@@ -48,6 +48,11 @@
 			cycle_node_state?.node &&
 			is_node_subtree_empty(session, cycle_node_state.node)
 	);
+	let should_pulse_cycle_layout = $derived(
+		session.commands.cycle_layout_next &&
+			!session.commands.cycle_layout_next.disabled &&
+			is_node_subtree_empty(session, cycle_node_state.node)
+	);
 
 	let file_input_ref = $state(null);
 
@@ -416,7 +421,7 @@
 
 							<!-- Layout: cycle to next layout -->
 							<button
-								class="{TW_TOOLBAR_BTN} {session.commands.cycle_layout_next?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
+								class="{TW_TOOLBAR_BTN} {should_pulse_cycle_layout ? TW_TOOLBAR_BTN_PULSE : ''} {session.commands.cycle_layout_next?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
 								onmousedown={(e) => handle_btn_mousedown(e, session.commands.cycle_layout_next)}
 								title="Cycle layout (⌃ ⇧ →)"
 								disabled={session.commands.cycle_layout_next?.disabled}
