@@ -49,7 +49,9 @@
 			is_node_subtree_empty(session, cycle_node_state.node)
 	);
 	let should_pulse_cycle_layout = $derived(
-		session.commands.cycle_layout_next && !session.commands.cycle_layout_next.disabled
+		session.commands.cycle_layout_next &&
+			!session.commands.cycle_layout_next.disabled &&
+			is_node_subtree_empty(session, cycle_node_state.node)
 	);
 
 	let file_input_ref = $state(null);
