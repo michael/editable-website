@@ -51,7 +51,8 @@
 	let should_pulse_cycle_layout = $derived(
 		session.commands.cycle_layout_next &&
 			!session.commands.cycle_layout_next.disabled &&
-			cycle_node_state &&
+			// cycle_layout and cycle_type need to reference the same node
+			cycle_node_state?.node === session.commands.cycle_layout_next.closest_switchable_layout.node &&
 			is_node_subtree_empty(session, cycle_node_state.node)
 	);
 
