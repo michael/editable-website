@@ -146,6 +146,22 @@ Update the prose content spacing to use `gap-5 sm:gap-7` for consistency across 
 - Change `Gallery.svelte` item spacing to the same `gap-5 sm:gap-7` scale.
 - Keep the rest of the prose layout structure unchanged.
 
+## Next implementation draft — nav spacers
+
+### Goal
+
+Rework `Nav.svelte` to use a single `nav_items` array, remove the fixed logo rendering for now, and add a `nav_spacer` block that renders as a flexible separator.
+
+### Scope
+
+- Keep the existing nav content model mostly unchanged.
+- Remove the fixed logo rendering from `Nav.svelte` for now.
+- Render `nav.nav_items` through a single `NodeArrayProperty` in the main nav row.
+- Add a new `nav_spacer` node type that renders as a `flex-1` separator.
+- Add a new `nav_image` node type with an `href` property and a fixed-height media preview.
+- Allow `nav_items` to contain `nav_item`, `nav_image`, and `nav_spacer` nodes.
+- Keep the mobile nav menu working, but ignore spacer and image nodes there.
+
 ## Next implementation draft — feature layout spacing
 
 ### Goal

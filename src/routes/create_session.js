@@ -30,6 +30,8 @@ import Overlays from './components/Overlays.svelte';
 import Page from './components/Page.svelte';
 import Nav from './components/Nav.svelte';
 import NavItem from './components/NavItem.svelte';
+import NavImage from './components/NavImage.svelte';
+import NavSpacer from './components/NavSpacer.svelte';
 import Footer from './components/Footer.svelte';
 import FooterLinkColumn from './components/FooterLinkColumn.svelte';
 import FooterLink from './components/FooterLink.svelte';
@@ -176,6 +178,8 @@ const session_config = {
 		page: Page,
 		nav: Nav,
 		nav_item: NavItem,
+		nav_image: NavImage,
+		nav_spacer: NavSpacer,
 		footer: Footer,
 		footer_link_column: FooterLinkColumn,
 		footer_link: FooterLink,
@@ -338,6 +342,8 @@ const session_config = {
 		feature: 2,
 		gallery: 5,
 		nav_item: 2,
+		nav_image: 1,
+		nav_spacer: 1,
 		button: 2
 	},
 
@@ -674,6 +680,32 @@ const session_config = {
 
 			tr.insert_nodes([new_nav_item_id]);
 			select_inserted_text_property(tr);
+		},
+		nav_image: function (tr) {
+			const new_nav_image_id = tr.build('new_nav_image', {
+				nav_image_media: {
+					id: 'nav_image_media',
+					type: 'image',
+					...MEDIA_DEFAULTS
+				},
+				new_nav_image: {
+					id: 'new_nav_image',
+					type: 'nav_image',
+					href: '',
+					target: '_self',
+					media: 'nav_image_media'
+				}
+			});
+
+			tr.insert_nodes([new_nav_image_id]);
+		},
+		nav_spacer: function (tr) {
+			const new_nav_spacer = {
+				id: nanoid(),
+				type: 'nav_spacer'
+			};
+			tr.create(new_nav_spacer);
+			tr.insert_nodes([new_nav_spacer.id]);
 		},
 
 		button: function (tr, content = { text: '', annotations: [] }, layout = 1) {

@@ -132,7 +132,7 @@ export const document_schema = define_document_schema({
 			},
 			nav_items: {
 				type: 'node_array',
-				node_types: ['nav_item'],
+				node_types: ['nav_item', 'nav_image', 'nav_spacer'],
 				default_node_type: 'nav_item'
 			}
 		}
@@ -147,6 +147,22 @@ export const document_schema = define_document_schema({
 				type: 'annotated_text',
 				node_types: [],
 				allow_newlines: false
+			}
+		}
+	},
+	nav_spacer: {
+		kind: 'block',
+		properties: {}
+	},
+	nav_image: {
+		kind: 'block',
+		properties: {
+			href: { type: 'string' },
+			target: { type: 'string', default: '_self' },
+			media: {
+				type: 'node',
+				node_types: ['image', 'video'],
+				default_node_type: 'image'
 			}
 		}
 	},
