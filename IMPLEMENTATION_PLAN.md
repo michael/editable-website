@@ -133,14 +133,17 @@ Add a reusable `prose_grid` block that arranges `prose` blocks in columns.
 
 ### Goal
 
-Add a second layout option for `DescriptiveListing.svelte` while preserving the original presentation as layout 1.
+Add five layout variants for `DescriptiveListing.svelte` so the listing can render left-aligned, centered, right-aligned, full width within the limiter, or as the current two-column version.
 
 ### Scope
 
 - Keep the existing descriptive listing content model unchanged.
-- Layout 1 must remain exactly as it was before the grid change.
-- Layout 2 must keep the current one-column-below-`lg` / two-column-at-`lg` grid version, including the current fixes.
-- Register `descriptive_listing` as a two-layout node so the layout cycling command can switch between the two versions.
+- Layout 1 should be a left-aligned `max-w-4xl` version.
+- Layout 2 should be a centered `max-w-4xl` version using `mx-auto`.
+- Layout 3 should be a right-aligned `max-w-4xl` version using `ml-auto`.
+- Layout 4 should be full width within `TW_LIMITER`, matching the Figure-style full-width limiter layout.
+- Layout 5 should preserve the current `lg` two-column grid version.
+- Register `descriptive_listing` as a five-layout node so the layout cycling command can switch between the versions.
 
 ## Next implementation draft — figure layouts
 
@@ -152,7 +155,7 @@ Add six layout variants for `Figure.svelte` so figure media can render at the de
 
 - Add a `layout` property to `figure` with values `1` through `6`.
 - Render layouts 1–5 inside `TW_LIMITER`.
-- Use `TW_PAGE_PADDING_X` and vertical padding for layouts 1–4.
+- Use `TW_PAGE_PADDING_X` inside the `max-w-4xl` container for layouts 2–4 so they line up with `Prose.svelte`.
 - Use `max-w-4xl` for layouts 2–4, with layout 3 centered and layout 4 right-oriented following `Prose.svelte`.
 - Render layout 5 like layout 1 but with zero vertical padding.
 - Render layout 6 as full-bleed screen width with no `TW_LIMITER`, no horizontal page padding, and no border radius.

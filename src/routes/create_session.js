@@ -330,7 +330,7 @@ const session_config = {
 		list: 4,
 		list_item: 1,
 		figure: 6,
-		descriptive_listing: 2,
+		descriptive_listing: 5,
 		captioned_figure: 1,
 		supporting_media: 1,
 		feature: 4,
