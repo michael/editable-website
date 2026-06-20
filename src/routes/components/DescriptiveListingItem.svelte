@@ -19,7 +19,7 @@
 		use:reveal
 	>
 		<div class="flex items-center justify-between gap-6">
-			<div class="min-w-0 flex-1">
+			<div class="min-w-2/3 flex-1">
 				<AnnotatedTextProperty
 					class="body-base {node.href ? "underline underline-offset-2" : ""}"
 					path={[...path, 'title']}
@@ -33,7 +33,7 @@
 			</div>
 
 			{#if display_meta}
-				<div class="min-w-0 shrink-0 self-center text-right">
+				<div class="min-w-0 self-center text-right">
 					<AnnotatedTextProperty
 						class="body-sm text-(--foreground)/50 pt-1"
 						path={[...path, 'meta']}
