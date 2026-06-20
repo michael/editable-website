@@ -19,7 +19,7 @@
 	<div class="{TW_LIMITER}">
 		<div class="{TW_PAGE_PADDING_X} py-10 sm:py-14 md:py-16 lg:py-28">
 			<NodeArrayProperty
-				class="grid grid-cols-1 {grid_cols_class} gap-x-8 gap-y-6 lg:gap-y-12 [--row:1]"
+				class="grid grid-cols-1 {grid_cols_class} gap-x-5 sm:gap-x-7 gap-y-8 lg:gap-y-7 [--row:1]"
 				path={[...path, 'items']}
 			/>
 		</div>

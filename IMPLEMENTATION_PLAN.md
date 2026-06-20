@@ -139,7 +139,10 @@ Update the prose content spacing to use `gap-5 sm:gap-7` for consistency across 
 
 - Keep the prose content model unchanged.
 - Change `Prose.svelte` content spacing from `gap-5 md:gap-8` to `gap-5 sm:gap-7`.
+- Change `ProseGrid.svelte` grid spacing so the wider vertical gap only applies below the multi-column breakpoint, while the horizontal gap stays on the `5 / sm:7` scale.
 - Change `ProseGridItem.svelte` content spacing from `gap-5 md:gap-8` to `gap-5 sm:gap-7`.
+- Change `DescriptiveGallery.svelte` grid spacing so the wider vertical gap only applies below the multi-column breakpoint, while the horizontal gap stays on the `5 / sm:7` scale.
+- Change `Gallery.svelte` item spacing to the same `gap-5 sm:gap-7` scale.
 - Keep the rest of the prose layout structure unchanged.
 
 ## Next implementation draft — feature layout spacing
