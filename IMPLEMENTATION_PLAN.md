@@ -129,6 +129,19 @@ Add a reusable `prose_grid` block that arranges `prose` blocks in columns.
 - Add `ProseGrid.svelte` using the same column-count-driven layout pattern as `Footer.svelte`.
 - Register the new component and inserter.
 
+## Next implementation draft — descriptive listing layouts
+
+### Goal
+
+Add a second layout option for `DescriptiveListing.svelte` while preserving the original presentation as layout 1.
+
+### Scope
+
+- Keep the existing descriptive listing content model unchanged.
+- Layout 1 must remain exactly as it was before the grid change.
+- Layout 2 must keep the current one-column-below-`lg` / two-column-at-`lg` grid version, including the current fixes.
+- Register `descriptive_listing` as a two-layout node so the layout cycling command can switch between the two versions.
+
 ## Next implementation draft — figure layouts
 
 ### Goal
