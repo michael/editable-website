@@ -31,7 +31,7 @@
 
 {#snippet body()}
 	<NodeArrayProperty
-		class="ew-feature-body flex flex-col gap-8"
+		class="ew-feature-body flex flex-col gap-5 sm:gap-7"
 		path={[...path, 'body']}
 	/>
 {/snippet}

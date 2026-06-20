@@ -40,7 +40,7 @@
 			</div>
 		</summary>
 		<div class="py-3">
-			<NodeArrayProperty class="flex flex-col gap-5 md:gap-8" path={[...path, 'body']} />
+			<NodeArrayProperty class="flex flex-col gap-5 sm:gap-7" path={[...path, 'body']} />
 		</div>
 	</details>
 </Node>

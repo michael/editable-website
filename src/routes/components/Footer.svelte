@@ -19,7 +19,7 @@
 
 <Node {path} class="text-sm text-(--foreground)">
 	<div class="{TW_LIMITER}">
-		<div class="flex flex-col items-center text-center lg:text-left lg:flex-row lg:items-stretch gap-8 lg:gap-12 py-10 lg:py-24 {TW_PAGE_PADDING_X}">
+		<div class="flex flex-col items-center text-center lg:text-left lg:flex-row lg:items-stretch gap-5 sm:gap-7 py-10 lg:py-24 {TW_PAGE_PADDING_X}">
 			<div class="flex flex-col items-center lg:items-start lg:self-stretch lg:justify-between lg:w-1/3">
 				<SizableViewbox {path} media_property="logo" placeholder_aspect_ratio={1}>
 					<svelte:element
@@ -37,7 +37,7 @@
 				/>
 			</div>
 			<NodeArrayProperty
-				class="[--row:1] footer-columns grid grid-cols-1 {grid_cols_class} flex-1 gap-x-8 gap-y-6 lg:gap-y-12"
+				class="[--row:1] footer-columns grid grid-cols-1 {grid_cols_class} flex-1 gap-5 sm:gap-7"
 				path={[...path, 'footer_link_columns']}
 			/>
 		</div>
