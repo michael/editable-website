@@ -1,24 +1,86 @@
 <script>
 	import { getContext } from 'svelte';
 	import { Node } from 'svedit';
-	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
+	import { TW_LIMITER, TW_MOBILE_LEFT_INSET, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 	import MediaProperty from './MediaProperty.svelte';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
+	let node = $derived(svedit.session.get(path));
 	let media_node = $derived(svedit.session.get([...path, 'media']));
+	let figure_layout = $derived(node.layout || 1);
+	let media_aspect_ratio = $derived(
+		media_node?.width && media_node?.height ? `${media_node.width} / ${media_node.height}` : '16 / 9'
+	);
 </script>
 
-<Node {path}>
+{#snippet media_frame(border_radius = true)}
+	<div
+		class="overflow-hidden"
+		style:border-radius={border_radius ? 'var(--image-border-radius)' : undefined}
+		style:aspect-ratio={media_aspect_ratio}
+	>
+		<MediaProperty path={[...path, 'media']} />
+	</div>
+{/snippet}
+
+{#snippet layout_1()}
 	<div class="{TW_LIMITER}">
 		<div class="figure {TW_PAGE_PADDING_X} py-10 sm:py-14 md:py-16 lg:py-28">
-			<div
-				class="overflow-hidden"
-				style:border-radius="var(--image-border-radius)"
-				style:aspect-ratio={media_node.width && media_node.height ? `${media_node.width} / ${media_node.height}` : '16 / 9'}
-			>
-				<MediaProperty path={[...path, 'media']} />
+			{@render media_frame()}
+		</div>
+	</div>
+{/snippet}
+
+{#snippet layout_2()}
+	<div class="{TW_LIMITER}">
+		<div class="figure {TW_PAGE_PADDING_X} py-10 sm:py-14 md:py-16 lg:py-28">
+			<div class="max-w-4xl">
+				{@render media_frame()}
 			</div>
 		</div>
 	</div>
+{/snippet}
+
+{#snippet layout_3()}
+	<div class="{TW_LIMITER}">
+		<div class="figure {TW_PAGE_PADDING_X} py-10 sm:py-14 md:py-16 lg:py-28">
+			<div class="mx-auto max-w-4xl">
+				{@render media_frame()}
+			</div>
+		</div>
+	</div>
+{/snippet}
+
+{#snippet layout_4()}
+	<div class="{TW_LIMITER}">
+		<div class="grid grid-cols-3 py-10 sm:py-14 md:py-16 lg:py-28">
+			<div class="max-sm:pl-5 max-md:pl-7 pr-5 sm:pr-7 md:pr-10 lg:pr-14 col-span-3 md:col-span-2 md:col-start-2">
+				<div class="{TW_MOBILE_LEFT_INSET} ml-auto max-w-4xl">
+					{@render media_frame()}
+				</div>
+			</div>
+		</div>
+	</div>
+{/snippet}
+
+{#snippet layout_5()}
+	<div class="{TW_LIMITER}">
+		<div class="figure {TW_PAGE_PADDING_X} py-0">
+			{@render media_frame()}
+		</div>
+	</div>
+{/snippet}
+
+{#snippet layout_6()}
+	<div class="w-full">
+		<div class="figure">
+			{@render media_frame(false)}
+		</div>
+	</div>
+{/snippet}
+
+<Node {path}>
+	{@const layouts = [layout_1, layout_2, layout_3, layout_4, layout_5, layout_6]}
+	{@render layouts[figure_layout - 1]()}
 </Node>

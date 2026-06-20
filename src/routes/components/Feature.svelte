@@ -65,7 +65,7 @@
 
 <!-- Like layout 1 but image stretches to edges (full bleed) -->
 {#snippet layout_3()}
-	<div class="{TW_LIMITER}">
+	<div class="">
 		<div class="grid grid-cols-1 md:grid-cols-2 pt-5 sm:pt-7 md:pt-0">
 			<div class="flex flex-col justify-center {TW_PAGE_PADDING}" use:reveal>
 				<div class="max-w-2xl">{@render body()}</div>
@@ -79,7 +79,7 @@
 
 <!-- Like layout 3 but flipped (image left, text right, full bleed) -->
 {#snippet layout_4()}
-	<div class="{TW_LIMITER}">
+	<div class="">
 		<div class="grid grid-cols-1 md:grid-cols-2 pt-5 sm:pt-7 md:pt-0">
 			<div class="max-md:order-2" use:reveal={{ delay: 200 }}>
 				{@render image()}

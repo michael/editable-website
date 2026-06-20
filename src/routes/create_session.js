@@ -329,7 +329,7 @@ const session_config = {
 		preformatted: 1,
 		list: 4,
 		list_item: 1,
-		figure: 1,
+		figure: 6,
 		captioned_figure: 1,
 		supporting_media: 1,
 		feature: 4,
@@ -614,6 +614,7 @@ const session_config = {
 				new_figure: {
 					id: 'new_figure',
 					type: 'figure',
+					layout,
 					media: 'image_one'
 				}
 			});

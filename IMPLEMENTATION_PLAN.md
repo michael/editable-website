@@ -129,6 +129,21 @@ Add a reusable `prose_grid` block that arranges `prose` blocks in columns.
 - Add `ProseGrid.svelte` using the same column-count-driven layout pattern as `Footer.svelte`.
 - Register the new component and inserter.
 
+## Next implementation draft — figure layouts
+
+### Goal
+
+Add six layout variants for `Figure.svelte` so figure media can render at the default limiter width, limited to `max-w-4xl`, center- or right-oriented, with a zero-padding variant and a full-bleed screen-width variant.
+
+### Scope
+
+- Add a `layout` property to `figure` with values `1` through `6`.
+- Render layouts 1–5 inside `TW_LIMITER`.
+- Use `TW_PAGE_PADDING_X` and vertical padding for layouts 1–4.
+- Use `max-w-4xl` for layouts 2–4, with layout 3 centered and layout 4 right-oriented following `Prose.svelte`.
+- Render layout 5 like layout 1 but with zero vertical padding.
+- Render layout 6 as full-bleed screen width with no `TW_LIMITER`, no horizontal page padding, and no border radius.
+
 ## Next implementation draft — captioned figure
 
 This step adds simple owner authentication for editing and private page-management features.

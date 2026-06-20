@@ -371,6 +371,7 @@ export const document_schema = define_document_schema({
 	figure: {
 		kind: 'block',
 		properties: {
+			layout: { type: 'integer', default: 1 },
 			media: {
 				type: 'node',
 				node_types: ['image', 'video'],
