@@ -52,12 +52,9 @@
 <!-- Layout 3: Right-oriented -->
 {#snippet layout_3()}
 	<div class="{TW_LIMITER}">
-		<div class="grid grid-cols-3 py-10 sm:py-14 md:py-16 lg:py-28">
-			<!-- IMPORTANT: Keep in sync with TW_PAGE_PADDING_X -->
-			<div class="max-sm:pl-5 max-md:pl-7 pr-5 sm:pr-7 md:pr-10 lg:pr-14 col-span-3 md:col-span-2 md:col-start-2">
-				<div class="{TW_MOBILE_LEFT_INSET} max-w-4xl">
-					{@render content()}
-				</div>
+		<div class="py-10 sm:py-14 md:py-16 lg:py-28">
+			<div class="{TW_PAGE_PADDING_X} ml-auto max-w-4xl">
+				{@render content()}
 			</div>
 		</div>
 	</div>
