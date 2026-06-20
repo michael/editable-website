@@ -38,7 +38,7 @@
 
 {#snippet layout_1()}
 	<div class="{TW_LIMITER}">
-		<div class="grid grid-cols-1 md:grid-cols-2 {TW_PAGE_PADDING} gap-5 sm:gap-7 pt-5 sm:pt-7 md:pt-0">
+		<div class="grid grid-cols-1 md:grid-cols-2 {TW_PAGE_PADDING} gap-5 sm:gap-7 py-10 sm:py-14 md:py-16 lg:py-28">
 			<div class="flex flex-col justify-center pb-0" use:reveal>
 				<div class="max-w-2xl">{@render body()}</div>
 			</div>
@@ -51,7 +51,7 @@
 
 {#snippet layout_2()}
 	<div class="{TW_LIMITER}">
-		<div class="grid grid-cols-1 md:grid-cols-2 {TW_PAGE_PADDING} gap-5 sm:gap-7 pt-5 sm:pt-7 md:pt-0">
+		<div class="grid grid-cols-1 md:grid-cols-2 {TW_PAGE_PADDING} gap-5 sm:gap-7 py-10 sm:py-14 md:py-16 lg:py-28">
 			<div class="max-md:order-2" use:reveal={{ delay: 200 }}>
 				{@render image('3 / 4', true)}
 			</div>

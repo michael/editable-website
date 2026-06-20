@@ -141,6 +141,7 @@ Update the prose content spacing to use `gap-5 sm:gap-7` for consistency across 
 - Change `Prose.svelte` content spacing from `gap-5 md:gap-8` to `gap-5 sm:gap-7`.
 - Change `ProseGrid.svelte` grid spacing so the wider vertical gap only applies below the multi-column breakpoint, while the horizontal gap stays on the `5 / sm:7` scale.
 - Change `ProseGridItem.svelte` content spacing from `gap-5 md:gap-8` to `gap-5 sm:gap-7`.
+- Change `DescriptiveGallery.svelte` wrapper padding to match `Prose.svelte` (`py-10 sm:py-14 md:py-16 lg:py-28`) and keep it symmetric.
 - Change `DescriptiveGallery.svelte` grid spacing so the wider vertical gap only applies below the multi-column breakpoint, while the horizontal gap stays on the `5 / sm:7` scale.
 - Change `Gallery.svelte` item spacing to the same `gap-5 sm:gap-7` scale.
 - Keep the rest of the prose layout structure unchanged.
@@ -156,6 +157,7 @@ Move the horizontal padding for `Feature.svelte` layouts 1 and 2 onto the top-le
 - Keep the existing feature content model unchanged.
 - Update layouts 1 and 2 so the outer grid owns the horizontal padding.
 - Add `gap-5 sm:gap-7` to the grid wrapper in layouts 1 and 2.
+- Make the top and bottom padding match `Prose.svelte` (`py-10 sm:py-14 md:py-16 lg:py-28`) and keep it symmetric.
 - Keep the current layout order and the two-layout limit unchanged.
 
 ## Next implementation draft — feature layouts
