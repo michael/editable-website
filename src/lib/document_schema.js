@@ -496,6 +496,7 @@ export const document_schema = define_document_schema({
 	accordion: {
 		kind: 'block',
 		properties: {
+			layout: { type: 'integer', default: 1 },
 			items: {
 				type: 'node_array',
 				node_types: ['accordion_item']

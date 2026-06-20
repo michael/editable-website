@@ -129,6 +129,22 @@ Add a reusable `prose_grid` block that arranges `prose` blocks in columns.
 - Add `ProseGrid.svelte` using the same column-count-driven layout pattern as `Footer.svelte`.
 - Register the new component and inserter.
 
+## Next implementation draft — accordion layouts
+
+### Goal
+
+Add five layout variants for `Accordion.svelte` so the accordion can render left-aligned, centered, right-aligned, full width within the limiter, or as the current two-column version.
+
+### Scope
+
+- Keep the existing accordion content model unchanged.
+- Layout 1 should be a left-aligned `max-w-4xl` version.
+- Layout 2 should be a centered `max-w-4xl` version using `mx-auto`.
+- Layout 3 should be a right-aligned `max-w-4xl` version using `ml-auto`.
+- Layout 4 should be full width within `TW_LIMITER`.
+- Layout 5 should preserve the current `lg` two-column grid version.
+- Register `accordion` as a five-layout node so the layout cycling command can switch between the versions.
+
 ## Next implementation draft — descriptive listing layouts
 
 ### Goal

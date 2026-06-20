@@ -37,7 +37,7 @@
    		`,
 			5: `
 	     	[--row:1]
-				grid grid-cols-4 lg:grid-cols-5
+				grid grid-cols-4 lg:grid-cols-5 xl:grid-cols-6
 				**:[.image-wrapper]:aspect-[2/1]
    		`
 		};

@@ -6,9 +6,9 @@
 	let { path } = $props();
 </script>
 
-<Node class="ew-accordion-item" {path}>
+<Node class="ew-accordion-item border-b border-[color-mix(in_oklch,var(--foreground)_7%,transparent)]" {path}>
 	<details
-		class="border-b border-[color-mix(in_oklch,var(--foreground)_7%,transparent)] py-2 md:py-3"
+		class="py-2 md:py-3"
 	>
 		<summary
 			class="list-none outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"

@@ -8,7 +8,8 @@ import {
 	ToggleAnnotationCommand,
 	UndoCommand,
 	RedoCommand,
-	SelectParentCommand
+	SelectParentCommand,
+	fill_document_defaults
 } from 'svedit';
 import nanoid from './nanoid.js';
 import {
@@ -331,6 +332,7 @@ const session_config = {
 		list_item: 1,
 		figure: 6,
 		descriptive_listing: 5,
+		accordion: 5,
 		captioned_figure: 1,
 		supporting_media: 1,
 		feature: 4,
@@ -917,6 +919,7 @@ const session_config = {
 			const accordion = {
 				id: nanoid(),
 				type: 'accordion',
+				layout: 1,
 				items: [accordion_item.id]
 			};
 			tr.create(accordion);
@@ -945,6 +948,7 @@ const session_config = {
 };
 
 export function create_session(doc) {
-	const session = new Session(document_schema, doc, session_config);
+	const migrated_doc = fill_document_defaults(doc, document_schema);
+	const session = new Session(document_schema, migrated_doc, session_config);
 	return session;
 }
