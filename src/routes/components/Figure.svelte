@@ -1,7 +1,7 @@
 <script>
 	import { getContext } from 'svelte';
 	import { Node } from 'svedit';
-	import { TW_LIMITER, TW_MOBILE_LEFT_INSET, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
+	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 	import MediaProperty from './MediaProperty.svelte';
 
 	const svedit = getContext('svedit');

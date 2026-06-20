@@ -1,7 +1,7 @@
 <script>
 	import { getContext, setContext } from 'svelte';
 	import { Node, NodeArrayProperty } from 'svedit';
-	import { TW_PAGE_PADDING_X, TW_MOBILE_LEFT_INSET, TW_LIMITER } from '../tailwind_theme.js';
+	import { TW_PAGE_PADDING_X, TW_LIMITER } from '../tailwind_theme.js';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
@@ -24,7 +24,7 @@
 </script>
 
 {#snippet content()}
-	<NodeArrayProperty class="flex flex-col gap-5 md:gap-8 {heading_spacing}" path={[...path, 'content']} />
+	<NodeArrayProperty class="flex flex-col gap-5 sm:gap-7 {heading_spacing}" path={[...path, 'content']} />
 {/snippet}
 
 <!-- Layout 1: Left-aligned -->

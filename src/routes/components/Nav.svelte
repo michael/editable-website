@@ -63,7 +63,7 @@
 			<div class="flex items-stretch text-sm min-w-full">
 				{@render logo()}
 				<div class="flex-1"></div>
-				<NodeArrayProperty class="nav-items flex items-stretch shrink-0 gap-x-2 sm:gap-x-4 py-3 pr-5 sm:pr-7 md:pr-10 lg:pr-14 min-w-max" path={[...path, 'nav_items']} />
+				<NodeArrayProperty class="nav-items flex items-stretch shrink-0 gap-x-2 sm:gap-x-4 py-3 pr-5 sm:pr-7 min-w-max" path={[...path, 'nav_items']} />
 			</div>
 		</div>
 	{:else}
