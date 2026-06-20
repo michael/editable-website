@@ -54,11 +54,9 @@
 
 {#snippet layout_4()}
 	<div class="{TW_LIMITER}">
-		<div class="grid grid-cols-3 py-10 sm:py-14 md:py-16 lg:py-28">
-			<div class="col-span-3 md:col-span-2 md:col-start-2">
-				<div class="{TW_MOBILE_LEFT_INSET} {TW_PAGE_PADDING_X} ml-auto max-w-4xl">
-					{@render media_frame()}
-				</div>
+		<div class="figure py-10 sm:py-14 md:py-16 lg:py-28">
+			<div class="{TW_PAGE_PADDING_X} ml-auto max-w-4xl">
+				{@render media_frame()}
 			</div>
 		</div>
 	</div>
