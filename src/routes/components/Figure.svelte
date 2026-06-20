@@ -10,7 +10,7 @@
 	let media_node = $derived(svedit.session.get([...path, 'media']));
 	let figure_layout = $derived(node.layout || 1);
 	let media_aspect_ratio = $derived(
-		media_node?.width && media_node?.height ? `${media_node.width} / ${media_node.height}` : '16 / 9'
+		media_node?.width && media_node?.height ? `${media_node.width} / ${media_node.height}` : '2/1'
 	);
 </script>
 
