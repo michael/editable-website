@@ -13,6 +13,7 @@
 		media_node.width && media_node.height ? `${media_node.width} / ${media_node.height}` : undefined
 	);
 	let colorset_class = $derived(node.colorset ? `ew-colorset-${node.colorset}` : '');
+	let feature_layout = $derived(node.layout === 2 ? 2 : 1);
 </script>
 
 <!-- Primitives -->
@@ -35,7 +36,6 @@
 	/>
 {/snippet}
 
-<!-- Default layout for Feature -->
 {#snippet layout_1()}
 	<div class="{TW_LIMITER}">
 		<div class="grid grid-cols-1 md:grid-cols-2 pt-5 sm:pt-7 md:pt-0">
@@ -49,7 +49,6 @@
 	</div>
 {/snippet}
 
-<!-- Like layout 1 but flipped horizontally -->
 {#snippet layout_2()}
 	<div class="{TW_LIMITER}">
 		<div class="grid grid-cols-1 md:grid-cols-2 pt-5 sm:pt-7 md:pt-0">
@@ -63,35 +62,7 @@
 	</div>
 {/snippet}
 
-<!-- Like layout 1 but image stretches to edges (full bleed) -->
-{#snippet layout_3()}
-	<div class="">
-		<div class="grid grid-cols-1 md:grid-cols-2 pt-5 sm:pt-7 md:pt-0">
-			<div class="flex flex-col justify-center {TW_PAGE_PADDING}" use:reveal>
-				<div class="max-w-2xl">{@render body()}</div>
-			</div>
-			<div use:reveal={{ delay: 200 }}>
-				{@render image()}
-			</div>
-		</div>
-	</div>
-{/snippet}
-
-<!-- Like layout 3 but flipped (image left, text right, full bleed) -->
-{#snippet layout_4()}
-	<div class="">
-		<div class="grid grid-cols-1 md:grid-cols-2 pt-5 sm:pt-7 md:pt-0">
-			<div class="max-md:order-2" use:reveal={{ delay: 200 }}>
-				{@render image()}
-			</div>
-			<div class="flex flex-col justify-center {TW_PAGE_PADDING} max-md:order-1" use:reveal>
-				<div class="max-w-2xl">{@render body()}</div>
-			</div>
-		</div>
-	</div>
-{/snippet}
-
 <Node class="ew-feature bg-(--background) text-(--foreground) {colorset_class}" {path}>
-	{@const layouts = [layout_1, layout_2, layout_3, layout_4]}
-	{@render layouts[node.layout - 1]()}
+	{@const layouts = [layout_1, layout_2]}
+	{@render layouts[feature_layout - 1]()}
 </Node>

@@ -335,7 +335,7 @@ const session_config = {
 		accordion: 5,
 		captioned_figure: 1,
 		supporting_media: 1,
-		feature: 4,
+		feature: 2,
 		gallery: 5,
 		nav_item: 2,
 		button: 2

@@ -129,6 +129,20 @@ Add a reusable `prose_grid` block that arranges `prose` blocks in columns.
 - Add `ProseGrid.svelte` using the same column-count-driven layout pattern as `Footer.svelte`.
 - Register the new component and inserter.
 
+## Next implementation draft — feature layouts
+
+### Goal
+
+Remove the full-bleed feature layouts and keep `Feature.svelte` on two layouts only.
+
+### Scope
+
+- Keep the existing feature content model unchanged.
+- Preserve layout 1 as the current left-text/right-image version.
+- Preserve layout 2 as the current flipped version.
+- Remove layouts 3 and 4 entirely.
+- Register `feature` as a two-layout node so the layout cycling command only offers those two layouts.
+
 ## Next implementation draft — accordion layouts
 
 ### Goal
