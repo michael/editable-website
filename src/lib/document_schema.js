@@ -132,7 +132,7 @@ export const document_schema = define_document_schema({
 			},
 			nav_items: {
 				type: 'node_array',
-				node_types: ['nav_item', 'nav_image', 'nav_spacer'],
+				node_types: ['nav_item', 'nav_spacer', 'nav_image'],
 				default_node_type: 'nav_item'
 			}
 		}

@@ -159,6 +159,8 @@ Rework `Nav.svelte` to use a single `nav_items` array, remove the fixed logo ren
 - Render `nav.nav_items` through a single `NodeArrayProperty` in the main nav row.
 - Add a new `nav_spacer` node type that renders as a `flex-1` separator.
 - Add a new `nav_image` node type with an `href` property and a fixed-height media preview.
+- Make `nav_item` layout 1 use the same vertical padding rhythm as the button-style layouts and slightly smaller horizontal padding.
+- Add a third `nav_item` layout matching the outlined secondary button style and the internal spacing of layout 2.
 - Allow `nav_items` to contain `nav_item`, `nav_image`, and `nav_spacer` nodes.
 - Keep the mobile nav menu working, but ignore spacer and image nodes there.
 
