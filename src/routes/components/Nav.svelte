@@ -9,10 +9,10 @@
 	const svedit = getContext('svedit');
 	let node = $derived(svedit.session.get(path));
 	let center_nav_item_ids = $derived(node.center_nav_items || []);
-	let mobile_menu_open = $state(false);
+	let mobile_nav_open = $state(false);
 
 	$effect(() => {
-		if (mobile_menu_open) {
+		if (mobile_nav_open) {
 			document.body.style.overflow = 'hidden';
 		} else {
 			document.body.style.overflow = '';
@@ -35,7 +35,7 @@
 		</svg>
 	{/snippet}
 
-	{#snippet nav_bar(editable = false)}
+	{#snippet desktop_nav()}
 		<div class="{TW_LIMITER} overflow-x-auto overflow-y-hidden relative">
 			<div class="flex items-center gap-16 py-5 px-5 sm:px-7 text-sm">
 				<NodeArrayProperty
@@ -43,35 +43,21 @@
 					class="flex flex-1 items-center *:min-w-max [--row:1]"
 					path={[...path, 'start_nav_items']}
 				/>
-
-				<!-- class={editable ? 'flex items-center gap-8 w-max [--row:1]' : 'hidden md:flex items-center gap-8 [--row:1]'} -->
 				<NodeArrayProperty
 					tag="nav"
 					class="flex items-center gap-8 w-max *:min-w-max [--row:1]"
 					path={[...path, 'center_nav_items']}
 				/>
-
 				<NodeArrayProperty
 					tag="div"
 					class="flex flex-1 items-center justify-end gap-3 *:min-w-max [--row:1]"
 					path={[...path, 'end_nav_items']}
 				/>
-
-				<!-- {#if !editable}
-					<button
-						class="cursor-pointer flex md:hidden items-center justify-center py-3"
-						onclick={() => (mobile_menu_open = !mobile_menu_open)}
-						aria-label="Toggle menu"
-						aria-expanded={mobile_menu_open}
-					>
-						{@render menu_icon(mobile_menu_open)}
-					</button>
-				{/if} -->
 			</div>
 		</div>
 	{/snippet}
 
-	{#snippet mobile_menu()}
+	{#snippet mobile_nav()}
 		<div
 			class="md:hidden fixed inset-0 bg-(--background)/80 backdrop-blur-sm z-50"
 			contenteditable="false"
@@ -79,7 +65,7 @@
 		>
 			<button
 				class="cursor-pointer absolute top-4 right-4 p-2"
-				onclick={() => (mobile_menu_open = false)}
+				onclick={() => (mobile_nav_open = false)}
 				aria-label="Close menu"
 			>
 				{@render menu_icon(true)}
@@ -93,7 +79,7 @@
 							href={item.href || '#'}
 							target={item.target}
 							class="text-3xl font-serif text-(--foreground) py-2 px-3 sm:px-5"
-							onclick={() => (mobile_menu_open = false)}
+							onclick={() => (mobile_nav_open = false)}
 						>
 							{item.label?.text || ''}
 						</a>
@@ -104,11 +90,21 @@
 	{/snippet}
 
 	{#if svedit.editable}
-		{@render nav_bar(true)}
+		{@render desktop_nav(true)}
 	{:else}
-		{@render nav_bar(false)}
-		<!-- {#if mobile_menu_open}
-			{@render mobile_menu()}
-		{/if} -->
+		<div>
+			<button
+				class="cursor-pointer flex md:hidden items-center justify-center py-3"
+				onclick={() => (mobile_nav_open = !mobile_nav_open)}
+				aria-label="Toggle menu"
+				aria-expanded={mobile_nav_open}
+			>
+				{@render menu_icon(mobile_nav_open)}
+			</button>
+		</div>
+
+		{#if mobile_nav_open}
+			{@render mobile_nav()}
+		{/if}
 	{/if}
 </Node>
