@@ -37,10 +37,10 @@
 
 	{#snippet nav_bar(editable = false)}
 		<div class="{TW_LIMITER} overflow-x-auto overflow-y-hidden relative">
-			<div class="flex items-center gap-4 py-5 px-5 sm:px-7 text-sm">
+			<div class="flex items-center gap-16 py-5 px-5 sm:px-7 text-sm">
 				<NodeArrayProperty
 					tag="div"
-					class="flex flex-1 items-center shrink-0 *:min-w-max [--row:1]"
+					class="flex flex-1 items-center *:min-w-max [--row:1]"
 					path={[...path, 'start_nav_items']}
 				/>
 
