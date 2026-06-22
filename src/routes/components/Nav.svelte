@@ -1,17 +1,14 @@
 <script>
 	import { getContext } from 'svelte';
-	import { resolve } from '$app/paths';
 	import { NodeArrayProperty, Node } from 'svedit';
 	import { slide } from 'svelte/transition';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
-	import MediaProperty from './MediaProperty.svelte';
 
 	let { path } = $props();
 
 	const svedit = getContext('svedit');
 	let node = $derived(svedit.session.get(path));
-	let logo_node = $derived(svedit.session.get([...path, 'logo']));
-	let nav_items = $derived(node.nav_items || []);
+	let center_nav_item_ids = $derived(node.center_nav_items || []);
 
 	let mobile_menu_open = $state(false);
 
@@ -42,35 +39,30 @@
 	{#snippet nav_bar(editable = false)}
 		<div class="{TW_LIMITER} overflow-x-auto overflow-y-hidden relative">
 			<div class="flex w-full min-w-max items-center gap-16 py-5 {TW_PAGE_PADDING_X} text-sm">
-				<div class="shrink-0">
-					<svelte:element
-						class="block h-10 min-w-0 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
-						style:aspect-ratio={logo_node?.width && logo_node?.height ? `${logo_node.width} / ${logo_node.height}` : '1 / 1'}
-						this={svedit.editable ? 'div' : 'a'}
-						href={svedit.editable ? undefined : resolve('/')}
-					>
-						<MediaProperty path={[...path, 'logo']} />
-					</svelte:element>
-				</div>
+				<NodeArrayProperty tag="div" class="shrink-0 [--row:1]" path={[...path, 'start_nav_items']} />
 
 				<NodeArrayProperty
 					tag="nav"
 					class={editable ? 'mx-auto flex shrink-0 w-max items-center gap-8 [--row:1]' : 'mx-auto hidden shrink-0 w-max items-center gap-8 [--row:1] md:flex'}
-					path={[...path, 'nav_items']}
+					path={[...path, 'center_nav_items']}
 				/>
 
-				<div class="shrink-0">
-					{#if !editable}
-						<button
-							class="cursor-pointer flex md:hidden items-center justify-center py-3"
-							onclick={() => (mobile_menu_open = !mobile_menu_open)}
-							aria-label="Toggle menu"
-							aria-expanded={mobile_menu_open}
-						>
-							{@render menu_icon(mobile_menu_open)}
-						</button>
-					{/if}
-				</div>
+				<NodeArrayProperty
+					tag="div"
+					class={editable ? 'shrink-0 [--row:1]' : 'hidden shrink-0 md:flex [--row:1]'}
+					path={[...path, 'end_nav_items']}
+				/>
+
+				{#if !editable}
+					<button
+						class="cursor-pointer flex md:hidden items-center justify-center py-3"
+						onclick={() => (mobile_menu_open = !mobile_menu_open)}
+						aria-label="Toggle menu"
+						aria-expanded={mobile_menu_open}
+					>
+						{@render menu_icon(mobile_menu_open)}
+					</button>
+				{/if}
 			</div>
 		</div>
 	{/snippet}
@@ -90,8 +82,8 @@
 			</button>
 
 			<nav class="flex flex-col pt-16 pb-5 px-3">
-				{#each nav_items as _node_id, index (index)}
-					{@const item = svedit.session.get([...path, 'nav_items', index])}
+				{#each center_nav_item_ids as _node_id, index (index)}
+					{@const item = svedit.session.get([...path, 'center_nav_items', index])}
 					{#if item.type === 'nav_item'}
 						<a
 							href={item.href || '#'}
@@ -117,4 +109,3 @@
 		{/if}
 	{/if}
 </Node>
-

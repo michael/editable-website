@@ -125,14 +125,19 @@ export const document_schema = define_document_schema({
 	nav: {
 		kind: 'block',
 		properties: {
-			logo: {
-				type: 'node',
-				node_types: ['image', 'video'],
-				default_node_type: 'image'
-			},
-			nav_items: {
+			start_nav_items: {
 				type: 'node_array',
-				node_types: ['nav_item', 'nav_spacer', 'nav_image'],
+				node_types: ['nav_image', 'nav_item'],
+				default_node_type: 'nav_image'
+			},
+			center_nav_items: {
+				type: 'node_array',
+				node_types: ['nav_item', 'nav_image'],
+				default_node_type: 'nav_item'
+			},
+			end_nav_items: {
+				type: 'node_array',
+				node_types: ['nav_item', 'nav_image'],
 				default_node_type: 'nav_item'
 			}
 		}
@@ -149,10 +154,6 @@ export const document_schema = define_document_schema({
 				allow_newlines: false
 			}
 		}
-	},
-	nav_spacer: {
-		kind: 'block',
-		properties: {}
 	},
 	nav_image: {
 		kind: 'block',

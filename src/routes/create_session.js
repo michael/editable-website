@@ -31,7 +31,7 @@ import Page from './components/Page.svelte';
 import Nav from './components/Nav.svelte';
 import NavItem from './components/NavItem.svelte';
 import NavImage from './components/NavImage.svelte';
-import NavSpacer from './components/NavSpacer.svelte';
+
 import Footer from './components/Footer.svelte';
 import FooterLinkColumn from './components/FooterLinkColumn.svelte';
 import FooterLink from './components/FooterLink.svelte';
@@ -179,7 +179,6 @@ const session_config = {
 		nav: Nav,
 		nav_item: NavItem,
 		nav_image: NavImage,
-		nav_spacer: NavSpacer,
 		footer: Footer,
 		footer_link_column: FooterLinkColumn,
 		footer_link: FooterLink,
@@ -343,7 +342,6 @@ const session_config = {
 		gallery: 5,
 		nav_item: 3,
 		nav_image: 1,
-		nav_spacer: 1,
 		button: 2
 	},
 
@@ -698,14 +696,6 @@ const session_config = {
 			});
 
 			tr.insert_nodes([new_nav_image_id]);
-		},
-		nav_spacer: function (tr) {
-			const new_nav_spacer = {
-				id: nanoid(),
-				type: 'nav_spacer'
-			};
-			tr.create(new_nav_spacer);
-			tr.insert_nodes([new_nav_spacer.id]);
 		},
 
 		button: function (tr, content = { text: '', annotations: [] }, layout = 1) {

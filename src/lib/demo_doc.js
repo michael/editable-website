@@ -1516,8 +1516,8 @@ const FULL_DOC = {
 			colorset: 0,
 			content: ['vvqbUaMzgjJXvJGMzHFDnrE']
 		},
-		nav_logo: {
-			id: 'nav_logo',
+		nav_logo_media: {
+			id: 'nav_logo_media',
 			type: 'image',
 			src: 'logo.svg',
 			mime_type: 'image/svg+xml',
@@ -1528,6 +1528,13 @@ const FULL_DOC = {
 			focal_point_x: 0.5,
 			focal_point_y: 0.5,
 			object_fit: 'cover'
+		},
+		nav_logo: {
+			id: 'nav_logo',
+			type: 'nav_image',
+			href: '/',
+			target: '_self',
+			media: 'nav_logo_media'
 		},
 		DDmmrQzcAxWJfdhatTbkRTh: {
 			id: 'DDmmrQzcAxWJfdhatTbkRTh',
@@ -1565,8 +1572,9 @@ const FULL_DOC = {
 		nav_1: {
 			id: 'nav_1',
 			type: 'nav',
-			logo: 'nav_logo',
-			nav_items: ['DDmmrQzcAxWJfdhatTbkRTh', 'GyKyQvRAvkgnywmxTVgvrnF', 'FKgjxHCeSbVZrdnPuxYkMYp']
+			start_nav_items: ['nav_logo'],
+			center_nav_items: ['DDmmrQzcAxWJfdhatTbkRTh', 'GyKyQvRAvkgnywmxTVgvrnF'],
+			end_nav_items: ['FKgjxHCeSbVZrdnPuxYkMYp']
 		},
 		footer_logo: {
 			id: 'footer_logo',
