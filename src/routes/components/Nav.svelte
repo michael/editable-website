@@ -38,18 +38,22 @@
 	{#snippet nav_bar(editable = false)}
 		<div class="{TW_LIMITER} overflow-x-auto overflow-y-hidden relative">
 			<div class="flex items-center gap-4 py-5 px-5 sm:px-7 text-sm">
-				<NodeArrayProperty tag="div" class="flex flex-1 items-center shrink-0 [--row:1]" path={[...path, 'start_nav_items']} />
+				<NodeArrayProperty
+					tag="div"
+					class="flex flex-1 items-center shrink-0 *:min-w-max [--row:1]"
+					path={[...path, 'start_nav_items']}
+				/>
 
 				<!-- class={editable ? 'flex items-center gap-8 w-max [--row:1]' : 'hidden md:flex items-center gap-8 [--row:1]'} -->
 				<NodeArrayProperty
 					tag="nav"
-					class="flex items-center gap-8 w-max [--row:1]"
+					class="flex items-center gap-8 w-max *:min-w-max [--row:1]"
 					path={[...path, 'center_nav_items']}
 				/>
 
 				<NodeArrayProperty
 					tag="div"
-					class="flex flex-1 items-center justify-end gap-3 [--row:1]"
+					class="flex flex-1 items-center justify-end gap-3 *:min-w-max [--row:1]"
 					path={[...path, 'end_nav_items']}
 				/>
 

@@ -14,7 +14,7 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="nav-item-link block py-2 mx-2 sm:mx-3 hover:underline underline-offset-2 transition-all duration-500 ease-in-out decoration-transparent hover:decoration-(--foreground) hover:text-(--foreground) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+		class="min-w-max nav-item-link block py-2 mx-2 sm:mx-3 hover:underline underline-offset-2 decoration-transparent hover:decoration-(--foreground) hover:text-(--foreground) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 	>
 		<AnnotatedTextProperty
 			path={[...path, 'label']}
