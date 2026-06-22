@@ -1543,7 +1543,29 @@ const FULL_DOC = {
 			href: '/#RtYpQwXsZvNmKjHgFdSaLe',
 			target: '_self',
 			label: {
-				text: 'Try it',
+				text: 'Showcases',
+				annotations: []
+			}
+		},
+		BESRZnRsUbbWapdUTzGNxFH: {
+			id: 'BESRZnRsUbbWapdUTzGNxFH',
+			type: 'nav_item',
+			layout: 1,
+			href: '#',
+			target: '_self',
+			label: {
+				text: 'Manual',
+				annotations: []
+			}
+		},
+		atmQQGpCXBweGkkcSuKpJPS: {
+			id: 'atmQQGpCXBweGkkcSuKpJPS',
+			type: 'nav_item',
+			layout: 1,
+			href: '#',
+			target: '_self',
+			label: {
+				text: 'Blog',
 				annotations: []
 			}
 		},
@@ -1555,6 +1577,17 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				text: 'About',
+				annotations: []
+			}
+		},
+		GtffzHxEWNweDuhFgUZFeBe: {
+			id: 'GtffzHxEWNweDuhFgUZFeBe',
+			type: 'nav_item',
+			layout: 3,
+			href: 'https://github.com/michael/editable-website#getting-started',
+			target: '_blank',
+			label: {
+				text: 'Download  ⤓',
 				annotations: []
 			}
 		},
@@ -1573,8 +1606,13 @@ const FULL_DOC = {
 			id: 'nav_1',
 			type: 'nav',
 			start_nav_items: ['nav_logo'],
-			center_nav_items: ['DDmmrQzcAxWJfdhatTbkRTh', 'GyKyQvRAvkgnywmxTVgvrnF'],
-			end_nav_items: ['FKgjxHCeSbVZrdnPuxYkMYp']
+			center_nav_items: [
+				'DDmmrQzcAxWJfdhatTbkRTh',
+				'BESRZnRsUbbWapdUTzGNxFH',
+				'atmQQGpCXBweGkkcSuKpJPS',
+				'GyKyQvRAvkgnywmxTVgvrnF'
+			],
+			end_nav_items: ['GtffzHxEWNweDuhFgUZFeBe', 'FKgjxHCeSbVZrdnPuxYkMYp']
 		},
 		footer_logo: {
 			id: 'footer_logo',

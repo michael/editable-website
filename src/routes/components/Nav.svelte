@@ -2,14 +2,13 @@
 	import { getContext } from 'svelte';
 	import { NodeArrayProperty, Node } from 'svedit';
 	import { slide } from 'svelte/transition';
-	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
+	import { TW_LIMITER } from '../tailwind_theme.js';
 
 	let { path } = $props();
 
 	const svedit = getContext('svedit');
 	let node = $derived(svedit.session.get(path));
 	let center_nav_item_ids = $derived(node.center_nav_items || []);
-
 	let mobile_menu_open = $state(false);
 
 	$effect(() => {
@@ -38,22 +37,23 @@
 
 	{#snippet nav_bar(editable = false)}
 		<div class="{TW_LIMITER} overflow-x-auto overflow-y-hidden relative">
-			<div class="flex w-full min-w-max items-center gap-16 py-5 {TW_PAGE_PADDING_X} text-sm">
-				<NodeArrayProperty tag="div" class="shrink-0 [--row:1]" path={[...path, 'start_nav_items']} />
+			<div class="flex items-center gap-4 py-5 px-5 sm:px-7 text-sm">
+				<NodeArrayProperty tag="div" class="flex flex-1 items-center shrink-0 [--row:1]" path={[...path, 'start_nav_items']} />
 
+				<!-- class={editable ? 'flex items-center gap-8 w-max [--row:1]' : 'hidden md:flex items-center gap-8 [--row:1]'} -->
 				<NodeArrayProperty
 					tag="nav"
-					class={editable ? 'mx-auto flex shrink-0 w-max items-center gap-8 [--row:1]' : 'mx-auto hidden shrink-0 w-max items-center gap-8 [--row:1] md:flex'}
+					class="flex items-center gap-8 w-max [--row:1]"
 					path={[...path, 'center_nav_items']}
 				/>
 
 				<NodeArrayProperty
 					tag="div"
-					class={editable ? 'shrink-0 [--row:1]' : 'hidden shrink-0 md:flex [--row:1]'}
+					class="flex flex-1 items-center justify-end gap-3 [--row:1]"
 					path={[...path, 'end_nav_items']}
 				/>
 
-				{#if !editable}
+				<!-- {#if !editable}
 					<button
 						class="cursor-pointer flex md:hidden items-center justify-center py-3"
 						onclick={() => (mobile_menu_open = !mobile_menu_open)}
@@ -62,7 +62,7 @@
 					>
 						{@render menu_icon(mobile_menu_open)}
 					</button>
-				{/if}
+				{/if} -->
 			</div>
 		</div>
 	{/snippet}
@@ -103,9 +103,8 @@
 		{@render nav_bar(true)}
 	{:else}
 		{@render nav_bar(false)}
-
-		{#if mobile_menu_open}
+		<!-- {#if mobile_menu_open}
 			{@render mobile_menu()}
-		{/if}
+		{/if} -->
 	{/if}
 </Node>

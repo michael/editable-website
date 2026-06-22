@@ -14,10 +14,9 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="nav-item-link flex items-center justify-center w-full py-2 mx-2 sm:mx-3 hover:underline underline-offset-2 transition-all duration-500 ease-in-out decoration-transparent hover:decoration-(--foreground) hover:text-(--foreground) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+		class="nav-item-link block py-2 mx-2 sm:mx-3 hover:underline underline-offset-2 transition-all duration-500 ease-in-out decoration-transparent hover:decoration-(--foreground) hover:text-(--foreground) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 	>
 		<AnnotatedTextProperty
-			class="px-2 sm:px-3.5"
 			path={[...path, 'label']}
 			placeholder="Label"
 		/>
@@ -29,7 +28,7 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="flex items-center justify-center w-full py-2 bg-(--accent) text-(--accent-foreground) rounded-(--button-border-radius) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+		class="block py-2 bg-(--accent) text-(--accent-foreground) rounded-(--button-border-radius) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 		class:hover:opacity-80={render_as_link}
 	>
 		<AnnotatedTextProperty
@@ -45,7 +44,7 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="flex items-center justify-center w-full py-2 outline-1 outline-(--foreground)/15 text-(--foreground) rounded-(--button-border-radius) focus-visible:outline-(--svedit-editing-stroke) {render_as_link ? 'hover:bg-(--foreground)/5' : ''}"
+		class="block py-2 outline-1 outline-(--foreground)/15 text-(--foreground) rounded-(--button-border-radius) focus-visible:outline-(--svedit-editing-stroke) {render_as_link ? 'hover:bg-(--foreground)/5' : ''}"
 	>
 		<AnnotatedTextProperty
 			class="px-2 sm:px-3.5"
