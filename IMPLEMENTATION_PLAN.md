@@ -146,23 +146,19 @@ Update the prose content spacing to use `gap-5 sm:gap-7` for consistency across 
 - Change `Gallery.svelte` item spacing to the same `gap-5 sm:gap-7` scale.
 - Keep the rest of the prose layout structure unchanged.
 
-## Next implementation draft — nav spacers
+## Next implementation draft — three-slot nav layout
 
 ### Goal
 
-Rework `Nav.svelte` to use a single `nav_items` array, remove the fixed logo rendering for now, and add a `nav_spacer` block that renders as a flexible separator.
+Rework `Nav.svelte` to render the desktop nav through fixed start, center, and end containers so the centered group stays centered without spacer hacks.
 
 ### Scope
 
-- Keep the existing nav content model mostly unchanged.
-- Remove the fixed logo rendering from `Nav.svelte` for now.
-- Render `nav.nav_items` through a single `NodeArrayProperty` in the main nav row.
-- Add a new `nav_spacer` node type that renders as a `flex-1` separator.
-- Add a new `nav_image` node type with an `href` property and a fixed-height media preview.
-- Make `nav_item` layout 1 use the same vertical padding rhythm as the button-style layouts and slightly smaller horizontal padding.
-- Add a third `nav_item` layout matching the outlined secondary button style and the internal spacing of layout 2.
-- Allow `nav_items` to contain `nav_item`, `nav_image`, and `nav_spacer` nodes.
-- Keep the mobile nav menu working, but ignore spacer and image nodes there.
+- Keep the existing nav content model unchanged for now.
+- Use a shared desktop layout snippet in both editable and non-editable branches.
+- Render the start slot with the logo, the center slot with the current nav items, and the end slot as a reserved CTA/mobile-toggle area.
+- Keep the mobile nav menu working for non-editable users.
+- In editable mobile mode, show the desktop nav and allow it to overflow.
 
 ## Next implementation draft — feature layout spacing
 
