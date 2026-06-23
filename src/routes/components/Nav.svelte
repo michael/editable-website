@@ -21,7 +21,7 @@
 			for (let index = 0; index < nav_items.length; index++) {
 				const item = svedit.session.get([...path, nav_items_name, index]);
 				if (item?.type === 'nav_image') {
-					return [...path, nav_items_name, index];
+					return [item.id];
 				}
 			}
 		}
@@ -35,7 +35,7 @@
 			for (let index = 0; index < nav_items.length; index++) {
 				const item = svedit.session.get([...path, nav_items_name, index]);
 				if (item?.type === 'nav_item' && item.layout === 2) {
-					return [...path, nav_items_name, index];
+					return [item.id];
 				}
 			}
 		}
@@ -106,15 +106,15 @@
 				{#if mobile_nav_cta_path}
 					<NavItem path={mobile_nav_cta_path} />
 				{/if}
-					<button
-						class="cursor-pointer flex items-center justify-center py-3"
-						onclick={() => (mobile_nav_open = !mobile_nav_open)}
-						aria-label="Toggle menu"
-						aria-expanded={mobile_nav_open}
-					>
-						{@render menu_icon(mobile_nav_open)}
-					</button>
-				</div>
+				<button
+					class="cursor-pointer flex items-center justify-center py-3"
+					onclick={() => (mobile_nav_open = !mobile_nav_open)}
+					aria-label="Toggle menu"
+					aria-expanded={mobile_nav_open}
+				>
+					{@render menu_icon(mobile_nav_open)}
+				</button>
+			</div>
 		</div>
 	</div>
 
