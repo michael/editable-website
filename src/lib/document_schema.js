@@ -59,6 +59,7 @@ export const document_schema = define_document_schema({
 					'accordion',
 					'preformatted'
 				],
+				annotation_types: ['section'],
 				default_node_type: 'prose'
 			},
 			nav: {
@@ -569,6 +570,10 @@ export const document_schema = define_document_schema({
 		properties: {}
 	},
 	highlight: {
+		kind: 'annotation',
+		properties: {}
+	},
+	section: {
 		kind: 'annotation',
 		properties: {}
 	}

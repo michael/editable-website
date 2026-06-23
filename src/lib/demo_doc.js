@@ -1751,6 +1751,10 @@ const FULL_DOC = {
 			logo_max_width: 40,
 			logo_aspect_ratio: 1
 		},
+		section_1: {
+			id: 'section_1',
+			type: 'section'
+		},
 		page_1: {
 			id: 'page_1',
 			type: 'page',
@@ -1763,27 +1767,36 @@ const FULL_DOC = {
 				annotations: []
 			},
 			image: 'vMaUqeqBAVSyPgDpnxWWPCK',
-			body: [
-				'gRpPsPcYyMPRSWWDXxvNGAF',
-				'RtYpQwXsZvNmKjHgFdSaLe',
-				'xKmNqPrStVwYzAbCdEfGh',
-				'dyRWExwbkfuqKyDupbEqaec',
-				'BPdekRaDEUcQZqtEwPwBvyu',
-				'FUeFBwWRRuSJMVAhgxThQqj',
-				'descriptive_gallery_intro',
-				'jLnPqRsTuVwXyZaBcDeFg',
-				'descriptive_gallery_outro',
-				'XVJGXtwnQMvcrcuByAtcWNa',
-				'fmxXNqJPJNkTZpAtwKSHxWb',
-				'eRkNrkcQvspQsPtkDtuqekV',
-				'prose_grid_1',
-				'xEphsDndbNejaRnnPRBwvBK',
-				'BBExBsmaSTXMZdcxMsYngwg',
-				'preformatted_example',
-				'YTMHBcPkYXJMRUnuSAhrTDE',
-				'zBXuGXXYWMGbSdteMyNFhja',
-				'wmrbpSFAFUmMRPDumcjKqpF'
-			],
+			body: {
+				nodes: [
+					'gRpPsPcYyMPRSWWDXxvNGAF',
+					'RtYpQwXsZvNmKjHgFdSaLe',
+					'xKmNqPrStVwYzAbCdEfGh',
+					'dyRWExwbkfuqKyDupbEqaec',
+					'BPdekRaDEUcQZqtEwPwBvyu',
+					'FUeFBwWRRuSJMVAhgxThQqj',
+					'descriptive_gallery_intro',
+					'jLnPqRsTuVwXyZaBcDeFg',
+					'descriptive_gallery_outro',
+					'XVJGXtwnQMvcrcuByAtcWNa',
+					'fmxXNqJPJNkTZpAtwKSHxWb',
+					'eRkNrkcQvspQsPtkDtuqekV',
+					'prose_grid_1',
+					'xEphsDndbNejaRnnPRBwvBK',
+					'BBExBsmaSTXMZdcxMsYngwg',
+					'preformatted_example',
+					'YTMHBcPkYXJMRUnuSAhrTDE',
+					'zBXuGXXYWMGbSdteMyNFhja',
+					'wmrbpSFAFUmMRPDumcjKqpF'
+				],
+				annotations: [
+					{
+						start_offset: 0,
+						end_offset: 3,
+						node_id: 'section_1'
+					}
+				]
+			},
 			nav: 'nav_1',
 			footer: 'footer_1'
 		}
