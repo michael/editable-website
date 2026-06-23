@@ -3,13 +3,29 @@
 	import { NodeArrayProperty, Node } from 'svedit';
 	import { slide } from 'svelte/transition';
 	import { TW_LIMITER } from '../tailwind_theme.js';
+	import NavImage from './NavImage.svelte';
 
 	let { path } = $props();
 
 	const svedit = getContext('svedit');
 	let node = $derived(svedit.session.get(path));
 	let center_nav_item_ids = $derived(node.center_nav_items || []);
+	let mobile_nav_image_path = $derived(find_mobile_nav_image_path());
 	let mobile_nav_open = $state(false);
+
+	function find_mobile_nav_image_path() {
+		for (const nav_items_name of ['start_nav_items', 'center_nav_items', 'end_nav_items']) {
+			const nav_items = node?.[nav_items_name] || [];
+			for (let index = 0; index < nav_items.length; index++) {
+				const item = svedit.session.get([...path, nav_items_name, index]);
+				if (item?.type === 'nav_image') {
+					return [...path, nav_items_name, index];
+				}
+			}
+		}
+
+		return null;
+	}
 
 	$effect(() => {
 		if (mobile_nav_open) {
@@ -66,7 +82,9 @@
 		class:hidden={svedit.editable}
 	>
 		<div class="flex items-center gap-16 py-2 px-5 sm:px-7 text-sm">
-			<div>LOGO</div>
+			{#if mobile_nav_image_path}
+				<NavImage path={mobile_nav_image_path} />
+			{/if}
 			<div class="flex-1"></div>
 			<button
 				class="cursor-pointer flex items-center justify-center py-3"
