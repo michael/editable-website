@@ -35,36 +35,58 @@
 		</svg>
 	{/snippet}
 
-	{#snippet desktop_nav()}
-		<div class="{TW_LIMITER} overflow-x-auto overflow-y-hidden relative">
-			<div class="flex items-center gap-16 py-5 px-5 sm:px-7 text-sm">
-				<NodeArrayProperty
-					tag="div"
-					class="flex flex-1 items-center *:min-w-max [--row:1]"
-					path={[...path, 'start_nav_items']}
-				/>
-				<NodeArrayProperty
-					tag="nav"
-					class="flex items-center gap-8 w-max *:min-w-max [--row:1]"
-					path={[...path, 'center_nav_items']}
-				/>
-				<NodeArrayProperty
-					tag="div"
-					class="flex flex-1 items-center justify-end gap-3 *:min-w-max [--row:1]"
-					path={[...path, 'end_nav_items']}
-				/>
-			</div>
-		</div>
-	{/snippet}
 
-	{#snippet mobile_nav()}
+	<!-- Desktop nav (visible also during mobile editing) -->
+	<div
+		class="{TW_LIMITER} overflow-x-auto overflow-y-hidden relative"
+		class:max-lg:hidden={!svedit.editable}
+	>
+		<div class="flex items-center gap-16 py-5 px-5 sm:px-7 text-sm">
+			<NodeArrayProperty
+				tag="div"
+				class="flex flex-1 items-center *:min-w-max [--row:1]"
+				path={[...path, 'start_nav_items']}
+			/>
+			<NodeArrayProperty
+				tag="nav"
+				class="flex items-center gap-8 w-max *:min-w-max [--row:1]"
+				path={[...path, 'center_nav_items']}
+			/>
+			<NodeArrayProperty
+				tag="div"
+				class="flex flex-1 items-center justify-end gap-3 *:min-w-max [--row:1]"
+				path={[...path, 'end_nav_items']}
+			/>
+		</div>
+	</div>
+
+	<!-- Mobile nav (visible also during mobile editing) -->
+	<div
+		class="{TW_LIMITER} lg:hidden"
+		class:hidden={svedit.editable}
+	>
+		<div class="flex items-center gap-16 py-2 px-5 sm:px-7 text-sm">
+			<div>LOGO</div>
+			<div class="flex-1"></div>
+			<button
+				class="cursor-pointer flex items-center justify-center py-3"
+				onclick={() => (mobile_nav_open = !mobile_nav_open)}
+				aria-label="Toggle menu"
+				aria-expanded={mobile_nav_open}
+			>
+				{@render menu_icon(mobile_nav_open)}
+			</button>
+		</div>
+	</div>
+
+	{#if mobile_nav_open}
 		<div
-			class="md:hidden fixed inset-0 bg-(--background)/80 backdrop-blur-sm z-50"
+			class="lg:hidden fixed inset-0 bg-(--background)/80 backdrop-blur-sm z-50"
 			contenteditable="false"
 			transition:slide={{ duration: 200 }}
 		>
 			<button
-				class="cursor-pointer absolute top-4 right-4 p-2"
+				class="cursor-pointer absolute top-0 right-0 px-5 sm:px-7 py-5"
 				onclick={() => (mobile_nav_open = false)}
 				aria-label="Close menu"
 			>
@@ -78,7 +100,7 @@
 						<a
 							href={item.href || '#'}
 							target={item.target}
-							class="text-3xl font-serif text-(--foreground) py-2 px-3 sm:px-5"
+							class="text-3xl text-(--foreground) py-2 px-3 sm:px-5"
 							onclick={() => (mobile_nav_open = false)}
 						>
 							{item.label?.text || ''}
@@ -87,24 +109,5 @@
 				{/each}
 			</nav>
 		</div>
-	{/snippet}
-
-	{#if svedit.editable}
-		{@render desktop_nav(true)}
-	{:else}
-		<div>
-			<button
-				class="cursor-pointer flex md:hidden items-center justify-center py-3"
-				onclick={() => (mobile_nav_open = !mobile_nav_open)}
-				aria-label="Toggle menu"
-				aria-expanded={mobile_nav_open}
-			>
-				{@render menu_icon(mobile_nav_open)}
-			</button>
-		</div>
-
-		{#if mobile_nav_open}
-			{@render mobile_nav()}
-		{/if}
 	{/if}
 </Node>
