@@ -146,6 +146,21 @@ Update the prose content spacing to use `gap-5 sm:gap-7` for consistency across 
 - Change `Gallery.svelte` item spacing to the same `gap-5 sm:gap-7` scale.
 - Keep the rest of the prose layout structure unchanged.
 
+## Next implementation draft — three-slot nav layout
+
+### Goal
+
+Rework `Nav.svelte` to render the desktop nav through fixed start, center, and end containers so the centered group stays centered without spacer hacks.
+
+### Scope
+
+- Split the nav content model into `start_nav_items`, `center_nav_items`, and `end_nav_items`.
+- Use `nav_image` and `nav_item` nodes in all three nav slots.
+- Do not use `nav_spacer` in the nav slots.
+- Use a shared desktop layout snippet in both editable and non-editable branches.
+- Keep the mobile nav menu working for non-editable users.
+- In editable mobile mode, show the desktop nav and allow it to overflow.
+
 ## Next implementation draft — feature layout spacing
 
 ### Goal

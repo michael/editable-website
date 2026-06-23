@@ -1516,8 +1516,8 @@ const FULL_DOC = {
 			colorset: 0,
 			content: ['vvqbUaMzgjJXvJGMzHFDnrE']
 		},
-		nav_logo: {
-			id: 'nav_logo',
+		nav_logo_media: {
+			id: 'nav_logo_media',
 			type: 'image',
 			src: 'logo.svg',
 			mime_type: 'image/svg+xml',
@@ -1529,6 +1529,13 @@ const FULL_DOC = {
 			focal_point_y: 0.5,
 			object_fit: 'cover'
 		},
+		nav_logo: {
+			id: 'nav_logo',
+			type: 'nav_image',
+			href: '/',
+			target: '_self',
+			media: 'nav_logo_media'
+		},
 		DDmmrQzcAxWJfdhatTbkRTh: {
 			id: 'DDmmrQzcAxWJfdhatTbkRTh',
 			type: 'nav_item',
@@ -1536,7 +1543,29 @@ const FULL_DOC = {
 			href: '/#RtYpQwXsZvNmKjHgFdSaLe',
 			target: '_self',
 			label: {
-				text: 'Try it',
+				text: 'Showcases',
+				annotations: []
+			}
+		},
+		BESRZnRsUbbWapdUTzGNxFH: {
+			id: 'BESRZnRsUbbWapdUTzGNxFH',
+			type: 'nav_item',
+			layout: 1,
+			href: '#',
+			target: '_self',
+			label: {
+				text: 'Manual',
+				annotations: []
+			}
+		},
+		atmQQGpCXBweGkkcSuKpJPS: {
+			id: 'atmQQGpCXBweGkkcSuKpJPS',
+			type: 'nav_item',
+			layout: 1,
+			href: '#',
+			target: '_self',
+			label: {
+				text: 'Blog',
 				annotations: []
 			}
 		},
@@ -1548,6 +1577,17 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				text: 'About',
+				annotations: []
+			}
+		},
+		GtffzHxEWNweDuhFgUZFeBe: {
+			id: 'GtffzHxEWNweDuhFgUZFeBe',
+			type: 'nav_item',
+			layout: 3,
+			href: 'https://github.com/michael/editable-website#getting-started',
+			target: '_blank',
+			label: {
+				text: 'Download  ⤓',
 				annotations: []
 			}
 		},
@@ -1565,8 +1605,14 @@ const FULL_DOC = {
 		nav_1: {
 			id: 'nav_1',
 			type: 'nav',
-			logo: 'nav_logo',
-			nav_items: ['DDmmrQzcAxWJfdhatTbkRTh', 'GyKyQvRAvkgnywmxTVgvrnF', 'FKgjxHCeSbVZrdnPuxYkMYp']
+			start_nav_items: ['nav_logo'],
+			center_nav_items: [
+				'DDmmrQzcAxWJfdhatTbkRTh',
+				'BESRZnRsUbbWapdUTzGNxFH',
+				'atmQQGpCXBweGkkcSuKpJPS',
+				'GyKyQvRAvkgnywmxTVgvrnF'
+			],
+			end_nav_items: ['GtffzHxEWNweDuhFgUZFeBe', 'FKgjxHCeSbVZrdnPuxYkMYp']
 		},
 		footer_logo: {
 			id: 'footer_logo',
