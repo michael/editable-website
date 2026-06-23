@@ -72,6 +72,7 @@ import Strong from './components/Strong.svelte';
 import Emphasis from './components/Emphasis.svelte';
 import Highlight from './components/Highlight.svelte';
 import Link from './components/Link.svelte';
+import Section from './components/Section.svelte';
 
 import { document_schema } from '$lib/document_schema.js';
 import { start_processing } from '$lib/client/asset_upload.js';
@@ -216,7 +217,8 @@ const session_config = {
 		strong: Strong,
 		emphasis: Emphasis,
 		highlight: Highlight,
-		link: Link
+		link: Link,
+		section: Section
 	},
 	replace_media,
 	handle_property_deletion: (tr, path) => {
@@ -362,6 +364,7 @@ const session_config = {
 			toggle_strong: new ToggleAnnotationCommand('strong', context),
 			toggle_emphasis: new ToggleAnnotationCommand('emphasis', context),
 			toggle_highlight: new ToggleAnnotationCommand('highlight', context),
+			toggle_section: new ToggleAnnotationCommand('section', context),
 			undo: new UndoCommand(context),
 			redo: new RedoCommand(context),
 			select_parent: new SelectParentCommand(context),
@@ -388,6 +391,7 @@ const session_config = {
 			'meta+b,ctrl+b': [commands.toggle_strong],
 			'meta+i,ctrl+i': [commands.toggle_emphasis],
 			'meta+u,ctrl+u': [commands.toggle_highlight],
+			'meta+shift+s,ctrl+shift+s': [commands.toggle_section],
 			'meta+z,ctrl+z': [commands.undo],
 			'meta+shift+z,ctrl+shift+z': [commands.redo],
 			escape: [commands.select_parent],

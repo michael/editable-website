@@ -14,9 +14,9 @@ export default defineConfig({
 			experimental: {
 				remoteFunctions: true
 			},
-			// alias: {
-			// 	'svedit': '../svedit/src/lib/index.js',
-			// },
+			alias: {
+				'svedit': '../svedit/src/lib/index.js',
+			},
 			compilerOptions: {
 				experimental: {
 					async: true
