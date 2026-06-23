@@ -4,6 +4,7 @@
 	import { slide } from 'svelte/transition';
 	import { TW_LIMITER } from '../tailwind_theme.js';
 	import NavImage from './NavImage.svelte';
+	import NavItem from './NavItem.svelte';
 
 	let { path } = $props();
 
@@ -11,6 +12,7 @@
 	let node = $derived(svedit.session.get(path));
 	let center_nav_item_ids = $derived(node.center_nav_items || []);
 	let mobile_nav_image_path = $derived(find_mobile_nav_image_path());
+	let mobile_nav_cta_path = $derived(find_mobile_nav_cta_path());
 	let mobile_nav_open = $state(false);
 
 	function find_mobile_nav_image_path() {
@@ -19,6 +21,20 @@
 			for (let index = 0; index < nav_items.length; index++) {
 				const item = svedit.session.get([...path, nav_items_name, index]);
 				if (item?.type === 'nav_image') {
+					return [...path, nav_items_name, index];
+				}
+			}
+		}
+
+		return null;
+	}
+
+	function find_mobile_nav_cta_path() {
+		for (const nav_items_name of ['start_nav_items', 'center_nav_items', 'end_nav_items']) {
+			const nav_items = node?.[nav_items_name] || [];
+			for (let index = 0; index < nav_items.length; index++) {
+				const item = svedit.session.get([...path, nav_items_name, index]);
+				if (item?.type === 'nav_item' && item.layout === 2) {
 					return [...path, nav_items_name, index];
 				}
 			}
@@ -86,14 +102,19 @@
 				<NavImage path={mobile_nav_image_path} />
 			{/if}
 			<div class="flex-1"></div>
-			<button
-				class="cursor-pointer flex items-center justify-center py-3"
-				onclick={() => (mobile_nav_open = !mobile_nav_open)}
-				aria-label="Toggle menu"
-				aria-expanded={mobile_nav_open}
-			>
-				{@render menu_icon(mobile_nav_open)}
-			</button>
+			<div class="flex items-center gap-3">
+				{#if mobile_nav_cta_path}
+					<NavItem path={mobile_nav_cta_path} />
+				{/if}
+					<button
+						class="cursor-pointer flex items-center justify-center py-3"
+						onclick={() => (mobile_nav_open = !mobile_nav_open)}
+						aria-label="Toggle menu"
+						aria-expanded={mobile_nav_open}
+					>
+						{@render menu_icon(mobile_nav_open)}
+					</button>
+				</div>
 		</div>
 	</div>
 
