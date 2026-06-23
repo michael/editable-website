@@ -54,10 +54,8 @@
 <Node {path}>
 	<div class="bg-(--background) text-(--foreground) {colorset_class}">
 		<div class="{TW_LIMITER} w-full ">
-			<div>
-				<div class="py-10 sm:py-14 md:py-16 lg:py-28">
-					<NodeArrayProperty class="flex flex-col gap-5 sm:gap-7 {grid_layout}" path={[...path, 'gallery_items']} />
-				</div>
+			<div class="{TW_PAGE_PADDING_X} py-10 sm:py-14 md:py-16 lg:py-28">
+				<NodeArrayProperty class="flex flex-col gap-5 sm:gap-7 {grid_layout}" path={[...path, 'gallery_items']} />
 			</div>
 		</div>
 	</div>
