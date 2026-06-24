@@ -4,15 +4,21 @@
 	import { TW_PAGE_PADDING_X, TW_LIMITER } from '../tailwind_theme.js';
 
 	const svedit = getContext('svedit');
-	let { path } = $props();
+	let { path, node_array_annotation = null } = $props();
 	let node = $derived(svedit.session.get(path));
 	let layout = $derived(node.layout || 1);
 	let colorset_class = $derived(node.colorset ? `ew-colorset-${node.colorset}` : '');
+	let top_padding_class = $derived(
+		node_array_annotation?.is_start
+			? 'pt-20 sm:pt-28 md:pt-32 lg:pt-56'
+			: 'pt-10 sm:pt-14 md:pt-16 lg:pt-28'
+	);
+	const bottom_padding_class = 'pb-10 sm:pb-14 md:pb-16 lg:pb-28';
 
 	setContext('prose', {
 		get is_centered() {
-			return layout === 4 || layout === 6 ;
-		},
+			return layout === 4 || layout === 6;
+		}
 	});
 
 	const heading_spacing = `
@@ -24,13 +30,16 @@
 </script>
 
 {#snippet content()}
-	<NodeArrayProperty class="flex flex-col gap-5 sm:gap-7 {heading_spacing}" path={[...path, 'content']} />
+	<NodeArrayProperty
+		class="flex flex-col gap-5 sm:gap-7 {heading_spacing}"
+		path={[...path, 'content']}
+	/>
 {/snippet}
 
 <!-- Layout 1: Left-aligned -->
 {#snippet layout_1()}
-	<div class="{TW_LIMITER}">
-		<div class="py-10 sm:py-14 md:py-16 lg:py-28">
+	<div class={TW_LIMITER}>
+		<div class="{top_padding_class} {bottom_padding_class}">
 			<div class="{TW_PAGE_PADDING_X} max-w-4xl">
 				{@render content()}
 			</div>
@@ -40,8 +49,8 @@
 
 <!-- Layout 2: Center-oriented -->
 {#snippet layout_2()}
-	<div class="{TW_LIMITER}">
-		<div class="py-10 sm:py-14 md:py-16 lg:py-28">
+	<div class={TW_LIMITER}>
+		<div class="{top_padding_class} {bottom_padding_class}">
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-4xl">
 				{@render content()}
 			</div>
@@ -51,8 +60,8 @@
 
 <!-- Layout 3: Right-oriented -->
 {#snippet layout_3()}
-	<div class="{TW_LIMITER}">
-		<div class="py-10 sm:py-14 md:py-16 lg:py-28">
+	<div class={TW_LIMITER}>
+		<div class="{top_padding_class} {bottom_padding_class}">
 			<div class="{TW_PAGE_PADDING_X} ml-auto max-w-4xl">
 				{@render content()}
 			</div>
@@ -62,8 +71,8 @@
 
 <!-- Layout 4: Centered -->
 {#snippet layout_4()}
-	<div class="{TW_LIMITER}">
-		<div class="py-10 sm:py-14 md:py-16 lg:py-28">
+	<div class={TW_LIMITER}>
+		<div class="{top_padding_class} {bottom_padding_class}">
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-4xl text-center text-balance">
 				{@render content()}
 			</div>
@@ -71,24 +80,21 @@
 	</div>
 {/snippet}
 
-
-
 <!-- Layout 5: Full width, left-oriented -->
 {#snippet layout_5()}
-	<div class="{TW_LIMITER}">
-		<div class="py-10 sm:py-14 md:py-16 lg:py-28">
-			<div class="{TW_PAGE_PADDING_X}">
+	<div class={TW_LIMITER}>
+		<div class="{top_padding_class} {bottom_padding_class}">
+			<div class={TW_PAGE_PADDING_X}>
 				{@render content()}
 			</div>
 		</div>
 	</div>
 {/snippet}
 
-
 <!-- Layout 6: Full width, centered -->
 {#snippet layout_6()}
-	<div class="{TW_LIMITER}">
-		<div class="py-10 sm:py-14 md:py-16 lg:py-28">
+	<div class={TW_LIMITER}>
+		<div class="{top_padding_class} {bottom_padding_class}">
 			<div class="{TW_PAGE_PADDING_X} text-center text-balance">
 				{@render content()}
 			</div>
@@ -96,7 +102,10 @@
 	</div>
 {/snippet}
 
-<Node class="ew-prose layout-{layout} bg-(--background) text-(--foreground) {colorset_class}" {path}>
+<Node
+	class="ew-prose layout-{layout} bg-(--background) text-(--foreground) {colorset_class}"
+	{path}
+>
 	{@const layouts = [layout_1, layout_2, layout_3, layout_4, layout_5, layout_6]}
 	{@render layouts[layout - 1]()}
 </Node>
