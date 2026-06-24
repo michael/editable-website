@@ -246,6 +246,97 @@ export class ToggleLinkCommand extends Command {
 	}
 }
 
+/**
+ * Command that toggles section annotations on non-empty node selections.
+ *
+ * Node-array annotations are exclusive. If the selection overlaps an existing
+ * annotation, the first toggle removes it while preserving the selection. A
+ * second toggle can then create a section for that original selection.
+ */
+export class ToggleSectionCommand extends Command {
+	active = $derived(this.is_active());
+
+	get_active_annotation() {
+		const selection = this.context.session.selection;
+		if (selection?.type !== 'node') return null;
+
+		const start = Math.min(selection.anchor_offset, selection.focus_offset);
+		const end = Math.max(selection.anchor_offset, selection.focus_offset);
+		const node_array_value = this.context.session.get(selection.path);
+
+		return (
+			node_array_value?.annotations?.find(
+				(annotation) =>
+					(annotation.start_offset <= start && annotation.end_offset > start) ||
+					(annotation.start_offset < end && annotation.end_offset >= end) ||
+					(annotation.start_offset >= start && annotation.end_offset <= end)
+			) ?? null
+		);
+	}
+
+	is_active() {
+		const annotation = this.get_active_annotation();
+		if (!annotation) return false;
+		return this.context.session.get(annotation.node_id)?.type === 'section';
+	}
+
+	is_enabled() {
+		const { session, editable } = this.context;
+		const selection = session.selection;
+		if (!editable || selection?.type !== 'node') return false;
+
+		const start = Math.min(selection.anchor_offset, selection.focus_offset);
+		const end = Math.max(selection.anchor_offset, selection.focus_offset);
+		if (start === end) return false;
+
+		const active_annotation = this.get_active_annotation();
+		const property_definition = session.inspect(selection.path);
+		return (
+			!!active_annotation || property_definition?.annotation_types?.includes('section') === true
+		);
+	}
+
+	execute() {
+		if (!this.is_enabled()) return;
+
+		const session = this.context.session;
+		const selection = session.selection;
+		const start = Math.min(selection.anchor_offset, selection.focus_offset);
+		const end = Math.max(selection.anchor_offset, selection.focus_offset);
+		const active_annotation = this.get_active_annotation();
+		const node_array_value = structuredClone(session.get(selection.path));
+		const tr = session.tr;
+
+		if (active_annotation) {
+			const annotation_index = node_array_value.annotations.findIndex(
+				(annotation) =>
+					annotation.start_offset === active_annotation.start_offset &&
+					annotation.end_offset === active_annotation.end_offset &&
+					annotation.node_id === active_annotation.node_id
+			);
+			if (annotation_index === -1) return;
+
+			tr.delete(active_annotation.node_id);
+			node_array_value.annotations.splice(annotation_index, 1);
+		} else {
+			const section = {
+				id: tr.generate_id(),
+				type: 'section'
+			};
+			tr.create(section);
+			node_array_value.annotations.push({
+				start_offset: start,
+				end_offset: end,
+				node_id: section.id
+			});
+		}
+
+		tr.set(selection.path, node_array_value);
+		tr.set_selection(selection);
+		session.apply(tr);
+	}
+}
+
 export class ToggleAccordionCommand extends Command {
 	is_enabled() {
 		const session = this.context.session;
