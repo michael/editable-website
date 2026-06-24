@@ -363,6 +363,28 @@
 								</svg>
 							</button>
 						{/if}
+						{#if session.selection?.type === 'node' && !is_node_caret && !session.commands.toggle_section?.disabled}
+							<button
+								class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
+								class:!text-(--svedit-editing-stroke)={session.commands.toggle_section?.active}
+								class:!border-(--svedit-editing-stroke)={session.commands.toggle_section?.active}
+								onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_section)}
+								title="Toggle section (⌘ ⇧ S)"
+								aria-label="Toggle section"
+							>
+								<svg
+									class="size-4"
+									viewBox="0 0 15 15"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+									aria-hidden="true"
+								>
+									<path d="M5 2.5H2.5V12.5H5" stroke="currentColor" />
+									<path d="M10 2.5H12.5V12.5H10" stroke="currentColor" />
+									<path d="M5.5 5H9.5M5.5 7.5H9.5M5.5 10H9.5" stroke="currentColor" />
+								</svg>
+							</button>
+						{/if}
 						<button
 							class="{TW_TOOLBAR_BTN} aspect-square {TW_TOOLBAR_BTN_HOVER}"
 							onmousedown={handle_delete_selection_click}
