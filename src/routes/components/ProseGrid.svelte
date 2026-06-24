@@ -6,7 +6,7 @@
 	const svedit = getContext('svedit');
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
-	let item_count = $derived(node.items?.length || 0);
+	let item_count = $derived(node.items?.nodes.length || 0);
 	let grid_cols_class = $derived(
 		item_count <= 1 ? 'lg:grid-cols-1' :
 		item_count === 2 ? 'lg:grid-cols-2' :
