@@ -57,14 +57,14 @@ export function collect_page_body_node_ids(page_doc) {
 
 	const page_root = page_doc.nodes[page_doc.document_id];
 
-	if (!page_root?.body || !Array.isArray(page_root.body)) {
+	if (!page_root?.body?.nodes) {
 		return [page_doc.document_id];
 	}
 
 	const body_node_ids = [page_doc.document_id];
 	const seen_ids = new Set(body_node_ids);
 
-	for (const child_id of page_root.body) {
+	for (const child_id of page_root.body.nodes) {
 		const subtree_ids = collect_node_ids_in_order(child_id, page_doc.nodes);
 		for (const subtree_id of subtree_ids) {
 			if (seen_ids.has(subtree_id)) continue;

@@ -53,14 +53,14 @@ const FULL_DOC = {
 		tgzmEzyQGVDSHZVYnvuFWRp: {
 			id: 'tgzmEzyQGVDSHZVYnvuFWRp',
 			type: 'button_group',
-			buttons: ['qJWqpEWPTKZUKvupagFjxCF']
+			buttons: { nodes: ['qJWqpEWPTKZUKvupagFjxCF'], annotations: [] }
 		},
 		gRpPsPcYyMPRSWWDXxvNGAF: {
 			id: 'gRpPsPcYyMPRSWWDXxvNGAF',
 			type: 'prose',
 			layout: 6,
 			colorset: 0,
-			content: ['TSRjJkcjxCEVZUVMwWBPJJT', 'TrHvNdkJMcGrescwAXFcYfV', 'tgzmEzyQGVDSHZVYnvuFWRp']
+			content: { nodes: ['TSRjJkcjxCEVZUVMwWBPJJT', 'TrHvNdkJMcGrescwAXFcYfV', 'tgzmEzyQGVDSHZVYnvuFWRp'], annotations: [] }
 		},
 		VbNcMxZaQwErTyUiOpLkJh: {
 			id: 'VbNcMxZaQwErTyUiOpLkJh',
@@ -193,7 +193,7 @@ const FULL_DOC = {
 			layout: 1,
 			colorset: 0,
 			media: 'VbNcMxZaQwErTyUiOpLkJh',
-			body: ['XEZYvKrndUKmFeRwPskjXSb', 'QjBkRxHSjJDEsZyrzWfvumb', 'JkfchFmwTqBYVZawgntPWxP']
+			body: { nodes: ['XEZYvKrndUKmFeRwPskjXSb', 'QjBkRxHSjJDEsZyrzWfvumb', 'JkfchFmwTqBYVZawgntPWxP'], annotations: [] }
 		},
 		zrUZReSCBXBtyTpWEnCqfus: {
 			id: 'zrUZReSCBXBtyTpWEnCqfus',
@@ -348,13 +348,13 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: [
+			content: { nodes: [
 				'zrUZReSCBXBtyTpWEnCqfus',
 				'GqVyqhnraWTBPCpCrAxmPwG',
 				'CvSCfCmvzxqEHqxpMZeaVVF',
 				'evfXRMxeSsZMxKySzTnGKsC',
 				'QWUhWXRFPmmUEVjKnYJvtQW'
-			]
+			], annotations: [] }
 		},
 		ttqZrWgKByzNJpAZWDjCdkt: {
 			id: 'ttqZrWgKByzNJpAZWDjCdkt',
@@ -379,7 +379,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: ['ttqZrWgKByzNJpAZWDjCdkt', 'HjCnaGHNswXGNmDReQhNPjy']
+			content: { nodes: ['ttqZrWgKByzNJpAZWDjCdkt', 'HjCnaGHNswXGNmDReQhNPjy'], annotations: [] }
 		},
 		jEhPHUyzqvpNeSHYfKCkYgS: {
 			id: 'jEhPHUyzqvpNeSHYfKCkYgS',
@@ -446,11 +446,11 @@ const FULL_DOC = {
 			type: 'gallery',
 			layout: 1,
 			colorset: 0,
-			gallery_items: [
+			gallery_items: { nodes: [
 				'wtvHDBrCzJVgacTaJqAwNJk',
 				'TQRANBXMrzXXZTtzxAYhhZf',
 				'HtSTZfjTcDSkttVaTUKMYAj'
-			]
+			], annotations: [] }
 		},
 		SXKmbzRCwPeAYSnXfXFXHBd: {
 			id: 'SXKmbzRCwPeAYSnXfXFXHBd',
@@ -581,13 +581,13 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: [
+			content: { nodes: [
 				'pFjJFVqzQzwUQzBhPQAqkuZ',
 				'jkPsBvJwtqCCjUDuByzxAHs',
 				'sBVXkwBDNWSvQvmDSUaQmSh',
 				'SDzUcrBBPfRZkGUestSfCrV',
 				'askXYZSpXVmkUURQpjBUCEd'
-			]
+			], annotations: [] }
 		},
 		FWAepzcFxQBWdFUpKazbgSJ: {
 			id: 'FWAepzcFxQBWdFUpKazbgSJ',
@@ -612,7 +612,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: ['FWAepzcFxQBWdFUpKazbgSJ', 'FUgwpAMYUEeuvRMvbvJqXEy']
+			content: { nodes: ['FWAepzcFxQBWdFUpKazbgSJ', 'FUgwpAMYUEeuvRMvbvJqXEy'], annotations: [] }
 		},
 		nprCMwYvJvUEmRaHBsxfgUd: {
 			id: 'nprCMwYvJvUEmRaHBsxfgUd',
@@ -702,7 +702,7 @@ const FULL_DOC = {
 			id: 'jLnPqRsTuVwXyZaBcDeFg',
 			type: 'descriptive_gallery',
 			layout: 1,
-			items: ['JUmgwJDKqdxVxJeBHkBdjVq', 'descriptive_gallery_item_2', 'YnBCBuemwpaUxQwHrFJNgMW']
+			items: { nodes: ['JUmgwJDKqdxVxJeBHkBdjVq', 'descriptive_gallery_item_2', 'YnBCBuemwpaUxQwHrFJNgMW'], annotations: [] }
 		},
 		VqaqUWzRKUJrZzQYqqurggB: {
 			id: 'VqaqUWzRKUJrZzQYqqurggB',
@@ -730,7 +730,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: ['KUAHxAZZcZTtjmHHBfbrbfs']
+			content: { nodes: ['KUAHxAZZcZTtjmHHBfbrbfs'], annotations: [] }
 		},
 		awxJbWfytmnufqPsJCPxPnR: {
 			id: 'awxJbWfytmnufqPsJCPxPnR',
@@ -809,7 +809,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: ['awxJbWfytmnufqPsJCPxPnR', 'fMgsDXKARPqeRZGCmYKuvqj', 'HgJRTPUBDfGQFhEDmwcNQNW']
+			content: { nodes: ['awxJbWfytmnufqPsJCPxPnR', 'fMgsDXKARPqeRZGCmYKuvqj', 'HgJRTPUBDfGQFhEDmwcNQNW'], annotations: [] }
 		},
 		BGYgxNUSXuDtBqxrKfExJnw: {
 			id: 'BGYgxNUSXuDtBqxrKfExJnw',
@@ -869,7 +869,7 @@ const FULL_DOC = {
 			id: 'fmxXNqJPJNkTZpAtwKSHxWb',
 			type: 'descriptive_listing',
 			layout: 1,
-			items: ['BGYgxNUSXuDtBqxrKfExJnw', 'DEKuXmWSgnDZEhRgHGptcZJ', 'NpbErTcbBZKBxShfRaFXzct']
+			items: { nodes: ['BGYgxNUSXuDtBqxrKfExJnw', 'DEKuXmWSgnDZEhRgHGptcZJ', 'NpbErTcbBZKBxShfRaFXzct'], annotations: [] }
 		},
 		KsFYXQPtmceJKGbEkmHqXTy: {
 			id: 'KsFYXQPtmceJKGbEkmHqXTy',
@@ -908,14 +908,14 @@ const FULL_DOC = {
 			id: 'eJjQwDAYHqfcegtbNPTtQSJ',
 			type: 'list',
 			layout: 2,
-			list_items: ['nHaWhmFqqDCzKjYfAYWzeAs', 'gfzZchrRysGcDEeXxAscCzg', 'hhauqXDVvpScWyhmrsmvrqe']
+			list_items: { nodes: ['nHaWhmFqqDCzKjYfAYWzeAs', 'gfzZchrRysGcDEeXxAscCzg', 'hhauqXDVvpScWyhmrsmvrqe'], annotations: [] }
 		},
 		eRkNrkcQvspQsPtkDtuqekV: {
 			id: 'eRkNrkcQvspQsPtkDtuqekV',
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: ['KsFYXQPtmceJKGbEkmHqXTy', 'eJjQwDAYHqfcegtbNPTtQSJ']
+			content: { nodes: ['KsFYXQPtmceJKGbEkmHqXTy', 'eJjQwDAYHqfcegtbNPTtQSJ'], annotations: [] }
 		},
 		AJZwMjfQPTRnyPCSjNzhbta: {
 			id: 'AJZwMjfQPTRnyPCSjNzhbta',
@@ -967,19 +967,19 @@ const FULL_DOC = {
 		prose_grid_free_action: {
 			id: 'prose_grid_free_action',
 			type: 'button_group',
-			buttons: ['prose_grid_free_button']
+			buttons: { nodes: ['prose_grid_free_button'], annotations: [] }
 		},
 		prose_grid_free: {
 			id: 'prose_grid_free',
 			type: 'prose_grid_item',
 			colorset: 0,
-			content: [
+			content: { nodes: [
 				'AJZwMjfQPTRnyPCSjNzhbta',
 				'pnyZxASHjrYVDxxYJpwpaUd',
 				'NkfqqZuDrJVBBCGSdWRhyXv',
 				'TTEwYweZQbgpAzDJeVgJaQg',
 				'prose_grid_free_action'
-			]
+			], annotations: [] }
 		},
 		bFTuteKYWEYEJsesbaZQqMW: {
 			id: 'bFTuteKYWEYEJsesbaZQqMW',
@@ -1031,7 +1031,7 @@ const FULL_DOC = {
 		prose_grid_supergrok_action: {
 			id: 'prose_grid_supergrok_action',
 			type: 'button_group',
-			buttons: ['prose_grid_supergrok_button']
+			buttons: { nodes: ['prose_grid_supergrok_button'], annotations: [] }
 		},
 		zmVKWFqacrbaAWnfhxJnkwH: {
 			id: 'zmVKWFqacrbaAWnfhxJnkwH',
@@ -1046,14 +1046,14 @@ const FULL_DOC = {
 			id: 'prose_grid_supergrok',
 			type: 'prose_grid_item',
 			colorset: 0,
-			content: [
+			content: { nodes: [
 				'bFTuteKYWEYEJsesbaZQqMW',
 				'VZTbMkwXXkstnDCNDdKnEVc',
 				'JTGfWeYsMugYPsXsvgtAUKs',
 				'MuvTMbngQPxqRJQVPZmHHaD',
 				'prose_grid_supergrok_action',
 				'zmVKWFqacrbaAWnfhxJnkwH'
-			]
+			], annotations: [] }
 		},
 		BEXmuGVzZJGECjrTPcSAmtF: {
 			id: 'BEXmuGVzZJGECjrTPcSAmtF',
@@ -1105,7 +1105,7 @@ const FULL_DOC = {
 		prose_grid_expert_action: {
 			id: 'prose_grid_expert_action',
 			type: 'button_group',
-			buttons: ['prose_grid_expert_button']
+			buttons: { nodes: ['prose_grid_expert_button'], annotations: [] }
 		},
 		SuNuqxwFCRepmRVXmrwmCjJ: {
 			id: 'SuNuqxwFCRepmRVXmrwmCjJ',
@@ -1120,20 +1120,20 @@ const FULL_DOC = {
 			id: 'prose_grid_expert',
 			type: 'prose_grid_item',
 			colorset: 0,
-			content: [
+			content: { nodes: [
 				'BEXmuGVzZJGECjrTPcSAmtF',
 				'vCyXCUGQbCqDSeWhQrgxUfP',
 				'wHdrXFGRBBaMRUeAkASChBE',
 				'kxSuHGYyXEBZMcpGbdjCVWm',
 				'prose_grid_expert_action',
 				'SuNuqxwFCRepmRVXmrwmCjJ'
-			]
+			], annotations: [] }
 		},
 		prose_grid_1: {
 			id: 'prose_grid_1',
 			type: 'prose_grid',
 			layout: 2,
-			items: ['prose_grid_free', 'prose_grid_supergrok', 'prose_grid_expert']
+			items: { nodes: ['prose_grid_free', 'prose_grid_supergrok', 'prose_grid_expert'], annotations: [] }
 		},
 		TYcAwBxbMfUnUnQFHbcnjjK: {
 			id: 'TYcAwBxbMfUnUnQFHbcnjjK',
@@ -1149,7 +1149,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: ['TYcAwBxbMfUnUnQFHbcnjjK']
+			content: { nodes: ['TYcAwBxbMfUnUnQFHbcnjjK'], annotations: [] }
 		},
 		PgFkSEuFXmXvecwFNksBFfw: {
 			id: 'PgFkSEuFXmXvecwFNksBFfw',
@@ -1167,7 +1167,7 @@ const FULL_DOC = {
 				text: 'How is this different to using a CMS?',
 				annotations: []
 			},
-			body: ['PgFkSEuFXmXvecwFNksBFfw']
+			body: { nodes: ['PgFkSEuFXmXvecwFNksBFfw'], annotations: [] }
 		},
 		fWGAzktgaAYgCnbjDDNZqZt: {
 			id: 'fWGAzktgaAYgCnbjDDNZqZt',
@@ -1185,7 +1185,7 @@ const FULL_DOC = {
 				text: 'Is mobile editing supported?',
 				annotations: []
 			},
-			body: ['fWGAzktgaAYgCnbjDDNZqZt']
+			body: { nodes: ['fWGAzktgaAYgCnbjDDNZqZt'], annotations: [] }
 		},
 		wdKfHzXjUysbpyHBKWnjHPp: {
 			id: 'wdKfHzXjUysbpyHBKWnjHPp',
@@ -1203,7 +1203,7 @@ const FULL_DOC = {
 				text: 'Where is the data stored?',
 				annotations: []
 			},
-			body: ['wdKfHzXjUysbpyHBKWnjHPp']
+			body: { nodes: ['wdKfHzXjUysbpyHBKWnjHPp'], annotations: [] }
 		},
 		ahabwjAyHuBbTNMJacqWupQ: {
 			id: 'ahabwjAyHuBbTNMJacqWupQ',
@@ -1221,7 +1221,7 @@ const FULL_DOC = {
 				text: 'How about AI?',
 				annotations: []
 			},
-			body: ['ahabwjAyHuBbTNMJacqWupQ']
+			body: { nodes: ['ahabwjAyHuBbTNMJacqWupQ'], annotations: [] }
 		},
 		vuEMUDFAUnxSBXvsvDsYDZe: {
 			id: 'vuEMUDFAUnxSBXvsvDsYDZe',
@@ -1239,7 +1239,7 @@ const FULL_DOC = {
 				text: 'Plugins?',
 				annotations: []
 			},
-			body: ['vuEMUDFAUnxSBXvsvDsYDZe']
+			body: { nodes: ['vuEMUDFAUnxSBXvsvDsYDZe'], annotations: [] }
 		},
 		ZdwnbaVUbAPYzCZQhyJAYBr: {
 			id: 'ZdwnbaVUbAPYzCZQhyJAYBr',
@@ -1257,7 +1257,7 @@ const FULL_DOC = {
 				text: 'Hosting?',
 				annotations: []
 			},
-			body: ['ZdwnbaVUbAPYzCZQhyJAYBr']
+			body: { nodes: ['ZdwnbaVUbAPYzCZQhyJAYBr'], annotations: [] }
 		},
 		prwbeXWyKVSsJXMPndjHYRS: {
 			id: 'prwbeXWyKVSsJXMPndjHYRS',
@@ -1275,7 +1275,7 @@ const FULL_DOC = {
 				text: 'Static builds?',
 				annotations: []
 			},
-			body: ['prwbeXWyKVSsJXMPndjHYRS']
+			body: { nodes: ['prwbeXWyKVSsJXMPndjHYRS'], annotations: [] }
 		},
 		VmvAPSsWYbVnekGqYyEKPUG: {
 			id: 'VmvAPSsWYbVnekGqYyEKPUG',
@@ -1293,12 +1293,12 @@ const FULL_DOC = {
 				text: 'License?',
 				annotations: []
 			},
-			body: ['VmvAPSsWYbVnekGqYyEKPUG']
+			body: { nodes: ['VmvAPSsWYbVnekGqYyEKPUG'], annotations: [] }
 		},
 		BBExBsmaSTXMZdcxMsYngwg: {
 			id: 'BBExBsmaSTXMZdcxMsYngwg',
 			type: 'accordion',
-			items: [
+			items: { nodes: [
 				'DerFSxwnBjUZXfsePjKbYPd',
 				'BfXmkWHjhSWZGMaKGxhSAXu',
 				'rmMwFFdvFZzxzdsaQtZvdKH',
@@ -1307,7 +1307,7 @@ const FULL_DOC = {
 				'tTTVGQvjNrfJsKHXSWaSDeE',
 				'gftTVYqqYFbsTAkfMJKbhzH',
 				'gYpxwQwkQNNWWvYbTWBrAfx'
-			],
+			], annotations: [] },
 			layout: 5
 		},
 		preformatted_example: {
@@ -1385,12 +1385,12 @@ const FULL_DOC = {
 			layout: 2,
 			colorset: 0,
 			media: 'hqrrTdEbTPaqzEcYMczhBZb',
-			body: [
+			body: { nodes: [
 				'TnMQYKQSSvPJySzxMfgqvge',
 				'vWuEJXfcsUSSXwYKQmbAnxq',
 				'HTXqugHBTYdFtsEPuJBwdcQ',
 				'QEnRdGNnZesaJWpDstgKQhq'
-			]
+			], annotations: [] }
 		},
 		VZSAXNdpyXTfwJzbQhEDdZe: {
 			id: 'VZSAXNdpyXTfwJzbQhEDdZe',
@@ -1424,14 +1424,14 @@ const FULL_DOC = {
 		fxbPhZADdeyCbysuCSwHNcA: {
 			id: 'fxbPhZADdeyCbysuCSwHNcA',
 			type: 'button_group',
-			buttons: ['VMpZbtCEwxBqnnkMBUEsKGE']
+			buttons: { nodes: ['VMpZbtCEwxBqnnkMBUEsKGE'], annotations: [] }
 		},
 		zBXuGXXYWMGbSdteMyNFhja: {
 			id: 'zBXuGXXYWMGbSdteMyNFhja',
 			type: 'prose',
 			layout: 4,
 			colorset: 0,
-			content: ['VZSAXNdpyXTfwJzbQhEDdZe', 'ZntpMyjvcVjpjFDQxZnvSYR', 'fxbPhZADdeyCbysuCSwHNcA']
+			content: { nodes: ['VZSAXNdpyXTfwJzbQhEDdZe', 'ZntpMyjvcVjpjFDQxZnvSYR', 'fxbPhZADdeyCbysuCSwHNcA'], annotations: [] }
 		},
 		AfkGmkTkFBhUGQsSSSzAaWV: {
 			id: 'AfkGmkTkFBhUGQsSSSzAaWV',
@@ -1514,7 +1514,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 4,
 			colorset: 0,
-			content: ['vvqbUaMzgjJXvJGMzHFDnrE']
+			content: { nodes: ['vvqbUaMzgjJXvJGMzHFDnrE'], annotations: [] }
 		},
 		nav_logo_media: {
 			id: 'nav_logo_media',
@@ -1605,14 +1605,14 @@ const FULL_DOC = {
 		nav_1: {
 			id: 'nav_1',
 			type: 'nav',
-			start_nav_items: ['nav_logo'],
-			center_nav_items: [
+			start_nav_items: { nodes: ['nav_logo'], annotations: [] },
+			center_nav_items: { nodes: [
 				'DDmmrQzcAxWJfdhatTbkRTh',
 				'BESRZnRsUbbWapdUTzGNxFH',
 				'atmQQGpCXBweGkkcSuKpJPS',
 				'GyKyQvRAvkgnywmxTVgvrnF'
-			],
-			end_nav_items: ['GtffzHxEWNweDuhFgUZFeBe', 'FKgjxHCeSbVZrdnPuxYkMYp']
+			], annotations: [] },
+			end_nav_items: { nodes: ['GtffzHxEWNweDuhFgUZFeBe', 'FKgjxHCeSbVZrdnPuxYkMYp'], annotations: [] }
 		},
 		footer_logo: {
 			id: 'footer_logo',
@@ -1670,12 +1670,12 @@ const FULL_DOC = {
 		fcSSWQUTYajjknPChgGsPZz: {
 			id: 'fcSSWQUTYajjknPChgGsPZz',
 			type: 'footer_link_column',
-			footer_links: [
+			footer_links: { nodes: [
 				'EtcfbabRCtPSvSpfFfjPeza',
 				'WVvBSREFCThNYcpgvfUnWkF',
 				'eDAnnFjNdZpzYMtpSqReBxf',
 				'GwPeRFYtAyrcCMfpuyzdWZp'
-			],
+			], annotations: [] },
 			label: {
 				text: 'On this page',
 				annotations: []
@@ -1708,7 +1708,7 @@ const FULL_DOC = {
 				text: 'GitHub',
 				annotations: []
 			},
-			footer_links: ['uavzfSnSpTRrHSfJpbfvpsh', 'footer_link_2_1']
+			footer_links: { nodes: ['uavzfSnSpTRrHSfJpbfvpsh', 'footer_link_2_1'], annotations: [] }
 		},
 		ewuBYPxRqFsJXffTuwqssXg: {
 			id: 'ewuBYPxRqFsJXffTuwqssXg',
@@ -1737,7 +1737,7 @@ const FULL_DOC = {
 				text: 'Videos',
 				annotations: []
 			},
-			footer_links: ['ewuBYPxRqFsJXffTuwqssXg', 'cCMbgzNjRjVjrvWuHJCvJkx']
+			footer_links: { nodes: ['ewuBYPxRqFsJXffTuwqssXg', 'cCMbgzNjRjVjrvWuHJCvJkx'], annotations: [] }
 		},
 		footer_1: {
 			id: 'footer_1',
@@ -1747,7 +1747,7 @@ const FULL_DOC = {
 				text: '© Editable 2026',
 				annotations: []
 			},
-			footer_link_columns: ['fcSSWQUTYajjknPChgGsPZz', 'footer_column_2', 'footer_column_3'],
+			footer_link_columns: { nodes: ['fcSSWQUTYajjknPChgGsPZz', 'footer_column_2', 'footer_column_3'], annotations: [] },
 			logo_max_width: 40,
 			logo_aspect_ratio: 1
 		},

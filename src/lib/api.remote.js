@@ -158,9 +158,14 @@ function collect_node_ids(root_id, nodes, exclude_roots) {
 
 			if (prop_def.type === 'node' && typeof value === 'string') {
 				stack.push(value);
-			} else if (prop_def.type === 'node_array' && Array.isArray(value)) {
-				for (const child_id of value) {
+			} else if (prop_def.type === 'node_array') {
+				for (const child_id of value.nodes) {
 					stack.push(child_id);
+				}
+				for (const annotation of value.annotations) {
+					if (annotation.node_id) {
+						stack.push(annotation.node_id);
+					}
 				}
 			} else if (prop_def.type === 'annotated_text' && value.annotations) {
 				for (const annotation of value.annotations) {

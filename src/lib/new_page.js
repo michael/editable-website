@@ -55,7 +55,7 @@ export function create_empty_doc(shared_documents) {
 				image: page_image_id,
 				nav: nav_document.document_id,
 				footer: footer_document.document_id,
-				body: [prose_id]
+				body: { nodes: [prose_id], annotations: [] }
 			},
 			[page_image_id]: {
 				id: page_image_id,
@@ -67,7 +67,7 @@ export function create_empty_doc(shared_documents) {
 				type: 'prose',
 				layout: 1,
 				colorset: 0,
-				content: [heading_id, paragraph_id]
+				content: { nodes: [heading_id, paragraph_id], annotations: [] }
 			},
 			[heading_id]: {
 				id: heading_id,

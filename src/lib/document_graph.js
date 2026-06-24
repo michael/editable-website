@@ -36,9 +36,14 @@ export function collect_node_ids_in_order(root_id, nodes, exclude_roots) {
 
 			if (prop_def.type === 'node' && typeof value === 'string') {
 				next_ids.push(value);
-			} else if (prop_def.type === 'node_array' && Array.isArray(value)) {
-				for (const child_id of value) {
+			} else if (prop_def.type === 'node_array') {
+				for (const child_id of value.nodes) {
 					next_ids.push(child_id);
+				}
+				for (const annotation of value.annotations) {
+					if (annotation.node_id) {
+						next_ids.push(annotation.node_id);
+					}
 				}
 			} else if (prop_def.type === 'annotated_text' && value.annotations) {
 				for (const annotation of value.annotations) {

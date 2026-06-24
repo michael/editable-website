@@ -14,5 +14,6 @@
 		padding: 1rem;
 		margin-block: 1rem;
 		border-radius: 8px;
+		background: yellow;
 	}
 </style>
