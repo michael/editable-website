@@ -8,7 +8,7 @@
 	const svedit = getContext('svedit');
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
-	let column_count = $derived(node.footer_link_columns?.length || 0);
+	let column_count = $derived(node.footer_link_columns.nodes.length);
 	let grid_cols_class = $derived(
 		column_count <= 1 ? 'lg:grid-cols-1' :
 		column_count === 2 ? 'lg:grid-cols-2' :
