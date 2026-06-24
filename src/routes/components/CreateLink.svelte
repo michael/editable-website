@@ -15,7 +15,7 @@
 	function create_link() {
 		if (href_input_value) {
 			svedit.session.apply(
-				svedit.session.tr.annotate_text('link', {
+				svedit.session.tr.toggle_annotation('link', {
 					href: href_input_value,
 					target: open_in_new_tab ? '_blank' : '_self'
 				})

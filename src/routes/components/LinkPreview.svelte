@@ -30,7 +30,7 @@
 
 	function handle_remove() {
 		if (is_annotation) {
-			svedit.session.apply(svedit.session.tr.annotate_text('link'));
+			svedit.session.apply(svedit.session.tr.toggle_annotation('link'));
 		} else {
 			const tr = svedit.session.tr;
 			tr.set([node.id, 'href'], '');
