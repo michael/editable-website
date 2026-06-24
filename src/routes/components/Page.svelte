@@ -10,11 +10,12 @@
   const svedit = getContext('svedit');
   let { path } = $props();
   let node = $derived(svedit.session.get(path));
-  let first_body_node_id = $derived(node.body?.[0]);
+  let body_node_ids = $derived(node.body.nodes);
+  let first_body_node_id = $derived(body_node_ids[0]);
   let first_body_node = $derived(first_body_node_id ? svedit.session.get([first_body_node_id]) : null);
   let nav_colorset_class = $derived(first_body_node?.colorset ? `ew-colorset-${first_body_node.colorset}` : '');
 
-  let last_body_node_id = $derived(node.body?.[node.body.length - 1]);
+  let last_body_node_id = $derived(body_node_ids[body_node_ids.length - 1]);
   let last_body_node = $derived(last_body_node_id ? svedit.session.get([last_body_node_id]) : null);
   let footer_colorset_class = $derived(last_body_node?.colorset ? `ew-colorset-${last_body_node.colorset}` : '');
   let head_metadata = $derived(get_head_metadata(svedit.session.doc));

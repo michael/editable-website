@@ -429,7 +429,7 @@ const session_config = {
 				type: 'prose',
 				layout: 1,
 				colorset: 0,
-				content: [new_heading.id, new_paragraph.id]
+				content: { nodes: [new_heading.id, new_paragraph.id], annotations: [] }
 			};
 			tr.create(new_prose);
 			tr.insert_nodes([new_prose.id]);
@@ -450,7 +450,7 @@ const session_config = {
 			const new_prose_grid_item = {
 				id: nanoid(),
 				type: 'prose_grid_item',
-				content: [new_heading.id, new_paragraph.id]
+				content: { nodes: [new_heading.id, new_paragraph.id], annotations: [] }
 			};
 			tr.create(new_prose_grid_item);
 			tr.insert_nodes([new_prose_grid_item.id]);
@@ -490,23 +490,23 @@ const session_config = {
 				prose_grid_item_1: {
 					id: 'prose_grid_item_1',
 					type: 'prose_grid_item',
-					content: ['title_1', 'paragraph_1']
+					content: { nodes: ['title_1', 'paragraph_1'], annotations: [] }
 				},
 				prose_grid_item_2: {
 					id: 'prose_grid_item_2',
 					type: 'prose_grid_item',
-					content: ['title_2', 'paragraph_2']
+					content: { nodes: ['title_2', 'paragraph_2'], annotations: [] }
 				},
 				prose_grid_item_3: {
 					id: 'prose_grid_item_3',
 					type: 'prose_grid_item',
-					content: ['title_3', 'paragraph_3']
+					content: { nodes: ['title_3', 'paragraph_3'], annotations: [] }
 				},
 				new_prose_grid: {
 					id: 'new_prose_grid',
 					type: 'prose_grid',
 					layout: 1,
-					items: ['prose_grid_item_1', 'prose_grid_item_2', 'prose_grid_item_3']
+					items: { nodes: ['prose_grid_item_1', 'prose_grid_item_2', 'prose_grid_item_3'], annotations: [] }
 				}
 			});
 			tr.insert_nodes([new_prose_grid_id]);
@@ -565,7 +565,7 @@ const session_config = {
 				id: nanoid(),
 				type: 'list',
 				layout: 1,
-				list_items: [new_list_item.id]
+				list_items: { nodes: [new_list_item.id], annotations: [] }
 			};
 			tr.create(new_list);
 			tr.insert_nodes([new_list.id]);
@@ -609,7 +609,7 @@ const session_config = {
 					layout: 1,
 					colorset: 0,
 					media: 'feature_image',
-					body: ['body_text']
+					body: { nodes: ['body_text'], annotations: [] }
 				}
 			});
 
@@ -723,7 +723,7 @@ const session_config = {
 			const new_button_group = {
 				id: nanoid(),
 				type: 'button_group',
-				buttons: [new_button.id]
+				buttons: { nodes: [new_button.id], annotations: [] }
 			};
 			tr.create(new_button_group);
 			tr.insert_nodes([new_button_group.id]);
@@ -748,7 +748,7 @@ const session_config = {
 				new_footer_link_column: {
 					id: 'new_footer_link_column',
 					type: 'footer_link_column',
-					footer_links: ['new_footer_link']
+					footer_links: { nodes: ['new_footer_link'], annotations: [] }
 				}
 			});
 
@@ -938,7 +938,7 @@ const session_config = {
 				id: nanoid(),
 				type: 'accordion_item',
 				title: { text: '', annotations: [] },
-				body: [body_text.id]
+				body: { nodes: [body_text.id], annotations: [] }
 			};
 			tr.create(accordion_item);
 
@@ -946,7 +946,7 @@ const session_config = {
 				id: nanoid(),
 				type: 'accordion',
 				layout: 1,
-				items: [accordion_item.id]
+				items: { nodes: [accordion_item.id], annotations: [] }
 			};
 			tr.create(accordion);
 			tr.insert_nodes([accordion.id]);
@@ -964,7 +964,7 @@ const session_config = {
 				id: nanoid(),
 				type: 'accordion_item',
 				title: { text: '', annotations: [] },
-				body: [body_text.id]
+				body: { nodes: [body_text.id], annotations: [] }
 			};
 			tr.create(accordion_item);
 			tr.insert_nodes([accordion_item.id]);

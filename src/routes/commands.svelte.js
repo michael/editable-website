@@ -28,9 +28,9 @@ function replace_node_with_equivalent_type(tr, node_array_path, node_index, node
 
 	tr.create(new_node);
 
-	const node_array = [...tr.get(node_array_path)];
-	node_array[node_index] = new_node.id;
-	tr.set(node_array_path, node_array);
+	const node_array_value = structuredClone(tr.get(node_array_path));
+	node_array_value.nodes[node_index] = new_node.id;
+	tr.set(node_array_path, node_array_value);
 	tr.set_selection({
 		type: 'node',
 		path: node_array_path,
