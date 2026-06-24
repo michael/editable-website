@@ -20,8 +20,7 @@ import {
 	EditLinkCommand,
 	ReplaceMediaCommand,
 	EditImageCommand,
-	ToggleAccordionCommand,
-	ToggleSectionCommand
+	ToggleAccordionCommand
 } from './commands.svelte.js';
 
 // System components
@@ -291,7 +290,7 @@ const session_config = {
 	html_exporters: {
 		prose: (node, session, html_exporters) => {
 			let html = '<div class="prose">\n';
-			for (const child_id of node.content) {
+			for (const child_id of node.content.nodes) {
 				const child = session.get(child_id);
 				const exporter = html_exporters[child.type];
 				if (exporter) {
@@ -313,7 +312,7 @@ const session_config = {
 		preformatted: (node) => `<pre>${node.content.text}</pre>\n`,
 		list: (node, session, html_exporters) => {
 			let html = '<ul>\n';
-			for (const list_item_id of node.list_items) {
+			for (const list_item_id of node.list_items.nodes) {
 				html += html_exporters.list_item(session.get(list_item_id));
 			}
 			return `${html}</ul>\n`;
@@ -365,7 +364,7 @@ const session_config = {
 			toggle_strong: new ToggleAnnotationCommand('strong', context),
 			toggle_emphasis: new ToggleAnnotationCommand('emphasis', context),
 			toggle_highlight: new ToggleAnnotationCommand('highlight', context),
-			toggle_section: new ToggleSectionCommand(context),
+			toggle_section: new ToggleAnnotationCommand('section', context),
 			undo: new UndoCommand(context),
 			redo: new RedoCommand(context),
 			select_parent: new SelectParentCommand(context),
