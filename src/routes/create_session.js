@@ -787,7 +787,7 @@ const session_config = {
 				type: 'gallery',
 				layout: 1,
 				colorset: 0,
-				gallery_items
+				gallery_items: { nodes: gallery_items, annotations: [] }
 			};
 			tr.create(gallery);
 			tr.insert_nodes([gallery.id]);
@@ -847,7 +847,7 @@ const session_config = {
 				id: nanoid(),
 				type: 'descriptive_gallery',
 				layout: 1,
-				items
+				items: { nodes: items, annotations: [] }
 			};
 			tr.create(descriptive_gallery);
 			tr.insert_nodes([descriptive_gallery.id]);
@@ -900,7 +900,7 @@ const session_config = {
 				id: nanoid(),
 				type: 'descriptive_listing',
 				layout: 1,
-				items
+				items: { nodes: items, annotations: [] }
 			};
 			tr.create(descriptive_listing);
 			tr.insert_nodes([descriptive_listing.id]);
