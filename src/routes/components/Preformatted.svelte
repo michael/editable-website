@@ -1,18 +1,27 @@
 <script>
 	import { Node, AnnotatedTextProperty } from 'svedit';
 	import { TW_PAGE_PADDING_X } from '../tailwind_theme.js';
-	let { path } = $props();
+	let { path, node_array_annotation: section = null } = $props();
+	let padding_top_wide = $derived(!section || section?.is_start);
+	let padding_bottom_wide = $derived(!section || section?.is_end);
 </script>
+
 <Node class="ew-preformatted bg-(--background) text-(--foreground)" {path}>
 	<div class="mx-auto w-full max-w-7xl">
-		<div class="{TW_PAGE_PADDING_X} py-10 sm:py-14 md:py-16 lg:py-28 px-4 sm:px-5 md:px-6">
+		<div
+			class={[
+				`${TW_PAGE_PADDING_X} px-4 sm:px-5 md:px-6`,
+				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
+				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+			]}
+		>
 			<div
-				class="font-mono subpixel-antialiased text-sm p-3 lg:p-6 border border-(--foreground)/7 bg-(--foreground)/5"
+				class="border border-(--foreground)/7 bg-(--foreground)/5 p-3 font-mono text-sm subpixel-antialiased lg:p-6"
 				style:border-radius="var(--image-border-radius)"
 			>
 				<AnnotatedTextProperty
-					tag='pre'
-					class="whitespace-pre! wrap-normal! overflow-x-auto! tab-2"
+					tag="pre"
+					class="overflow-x-auto! wrap-normal! whitespace-pre! tab-2"
 					path={[...path, 'content']}
 					placeholder="Preformatted text"
 				/>

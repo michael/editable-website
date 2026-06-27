@@ -2,13 +2,14 @@
 	import { getContext } from 'svelte';
 	import { Node, NodeArrayProperty } from 'svedit';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
-	let { path } = $props();
+	let { path, node_array_annotation: section = null } = $props();
 
 	const svedit = getContext('svedit');
 	let node = $derived(svedit.session.get(path));
 	let colorset_class = $derived(node.colorset ? `ew-colorset-${node.colorset}` : '');
+	let padding_top_wide = $derived(!section || section?.is_start);
+	let padding_bottom_wide = $derived(!section || section?.is_end);
 	let grid_layout = $derived.by(get_grid_layout);
-
 
 	function get_grid_layout() {
 		const layouts = {
@@ -53,9 +54,18 @@
 
 <Node {path}>
 	<div class="bg-(--background) text-(--foreground) {colorset_class}">
-		<div class="{TW_LIMITER} w-full ">
-			<div class="{TW_PAGE_PADDING_X} py-10 sm:py-14 md:py-16 lg:py-28">
-				<NodeArrayProperty class="flex flex-col gap-5 sm:gap-7 {grid_layout}" path={[...path, 'gallery_items']} />
+		<div class="{TW_LIMITER} w-full">
+			<div
+				class={[
+					TW_PAGE_PADDING_X,
+					padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
+					padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+				]}
+			>
+				<NodeArrayProperty
+					class="flex flex-col gap-5 sm:gap-7 {grid_layout}"
+					path={[...path, 'gallery_items']}
+				/>
 			</div>
 		</div>
 	</div>

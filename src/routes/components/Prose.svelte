@@ -8,16 +8,8 @@
 	let node = $derived(svedit.session.get(path));
 	let layout = $derived(node.layout || 1);
 	let colorset_class = $derived(node.colorset ? `ew-colorset-${node.colorset}` : '');
-	let top_padding_class = $derived(
-		!section || section?.is_start
-			? 'pt-10 sm:pt-14 md:pt-16 lg:pt-28'
-			: 'pt-5 sm:pt-7 md:pt-8 lg:pt-14'
-	);
-	let bottom_padding_class = $derived(
-		!section || section?.is_end
-			? 'pb-10 sm:pb-14 md:pb-16 lg:pb-28'
-			: 'pb-5 sm:pb-7 md:pb-8 lg:pb-14'
-	);
+	let padding_top_wide = $derived(!section || section?.is_start);
+	let padding_bottom_wide = $derived(!section || section?.is_end);
 
 	setContext('prose', {
 		get is_centered() {
@@ -43,7 +35,12 @@
 <!-- Layout 1: Left-aligned -->
 {#snippet layout_1()}
 	<div class={TW_LIMITER}>
-		<div class="{top_padding_class} {bottom_padding_class}">
+		<div
+			class={[
+				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
+				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+			]}
+		>
 			<div class="{TW_PAGE_PADDING_X} max-w-4xl">
 				{@render content()}
 			</div>
@@ -54,7 +51,12 @@
 <!-- Layout 2: Center-oriented -->
 {#snippet layout_2()}
 	<div class={TW_LIMITER}>
-		<div class="{top_padding_class} {bottom_padding_class}">
+		<div
+			class={[
+				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
+				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+			]}
+		>
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-4xl">
 				{@render content()}
 			</div>
@@ -65,7 +67,12 @@
 <!-- Layout 3: Right-oriented -->
 {#snippet layout_3()}
 	<div class={TW_LIMITER}>
-		<div class="{top_padding_class} {bottom_padding_class}">
+		<div
+			class={[
+				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
+				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+			]}
+		>
 			<div class="{TW_PAGE_PADDING_X} ml-auto max-w-4xl">
 				{@render content()}
 			</div>
@@ -76,7 +83,12 @@
 <!-- Layout 4: Centered -->
 {#snippet layout_4()}
 	<div class={TW_LIMITER}>
-		<div class="{top_padding_class} {bottom_padding_class}">
+		<div
+			class={[
+				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
+				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+			]}
+		>
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-4xl text-center text-balance">
 				{@render content()}
 			</div>
@@ -87,7 +99,12 @@
 <!-- Layout 5: Full width, left-oriented -->
 {#snippet layout_5()}
 	<div class={TW_LIMITER}>
-		<div class="{top_padding_class} {bottom_padding_class}">
+		<div
+			class={[
+				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
+				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+			]}
+		>
 			<div class={TW_PAGE_PADDING_X}>
 				{@render content()}
 			</div>
@@ -98,7 +115,12 @@
 <!-- Layout 6: Full width, centered -->
 {#snippet layout_6()}
 	<div class={TW_LIMITER}>
-		<div class="{top_padding_class} {bottom_padding_class}">
+		<div
+			class={[
+				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
+				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+			]}
+		>
 			<div class="{TW_PAGE_PADDING_X} text-center text-balance">
 				{@render content()}
 			</div>
