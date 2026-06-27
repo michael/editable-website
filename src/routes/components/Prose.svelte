@@ -4,16 +4,20 @@
 	import { TW_PAGE_PADDING_X, TW_LIMITER } from '../tailwind_theme.js';
 
 	const svedit = getContext('svedit');
-	let { path, node_array_annotation = null } = $props();
+	let { path, node_array_annotation: section = null } = $props();
 	let node = $derived(svedit.session.get(path));
 	let layout = $derived(node.layout || 1);
 	let colorset_class = $derived(node.colorset ? `ew-colorset-${node.colorset}` : '');
 	let top_padding_class = $derived(
-		node_array_annotation?.is_start
-			? 'pt-20 sm:pt-28 md:pt-32 lg:pt-56'
-			: 'pt-10 sm:pt-14 md:pt-16 lg:pt-28'
+		!section || section?.is_start
+			? 'pt-10 sm:pt-14 md:pt-16 lg:pt-28'
+			: 'pt-5 sm:pt-7 md:pt-8 lg:pt-14'
 	);
-	const bottom_padding_class = 'pb-10 sm:pb-14 md:pb-16 lg:pb-28';
+	let bottom_padding_class = $derived(
+		!section || section?.is_end
+			? 'pb-10 sm:pb-14 md:pb-16 lg:pb-28'
+			: 'pb-5 sm:pb-7 md:pb-8 lg:pb-14'
+	);
 
 	setContext('prose', {
 		get is_centered() {
