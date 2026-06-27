@@ -5,10 +5,12 @@
 	import MediaProperty from './MediaProperty.svelte';
 
 	const svedit = getContext('svedit');
-	let { path } = $props();
+	let { path, node_array_annotation: section = null } = $props();
 	let node = $derived(svedit.session.get(path));
 	let media_node = $derived(svedit.session.get([...path, 'media']));
 	let figure_layout = $derived(node.layout || 1);
+	let padding_top_wide = $derived(!section || section?.is_start);
+	let padding_bottom_wide = $derived(!section || section?.is_end);
 	let media_aspect_ratio = $derived(
 		media_node?.width && media_node?.height ? `${media_node.width} / ${media_node.height}` : '2/1'
 	);
@@ -25,16 +27,28 @@
 {/snippet}
 
 {#snippet layout_1()}
-	<div class="{TW_LIMITER}">
-		<div class="figure {TW_PAGE_PADDING_X} py-10 sm:py-14 md:py-16 lg:py-28">
+	<div class={TW_LIMITER}>
+		<div
+			class={[
+				`figure ${TW_PAGE_PADDING_X}`,
+				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
+				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+			]}
+		>
 			{@render media_frame()}
 		</div>
 	</div>
 {/snippet}
 
 {#snippet layout_2()}
-	<div class="{TW_LIMITER}">
-		<div class="figure py-10 sm:py-14 md:py-16 lg:py-28">
+	<div class={TW_LIMITER}>
+		<div
+			class={[
+				'figure',
+				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
+				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+			]}
+		>
 			<div class="{TW_PAGE_PADDING_X} max-w-4xl">
 				{@render media_frame()}
 			</div>
@@ -43,8 +57,14 @@
 {/snippet}
 
 {#snippet layout_3()}
-	<div class="{TW_LIMITER}">
-		<div class="figure py-10 sm:py-14 md:py-16 lg:py-28">
+	<div class={TW_LIMITER}>
+		<div
+			class={[
+				'figure',
+				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
+				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+			]}
+		>
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-4xl">
 				{@render media_frame()}
 			</div>
@@ -53,8 +73,14 @@
 {/snippet}
 
 {#snippet layout_4()}
-	<div class="{TW_LIMITER}">
-		<div class="figure py-10 sm:py-14 md:py-16 lg:py-28">
+	<div class={TW_LIMITER}>
+		<div
+			class={[
+				'figure',
+				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
+				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+			]}
+		>
 			<div class="{TW_PAGE_PADDING_X} ml-auto max-w-4xl">
 				{@render media_frame()}
 			</div>
@@ -63,7 +89,7 @@
 {/snippet}
 
 {#snippet layout_5()}
-	<div class="{TW_LIMITER}">
+	<div class={TW_LIMITER}>
 		<div class="figure {TW_PAGE_PADDING_X} py-0">
 			{@render media_frame()}
 		</div>

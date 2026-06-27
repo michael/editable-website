@@ -2,14 +2,22 @@
 	import { Node, NodeArrayProperty } from 'svedit';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 
-	let { path } = $props();
+	let { path, node_array_annotation: section = null } = $props();
+	let padding_top_wide = $derived(!section || section?.is_start);
+	let padding_bottom_wide = $derived(!section || section?.is_end);
 </script>
 
 <Node class="ew-descriptive-gallery" {path}>
 	<div class="{TW_LIMITER} w-full">
-		<div class="{TW_PAGE_PADDING_X} py-10 sm:py-14 md:py-16 lg:py-28">
+		<div
+			class={[
+				TW_PAGE_PADDING_X,
+				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
+				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+			]}
+		>
 			<NodeArrayProperty
-				class="grid grid-cols-1 gap-x-5 sm:gap-x-7 gap-y-8 md:gap-y-7 [--row:1] md:grid-cols-2 xl:grid-cols-3"
+				class="grid grid-cols-1 gap-x-5 gap-y-8 [--row:1] sm:gap-x-7 md:grid-cols-2 md:gap-y-7 xl:grid-cols-3"
 				path={[...path, 'items']}
 			/>
 		</div>

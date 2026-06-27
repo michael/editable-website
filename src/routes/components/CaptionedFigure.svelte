@@ -5,23 +5,33 @@
 	import MediaProperty from './MediaProperty.svelte';
 
 	const svedit = getContext('svedit');
-	let { path } = $props();
+	let { path, node_array_annotation: section = null } = $props();
 	let media_node = $derived(svedit.session.get([...path, 'media']));
+	let padding_top_wide = $derived(!section || section?.is_start);
+	let padding_bottom_wide = $derived(!section || section?.is_end);
 </script>
 
 <Node {path}>
-	<div class="{TW_LIMITER}">
-		<div class="captioned-figure {TW_PAGE_PADDING_X} py-10 sm:py-14 md:py-16 lg:py-28">
+	<div class={TW_LIMITER}>
+		<div
+			class={[
+				`captioned-figure ${TW_PAGE_PADDING_X}`,
+				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
+				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+			]}
+		>
 			<div
 				class="overflow-hidden"
 				style:border-radius="var(--image-border-radius)"
-				style:aspect-ratio={media_node.width && media_node.height ? `${media_node.width} / ${media_node.height}` : '2 / 1'}
+				style:aspect-ratio={media_node.width && media_node.height
+					? `${media_node.width} / ${media_node.height}`
+					: '2 / 1'}
 			>
 				<MediaProperty path={[...path, 'media']} />
 			</div>
 			<AnnotatedTextProperty
 				tag="figcaption"
-				class="mt-4 text-sm sm:text-base leading-6"
+				class="mt-4 text-sm leading-6 sm:text-base"
 				path={[...path, 'caption']}
 				placeholder="Caption"
 			/>

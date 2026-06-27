@@ -7,10 +7,10 @@
 	const bracket_class =
 		'pointer-events-none absolute left-5 right-5 z-1 h-4 select-none sm:left-7 sm:right-7';
 	const corner_class =
-		'absolute size-3.5 border-(--svedit-canvas-stroke) border-dashed';
+		'absolute size-3.5 border-(--svedit-canvas-stroke)';
 </script>
 
-<div {...rest}>
+<section {...rest}>
 	{#if svedit.editable}
 		<div class="relative">
 			<div class="{bracket_class} top-4" contenteditable="false" aria-hidden="true">
@@ -30,4 +30,4 @@
 			</div>
 		</div>
 	{/if}
-</div>
+</section>
