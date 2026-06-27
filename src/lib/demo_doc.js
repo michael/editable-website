@@ -35,7 +35,7 @@ const FULL_DOC = {
 			type: 'paragraph_lg',
 			layout: 2,
 			content: {
-				text: 'Editable brings live, on-page editing to Svelte websites.',
+				text: 'Editable brings live, on-page editing to Svelte.',
 				annotations: []
 			}
 		},
@@ -53,14 +53,20 @@ const FULL_DOC = {
 		tgzmEzyQGVDSHZVYnvuFWRp: {
 			id: 'tgzmEzyQGVDSHZVYnvuFWRp',
 			type: 'button_group',
-			buttons: { nodes: ['qJWqpEWPTKZUKvupagFjxCF'], annotations: [] }
+			buttons: {
+				nodes: ['qJWqpEWPTKZUKvupagFjxCF'],
+				annotations: []
+			}
 		},
 		gRpPsPcYyMPRSWWDXxvNGAF: {
 			id: 'gRpPsPcYyMPRSWWDXxvNGAF',
 			type: 'prose',
 			layout: 6,
 			colorset: 0,
-			content: { nodes: ['TSRjJkcjxCEVZUVMwWBPJJT', 'TrHvNdkJMcGrescwAXFcYfV', 'tgzmEzyQGVDSHZVYnvuFWRp'], annotations: [] }
+			content: {
+				nodes: ['TSRjJkcjxCEVZUVMwWBPJJT', 'TrHvNdkJMcGrescwAXFcYfV', 'tgzmEzyQGVDSHZVYnvuFWRp'],
+				annotations: []
+			}
 		},
 		VbNcMxZaQwErTyUiOpLkJh: {
 			id: 'VbNcMxZaQwErTyUiOpLkJh',
@@ -193,7 +199,10 @@ const FULL_DOC = {
 			layout: 1,
 			colorset: 0,
 			media: 'VbNcMxZaQwErTyUiOpLkJh',
-			body: { nodes: ['XEZYvKrndUKmFeRwPskjXSb', 'QjBkRxHSjJDEsZyrzWfvumb', 'JkfchFmwTqBYVZawgntPWxP'], annotations: [] }
+			body: {
+				nodes: ['XEZYvKrndUKmFeRwPskjXSb', 'QjBkRxHSjJDEsZyrzWfvumb', 'JkfchFmwTqBYVZawgntPWxP'],
+				annotations: []
+			}
 		},
 		zrUZReSCBXBtyTpWEnCqfus: {
 			id: 'zrUZReSCBXBtyTpWEnCqfus',
@@ -348,13 +357,16 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: { nodes: [
-				'zrUZReSCBXBtyTpWEnCqfus',
-				'GqVyqhnraWTBPCpCrAxmPwG',
-				'CvSCfCmvzxqEHqxpMZeaVVF',
-				'evfXRMxeSsZMxKySzTnGKsC',
-				'QWUhWXRFPmmUEVjKnYJvtQW'
-			], annotations: [] }
+			content: {
+				nodes: [
+					'zrUZReSCBXBtyTpWEnCqfus',
+					'GqVyqhnraWTBPCpCrAxmPwG',
+					'CvSCfCmvzxqEHqxpMZeaVVF',
+					'evfXRMxeSsZMxKySzTnGKsC',
+					'QWUhWXRFPmmUEVjKnYJvtQW'
+				],
+				annotations: []
+			}
 		},
 		ttqZrWgKByzNJpAZWDjCdkt: {
 			id: 'ttqZrWgKByzNJpAZWDjCdkt',
@@ -379,7 +391,10 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: { nodes: ['ttqZrWgKByzNJpAZWDjCdkt', 'HjCnaGHNswXGNmDReQhNPjy'], annotations: [] }
+			content: {
+				nodes: ['ttqZrWgKByzNJpAZWDjCdkt', 'HjCnaGHNswXGNmDReQhNPjy'],
+				annotations: []
+			}
 		},
 		jEhPHUyzqvpNeSHYfKCkYgS: {
 			id: 'jEhPHUyzqvpNeSHYfKCkYgS',
@@ -446,11 +461,10 @@ const FULL_DOC = {
 			type: 'gallery',
 			layout: 1,
 			colorset: 0,
-			gallery_items: { nodes: [
-				'wtvHDBrCzJVgacTaJqAwNJk',
-				'TQRANBXMrzXXZTtzxAYhhZf',
-				'HtSTZfjTcDSkttVaTUKMYAj'
-			], annotations: [] }
+			gallery_items: {
+				nodes: ['wtvHDBrCzJVgacTaJqAwNJk', 'TQRANBXMrzXXZTtzxAYhhZf', 'HtSTZfjTcDSkttVaTUKMYAj'],
+				annotations: []
+			}
 		},
 		SXKmbzRCwPeAYSnXfXFXHBd: {
 			id: 'SXKmbzRCwPeAYSnXfXFXHBd',
@@ -581,13 +595,16 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: { nodes: [
-				'pFjJFVqzQzwUQzBhPQAqkuZ',
-				'jkPsBvJwtqCCjUDuByzxAHs',
-				'sBVXkwBDNWSvQvmDSUaQmSh',
-				'SDzUcrBBPfRZkGUestSfCrV',
-				'askXYZSpXVmkUURQpjBUCEd'
-			], annotations: [] }
+			content: {
+				nodes: [
+					'pFjJFVqzQzwUQzBhPQAqkuZ',
+					'jkPsBvJwtqCCjUDuByzxAHs',
+					'sBVXkwBDNWSvQvmDSUaQmSh',
+					'SDzUcrBBPfRZkGUestSfCrV',
+					'askXYZSpXVmkUURQpjBUCEd'
+				],
+				annotations: []
+			}
 		},
 		FWAepzcFxQBWdFUpKazbgSJ: {
 			id: 'FWAepzcFxQBWdFUpKazbgSJ',
@@ -612,7 +629,10 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: { nodes: ['FWAepzcFxQBWdFUpKazbgSJ', 'FUgwpAMYUEeuvRMvbvJqXEy'], annotations: [] }
+			content: {
+				nodes: ['FWAepzcFxQBWdFUpKazbgSJ', 'FUgwpAMYUEeuvRMvbvJqXEy'],
+				annotations: []
+			}
 		},
 		nprCMwYvJvUEmRaHBsxfgUd: {
 			id: 'nprCMwYvJvUEmRaHBsxfgUd',
@@ -702,7 +722,10 @@ const FULL_DOC = {
 			id: 'jLnPqRsTuVwXyZaBcDeFg',
 			type: 'descriptive_gallery',
 			layout: 1,
-			items: { nodes: ['JUmgwJDKqdxVxJeBHkBdjVq', 'descriptive_gallery_item_2', 'YnBCBuemwpaUxQwHrFJNgMW'], annotations: [] }
+			items: {
+				nodes: ['JUmgwJDKqdxVxJeBHkBdjVq', 'descriptive_gallery_item_2', 'YnBCBuemwpaUxQwHrFJNgMW'],
+				annotations: []
+			}
 		},
 		VqaqUWzRKUJrZzQYqqurggB: {
 			id: 'VqaqUWzRKUJrZzQYqqurggB',
@@ -730,7 +753,10 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: { nodes: ['KUAHxAZZcZTtjmHHBfbrbfs'], annotations: [] }
+			content: {
+				nodes: ['KUAHxAZZcZTtjmHHBfbrbfs'],
+				annotations: []
+			}
 		},
 		awxJbWfytmnufqPsJCPxPnR: {
 			id: 'awxJbWfytmnufqPsJCPxPnR',
@@ -809,7 +835,10 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: { nodes: ['awxJbWfytmnufqPsJCPxPnR', 'fMgsDXKARPqeRZGCmYKuvqj', 'HgJRTPUBDfGQFhEDmwcNQNW'], annotations: [] }
+			content: {
+				nodes: ['awxJbWfytmnufqPsJCPxPnR', 'fMgsDXKARPqeRZGCmYKuvqj', 'HgJRTPUBDfGQFhEDmwcNQNW'],
+				annotations: []
+			}
 		},
 		BGYgxNUSXuDtBqxrKfExJnw: {
 			id: 'BGYgxNUSXuDtBqxrKfExJnw',
@@ -869,7 +898,10 @@ const FULL_DOC = {
 			id: 'fmxXNqJPJNkTZpAtwKSHxWb',
 			type: 'descriptive_listing',
 			layout: 1,
-			items: { nodes: ['BGYgxNUSXuDtBqxrKfExJnw', 'DEKuXmWSgnDZEhRgHGptcZJ', 'NpbErTcbBZKBxShfRaFXzct'], annotations: [] }
+			items: {
+				nodes: ['BGYgxNUSXuDtBqxrKfExJnw', 'DEKuXmWSgnDZEhRgHGptcZJ', 'NpbErTcbBZKBxShfRaFXzct'],
+				annotations: []
+			}
 		},
 		KsFYXQPtmceJKGbEkmHqXTy: {
 			id: 'KsFYXQPtmceJKGbEkmHqXTy',
@@ -908,14 +940,20 @@ const FULL_DOC = {
 			id: 'eJjQwDAYHqfcegtbNPTtQSJ',
 			type: 'list',
 			layout: 2,
-			list_items: { nodes: ['nHaWhmFqqDCzKjYfAYWzeAs', 'gfzZchrRysGcDEeXxAscCzg', 'hhauqXDVvpScWyhmrsmvrqe'], annotations: [] }
+			list_items: {
+				nodes: ['nHaWhmFqqDCzKjYfAYWzeAs', 'gfzZchrRysGcDEeXxAscCzg', 'hhauqXDVvpScWyhmrsmvrqe'],
+				annotations: []
+			}
 		},
 		eRkNrkcQvspQsPtkDtuqekV: {
 			id: 'eRkNrkcQvspQsPtkDtuqekV',
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: { nodes: ['KsFYXQPtmceJKGbEkmHqXTy', 'eJjQwDAYHqfcegtbNPTtQSJ'], annotations: [] }
+			content: {
+				nodes: ['KsFYXQPtmceJKGbEkmHqXTy', 'eJjQwDAYHqfcegtbNPTtQSJ'],
+				annotations: []
+			}
 		},
 		AJZwMjfQPTRnyPCSjNzhbta: {
 			id: 'AJZwMjfQPTRnyPCSjNzhbta',
@@ -967,19 +1005,25 @@ const FULL_DOC = {
 		prose_grid_free_action: {
 			id: 'prose_grid_free_action',
 			type: 'button_group',
-			buttons: { nodes: ['prose_grid_free_button'], annotations: [] }
+			buttons: {
+				nodes: ['prose_grid_free_button'],
+				annotations: []
+			}
 		},
 		prose_grid_free: {
 			id: 'prose_grid_free',
 			type: 'prose_grid_item',
 			colorset: 0,
-			content: { nodes: [
-				'AJZwMjfQPTRnyPCSjNzhbta',
-				'pnyZxASHjrYVDxxYJpwpaUd',
-				'NkfqqZuDrJVBBCGSdWRhyXv',
-				'TTEwYweZQbgpAzDJeVgJaQg',
-				'prose_grid_free_action'
-			], annotations: [] }
+			content: {
+				nodes: [
+					'AJZwMjfQPTRnyPCSjNzhbta',
+					'pnyZxASHjrYVDxxYJpwpaUd',
+					'NkfqqZuDrJVBBCGSdWRhyXv',
+					'TTEwYweZQbgpAzDJeVgJaQg',
+					'prose_grid_free_action'
+				],
+				annotations: []
+			}
 		},
 		bFTuteKYWEYEJsesbaZQqMW: {
 			id: 'bFTuteKYWEYEJsesbaZQqMW',
@@ -1031,7 +1075,10 @@ const FULL_DOC = {
 		prose_grid_supergrok_action: {
 			id: 'prose_grid_supergrok_action',
 			type: 'button_group',
-			buttons: { nodes: ['prose_grid_supergrok_button'], annotations: [] }
+			buttons: {
+				nodes: ['prose_grid_supergrok_button'],
+				annotations: []
+			}
 		},
 		zmVKWFqacrbaAWnfhxJnkwH: {
 			id: 'zmVKWFqacrbaAWnfhxJnkwH',
@@ -1046,14 +1093,17 @@ const FULL_DOC = {
 			id: 'prose_grid_supergrok',
 			type: 'prose_grid_item',
 			colorset: 0,
-			content: { nodes: [
-				'bFTuteKYWEYEJsesbaZQqMW',
-				'VZTbMkwXXkstnDCNDdKnEVc',
-				'JTGfWeYsMugYPsXsvgtAUKs',
-				'MuvTMbngQPxqRJQVPZmHHaD',
-				'prose_grid_supergrok_action',
-				'zmVKWFqacrbaAWnfhxJnkwH'
-			], annotations: [] }
+			content: {
+				nodes: [
+					'bFTuteKYWEYEJsesbaZQqMW',
+					'VZTbMkwXXkstnDCNDdKnEVc',
+					'JTGfWeYsMugYPsXsvgtAUKs',
+					'MuvTMbngQPxqRJQVPZmHHaD',
+					'prose_grid_supergrok_action',
+					'zmVKWFqacrbaAWnfhxJnkwH'
+				],
+				annotations: []
+			}
 		},
 		BEXmuGVzZJGECjrTPcSAmtF: {
 			id: 'BEXmuGVzZJGECjrTPcSAmtF',
@@ -1105,7 +1155,10 @@ const FULL_DOC = {
 		prose_grid_expert_action: {
 			id: 'prose_grid_expert_action',
 			type: 'button_group',
-			buttons: { nodes: ['prose_grid_expert_button'], annotations: [] }
+			buttons: {
+				nodes: ['prose_grid_expert_button'],
+				annotations: []
+			}
 		},
 		SuNuqxwFCRepmRVXmrwmCjJ: {
 			id: 'SuNuqxwFCRepmRVXmrwmCjJ',
@@ -1120,20 +1173,26 @@ const FULL_DOC = {
 			id: 'prose_grid_expert',
 			type: 'prose_grid_item',
 			colorset: 0,
-			content: { nodes: [
-				'BEXmuGVzZJGECjrTPcSAmtF',
-				'vCyXCUGQbCqDSeWhQrgxUfP',
-				'wHdrXFGRBBaMRUeAkASChBE',
-				'kxSuHGYyXEBZMcpGbdjCVWm',
-				'prose_grid_expert_action',
-				'SuNuqxwFCRepmRVXmrwmCjJ'
-			], annotations: [] }
+			content: {
+				nodes: [
+					'BEXmuGVzZJGECjrTPcSAmtF',
+					'vCyXCUGQbCqDSeWhQrgxUfP',
+					'wHdrXFGRBBaMRUeAkASChBE',
+					'kxSuHGYyXEBZMcpGbdjCVWm',
+					'prose_grid_expert_action',
+					'SuNuqxwFCRepmRVXmrwmCjJ'
+				],
+				annotations: []
+			}
 		},
 		prose_grid_1: {
 			id: 'prose_grid_1',
 			type: 'prose_grid',
 			layout: 2,
-			items: { nodes: ['prose_grid_free', 'prose_grid_supergrok', 'prose_grid_expert'], annotations: [] }
+			items: {
+				nodes: ['prose_grid_free', 'prose_grid_supergrok', 'prose_grid_expert'],
+				annotations: []
+			}
 		},
 		TYcAwBxbMfUnUnQFHbcnjjK: {
 			id: 'TYcAwBxbMfUnUnQFHbcnjjK',
@@ -1149,7 +1208,10 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: { nodes: ['TYcAwBxbMfUnUnQFHbcnjjK'], annotations: [] }
+			content: {
+				nodes: ['TYcAwBxbMfUnUnQFHbcnjjK'],
+				annotations: []
+			}
 		},
 		PgFkSEuFXmXvecwFNksBFfw: {
 			id: 'PgFkSEuFXmXvecwFNksBFfw',
@@ -1167,7 +1229,10 @@ const FULL_DOC = {
 				text: 'How is this different to using a CMS?',
 				annotations: []
 			},
-			body: { nodes: ['PgFkSEuFXmXvecwFNksBFfw'], annotations: [] }
+			body: {
+				nodes: ['PgFkSEuFXmXvecwFNksBFfw'],
+				annotations: []
+			}
 		},
 		fWGAzktgaAYgCnbjDDNZqZt: {
 			id: 'fWGAzktgaAYgCnbjDDNZqZt',
@@ -1185,7 +1250,10 @@ const FULL_DOC = {
 				text: 'Is mobile editing supported?',
 				annotations: []
 			},
-			body: { nodes: ['fWGAzktgaAYgCnbjDDNZqZt'], annotations: [] }
+			body: {
+				nodes: ['fWGAzktgaAYgCnbjDDNZqZt'],
+				annotations: []
+			}
 		},
 		wdKfHzXjUysbpyHBKWnjHPp: {
 			id: 'wdKfHzXjUysbpyHBKWnjHPp',
@@ -1203,7 +1271,10 @@ const FULL_DOC = {
 				text: 'Where is the data stored?',
 				annotations: []
 			},
-			body: { nodes: ['wdKfHzXjUysbpyHBKWnjHPp'], annotations: [] }
+			body: {
+				nodes: ['wdKfHzXjUysbpyHBKWnjHPp'],
+				annotations: []
+			}
 		},
 		ahabwjAyHuBbTNMJacqWupQ: {
 			id: 'ahabwjAyHuBbTNMJacqWupQ',
@@ -1221,7 +1292,10 @@ const FULL_DOC = {
 				text: 'How about AI?',
 				annotations: []
 			},
-			body: { nodes: ['ahabwjAyHuBbTNMJacqWupQ'], annotations: [] }
+			body: {
+				nodes: ['ahabwjAyHuBbTNMJacqWupQ'],
+				annotations: []
+			}
 		},
 		vuEMUDFAUnxSBXvsvDsYDZe: {
 			id: 'vuEMUDFAUnxSBXvsvDsYDZe',
@@ -1239,7 +1313,10 @@ const FULL_DOC = {
 				text: 'Plugins?',
 				annotations: []
 			},
-			body: { nodes: ['vuEMUDFAUnxSBXvsvDsYDZe'], annotations: [] }
+			body: {
+				nodes: ['vuEMUDFAUnxSBXvsvDsYDZe'],
+				annotations: []
+			}
 		},
 		ZdwnbaVUbAPYzCZQhyJAYBr: {
 			id: 'ZdwnbaVUbAPYzCZQhyJAYBr',
@@ -1257,7 +1334,10 @@ const FULL_DOC = {
 				text: 'Hosting?',
 				annotations: []
 			},
-			body: { nodes: ['ZdwnbaVUbAPYzCZQhyJAYBr'], annotations: [] }
+			body: {
+				nodes: ['ZdwnbaVUbAPYzCZQhyJAYBr'],
+				annotations: []
+			}
 		},
 		prwbeXWyKVSsJXMPndjHYRS: {
 			id: 'prwbeXWyKVSsJXMPndjHYRS',
@@ -1275,7 +1355,10 @@ const FULL_DOC = {
 				text: 'Static builds?',
 				annotations: []
 			},
-			body: { nodes: ['prwbeXWyKVSsJXMPndjHYRS'], annotations: [] }
+			body: {
+				nodes: ['prwbeXWyKVSsJXMPndjHYRS'],
+				annotations: []
+			}
 		},
 		VmvAPSsWYbVnekGqYyEKPUG: {
 			id: 'VmvAPSsWYbVnekGqYyEKPUG',
@@ -1293,30 +1376,28 @@ const FULL_DOC = {
 				text: 'License?',
 				annotations: []
 			},
-			body: { nodes: ['VmvAPSsWYbVnekGqYyEKPUG'], annotations: [] }
+			body: {
+				nodes: ['VmvAPSsWYbVnekGqYyEKPUG'],
+				annotations: []
+			}
 		},
 		BBExBsmaSTXMZdcxMsYngwg: {
 			id: 'BBExBsmaSTXMZdcxMsYngwg',
 			type: 'accordion',
-			items: { nodes: [
-				'DerFSxwnBjUZXfsePjKbYPd',
-				'BfXmkWHjhSWZGMaKGxhSAXu',
-				'rmMwFFdvFZzxzdsaQtZvdKH',
-				'EjhqKzYMTknJuyFwbhJzyCA',
-				'PeFCTQcmaYpxvjGMrfvgGeW',
-				'tTTVGQvjNrfJsKHXSWaSDeE',
-				'gftTVYqqYFbsTAkfMJKbhzH',
-				'gYpxwQwkQNNWWvYbTWBrAfx'
-			], annotations: [] },
-			layout: 5
-		},
-		preformatted_example: {
-			id: 'preformatted_example',
-			type: 'preformatted',
-			content: {
-				text: 'const greeting = "Hello, world!"\n\n+----+----+\n|  /\\|    |\n| /  \\    |\n+----+----+',
+			items: {
+				nodes: [
+					'DerFSxwnBjUZXfsePjKbYPd',
+					'BfXmkWHjhSWZGMaKGxhSAXu',
+					'rmMwFFdvFZzxzdsaQtZvdKH',
+					'EjhqKzYMTknJuyFwbhJzyCA',
+					'PeFCTQcmaYpxvjGMrfvgGeW',
+					'tTTVGQvjNrfJsKHXSWaSDeE',
+					'gftTVYqqYFbsTAkfMJKbhzH',
+					'gYpxwQwkQNNWWvYbTWBrAfx'
+				],
 				annotations: []
-			}
+			},
+			layout: 5
 		},
 		hqrrTdEbTPaqzEcYMczhBZb: {
 			id: 'hqrrTdEbTPaqzEcYMczhBZb',
@@ -1385,12 +1466,15 @@ const FULL_DOC = {
 			layout: 2,
 			colorset: 0,
 			media: 'hqrrTdEbTPaqzEcYMczhBZb',
-			body: { nodes: [
-				'TnMQYKQSSvPJySzxMfgqvge',
-				'vWuEJXfcsUSSXwYKQmbAnxq',
-				'HTXqugHBTYdFtsEPuJBwdcQ',
-				'QEnRdGNnZesaJWpDstgKQhq'
-			], annotations: [] }
+			body: {
+				nodes: [
+					'TnMQYKQSSvPJySzxMfgqvge',
+					'vWuEJXfcsUSSXwYKQmbAnxq',
+					'HTXqugHBTYdFtsEPuJBwdcQ',
+					'QEnRdGNnZesaJWpDstgKQhq'
+				],
+				annotations: []
+			}
 		},
 		VZSAXNdpyXTfwJzbQhEDdZe: {
 			id: 'VZSAXNdpyXTfwJzbQhEDdZe',
@@ -1424,14 +1508,20 @@ const FULL_DOC = {
 		fxbPhZADdeyCbysuCSwHNcA: {
 			id: 'fxbPhZADdeyCbysuCSwHNcA',
 			type: 'button_group',
-			buttons: { nodes: ['VMpZbtCEwxBqnnkMBUEsKGE'], annotations: [] }
+			buttons: {
+				nodes: ['VMpZbtCEwxBqnnkMBUEsKGE'],
+				annotations: []
+			}
 		},
 		zBXuGXXYWMGbSdteMyNFhja: {
 			id: 'zBXuGXXYWMGbSdteMyNFhja',
 			type: 'prose',
 			layout: 4,
 			colorset: 0,
-			content: { nodes: ['VZSAXNdpyXTfwJzbQhEDdZe', 'ZntpMyjvcVjpjFDQxZnvSYR', 'fxbPhZADdeyCbysuCSwHNcA'], annotations: [] }
+			content: {
+				nodes: ['VZSAXNdpyXTfwJzbQhEDdZe', 'ZntpMyjvcVjpjFDQxZnvSYR', 'fxbPhZADdeyCbysuCSwHNcA'],
+				annotations: []
+			}
 		},
 		AfkGmkTkFBhUGQsSSSzAaWV: {
 			id: 'AfkGmkTkFBhUGQsSSSzAaWV',
@@ -1514,7 +1604,30 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 4,
 			colorset: 0,
-			content: { nodes: ['vvqbUaMzgjJXvJGMzHFDnrE'], annotations: [] }
+			content: {
+				nodes: ['vvqbUaMzgjJXvJGMzHFDnrE'],
+				annotations: []
+			}
+		},
+		mACRdEqtkMhwnUcdeKpBfDW: {
+			id: 'mACRdEqtkMhwnUcdeKpBfDW',
+			type: 'section'
+		},
+		uucFzvqgQjVkmDFcFhMnbvX: {
+			id: 'uucFzvqgQjVkmDFcFhMnbvX',
+			type: 'section'
+		},
+		hPnUrMaKzUxndrvFhzrgvCD: {
+			id: 'hPnUrMaKzUxndrvFhzrgvCD',
+			type: 'section'
+		},
+		KgADBhzVGCwhYhBsAkyZvvT: {
+			id: 'KgADBhzVGCwhYhBsAkyZvvT',
+			type: 'section'
+		},
+		kKwKQPPJhSmxzuxPnkqZPaT: {
+			id: 'kKwKQPPJhSmxzuxPnkqZPaT',
+			type: 'section'
 		},
 		nav_logo_media: {
 			id: 'nav_logo_media',
@@ -1605,14 +1718,23 @@ const FULL_DOC = {
 		nav_1: {
 			id: 'nav_1',
 			type: 'nav',
-			start_nav_items: { nodes: ['nav_logo'], annotations: [] },
-			center_nav_items: { nodes: [
-				'DDmmrQzcAxWJfdhatTbkRTh',
-				'BESRZnRsUbbWapdUTzGNxFH',
-				'atmQQGpCXBweGkkcSuKpJPS',
-				'GyKyQvRAvkgnywmxTVgvrnF'
-			], annotations: [] },
-			end_nav_items: { nodes: ['GtffzHxEWNweDuhFgUZFeBe', 'FKgjxHCeSbVZrdnPuxYkMYp'], annotations: [] }
+			start_nav_items: {
+				nodes: ['nav_logo'],
+				annotations: []
+			},
+			center_nav_items: {
+				nodes: [
+					'DDmmrQzcAxWJfdhatTbkRTh',
+					'BESRZnRsUbbWapdUTzGNxFH',
+					'atmQQGpCXBweGkkcSuKpJPS',
+					'GyKyQvRAvkgnywmxTVgvrnF'
+				],
+				annotations: []
+			},
+			end_nav_items: {
+				nodes: ['GtffzHxEWNweDuhFgUZFeBe', 'FKgjxHCeSbVZrdnPuxYkMYp'],
+				annotations: []
+			}
 		},
 		footer_logo: {
 			id: 'footer_logo',
@@ -1670,12 +1792,15 @@ const FULL_DOC = {
 		fcSSWQUTYajjknPChgGsPZz: {
 			id: 'fcSSWQUTYajjknPChgGsPZz',
 			type: 'footer_link_column',
-			footer_links: { nodes: [
-				'EtcfbabRCtPSvSpfFfjPeza',
-				'WVvBSREFCThNYcpgvfUnWkF',
-				'eDAnnFjNdZpzYMtpSqReBxf',
-				'GwPeRFYtAyrcCMfpuyzdWZp'
-			], annotations: [] },
+			footer_links: {
+				nodes: [
+					'EtcfbabRCtPSvSpfFfjPeza',
+					'WVvBSREFCThNYcpgvfUnWkF',
+					'eDAnnFjNdZpzYMtpSqReBxf',
+					'GwPeRFYtAyrcCMfpuyzdWZp'
+				],
+				annotations: []
+			},
 			label: {
 				text: 'On this page',
 				annotations: []
@@ -1708,7 +1833,10 @@ const FULL_DOC = {
 				text: 'GitHub',
 				annotations: []
 			},
-			footer_links: { nodes: ['uavzfSnSpTRrHSfJpbfvpsh', 'footer_link_2_1'], annotations: [] }
+			footer_links: {
+				nodes: ['uavzfSnSpTRrHSfJpbfvpsh', 'footer_link_2_1'],
+				annotations: []
+			}
 		},
 		ewuBYPxRqFsJXffTuwqssXg: {
 			id: 'ewuBYPxRqFsJXffTuwqssXg',
@@ -1737,7 +1865,10 @@ const FULL_DOC = {
 				text: 'Videos',
 				annotations: []
 			},
-			footer_links: { nodes: ['ewuBYPxRqFsJXffTuwqssXg', 'cCMbgzNjRjVjrvWuHJCvJkx'], annotations: [] }
+			footer_links: {
+				nodes: ['ewuBYPxRqFsJXffTuwqssXg', 'cCMbgzNjRjVjrvWuHJCvJkx'],
+				annotations: []
+			}
 		},
 		footer_1: {
 			id: 'footer_1',
@@ -1747,13 +1878,12 @@ const FULL_DOC = {
 				text: '© Editable 2026',
 				annotations: []
 			},
-			footer_link_columns: { nodes: ['fcSSWQUTYajjknPChgGsPZz', 'footer_column_2', 'footer_column_3'], annotations: [] },
+			footer_link_columns: {
+				nodes: ['fcSSWQUTYajjknPChgGsPZz', 'footer_column_2', 'footer_column_3'],
+				annotations: []
+			},
 			logo_max_width: 40,
 			logo_aspect_ratio: 1
-		},
-		section_1: {
-			id: 'section_1',
-			type: 'section'
 		},
 		page_1: {
 			id: 'page_1',
@@ -1784,16 +1914,35 @@ const FULL_DOC = {
 					'prose_grid_1',
 					'xEphsDndbNejaRnnPRBwvBK',
 					'BBExBsmaSTXMZdcxMsYngwg',
-					'preformatted_example',
 					'YTMHBcPkYXJMRUnuSAhrTDE',
 					'zBXuGXXYWMGbSdteMyNFhja',
 					'wmrbpSFAFUmMRPDumcjKqpF'
 				],
 				annotations: [
 					{
-						start_offset: 0,
-						end_offset: 3,
-						node_id: 'section_1'
+						start_offset: 3,
+						end_offset: 6,
+						node_id: 'mACRdEqtkMhwnUcdeKpBfDW'
+					},
+					{
+						start_offset: 6,
+						end_offset: 9,
+						node_id: 'uucFzvqgQjVkmDFcFhMnbvX'
+					},
+					{
+						start_offset: 9,
+						end_offset: 11,
+						node_id: 'hPnUrMaKzUxndrvFhzrgvCD'
+					},
+					{
+						start_offset: 11,
+						end_offset: 13,
+						node_id: 'KgADBhzVGCwhYhBsAkyZvvT'
+					},
+					{
+						start_offset: 13,
+						end_offset: 15,
+						node_id: 'kKwKQPPJhSmxzuxPnkqZPaT'
 					}
 				]
 			},
