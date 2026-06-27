@@ -26,7 +26,7 @@ const FULL_DOC = {
 			type: 'heading_2',
 			layout: 1,
 			content: {
-				text: 'Skip the CMS',
+				text: 'Making websites should be fun',
 				annotations: []
 			}
 		},
