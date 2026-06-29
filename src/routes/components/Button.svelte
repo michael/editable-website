@@ -1,6 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
-	import { Node, AnnotatedTextProperty } from 'svedit';
+	import { Node, TextProperty } from 'svedit';
 	const svedit = getContext('svedit');
 
 	let { path } = $props();
@@ -9,20 +9,15 @@
 	let layout = $derived(node.layout || 1);
 </script>
 
-
-
 {#snippet layout_1()}
 	<svelte:element
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="ew-button text-sm flex items-center justify-center px-6 py-3 min-w-[calc(1lh+24px)] bg-(--accent) text-(--accent-foreground) rounded-(--button-border-radius) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+		class="ew-button flex min-w-[calc(1lh+24px)] items-center justify-center rounded-(--button-border-radius) bg-(--accent) px-6 py-3 text-sm text-(--accent-foreground) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 		class:hover:opacity-80={render_as_link}
 	>
-		<AnnotatedTextProperty
-			path={[...path, 'label']}
-			placeholder="Label"
-		/>
+		<TextProperty path={[...path, 'label']} placeholder="Label" />
 	</svelte:element>
 {/snippet}
 
@@ -31,12 +26,11 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="ew-button text-sm flex items-center justify-center px-4 py-3 outline-1 outline-(--foreground)/15 text-(--foreground) rounded-(--button-border-radius) focus-visible:outline-(--svedit-editing-stroke) {render_as_link ? 'hover:bg-(--foreground)/5' : ''}"
+		class="ew-button flex items-center justify-center rounded-(--button-border-radius) px-4 py-3 text-sm text-(--foreground) outline-1 outline-(--foreground)/15 focus-visible:outline-(--svedit-editing-stroke) {render_as_link
+			? 'hover:bg-(--foreground)/5'
+			: ''}"
 	>
-		<AnnotatedTextProperty
-			path={[...path, 'label']}
-			placeholder="Label"
-		/>
+		<TextProperty path={[...path, 'label']} placeholder="Label" />
 	</svelte:element>
 {/snippet}
 

@@ -1,11 +1,11 @@
 <script>
-	import { AnnotatedTextProperty } from 'svedit';
+	import { TextProperty } from 'svedit';
 	let { path, tag = 'h2', placeholder = 'Heading 1', class: css_class = '' } = $props();
 </script>
 
-<AnnotatedTextProperty
+<TextProperty
 	{tag}
-	class="{css_class} ew-display tracking-tight text-4xl lg:text-5xl text-balance"
+	class="{css_class} ew-display text-4xl tracking-tight text-balance lg:text-5xl"
 	{path}
 	{placeholder}
 />

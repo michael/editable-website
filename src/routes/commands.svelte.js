@@ -253,7 +253,7 @@ export class ToggleAccordionCommand extends Command {
 		const path = session.selection.path;
 		const property_definition = session.inspect(path);
 
-		if (property_definition?.type === 'annotated_text' && property_definition.name === 'title') {
+		if (property_definition?.type === 'text' && property_definition.name === 'title') {
 			const owning_node = session.get(path.slice(0, -1));
 			return owning_node.type === 'accordion_item';
 		}

@@ -167,7 +167,7 @@ function collect_node_ids(root_id, nodes, exclude_roots) {
 						stack.push(annotation.node_id);
 					}
 				}
-			} else if (prop_def.type === 'annotated_text' && value.annotations) {
+			} else if (prop_def.type === 'text' && value.annotations) {
 				for (const annotation of value.annotations) {
 					if (annotation.node_id) {
 						stack.push(annotation.node_id);
@@ -179,8 +179,6 @@ function collect_node_ids(root_id, nodes, exclude_roots) {
 
 	return collected;
 }
-
-
 
 /**
  * @param {string} document_id
@@ -238,8 +236,6 @@ function get_home_page_id_from_db() {
 	return row?.value ?? null;
 }
 
-
-
 /**
  * @param {string} document_id
  * @returns {boolean}
@@ -254,9 +250,9 @@ function is_home_page_document_id(document_id) {
  */
 function get_active_slug_for_document_id(document_id) {
 	const row = /** @type {{ slug: string } | undefined } */ (
-		db.prepare('SELECT slug FROM document_slugs WHERE document_id = ? AND is_active = 1').get(
-			document_id
-		)
+		db
+			.prepare('SELECT slug FROM document_slugs WHERE document_id = ? AND is_active = 1')
+			.get(document_id)
 	);
 
 	return row?.slug ?? null;
@@ -319,9 +315,7 @@ function create_slug_candidate(title, document_id) {
  * @returns {string}
  */
 function create_unique_slug(base_slug) {
-	const slug_exists_stmt = db.prepare(
-		'SELECT document_id FROM document_slugs WHERE slug = ?'
-	);
+	const slug_exists_stmt = db.prepare('SELECT document_id FROM document_slugs WHERE slug = ?');
 
 	let slug = base_slug;
 	let suffix = 2;
@@ -401,7 +395,7 @@ function collect_document_refs(nodes, node_ids, source_document_id) {
 		if (!type_schema) continue;
 
 		for (const [prop_name, prop_def] of Object.entries(type_schema.properties)) {
-			if (prop_def.type !== 'annotated_text') continue;
+			if (prop_def.type !== 'text') continue;
 
 			const value = node[prop_name];
 			if (!value?.annotations) continue;
@@ -538,9 +532,11 @@ function summarize_page_document(page_doc) {
  */
 function get_outgoing_refs(source_document_id) {
 	const rows = /** @type {Array<{ target_document_id: string }>} */ (
-		db.prepare(
-			'SELECT target_document_id FROM document_refs WHERE source_document_id = ? ORDER BY ref_order, rowid'
-		).all(source_document_id)
+		db
+			.prepare(
+				'SELECT target_document_id FROM document_refs WHERE source_document_id = ? ORDER BY ref_order, rowid'
+			)
+			.all(source_document_id)
 	);
 
 	return rows.map((row) => row.target_document_id);
@@ -634,15 +630,13 @@ function build_page_browser_data() {
 	const pathname = request_event.url.pathname;
 	const home_page_id = get_home_page_id_from_db();
 	const current_document_id =
-		pathname === '/'
-			? home_page_id
-			: resolve_slug(pathname.slice(1))?.document_id ?? null;
+		pathname === '/' ? home_page_id : (resolve_slug(pathname.slice(1))?.document_id ?? null);
 	const page_docs = list_page_documents();
 	const page_docs_by_id = new Map(page_docs.map((page_doc) => [page_doc.document_id, page_doc]));
 	const summaries = page_docs.map(summarize_page_document);
 	const summaries_by_id = new Map(summaries.map((summary) => [summary.document_id, summary]));
 
-	const home_page_doc = home_page_id ? page_docs_by_id.get(home_page_id) ?? null : null;
+	const home_page_doc = home_page_id ? (page_docs_by_id.get(home_page_id) ?? null) : null;
 	const { nav_root_id, footer_root_id } = home_page_doc
 		? get_shared_root_ids(home_page_doc)
 		: { nav_root_id: null, footer_root_id: null };
@@ -979,7 +973,7 @@ function rewrite_internal_page_hrefs(nodes, target_document_id, new_slug) {
 		if (!type_schema) continue;
 
 		for (const [prop_name, prop_def] of Object.entries(type_schema.properties)) {
-			if (prop_def.type !== 'annotated_text') continue;
+			if (prop_def.type !== 'text') continue;
 
 			const value = node[prop_name];
 			if (!value?.annotations) continue;
@@ -1004,7 +998,12 @@ function insert_active_slug(document_id, slug, insert_slug_stmt, deactivate_slug
 	insert_slug_stmt.run(slug, document_id, 1, new Date().toISOString());
 }
 
-function move_active_slug_to_history(document_id, insert_slug_stmt, deactivate_slug_stmt, delete_slug_stmt) {
+function move_active_slug_to_history(
+	document_id,
+	insert_slug_stmt,
+	deactivate_slug_stmt,
+	delete_slug_stmt
+) {
 	const current_slug = get_active_slug_for_document_id(document_id);
 	if (!current_slug) return null;
 
@@ -1014,7 +1013,13 @@ function move_active_slug_to_history(document_id, insert_slug_stmt, deactivate_s
 	return current_slug;
 }
 
-function assign_active_slug(document_id, slug, insert_slug_stmt, deactivate_slug_stmt, delete_slug_stmt) {
+function assign_active_slug(
+	document_id,
+	slug,
+	insert_slug_stmt,
+	deactivate_slug_stmt,
+	delete_slug_stmt
+) {
 	delete_slug_stmt.run(slug);
 	insert_active_slug(document_id, slug, insert_slug_stmt, deactivate_slug_stmt);
 }
@@ -1039,7 +1044,9 @@ export const save_document = command(save_document_input_schema, async (combined
 	const nav_root_id = page_node.nav;
 	const footer_root_id = page_node.footer;
 
-	const nav_node_ids = nav_root_id ? new Set(collect_node_ids_in_order(nav_root_id, all_nodes)) : new Set();
+	const nav_node_ids = nav_root_id
+		? new Set(collect_node_ids_in_order(nav_root_id, all_nodes))
+		: new Set();
 	const footer_node_ids = footer_root_id
 		? new Set(collect_node_ids_in_order(footer_root_id, all_nodes))
 		: new Set();
@@ -1079,7 +1086,9 @@ export const save_document = command(save_document_input_schema, async (combined
 
 	try {
 		const existing_page_row = /** @type {DocumentRow | undefined} */ (
-			db.prepare('SELECT created_at FROM documents WHERE document_id = ?').get(combined_doc.document_id)
+			db
+				.prepare('SELECT created_at FROM documents WHERE document_id = ?')
+				.get(combined_doc.document_id)
 		);
 		const now_iso = new Date().toISOString();
 		const created_at = existing_page_row?.created_at ?? now_iso;
@@ -1139,11 +1148,20 @@ export const save_document = command(save_document_input_schema, async (combined
 
 		let active_slug = get_active_slug_for_document_id(combined_doc.document_id);
 
-		if (combined_doc.create && !active_slug && !is_home_page_document_id(combined_doc.document_id)) {
+		if (
+			combined_doc.create &&
+			!active_slug &&
+			!is_home_page_document_id(combined_doc.document_id)
+		) {
 			const metadata = extract_page_metadata(page_doc);
 			const base_slug = create_slug_candidate(metadata.title, combined_doc.document_id);
 			active_slug = create_unique_slug(base_slug);
-			insert_active_slug(combined_doc.document_id, active_slug, insert_slug, deactivate_active_slug);
+			insert_active_slug(
+				combined_doc.document_id,
+				active_slug,
+				insert_slug,
+				deactivate_active_slug
+			);
 		}
 
 		const persisted_page = get_optional_doc_from_db(combined_doc.document_id);
@@ -1182,12 +1200,18 @@ export const update_page_slug = command(update_page_slug_input_schema, async (in
 
 	const existing_doc = get_optional_doc_from_db(input.document_id);
 	if (!existing_doc) {
-		return create_page_url_error_result('page_not_found', `Document not found: ${input.document_id}`);
+		return create_page_url_error_result(
+			'page_not_found',
+			`Document not found: ${input.document_id}`
+		);
 	}
 
 	const home_page_id = get_home_page_id_from_db();
 	if (home_page_id === input.document_id) {
-		return create_page_url_error_result('home_page_url_locked', 'The home page URL cannot be changed');
+		return create_page_url_error_result(
+			'home_page_url_locked',
+			'The home page URL cannot be changed'
+		);
 	}
 
 	const current_active_slug = get_active_slug_for_document_id(input.document_id);
@@ -1206,10 +1230,16 @@ export const update_page_slug = command(update_page_slug_input_schema, async (in
 	}
 
 	const existing_slug = /** @type {{ document_id: string, is_active: number } | undefined} */ (
-		db.prepare('SELECT document_id, is_active FROM document_slugs WHERE slug = ?').get(normalized_slug)
+		db
+			.prepare('SELECT document_id, is_active FROM document_slugs WHERE slug = ?')
+			.get(normalized_slug)
 	);
 
-	if (existing_slug && existing_slug.document_id !== input.document_id && existing_slug.is_active === 1) {
+	if (
+		existing_slug &&
+		existing_slug.document_id !== input.document_id &&
+		existing_slug.is_active === 1
+	) {
 		return create_page_url_error_result(
 			'page_url_used_by_other_page',
 			'That Page URL is already in use by another page. Rename that page first.'
@@ -1251,17 +1281,17 @@ export const update_page_slug = command(update_page_slug_input_schema, async (in
 		}
 
 		const page_rows = /** @type {DocumentRow[]} */ (
-			db.prepare('SELECT * FROM documents WHERE type IN (?, ?, ?) ORDER BY document_id').all(
-				'page',
-				'nav',
-				'footer'
-			)
+			db
+				.prepare('SELECT * FROM documents WHERE type IN (?, ?, ?) ORDER BY document_id')
+				.all('page', 'nav', 'footer')
 		);
 
 		const upsert = db.prepare(
 			'INSERT INTO documents (document_id, type, data, created_at, updated_at) VALUES(?, ?, ?, ?, ?) ON CONFLICT(document_id) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at'
 		);
-		const delete_document_refs = db.prepare('DELETE FROM document_refs WHERE source_document_id = ?');
+		const delete_document_refs = db.prepare(
+			'DELETE FROM document_refs WHERE source_document_id = ?'
+		);
 		const insert_document_ref = db.prepare(
 			'INSERT OR REPLACE INTO document_refs (target_document_id, source_document_id, ref_order) VALUES (?, ?, ?)'
 		);

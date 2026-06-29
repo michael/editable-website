@@ -1,6 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
-	import { Node, AnnotatedTextProperty } from 'svedit';
+	import { Node, TextProperty } from 'svedit';
 	import { reveal } from '../reveal.js';
 
 	const svedit = getContext('svedit');
@@ -10,7 +10,10 @@
 	let display_meta = $derived(svedit.editable || !!node.meta?.text?.trim());
 </script>
 
-<Node class="descriptive-listing-item group border-b border-[color-mix(in_oklch,var(--foreground)_7%,transparent)]" {path}>
+<Node
+	class="descriptive-listing-item group border-b border-[color-mix(in_oklch,var(--foreground)_7%,transparent)]"
+	{path}
+>
 	<svelte:element
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
@@ -20,24 +23,24 @@
 	>
 		<div class="flex items-center justify-between gap-6">
 			<div class="min-w-2/3 flex-1">
-				<AnnotatedTextProperty
-					class="body-base {node.href ? "underline underline-offset-2" : ""}"
+				<TextProperty
+					class="body-base {node.href ? 'underline underline-offset-2' : ''}"
 					path={[...path, 'title']}
-					placeholder='Title'
+					placeholder="Title"
 				/>
-				<AnnotatedTextProperty
-					class="body-base text-(--foreground)/50 pt-1 text-balance"
+				<TextProperty
+					class="pt-1 body-base text-balance text-(--foreground)/50"
 					path={[...path, 'description']}
-					placeholder='Description'
+					placeholder="Description"
 				/>
 			</div>
 
 			{#if display_meta}
 				<div class="min-w-0 self-center text-right">
-					<AnnotatedTextProperty
-						class="body-base text-(--foreground)/50 pt-1"
+					<TextProperty
+						class="pt-1 body-base text-(--foreground)/50"
 						path={[...path, 'meta']}
-						placeholder='Meta'
+						placeholder="Meta"
 					/>
 				</div>
 			{/if}

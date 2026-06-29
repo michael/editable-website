@@ -1,15 +1,16 @@
 <script>
 	import { getContext } from 'svelte';
-	import { Node, NodeArrayProperty, AnnotatedTextProperty } from 'svedit';
+	import { Node, NodeArrayProperty, TextProperty } from 'svedit';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
 </script>
 
-<Node class="ew-accordion-item border-b border-[color-mix(in_oklch,var(--foreground)_7%,transparent)]" {path}>
-	<details
-		class="py-2 md:py-3"
-	>
+<Node
+	class="ew-accordion-item border-b border-[color-mix(in_oklch,var(--foreground)_7%,transparent)]"
+	{path}
+>
+	<details class="py-2 md:py-3">
 		<summary
 			class="list-none outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 			class:pointer-events-none={svedit.editable}
@@ -17,11 +18,7 @@
 		>
 			<div class="flex items-center justify-between gap-4">
 				<div class="min-w-0">
-					<AnnotatedTextProperty
-						class="body-base"
-						path={[...path, 'title']}
-						placeholder="Title"
-					/>
+					<TextProperty class="body-base" path={[...path, 'title']} placeholder="Title" />
 				</div>
 				<div
 					class="pointer-events-auto flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center text-[color-mix(in_oklch,var(--foreground)_60%,transparent)] outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
