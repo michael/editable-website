@@ -1,6 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
-	import { Node, AnnotatedTextProperty } from 'svedit';
+	import { Node, TextProperty } from 'svedit';
 
 	const svedit = getContext('svedit');
 
@@ -11,17 +11,17 @@
 
 	function get_marker(index, layout) {
 		switch (layout) {
-		case 1:
-			return '—';
-		case 2:
-			return '✓';
-		case 3:
-			return `${String(index).padStart(2, '0')}.`;
-		case 4:
-			return `${to_latin(index)}.`;
-		default:
-			return '—';
-	}
+			case 1:
+				return '—';
+			case 2:
+				return '✓';
+			case 3:
+				return `${String(index).padStart(2, '0')}.`;
+			case 4:
+				return `${to_latin(index)}.`;
+			default:
+				return '—';
+		}
 	}
 
 	function to_latin(index) {
@@ -40,10 +40,14 @@
 
 <Node {path}>
 	<div class="grid grid-cols-[2rem_minmax(0,1fr)] gap-3 py-0" role="listitem">
-		<div contenteditable="false" class="select-none text-right text-sm leading-7 text-[color-mix(in_oklch,var(--foreground)_60%,transparent)]" aria-hidden="true">
+		<div
+			contenteditable="false"
+			class="text-right text-sm leading-7 text-[color-mix(in_oklch,var(--foreground)_60%,transparent)] select-none"
+			aria-hidden="true"
+		>
 			{marker}
 		</div>
-		<AnnotatedTextProperty
+		<TextProperty
 			class="leading-7 text-(--foreground)"
 			path={[...path, 'content']}
 			placeholder="List item"

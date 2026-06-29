@@ -38,12 +38,12 @@ const TITLE_NODE_TYPES = ['heading_1', 'heading_2', 'heading_3', 'heading_4', 'h
  */
 
 /**
- * @param {{ text?: string } | null | undefined} annotated_text
+ * @param {{ text?: string } | null | undefined} text
  * @returns {string}
  */
-export function extract_plain_text(annotated_text) {
-	if (!annotated_text || typeof annotated_text.text !== 'string') return '';
-	return annotated_text.text.trim();
+export function extract_plain_text(text) {
+	if (!text || typeof text.text !== 'string') return '';
+	return text.text.trim();
 }
 
 /**

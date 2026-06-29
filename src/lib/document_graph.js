@@ -45,7 +45,7 @@ export function collect_node_ids_in_order(root_id, nodes, exclude_roots) {
 						next_ids.push(annotation.node_id);
 					}
 				}
-			} else if (prop_def.type === 'annotated_text' && value.annotations) {
+			} else if (prop_def.type === 'text' && value.annotations) {
 				for (const annotation of value.annotations) {
 					if (annotation.node_id) {
 						next_ids.push(annotation.node_id);

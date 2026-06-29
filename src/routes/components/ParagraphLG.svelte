@@ -1,6 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
-	import { Node, AnnotatedTextProperty } from 'svedit';
+	import { Node, TextProperty } from 'svedit';
 	import { reveal } from '../reveal.js';
 
 	const svedit = getContext('svedit');
@@ -11,11 +11,11 @@
 
 <Node class="ew-paragraph-lg" {path}>
 	<div use:reveal>
-		<AnnotatedTextProperty
-			tag='p'
+		<TextProperty
+			tag="p"
 			class={`body-lg ${layout === 2 ? 'text-(--foreground)/50' : ''}`}
 			path={[...path, 'content']}
-			placeholder='Large Paragraph'
+			placeholder="Large Paragraph"
 		/>
 	</div>
 </Node>

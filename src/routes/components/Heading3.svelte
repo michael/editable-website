@@ -1,6 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
-	import { Node, AnnotatedTextProperty } from 'svedit';
+	import { Node, TextProperty } from 'svedit';
 	import { reveal } from '../reveal.js';
 
 	const svedit = getContext('svedit');
@@ -11,11 +11,11 @@
 
 <Node class="ew-heading-3" {path}>
 	<div use:reveal>
-		<AnnotatedTextProperty
-			tag='h2'
+		<TextProperty
+			tag="h2"
 			class={`display-3 ${layout === 2 ? 'text-(--foreground)/50' : ''}`}
 			path={[...path, 'content']}
-			placeholder='Heading 3'
+			placeholder="Heading 3"
 		/>
 	</div>
 </Node>

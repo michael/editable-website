@@ -1,6 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
-	import { Node, AnnotatedTextProperty } from 'svedit';
+	import { Node, TextProperty } from 'svedit';
 	import MediaProperty from './MediaProperty.svelte';
 	import { reveal } from '../reveal.js';
 
@@ -26,15 +26,15 @@
 			<MediaProperty path={[...path, 'media']} />
 		</div>
 		<div class="pt-4">
-			<AnnotatedTextProperty
-				class="body-base {node.href ? "underline underline-offset-2" : ""}"
+			<TextProperty
+				class="body-base {node.href ? 'underline underline-offset-2' : ''}"
 				path={[...path, 'title']}
-				placeholder='Title'
+				placeholder="Title"
 			/>
-			<AnnotatedTextProperty
-				class="body-sm text-(--foreground)/50 pt-1"
+			<TextProperty
+				class="pt-1 body-sm text-(--foreground)/50"
 				path={[...path, 'description']}
-				placeholder='Description'
+				placeholder="Description"
 			/>
 		</div>
 	</svelte:element>

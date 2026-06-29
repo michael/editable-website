@@ -1,6 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
-	import { AnnotatedTextProperty, Node } from 'svedit';
+	import { TextProperty, Node } from 'svedit';
 	const svedit = getContext('svedit');
 
 	let { path } = $props();
@@ -14,10 +14,10 @@
 			this={render_as_link ? 'a' : 'div'}
 			href={render_as_link ? node.href : undefined}
 			target={render_as_link ? node.target : undefined}
-			class="inline-block py-2 hover:underline underline-offset-2 transition-all duration-500 ease-in-out decoration-transparent hover:decoration-(--foreground) hover:text-(--foreground) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+			class="inline-block py-2 decoration-transparent underline-offset-2 outline-1 outline-transparent transition-all duration-500 ease-in-out hover:text-(--foreground) hover:underline hover:decoration-(--foreground) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 			class:hover:underline={render_as_link}
 		>
-			<AnnotatedTextProperty class="inline" path={[...path, 'label']} placeholder="Label" />
+			<TextProperty class="inline" path={[...path, 'label']} placeholder="Label" />
 		</svelte:element>
 	</div>
 </Node>

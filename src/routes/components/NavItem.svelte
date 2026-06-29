@@ -1,6 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
-	import { Node, AnnotatedTextProperty } from 'svedit';
+	import { Node, TextProperty } from 'svedit';
 	const svedit = getContext('svedit');
 
 	let { path } = $props();
@@ -14,12 +14,9 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="min-w-max nav-item-link block py-2 mx-2 sm:mx-3 hover:underline underline-offset-2 decoration-transparent hover:decoration-(--foreground) hover:text-(--foreground) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+		class="nav-item-link mx-2 block min-w-max py-2 decoration-transparent underline-offset-2 outline-1 outline-transparent hover:text-(--foreground) hover:underline hover:decoration-(--foreground) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) sm:mx-3"
 	>
-		<AnnotatedTextProperty
-			path={[...path, 'label']}
-			placeholder="Label"
-		/>
+		<TextProperty path={[...path, 'label']} placeholder="Label" />
 	</svelte:element>
 {/snippet}
 
@@ -28,14 +25,10 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="block py-2 bg-(--accent) text-(--accent-foreground) rounded-(--button-border-radius) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+		class="block rounded-(--button-border-radius) bg-(--accent) py-2 text-(--accent-foreground) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 		class:hover:opacity-80={render_as_link}
 	>
-		<AnnotatedTextProperty
-			class="px-2 sm:px-3.5"
-			path={[...path, 'label']}
-			placeholder="Label"
-		/>
+		<TextProperty class="px-2 sm:px-3.5" path={[...path, 'label']} placeholder="Label" />
 	</svelte:element>
 {/snippet}
 
@@ -44,13 +37,11 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="block py-2 outline-1 outline-(--foreground)/15 text-(--foreground) rounded-(--button-border-radius) focus-visible:outline-(--svedit-editing-stroke) {render_as_link ? 'hover:bg-(--foreground)/5' : ''}"
+		class="block rounded-(--button-border-radius) py-2 text-(--foreground) outline-1 outline-(--foreground)/15 focus-visible:outline-(--svedit-editing-stroke) {render_as_link
+			? 'hover:bg-(--foreground)/5'
+			: ''}"
 	>
-		<AnnotatedTextProperty
-			class="px-2 sm:px-3.5"
-			path={[...path, 'label']}
-			placeholder="Label"
-		/>
+		<TextProperty class="px-2 sm:px-3.5" path={[...path, 'label']} placeholder="Label" />
 	</svelte:element>
 {/snippet}
 

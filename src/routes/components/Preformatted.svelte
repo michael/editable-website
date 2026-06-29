@@ -1,5 +1,5 @@
 <script>
-	import { Node, AnnotatedTextProperty } from 'svedit';
+	import { Node, TextProperty } from 'svedit';
 	import { TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 	let { path, node_array_annotation: section = null } = $props();
 	let padding_top_wide = $derived(!section || section?.is_start);
@@ -19,7 +19,7 @@
 				class="border border-(--foreground)/7 bg-(--foreground)/5 p-3 font-mono text-sm subpixel-antialiased lg:p-6"
 				style:border-radius="var(--image-border-radius)"
 			>
-				<AnnotatedTextProperty
+				<TextProperty
 					tag="pre"
 					class="overflow-x-auto! wrap-normal! whitespace-pre! tab-2"
 					path={[...path, 'content']}

@@ -1,6 +1,6 @@
 <script>
 	import { getContext } from 'svelte';
-	import { Node, AnnotatedTextProperty } from 'svedit';
+	import { Node, TextProperty } from 'svedit';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 	import MediaProperty from './MediaProperty.svelte';
 
@@ -29,7 +29,7 @@
 			>
 				<MediaProperty path={[...path, 'media']} />
 			</div>
-			<AnnotatedTextProperty
+			<TextProperty
 				tag="figcaption"
 				class="mt-4 text-sm leading-6 sm:text-base"
 				path={[...path, 'caption']}

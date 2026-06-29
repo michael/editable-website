@@ -160,8 +160,8 @@
 		if (sel.type === 'text') {
 			const active_annotation = svedit.session.active_annotation('link');
 			if (active_annotation) {
-				const annotated_text = svedit.session.get(sel.path);
-				const annotation_index = annotated_text.annotations.indexOf(active_annotation);
+				const text = svedit.session.get(sel.path);
+				const annotation_index = text.annotations.indexOf(active_annotation);
 				const link_node = svedit.session.get(active_annotation.node_id);
 				const path = [...sel.path, 'annotations', annotation_index, 'node_id'];
 				return { node: link_node, path };
