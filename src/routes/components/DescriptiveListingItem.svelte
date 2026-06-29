@@ -7,7 +7,7 @@
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
 	let render_as_link = $derived(!svedit.editable && node.href);
-	let display_meta = $derived(svedit.editable || !!node.meta?.text?.trim());
+	let display_meta = $derived(svedit.editable || !!node.meta?.content?.trim());
 </script>
 
 <Node
