@@ -26,7 +26,7 @@ const FULL_DOC = {
 			type: 'heading_2',
 			layout: 1,
 			content: {
-				text: 'Making websites should be fun',
+				content: 'Making websites should be fun',
 				annotations: []
 			}
 		},
@@ -35,7 +35,7 @@ const FULL_DOC = {
 			type: 'paragraph_lg',
 			layout: 2,
 			content: {
-				text: 'Editable brings live, on-page editing to Svelte.',
+				content: 'Editable brings live, on-page editing to Svelte.',
 				annotations: []
 			}
 		},
@@ -46,7 +46,7 @@ const FULL_DOC = {
 			href: 'https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform',
 			target: '_blank',
 			label: {
-				text: 'Join Early Access →',
+				content: 'Join Early Access →',
 				annotations: []
 			}
 		},
@@ -86,7 +86,7 @@ const FULL_DOC = {
 			type: 'heading_3',
 			layout: 1,
 			content: {
-				text: 'Start editing',
+				content: 'Start editing',
 				annotations: []
 			}
 		},
@@ -129,7 +129,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'Press ⌘ / Ctrl + e to enter edit mode. Click where you want to edit. Move around with the arrow keys. Change anything you see! Bold, italics and links with ⌘ / Ctrl + b, i and k. Undo with ⌘ / Ctrl + z. Save changes with ⌘ / Ctrl + s.',
+				content:
+					'Press ⌘ / Ctrl + e to enter edit mode. Click where you want to edit. Move around with the arrow keys. Change anything you see! Bold, italics and links with ⌘ / Ctrl + b, i and k. Undo with ⌘ / Ctrl + z. Save changes with ⌘ / Ctrl + s.',
 				annotations: [
 					{
 						start_offset: 156,
@@ -183,7 +184,8 @@ const FULL_DOC = {
 			type: 'paragraph_sm',
 			layout: 2,
 			content: {
-				text: 'On this example page, changes are not persisted. On a real site, a logged in user would have their changes persisted to a database.',
+				content:
+					'On this example page, changes are not persisted. On a real site, a logged in user would have their changes persisted to a database.',
 				annotations: [
 					{
 						start_offset: 0,
@@ -209,7 +211,7 @@ const FULL_DOC = {
 			type: 'heading_3',
 			layout: 1,
 			content: {
-				text: 'Build with blocks',
+				content: 'Build with blocks',
 				annotations: []
 			}
 		},
@@ -234,7 +236,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'In edit mode the dashed gaps let you add blocks. Select the dashed gap below this paragraph to see a flashing purple cursor. Press Enter to add a block. Change text styles (paragraph > heading etc) with Ctrl + Shift + Right.',
+				content:
+					'In edit mode the dashed gaps let you add blocks. Select the dashed gap below this paragraph to see a flashing purple cursor. Press Enter to add a block. Change text styles (paragraph > heading etc) with Ctrl + Shift + Right.',
 				annotations: [
 					{
 						start_offset: 17,
@@ -280,7 +283,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'Select one of the full width dashed gap to see a flashing purple cursor. Press Enter to create a new top-level block. Ctrl + Shift + Down cycles through block types. Again Ctrl + Shift + Right lets you flip through available layouts.',
+				content:
+					'Select one of the full width dashed gap to see a flashing purple cursor. Press Enter to create a new top-level block. Ctrl + Shift + Down cycles through block types. Again Ctrl + Shift + Right lets you flip through available layouts.',
 				annotations: [
 					{
 						start_offset: 18,
@@ -314,7 +318,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'To move blocks, drag from a dashed gap to select multiple, then cut and paste like usual.',
+				content:
+					'To move blocks, drag from a dashed gap to select multiple, then cut and paste like usual.',
 				annotations: [
 					{
 						start_offset: 16,
@@ -337,7 +342,8 @@ const FULL_DOC = {
 			type: 'paragraph_sm',
 			layout: 2,
 			content: {
-				text: 'Pro tip: Press Esc to select the parent block. Useful when editing text but wanting to change the parent layout.',
+				content:
+					'Pro tip: Press Esc to select the parent block. Useful when editing text but wanting to change the parent layout.',
 				annotations: [
 					{
 						start_offset: 0,
@@ -373,7 +379,7 @@ const FULL_DOC = {
 			type: 'heading_3',
 			layout: 1,
 			content: {
-				text: 'Add images and videos',
+				content: 'Add images and videos',
 				annotations: []
 			}
 		},
@@ -382,7 +388,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'Open a folder on your computer that has some images. Select one and copy it to the clipboard. Select the placeholder below and paste it. To replace an image, select it first, then paste the new one on top.',
+				content:
+					'Open a folder on your computer that has some images. Select one and copy it to the clipboard. Select the placeholder below and paste it. To replace an image, select it first, then paste the new one on top.',
 				annotations: []
 			}
 		},
@@ -479,7 +486,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'You can even paste several images at once. Select three or four from your computer and copy to the clipboard. Now select a vertical dashed area before or after an image above. Paste and all the images will be added in one go.',
+				content:
+					'You can even paste several images at once. Select three or four from your computer and copy to the clipboard. Now select a vertical dashed area before or after an image above. Paste and all the images will be added in one go.',
 				annotations: [
 					{
 						start_offset: 123,
@@ -523,7 +531,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: "When you add images in the text flow, like the one above, you'll be able to change its size using the handles at the edges of the image.",
+				content:
+					"When you add images in the text flow, like the one above, you'll be able to change its size using the handles at the edges of the image.",
 				annotations: [
 					{
 						start_offset: 102,
@@ -570,7 +579,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'You can even paste short video clips onto any media placeholder. Currently .mp4 , .webm, and of course .gif are supported.',
+				content:
+					'You can even paste short video clips onto any media placeholder. Currently .mp4 , .webm, and of course .gif are supported.',
 				annotations: [
 					{
 						start_offset: 75,
@@ -611,7 +621,7 @@ const FULL_DOC = {
 			type: 'heading_3',
 			layout: 1,
 			content: {
-				text: 'Link to other pages',
+				content: 'Link to other pages',
 				annotations: []
 			}
 		},
@@ -620,7 +630,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'Click on one of the cards below. A link preview appears at the bottom. Click “EDIT” or press ⌘ / Ctrl + k to bring up the link editor.',
+				content:
+					'Click on one of the cards below. A link preview appears at the bottom. Click “EDIT” or press ⌘ / Ctrl + k to bring up the link editor.',
 				annotations: []
 			}
 		},
@@ -654,11 +665,11 @@ const FULL_DOC = {
 			target: '_blank',
 			media: 'nprCMwYvJvUEmRaHBsxfgUd',
 			title: {
-				text: 'Glücksmaurer',
+				content: 'Glücksmaurer',
 				annotations: []
 			},
 			description: {
-				text: 'Innovative real estate agent in Worms, Germany.',
+				content: 'Innovative real estate agent in Worms, Germany.',
 				annotations: []
 			}
 		},
@@ -682,11 +693,11 @@ const FULL_DOC = {
 			target: '_blank',
 			media: 'descriptive_gallery_item_2_image',
 			title: {
-				text: 'Colbourns',
+				content: 'Colbourns',
 				annotations: []
 			},
 			description: {
-				text: 'London-based designer of premium-quality, elegant rugs.',
+				content: 'London-based designer of premium-quality, elegant rugs.',
 				annotations: []
 			}
 		},
@@ -710,11 +721,11 @@ const FULL_DOC = {
 			target: '_blank',
 			media: 'ReRqxYxMdAUVaMuudfJhzsS',
 			title: {
-				text: 'Visionaries Tomorrow',
+				content: 'Visionaries Tomorrow',
 				annotations: []
 			},
 			description: {
-				text: 'An early-stage industrial deep tech fund.',
+				content: 'An early-stage industrial deep tech fund.',
 				annotations: []
 			}
 		},
@@ -738,7 +749,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'The cards above are links to examples of live in-place editable websites Johannes Mutter and I have already launched using this technology. You can see that any design is possible — it’s just HTML and CSS.',
+				content:
+					'The cards above are links to examples of live in-place editable websites Johannes Mutter and I have already launched using this technology. You can see that any design is possible — it’s just HTML and CSS.',
 				annotations: [
 					{
 						start_offset: 73,
@@ -763,7 +775,7 @@ const FULL_DOC = {
 			type: 'heading_3',
 			layout: 1,
 			content: {
-				text: 'How does this work?',
+				content: 'How does this work?',
 				annotations: []
 			}
 		},
@@ -796,7 +808,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'This site is powered by Svelte and Svedit — an open source rich text editor I’ve created. Editable Website builds on SvelteKit and SQLite to enable full websites with multiple pages and a persistent backend where only an admin can make changes.',
+				content:
+					'This site is powered by Svelte and Svedit — an open source rich text editor I’ve created. Editable Website builds on SvelteKit and SQLite to enable full websites with multiple pages and a persistent backend where only an admin can make changes.',
 				annotations: [
 					{
 						start_offset: 117,
@@ -826,7 +839,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'The source code is not only available for this site, but for all the foundations it is built on:',
+				content:
+					'The source code is not only available for this site, but for all the foundations it is built on:',
 				annotations: []
 			}
 		},
@@ -846,15 +860,15 @@ const FULL_DOC = {
 			href: 'https://github.com/michael/editable-website',
 			target: '_blank',
 			title: {
-				text: 'Editable',
+				content: 'Editable',
 				annotations: []
 			},
 			description: {
-				text: 'CMS-free editable websites with Svelte ★1.7k+',
+				content: 'CMS-free editable websites with Svelte ★1.7k+',
 				annotations: []
 			},
 			meta: {
-				text: 'Source available',
+				content: 'Source available',
 				annotations: []
 			}
 		},
@@ -864,15 +878,15 @@ const FULL_DOC = {
 			href: 'https://github.com/michael/svedit',
 			target: '_blank',
 			title: {
-				text: 'Svedit',
+				content: 'Svedit',
 				annotations: []
 			},
 			description: {
-				text: 'A tiny library for building editable websites in Svelte ★600+',
+				content: 'A tiny library for building editable websites in Svelte ★600+',
 				annotations: []
 			},
 			meta: {
-				text: 'MIT licensed',
+				content: 'MIT licensed',
 				annotations: []
 			}
 		},
@@ -882,15 +896,15 @@ const FULL_DOC = {
 			href: 'https://github.com/sveltejs/svelte',
 			target: '_blank',
 			title: {
-				text: 'Svelte',
+				content: 'Svelte',
 				annotations: []
 			},
 			description: {
-				text: 'Web development for the rest of us ★86.7k+',
+				content: 'Web development for the rest of us ★86.7k+',
 				annotations: []
 			},
 			meta: {
-				text: 'MIT licensed',
+				content: 'MIT licensed',
 				annotations: []
 			}
 		},
@@ -908,7 +922,7 @@ const FULL_DOC = {
 			type: 'heading_3',
 			layout: 1,
 			content: {
-				text: 'Early Access Pricing',
+				content: 'Early Access Pricing',
 				annotations: []
 			}
 		},
@@ -916,7 +930,7 @@ const FULL_DOC = {
 			id: 'nHaWhmFqqDCzKjYfAYWzeAs',
 			type: 'list_item',
 			content: {
-				text: 'Includes all code and the right to modify it',
+				content: 'Includes all code and the right to modify it',
 				annotations: []
 			}
 		},
@@ -924,7 +938,7 @@ const FULL_DOC = {
 			id: 'gfzZchrRysGcDEeXxAscCzg',
 			type: 'list_item',
 			content: {
-				text: 'No subscription',
+				content: 'No subscription',
 				annotations: []
 			}
 		},
@@ -932,7 +946,7 @@ const FULL_DOC = {
 			id: 'hhauqXDVvpScWyhmrsmvrqe',
 			type: 'list_item',
 			content: {
-				text: 'No hidden costs',
+				content: 'No hidden costs',
 				annotations: []
 			}
 		},
@@ -960,7 +974,7 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 2,
 			content: {
-				text: 'PRE-LAUNCH',
+				content: 'PRE-LAUNCH',
 				annotations: []
 			}
 		},
@@ -969,7 +983,7 @@ const FULL_DOC = {
 			type: 'heading_3',
 			layout: 1,
 			content: {
-				text: 'Free',
+				content: 'Free',
 				annotations: []
 			}
 		},
@@ -978,7 +992,7 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 2,
 			content: {
-				text: 'Install Editable and start developing.',
+				content: 'Install Editable and start developing.',
 				annotations: []
 			}
 		},
@@ -987,7 +1001,7 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'Setup a website in minutes. Spend the next hour customizing it.',
+				content: 'Setup a website in minutes. Spend the next hour customizing it.',
 				annotations: []
 			}
 		},
@@ -998,7 +1012,7 @@ const FULL_DOC = {
 			href: 'https://github.com/michael/editable-website#getting-started',
 			target: '_blank',
 			label: {
-				text: 'Download and Install ⤓',
+				content: 'Download and Install ⤓',
 				annotations: []
 			}
 		},
@@ -1030,7 +1044,7 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 2,
 			content: {
-				text: 'PERSONAL',
+				content: 'PERSONAL',
 				annotations: []
 			}
 		},
@@ -1039,7 +1053,7 @@ const FULL_DOC = {
 			type: 'heading_3',
 			layout: 1,
 			content: {
-				text: '€99',
+				content: '€99',
 				annotations: []
 			}
 		},
@@ -1048,7 +1062,7 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 2,
 			content: {
-				text: 'Once. Per domain. When you launch.',
+				content: 'Once. Per domain. When you launch.',
 				annotations: []
 			}
 		},
@@ -1057,7 +1071,7 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'For personal use or businesses with less than 150,000 EUR in annual revenue.',
+				content: 'For personal use or businesses with less than 150,000 EUR in annual revenue.',
 				annotations: []
 			}
 		},
@@ -1068,7 +1082,7 @@ const FULL_DOC = {
 			href: '#zBXuGXXYWMGbSdteMyNFhja',
 			target: '_self',
 			label: {
-				text: 'Purchase →',
+				content: 'Purchase →',
 				annotations: []
 			}
 		},
@@ -1085,7 +1099,7 @@ const FULL_DOC = {
 			type: 'paragraph_sm',
 			layout: 2,
 			content: {
-				text: '* Early Access only',
+				content: '* Early Access only',
 				annotations: []
 			}
 		},
@@ -1110,7 +1124,7 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 2,
 			content: {
-				text: 'COMMERCIAL',
+				content: 'COMMERCIAL',
 				annotations: []
 			}
 		},
@@ -1119,7 +1133,7 @@ const FULL_DOC = {
 			type: 'heading_3',
 			layout: 1,
 			content: {
-				text: '€299',
+				content: '€299',
 				annotations: []
 			}
 		},
@@ -1128,7 +1142,7 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 2,
 			content: {
-				text: 'Once. Per domain. When you launch.',
+				content: 'Once. Per domain. When you launch.',
 				annotations: []
 			}
 		},
@@ -1137,7 +1151,7 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'For professional use or businesses with more than 150,000 EUR in annual revenue.',
+				content: 'For professional use or businesses with more than 150,000 EUR in annual revenue.',
 				annotations: []
 			}
 		},
@@ -1148,7 +1162,7 @@ const FULL_DOC = {
 			href: '#zBXuGXXYWMGbSdteMyNFhja',
 			target: '_self',
 			label: {
-				text: 'Purchase →',
+				content: 'Purchase →',
 				annotations: []
 			}
 		},
@@ -1165,7 +1179,7 @@ const FULL_DOC = {
 			type: 'paragraph_sm',
 			layout: 2,
 			content: {
-				text: '* Early Access only',
+				content: '* Early Access only',
 				annotations: []
 			}
 		},
@@ -1199,7 +1213,7 @@ const FULL_DOC = {
 			type: 'heading_3',
 			layout: 1,
 			content: {
-				text: 'Frequently Asked Questions',
+				content: 'Frequently Asked Questions',
 				annotations: []
 			}
 		},
@@ -1218,7 +1232,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'The editing infrastructure (Svedit) becomes an integral part of your website (at runtime). As a developer, all you do is define content types (e.g. Figure) and implement components (e.g. Figure.svelte) — they are editable by default.',
+				content:
+					'The editing infrastructure (Svedit) becomes an integral part of your website (at runtime). As a developer, all you do is define content types (e.g. Figure) and implement components (e.g. Figure.svelte) — they are editable by default.',
 				annotations: []
 			}
 		},
@@ -1226,7 +1241,7 @@ const FULL_DOC = {
 			id: 'DerFSxwnBjUZXfsePjKbYPd',
 			type: 'accordion_item',
 			title: {
-				text: 'How is this different to using a CMS?',
+				content: 'How is this different to using a CMS?',
 				annotations: []
 			},
 			body: {
@@ -1239,7 +1254,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'There is experimental support for mobile editing — it works in principle. The current focus is on desktop UX, but mobile editing will improve over time.',
+				content:
+					'There is experimental support for mobile editing — it works in principle. The current focus is on desktop UX, but mobile editing will improve over time.',
 				annotations: []
 			}
 		},
@@ -1247,7 +1263,7 @@ const FULL_DOC = {
 			id: 'BfXmkWHjhSWZGMaKGxhSAXu',
 			type: 'accordion_item',
 			title: {
-				text: 'Is mobile editing supported?',
+				content: 'Is mobile editing supported?',
 				annotations: []
 			},
 			body: {
@@ -1260,7 +1276,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: "All content lives in a single data/ directory — an SQLite database (db.sqlite3) and uploaded assets (assets/). Locally this defaults to ./data. On Fly.io it's a persistent volume at /data. To back up your site, copy this directory.",
+				content:
+					"All content lives in a single data/ directory — an SQLite database (db.sqlite3) and uploaded assets (assets/). Locally this defaults to ./data. On Fly.io it's a persistent volume at /data. To back up your site, copy this directory.",
 				annotations: []
 			}
 		},
@@ -1268,7 +1285,7 @@ const FULL_DOC = {
 			id: 'rmMwFFdvFZzxzdsaQtZvdKH',
 			type: 'accordion_item',
 			title: {
-				text: 'Where is the data stored?',
+				content: 'Where is the data stored?',
 				annotations: []
 			},
 			body: {
@@ -1281,7 +1298,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'Editable Website is a foundational, AI-agnostic tool. That said, it makes perfect sense to utilize AI workflows to help building your custom site. Think prompts like "Create a paragraph block type with layout variants" and "Implement Paragraph.svelte with 2 layout modes".',
+				content:
+					'Editable Website is a foundational, AI-agnostic tool. That said, it makes perfect sense to utilize AI workflows to help building your custom site. Think prompts like "Create a paragraph block type with layout variants" and "Implement Paragraph.svelte with 2 layout modes".',
 				annotations: []
 			}
 		},
@@ -1289,7 +1307,7 @@ const FULL_DOC = {
 			id: 'EjhqKzYMTknJuyFwbhJzyCA',
 			type: 'accordion_item',
 			title: {
-				text: 'How about AI?',
+				content: 'How about AI?',
 				annotations: []
 			},
 			body: {
@@ -1302,7 +1320,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: "Editable Website is modular and you can and should reuse code across projects. However, I purposely don't want to establish a community maintained plugin repository. I want to encourage you to own all your code, for the benefit of simplicity, safety, and control. Share code snippets, not plugins.",
+				content:
+					"Editable Website is modular and you can and should reuse code across projects. However, I purposely don't want to establish a community maintained plugin repository. I want to encourage you to own all your code, for the benefit of simplicity, safety, and control. Share code snippets, not plugins.",
 				annotations: []
 			}
 		},
@@ -1310,7 +1329,7 @@ const FULL_DOC = {
 			id: 'PeFCTQcmaYpxvjGMrfvgGeW',
 			type: 'accordion_item',
 			title: {
-				text: 'Plugins?',
+				content: 'Plugins?',
 				annotations: []
 			},
 			body: {
@@ -1323,7 +1342,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'Editable Website runs on any VPS. All you need is Node.js and SQLite. The repository includes a Dockerfile and fly.toml for one-command deployment to Fly.io — see Deploying to Fly.io above. The same Dockerfile works with any platform that supports Docker.',
+				content:
+					'Editable Website runs on any VPS. All you need is Node.js and SQLite. The repository includes a Dockerfile and fly.toml for one-command deployment to Fly.io — see Deploying to Fly.io above. The same Dockerfile works with any platform that supports Docker.',
 				annotations: []
 			}
 		},
@@ -1331,7 +1351,7 @@ const FULL_DOC = {
 			id: 'tTTVGQvjNrfJsKHXSWaSDeE',
 			type: 'accordion_item',
 			title: {
-				text: 'Hosting?',
+				content: 'Hosting?',
 				annotations: []
 			},
 			body: {
@@ -1344,7 +1364,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: "There's no point for static builds with Editable Website. The whole idea is that users edit content live, without having to wait for a rebuild to finish. SQLite is fast. Very fast. Web-optimized images are generated client-side before upload: resizing happens in the browser via canvas and toBlob(), and WebP encoding is done with @jsquash/webp. It still makes sense to enable a proxy for images, so they can be delivered from a CDN.",
+				content:
+					"There's no point for static builds with Editable Website. The whole idea is that users edit content live, without having to wait for a rebuild to finish. SQLite is fast. Very fast. Web-optimized images are generated client-side before upload: resizing happens in the browser via canvas and toBlob(), and WebP encoding is done with @jsquash/webp. It still makes sense to enable a proxy for images, so they can be delivered from a CDN.",
 				annotations: []
 			}
 		},
@@ -1352,7 +1373,7 @@ const FULL_DOC = {
 			id: 'gftTVYqqYFbsTAkfMJKbhzH',
 			type: 'accordion_item',
 			title: {
-				text: 'Static builds?',
+				content: 'Static builds?',
 				annotations: []
 			},
 			body: {
@@ -1365,7 +1386,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: "Editable Website will at least be source-available. There will likely be an affordable one-time registration fee (per domain) for personal use, and a fair fee for commercial projects. I'm still working on the details. If you’re open to discussion, join the technical preview.",
+				content:
+					"Editable Website will at least be source-available. There will likely be an affordable one-time registration fee (per domain) for personal use, and a fair fee for commercial projects. I'm still working on the details. If you’re open to discussion, join the technical preview.",
 				annotations: []
 			}
 		},
@@ -1373,7 +1395,7 @@ const FULL_DOC = {
 			id: 'gYpxwQwkQNNWWvYbTWBrAfx',
 			type: 'accordion_item',
 			title: {
-				text: 'License?',
+				content: 'License?',
 				annotations: []
 			},
 			body: {
@@ -1417,7 +1439,7 @@ const FULL_DOC = {
 			type: 'heading_3',
 			layout: 1,
 			content: {
-				text: 'Hello, I’m Michael',
+				content: 'Hello, I’m Michael',
 				annotations: []
 			}
 		},
@@ -1432,7 +1454,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'Since 2011 I’ve been taming web browsers to behave correctly and predictably when editing rich text.',
+				content:
+					'Since 2011 I’ve been taming web browsers to behave correctly and predictably when editing rich text.',
 				annotations: [
 					{
 						start_offset: 21,
@@ -1447,7 +1470,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'I want you to be able to launch websites that anyone can edit. No more calls asking you to update someone’s WordPress site! They’ll be able to do it themselves.',
+				content:
+					'I want you to be able to launch websites that anyone can edit. No more calls asking you to update someone’s WordPress site! They’ll be able to do it themselves.',
 				annotations: []
 			}
 		},
@@ -1456,7 +1480,8 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'Most CMSs are too complex for clients and too restrictive for developers. Change every pixel of your site, create new content types, or integrate 3rd party data. Everything you can do with Svelte, you can do with Editable.',
+				content:
+					'Most CMSs are too complex for clients and too restrictive for developers. Change every pixel of your site, create new content types, or integrate 3rd party data. Everything you can do with Svelte, you can do with Editable.',
 				annotations: []
 			}
 		},
@@ -1481,7 +1506,7 @@ const FULL_DOC = {
 			type: 'heading_3',
 			layout: 1,
 			content: {
-				text: 'How can I get it?',
+				content: 'How can I get it?',
 				annotations: []
 			}
 		},
@@ -1490,7 +1515,7 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				text: 'Only Early Access members can purchase a license.',
+				content: 'Only Early Access members can purchase a license.',
 				annotations: []
 			}
 		},
@@ -1501,7 +1526,7 @@ const FULL_DOC = {
 			href: 'https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform?usp=dialog',
 			target: '_blank',
 			label: {
-				text: 'Join Early Access →',
+				content: 'Join Early Access →',
 				annotations: []
 			}
 		},
@@ -1564,7 +1589,8 @@ const FULL_DOC = {
 			type: 'paragraph_sm',
 			layout: 2,
 			content: {
-				text: 'Big thanks to Johannes Mutter for helping with concept, design, and engineering, Tom Atkins for support with positioning and copywriting, and Sonja Stojanovic for modelling and being the very first happy Editable Website user — followed by Trails, Postlmayr Design, Aufreiter Architektur, and many more.',
+				content:
+					'Big thanks to Johannes Mutter for helping with concept, design, and engineering, Tom Atkins for support with positioning and copywriting, and Sonja Stojanovic for modelling and being the very first happy Editable Website user — followed by Trails, Postlmayr Design, Aufreiter Architektur, and many more.',
 				annotations: [
 					{
 						start_offset: 14,
@@ -1656,7 +1682,7 @@ const FULL_DOC = {
 			href: '/#RtYpQwXsZvNmKjHgFdSaLe',
 			target: '_self',
 			label: {
-				text: 'Showcases',
+				content: 'Showcases',
 				annotations: []
 			}
 		},
@@ -1667,7 +1693,7 @@ const FULL_DOC = {
 			href: '#',
 			target: '_self',
 			label: {
-				text: 'Manual',
+				content: 'Manual',
 				annotations: []
 			}
 		},
@@ -1678,7 +1704,7 @@ const FULL_DOC = {
 			href: '#',
 			target: '_self',
 			label: {
-				text: 'Blog',
+				content: 'Blog',
 				annotations: []
 			}
 		},
@@ -1689,7 +1715,7 @@ const FULL_DOC = {
 			href: '/#XVJGXtwnQMvcrcuByAtcWNa',
 			target: '_self',
 			label: {
-				text: 'About',
+				content: 'About',
 				annotations: []
 			}
 		},
@@ -1700,7 +1726,7 @@ const FULL_DOC = {
 			href: 'https://github.com/michael/editable-website#getting-started',
 			target: '_blank',
 			label: {
-				text: 'Download  ⤓',
+				content: 'Download  ⤓',
 				annotations: []
 			}
 		},
@@ -1711,7 +1737,7 @@ const FULL_DOC = {
 			href: 'https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform',
 			target: '_blank',
 			label: {
-				text: 'Join Early Access →',
+				content: 'Join Early Access →',
 				annotations: []
 			}
 		},
@@ -1755,7 +1781,7 @@ const FULL_DOC = {
 			href: '/#RtYpQwXsZvNmKjHgFdSaLe',
 			target: '_self',
 			label: {
-				text: 'Editing',
+				content: 'Editing',
 				annotations: []
 			}
 		},
@@ -1765,7 +1791,7 @@ const FULL_DOC = {
 			href: '/#xKmNqPrStVwYzAbCdEfGh',
 			target: '_self',
 			label: {
-				text: 'Blocks',
+				content: 'Blocks',
 				annotations: []
 			}
 		},
@@ -1775,7 +1801,7 @@ const FULL_DOC = {
 			href: '/#BPdekRaDEUcQZqtEwPwBvyu',
 			target: '_self',
 			label: {
-				text: 'Media',
+				content: 'Media',
 				annotations: []
 			}
 		},
@@ -1785,7 +1811,7 @@ const FULL_DOC = {
 			href: '/#jLnPqRsTuVwXyZaBcDeFg',
 			target: '_self',
 			label: {
-				text: 'Examples',
+				content: 'Examples',
 				annotations: []
 			}
 		},
@@ -1802,7 +1828,7 @@ const FULL_DOC = {
 				annotations: []
 			},
 			label: {
-				text: 'On this page',
+				content: 'On this page',
 				annotations: []
 			}
 		},
@@ -1812,7 +1838,7 @@ const FULL_DOC = {
 			href: 'https://github.com/michael/editable-website',
 			target: '_blank',
 			label: {
-				text: 'Editable Website',
+				content: 'Editable Website',
 				annotations: []
 			}
 		},
@@ -1821,7 +1847,7 @@ const FULL_DOC = {
 			type: 'footer_link',
 			href: 'https://svedit.dev',
 			label: {
-				text: 'Svedit',
+				content: 'Svedit',
 				annotations: []
 			},
 			target: '_blank'
@@ -1830,7 +1856,7 @@ const FULL_DOC = {
 			id: 'footer_column_2',
 			type: 'footer_link_column',
 			label: {
-				text: 'GitHub',
+				content: 'GitHub',
 				annotations: []
 			},
 			footer_links: {
@@ -1843,7 +1869,7 @@ const FULL_DOC = {
 			type: 'footer_link',
 			href: 'https://www.youtube.com/watch?v=T2RMYj_1g9E',
 			label: {
-				text: 'Introduction',
+				content: 'Introduction',
 				annotations: []
 			},
 			target: '_blank'
@@ -1854,7 +1880,7 @@ const FULL_DOC = {
 			href: 'https://youtu.be/o4kcABS-XH4?t=3226',
 			target: '_blank',
 			label: {
-				text: 'Update 2025-10',
+				content: 'Update 2025-10',
 				annotations: []
 			}
 		},
@@ -1862,7 +1888,7 @@ const FULL_DOC = {
 			id: 'footer_column_3',
 			type: 'footer_link_column',
 			label: {
-				text: 'Videos',
+				content: 'Videos',
 				annotations: []
 			},
 			footer_links: {
@@ -1875,7 +1901,7 @@ const FULL_DOC = {
 			type: 'footer',
 			logo: 'footer_logo',
 			copyright: {
-				text: '© Editable 2026',
+				content: '© Editable 2026',
 				annotations: []
 			},
 			footer_link_columns: {
@@ -1889,11 +1915,12 @@ const FULL_DOC = {
 			id: 'page_1',
 			type: 'page',
 			title: {
-				text: 'Editable Website',
+				content: 'Editable Website',
 				annotations: []
 			},
 			description: {
-				text: 'SvelteKit template for building CMS-free editable websites. Site owners can edit content directly in the layout - no CMS needed.',
+				content:
+					'SvelteKit template for building CMS-free editable websites. Site owners can edit content directly in the layout - no CMS needed.',
 				annotations: []
 			},
 			image: 'vMaUqeqBAVSyPgDpnxWWPCK',

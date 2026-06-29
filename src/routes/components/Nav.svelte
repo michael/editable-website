@@ -58,46 +58,57 @@
 
 <Node {path}>
 	{#snippet menu_icon(open)}
-		<svg class="w-6 h-6 stroke-(--foreground)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+		<svg
+			class="h-6 w-6 stroke-(--foreground)"
+			fill="none"
+			stroke="currentColor"
+			viewBox="0 0 24 24"
+		>
 			{#if open}
-				<path stroke-linecap="square" stroke-linejoin="miter" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
+				<path
+					stroke-linecap="square"
+					stroke-linejoin="miter"
+					stroke-width="1.5"
+					d="M6 18L18 6M6 6l12 12"
+				/>
 			{:else}
-				<path stroke-linecap="square" stroke-linejoin="miter" stroke-width="1.5" d="M4 8h16M4 16h16" />
+				<path
+					stroke-linecap="square"
+					stroke-linejoin="miter"
+					stroke-width="1.5"
+					d="M4 8h16M4 16h16"
+				/>
 			{/if}
 		</svg>
 	{/snippet}
 
-
 	<!-- Desktop nav (visible also during mobile editing) -->
 	<div
-		class="{TW_LIMITER} overflow-x-auto overflow-y-hidden relative"
+		class="{TW_LIMITER} relative overflow-x-auto overflow-y-hidden"
 		class:max-lg:hidden={!svedit.editable}
 	>
-		<div class="flex items-center gap-16 py-5 px-5 sm:px-7 text-sm">
+		<div class="flex items-center gap-16 px-5 py-5 text-sm sm:px-7">
 			<NodeArrayProperty
 				tag="div"
-				class="flex flex-1 items-center *:min-w-max [--row:1]"
+				class="flex flex-1 items-center [--row:1] *:min-w-max"
 				path={[...path, 'start_nav_items']}
 			/>
 			<NodeArrayProperty
 				tag="nav"
-				class="flex items-center gap-8 w-max *:min-w-max [--row:1]"
+				class="flex w-max items-center gap-8 [--row:1] *:min-w-max"
 				path={[...path, 'center_nav_items']}
 			/>
 			<NodeArrayProperty
 				tag="div"
-				class="flex flex-1 items-center justify-end gap-3 *:min-w-max [--row:1]"
+				class="flex flex-1 items-center justify-end gap-3 [--row:1] *:min-w-max"
 				path={[...path, 'end_nav_items']}
 			/>
 		</div>
 	</div>
 
 	<!-- Mobile nav (visible also during mobile editing) -->
-	<div
-		class="{TW_LIMITER} lg:hidden"
-		class:hidden={svedit.editable}
-	>
-		<div class="flex items-center gap-16 py-2 px-5 sm:px-7 text-sm">
+	<div class="{TW_LIMITER} lg:hidden" class:hidden={svedit.editable}>
+		<div class="flex items-center gap-16 px-5 py-2 text-sm sm:px-7">
 			{#if mobile_nav_image_path}
 				<NavImage path={mobile_nav_image_path} />
 			{/if}
@@ -107,7 +118,7 @@
 					<NavItem path={mobile_nav_cta_path} />
 				{/if}
 				<button
-					class="cursor-pointer flex items-center justify-center py-3"
+					class="flex cursor-pointer items-center justify-center py-3"
 					onclick={() => (mobile_nav_open = !mobile_nav_open)}
 					aria-label="Toggle menu"
 					aria-expanded={mobile_nav_open}
@@ -120,29 +131,29 @@
 
 	{#if mobile_nav_open}
 		<div
-			class="lg:hidden fixed inset-0 bg-(--background)/80 backdrop-blur-sm z-50"
+			class="fixed inset-0 z-50 bg-(--background)/80 backdrop-blur-sm lg:hidden"
 			contenteditable="false"
 			transition:slide={{ duration: 200 }}
 		>
 			<button
-				class="cursor-pointer absolute top-0 right-0 px-5 sm:px-7 py-5"
+				class="absolute top-0 right-0 cursor-pointer px-5 py-5 sm:px-7"
 				onclick={() => (mobile_nav_open = false)}
 				aria-label="Close menu"
 			>
 				{@render menu_icon(true)}
 			</button>
 
-			<nav class="flex flex-col pt-16 pb-5 px-3">
+			<nav class="flex flex-col px-3 pt-16 pb-5">
 				{#each center_nav_item_ids as _node_id, index (index)}
 					{@const item = svedit.session.get([...path, 'center_nav_items', index])}
 					{#if item.type === 'nav_item'}
 						<a
 							href={item.href || '#'}
 							target={item.target}
-							class="text-3xl text-(--foreground) py-2 px-3 sm:px-5"
+							class="px-3 py-2 text-3xl text-(--foreground) sm:px-5"
 							onclick={() => (mobile_nav_open = false)}
 						>
-							{item.label?.text || ''}
+							{item.label?.content || ''}
 						</a>
 					{/if}
 				{/each}

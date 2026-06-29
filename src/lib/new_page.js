@@ -45,11 +45,11 @@ export function create_empty_doc(shared_documents) {
 				id: page_id,
 				type: 'page',
 				title: {
-					text: '',
+					content: '',
 					annotations: []
 				},
 				description: {
-					text: '',
+					content: '',
 					annotations: []
 				},
 				image: page_image_id,
@@ -73,7 +73,7 @@ export function create_empty_doc(shared_documents) {
 				id: heading_id,
 				type: 'heading_1',
 				content: {
-					text: '',
+					content: '',
 					annotations: []
 				}
 			},
@@ -81,7 +81,7 @@ export function create_empty_doc(shared_documents) {
 				id: paragraph_id,
 				type: 'paragraph',
 				content: {
-					text: '',
+					content: '',
 					annotations: []
 				}
 			}
