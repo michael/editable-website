@@ -158,11 +158,10 @@
 		}
 
 		if (sel.type === 'text') {
-			const active_annotation = svedit.session.active_annotation('link');
-			if (active_annotation) {
-				const text = svedit.session.get(sel.path);
-				const annotation_index = text.annotations.indexOf(active_annotation);
-				const link_node = svedit.session.get(active_annotation.node_id);
+			const active_annotation = svedit.session.active_annotation;
+			if (active_annotation?.node.type === 'link') {
+				const annotation_index = active_annotation.index;
+				const link_node = active_annotation.node;
 				const path = [...sel.path, 'annotations', annotation_index, 'node_id'];
 				return { node: link_node, path };
 			}

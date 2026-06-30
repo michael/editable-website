@@ -16,8 +16,8 @@
 		const selected_node = svedit.session.selected_node;
 		if (selected_node && 'href' in selected_node) return selected_node;
 
-		const active_link = svedit.session.active_annotation('link');
-		if (active_link) return svedit.session.get(active_link.node_id);
+		const active_link = svedit.session.active_annotation;
+		if (active_link?.node.type === 'link') return active_link.node;
 
 		return null;
 	}

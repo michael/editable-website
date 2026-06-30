@@ -220,23 +220,33 @@ export class ToggleLinkCommand extends Command {
 	}
 
 	is_active() {
-		return this.context.session.active_annotation('link');
+		const selected_annotations = this.context.session.selected_annotations;
+		return selected_annotations.length === 1 && selected_annotations[0].node.type === 'link';
 	}
 
 	is_enabled() {
 		const { session, editable } = this.context;
 
-		const can_remove_link = session.active_annotation('link');
+		if (!editable || session.selection?.type !== 'text') return false;
+
+		const selected_annotations = session.selected_annotations;
+		const can_remove_link =
+			selected_annotations.length === 1 && selected_annotations[0].node.type === 'link';
 		const can_create_link =
-			!session.active_annotation() && !is_selection_collapsed(session.selection);
-		return editable && session.selection?.type === 'text' && (can_remove_link || can_create_link);
+			selected_annotations.length === 0 && !is_selection_collapsed(session.selection);
+
+		return can_remove_link || can_create_link;
 	}
 
 	execute() {
-		const session = this.context.session;
-		const has_active_link = session.active_annotation('link');
+		if (!this.is_enabled()) return;
 
-		if (has_active_link) {
+		const session = this.context.session;
+		const selected_annotations = session.selected_annotations;
+		const has_selected_link =
+			selected_annotations.length === 1 && selected_annotations[0].node.type === 'link';
+
+		if (has_selected_link) {
 			// Delete link
 			session.apply(session.tr.toggle_annotation('link'));
 		} else {
@@ -295,8 +305,8 @@ export class EditLinkCommand extends Command {
 		if (selected_node && 'href' in selected_node) return true;
 
 		// Check for active link annotation (text link)
-		const active_link = session.active_annotation('link');
-		if (active_link) return true;
+		const active_link = session.active_annotation;
+		if (active_link?.node.type === 'link') return true;
 
 		return false;
 	}
@@ -305,7 +315,7 @@ export class EditLinkCommand extends Command {
 		if (this.is_enabled()) {
 			const { session } = this.context;
 			// Select the parent node if a property is selected (but not for annotation links)
-			const active_link = session.active_annotation('link');
+			const active_link = session.active_annotation?.node.type === 'link';
 			if (
 				!active_link &&
 				(session.selection?.type === 'text' || session.selection?.type === 'property')
