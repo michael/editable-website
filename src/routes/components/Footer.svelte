@@ -21,7 +21,7 @@
 <Node {path} class="text-sm text-(--foreground)">
 	<div class={TW_LIMITER}>
 		<div
-			class="flex flex-col items-start gap-10 py-10 text-left sm:gap-14 lg:flex-row lg:items-stretch lg:gap-7 lg:py-24 {TW_PAGE_PADDING_X}"
+			class="flex flex-col gap-10 pt-24 pb-10 text-left sm:gap-14 sm:pt-32 lg:flex-row items-stretch lg:gap-7 lg:py-24 {TW_PAGE_PADDING_X}"
 		>
 			<NodeArrayProperty
 				class="flex flex-col gap-5 [--row:0] sm:gap-7 lg:w-1/3"
