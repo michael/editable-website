@@ -77,17 +77,10 @@ export const document_schema = define_document_schema({
 	footer: {
 		kind: 'block',
 		properties: {
-			logo_max_width: { type: 'integer', default: 0 },
-			logo_aspect_ratio: { type: 'number', default: 0 },
-			logo: {
-				type: 'node',
-				node_types: ['image', 'video'],
-				default_node_type: 'image'
-			},
-			copyright: {
-				type: 'text',
-				annotation_types: [],
-				allow_newlines: true
+			content: {
+				type: 'node_array',
+				node_types: RICH_CONTENT_NODE_TYPES,
+				default_node_type: 'paragraph'
 			},
 			footer_link_columns: {
 				type: 'node_array',

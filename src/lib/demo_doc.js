@@ -1628,7 +1628,7 @@ const FULL_DOC = {
 		wmrbpSFAFUmMRPDumcjKqpF: {
 			id: 'wmrbpSFAFUmMRPDumcjKqpF',
 			type: 'prose',
-			layout: 4,
+			layout: 5,
 			colorset: 0,
 			content: {
 				nodes: ['vvqbUaMzgjJXvJGMzHFDnrE'],
@@ -1762,8 +1762,8 @@ const FULL_DOC = {
 				annotations: []
 			}
 		},
-		footer_logo: {
-			id: 'footer_logo',
+		ncqBPBKuDzbdCKqPdAUwszK: {
+			id: 'ncqBPBKuDzbdCKqPdAUwszK',
 			type: 'image',
 			src: 'logo.svg',
 			mime_type: 'image/svg+xml',
@@ -1774,6 +1774,22 @@ const FULL_DOC = {
 			focal_point_x: 0.5,
 			focal_point_y: 0.5,
 			object_fit: 'cover'
+		},
+		WkrTBHKFKjjCphujhzqZrup: {
+			id: 'WkrTBHKFKjjCphujhzqZrup',
+			type: 'supporting_media',
+			media: 'ncqBPBKuDzbdCKqPdAUwszK',
+			media_max_width: 64,
+			media_aspect_ratio: 1
+		},
+		footer_copyright: {
+			id: 'footer_copyright',
+			type: 'paragraph_sm',
+			layout: 2,
+			content: {
+				content: '© Ken Experiences GmbH 2026',
+				annotations: []
+			}
 		},
 		EtcfbabRCtPSvSpfFfjPeza: {
 			id: 'EtcfbabRCtPSvSpfFfjPeza',
@@ -1899,17 +1915,14 @@ const FULL_DOC = {
 		footer_1: {
 			id: 'footer_1',
 			type: 'footer',
-			logo: 'footer_logo',
-			copyright: {
-				content: '© Editable 2026',
+			content: {
+				nodes: ['WkrTBHKFKjjCphujhzqZrup', 'footer_copyright'],
 				annotations: []
 			},
 			footer_link_columns: {
 				nodes: ['fcSSWQUTYajjknPChgGsPZz', 'footer_column_2', 'footer_column_3'],
 				annotations: []
-			},
-			logo_max_width: 40,
-			logo_aspect_ratio: 1
+			}
 		},
 		page_1: {
 			id: 'page_1',
