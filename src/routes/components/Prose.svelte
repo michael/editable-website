@@ -25,10 +25,10 @@
 	`;
 </script>
 
-{#snippet content()}
+{#snippet body()}
 	<NodeArrayProperty
 		class="flex flex-col gap-5 sm:gap-7 {heading_spacing}"
-		path={[...path, 'content']}
+		path={[...path, 'body']}
 	/>
 {/snippet}
 
@@ -42,7 +42,7 @@
 			]}
 		>
 			<div class="{TW_PAGE_PADDING_X} max-w-4xl">
-				{@render content()}
+				{@render body()}
 			</div>
 		</div>
 	</div>
@@ -58,7 +58,7 @@
 			]}
 		>
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-4xl">
-				{@render content()}
+				{@render body()}
 			</div>
 		</div>
 	</div>
@@ -74,7 +74,7 @@
 			]}
 		>
 			<div class="{TW_PAGE_PADDING_X} ml-auto max-w-4xl">
-				{@render content()}
+				{@render body()}
 			</div>
 		</div>
 	</div>
@@ -90,7 +90,7 @@
 			]}
 		>
 			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-4xl text-center text-balance">
-				{@render content()}
+				{@render body()}
 			</div>
 		</div>
 	</div>
@@ -106,7 +106,7 @@
 			]}
 		>
 			<div class={TW_PAGE_PADDING_X}>
-				{@render content()}
+				{@render body()}
 			</div>
 		</div>
 	</div>
@@ -122,7 +122,7 @@
 			]}
 		>
 			<div class="{TW_PAGE_PADDING_X} text-center text-balance">
-				{@render content()}
+				{@render body()}
 			</div>
 		</div>
 	</div>

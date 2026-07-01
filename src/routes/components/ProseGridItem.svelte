@@ -15,7 +15,7 @@
 	setContext('prose', {
 		get is_centered() {
 			return layout === 2;
-		},
+		}
 	});
 
 	const heading_spacing = `
@@ -26,28 +26,30 @@
 	`;
 </script>
 
-{#snippet content()}
-	<NodeArrayProperty class="[--row:0] flex flex-col gap-5 sm:gap-7 {heading_spacing}" path={[...path, 'content']} />
+{#snippet body()}
+	<NodeArrayProperty
+		class="flex flex-col gap-5 [--row:0] sm:gap-7 {heading_spacing}"
+		path={[...path, 'body']}
+	/>
 {/snippet}
 
 <!-- Layout 1: Left-aligned -->
 {#snippet layout_1()}
 	<div class="py-10 sm:py-14 md:py-16 lg:py-28">
 		<div class="max-w-4xl">
-			{@render content()}
+			{@render body()}
 		</div>
 	</div>
 {/snippet}
 
-
 <!-- Layout 2: Centered -->
 {#snippet layout_2()}
 	<div
-		class="h-full py-10 px-8 border border-(--foreground)/7 bg-(--foreground)/5"
+		class="h-full border border-(--foreground)/7 bg-(--foreground)/5 px-8 py-10"
 		style:border-radius="var(--image-border-radius)"
 	>
 		<div class="text-center text-balance">
-			{@render content()}
+			{@render body()}
 		</div>
 	</div>
 {/snippet}

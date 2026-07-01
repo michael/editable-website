@@ -63,7 +63,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 6,
 			colorset: 0,
-			content: {
+			body: {
 				nodes: ['TSRjJkcjxCEVZUVMwWBPJJT', 'TrHvNdkJMcGrescwAXFcYfV', 'tgzmEzyQGVDSHZVYnvuFWRp'],
 				annotations: []
 			}
@@ -363,7 +363,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: {
+			body: {
 				nodes: [
 					'zrUZReSCBXBtyTpWEnCqfus',
 					'GqVyqhnraWTBPCpCrAxmPwG',
@@ -398,7 +398,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: {
+			body: {
 				nodes: ['ttqZrWgKByzNJpAZWDjCdkt', 'HjCnaGHNswXGNmDReQhNPjy'],
 				annotations: []
 			}
@@ -605,7 +605,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: {
+			body: {
 				nodes: [
 					'pFjJFVqzQzwUQzBhPQAqkuZ',
 					'jkPsBvJwtqCCjUDuByzxAHs',
@@ -640,7 +640,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: {
+			body: {
 				nodes: ['FWAepzcFxQBWdFUpKazbgSJ', 'FUgwpAMYUEeuvRMvbvJqXEy'],
 				annotations: []
 			}
@@ -765,7 +765,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: {
+			body: {
 				nodes: ['KUAHxAZZcZTtjmHHBfbrbfs'],
 				annotations: []
 			}
@@ -849,7 +849,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: {
+			body: {
 				nodes: ['awxJbWfytmnufqPsJCPxPnR', 'fMgsDXKARPqeRZGCmYKuvqj', 'HgJRTPUBDfGQFhEDmwcNQNW'],
 				annotations: []
 			}
@@ -964,7 +964,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: {
+			body: {
 				nodes: ['KsFYXQPtmceJKGbEkmHqXTy', 'eJjQwDAYHqfcegtbNPTtQSJ'],
 				annotations: []
 			}
@@ -1028,7 +1028,7 @@ const FULL_DOC = {
 			id: 'prose_grid_free',
 			type: 'prose_grid_item',
 			colorset: 0,
-			content: {
+			body: {
 				nodes: [
 					'AJZwMjfQPTRnyPCSjNzhbta',
 					'pnyZxASHjrYVDxxYJpwpaUd',
@@ -1107,7 +1107,7 @@ const FULL_DOC = {
 			id: 'prose_grid_supergrok',
 			type: 'prose_grid_item',
 			colorset: 0,
-			content: {
+			body: {
 				nodes: [
 					'bFTuteKYWEYEJsesbaZQqMW',
 					'VZTbMkwXXkstnDCNDdKnEVc',
@@ -1187,7 +1187,7 @@ const FULL_DOC = {
 			id: 'prose_grid_expert',
 			type: 'prose_grid_item',
 			colorset: 0,
-			content: {
+			body: {
 				nodes: [
 					'BEXmuGVzZJGECjrTPcSAmtF',
 					'vCyXCUGQbCqDSeWhQrgxUfP',
@@ -1222,7 +1222,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 1,
 			colorset: 0,
-			content: {
+			body: {
 				nodes: ['TYcAwBxbMfUnUnQFHbcnjjK'],
 				annotations: []
 			}
@@ -1543,7 +1543,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 4,
 			colorset: 0,
-			content: {
+			body: {
 				nodes: ['VZSAXNdpyXTfwJzbQhEDdZe', 'ZntpMyjvcVjpjFDQxZnvSYR', 'fxbPhZADdeyCbysuCSwHNcA'],
 				annotations: []
 			}
@@ -1630,7 +1630,7 @@ const FULL_DOC = {
 			type: 'prose',
 			layout: 5,
 			colorset: 0,
-			content: {
+			body: {
 				nodes: ['vvqbUaMzgjJXvJGMzHFDnrE'],
 				annotations: []
 			}
@@ -1924,7 +1924,7 @@ const FULL_DOC = {
 		footer_1: {
 			id: 'footer_1',
 			type: 'footer',
-			content: {
+			body: {
 				nodes: ['WkrTBHKFKjjCphujhzqZrup', 'footer_copyright'],
 				annotations: []
 			},
