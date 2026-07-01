@@ -1,7 +1,7 @@
 import { define_document_schema } from 'svedit';
 import { MEDIA_DEFAULTS } from '$lib/config.js';
 
-const ALL_ANNOTATIONS = ['strong', 'emphasis', 'highlight', 'link'];
+const ALL_ANNOTATIONS = ['strong', 'emphasis', 'code', 'highlight', 'link'];
 const MINIMAL_ANNOTATIONS = ['emphasis', 'highlight'];
 const NO_ANNOTATIONS = [];
 const TEXT_NODE_TYPES = [
@@ -576,6 +576,10 @@ export const document_schema = define_document_schema({
 		properties: {}
 	},
 	emphasis: {
+		kind: 'annotation',
+		properties: {}
+	},
+	code: {
 		kind: 'annotation',
 		properties: {}
 	},

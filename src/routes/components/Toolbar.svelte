@@ -16,9 +16,7 @@
 	let can_logout = $derived(app.has_backend && app.is_admin && !editable);
 
 	let selected_property = $derived(
-		session.selection?.type === 'property'
-			? session.get(session.selection.path)
-			: null
+		session.selection?.type === 'property' ? session.get(session.selection.path) : null
 	);
 	let is_media_selected = $derived(
 		selected_property?.type === 'image' || selected_property?.type === 'video'
@@ -52,7 +50,8 @@
 		session.commands.cycle_layout_next &&
 			!session.commands.cycle_layout_next.disabled &&
 			// cycle_layout and cycle_type need to reference the same node
-			cycle_node_state?.node === session.commands.cycle_layout_next.closest_switchable_layout.node &&
+			cycle_node_state?.node ===
+				session.commands.cycle_layout_next.closest_switchable_layout.node &&
 			is_node_subtree_empty(session, cycle_node_state.node)
 	);
 
@@ -106,9 +105,12 @@
 	// On mobile also pin to left edge so the toolbar can scroll horizontally
 	const TW_TOOLBAR_LEFT = 'left-5 sm:left-7 md:left-auto';
 
-	const TW_TOOLBAR_BTN = 'flex items-center justify-center size-9 rounded-full text-(--foreground) bg-(--background) border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] cursor-pointer pointer-events-auto shadow-sm transition-all duration-150 active:scale-95 active:translate-y-px outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1';
-	const TW_TOOLBAR_BTN_DISABLED = 'text-[color-mix(in_oklch,var(--background)_70%,var(--foreground))] border-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] !cursor-not-allowed shadow-none';
-	const TW_TOOLBAR_BTN_HOVER = 'hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] active:scale-95 active:translate-y-px';
+	const TW_TOOLBAR_BTN =
+		'flex items-center justify-center size-9 rounded-full text-(--foreground) bg-(--background) border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] cursor-pointer pointer-events-auto shadow-sm transition-all duration-150 active:scale-95 active:translate-y-px outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1';
+	const TW_TOOLBAR_BTN_DISABLED =
+		'text-[color-mix(in_oklch,var(--background)_70%,var(--foreground))] border-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] !cursor-not-allowed shadow-none';
+	const TW_TOOLBAR_BTN_HOVER =
+		'hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] active:scale-95 active:translate-y-px';
 	const TW_TOOLBAR_BTN_PULSE = 'pulse';
 
 	function handle_btn_mousedown(event, command) {
@@ -120,7 +122,7 @@
 
 <div class="fixed {TW_TOOLBAR_POSITION} {TW_TOOLBAR_LEFT} z-50">
 	<div class="overflow-x-auto">
-		<div class="px-2 py-2 flex items-center gap-1.5 sm:gap-3 w-max ml-auto">
+		<div class="ml-auto flex w-max items-center gap-1.5 px-2 py-2 sm:gap-3">
 			{#if !editable}
 				<!-- Read mode: New page + Edit + Pages buttons -->
 				<div class="flex items-center gap-1">
@@ -216,7 +218,9 @@
 					<div class="flex items-center gap-1">
 						<!-- Bold -->
 						<button
-							class="{TW_TOOLBAR_BTN} {session.commands.toggle_strong?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
+							class="{TW_TOOLBAR_BTN} {session.commands.toggle_strong?.disabled
+								? TW_TOOLBAR_BTN_DISABLED
+								: TW_TOOLBAR_BTN_HOVER}"
 							class:!text-(--svedit-editing-stroke)={session.commands.toggle_strong?.active}
 							class:!border-(--svedit-editing-stroke)={session.commands.toggle_strong?.active}
 							onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_strong)}
@@ -237,7 +241,9 @@
 
 						<!-- Italic -->
 						<button
-							class="{TW_TOOLBAR_BTN} {session.commands.toggle_emphasis?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
+							class="{TW_TOOLBAR_BTN} {session.commands.toggle_emphasis?.disabled
+								? TW_TOOLBAR_BTN_DISABLED
+								: TW_TOOLBAR_BTN_HOVER}"
 							class:!text-(--svedit-editing-stroke)={session.commands.toggle_emphasis?.active}
 							class:!border-(--svedit-editing-stroke)={session.commands.toggle_emphasis?.active}
 							onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_emphasis)}
@@ -256,9 +262,45 @@
 							</svg>
 						</button>
 
+						<!-- Code -->
+						<button
+							class="{TW_TOOLBAR_BTN} {session.commands.toggle_code?.disabled
+								? TW_TOOLBAR_BTN_DISABLED
+								: TW_TOOLBAR_BTN_HOVER}"
+							class:!text-(--svedit-editing-stroke)={session.commands.toggle_code?.active}
+							class:!border-(--svedit-editing-stroke)={session.commands.toggle_code?.active}
+							onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_code)}
+							title="Code (⌘ ⇧ C)"
+							aria-label="Code"
+						>
+							<svg
+								class="size-4"
+								viewBox="0 0 15 15"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+								aria-hidden="true"
+							>
+								<path
+									d="M5.25 3.75L2.25 7.5L5.25 11.25"
+									stroke="currentColor"
+									stroke-linecap="square"
+									stroke-linejoin="miter"
+								/>
+								<path
+									d="M9.75 3.75L12.75 7.5L9.75 11.25"
+									stroke="currentColor"
+									stroke-linecap="square"
+									stroke-linejoin="miter"
+								/>
+								<path d="M8.5 2.5L6.5 12.5" stroke="currentColor" stroke-linecap="square" />
+							</svg>
+						</button>
+
 						<!-- Highlight -->
 						<button
-							class="{TW_TOOLBAR_BTN} {session.commands.toggle_highlight?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
+							class="{TW_TOOLBAR_BTN} {session.commands.toggle_highlight?.disabled
+								? TW_TOOLBAR_BTN_DISABLED
+								: TW_TOOLBAR_BTN_HOVER}"
 							class:!text-(--svedit-editing-stroke)={session.commands.toggle_highlight?.active}
 							class:!border-(--svedit-editing-stroke)={session.commands.toggle_highlight?.active}
 							onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_highlight)}
@@ -280,7 +322,9 @@
 
 						<!-- Link -->
 						<button
-							class="{TW_TOOLBAR_BTN} {session.commands.toggle_link?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
+							class="{TW_TOOLBAR_BTN} {session.commands.toggle_link?.disabled
+								? TW_TOOLBAR_BTN_DISABLED
+								: TW_TOOLBAR_BTN_HOVER}"
 							class:!text-(--svedit-editing-stroke)={session.commands.toggle_link?.active}
 							class:!border-(--svedit-editing-stroke)={session.commands.toggle_link?.active}
 							onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_link)}
@@ -311,7 +355,10 @@
 				{#if is_media_selected}
 					<div class="flex items-center gap-1">
 						<button
-							class="{TW_TOOLBAR_BTN} text-[10px] font-semibold tracking-[0.08em] {session.commands.edit_image?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
+							class="{TW_TOOLBAR_BTN} text-[10px] font-semibold tracking-[0.08em] {session.commands
+								.edit_image?.disabled
+								? TW_TOOLBAR_BTN_DISABLED
+								: TW_TOOLBAR_BTN_HOVER}"
 							onmousedown={handle_edit_image_click}
 							title="Alt text"
 							aria-label="Alt text"
@@ -421,7 +468,11 @@
 						{#if can_show_cycle_tools}
 							<!-- Type: cycle to next node type -->
 							<button
-								class="{TW_TOOLBAR_BTN} {should_pulse_cycle_type ? TW_TOOLBAR_BTN_PULSE : ''} {session.commands.cycle_node_type_next?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
+								class="{TW_TOOLBAR_BTN} {should_pulse_cycle_type
+									? TW_TOOLBAR_BTN_PULSE
+									: ''} {session.commands.cycle_node_type_next?.disabled
+									? TW_TOOLBAR_BTN_DISABLED
+									: TW_TOOLBAR_BTN_HOVER}"
 								onmousedown={(e) => handle_btn_mousedown(e, session.commands.cycle_node_type_next)}
 								title="Cycle type (⌃ ⇧ ↓)"
 								disabled={session.commands.cycle_node_type_next?.disabled}
@@ -445,7 +496,11 @@
 
 							<!-- Layout: cycle to next layout -->
 							<button
-								class="{TW_TOOLBAR_BTN} {should_pulse_cycle_layout ? TW_TOOLBAR_BTN_PULSE : ''} {session.commands.cycle_layout_next?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
+								class="{TW_TOOLBAR_BTN} {should_pulse_cycle_layout
+									? TW_TOOLBAR_BTN_PULSE
+									: ''} {session.commands.cycle_layout_next?.disabled
+									? TW_TOOLBAR_BTN_DISABLED
+									: TW_TOOLBAR_BTN_HOVER}"
 								onmousedown={(e) => handle_btn_mousedown(e, session.commands.cycle_layout_next)}
 								title="Cycle layout (⌃ ⇧ →)"
 								disabled={session.commands.cycle_layout_next?.disabled}
@@ -470,7 +525,9 @@
 
 						<!-- Select parent -->
 						<button
-							class="{TW_TOOLBAR_BTN} {session.commands.select_parent?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
+							class="{TW_TOOLBAR_BTN} {session.commands.select_parent?.disabled
+								? TW_TOOLBAR_BTN_DISABLED
+								: TW_TOOLBAR_BTN_HOVER}"
 							onmousedown={(e) => handle_btn_mousedown(e, session.commands.select_parent)}
 							title="Select parent (Esc)"
 							aria-label="Select parent"
@@ -502,16 +559,13 @@
 				<!-- Stable right group: Undo / Redo -->
 				<div class="flex items-center gap-1">
 					<button
-						class="{TW_TOOLBAR_BTN} {session.commands.undo?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
+						class="{TW_TOOLBAR_BTN} {session.commands.undo?.disabled
+							? TW_TOOLBAR_BTN_DISABLED
+							: TW_TOOLBAR_BTN_HOVER}"
 						onmousedown={(e) => handle_btn_mousedown(e, session.commands.undo)}
 						title="Undo (⌘ Z)"
 					>
-						<svg
-							class="size-4"
-							viewBox="0 0 15 15"
-							fill="none"
-							xmlns="http://www.w3.org/2000/svg"
-						>
+						<svg class="size-4" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path
 								d="M2.13794 12C3.42201 13.5285 5.34758 14.5 7.50005 14.5C11.366 14.5 14.5001 11.366 14.5001 7.5C14.5001 3.63401 11.366 0.5 7.50001 0.5C5.50001 0.5 3.75001 1.75 2.50001 3"
 								stroke="currentColor"
@@ -524,16 +578,13 @@
 						</svg>
 					</button>
 					<button
-						class="{TW_TOOLBAR_BTN} {session.commands.redo?.disabled ? TW_TOOLBAR_BTN_DISABLED : TW_TOOLBAR_BTN_HOVER}"
+						class="{TW_TOOLBAR_BTN} {session.commands.redo?.disabled
+							? TW_TOOLBAR_BTN_DISABLED
+							: TW_TOOLBAR_BTN_HOVER}"
 						onmousedown={(e) => handle_btn_mousedown(e, session.commands.redo)}
 						title="Redo (⌘ ⇧ Z)"
 					>
-						<svg
-							class="size-4"
-							viewBox="0 0 15 15"
-							fill="none"
-							xmlns="http://www.w3.org/2000/svg"
-						>
+						<svg class="size-4" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path
 								d="M12.8621 12C11.578 13.5285 9.65242 14.5 7.49995 14.5C3.63395 14.5 0.499947 11.366 0.499947 7.5C0.499947 3.63401 3.634 0.5 7.49999 0.5C9.49999 0.5 11.25 1.75 12.5 3"
 								stroke="currentColor"
@@ -550,7 +601,7 @@
 				<div class="flex items-center gap-1">
 					{#if cancel_command && !cancel_command.disabled}
 						<button
-							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--foreground) bg-(--background) border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] shadow-sm transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))] active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] active:scale-95 active:translate-y-px outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+							class="pointer-events-auto inline-flex cursor-pointer items-center justify-center rounded-full border border-[color-mix(in_oklch,var(--background)_91%,var(--foreground))] bg-(--background) px-4 py-2 text-sm font-semibold text-(--foreground) shadow-sm outline-1 outline-transparent transition-all duration-150 hover:border-[color-mix(in_oklch,var(--background)_88%,var(--foreground))] hover:bg-[color-mix(in_oklch,var(--background)_96%,var(--foreground))] focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-95 active:border-[color-mix(in_oklch,var(--background)_84%,var(--foreground))] active:bg-[color-mix(in_oklch,var(--background)_94%,var(--foreground))]"
 							onclick={() => cancel_command.execute()}
 							title="Cancel (⌘ ⎋)"
 						>
@@ -560,7 +611,7 @@
 
 					{#if !app_commands.save_document.disabled}
 						<button
-							class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold cursor-pointer pointer-events-auto rounded-full text-(--svedit-editing-stroke) bg-(--background) border border-(--svedit-editing-stroke) shadow-sm transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--foreground)_4%,var(--background))] active:bg-[color-mix(in_oklch,var(--foreground)_7%,var(--background))] active:scale-95 active:translate-y-px outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+							class="pointer-events-auto inline-flex cursor-pointer items-center justify-center rounded-full border border-(--svedit-editing-stroke) bg-(--background) px-4 py-2 text-sm font-semibold text-(--svedit-editing-stroke) shadow-sm outline-1 outline-transparent transition-all duration-150 hover:bg-[color-mix(in_oklch,var(--foreground)_4%,var(--background))] focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-95 active:bg-[color-mix(in_oklch,var(--foreground)_7%,var(--background))]"
 							onclick={() => app_commands.save_document.execute()}
 							title="Save (⌘ S)"
 						>
