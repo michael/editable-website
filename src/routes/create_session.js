@@ -34,6 +34,7 @@ import NavImage from './components/NavImage.svelte';
 
 import Footer from './components/Footer.svelte';
 import FooterLinkColumn from './components/FooterLinkColumn.svelte';
+import FooterColumnLabel from './components/FooterColumnLabel.svelte';
 import FooterLink from './components/FooterLink.svelte';
 
 import Prose from './components/Prose.svelte';
@@ -182,6 +183,7 @@ const session_config = {
 		nav_image: NavImage,
 		footer: Footer,
 		footer_link_column: FooterLinkColumn,
+		footer_column_label: FooterColumnLabel,
 		footer_link: FooterLink,
 		button: Button,
 		button_group: ButtonGroup,
@@ -747,6 +749,18 @@ const session_config = {
 			tr.insert_nodes([new_footer_link_id]);
 			select_inserted_text_property(tr);
 		},
+		footer_column_label: function (tr, content = { content: '', annotations: [] }, layout = 1) {
+			const new_footer_column_label_id = tr.build('new_footer_column_label', {
+				new_footer_column_label: {
+					id: 'new_footer_column_label',
+					type: 'footer_column_label',
+					label: content
+				}
+			});
+
+			tr.insert_nodes([new_footer_column_label_id]);
+			select_inserted_text_property(tr);
+		},
 		footer_link_column: function (tr, content = { content: '', annotations: [] }, layout = 1) {
 			const new_footer_link_column_id = tr.build('new_footer_link_column', {
 				new_footer_link: {
@@ -756,7 +770,7 @@ const session_config = {
 				new_footer_link_column: {
 					id: 'new_footer_link_column',
 					type: 'footer_link_column',
-					footer_links: { nodes: ['new_footer_link'], annotations: [] }
+					items: { nodes: ['new_footer_link'], annotations: [] }
 				}
 			});
 
