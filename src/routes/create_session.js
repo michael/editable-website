@@ -296,7 +296,7 @@ const session_config = {
 	html_exporters: {
 		prose: (node, session, html_exporters) => {
 			let html = '<div class="prose">\n';
-			for (const child_id of node.content.nodes) {
+			for (const child_id of node.body.nodes) {
 				const child = session.get(child_id);
 				const exporter = html_exporters[child.type];
 				if (exporter) {
@@ -442,7 +442,7 @@ const session_config = {
 				type: 'prose',
 				layout: 1,
 				colorset: 0,
-				content: { nodes: [new_heading.id, new_paragraph.id], annotations: [] }
+				body: { nodes: [new_heading.id, new_paragraph.id], annotations: [] }
 			};
 			tr.create(new_prose);
 			tr.insert_nodes([new_prose.id]);
@@ -463,7 +463,7 @@ const session_config = {
 			const new_prose_grid_item = {
 				id: nanoid(),
 				type: 'prose_grid_item',
-				content: { nodes: [new_heading.id, new_paragraph.id], annotations: [] }
+				body: { nodes: [new_heading.id, new_paragraph.id], annotations: [] }
 			};
 			tr.create(new_prose_grid_item);
 			tr.insert_nodes([new_prose_grid_item.id]);
@@ -503,17 +503,17 @@ const session_config = {
 				prose_grid_item_1: {
 					id: 'prose_grid_item_1',
 					type: 'prose_grid_item',
-					content: { nodes: ['title_1', 'paragraph_1'], annotations: [] }
+					body: { nodes: ['title_1', 'paragraph_1'], annotations: [] }
 				},
 				prose_grid_item_2: {
 					id: 'prose_grid_item_2',
 					type: 'prose_grid_item',
-					content: { nodes: ['title_2', 'paragraph_2'], annotations: [] }
+					body: { nodes: ['title_2', 'paragraph_2'], annotations: [] }
 				},
 				prose_grid_item_3: {
 					id: 'prose_grid_item_3',
 					type: 'prose_grid_item',
-					content: { nodes: ['title_3', 'paragraph_3'], annotations: [] }
+					body: { nodes: ['title_3', 'paragraph_3'], annotations: [] }
 				},
 				new_prose_grid: {
 					id: 'new_prose_grid',
@@ -647,13 +647,6 @@ const session_config = {
 			});
 
 			tr.insert_nodes([new_figure_id]);
-			// NOTE: Relies on insert_nodes selecting the newly inserted node(s)
-			// tr.set_selection({
-			//   type: 'text',
-			//   path: [...tr.selection.path, tr.selection.focus_offset - 1 , 'content'],
-			//   anchor_offset: 0,
-			//   focus_offset: 0
-			// });
 		},
 		captioned_figure: function (tr, content = { content: '', annotations: [] }, layout = 1) {
 			const new_captioned_figure_id = tr.build('new_captioned_figure', {
@@ -814,13 +807,6 @@ const session_config = {
 			});
 
 			tr.insert_nodes([new_footer_link_column_id]);
-			// NOTE: Relies on insert_nodes selecting the newly inserted node(s)
-			// tr.set_selection({
-			//   type: 'text',
-			//   path: [...tr.selection.path, tr.selection.focus_offset - 1 , 'content'],
-			//   anchor_offset: 0,
-			//   focus_offset: 0
-			// });
 		},
 
 		gallery: function (tr) {

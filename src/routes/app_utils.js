@@ -28,7 +28,7 @@ function get_ancestor_walk_paths(session) {
 	}
 
 	// For text/property selections, go up to the containing node_array
-	// Path like ['page_1', 'body', 0, 'content', 0, 'text'] -> start at ['page_1', 'body', 0, 'content']
+	// Path like ['page_1', 'body', 0, 'body', 0, 'text'] -> start at ['page_1', 'body', 0, 'body']
 	if (session.selection.path.length > 3) {
 		return {
 			full_path: session.selection.path,
@@ -50,8 +50,6 @@ function get_node_index_at(full_path, ancestor_path) {
 	if (full_path.length <= ancestor_path.length) return null;
 	return parseInt(String(full_path[ancestor_path.length]));
 }
-
-
 
 /**
  * Compare schema/value objects deeply. Object key order is ignored, array order is not.
@@ -184,7 +182,7 @@ export function get_closest_switchable_type(session) {
 		const schema = session.inspect(path);
 		if (schema?.type === 'node_array' && schema.node_types?.length > 1) {
 			// Extract the node index from full_path at this level
-			// E.g. full_path ['p1', 'body', 2, 'content', 0, 'text']
+			// E.g. full_path ['p1', 'body', 2, 'body', 0, 'text']
 			//       path      ['p1', 'body']
 			//       -> node_index = full_path[2] = 2
 			const node_index = get_node_index_at(full_path, path);

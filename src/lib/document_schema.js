@@ -77,7 +77,7 @@ export const document_schema = define_document_schema({
 	footer: {
 		kind: 'block',
 		properties: {
-			content: {
+			body: {
 				type: 'node_array',
 				node_types: RICH_CONTENT_NODE_TYPES,
 				default_node_type: 'paragraph'
@@ -217,7 +217,7 @@ export const document_schema = define_document_schema({
 		kind: 'block',
 		properties: {
 			colorset: { type: 'integer', default: 0 },
-			content: {
+			body: {
 				type: 'node_array',
 				node_types: RICH_CONTENT_NODE_TYPES,
 				default_node_type: 'paragraph'
@@ -229,7 +229,7 @@ export const document_schema = define_document_schema({
 		properties: {
 			layout: { type: 'integer', default: 1 },
 			colorset: { type: 'integer', default: 0 },
-			content: {
+			body: {
 				type: 'node_array',
 				node_types: RICH_CONTENT_NODE_TYPES,
 				default_node_type: 'paragraph'
