@@ -1,8 +1,12 @@
 <script>
+	import { getContext } from 'svelte';
 	import { Node, NodeArrayProperty } from 'svedit';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 
 	let { path, node_array_annotation: section = null } = $props();
+	const svedit = getContext('svedit');
+	let node = $derived(svedit.session.get(path));
+	let layout = $derived(node.layout || 1);
 	let padding_top_wide = $derived(!section || section?.is_start);
 	let padding_bottom_wide = $derived(!section || section?.is_end);
 </script>
@@ -17,7 +21,9 @@
 			]}
 		>
 			<NodeArrayProperty
-				class="grid grid-cols-1 gap-x-5 gap-y-8 [--row:1] sm:gap-x-7 md:grid-cols-2 md:gap-y-7 xl:grid-cols-3"
+				class={layout === 2
+					? 'grid grid-cols-1 gap-x-5 gap-y-8 [--row:1] sm:gap-x-7 md:grid-cols-2 md:gap-y-7'
+					: 'grid grid-cols-1 gap-x-5 gap-y-8 [--row:1] sm:gap-x-7 md:grid-cols-2 md:gap-y-7 xl:grid-cols-3'}
 				path={[...path, 'items']}
 			/>
 		</div>

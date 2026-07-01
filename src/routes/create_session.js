@@ -348,6 +348,7 @@ const session_config = {
 		supporting_media: 1,
 		feature: 2,
 		gallery: 5,
+		descriptive_gallery: 2,
 		nav_button: 2,
 		nav_image: 1,
 		button: 2
