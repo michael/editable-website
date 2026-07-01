@@ -13,7 +13,7 @@
 
 <Node class="nav-image flex items-center shrink-0 min-w-10" {path}>
 	<svelte:element
-		class="h-10 block min-w-0 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+		class="h-8 block min-w-0 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
 		style:aspect-ratio={media_node.width && media_node.height ? `${media_node.width} / ${media_node.height}` : '1 / 1'}
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}

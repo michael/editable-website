@@ -1677,8 +1677,7 @@ const FULL_DOC = {
 		},
 		DDmmrQzcAxWJfdhatTbkRTh: {
 			id: 'DDmmrQzcAxWJfdhatTbkRTh',
-			type: 'nav_item',
-			layout: 1,
+			type: 'nav_link',
 			href: '/#RtYpQwXsZvNmKjHgFdSaLe',
 			target: '_self',
 			label: {
@@ -1688,8 +1687,7 @@ const FULL_DOC = {
 		},
 		BESRZnRsUbbWapdUTzGNxFH: {
 			id: 'BESRZnRsUbbWapdUTzGNxFH',
-			type: 'nav_item',
-			layout: 1,
+			type: 'nav_link',
 			href: '#',
 			target: '_self',
 			label: {
@@ -1699,8 +1697,7 @@ const FULL_DOC = {
 		},
 		atmQQGpCXBweGkkcSuKpJPS: {
 			id: 'atmQQGpCXBweGkkcSuKpJPS',
-			type: 'nav_item',
-			layout: 1,
+			type: 'nav_link',
 			href: '#',
 			target: '_self',
 			label: {
@@ -1710,8 +1707,7 @@ const FULL_DOC = {
 		},
 		GyKyQvRAvkgnywmxTVgvrnF: {
 			id: 'GyKyQvRAvkgnywmxTVgvrnF',
-			type: 'nav_item',
-			layout: 1,
+			type: 'nav_link',
 			href: '/#XVJGXtwnQMvcrcuByAtcWNa',
 			target: '_self',
 			label: {
@@ -1721,8 +1717,8 @@ const FULL_DOC = {
 		},
 		GtffzHxEWNweDuhFgUZFeBe: {
 			id: 'GtffzHxEWNweDuhFgUZFeBe',
-			type: 'nav_item',
-			layout: 3,
+			type: 'nav_button',
+			layout: 2,
 			href: 'https://github.com/michael/editable-website#getting-started',
 			target: '_blank',
 			label: {
@@ -1732,8 +1728,8 @@ const FULL_DOC = {
 		},
 		FKgjxHCeSbVZrdnPuxYkMYp: {
 			id: 'FKgjxHCeSbVZrdnPuxYkMYp',
-			type: 'nav_item',
-			layout: 2,
+			type: 'nav_button',
+			layout: 1,
 			href: 'https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform',
 			target: '_blank',
 			label: {
@@ -1744,11 +1740,11 @@ const FULL_DOC = {
 		nav_1: {
 			id: 'nav_1',
 			type: 'nav',
-			start_nav_items: {
+			start_items: {
 				nodes: ['nav_logo'],
 				annotations: []
 			},
-			center_nav_items: {
+			center_items: {
 				nodes: [
 					'DDmmrQzcAxWJfdhatTbkRTh',
 					'BESRZnRsUbbWapdUTzGNxFH',
@@ -1757,7 +1753,7 @@ const FULL_DOC = {
 				],
 				annotations: []
 			},
-			end_nav_items: {
+			end_items: {
 				nodes: ['GtffzHxEWNweDuhFgUZFeBe', 'FKgjxHCeSbVZrdnPuxYkMYp'],
 				annotations: []
 			}
