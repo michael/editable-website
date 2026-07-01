@@ -17,13 +17,16 @@ import {
  */
 function replace_node_with_equivalent_type(tr, node_array_path, node_index, node, new_type) {
 	const node_schema = tr.schema[node.type];
+	const new_node_schema = tr.schema[new_type];
 	const new_node = {
 		id: tr.generate_id(),
 		type: new_type
 	};
 
 	for (const property_name of Object.keys(node_schema.properties)) {
-		new_node[property_name] = structuredClone(node[property_name]);
+		if (property_name in new_node_schema.properties) {
+			new_node[property_name] = structuredClone(node[property_name]);
+		}
 	}
 
 	tr.create(new_node);

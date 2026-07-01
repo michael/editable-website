@@ -124,27 +124,39 @@ export const document_schema = define_document_schema({
 	nav: {
 		kind: 'block',
 		properties: {
-			start_nav_items: {
+			start_items: {
 				type: 'node_array',
-				node_types: ['nav_image', 'nav_item'],
+				node_types: ['nav_image', 'nav_link', 'nav_button'],
 				default_node_type: 'nav_image'
 			},
-			center_nav_items: {
+			center_items: {
 				type: 'node_array',
-				node_types: ['nav_item', 'nav_image'],
-				default_node_type: 'nav_item'
+				node_types: ['nav_link', 'nav_button', 'nav_image'],
+				default_node_type: 'nav_link'
 			},
-			end_nav_items: {
+			end_items: {
 				type: 'node_array',
-				node_types: ['nav_item', 'nav_image'],
-				default_node_type: 'nav_item'
+				node_types: ['nav_link', 'nav_button', 'nav_image'],
+				default_node_type: 'nav_button'
 			}
 		}
 	},
-	nav_item: {
+	nav_link: {
 		kind: 'block',
 		properties: {
-			layout: { type: 'integer', default: 1 },
+			href: { type: 'string' },
+			target: { type: 'string', default: '_self' },
+			label: {
+				type: 'text',
+				annotation_types: [],
+				allow_newlines: false
+			}
+		}
+	},
+	nav_button: {
+		kind: 'block',
+		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			href: { type: 'string' },
 			target: { type: 'string', default: '_self' },
 			label: {
