@@ -1831,20 +1831,25 @@ const FULL_DOC = {
 				annotations: []
 			}
 		},
+		footer_column_label_1: {
+			id: 'footer_column_label_1',
+			type: 'footer_column_label',
+			label: {
+				content: 'On this page',
+				annotations: []
+			}
+		},
 		fcSSWQUTYajjknPChgGsPZz: {
 			id: 'fcSSWQUTYajjknPChgGsPZz',
 			type: 'footer_link_column',
-			footer_links: {
+			items: {
 				nodes: [
+					'footer_column_label_1',
 					'EtcfbabRCtPSvSpfFfjPeza',
 					'WVvBSREFCThNYcpgvfUnWkF',
 					'eDAnnFjNdZpzYMtpSqReBxf',
 					'GwPeRFYtAyrcCMfpuyzdWZp'
 				],
-				annotations: []
-			},
-			label: {
-				content: 'On this page',
 				annotations: []
 			}
 		},
@@ -1868,15 +1873,19 @@ const FULL_DOC = {
 			},
 			target: '_blank'
 		},
-		footer_column_2: {
-			id: 'footer_column_2',
-			type: 'footer_link_column',
+		footer_column_label_2: {
+			id: 'footer_column_label_2',
+			type: 'footer_column_label',
 			label: {
 				content: 'GitHub',
 				annotations: []
-			},
-			footer_links: {
-				nodes: ['uavzfSnSpTRrHSfJpbfvpsh', 'footer_link_2_1'],
+			}
+		},
+		footer_column_2: {
+			id: 'footer_column_2',
+			type: 'footer_link_column',
+			items: {
+				nodes: ['footer_column_label_2', 'uavzfSnSpTRrHSfJpbfvpsh', 'footer_link_2_1'],
 				annotations: []
 			}
 		},
@@ -1900,15 +1909,19 @@ const FULL_DOC = {
 				annotations: []
 			}
 		},
-		footer_column_3: {
-			id: 'footer_column_3',
-			type: 'footer_link_column',
+		footer_column_label_3: {
+			id: 'footer_column_label_3',
+			type: 'footer_column_label',
 			label: {
 				content: 'Videos',
 				annotations: []
-			},
-			footer_links: {
-				nodes: ['ewuBYPxRqFsJXffTuwqssXg', 'cCMbgzNjRjVjrvWuHJCvJkx'],
+			}
+		},
+		footer_column_3: {
+			id: 'footer_column_3',
+			type: 'footer_link_column',
+			items: {
+				nodes: ['footer_column_label_3', 'ewuBYPxRqFsJXffTuwqssXg', 'cCMbgzNjRjVjrvWuHJCvJkx'],
 				annotations: []
 			}
 		},

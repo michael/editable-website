@@ -1,17 +1,16 @@
 <script>
-	import { NodeArrayProperty, TextProperty, Node } from 'svedit';
+	import { NodeArrayProperty, Node } from 'svedit';
 	let { path } = $props();
 </script>
 
 <Node {path}>
-	<div class="footer-link-column">
-		<TextProperty
-			class="pb-1.5 body-sm text-(--foreground)/50"
-			path={[...path, 'label']}
-			placeholder="Column Label"
+	<div
+		class="ew-footer-link-column"
+		style="anchor-name: --footer-column-items; --node-caret-boundary: initial;"
+	>
+		<NodeArrayProperty
+			class="ew-footer-column-items [--row:0] space-y-4 [&>.footer-column-label:not(.first)]:mt-10 sm:[&>.footer-column-label:not(.first)]:mt-12"
+			path={[...path, 'items']}
 		/>
-		<div style="anchor-name: --footer-links; --node-caret-boundary: initial;">
-			<NodeArrayProperty class="footer-links [--row:0]" path={[...path, 'footer_links']} />
-		</div>
 	</div>
 </Node>

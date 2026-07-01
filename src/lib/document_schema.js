@@ -92,15 +92,20 @@ export const document_schema = define_document_schema({
 	footer_link_column: {
 		kind: 'block',
 		properties: {
+			items: {
+				type: 'node_array',
+				node_types: ['footer_column_label', 'footer_link'],
+				default_node_type: 'footer_link'
+			}
+		}
+	},
+	footer_column_label: {
+		kind: 'block',
+		properties: {
 			label: {
 				type: 'text',
 				annotation_types: [],
 				allow_newlines: false
-			},
-			footer_links: {
-				type: 'node_array',
-				node_types: ['footer_link'],
-				default_node_type: 'footer_link'
 			}
 		}
 	},
