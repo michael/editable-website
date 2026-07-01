@@ -17,7 +17,7 @@
 			class="inline-block decoration-transparent underline-offset-2 outline-1 outline-transparent transition-all duration-500 ease-in-out hover:text-(--foreground) hover:underline hover:decoration-(--foreground) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 			class:hover:underline={render_as_link}
 		>
-			<TextProperty class="inline" path={[...path, 'label']} placeholder="Link label" />
+			<TextProperty class="inline" path={[...path, 'label']} placeholder="Link" />
 		</svelte:element>
 	</div>
 </Node>

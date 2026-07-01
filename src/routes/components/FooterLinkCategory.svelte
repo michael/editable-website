@@ -3,10 +3,10 @@
 	let { path } = $props();
 </script>
 
-<Node {path} class="ew-footer-column-label">
+<Node {path} class="ew-footer-link-category">
 	<TextProperty
 		class="block body-sm text-(--foreground)/50"
-		path={[...path, 'label']}
-		placeholder="Column Label"
+		path={[...path, 'title']}
+		placeholder="Category"
 	/>
 </Node>
