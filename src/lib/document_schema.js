@@ -460,7 +460,7 @@ export const document_schema = define_document_schema({
 	descriptive_gallery: {
 		kind: 'block',
 		properties: {
-			layout: { type: 'integer', default: 1 },
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			items: {
 				type: 'node_array',
 				node_types: ['descriptive_gallery_item']
