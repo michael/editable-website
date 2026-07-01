@@ -6,10 +6,10 @@
 <Node {path}>
 	<div
 		class="ew-footer-link-column"
-		style="anchor-name: --footer-column-items; --node-caret-boundary: initial;"
+		style="anchor-name: --footer-link-items; --node-caret-boundary: initial;"
 	>
 		<NodeArrayProperty
-			class="ew-footer-column-items [--row:0] space-y-4 [&>.footer-column-label:not(.first)]:mt-10 sm:[&>.footer-column-label:not(.first)]:mt-12"
+			class="ew-footer-link-items space-y-4 [--row:0] [&>.ew-footer-link-category:not(.first)]:mt-10 sm:[&>.ew-footer-link-category:not(.first)]:mt-12"
 			path={[...path, 'items']}
 		/>
 	</div>
