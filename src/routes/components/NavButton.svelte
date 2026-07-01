@@ -17,7 +17,7 @@
 		class="block rounded-(--button-border-radius) bg-(--accent) py-1 text-(--accent-foreground) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 		class:hover:opacity-80={render_as_link}
 	>
-		<TextProperty class="px-1.5 sm:px-2.5" path={[...path, 'label']} placeholder="Button" />
+		<TextProperty class="px-2.5" path={[...path, 'label']} placeholder="Button" />
 	</svelte:element>
 {/snippet}
 
@@ -30,7 +30,7 @@
 			? 'hover:bg-(--foreground)/5'
 			: ''}"
 	>
-		<TextProperty class="px-1.5 sm:px-2.5" path={[...path, 'label']} placeholder="Button" />
+		<TextProperty class="px-2.5" path={[...path, 'label']} placeholder="Button" />
 	</svelte:element>
 {/snippet}
 
