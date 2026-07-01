@@ -72,6 +72,7 @@ import Video from './components/Video.svelte';
 
 import Strong from './components/Strong.svelte';
 import Emphasis from './components/Emphasis.svelte';
+import Code from './components/Code.svelte';
 import Highlight from './components/Highlight.svelte';
 import Link from './components/Link.svelte';
 import Section from './components/Section.svelte';
@@ -220,6 +221,7 @@ const session_config = {
 		accordion_item: AccordionItem,
 		strong: Strong,
 		emphasis: Emphasis,
+		code: Code,
 		highlight: Highlight,
 		link: Link,
 		section: Section
@@ -367,6 +369,7 @@ const session_config = {
 			break_text_node: new BreakTextNodeCommand(context),
 			toggle_strong: new ToggleAnnotationCommand('strong', context),
 			toggle_emphasis: new ToggleAnnotationCommand('emphasis', context),
+			toggle_code: new ToggleAnnotationCommand('code', context),
 			toggle_highlight: new ToggleAnnotationCommand('highlight', context),
 			toggle_section: new ToggleAnnotationCommand('section', context),
 			undo: new UndoCommand(context),
@@ -399,6 +402,7 @@ const session_config = {
 			'alt+enter': [commands.edit_image],
 			'meta+b,ctrl+b': [commands.toggle_strong],
 			'meta+i,ctrl+i': [commands.toggle_emphasis],
+			'meta+shift+c,ctrl+shift+c': [commands.toggle_code],
 			'meta+u,ctrl+u': [commands.toggle_highlight],
 			'meta+shift+s,ctrl+shift+s': [commands.toggle_section],
 			'meta+z,ctrl+z': [commands.undo],
@@ -410,8 +414,7 @@ const session_config = {
 			'ctrl+shift+arrowup': [commands.cycle_node_type_previous],
 			tab: [commands.toggle_accordion],
 
-			'meta+k,ctrl+k': [commands.edit_link, commands.toggle_link],
-			'ctrl+shift+c': [commands.cycle_colorset]
+			'meta+k,ctrl+k': [commands.edit_link, commands.toggle_link]
 		});
 
 		return { commands, keymap };
