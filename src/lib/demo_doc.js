@@ -26,27 +26,38 @@ const FULL_DOC = {
 			type: 'heading_2',
 			layout: 1,
 			content: {
-				content: 'Making websites should be fun',
+				content: 'Skip the CMS',
 				annotations: []
 			}
 		},
-		TrHvNdkJMcGrescwAXFcYfV: {
-			id: 'TrHvNdkJMcGrescwAXFcYfV',
-			type: 'paragraph_lg',
+		QUyEgDbAcDSNkdtEewwfYGM: {
+			id: 'QUyEgDbAcDSNkdtEewwfYGM',
+			type: 'paragraph_xl',
 			layout: 2,
 			content: {
-				content: 'Editable brings live, on-page editing to Svelte.',
+				content: 'Editable brings live on-page editing to Svelte.',
 				annotations: []
 			}
 		},
-		qJWqpEWPTKZUKvupagFjxCF: {
-			id: 'qJWqpEWPTKZUKvupagFjxCF',
+		aMhZzGXzvqnSBrQMgrBvNEy: {
+			id: 'aMhZzGXzvqnSBrQMgrBvNEy',
 			type: 'button',
 			layout: 1,
-			href: 'https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform',
+			href: '',
 			target: '_blank',
 			label: {
-				content: 'Join Early Access →',
+				content: 'Try',
+				annotations: []
+			}
+		},
+		XmMkSnbXSwSwVnMJgzkPmer: {
+			id: 'XmMkSnbXSwSwVnMJgzkPmer',
+			type: 'button',
+			layout: 2,
+			href: '',
+			target: '_self',
+			label: {
+				content: 'Download ⤓',
 				annotations: []
 			}
 		},
@@ -54,7 +65,7 @@ const FULL_DOC = {
 			id: 'tgzmEzyQGVDSHZVYnvuFWRp',
 			type: 'button_group',
 			buttons: {
-				nodes: ['qJWqpEWPTKZUKvupagFjxCF'],
+				nodes: ['aMhZzGXzvqnSBrQMgrBvNEy', 'XmMkSnbXSwSwVnMJgzkPmer'],
 				annotations: []
 			}
 		},
@@ -64,7 +75,7 @@ const FULL_DOC = {
 			layout: 6,
 			colorset: 0,
 			body: {
-				nodes: ['TSRjJkcjxCEVZUVMwWBPJJT', 'TrHvNdkJMcGrescwAXFcYfV', 'tgzmEzyQGVDSHZVYnvuFWRp'],
+				nodes: ['TSRjJkcjxCEVZUVMwWBPJJT', 'QUyEgDbAcDSNkdtEewwfYGM', 'tgzmEzyQGVDSHZVYnvuFWRp'],
 				annotations: []
 			}
 		},
@@ -90,25 +101,83 @@ const FULL_DOC = {
 				annotations: []
 			}
 		},
+		xMcjMhSuQKDayKNqNMbGDHW: {
+			id: 'xMcjMhSuQKDayKNqNMbGDHW',
+			type: 'code'
+		},
+		mHGxthXrZxjSjhYyXwbQfDf: {
+			id: 'mHGxthXrZxjSjhYyXwbQfDf',
+			type: 'code'
+		},
+		xeFfTFanDDERfWHUcjFRbbB: {
+			id: 'xeFfTFanDDERfWHUcjFRbbB',
+			type: 'code'
+		},
+		CXScmpeXnecfzNpGxVvXdqf: {
+			id: 'CXScmpeXnecfzNpGxVvXdqf',
+			type: 'code'
+		},
+		vEsgCXdGdskZEJZbhvCqtvv: {
+			id: 'vEsgCXdGdskZEJZbhvCqtvv',
+			type: 'code'
+		},
+		WyqzrzHVaPMbjcCJsYkuZsE: {
+			id: 'WyqzrzHVaPMbjcCJsYkuZsE',
+			type: 'code'
+		},
+		McYSzTepjCMEbuWZupfCEXA: {
+			id: 'McYSzTepjCMEbuWZupfCEXA',
+			type: 'code'
+		},
+		QjBkRxHSjJDEsZyrzWfvumb: {
+			id: 'QjBkRxHSjJDEsZyrzWfvumb',
+			type: 'paragraph',
+			layout: 1,
+			content: {
+				content:
+					'Hold ⌘ (Mac) or Ctrl (Windows) and press E to enter edit mode. Click where you want to edit. Move around with ← → ↑ ↓. Change anything you see!',
+				annotations: [
+					{
+						start_offset: 5,
+						end_offset: 6,
+						node_id: 'xMcjMhSuQKDayKNqNMbGDHW'
+					},
+					{
+						start_offset: 41,
+						end_offset: 42,
+						node_id: 'mHGxthXrZxjSjhYyXwbQfDf'
+					},
+					{
+						start_offset: 16,
+						end_offset: 20,
+						node_id: 'xeFfTFanDDERfWHUcjFRbbB'
+					},
+					{
+						start_offset: 110,
+						end_offset: 111,
+						node_id: 'CXScmpeXnecfzNpGxVvXdqf'
+					},
+					{
+						start_offset: 112,
+						end_offset: 113,
+						node_id: 'vEsgCXdGdskZEJZbhvCqtvv'
+					},
+					{
+						start_offset: 114,
+						end_offset: 115,
+						node_id: 'WyqzrzHVaPMbjcCJsYkuZsE'
+					},
+					{
+						start_offset: 116,
+						end_offset: 117,
+						node_id: 'McYSzTepjCMEbuWZupfCEXA'
+					}
+				]
+			}
+		},
 		NhhsYbqTRzPtpQcHFUgwFhP: {
 			id: 'NhhsYbqTRzPtpQcHFUgwFhP',
-			type: 'strong'
-		},
-		ypAZzWFdhamCaTMKmZMZPMm: {
-			id: 'ypAZzWFdhamCaTMKmZMZPMm',
-			type: 'strong'
-		},
-		wuyFjXptXyMvgYKUcvtTggC: {
-			id: 'wuyFjXptXyMvgYKUcvtTggC',
-			type: 'strong'
-		},
-		ZWDXzUmKJbqDwJbNTbhEtWQ: {
-			id: 'ZWDXzUmKJbqDwJbNTbhEtWQ',
-			type: 'strong'
-		},
-		zqyQQtSbzxtdTTsVTYuuXEh: {
-			id: 'zqyQQtSbzxtdTTsVTYuuXEh',
-			type: 'strong'
+			type: 'code'
 		},
 		PYHXbxRMREHBpAqxbdsUXzP: {
 			id: 'PYHXbxRMREHBpAqxbdsUXzP',
@@ -124,53 +193,142 @@ const FULL_DOC = {
 			href: '#',
 			target: '_self'
 		},
-		QjBkRxHSjJDEsZyrzWfvumb: {
-			id: 'QjBkRxHSjJDEsZyrzWfvumb',
+		JbDedTasSYzbCEhdrVvMXSv: {
+			id: 'JbDedTasSYzbCEhdrVvMXSv',
+			type: 'code'
+		},
+		jhRSZnegTBQARenKdBUQYgh: {
+			id: 'jhRSZnegTBQARenKdBUQYgh',
+			type: 'code'
+		},
+		kXvGKSUVXvvHjyzvZkFrXRQ: {
+			id: 'kXvGKSUVXvvHjyzvZkFrXRQ',
+			type: 'code'
+		},
+		GArGdawPrKZYvfxPdveNwrk: {
+			id: 'GArGdawPrKZYvfxPdveNwrk',
+			type: 'code'
+		},
+		ujTkSPgAkSZUCRTqhbvZadx: {
+			id: 'ujTkSPgAkSZUCRTqhbvZadx',
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				content:
-					'Press ⌘ / Ctrl + e to enter edit mode. Click where you want to edit. Move around with the arrow keys. Change anything you see! Bold, italics and links with ⌘ / Ctrl + b, i and k. Undo with ⌘ / Ctrl + z. Save changes with ⌘ / Ctrl + s.',
+				content: 'Bold, italics and links with ⌘ or Ctrl + B, I and K.',
 				annotations: [
 					{
-						start_offset: 156,
-						end_offset: 168,
+						start_offset: 34,
+						end_offset: 38,
 						node_id: 'NhhsYbqTRzPtpQcHFUgwFhP'
 					},
 					{
-						start_offset: 170,
-						end_offset: 172,
-						node_id: 'ypAZzWFdhamCaTMKmZMZPMm'
-					},
-					{
-						start_offset: 176,
-						end_offset: 177,
-						node_id: 'wuyFjXptXyMvgYKUcvtTggC'
-					},
-					{
-						start_offset: 189,
-						end_offset: 201,
-						node_id: 'ZWDXzUmKJbqDwJbNTbhEtWQ'
-					},
-					{
-						start_offset: 221,
-						end_offset: 233,
-						node_id: 'zqyQQtSbzxtdTTsVTYuuXEh'
-					},
-					{
-						start_offset: 127,
-						end_offset: 131,
+						start_offset: 0,
+						end_offset: 4,
 						node_id: 'PYHXbxRMREHBpAqxbdsUXzP'
 					},
 					{
-						start_offset: 133,
-						end_offset: 140,
+						start_offset: 6,
+						end_offset: 13,
 						node_id: 'djTpcsEQTzfGMSRctKenpWt'
 					},
 					{
-						start_offset: 145,
-						end_offset: 150,
+						start_offset: 18,
+						end_offset: 23,
 						node_id: 'eUteADFhxtenJraxpeprgHr'
+					},
+					{
+						start_offset: 41,
+						end_offset: 42,
+						node_id: 'JbDedTasSYzbCEhdrVvMXSv'
+					},
+					{
+						start_offset: 44,
+						end_offset: 45,
+						node_id: 'jhRSZnegTBQARenKdBUQYgh'
+					},
+					{
+						start_offset: 50,
+						end_offset: 51,
+						node_id: 'kXvGKSUVXvvHjyzvZkFrXRQ'
+					},
+					{
+						start_offset: 29,
+						end_offset: 30,
+						node_id: 'GArGdawPrKZYvfxPdveNwrk'
+					}
+				]
+			}
+		},
+		ZWDXzUmKJbqDwJbNTbhEtWQ: {
+			id: 'ZWDXzUmKJbqDwJbNTbhEtWQ',
+			type: 'code'
+		},
+		XtZkqrCsUBAmDnMbvnzKTfd: {
+			id: 'XtZkqrCsUBAmDnMbvnzKTfd',
+			type: 'code'
+		},
+		JSnSMURcyQJfxBDrNjVHwdf: {
+			id: 'JSnSMURcyQJfxBDrNjVHwdf',
+			type: 'code'
+		},
+		rMEHvQGqSpdRkUgmCBvgptB: {
+			id: 'rMEHvQGqSpdRkUgmCBvgptB',
+			type: 'paragraph',
+			layout: 1,
+			content: {
+				content: 'Undo with ⌘ or Ctrl + z.',
+				annotations: [
+					{
+						start_offset: 22,
+						end_offset: 23,
+						node_id: 'ZWDXzUmKJbqDwJbNTbhEtWQ'
+					},
+					{
+						start_offset: 15,
+						end_offset: 19,
+						node_id: 'XtZkqrCsUBAmDnMbvnzKTfd'
+					},
+					{
+						start_offset: 10,
+						end_offset: 11,
+						node_id: 'JSnSMURcyQJfxBDrNjVHwdf'
+					}
+				]
+			}
+		},
+		NCXQcRsQGtuuZdregZhUCgR: {
+			id: 'NCXQcRsQGtuuZdregZhUCgR',
+			type: 'code'
+		},
+		vcrqWDCcutwyaBySHdJJPeW: {
+			id: 'vcrqWDCcutwyaBySHdJJPeW',
+			type: 'code'
+		},
+		pBzAGGQzdznNkuaPVcBZkMJ: {
+			id: 'pBzAGGQzdznNkuaPVcBZkMJ',
+			type: 'code'
+		},
+		bqHNFFXTKuAzfJSgBkBzRqh: {
+			id: 'bqHNFFXTKuAzfJSgBkBzRqh',
+			type: 'paragraph',
+			layout: 1,
+			content: {
+				content: 'Save changes with  ⌘ or Ctrl + S.',
+				annotations: [
+					{
+						start_offset: 24,
+						end_offset: 28,
+						node_id: 'NCXQcRsQGtuuZdregZhUCgR'
+					},
+					{
+						start_offset: 19,
+						end_offset: 20,
+						node_id: 'vcrqWDCcutwyaBySHdJJPeW'
+					},
+					{
+						start_offset: 31,
+						end_offset: 32,
+						node_id: 'pBzAGGQzdznNkuaPVcBZkMJ'
 					}
 				]
 			}
@@ -202,7 +360,14 @@ const FULL_DOC = {
 			colorset: 0,
 			media: 'VbNcMxZaQwErTyUiOpLkJh',
 			body: {
-				nodes: ['XEZYvKrndUKmFeRwPskjXSb', 'QjBkRxHSjJDEsZyrzWfvumb', 'JkfchFmwTqBYVZawgntPWxP'],
+				nodes: [
+					'XEZYvKrndUKmFeRwPskjXSb',
+					'QjBkRxHSjJDEsZyrzWfvumb',
+					'ujTkSPgAkSZUCRTqhbvZadx',
+					'rMEHvQGqSpdRkUgmCBvgptB',
+					'bqHNFFXTKuAzfJSgBkBzRqh',
+					'JkfchFmwTqBYVZawgntPWxP'
+				],
 				annotations: []
 			}
 		},
@@ -215,49 +380,77 @@ const FULL_DOC = {
 				annotations: []
 			}
 		},
-		AmRQEvmJZPdcXuSgwRNsSzk: {
-			id: 'AmRQEvmJZPdcXuSgwRNsSzk',
-			type: 'strong'
-		},
 		MheDsAwTmfQDGqdkpMWgXUH: {
 			id: 'MheDsAwTmfQDGqdkpMWgXUH',
 			type: 'strong'
 		},
-		XFwXMKjgMyyYRSemxHhemYh: {
-			id: 'XFwXMKjgMyyYRSemxHhemYh',
-			type: 'strong'
+		BHmangmnGSWDUkzjJXKbDjt: {
+			id: 'BHmangmnGSWDUkzjJXKbDjt',
+			type: 'paragraph',
+			layout: 1,
+			content: {
+				content: 'Select the dashed gap below this paragraph to see a flashing purple cursor.',
+				annotations: [
+					{
+						start_offset: 11,
+						end_offset: 22,
+						node_id: 'MheDsAwTmfQDGqdkpMWgXUH'
+					}
+				]
+			}
 		},
 		wqkSZVmFDECjqksNpcRTVyz: {
 			id: 'wqkSZVmFDECjqksNpcRTVyz',
-			type: 'strong'
+			type: 'code'
 		},
-		GqVyqhnraWTBPCpCrAxmPwG: {
-			id: 'GqVyqhnraWTBPCpCrAxmPwG',
+		QpSJFMHdkhkNHZgAYXpHHfk: {
+			id: 'QpSJFMHdkhkNHZgAYXpHHfk',
+			type: 'code'
+		},
+		JfaRJhxSWdashHgnSsbAnpX: {
+			id: 'JfaRJhxSWdashHgnSsbAnpX',
+			type: 'code'
+		},
+		CVtRckgSqBjmpmCJPGEjRHy: {
+			id: 'CVtRckgSqBjmpmCJPGEjRHy',
+			type: 'code'
+		},
+		dYcjUGQyrScuGmYaSuHnqpC: {
+			id: 'dYcjUGQyrScuGmYaSuHnqpC',
+			type: 'code'
+		},
+		ZSgWGxPAGFbMqrCRXRQtnwe: {
+			id: 'ZSgWGxPAGFbMqrCRXRQtnwe',
 			type: 'paragraph',
 			layout: 1,
 			content: {
 				content:
-					'In edit mode the dashed gaps let you add blocks. Select the dashed gap below this paragraph to see a flashing purple cursor. Press Enter to add a block. Change text styles (paragraph > heading etc) with Ctrl + Shift + Right.',
+					'Press Enter to add a block. Change text type (paragraph, heading) with Ctrl + Shift + ↓ ↑.',
 				annotations: [
 					{
-						start_offset: 17,
-						end_offset: 28,
-						node_id: 'AmRQEvmJZPdcXuSgwRNsSzk'
-					},
-					{
-						start_offset: 60,
-						end_offset: 71,
-						node_id: 'MheDsAwTmfQDGqdkpMWgXUH'
-					},
-					{
-						start_offset: 203,
-						end_offset: 223,
-						node_id: 'XFwXMKjgMyyYRSemxHhemYh'
-					},
-					{
-						start_offset: 131,
-						end_offset: 136,
+						start_offset: 6,
+						end_offset: 11,
 						node_id: 'wqkSZVmFDECjqksNpcRTVyz'
+					},
+					{
+						start_offset: 71,
+						end_offset: 75,
+						node_id: 'QpSJFMHdkhkNHZgAYXpHHfk'
+					},
+					{
+						start_offset: 78,
+						end_offset: 83,
+						node_id: 'JfaRJhxSWdashHgnSsbAnpX'
+					},
+					{
+						start_offset: 86,
+						end_offset: 87,
+						node_id: 'CVtRckgSqBjmpmCJPGEjRHy'
+					},
+					{
+						start_offset: 88,
+						end_offset: 89,
+						node_id: 'dYcjUGQyrScuGmYaSuHnqpC'
 					}
 				]
 			}
@@ -266,45 +459,119 @@ const FULL_DOC = {
 			id: 'kRSnDfvEsJkQjdrMZGSFQzt',
 			type: 'strong'
 		},
-		PkjDmTSvXRPdtwcYmSUScYs: {
-			id: 'PkjDmTSvXRPdtwcYmSUScYs',
-			type: 'strong'
-		},
-		zAmCJVJvxsvPMaqHkBgyaNx: {
-			id: 'zAmCJVJvxsvPMaqHkBgyaNx',
-			type: 'strong'
-		},
-		tFBaRUUJkEmftcgEyEqTAVB: {
-			id: 'tFBaRUUJkEmftcgEyEqTAVB',
-			type: 'strong'
-		},
 		CvSCfCmvzxqEHqxpMZeaVVF: {
 			id: 'CvSCfCmvzxqEHqxpMZeaVVF',
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				content:
-					'Select one of the full width dashed gap to see a flashing purple cursor. Press Enter to create a new top-level block. Ctrl + Shift + Down cycles through block types. Again Ctrl + Shift + Right lets you flip through available layouts.',
+				content: 'Select one of the full width dashed gap to see a flashing purple cursor.',
 				annotations: [
 					{
 						start_offset: 18,
 						end_offset: 39,
 						node_id: 'kRSnDfvEsJkQjdrMZGSFQzt'
-					},
+					}
+				]
+			}
+		},
+		PkjDmTSvXRPdtwcYmSUScYs: {
+			id: 'PkjDmTSvXRPdtwcYmSUScYs',
+			type: 'code'
+		},
+		ktaDsqgnHQSMBrTUGcqTUUz: {
+			id: 'ktaDsqgnHQSMBrTUGcqTUUz',
+			type: 'code'
+		},
+		yWZRRQxqhEhzdZXGrPDceZP: {
+			id: 'yWZRRQxqhEhzdZXGrPDceZP',
+			type: 'code'
+		},
+		PNcfVQKsbXcDysAFjVdeEHy: {
+			id: 'PNcfVQKsbXcDysAFjVdeEHy',
+			type: 'code'
+		},
+		ssTKzywWSxfYVCVVErvSfnb: {
+			id: 'ssTKzywWSxfYVCVVErvSfnb',
+			type: 'code'
+		},
+		jDeYDdttTydQBbCSWUcmSdY: {
+			id: 'jDeYDdttTydQBbCSWUcmSdY',
+			type: 'paragraph',
+			layout: 1,
+			content: {
+				content:
+					'Press Enter to create a new top-level block. Ctrl + Shift + ↓ ↑ cycles through block types.',
+				annotations: [
 					{
-						start_offset: 79,
-						end_offset: 84,
+						start_offset: 6,
+						end_offset: 11,
 						node_id: 'PkjDmTSvXRPdtwcYmSUScYs'
 					},
 					{
-						start_offset: 118,
-						end_offset: 137,
-						node_id: 'zAmCJVJvxsvPMaqHkBgyaNx'
+						start_offset: 45,
+						end_offset: 49,
+						node_id: 'ktaDsqgnHQSMBrTUGcqTUUz'
 					},
 					{
-						start_offset: 172,
-						end_offset: 192,
-						node_id: 'tFBaRUUJkEmftcgEyEqTAVB'
+						start_offset: 52,
+						end_offset: 57,
+						node_id: 'yWZRRQxqhEhzdZXGrPDceZP'
+					},
+					{
+						start_offset: 60,
+						end_offset: 61,
+						node_id: 'PNcfVQKsbXcDysAFjVdeEHy'
+					},
+					{
+						start_offset: 62,
+						end_offset: 63,
+						node_id: 'ssTKzywWSxfYVCVVErvSfnb'
+					}
+				]
+			}
+		},
+		HytEbtHQPEFqFezjtyXzWJn: {
+			id: 'HytEbtHQPEFqFezjtyXzWJn',
+			type: 'code'
+		},
+		ZEUCwYThgQJGGgaeasrGZVT: {
+			id: 'ZEUCwYThgQJGGgaeasrGZVT',
+			type: 'code'
+		},
+		bSHeWpBRwPYjMTDntDyKuGJ: {
+			id: 'bSHeWpBRwPYjMTDntDyKuGJ',
+			type: 'code'
+		},
+		SmWwtdZBgtXGuRYcaVpBWpn: {
+			id: 'SmWwtdZBgtXGuRYcaVpBWpn',
+			type: 'code'
+		},
+		ehJPXxeANCRWGeZshXDFbuN: {
+			id: 'ehJPXxeANCRWGeZshXDFbuN',
+			type: 'paragraph',
+			layout: 1,
+			content: {
+				content: 'Again Ctrl + Shift + ← → lets you flip through available layouts.',
+				annotations: [
+					{
+						start_offset: 6,
+						end_offset: 10,
+						node_id: 'HytEbtHQPEFqFezjtyXzWJn'
+					},
+					{
+						start_offset: 13,
+						end_offset: 18,
+						node_id: 'ZEUCwYThgQJGGgaeasrGZVT'
+					},
+					{
+						start_offset: 23,
+						end_offset: 24,
+						node_id: 'bSHeWpBRwPYjMTDntDyKuGJ'
+					},
+					{
+						start_offset: 21,
+						end_offset: 22,
+						node_id: 'SmWwtdZBgtXGuRYcaVpBWpn'
 					}
 				]
 			}
@@ -329,31 +596,22 @@ const FULL_DOC = {
 				]
 			}
 		},
-		FGHDfRZMdeYQeVJBarNFeHa: {
-			id: 'FGHDfRZMdeYQeVJBarNFeHa',
-			type: 'strong'
+		RYxjfHePFDdjENCfWRaqemY: {
+			id: 'RYxjfHePFDdjENCfWRaqemY',
+			type: 'code'
 		},
-		gkHzcWkcKRsYffDnwJtGnjG: {
-			id: 'gkHzcWkcKRsYffDnwJtGnjG',
-			type: 'strong'
-		},
-		QWUhWXRFPmmUEVjKnYJvtQW: {
-			id: 'QWUhWXRFPmmUEVjKnYJvtQW',
-			type: 'paragraph_sm',
-			layout: 2,
+		XJJCuZhHEJsWSnmGeurTRes: {
+			id: 'XJJCuZhHEJsWSnmGeurTRes',
+			type: 'paragraph',
+			layout: 1,
 			content: {
 				content:
-					'Pro tip: Press Esc to select the parent block. Useful when editing text but wanting to change the parent layout.',
+					'Press Esc to select the parent block. Useful when editing text but wanting to change the parent layout.',
 				annotations: [
 					{
-						start_offset: 0,
-						end_offset: 8,
-						node_id: 'FGHDfRZMdeYQeVJBarNFeHa'
-					},
-					{
-						start_offset: 15,
-						end_offset: 18,
-						node_id: 'gkHzcWkcKRsYffDnwJtGnjG'
+						start_offset: 6,
+						end_offset: 9,
+						node_id: 'RYxjfHePFDdjENCfWRaqemY'
 					}
 				]
 			}
@@ -366,10 +624,13 @@ const FULL_DOC = {
 			body: {
 				nodes: [
 					'zrUZReSCBXBtyTpWEnCqfus',
-					'GqVyqhnraWTBPCpCrAxmPwG',
+					'BHmangmnGSWDUkzjJXKbDjt',
+					'ZSgWGxPAGFbMqrCRXRQtnwe',
 					'CvSCfCmvzxqEHqxpMZeaVVF',
+					'jDeYDdttTydQBbCSWUcmSdY',
+					'ehJPXxeANCRWGeZshXDFbuN',
 					'evfXRMxeSsZMxKySzTnGKsC',
-					'QWUhWXRFPmmUEVjKnYJvtQW'
+					'XJJCuZhHEJsWSnmGeurTRes'
 				],
 				annotations: []
 			}
@@ -922,7 +1183,7 @@ const FULL_DOC = {
 			type: 'heading_3',
 			layout: 1,
 			content: {
-				content: 'Early Access Pricing',
+				content: 'Introductory Pricing',
 				annotations: []
 			}
 		},
@@ -1501,32 +1762,34 @@ const FULL_DOC = {
 				annotations: []
 			}
 		},
-		VZSAXNdpyXTfwJzbQhEDdZe: {
-			id: 'VZSAXNdpyXTfwJzbQhEDdZe',
-			type: 'heading_3',
+		CqTEkBNqegxMsErnwufYdHp: {
+			id: 'CqTEkBNqegxMsErnwufYdHp',
+			type: 'heading_2',
 			layout: 1,
 			content: {
-				content: 'How can I get it?',
+				content: 'Try Editable now',
 				annotations: []
 			}
 		},
-		ZntpMyjvcVjpjFDQxZnvSYR: {
-			id: 'ZntpMyjvcVjpjFDQxZnvSYR',
-			type: 'paragraph',
-			layout: 1,
-			content: {
-				content: 'Only Early Access members can purchase a license.',
-				annotations: []
-			}
-		},
-		VMpZbtCEwxBqnnkMBUEsKGE: {
-			id: 'VMpZbtCEwxBqnnkMBUEsKGE',
+		gMEmnxMvAaEMBfvxmUFzzeM: {
+			id: 'gMEmnxMvAaEMBfvxmUFzzeM',
 			type: 'button',
 			layout: 1,
-			href: 'https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform?usp=dialog',
+			href: '',
 			target: '_blank',
 			label: {
-				content: 'Join Early Access →',
+				content: 'Try',
+				annotations: []
+			}
+		},
+		qawneFduCjytdSMKSPbhBDk: {
+			id: 'qawneFduCjytdSMKSPbhBDk',
+			type: 'button',
+			layout: 2,
+			href: '',
+			target: '_self',
+			label: {
+				content: 'Download ⤓',
 				annotations: []
 			}
 		},
@@ -1534,7 +1797,7 @@ const FULL_DOC = {
 			id: 'fxbPhZADdeyCbysuCSwHNcA',
 			type: 'button_group',
 			buttons: {
-				nodes: ['VMpZbtCEwxBqnnkMBUEsKGE'],
+				nodes: ['gMEmnxMvAaEMBfvxmUFzzeM', 'qawneFduCjytdSMKSPbhBDk'],
 				annotations: []
 			}
 		},
@@ -1544,7 +1807,7 @@ const FULL_DOC = {
 			layout: 4,
 			colorset: 0,
 			body: {
-				nodes: ['VZSAXNdpyXTfwJzbQhEDdZe', 'ZntpMyjvcVjpjFDQxZnvSYR', 'fxbPhZADdeyCbysuCSwHNcA'],
+				nodes: ['CqTEkBNqegxMsErnwufYdHp', 'fxbPhZADdeyCbysuCSwHNcA'],
 				annotations: []
 			}
 		},
@@ -1715,25 +1978,25 @@ const FULL_DOC = {
 				annotations: []
 			}
 		},
-		GtffzHxEWNweDuhFgUZFeBe: {
-			id: 'GtffzHxEWNweDuhFgUZFeBe',
+		yeYXsdtjqkFgJtvdhjTemtP: {
+			id: 'yeYXsdtjqkFgJtvdhjTemtP',
 			type: 'nav_button',
-			layout: 2,
-			href: 'https://github.com/michael/editable-website#getting-started',
-			target: '_blank',
+			layout: 1,
+			href: '',
+			target: '_self',
 			label: {
-				content: 'Download  ⤓',
+				content: 'Try',
 				annotations: []
 			}
 		},
 		FKgjxHCeSbVZrdnPuxYkMYp: {
 			id: 'FKgjxHCeSbVZrdnPuxYkMYp',
 			type: 'nav_button',
-			layout: 1,
-			href: 'https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform',
+			layout: 2,
+			href: '',
 			target: '_blank',
 			label: {
-				content: 'Join Early Access →',
+				content: 'Download ⤓',
 				annotations: []
 			}
 		},
@@ -1754,7 +2017,7 @@ const FULL_DOC = {
 				annotations: []
 			},
 			end_items: {
-				nodes: ['GtffzHxEWNweDuhFgUZFeBe', 'FKgjxHCeSbVZrdnPuxYkMYp'],
+				nodes: ['yeYXsdtjqkFgJtvdhjTemtP', 'FKgjxHCeSbVZrdnPuxYkMYp'],
 				annotations: []
 			}
 		},
@@ -1784,6 +2047,14 @@ const FULL_DOC = {
 			layout: 2,
 			content: {
 				content: '© Ken Experiences GmbH 2026',
+				annotations: []
+			}
+		},
+		footer_link_category_1: {
+			id: 'footer_link_category_1',
+			type: 'footer_link_category',
+			title: {
+				content: 'On this page',
 				annotations: []
 			}
 		},
@@ -1827,14 +2098,6 @@ const FULL_DOC = {
 				annotations: []
 			}
 		},
-		footer_link_category_1: {
-			id: 'footer_link_category_1',
-			type: 'footer_link_category',
-			title: {
-				content: 'On this page',
-				annotations: []
-			}
-		},
 		fcSSWQUTYajjknPChgGsPZz: {
 			id: 'fcSSWQUTYajjknPChgGsPZz',
 			type: 'footer_link_column',
@@ -1846,6 +2109,14 @@ const FULL_DOC = {
 					'eDAnnFjNdZpzYMtpSqReBxf',
 					'GwPeRFYtAyrcCMfpuyzdWZp'
 				],
+				annotations: []
+			}
+		},
+		footer_link_category_2: {
+			id: 'footer_link_category_2',
+			type: 'footer_link_category',
+			title: {
+				content: 'GitHub',
 				annotations: []
 			}
 		},
@@ -1869,19 +2140,19 @@ const FULL_DOC = {
 			},
 			target: '_blank'
 		},
-		footer_link_category_2: {
-			id: 'footer_link_category_2',
-			type: 'footer_link_category',
-			title: {
-				content: 'GitHub',
-				annotations: []
-			}
-		},
 		footer_column_2: {
 			id: 'footer_column_2',
 			type: 'footer_link_column',
 			items: {
 				nodes: ['footer_link_category_2', 'uavzfSnSpTRrHSfJpbfvpsh', 'footer_link_2_1'],
+				annotations: []
+			}
+		},
+		footer_link_category_3: {
+			id: 'footer_link_category_3',
+			type: 'footer_link_category',
+			title: {
+				content: 'Videos',
 				annotations: []
 			}
 		},
@@ -1902,14 +2173,6 @@ const FULL_DOC = {
 			target: '_blank',
 			label: {
 				content: 'Update 2025-10',
-				annotations: []
-			}
-		},
-		footer_link_category_3: {
-			id: 'footer_link_category_3',
-			type: 'footer_link_category',
-			title: {
-				content: 'Videos',
 				annotations: []
 			}
 		},
