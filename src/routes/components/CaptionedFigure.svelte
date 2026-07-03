@@ -5,7 +5,7 @@
 	import MediaProperty from './MediaProperty.svelte';
 
 	const svedit = getContext('svedit');
-	let { path, node_array_annotation: section = null } = $props();
+	let { path, annotation: section = null } = $props();
 	let media_node = $derived(svedit.session.get([...path, 'media']));
 	let padding_top_wide = $derived(!section || section?.is_start);
 	let padding_bottom_wide = $derived(!section || section?.is_end);

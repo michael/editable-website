@@ -4,7 +4,7 @@
 	import { TW_PAGE_PADDING_X, TW_LIMITER } from '../tailwind_theme.js';
 
 	const svedit = getContext('svedit');
-	let { path, node_array_annotation: section = null } = $props();
+	let { path, annotation: section = null } = $props();
 	let node = $derived(svedit.session.get(path));
 	let layout = $derived(node.layout || 1);
 	let colorset_class = $derived(node.colorset ? `ew-colorset-${node.colorset}` : '');

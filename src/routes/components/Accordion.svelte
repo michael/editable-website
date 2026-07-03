@@ -4,7 +4,7 @@
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 
 	const svedit = getContext('svedit');
-	let { path, node_array_annotation: section = null } = $props();
+	let { path, annotation: section = null } = $props();
 	let node = $derived(svedit.session.get(path));
 	let accordion_layout = $derived(node.layout || 1);
 	let padding_top_wide = $derived(!section || section?.is_start);
