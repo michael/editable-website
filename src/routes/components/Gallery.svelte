@@ -2,7 +2,7 @@
 	import { getContext } from 'svelte';
 	import { Node, NodeArrayProperty } from 'svedit';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
-	let { path, node_array_annotation: section = null } = $props();
+	let { path, annotation: section = null } = $props();
 
 	const svedit = getContext('svedit');
 	let node = $derived(svedit.session.get(path));

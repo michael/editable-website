@@ -1,7 +1,7 @@
 <script>
 	import { Node, TextProperty } from 'svedit';
 	import { TW_PAGE_PADDING_X } from '../tailwind_theme.js';
-	let { path, node_array_annotation: section = null } = $props();
+	let { path, annotation: section = null } = $props();
 	let padding_top_wide = $derived(!section || section?.is_start);
 	let padding_bottom_wide = $derived(!section || section?.is_end);
 </script>

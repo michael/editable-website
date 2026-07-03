@@ -5,7 +5,7 @@
 	import MediaProperty from './MediaProperty.svelte';
 
 	const svedit = getContext('svedit');
-	let { path, node_array_annotation: section = null } = $props();
+	let { path, annotation: section = null } = $props();
 	let node = $derived(svedit.session.get(path));
 	let media_node = $derived(svedit.session.get([...path, 'media']));
 	let figure_layout = $derived(node.layout || 1);
