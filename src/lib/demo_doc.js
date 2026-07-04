@@ -2228,7 +2228,7 @@ const FULL_DOC = {
 			href: 'https://github.com/michael/editable-website',
 			target: '_blank',
 			label: {
-				content: 'Editable Website',
+				content: 'Editable',
 				annotations: []
 			}
 		},

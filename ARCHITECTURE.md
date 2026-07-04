@@ -2,7 +2,7 @@
 
 > **Work in progress** — this document is actively being developed and may change significantly. It was written with AI assistance and iterated on to serve as a specification for implementation.
 
-This document describes the backend architecture for Editable Website v2.
+This document describes the backend architecture for Editable v2.
 
 ## Next implementation draft — admin authentication
 
@@ -47,7 +47,7 @@ This step does not include:
 
 ## Overview
 
-Editable Website is a SvelteKit application that lets site owners edit content directly in the browser. The editor (Svedit) works with a graph-based document model — a flat map of nodes with references between them. The backend stores these documents in SQLite and serves them to the frontend, stitching together shared content (nav, footer) with page-specific content into a single document that Svedit can edit locally.
+Editable is a SvelteKit application that lets site owners edit content directly in the browser. The editor (Svedit) works with a graph-based document model — a flat map of nodes with references between them. The backend stores these documents in SQLite and serves them to the frontend, stitching together shared content (nav, footer) with page-specific content into a single document that Svedit can edit locally.
 
 The production architecture is database-backed and supports multiple pages, but the project must also continue to support static preview/local development mode (for example `VERCEL=1`) where the app falls back to the demo document. In that mode, only the `/` route needs to work, multi-page features are disabled, authentication is disabled, and code paths must avoid hard dependencies on server-only runtime features that would break static deployments.
 
@@ -55,7 +55,7 @@ The content model includes reusable `list` and `button_group` blocks for richer 
 
 The node-type cycling command is intentionally conservative once a node contains user data. A node is considered empty only when every property in its subtree is either empty or equal to the property's schema/default value, except for `layout`, which is ignored by the emptiness check so layout changes do not block destructive type switches. Empty nodes may cycle to any other type allowed by the containing `node_array`. Non-empty nodes may only cycle to types with an exactly equivalent property schema, and the replacement node carries over all existing property values. Even for schema-equivalent switches, cycling should replace the node root with a new id rather than mutating the existing node's `type`; referenced child nodes may be reused so compatible subtree data is preserved.
 
-In full runtime mode, Editable Website also supports a simple owner-only admin authentication model. Whoever knows the admin password can unlock editing and private page-management features. This is intentionally not a multi-user system — there is no user database, no roles, and no per-user ownership model. Authentication exists only to distinguish between:
+In full runtime mode, Editable also supports a simple owner-only admin authentication model. Whoever knows the admin password can unlock editing and private page-management features. This is intentionally not a multi-user system — there is no user database, no roles, and no per-user ownership model. Authentication exists only to distinguish between:
 
 1. **Admin mode** — authenticated with the configured admin password, can edit and save, browse drafts, create pages, delete pages, and use the full page browser
 2. **Edit-for-fun mode** — unauthenticated, can temporarily edit the currently open page in the browser UI, but cannot save changes or access private site-management features
@@ -67,17 +67,17 @@ The app uses Svelte's experimental async features and SvelteKit's remote functio
 
 ```js
 const config = {
-  kit: {
-    adapter: adapter(),
-    experimental: {
-      remoteFunctions: true
-    }
-  },
-  compilerOptions: {
-    experimental: {
-      async: true
-    }
-  }
+	kit: {
+		adapter: adapter(),
+		experimental: {
+			remoteFunctions: true
+		}
+	},
+	compilerOptions: {
+		experimental: {
+			async: true
+		}
+	}
 };
 ```
 
@@ -93,7 +93,7 @@ const config = {
 import migrate from '$lib/server/migrate.js';
 
 export async function init() {
-  migrate();
+	migrate();
 }
 ```
 
@@ -110,7 +110,7 @@ There is no `user` object in this model. The only server-side auth state needed 
 
 ## Static / Vercel compatibility mode
 
-Editable Website must preserve a lightweight static-compatible mode for preview deployments and single-page local development. This mode is currently used when the app runs in a Vercel-style environment (`VERCEL=1`) and should keep working even as the full multi-page setup is introduced.
+Editable must preserve a lightweight static-compatible mode for preview deployments and single-page local development. This mode is currently used when the app runs in a Vercel-style environment (`VERCEL=1`) and should keep working even as the full multi-page setup is introduced.
 
 **Requirements:**
 
@@ -243,7 +243,7 @@ Assets (images, videos) are stored as files in `ASSET_PATH`. Assets are referenc
 
 ### Authentication model
 
-Editable Website uses a single shared admin password configured via the `ADMIN_PASSWORD` environment variable.
+Editable uses a single shared admin password configured via the `ADMIN_PASSWORD` environment variable.
 
 Properties of this model:
 
@@ -270,6 +270,7 @@ The authentication flow is:
 Logout deletes the session row and clears the cookie.
 
 Admin sessions use a sliding expiration window of two weeks:
+
 - when a session is created, `expires` is set to `now + 2 weeks`
 - when an authenticated admin makes a meaningful authenticated request, the server extends `expires` to `now + 2 weeks`
 - expired sessions are treated as invalid and deleted on lookup
@@ -420,11 +421,13 @@ This model is intentionally simple, but it still needs basic hardening:
 Page documents continue to have a stable internal `document_id`, but public page URLs are **slug-based** for non-home pages.
 
 **Key rule:**
+
 - `document_id` is the durable internal identity
 - non-home pages have a human-readable public `slug`
 - the home page is a special case whose canonical public URL is always `/`
 
 Examples:
+
 - internal id: `WRfteHhfPvzJBJjvFxQCEpg`
 - public slug: `survey`
 - public URL: `/survey`
@@ -436,19 +439,24 @@ This separation keeps internal references stable while allowing pretty URLs, whi
 Auto-generated slugs are derived from the page summary title using the `slugify` package.
 
 Use:
+
 - `slugify(title, { lower: true, strict: true, trim: true })`
 
 If no title can be extracted on save:
+
 - fall back to the page's `document_id` as the slug source
 
 If the generated slug is empty after slugification:
+
 - fall back to the page's `document_id`
 
 If the candidate slug collides with an existing active slug:
+
 - generate a unique slug deterministically by suffixing
 - examples: `survey`, `survey-2`, `survey-3`, ...
 
 Auto-generated slugs are assigned once on first save and then remain stable until the user explicitly changes them:
+
 - they are created on first save
 - they do **not** auto-update when the extracted title changes later
 - they must **not** overwrite a user-defined custom slug
@@ -460,6 +468,7 @@ Auto-generated slugs are assigned once on first save and then remain stable unti
 The system needs a durable mapping from non-home page slugs to page documents, including old slugs that should continue to resolve.
 
 A non-home page therefore has:
+
 - one **current active slug**
 - zero or more **historical slugs**
 
@@ -468,10 +477,12 @@ Historical slugs exist so that when a page's active slug is changed later, old s
 This requires a slug mapping table in the database rather than storing only a single slug string on the page row.
 
 Conceptually, the mapping must support:
+
 - resolving a slug to a `document_id`
 - distinguishing the current active slug from historical aliases
 
 The home page is excluded from this mapping:
+
 - its canonical URL is always `/`
 - it does not need a stored slug row
 - it is treated as a special case in routing and in the page browser
@@ -481,10 +492,12 @@ The home page is excluded from this mapping:
 Admins can change a page's Page URL from the page browser ellipsis menu.
 
 When a user changes a page's slug:
+
 - that slug becomes the page's active slug
 - the previously active slug becomes a historical alias unless that slug is explicitly reassigned to another page
 
 User-facing behavior should stay simple:
+
 - the UI shows the current Page URL
 - the UI can describe it in user-facing copy as "the Page URL your page will be reachable at"
 - the UI can present it as `example.com/[your-slug-here]`, with only the part after the slash editable
@@ -503,6 +516,7 @@ If a user tries to assign a slug that is already used elsewhere, there are two c
 This is rejected.
 
 The UI should explain that:
+
 - this address is currently in use by another page
 - the user must first rename that other page if they want to free up this address
 - no automatic reassignment of another page's active slug is ever performed in the background
@@ -514,6 +528,7 @@ This keeps active page URLs stable and avoids surprising background rewrites.
 This is allowed immediately.
 
 When this happens:
+
 1. remove that historical alias from the page that currently owns it
 2. assign the slug as the new active slug of the target page
 3. if the target page's active slug changed, rewrite all internal links that target the target page
@@ -526,10 +541,12 @@ Historical alias ownership is therefore an internal implementation detail, not a
 Internal page links are slug-based, so whenever a page's active slug changes, all internal links that target that page must be updated to the new slug.
 
 This applies to:
+
 - manually changing a page slug
 - enforcing reassignment of a historical alias from one page to another
 
 This is a deliberate tradeoff:
+
 - stable ids would make link maintenance simpler
 - but pretty shareable URLs are more important for this product
 
@@ -546,6 +563,7 @@ Slug resolution must behave as follows:
 - if the slug is unknown, return 404
 
 For canonicalization:
+
 - if a request comes in via a historical alias, the app should still resolve the page
 - the response must issue a `301` redirect to the page's current active slug
 - old slugs continue to work only as redirecting aliases unless that slug has been explicitly reassigned to another page
@@ -619,6 +637,7 @@ This id is stable from the beginning, even before the document is persisted. The
 The transient `/new` document must be composed from the **current shared nav and footer documents in the database**, not from the static demo document. This ensures that if shared nav or footer content has been edited elsewhere, the new page starts from that latest shared state.
 
 On first save:
+
 - the client sends that already-generated id to the server with `create: true`
 - the server persists the page under that id if it does not already exist
 - the server also assigns the page its first active slug
@@ -642,16 +661,16 @@ There are two media node types: `image` and `video`. Each has the same visual pr
 
 ```json
 {
-    "id": "feature_1_image",
-    "type": "image",
-    "src": "c4b519da4c0a6512b5d9519aac0d9df7fab9152a6df109515456ada4702fabdb.webp",
-    "width": 1600,
-    "height": 900,
-    "alt": "Feature image",
-    "scale": 1.0,
-    "focal_point_x": 0.5,
-    "focal_point_y": 0.5,
-    "object_fit": "cover"
+	"id": "feature_1_image",
+	"type": "image",
+	"src": "c4b519da4c0a6512b5d9519aac0d9df7fab9152a6df109515456ada4702fabdb.webp",
+	"width": 1600,
+	"height": 900,
+	"alt": "Feature image",
+	"scale": 1.0,
+	"focal_point_x": 0.5,
+	"focal_point_y": 0.5,
+	"object_fit": "cover"
 }
 ```
 
@@ -659,16 +678,16 @@ There are two media node types: `image` and `video`. Each has the same visual pr
 
 ```json
 {
-    "id": "hero_video",
-    "type": "video",
-    "src": "e7a3f1bc...abcd.mp4",
-    "width": 1920,
-    "height": 1080,
-    "alt": "Product demo",
-    "scale": 1.0,
-    "focal_point_x": 0.5,
-    "focal_point_y": 0.5,
-    "object_fit": "cover"
+	"id": "hero_video",
+	"type": "video",
+	"src": "e7a3f1bc...abcd.mp4",
+	"width": 1920,
+	"height": 1080,
+	"alt": "Product demo",
+	"scale": 1.0,
+	"focal_point_x": 0.5,
+	"focal_point_y": 0.5,
+	"object_fit": "cover"
 }
 ```
 
@@ -734,8 +753,8 @@ The paste handler uses `get_media_type(file)` to map each file's MIME type to a 
 ```js
 /** @returns {'image' | 'video'} */
 function get_media_type(file) {
-    if (file.type.startsWith('video/')) return 'video';
-    return 'image';
+	if (file.type.startsWith('video/')) return 'video';
+	return 'image';
 }
 ```
 
@@ -821,13 +840,13 @@ variant URL  = /assets/{stem}/w320.webp
 
 ```html
 <img
-    src="/assets/c4b519da...fabdb.webp"
-    srcset="
-        /assets/c4b519da...fabdb/w320.webp 320w,
-        /assets/c4b519da...fabdb/w640.webp 640w,
-        /assets/c4b519da...fabdb/w1024.webp 1024w,
-        /assets/c4b519da...fabdb.webp 1600w
-    "
+	src="/assets/c4b519da...fabdb.webp"
+	srcset="
+		/assets/c4b519da...fabdb/w320.webp   320w,
+		/assets/c4b519da...fabdb/w640.webp   640w,
+		/assets/c4b519da...fabdb/w1024.webp 1024w,
+		/assets/c4b519da...fabdb.webp       1600w
+	"
 />
 ```
 
@@ -839,12 +858,12 @@ Different media types are handled differently:
 
 The asset id always includes the file extension. The stem (id without extension) is used to derive the variant directory.
 
-| Type | Node type | Client processing | Asset id example | Variants |
-|---|---|---|---|---|
-| Static images (JPEG, PNG, WebP, HEIC) | `image` | Resize to `MAX_IMAGE_WIDTH`, convert to WebP via WASM | `c4b519da...fabdb.webp` | Yes (`c4b519da...fabdb/w320.webp`, etc.) |
-| Animated GIFs | `image` | Passthrough | `c4b519da...fabdb.gif` | No |
-| SVGs | `image` | Passthrough | `c4b519da...fabdb.svg` | No |
-| Videos (MP4) | `video` | Passthrough | `c4b519da...fabdb.mp4` | No |
+| Type                                  | Node type | Client processing                                     | Asset id example        | Variants                                 |
+| ------------------------------------- | --------- | ----------------------------------------------------- | ----------------------- | ---------------------------------------- |
+| Static images (JPEG, PNG, WebP, HEIC) | `image`   | Resize to `MAX_IMAGE_WIDTH`, convert to WebP via WASM | `c4b519da...fabdb.webp` | Yes (`c4b519da...fabdb/w320.webp`, etc.) |
+| Animated GIFs                         | `image`   | Passthrough                                           | `c4b519da...fabdb.gif`  | No                                       |
+| SVGs                                  | `image`   | Passthrough                                           | `c4b519da...fabdb.svg`  | No                                       |
+| Videos (MP4)                          | `video`   | Passthrough                                           | `c4b519da...fabdb.mp4`  | No                                       |
 
 ### Image size constraints
 
@@ -1187,6 +1206,7 @@ The slug editing flow must cover these cases:
 #### User-facing slug editing model
 
 The page browser should present Page URL editing in a simple way:
+
 - show the current Page URL
 - allow the user to change it
 - describe it in user-facing copy as "the Page URL your page will be reachable at"
@@ -1194,6 +1214,7 @@ The page browser should present Page URL editing in a simple way:
 - do not expose "auto mode" or "custom mode" terminology in the UI
 
 This gives users a simple mental model:
+
 - "the Page URL is whatever is currently shown"
 - "the system picks an initial Page URL for me"
 - "if I change it manually, the system respects that"
@@ -1201,18 +1222,21 @@ This gives users a simple mental model:
 #### 1. Setting a slug that is unused
 
 If the requested slug is not currently used as either an active slug or a historical alias:
+
 - assign it to the page as the new active slug
 - preserve the previous active slug as a historical alias
 
 #### 2. Setting a slug equal to the page's own current active slug
 
 This is forbidden as a no-op edit:
+
 - the UI should reject it
 - no database changes are made
 
 #### 3. Setting a slug equal to the page's own historical alias
 
 If the requested slug is already a historical alias of the same page:
+
 - promote that alias back to the page's active slug
 - remove the historical alias entry for that slug
 - move the previously active slug into historical aliases
@@ -1221,10 +1245,12 @@ If the requested slug is already a historical alias of the same page:
 #### 4. Setting a slug that is a historical alias of another page
 
 Historical aliases are still reserved. The UI must offer:
+
 - `Cancel`
 - `Enforce`
 
 If the user chooses `Enforce`:
+
 1. remove that historical alias from the page that currently owns it
 2. assign the slug as the new active slug of the target page
 3. rewrite internal links referencing the target page
@@ -1236,6 +1262,7 @@ This avoids ambiguous resolution and keeps slug ownership explicit.
 This is rejected.
 
 The UI must explain that:
+
 - the address is already in use by another page
 - the user must first rename that other page if they want to use this address here
 - no force-takeover flow exists for active page URLs
@@ -1247,11 +1274,13 @@ This keeps the behavior predictable and avoids automatically changing another pa
 Deleting a page removes its active slug and all historical aliases.
 
 When a page is deleted:
+
 1. remove its active slug and all historical aliases from the slug mapping table
 2. delete the page document
 3. update `document_refs` accordingly
 
 Broken links are acceptable after deletion. The intended workflow is:
+
 - if a page is still linked, the user should first remove those references so the page becomes a draft again
 - then the user can delete it
 
@@ -1268,7 +1297,7 @@ The ellipsis menu is implemented as a dialog using anchor positioning. It can be
 
 ## Authentication
 
-Editable Website is a **single-user application**. There is one admin account. No user registration, no roles, no multi-tenancy.
+Editable is a **single-user application**. There is one admin account. No user registration, no roles, no multi-tenancy.
 
 ### Admin password
 
@@ -1340,9 +1369,9 @@ For example, `SupportingMedia.svelte` handles centering itself based on the pare
 
 ```svelte
 <div style:margin={is_centered ? '0 auto' : undefined}>
-    <SizableViewbox {path}>
-        <MediaProperty path={[...path, 'media']} />
-    </SizableViewbox>
+	<SizableViewbox {path}>
+		<MediaProperty path={[...path, 'media']} />
+	</SizableViewbox>
 </div>
 ```
 
@@ -1350,7 +1379,7 @@ And `Footer.svelte` uses it for the logo with a different media property name:
 
 ```svelte
 <SizableViewbox {path} media_property="logo" placeholder_aspect_ratio={1}>
-    <MediaProperty path={[...path, 'logo']} />
+	<MediaProperty path={[...path, 'logo']} />
 </SizableViewbox>
 ```
 
@@ -1402,9 +1431,9 @@ It uses a children snippet for the inner content, provides drag handles for resi
 
 ```css
 .sizable-viewbox {
-    max-width: var(--viewbox-max-width);  /* e.g. 400px, or 100% when 0 */
-    aspect-ratio: var(--viewbox-aspect-ratio);  /* e.g. 1.333, or auto when 0 */
-    width: 100%;  /* fill up to max-width, naturally capped by parent */
+	max-width: var(--viewbox-max-width); /* e.g. 400px, or 100% when 0 */
+	aspect-ratio: var(--viewbox-aspect-ratio); /* e.g. 1.333, or auto when 0 */
+	width: 100%; /* fill up to max-width, naturally capped by parent */
 }
 ```
 
@@ -1422,7 +1451,7 @@ Both gestures write to the svedit session via transactions (`svedit.session.tr` 
 
 ### Interaction with MediaControls
 
-`MediaControls` (zoom, pan, focal point, double-click to reset scale) still works inside the viewbox. The viewbox only controls the *container* dimensions; `MediaProperty` and `MediaControls` handle everything inside it as usual.
+`MediaControls` (zoom, pan, focal point, double-click to reset scale) still works inside the viewbox. The viewbox only controls the _container_ dimensions; `MediaProperty` and `MediaControls` handle everything inside it as usual.
 
 ## Future: optional S3 storage
 
