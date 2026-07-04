@@ -1,275 +1,379 @@
 # Common Content Model
 
-The Common Content Model (CCM) describes the portable content schema used by Editable Website. It aims to cover 80%+ of the content structures most websites need.
+The Common Content Model (CCM) describes the portable content schema used by Editable Website. It aims to cover the common content structures most websites need while staying small enough that site owners can understand and edit it directly.
 
-This write-up is AI-assisted and currently a work in progress. Its purpose is to support discussion about the content model with Editable Website users.
+This document describes the current schema in [`src/lib/document_schema.js`](src/lib/document_schema.js).
 
-A document is a graph of nodes stored by id. Each node has an `id`, a `type`, and type-specific properties. The CCM uses Svedit schema primitives such as `string`, `integer`, `number`, `annotated_text`, `node`, and `node_array`; see the [Svedit schema documentation](https://github.com/michael/svedit#schema) for the underlying data type definitions.
+## Model vocabulary
 
-**Node types**
+Editable Website documents are graphs of nodes stored by id. Each node has:
 
-[`paragraph`](#node-paragraph) · [`paragraph_sm`](#node-paragraph_sm) · [`paragraph_lg`](#node-paragraph_lg) · [`paragraph_xl`](#node-paragraph_xl) · [`heading_1`](#node-heading_1) · [`heading_2`](#node-heading_2) · [`heading_3`](#node-heading_3) · [`heading_4`](#node-heading_4) · [`heading_5`](#node-heading_5) · [`list`](#node-list) · [`list_item`](#node-list_item) · [`preformatted`](#node-preformatted) · [`image`](#node-image) · [`video`](#node-video) · [`button`](#node-button) · [`supporting_media`](#node-supporting_media) · [`captioned_figure`](#node-captioned_figure) · [`page`](#node-page) · [`prose_grid`](#node-prose_grid) · [`prose`](#node-prose) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`titled_gallery`](#node-titled_gallery) · [`titled_gallery_item`](#node-titled_gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item)
+- `id`
+- `type`
+- type-specific properties
 
-**Annotation types**
+The model uses a few naming conventions consistently:
 
-[`strong`](#annotation-strong) · [`emphasis`](#annotation-emphasis) · [`highlight`](#annotation-highlight) · [`link`](#annotation-link)
+- `content` is reserved for the string payload inside text properties.
+- `body` is a node array containing authored nested content.
+- `items` is a node array containing repeated structured children.
+- `label`, `title`, `description`, and `meta` are text properties with semantic meaning in their node.
 
-## Node: `paragraph`
+### Text properties
 
-`paragraph` is the default rich text node for body copy inside editorial flows such as `prose`, `prose_grid_item`, `feature`, and `accordion_item`.
+Schema type:
 
-| Property  | Type             | Default | Allowed values | Allowed annotation types                  | Meaning                                   |
-| --------- | ---------------- | ------- | -------------- | ----------------------------------------- | ----------------------------------------- |
-| `layout`   | `integer`        | `1`     | `1`, `2`       | N/A                                       | Layout 1 is the standard body style. Layout 2 is muted secondary body copy. |
-| `content` | `annotated_text` | None    | N/A            | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
+```js
+{
+  type: 'text',
+  annotation_types: ['strong', 'emphasis'],
+  allow_newlines: true
+}
+```
 
-## Node: `paragraph_sm`
+Document value shape:
 
-`paragraph_sm` is a small editorial text node for supplementary copy inside rich text flows.
+```js
+{
+  content: 'Editable text',
+  annotations: []
+}
+```
 
-| Property  | Type             | Default | Allowed values | Allowed annotation types                  | Meaning                                              |
-| --------- | ---------------- | ------- | -------------- | ----------------------------------------- | ---------------------------------------------------- |
-| `layout`   | `integer`        | `1`     | `1`, `2`       | N/A                                       | Layout 1 is the standard body style. Layout 2 is muted secondary body copy. |
-| `content` | `annotated_text` | None    | N/A            | `strong`, `emphasis`, `highlight`, `link` | Editable small paragraph text. Newlines are allowed. |
+### Node arrays
 
-## Node: `paragraph_lg`
+Schema type:
 
-`paragraph_lg` is a larger editorial text node for introductory copy.
+```js
+{
+  type: 'node_array',
+  node_types: ['paragraph', 'heading_2'],
+  annotation_types: ['section'],
+  default_node_type: 'paragraph'
+}
+```
 
-| Property  | Type             | Default | Allowed values | Allowed annotation types                  | Meaning                                   |
-| --------- | ---------------- | ------- | -------------- | ----------------------------------------- | ----------------------------------------- |
-| `layout`   | `integer`        | `1`     | `1`, `2`       | N/A                                       | Layout 1 is the standard body style. Layout 2 is muted secondary body copy. |
-| `content` | `annotated_text` | None    | N/A            | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
+Document value shape:
 
-## Node: `paragraph_xl`
+```js
+{
+  nodes: ['node_id_1', 'node_id_2'],
+  annotations: []
+}
+```
 
-`paragraph_xl` is a very large editorial text node for prominent introductory copy.
+`annotation_types` on a node array enables annotations over child-node ranges. The current shared page body supports `section` annotations.
 
-| Property  | Type             | Default | Allowed values | Allowed annotation types                  | Meaning                                   |
-| --------- | ---------------- | ------- | -------------- | ----------------------------------------- | ----------------------------------------- |
-| `layout`   | `integer`        | `1`     | `1`, `2`       | N/A                                       | Layout 1 is the standard body style. Layout 2 is muted secondary body copy. |
-| `content` | `annotated_text` | None    | N/A            | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
+### Annotation groups
 
-## Node: `heading_1`
+The schema uses these practical groups:
 
-`heading_1` is the primary editorial heading node.
+| Name                  | Annotation types                                  |
+| --------------------- | ------------------------------------------------- |
+| Rich text annotations | `strong`, `emphasis`, `code`, `highlight`, `link` |
+| Minimal annotations   | `emphasis`, `highlight`                           |
+| No annotations        | none                                              |
 
-| Property  | Type             | Default | Allowed values | Allowed annotation types                  | Meaning                                   |
-| --------- | ---------------- | ------- | -------------- | ----------------------------------------- | ----------------------------------------- |
-| `layout`   | `integer`        | `1`     | `1`, `2`       | N/A                                       | Layout 1 is the standard heading style. Layout 2 is muted secondary copy. |
-| `content` | `annotated_text` | None    | N/A            | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
+## Node types
 
-## Node: `heading_2`
+[`page`](#node-page) · [`nav`](#node-nav) · [`nav_link`](#node-nav_link) · [`nav_button`](#node-nav_button) · [`nav_image`](#node-nav_image) · [`footer`](#node-footer) · [`footer_link_column`](#node-footer_link_column) · [`footer_link_category`](#node-footer_link_category) · [`footer_link`](#node-footer_link) · [`prose`](#node-prose) · [`prose_grid`](#node-prose_grid) · [`prose_grid_item`](#node-prose_grid_item) · [`paragraph`](#node-paragraph) · [`paragraph_sm`](#node-paragraph_sm) · [`paragraph_lg`](#node-paragraph_lg) · [`paragraph_xl`](#node-paragraph_xl) · [`heading_1`](#node-heading_1) · [`heading_2`](#node-heading_2) · [`heading_3`](#node-heading_3) · [`heading_4`](#node-heading_4) · [`heading_5`](#node-heading_5) · [`list`](#node-list) · [`list_item`](#node-list_item) · [`preformatted`](#node-preformatted) · [`button_group`](#node-button_group) · [`button`](#node-button) · [`image`](#node-image) · [`video`](#node-video) · [`figure`](#node-figure) · [`captioned_figure`](#node-captioned_figure) · [`supporting_media`](#node-supporting_media) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item) · [`descriptive_listing`](#node-descriptive_listing) · [`descriptive_listing_item`](#node-descriptive_listing_item) · [`accordion`](#node-accordion) · [`accordion_item`](#node-accordion_item) · [`feature`](#node-feature)
 
-`heading_2` is the secondary editorial heading node.
+## Annotation types
 
-| Property  | Type             | Default | Allowed values | Allowed annotation types                  | Meaning                                   |
-| --------- | ---------------- | ------- | -------------- | ----------------------------------------- | ----------------------------------------- |
-| `layout`   | `integer`        | `1`     | `1`, `2`       | N/A                                       | Layout 1 is the standard heading style. Layout 2 is muted secondary copy. |
-| `content` | `annotated_text` | None    | N/A            | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
+[`strong`](#annotation-strong) · [`emphasis`](#annotation-emphasis) · [`code`](#annotation-code) · [`highlight`](#annotation-highlight) · [`link`](#annotation-link) · [`section`](#annotation-section)
 
-## Node: `heading_3`
+## Shared content groups
 
-`heading_3` is the tertiary editorial heading node.
+### Rich content nodes
 
-| Property  | Type             | Default | Allowed values | Allowed annotation types                  | Meaning                                   |
-| --------- | ---------------- | ------- | -------------- | ----------------------------------------- | ----------------------------------------- |
-| `layout`   | `integer`        | `1`     | `1`, `2`       | N/A                                       | Layout 1 is the standard heading style. Layout 2 is muted secondary copy. |
-| `content` | `annotated_text` | None    | N/A            | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
+Used by `prose.body`, `prose_grid_item.body`, `feature.body`, and `footer.body`:
 
-## Node: `heading_4`
+```js
+[
+	'paragraph_sm',
+	'paragraph',
+	'paragraph_lg',
+	'paragraph_xl',
+	'heading_1',
+	'heading_2',
+	'heading_3',
+	'heading_4',
+	'heading_5',
+	'list',
+	'supporting_media',
+	'button_group'
+];
+```
 
-`heading_4` is a lower-priority editorial heading node.
+### Rich content nodes without headings
 
-| Property  | Type             | Default | Allowed values | Allowed annotation types                  | Meaning                                   |
-| --------- | ---------------- | ------- | -------------- | ----------------------------------------- | ----------------------------------------- |
-| `layout`   | `integer`        | `1`     | `1`, `2`       | N/A                                       | Layout 1 is the standard heading style. Layout 2 is muted secondary copy. |
-| `content` | `annotated_text` | None    | N/A            | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
+Used by `accordion_item.body`:
 
-## Node: `heading_5`
-
-`heading_5` is the least prominent heading node.
-
-| Property  | Type             | Default | Allowed values | Allowed annotation types                  | Meaning                                   |
-| --------- | ---------------- | ------- | -------------- | ----------------------------------------- | ----------------------------------------- |
-| `layout`   | `integer`        | `1`     | `1`, `2`       | N/A                                       | Layout 1 is the standard heading style. Layout 2 is muted secondary copy. |
-| `content` | `annotated_text` | None    | N/A            | `strong`, `emphasis`, `highlight`, `link` | Editable rich text. Newlines are allowed. |
-
-## Node: `list_item`
-
-`list_item` is a single list row inside `list`.
-
-| Property  | Type             | Default | Allowed annotation types                  | Meaning                                            |
-| --------- | ---------------- | ------- | ----------------------------------------- | -------------------------------------------------- |
-| `content` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Editable list item text. Newlines are not allowed. |
-
-## Node: `preformatted`
-
-`preformatted` is a monospaced block for content that should preserve spacing and line breaks exactly as entered. It is useful for ASCII art, technical illustrations, logs, and similar fixed-width content. It accepts the same `annotated_text` storage shape as regular text, but no annotations are allowed.
-
-| Property  | Type             | Default | Allowed annotation types | Meaning                                       |
-| --------- | ---------------- | ------- | ------------------------ | --------------------------------------------- |
-| `content` | `annotated_text` | None    | No annotations           | Preserved text content. Newlines are allowed. |
-
-## Node: `list`
-
-`list` is a structured list block for editorial flows such as `prose` or accordion bodies.
-
-| Property     | Type         | Default     | Allowed node types | Meaning                               |
-| ------------ | ------------ | ----------- | ------------------ | ------------------------------------- |
-| `layout`     | `integer`    | `1`         | `1`, `2`, `3`, `4` | Marker style for the rendered list.   |
-| `list_items` | `node_array` | `list_item` | `list_item`        | Ordered list items owned by the list. |
-
-### List layouts
-
-| Value | Meaning                  |
-| ----- | ------------------------ |
-| `1`   | Dash markers.            |
-| `2`   | Checkmark markers.       |
-| `3`   | Zero-padded numbering.   |
-| `4`   | Lowercase latin letters. |
-
-## Node: `image`
-
-`image` stores an image asset and its display controls.
-
-| Property        | Type      | Default | Meaning                                                             |
-| --------------- | --------- | ------- | ------------------------------------------------------------------- |
-| `src`           | `string`  | None    | Asset id or temporary blob URL before save.                         |
-| `mime_type`     | `string`  | None    | MIME type, such as `image/webp`, `image/jpeg`, or `image/svg+xml`.  |
-| `width`         | `integer` | None    | Intrinsic image width in pixels.                                    |
-| `height`        | `integer` | None    | Intrinsic image height in pixels.                                   |
-| `alt`           | `string`  | None    | Alternative text.                                                   |
-| `focal_point_x` | `number`  | `0`     | Horizontal focal point as a normalized value, typically `0` to `1`. |
-| `focal_point_y` | `number`  | `0`     | Vertical focal point as a normalized value, typically `0` to `1`.   |
-| `scale`         | `number`  | `1.0`   | Display scale applied inside the media frame.                       |
-| `object_fit`    | `string`  | `cover` | CSS object-fit behavior, such as `cover` or `contain`.              |
-
-## Node: `video`
-
-`video` stores a video asset and uses the same display controls as `image`.
-
-| Property        | Type      | Default | Meaning                                                             |
-| --------------- | --------- | ------- | ------------------------------------------------------------------- |
-| `src`           | `string`  | None    | Asset id or temporary blob URL before save.                         |
-| `mime_type`     | `string`  | None    | MIME type, such as `video/mp4` or `video/webm`.                     |
-| `width`         | `integer` | None    | Intrinsic video width in pixels.                                    |
-| `height`        | `integer` | None    | Intrinsic video height in pixels.                                   |
-| `alt`           | `string`  | None    | Accessible label for the video.                                     |
-| `focal_point_x` | `number`  | `0`     | Horizontal focal point as a normalized value, typically `0` to `1`. |
-| `focal_point_y` | `number`  | `0`     | Vertical focal point as a normalized value, typically `0` to `1`.   |
-| `scale`         | `number`  | `1.0`   | Display scale applied inside the media frame.                       |
-| `object_fit`    | `string`  | `cover` | CSS object-fit behavior, such as `cover` or `contain`.              |
-
-## Node: `captioned_figure`
-
-`captioned_figure` is a media block with a single caption rendered below the media. It is useful when the image or video needs a brief explanatory line in a small font.
-
-| Property  | Type             | Default | Allowed node or annotation types          | Meaning                                                           |
-| --------- | ---------------- | ------- | ----------------------------------------- | ----------------------------------------------------------------- |
-| `media`   | `node`           | `image` | `image`, `video`                          | Media displayed by the captioned figure.                          |
-| `caption` | `annotated_text` | None    | `strong`, `emphasis`, `highlight`, `link` | Short caption rendered below the media. Newlines are not allowed. |
+```js
+[
+	'paragraph_sm',
+	'paragraph',
+	'paragraph_lg',
+	'paragraph_xl',
+	'list',
+	'supporting_media',
+	'button_group'
+];
+```
 
 ## Node: `page`
 
-`page` is the document root. It stores page metadata, shared chrome references, and an ordered body of content blocks.
+`page` is the document root. It stores page metadata, shared chrome references, and the ordered page body.
 
-| Property      | Type             | Default  | Allowed node types                                                                                              | Meaning                                                                                                                               |
-| ------------- | ---------------- | -------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `title`       | `annotated_text` | None     | No annotations                                                                                                  | Page title used for head metadata and editable search-result preview. Newlines are not allowed.                                       |
-| `description` | `annotated_text` | None     | No annotations                                                                                                  | Page description used for head metadata and editable search-result preview. Newlines are allowed.                                     |
-| `image`       | `node`           | `image`  | `image`                                                                                                         | Preview image used for page metadata. The `image` node is documented below because it is also used by `prose` via `supporting_media`. |
-| `body`        | `node_array`     | `prose`  | `prose`, `figure`, `captioned_figure`, `gallery`, `titled_gallery`, `descriptive_gallery` | Ordered page body blocks. The current app supports additional body block types, but they are outside this initial CCM scope.          |
-| `nav`         | `node`           | `nav`    | Out of scope                                                                                                    | Shared navigation reference. Not specified in this draft.                                                                             |
-| `footer`      | `node`           | `footer` | Out of scope                                                                                                    | Shared footer reference. Not specified in this draft.                                                                                 |
+| Property      | Type         | Default  | Allowed node or annotation types                                                                                                                                             | Meaning                                                                    |
+| ------------- | ------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `title`       | `text`       | none     | no annotations                                                                                                                                                               | Page title for metadata and editable previews. Newlines are not allowed.   |
+| `description` | `text`       | none     | no annotations                                                                                                                                                               | Page description for metadata and editable previews. Newlines are allowed. |
+| `image`       | `node`       | `image`  | `image`                                                                                                                                                                      | Preview image used for page metadata.                                      |
+| `body`        | `node_array` | `prose`  | `prose`, `prose_grid`, `figure`, `captioned_figure`, `gallery`, `feature`, `descriptive_gallery`, `descriptive_listing`, `accordion`, `preformatted`; annotations: `section` | Ordered page body blocks.                                                  |
+| `nav`         | `node`       | `nav`    | `nav`                                                                                                                                                                        | Shared navigation node.                                                    |
+| `footer`      | `node`       | `footer` | `footer`                                                                                                                                                                     | Shared footer node.                                                        |
 
+## Node: `nav`
 
+`nav` is the shared site navigation. It has three editable item groups so layouts can distribute logo/image, central links, and right-side actions independently.
 
-## Node: `button`
+| Property       | Type         | Default      | Allowed node types                    | Meaning                                                                 |
+| -------------- | ------------ | ------------ | ------------------------------------- | ----------------------------------------------------------------------- |
+| `start_items`  | `node_array` | `nav_image`  | `nav_image`, `nav_link`, `nav_button` | Left/start-aligned navigation items. Usually logo or brand image first. |
+| `center_items` | `node_array` | `nav_link`   | `nav_link`, `nav_button`, `nav_image` | Center navigation items, usually page links.                            |
+| `end_items`    | `node_array` | `nav_button` | `nav_link`, `nav_button`, `nav_image` | Right/end-aligned navigation items, usually calls to action.            |
 
-`button` is a call-to-action link, usually rendered inside a button group.
+## Node: `nav_link`
 
-| Property | Type             | Default | Allowed annotation types | Meaning                                   |
-| -------- | ---------------- | ------- | ------------------------ | ----------------------------------------- |
-| `layout` | `integer`        | `1`     | Theme-defined            | Visual button style.                      |
-| `label`  | `annotated_text` | None    | No annotations           | Button label. Newlines are not allowed.   |
-| `href`   | `string`         | None    | N/A                      | Link destination.                         |
-| `target` | `string`         | `_self` | N/A                      | Link target, such as `_self` or `_blank`. |
+`nav_link` is a plain navigation link.
+
+| Property | Type     | Default | Allowed annotation types | Meaning                                   |
+| -------- | -------- | ------- | ------------------------ | ----------------------------------------- |
+| `href`   | `string` | none    | N/A                      | Link destination.                         |
+| `target` | `string` | `_self` | N/A                      | Link target, such as `_self` or `_blank`. |
+| `label`  | `text`   | none    | no annotations           | Link label. Newlines are not allowed.     |
+
+## Node: `nav_button`
+
+`nav_button` is a navigation link rendered with button styling. It intentionally shares `label`, `href`, and `target` with `nav_link`, so users can type-switch between link and button without losing content.
+
+| Property | Type      | Default | Allowed values or annotation types | Meaning                                   |
+| -------- | --------- | ------- | ---------------------------------- | ----------------------------------------- |
+| `layout` | `integer` | `1`     | `1`, `2`                           | Button visual style.                      |
+| `href`   | `string`  | none    | N/A                                | Link destination.                         |
+| `target` | `string`  | `_self` | N/A                                | Link target, such as `_self` or `_blank`. |
+| `label`  | `text`    | none    | no annotations                     | Button label. Newlines are not allowed.   |
+
+## Node: `nav_image`
+
+`nav_image` is a linked or unlinked media item for navigation, commonly used for logos.
+
+| Property | Type     | Default | Allowed node types | Meaning                                                         |
+| -------- | -------- | ------- | ------------------ | --------------------------------------------------------------- |
+| `href`   | `string` | none    | N/A                | Optional link destination. Empty means the image is not linked. |
+| `target` | `string` | `_self` | N/A                | Link target, such as `_self` or `_blank`.                       |
+| `media`  | `node`   | `image` | `image`, `video`   | Media displayed in the navigation.                              |
+
+## Node: `footer`
+
+`footer` is the shared site footer. Its left/content area is generic rich body content, and its link area is a set of columns.
+
+| Property              | Type         | Default              | Allowed node types   | Meaning                                                                        |
+| --------------------- | ------------ | -------------------- | -------------------- | ------------------------------------------------------------------------------ |
+| `body`                | `node_array` | `paragraph`          | rich content nodes   | Main footer content area. This can contain text, headings, media, and buttons. |
+| `footer_link_columns` | `node_array` | `footer_link_column` | `footer_link_column` | Footer link columns.                                                           |
+
+## Node: `footer_link_column`
+
+`footer_link_column` is one flat column of footer link-related items.
+
+| Property | Type         | Default       | Allowed node types                    | Meaning                                                                             |
+| -------- | ------------ | ------------- | ------------------------------------- | ----------------------------------------------------------------------------------- |
+| `items`  | `node_array` | `footer_link` | `footer_link_category`, `footer_link` | Ordered category labels and links. Multiple category groups can live in one column. |
+
+## Node: `footer_link_category`
+
+`footer_link_category` labels a group of footer links.
+
+| Property | Type   | Default | Allowed annotation types | Meaning                                   |
+| -------- | ------ | ------- | ------------------------ | ----------------------------------------- |
+| `title`  | `text` | none    | no annotations           | Category title. Newlines are not allowed. |
+
+## Node: `footer_link`
+
+`footer_link` is a plain footer link.
+
+| Property | Type     | Default | Allowed annotation types | Meaning                                   |
+| -------- | -------- | ------- | ------------------------ | ----------------------------------------- |
+| `href`   | `string` | none    | N/A                      | Link destination.                         |
+| `target` | `string` | `_self` | N/A                      | Link target, such as `_self` or `_blank`. |
+| `label`  | `text`   | none    | no annotations           | Link label. Newlines are not allowed.     |
+
+## Node: `prose`
+
+`prose` is a text-first editorial section. It contains a rich `body` node array.
+
+| Property   | Type         | Default     | Allowed node types      | Meaning                                   |
+| ---------- | ------------ | ----------- | ----------------------- | ----------------------------------------- |
+| `layout`   | `integer`    | `1`         | app-defined layouts 1–6 | Horizontal alignment and width treatment. |
+| `colorset` | `integer`    | `0`         | theme-defined           | Optional color treatment.                 |
+| `body`     | `node_array` | `paragraph` | rich content nodes      | Ordered prose children.                   |
 
 ## Node: `prose_grid`
 
 `prose_grid` is a grid of prose blocks arranged as columns on larger screens.
 
-| Property | Type         | Default           | Allowed node types | Meaning                      |
-| -------- | ------------ | ----------------- | ------------------ | ---------------------------- |
-| `layout` | `integer`    | `1`               | `1`, `2`           | Text alignment for the grid. |
-| `items`  | `node_array` | `prose_grid_item` | `prose_grid_item`  | Ordered grid items.          |
+| Property | Type         | Default           | Allowed node types | Meaning              |
+| -------- | ------------ | ----------------- | ------------------ | -------------------- |
+| `layout` | `integer`    | `1`               | `1`, `2`           | Grid layout variant. |
+| `items`  | `node_array` | `prose_grid_item` | `prose_grid_item`  | Ordered grid items.  |
 
 ## Node: `prose_grid_item`
 
-`prose_grid_item` is a prose block used as a child of `prose_grid`. It uses the same internal content structure as `prose`, but its own layout is limited to left-aligned or centered text.
+`prose_grid_item` is a prose block used as a child of `prose_grid`.
 
-| Property   | Type         | Default     | Allowed node types                                                                                                       | Meaning                              |
-| ---------- | ------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------ |
-| `layout`   | `integer`    | `1`         | `1`, `2`                                                                                                                 | Text alignment within the grid item. |
-| `colorset` | `integer`    | `0`         | Theme-defined                                                                                                            | Optional color treatment.            |
-| `content`  | `node_array` | `paragraph` | `paragraph`, `paragraph_sm`, `heading_1`, `heading_2`, `heading_3`, `paragraph_lg`, `paragraph_xl`, `list`, `supporting_media`, `button_group` | Ordered prose children.              |
+| Property   | Type         | Default     | Allowed node types | Meaning                   |
+| ---------- | ------------ | ----------- | ------------------ | ------------------------- |
+| `colorset` | `integer`    | `0`         | theme-defined      | Optional color treatment. |
+| `body`     | `node_array` | `paragraph` | rich content nodes | Ordered prose children.   |
 
-## Node: `prose`
+## Text nodes
 
-`prose` is a text-first editorial section. It primarily contains headings and paragraphs, and may include supporting media that illustrates or visually enriches nearby text.
+The paragraph and heading family share the same basic shape:
 
-| Property  | Type         | Default     | Allowed node types                                                                                                       | Meaning                                   |
-| --------- | ------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------- |
-| `layout`  | `integer`    | `1`         | `1`, `2`, `3`, `4`                                                                                                       | Horizontal alignment and width treatment. |
-| `content` | `node_array` | `paragraph` | `paragraph`, `paragraph_sm`, `heading_1`, `heading_2`, `heading_3`, `heading_4`, `heading_5`, `paragraph_lg`, `paragraph_xl`, `list`, `supporting_media`, `button_group` | Ordered prose children.                   |
+| Node type      | Meaning                           |
+| -------------- | --------------------------------- |
+| `paragraph`    | Default rich body copy.           |
+| `paragraph_sm` | Small supplementary copy.         |
+| `paragraph_lg` | Larger editorial copy.            |
+| `paragraph_xl` | Very large editorial copy.        |
+| `heading_1`    | Primary editorial heading.        |
+| `heading_2`    | Secondary editorial heading.      |
+| `heading_3`    | Tertiary editorial heading.       |
+| `heading_4`    | Lower-priority editorial heading. |
+| `heading_5`    | Least prominent heading.          |
 
-### Prose layouts
+Each has:
 
-| Value | Meaning               |
-| ----- | --------------------- |
-| `1`   | Left-aligned prose.   |
-| `2`   | Center-oriented prose |
-| `3`   | Right-aligned prose.  |
-| `4`   | Centered prose.       |
+| Property  | Type      | Default | Allowed values or annotation types                | Meaning                                                         |
+| --------- | --------- | ------- | ------------------------------------------------- | --------------------------------------------------------------- |
+| `layout`  | `integer` | `1`     | `1`, `2`                                          | Layout 1 is the normal style. Layout 2 is muted secondary copy. |
+| `content` | `text`    | none    | `strong`, `emphasis`, `code`, `highlight`, `link` | Editable text. Newlines are allowed.                            |
+
+## Node: `list`
+
+`list` is a structured list block for rich content bodies.
+
+| Property     | Type         | Default     | Allowed node types or values | Meaning                             |
+| ------------ | ------------ | ----------- | ---------------------------- | ----------------------------------- |
+| `layout`     | `integer`    | `1`         | app-defined layouts 1–4      | Marker style for the rendered list. |
+| `list_items` | `node_array` | `list_item` | `list_item`                  | Ordered list rows.                  |
+
+## Node: `list_item`
+
+`list_item` is a single list row inside `list`.
+
+| Property  | Type   | Default | Allowed annotation types                          | Meaning                                            |
+| --------- | ------ | ------- | ------------------------------------------------- | -------------------------------------------------- |
+| `content` | `text` | none    | `strong`, `emphasis`, `code`, `highlight`, `link` | Editable list item text. Newlines are not allowed. |
+
+## Node: `preformatted`
+
+`preformatted` is a monospaced text block that preserves spacing and line breaks.
+
+| Property  | Type   | Default | Allowed annotation types | Meaning                                       |
+| --------- | ------ | ------- | ------------------------ | --------------------------------------------- |
+| `content` | `text` | none    | no annotations           | Preserved text content. Newlines are allowed. |
+
+## Node: `button_group`
+
+`button_group` is a collection of call-to-action buttons.
+
+| Property  | Type         | Default  | Allowed node types | Meaning          |
+| --------- | ------------ | -------- | ------------------ | ---------------- |
+| `buttons` | `node_array` | `button` | `button`           | Ordered buttons. |
+
+## Node: `button`
+
+`button` is a call-to-action link.
+
+| Property | Type      | Default | Allowed values or annotation types | Meaning                                   |
+| -------- | --------- | ------- | ---------------------------------- | ----------------------------------------- |
+| `layout` | `integer` | `1`     | app-defined layouts 1–2            | Visual button style.                      |
+| `href`   | `string`  | none    | N/A                                | Link destination.                         |
+| `target` | `string`  | `_self` | N/A                                | Link target, such as `_self` or `_blank`. |
+| `label`  | `text`    | none    | no annotations                     | Button label. Newlines are not allowed.   |
+
+## Node: `image`
+
+`image` stores an image asset and its display controls.
+
+| Property        | Type      | Default       | Meaning                                                            |
+| --------------- | --------- | ------------- | ------------------------------------------------------------------ |
+| `src`           | `string`  | none          | Asset id or temporary blob URL before save.                        |
+| `mime_type`     | `string`  | none          | MIME type, such as `image/webp`, `image/jpeg`, or `image/svg+xml`. |
+| `width`         | `integer` | none          | Intrinsic image width in pixels.                                   |
+| `height`        | `integer` | none          | Intrinsic image height in pixels.                                  |
+| `alt`           | `string`  | none          | Alternative text.                                                  |
+| `focal_point_x` | `number`  | media default | Horizontal focal point as a normalized value.                      |
+| `focal_point_y` | `number`  | media default | Vertical focal point as a normalized value.                        |
+| `scale`         | `number`  | media default | Display scale applied inside the media frame.                      |
+| `object_fit`    | `string`  | media default | CSS object-fit behavior.                                           |
+
+## Node: `video`
+
+`video` stores a video asset and uses the same display controls as `image`.
+
+| Property        | Type      | Default       | Meaning                                         |
+| --------------- | --------- | ------------- | ----------------------------------------------- |
+| `src`           | `string`  | none          | Asset id or temporary blob URL before save.     |
+| `mime_type`     | `string`  | none          | MIME type, such as `video/mp4` or `video/webm`. |
+| `width`         | `integer` | none          | Intrinsic video width in pixels.                |
+| `height`        | `integer` | none          | Intrinsic video height in pixels.               |
+| `alt`           | `string`  | none          | Accessible label for the video.                 |
+| `focal_point_x` | `number`  | media default | Horizontal focal point as a normalized value.   |
+| `focal_point_y` | `number`  | media default | Vertical focal point as a normalized value.     |
+| `scale`         | `number`  | media default | Display scale applied inside the media frame.   |
+| `object_fit`    | `string`  | media default | CSS object-fit behavior.                        |
+
+## Node: `figure`
+
+`figure` is a standalone media block.
+
+| Property | Type      | Default | Allowed node types or values | Meaning                        |
+| -------- | --------- | ------- | ---------------------------- | ------------------------------ |
+| `layout` | `integer` | `1`     | app-defined layouts 1–6      | Visual media layout.           |
+| `media`  | `node`    | `image` | `image`, `video`             | Media displayed by the figure. |
+
+## Node: `captioned_figure`
+
+`captioned_figure` is a media block with a single caption.
+
+| Property  | Type   | Default | Allowed node or annotation types                  | Meaning                                  |
+| --------- | ------ | ------- | ------------------------------------------------- | ---------------------------------------- |
+| `media`   | `node` | `image` | `image`, `video`                                  | Media displayed by the figure.           |
+| `caption` | `text` | none    | `strong`, `emphasis`, `code`, `highlight`, `link` | Short caption. Newlines are not allowed. |
 
 ## Node: `supporting_media`
 
-`supporting_media` is media placed inside a `prose` flow to support, illustrate, or visually enrich nearby text. It references either an `image` or `video` node and can be sized independently from text.
+`supporting_media` is media placed inside a rich content flow.
 
 | Property             | Type      | Default | Allowed node types | Meaning                                                                                       |
 | -------------------- | --------- | ------- | ------------------ | --------------------------------------------------------------------------------------------- |
-| `media_max_width`    | `integer` | `0`     | N/A                | Optional maximum display width for the media. `0` means no explicit maximum.                  |
+| `media_max_width`    | `integer` | `0`     | N/A                | Optional maximum display width. `0` means no explicit maximum.                                |
 | `media_aspect_ratio` | `number`  | `0`     | N/A                | Optional display aspect ratio. `0` means use the media's natural ratio or component fallback. |
 | `media`              | `node`    | `image` | `image`, `video`   | Media displayed by the supporting media node.                                                 |
 
-## Node: `accordion`
-
-`accordion` is a collapsible collection of accordion items.
-
-| Property | Type         | Default          | Allowed node types | Meaning                          |
-| -------- | ------------ | ---------------- | ------------------ | -------------------------------- |
-| `items`  | `node_array` | `accordion_item` | `accordion_item`   | Ordered collapsible child items. |
-
-## Node: `accordion_item`
-
-`accordion_item` is a collapsible content block with a single title and a rich body. The title acts as the heading of the collapsible. The body accepts the same child nodes as `prose`, allowing a couple of paragraphs and optional supporting media inside the expanded content.
-
-| Property | Type             | Default     | Allowed node or annotation types                                                                                         | Meaning                                                              |
-| -------- | ---------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
-| `title`  | `annotated_text` | None        | `emphasis`, `highlight`, `link`                                                                                          | Required heading of the collapsible. Newlines are not allowed.       |
-| `body`   | `node_array`     | `paragraph` | `paragraph`, `paragraph_sm`, `heading_1`, `heading_2`, `heading_3`, `heading_4`, `heading_5`, `paragraph_lg`, `paragraph_xl`, `list`, `supporting_media`, `button_group` | Expandable rich body content, using the same child nodes as `prose`. |
-
 ## Node: `gallery`
 
-A gallery is a collection of media-first items. Layouts may render those items as grids, mosaics, carousels, or lists.
+`gallery` is a media-first collection.
 
-`gallery` is used when each item only needs media. Items may optionally link somewhere, but linking is behavior, not the defining content structure. If every item also needs a title, use `titled_gallery` instead.
-
-| Property | Type         | Default        | Allowed node types | Meaning                                  |
-| -------- | ------------ | -------------- | ------------------ | ---------------------------------------- |
-| `layout` | `integer`    | `1`            | Theme-defined      | Visual arrangement of the gallery items. |
-| `items`  | `node_array` | `gallery_item` | `gallery_item`     | Ordered media-first items.               |
+| Property        | Type         | Default | Allowed node types or values | Meaning                              |
+| --------------- | ------------ | ------- | ---------------------------- | ------------------------------------ |
+| `layout`        | `integer`    | `1`     | app-defined layouts 1–5      | Visual arrangement of gallery items. |
+| `colorset`      | `integer`    | `0`     | theme-defined                | Optional color treatment.            |
+| `gallery_items` | `node_array` | none    | `gallery_item`               | Ordered media-first items.           |
 
 ## Node: `gallery_item`
 
@@ -277,111 +381,106 @@ A gallery is a collection of media-first items. Layouts may render those items a
 
 | Property | Type     | Default | Allowed node types | Meaning                                                        |
 | -------- | -------- | ------- | ------------------ | -------------------------------------------------------------- |
-| `media`  | `node`   | `image` | `image`, `video`   | Media shown by the item.                                       |
-| `href`   | `string` | None    | N/A                | Optional link destination. Empty means the item is not linked. |
+| `href`   | `string` | none    | N/A                | Optional link destination. Empty means the item is not linked. |
 | `target` | `string` | `_self` | N/A                | Link target, such as `_self` or `_blank`.                      |
-
-## Node: `titled_gallery`
-
-`titled_gallery` is a gallery whose items each have media and a title. Items may optionally link somewhere, but linking is behavior, not the defining content structure.
-
-| Property | Type         | Default               | Allowed node types    | Meaning                                         |
-| -------- | ------------ | --------------------- | --------------------- | ----------------------------------------------- |
-| `layout` | `integer`    | `1`                   | Theme-defined         | Visual arrangement of the titled gallery items. |
-| `items`  | `node_array` | `titled_gallery_item` | `titled_gallery_item` | Ordered media-and-title items.                  |
-
-## Node: `titled_gallery_item`
-
-`titled_gallery_item` is a media-first item with a required title. It may be rendered as a card, tile, carousel slide, or list row depending on the parent gallery layout.
-
-| Property | Type             | Default | Allowed node or annotation types | Meaning                                                        |
-| -------- | ---------------- | ------- | -------------------------------- | -------------------------------------------------------------- |
-| `media`  | `node`           | `image` | `image`, `video`                 | Media shown by the item.                                       |
-| `title`  | `annotated_text` | None    | `emphasis`, `highlight`          | Required item title. Newlines are not allowed.                 |
-| `href`   | `string`         | None    | N/A                              | Optional link destination. Empty means the item is not linked. |
-| `target` | `string`         | `_self` | N/A                              | Link target, such as `_self` or `_blank`.                      |
+| `media`  | `node`   | `image` | `image`, `video`   | Media shown by the item.                                       |
 
 ## Node: `descriptive_gallery`
 
-`descriptive_gallery` is a gallery whose items each have media, a title, and a description. Items may optionally link somewhere, but linking is behavior, not the defining content structure.
+`descriptive_gallery` is a gallery whose items each have media, a title, and a description.
 
-| Property | Type         | Default                    | Allowed node types         | Meaning                                              |
-| -------- | ------------ | -------------------------- | -------------------------- | ---------------------------------------------------- |
-| `layout` | `integer`    | `1`                        | Theme-defined              | Visual arrangement of the descriptive gallery items. |
-| `items`  | `node_array` | `descriptive_gallery_item` | `descriptive_gallery_item` | Ordered media-title-description items.               |
+| Property | Type         | Default | Allowed node types or values | Meaning                                          |
+| -------- | ------------ | ------- | ---------------------------- | ------------------------------------------------ |
+| `layout` | `integer`    | `1`     | `1`, `2`                     | Visual arrangement of descriptive gallery items. |
+| `items`  | `node_array` | none    | `descriptive_gallery_item`   | Ordered media-title-description items.           |
 
 ## Node: `descriptive_gallery_item`
 
-`descriptive_gallery_item` is a media-first item with a required title and description. It may be rendered as a card, tile, carousel slide, or list row depending on the parent gallery layout.
+`descriptive_gallery_item` is a media-first item with title and description. It may optionally link somewhere.
 
-Editable Website does not define chronological post types in the core model. Article, project, product, or resource listings can be modeled with galleries. If structured metadata is not needed, compact metadata can be included in the title or description. Apps that need structured fields such as date, category, author, or reading time should extend the model.
-
-| Property      | Type             | Default | Allowed node or annotation types | Meaning                                                        |
-| ------------- | ---------------- | ------- | -------------------------------- | -------------------------------------------------------------- |
-| `media`       | `node`           | `image` | `image`, `video`                 | Media shown by the item.                                       |
-| `title`       | `annotated_text` | None    | `emphasis`, `highlight`          | Required item title. Newlines are not allowed.                 |
-| `description` | `annotated_text` | None    | `emphasis`, `highlight`, `link`  | Required item description. Newlines are allowed.               |
-| `href`        | `string`         | None    | N/A                              | Optional link destination. Empty means the item is not linked. |
-| `target`      | `string`         | `_self` | N/A                              | Link target, such as `_self` or `_blank`.                      |
-
-## Node: `listing`
-
-`listing` is a collection of text-first items arranged as rows. A classic listing item has a title on the left and an optional meta field on the right. Items may optionally link somewhere, but linking is behavior, not the defining content structure.
-
-| Property | Type         | Default        | Allowed node types | Meaning                                  |
-| -------- | ------------ | -------------- | ------------------ | ---------------------------------------- |
-| `layout` | `integer`    | `1`            | Theme-defined      | Visual arrangement of the listing items. |
-| `items`  | `node_array` | `listing_item` | `listing_item`     | Ordered title-and-meta listing items.    |
-
-## Node: `listing_item`
-
-`listing_item` is a text-first row with a required title and an optional meta field. It is intended for classic lists where the title sits on the left and meta information, if present, sits on the right.
-
-| Property | Type             | Default | Allowed node or annotation types | Meaning                                                                            |
-| -------- | ---------------- | ------- | -------------------------------- | ---------------------------------------------------------------------------------- |
-| `title`  | `annotated_text` | None    | `emphasis`, `highlight`, `link`  | Required item title. Newlines are not allowed.                                     |
-| `meta`   | `annotated_text` | None    | `emphasis`, `highlight`          | Optional item metadata, typically rendered on the right. Newlines are not allowed. |
-| `href`   | `string`         | None    | N/A                              | Optional link destination. Empty means the item is not linked.                     |
-| `target` | `string`         | `_self` | N/A                              | Link target, such as `_self` or `_blank`.                                          |
+| Property      | Type     | Default | Allowed node or annotation types | Meaning                                                        |
+| ------------- | -------- | ------- | -------------------------------- | -------------------------------------------------------------- |
+| `href`        | `string` | none    | N/A                              | Optional link destination. Empty means the item is not linked. |
+| `target`      | `string` | `_self` | N/A                              | Link target, such as `_self` or `_blank`.                      |
+| `media`       | `node`   | `image` | `image`, `video`                 | Media shown by the item.                                       |
+| `title`       | `text`   | none    | `emphasis`, `highlight`          | Item title. Newlines are not allowed.                          |
+| `description` | `text`   | none    | `emphasis`, `highlight`          | Item description. Newlines are allowed.                        |
 
 ## Node: `descriptive_listing`
 
-`descriptive_listing` is a collection of text-first items arranged as rows. Each item has a title and description, plus an optional meta field. Items may optionally link somewhere, but linking is behavior, not the defining content structure.
+`descriptive_listing` is a collection of text-first items arranged as rows.
 
-| Property | Type         | Default                    | Allowed node types         | Meaning                                              |
-| -------- | ------------ | -------------------------- | -------------------------- | ---------------------------------------------------- |
-| `layout` | `integer`    | `1`                        | Theme-defined              | Visual arrangement of the descriptive listing items. |
-| `items`  | `node_array` | `descriptive_listing_item` | `descriptive_listing_item` | Ordered title-description-meta listing items.        |
+| Property | Type         | Default | Allowed node types or values | Meaning                                       |
+| -------- | ------------ | ------- | ---------------------------- | --------------------------------------------- |
+| `layout` | `integer`    | `1`     | app-defined layouts 1–5      | Visual arrangement of listing items.          |
+| `items`  | `node_array` | none    | `descriptive_listing_item`   | Ordered title-description-meta listing items. |
 
 ## Node: `descriptive_listing_item`
 
-`descriptive_listing_item` is a text-first row with a required title and description, plus an optional meta field. It is intended for list layouts where the title and description are grouped on the left and the meta field, if present, sits on the right.
+`descriptive_listing_item` is a text-first row with title, description, and optional meta text. It may optionally link somewhere.
 
-| Property      | Type             | Default | Allowed node or annotation types | Meaning                                                                            |
-| ------------- | ---------------- | ------- | -------------------------------- | ---------------------------------------------------------------------------------- |
-| `title`       | `annotated_text` | None    | `emphasis`, `highlight`, `link`  | Required item title. Newlines are not allowed.                                     |
-| `description` | `annotated_text` | None    | `emphasis`, `highlight`, `link`  | Required item description. Newlines are allowed.                                   |
-| `meta`        | `annotated_text` | None    | `emphasis`, `highlight`          | Optional item metadata, typically rendered on the right. Newlines are not allowed. |
-| `href`        | `string`         | None    | N/A                              | Optional link destination. Empty means the item is not linked.                     |
-| `target`      | `string`         | `_self` | N/A                              | Link target, such as `_self` or `_blank`.                                          |
+| Property      | Type     | Default | Allowed annotation types | Meaning                                                        |
+| ------------- | -------- | ------- | ------------------------ | -------------------------------------------------------------- |
+| `href`        | `string` | none    | N/A                      | Optional link destination. Empty means the item is not linked. |
+| `target`      | `string` | `_self` | N/A                      | Link target, such as `_self` or `_blank`.                      |
+| `title`       | `text`   | none    | `emphasis`, `highlight`  | Item title. Newlines are not allowed.                          |
+| `description` | `text`   | none    | `emphasis`, `highlight`  | Item description. Newlines are allowed.                        |
+| `meta`        | `text`   | none    | `emphasis`, `highlight`  | Optional metadata. Newlines are not allowed.                   |
+
+## Node: `accordion`
+
+`accordion` is a collapsible collection of accordion items.
+
+| Property | Type         | Default | Allowed node types or values | Meaning                    |
+| -------- | ------------ | ------- | ---------------------------- | -------------------------- |
+| `layout` | `integer`    | `1`     | app-defined layouts 1–5      | Accordion visual layout.   |
+| `items`  | `node_array` | none    | `accordion_item`             | Ordered collapsible items. |
+
+## Node: `accordion_item`
+
+`accordion_item` is a collapsible content block with a title and rich body.
+
+| Property | Type         | Default     | Allowed node or annotation types    | Meaning                               |
+| -------- | ------------ | ----------- | ----------------------------------- | ------------------------------------- |
+| `title`  | `text`       | none        | `emphasis`, `highlight`             | Item title. Newlines are not allowed. |
+| `body`   | `node_array` | `paragraph` | rich content nodes without headings | Expandable rich body content.         |
+
+## Node: `feature`
+
+`feature` is a flexible feature section with media and a rich body.
+
+| Property   | Type         | Default     | Allowed node types or values | Meaning                    |
+| ---------- | ------------ | ----------- | ---------------------------- | -------------------------- |
+| `layout`   | `integer`    | `1`         | app-defined layouts 1–2      | Feature layout variant.    |
+| `colorset` | `integer`    | `0`         | theme-defined                | Optional color treatment.  |
+| `media`    | `node`       | `image`     | `image`, `video`             | Feature media.             |
+| `body`     | `node_array` | `paragraph` | rich content nodes           | Feature text/content body. |
 
 ## Annotation: `strong`
 
-`strong` marks an annotated text range as strongly emphasized.
+`strong` marks a text range as strongly emphasized.
 
 ## Annotation: `emphasis`
 
-`emphasis` marks an annotated text range as emphasized.
+`emphasis` marks a text range as emphasized.
+
+## Annotation: `code`
+
+`code` marks a text range as inline code.
 
 ## Annotation: `highlight`
 
-`highlight` marks an annotated text range as highlighted.
+`highlight` marks a text range as highlighted.
 
 ## Annotation: `link`
 
-`link` marks an annotated text range as a hyperlink.
+`link` marks a text range as a hyperlink.
 
 | Property | Type     | Default | Meaning                                                            |
 | -------- | -------- | ------- | ------------------------------------------------------------------ |
-| `href`   | `string` | None    | Link destination. Internal page links use root-relative page URLs. |
+| `href`   | `string` | none    | Link destination. Internal page links use root-relative page URLs. |
 | `target` | `string` | `_self` | Link target, such as `_self` or `_blank`.                          |
+
+## Annotation: `section`
+
+`section` annotates a range in a node array, currently used for page body section grouping.
