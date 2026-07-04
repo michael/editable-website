@@ -64,16 +64,6 @@ Document value shape:
 
 `annotation_types` on a node array enables annotations over child-node ranges. The current shared page body supports `section` annotations.
 
-### Annotation groups
-
-The schema uses these practical groups:
-
-| Name                  | Annotation types                                  |
-| --------------------- | ------------------------------------------------- |
-| Rich text annotations | `strong`, `emphasis`, `code`, `highlight`, `link` |
-| Minimal annotations   | `emphasis`, `highlight`                           |
-| No annotations        | none                                              |
-
 ## Node types
 
 [`page`](#node-page) · [`nav`](#node-nav) · [`nav_link`](#node-nav_link) · [`nav_button`](#node-nav_button) · [`nav_image`](#node-nav_image) · [`footer`](#node-footer) · [`footer_link_column`](#node-footer_link_column) · [`footer_link_category`](#node-footer_link_category) · [`footer_link`](#node-footer_link) · [`prose`](#node-prose) · [`prose_grid`](#node-prose_grid) · [`prose_grid_item`](#node-prose_grid_item) · [`paragraph`](#node-paragraph) · [`paragraph_sm`](#node-paragraph_sm) · [`paragraph_lg`](#node-paragraph_lg) · [`paragraph_xl`](#node-paragraph_xl) · [`heading_1`](#node-heading_1) · [`heading_2`](#node-heading_2) · [`heading_3`](#node-heading_3) · [`heading_4`](#node-heading_4) · [`heading_5`](#node-heading_5) · [`list`](#node-list) · [`list_item`](#node-list_item) · [`preformatted`](#node-preformatted) · [`button_group`](#node-button_group) · [`button`](#node-button) · [`image`](#node-image) · [`video`](#node-video) · [`figure`](#node-figure) · [`captioned_figure`](#node-captioned_figure) · [`supporting_media`](#node-supporting_media) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item) · [`descriptive_listing`](#node-descriptive_listing) · [`descriptive_listing_item`](#node-descriptive_listing_item) · [`accordion`](#node-accordion) · [`accordion_item`](#node-accordion_item) · [`feature`](#node-feature)
