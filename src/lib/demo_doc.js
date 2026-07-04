@@ -43,8 +43,8 @@ const FULL_DOC = {
 			id: 'aMhZzGXzvqnSBrQMgrBvNEy',
 			type: 'button',
 			layout: 1,
-			href: '',
-			target: '_blank',
+			href: '#RtYpQwXsZvNmKjHgFdSaLe',
+			target: '_self',
 			label: {
 				content: 'Try',
 				annotations: []
@@ -79,18 +79,37 @@ const FULL_DOC = {
 				annotations: []
 			}
 		},
+		mFEZbHhacnMvZEfegMSNGQH: {
+			id: 'mFEZbHhacnMvZEfegMSNGQH',
+			type: 'image',
+			src: '',
+			mime_type: '',
+			width: 0,
+			height: 0,
+			alt: '',
+			scale: 1,
+			focal_point_x: 0.5,
+			focal_point_y: 0.5,
+			object_fit: 'contain'
+		},
+		RJbHKqVmgTdenaRBmANhAhn: {
+			id: 'RJbHKqVmgTdenaRBmANhAhn',
+			type: 'figure',
+			layout: 5,
+			media: 'mFEZbHhacnMvZEfegMSNGQH'
+		},
 		VbNcMxZaQwErTyUiOpLkJh: {
 			id: 'VbNcMxZaQwErTyUiOpLkJh',
 			type: 'image',
-			src: 'cmde.webp',
-			mime_type: 'image/webp',
-			width: 192,
-			height: 256,
-			alt: 'Feature image',
+			src: '',
+			mime_type: '',
+			width: 0,
+			height: 0,
+			alt: '',
 			scale: 1,
-			focal_point_x: 0.5329817181174089,
-			focal_point_y: 0.47301940896272265,
-			object_fit: 'cover'
+			focal_point_x: 0.5,
+			focal_point_y: 0.5,
+			object_fit: 'contain'
 		},
 		XEZYvKrndUKmFeRwPskjXSb: {
 			id: 'XEZYvKrndUKmFeRwPskjXSb',
@@ -113,6 +132,40 @@ const FULL_DOC = {
 			id: 'xeFfTFanDDERfWHUcjFRbbB',
 			type: 'code'
 		},
+		QjBkRxHSjJDEsZyrzWfvumb: {
+			id: 'QjBkRxHSjJDEsZyrzWfvumb',
+			type: 'paragraph',
+			layout: 1,
+			content: {
+				content: 'Hold ⌘ (Mac) or Ctrl (Windows) and press E to enter edit mode.',
+				annotations: [
+					{
+						start_offset: 5,
+						end_offset: 6,
+						node_id: 'xMcjMhSuQKDayKNqNMbGDHW'
+					},
+					{
+						start_offset: 41,
+						end_offset: 42,
+						node_id: 'mHGxthXrZxjSjhYyXwbQfDf'
+					},
+					{
+						start_offset: 16,
+						end_offset: 20,
+						node_id: 'xeFfTFanDDERfWHUcjFRbbB'
+					}
+				]
+			}
+		},
+		FwDGdCAfycBzYtSdHVMnKBG: {
+			id: 'FwDGdCAfycBzYtSdHVMnKBG',
+			type: 'paragraph',
+			layout: 1,
+			content: {
+				content: 'Click where you want to edit.',
+				annotations: []
+			}
+		},
 		CXScmpeXnecfzNpGxVvXdqf: {
 			id: 'CXScmpeXnecfzNpGxVvXdqf',
 			type: 'code'
@@ -129,50 +182,43 @@ const FULL_DOC = {
 			id: 'McYSzTepjCMEbuWZupfCEXA',
 			type: 'code'
 		},
-		QjBkRxHSjJDEsZyrzWfvumb: {
-			id: 'QjBkRxHSjJDEsZyrzWfvumb',
+		twHRnpvTfHanzbUmQGfrzSN: {
+			id: 'twHRnpvTfHanzbUmQGfrzSN',
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				content:
-					'Hold ⌘ (Mac) or Ctrl (Windows) and press E to enter edit mode. Click where you want to edit. Move around with ← → ↑ ↓. Change anything you see!',
+				content: 'Move around with ← → ↑ ↓.',
 				annotations: [
 					{
-						start_offset: 5,
-						end_offset: 6,
-						node_id: 'xMcjMhSuQKDayKNqNMbGDHW'
-					},
-					{
-						start_offset: 41,
-						end_offset: 42,
-						node_id: 'mHGxthXrZxjSjhYyXwbQfDf'
-					},
-					{
-						start_offset: 16,
-						end_offset: 20,
-						node_id: 'xeFfTFanDDERfWHUcjFRbbB'
-					},
-					{
-						start_offset: 110,
-						end_offset: 111,
+						start_offset: 17,
+						end_offset: 18,
 						node_id: 'CXScmpeXnecfzNpGxVvXdqf'
 					},
 					{
-						start_offset: 112,
-						end_offset: 113,
+						start_offset: 19,
+						end_offset: 20,
 						node_id: 'vEsgCXdGdskZEJZbhvCqtvv'
 					},
 					{
-						start_offset: 114,
-						end_offset: 115,
+						start_offset: 21,
+						end_offset: 22,
 						node_id: 'WyqzrzHVaPMbjcCJsYkuZsE'
 					},
 					{
-						start_offset: 116,
-						end_offset: 117,
+						start_offset: 23,
+						end_offset: 24,
 						node_id: 'McYSzTepjCMEbuWZupfCEXA'
 					}
 				]
+			}
+		},
+		znRgjawqTbTegrUtGxwDtSE: {
+			id: 'znRgjawqTbTegrUtGxwDtSE',
+			type: 'paragraph',
+			layout: 1,
+			content: {
+				content: 'Change anything you see!',
+				annotations: []
 			}
 		},
 		NhhsYbqTRzPtpQcHFUgwFhP: {
@@ -259,10 +305,6 @@ const FULL_DOC = {
 				]
 			}
 		},
-		ZWDXzUmKJbqDwJbNTbhEtWQ: {
-			id: 'ZWDXzUmKJbqDwJbNTbhEtWQ',
-			type: 'code'
-		},
 		XtZkqrCsUBAmDnMbvnzKTfd: {
 			id: 'XtZkqrCsUBAmDnMbvnzKTfd',
 			type: 'code'
@@ -271,18 +313,17 @@ const FULL_DOC = {
 			id: 'JSnSMURcyQJfxBDrNjVHwdf',
 			type: 'code'
 		},
+		fDrYgEpkMsDvfCcnhVZeNbG: {
+			id: 'fDrYgEpkMsDvfCcnhVZeNbG',
+			type: 'code'
+		},
 		rMEHvQGqSpdRkUgmCBvgptB: {
 			id: 'rMEHvQGqSpdRkUgmCBvgptB',
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				content: 'Undo with ⌘ or Ctrl + z.',
+				content: 'Undo with ⌘ or Ctrl + Z.',
 				annotations: [
-					{
-						start_offset: 22,
-						end_offset: 23,
-						node_id: 'ZWDXzUmKJbqDwJbNTbhEtWQ'
-					},
 					{
 						start_offset: 15,
 						end_offset: 19,
@@ -292,6 +333,11 @@ const FULL_DOC = {
 						start_offset: 10,
 						end_offset: 11,
 						node_id: 'JSnSMURcyQJfxBDrNjVHwdf'
+					},
+					{
+						start_offset: 22,
+						end_offset: 23,
+						node_id: 'fDrYgEpkMsDvfCcnhVZeNbG'
 					}
 				]
 			}
@@ -333,36 +379,29 @@ const FULL_DOC = {
 				]
 			}
 		},
-		ZRuWrftZyGGczYqTxCtqEnd: {
-			id: 'ZRuWrftZyGGczYqTxCtqEnd',
-			type: 'emphasis'
-		},
 		JkfchFmwTqBYVZawgntPWxP: {
 			id: 'JkfchFmwTqBYVZawgntPWxP',
 			type: 'paragraph_sm',
 			layout: 2,
 			content: {
 				content:
-					'On this example page, changes are not persisted. On a real site, a logged in user would have their changes persisted to a database.',
-				annotations: [
-					{
-						start_offset: 0,
-						end_offset: 131,
-						node_id: 'ZRuWrftZyGGczYqTxCtqEnd'
-					}
-				]
+					'On this demo page, changes are not persisted. On a real site, a logged in user would have their changes persisted to a database.',
+				annotations: []
 			}
 		},
 		RtYpQwXsZvNmKjHgFdSaLe: {
 			id: 'RtYpQwXsZvNmKjHgFdSaLe',
 			type: 'feature',
-			layout: 1,
+			layout: 2,
 			colorset: 0,
 			media: 'VbNcMxZaQwErTyUiOpLkJh',
 			body: {
 				nodes: [
 					'XEZYvKrndUKmFeRwPskjXSb',
 					'QjBkRxHSjJDEsZyrzWfvumb',
+					'FwDGdCAfycBzYtSdHVMnKBG',
+					'twHRnpvTfHanzbUmQGfrzSN',
+					'znRgjawqTbTegrUtGxwDtSE',
 					'ujTkSPgAkSZUCRTqhbvZadx',
 					'rMEHvQGqSpdRkUgmCBvgptB',
 					'bqHNFFXTKuAzfJSgBkBzRqh',
@@ -371,8 +410,21 @@ const FULL_DOC = {
 				annotations: []
 			}
 		},
-		zrUZReSCBXBtyTpWEnCqfus: {
-			id: 'zrUZReSCBXBtyTpWEnCqfus',
+		HKvdPmGRBhfDwPBNEnwGfKw: {
+			id: 'HKvdPmGRBhfDwPBNEnwGfKw',
+			type: 'image',
+			src: '',
+			mime_type: '',
+			width: 0,
+			height: 0,
+			alt: '',
+			scale: 1,
+			focal_point_x: 0.5,
+			focal_point_y: 0.5,
+			object_fit: 'contain'
+		},
+		fhGVryvJNVhDWWKkGYGZsyZ: {
+			id: 'fhGVryvJNVhDWWKkGYGZsyZ',
 			type: 'heading_3',
 			layout: 1,
 			content: {
@@ -380,12 +432,12 @@ const FULL_DOC = {
 				annotations: []
 			}
 		},
-		MheDsAwTmfQDGqdkpMWgXUH: {
-			id: 'MheDsAwTmfQDGqdkpMWgXUH',
+		AuWEjBDcdcswwFJDSyTzSHK: {
+			id: 'AuWEjBDcdcswwFJDSyTzSHK',
 			type: 'strong'
 		},
-		BHmangmnGSWDUkzjJXKbDjt: {
-			id: 'BHmangmnGSWDUkzjJXKbDjt',
+		evXXtdJpAjyFbbfTxbjxErW: {
+			id: 'evXXtdJpAjyFbbfTxbjxErW',
 			type: 'paragraph',
 			layout: 1,
 			content: {
@@ -394,73 +446,82 @@ const FULL_DOC = {
 					{
 						start_offset: 11,
 						end_offset: 22,
-						node_id: 'MheDsAwTmfQDGqdkpMWgXUH'
+						node_id: 'AuWEjBDcdcswwFJDSyTzSHK'
 					}
 				]
 			}
 		},
-		wqkSZVmFDECjqksNpcRTVyz: {
-			id: 'wqkSZVmFDECjqksNpcRTVyz',
+		jETAUbRNDUeMJEmdFbHDhWv: {
+			id: 'jETAUbRNDUeMJEmdFbHDhWv',
 			type: 'code'
 		},
-		QpSJFMHdkhkNHZgAYXpHHfk: {
-			id: 'QpSJFMHdkhkNHZgAYXpHHfk',
-			type: 'code'
-		},
-		JfaRJhxSWdashHgnSsbAnpX: {
-			id: 'JfaRJhxSWdashHgnSsbAnpX',
-			type: 'code'
-		},
-		CVtRckgSqBjmpmCJPGEjRHy: {
-			id: 'CVtRckgSqBjmpmCJPGEjRHy',
-			type: 'code'
-		},
-		dYcjUGQyrScuGmYaSuHnqpC: {
-			id: 'dYcjUGQyrScuGmYaSuHnqpC',
-			type: 'code'
-		},
-		ZSgWGxPAGFbMqrCRXRQtnwe: {
-			id: 'ZSgWGxPAGFbMqrCRXRQtnwe',
+		aDadwdgEhVSbkdeXCUrrwxp: {
+			id: 'aDadwdgEhVSbkdeXCUrrwxp',
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				content:
-					'Press Enter to add a block. Change text type (paragraph, heading) with Ctrl + Shift + ↓ ↑.',
+				content: 'Press Enter to add a block.',
 				annotations: [
 					{
 						start_offset: 6,
 						end_offset: 11,
-						node_id: 'wqkSZVmFDECjqksNpcRTVyz'
-					},
-					{
-						start_offset: 71,
-						end_offset: 75,
-						node_id: 'QpSJFMHdkhkNHZgAYXpHHfk'
-					},
-					{
-						start_offset: 78,
-						end_offset: 83,
-						node_id: 'JfaRJhxSWdashHgnSsbAnpX'
-					},
-					{
-						start_offset: 86,
-						end_offset: 87,
-						node_id: 'CVtRckgSqBjmpmCJPGEjRHy'
-					},
-					{
-						start_offset: 88,
-						end_offset: 89,
-						node_id: 'dYcjUGQyrScuGmYaSuHnqpC'
+						node_id: 'jETAUbRNDUeMJEmdFbHDhWv'
 					}
 				]
 			}
 		},
-		kRSnDfvEsJkQjdrMZGSFQzt: {
-			id: 'kRSnDfvEsJkQjdrMZGSFQzt',
+		RTByAAwgnPEVmZZqtUTsxrb: {
+			id: 'RTByAAwgnPEVmZZqtUTsxrb',
+			type: 'code'
+		},
+		cEYAaPMyhqbrzxctrNsvxDP: {
+			id: 'cEYAaPMyhqbrzxctrNsvxDP',
+			type: 'code'
+		},
+		VjmsVtbYwjJQMjUKQGzKSjm: {
+			id: 'VjmsVtbYwjJQMjUKQGzKSjm',
+			type: 'code'
+		},
+		zNdZdAUVsgmJMFzsMGJFTbC: {
+			id: 'zNdZdAUVsgmJMFzsMGJFTbC',
+			type: 'code'
+		},
+		PstHADVermUQTXZSChbrGbr: {
+			id: 'PstHADVermUQTXZSChbrGbr',
+			type: 'paragraph',
+			layout: 1,
+			content: {
+				content: 'Change the text type from paragraph to heading with Ctrl + Shift + ↓ ↑.',
+				annotations: [
+					{
+						start_offset: 52,
+						end_offset: 56,
+						node_id: 'RTByAAwgnPEVmZZqtUTsxrb'
+					},
+					{
+						start_offset: 59,
+						end_offset: 64,
+						node_id: 'cEYAaPMyhqbrzxctrNsvxDP'
+					},
+					{
+						start_offset: 67,
+						end_offset: 68,
+						node_id: 'VjmsVtbYwjJQMjUKQGzKSjm'
+					},
+					{
+						start_offset: 69,
+						end_offset: 70,
+						node_id: 'zNdZdAUVsgmJMFzsMGJFTbC'
+					}
+				]
+			}
+		},
+		mCAdjAUWSwMQAQKRmCffWkv: {
+			id: 'mCAdjAUWSwMQAQKRmCffWkv',
 			type: 'strong'
 		},
-		CvSCfCmvzxqEHqxpMZeaVVF: {
-			id: 'CvSCfCmvzxqEHqxpMZeaVVF',
+		FvkmnCaHKSJbzaCuMpMcBJr: {
+			id: 'FvkmnCaHKSJbzaCuMpMcBJr',
 			type: 'paragraph',
 			layout: 1,
 			content: {
@@ -469,119 +530,128 @@ const FULL_DOC = {
 					{
 						start_offset: 18,
 						end_offset: 39,
-						node_id: 'kRSnDfvEsJkQjdrMZGSFQzt'
+						node_id: 'mCAdjAUWSwMQAQKRmCffWkv'
 					}
 				]
 			}
 		},
-		PkjDmTSvXRPdtwcYmSUScYs: {
-			id: 'PkjDmTSvXRPdtwcYmSUScYs',
+		vxUVaWExgWktgpgfNrfZJhS: {
+			id: 'vxUVaWExgWktgpgfNrfZJhS',
 			type: 'code'
 		},
-		ktaDsqgnHQSMBrTUGcqTUUz: {
-			id: 'ktaDsqgnHQSMBrTUGcqTUUz',
-			type: 'code'
-		},
-		yWZRRQxqhEhzdZXGrPDceZP: {
-			id: 'yWZRRQxqhEhzdZXGrPDceZP',
-			type: 'code'
-		},
-		PNcfVQKsbXcDysAFjVdeEHy: {
-			id: 'PNcfVQKsbXcDysAFjVdeEHy',
-			type: 'code'
-		},
-		ssTKzywWSxfYVCVVErvSfnb: {
-			id: 'ssTKzywWSxfYVCVVErvSfnb',
-			type: 'code'
-		},
-		jDeYDdttTydQBbCSWUcmSdY: {
-			id: 'jDeYDdttTydQBbCSWUcmSdY',
+		fZRAvjJsbByhMjcxeWjMABb: {
+			id: 'fZRAvjJsbByhMjcxeWjMABb',
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				content:
-					'Press Enter to create a new top-level block. Ctrl + Shift + ↓ ↑ cycles through block types.',
+				content: 'Press Enter to create a new top-level block.',
 				annotations: [
 					{
 						start_offset: 6,
 						end_offset: 11,
-						node_id: 'PkjDmTSvXRPdtwcYmSUScYs'
-					},
-					{
-						start_offset: 45,
-						end_offset: 49,
-						node_id: 'ktaDsqgnHQSMBrTUGcqTUUz'
-					},
-					{
-						start_offset: 52,
-						end_offset: 57,
-						node_id: 'yWZRRQxqhEhzdZXGrPDceZP'
-					},
-					{
-						start_offset: 60,
-						end_offset: 61,
-						node_id: 'PNcfVQKsbXcDysAFjVdeEHy'
-					},
-					{
-						start_offset: 62,
-						end_offset: 63,
-						node_id: 'ssTKzywWSxfYVCVVErvSfnb'
+						node_id: 'vxUVaWExgWktgpgfNrfZJhS'
 					}
 				]
 			}
 		},
-		HytEbtHQPEFqFezjtyXzWJn: {
-			id: 'HytEbtHQPEFqFezjtyXzWJn',
+		BnCeVMRsCBVEKqyZUzPUhpp: {
+			id: 'BnCeVMRsCBVEKqyZUzPUhpp',
 			type: 'code'
 		},
-		ZEUCwYThgQJGGgaeasrGZVT: {
-			id: 'ZEUCwYThgQJGGgaeasrGZVT',
+		eDkzrPMsADMCZPATPJayYUX: {
+			id: 'eDkzrPMsADMCZPATPJayYUX',
 			type: 'code'
 		},
-		bSHeWpBRwPYjMTDntDyKuGJ: {
-			id: 'bSHeWpBRwPYjMTDntDyKuGJ',
+		gpXYRgrBcWNYeyrXdRhpBvV: {
+			id: 'gpXYRgrBcWNYeyrXdRhpBvV',
 			type: 'code'
 		},
-		SmWwtdZBgtXGuRYcaVpBWpn: {
-			id: 'SmWwtdZBgtXGuRYcaVpBWpn',
+		gTkCsNxCgnNFegxNRcCHhjQ: {
+			id: 'gTkCsNxCgnNFegxNRcCHhjQ',
 			type: 'code'
 		},
-		ehJPXxeANCRWGeZshXDFbuN: {
-			id: 'ehJPXxeANCRWGeZshXDFbuN',
+		uSggjCXeQZSBHVGJtUVjrWB: {
+			id: 'uSggjCXeQZSBHVGJtUVjrWB',
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				content: 'Again Ctrl + Shift + ← → lets you flip through available layouts.',
+				content: 'Ctrl + Shift + ↓ ↑ cycles through block types.',
 				annotations: [
 					{
-						start_offset: 6,
-						end_offset: 10,
-						node_id: 'HytEbtHQPEFqFezjtyXzWJn'
+						start_offset: 0,
+						end_offset: 4,
+						node_id: 'BnCeVMRsCBVEKqyZUzPUhpp'
 					},
 					{
-						start_offset: 13,
+						start_offset: 7,
+						end_offset: 12,
+						node_id: 'eDkzrPMsADMCZPATPJayYUX'
+					},
+					{
+						start_offset: 15,
+						end_offset: 16,
+						node_id: 'gpXYRgrBcWNYeyrXdRhpBvV'
+					},
+					{
+						start_offset: 17,
 						end_offset: 18,
-						node_id: 'ZEUCwYThgQJGGgaeasrGZVT'
-					},
-					{
-						start_offset: 23,
-						end_offset: 24,
-						node_id: 'bSHeWpBRwPYjMTDntDyKuGJ'
-					},
-					{
-						start_offset: 21,
-						end_offset: 22,
-						node_id: 'SmWwtdZBgtXGuRYcaVpBWpn'
+						node_id: 'gTkCsNxCgnNFegxNRcCHhjQ'
 					}
 				]
 			}
 		},
-		rNjwbAzwSBeezHceJNjSdbq: {
-			id: 'rNjwbAzwSBeezHceJNjSdbq',
+		PXyrtZHKKVNtxcfPPEGZbys: {
+			id: 'PXyrtZHKKVNtxcfPPEGZbys',
+			type: 'code'
+		},
+		cQPhYUfcGRZwzwcZjHaxSBR: {
+			id: 'cQPhYUfcGRZwzwcZjHaxSBR',
+			type: 'code'
+		},
+		ZsRjCtYttZkdBUnMBnDAHEh: {
+			id: 'ZsRjCtYttZkdBUnMBnDAHEh',
+			type: 'code'
+		},
+		WCEqfDhjQMjKHkVuRdxXCXV: {
+			id: 'WCEqfDhjQMjKHkVuRdxXCXV',
+			type: 'code'
+		},
+		kdzfBXmwsbtGUfPVzXynEUG: {
+			id: 'kdzfBXmwsbtGUfPVzXynEUG',
+			type: 'paragraph',
+			layout: 1,
+			content: {
+				content: 'Ctrl + Shift + ← → lets you flip through available layouts.',
+				annotations: [
+					{
+						start_offset: 0,
+						end_offset: 4,
+						node_id: 'PXyrtZHKKVNtxcfPPEGZbys'
+					},
+					{
+						start_offset: 7,
+						end_offset: 12,
+						node_id: 'cQPhYUfcGRZwzwcZjHaxSBR'
+					},
+					{
+						start_offset: 17,
+						end_offset: 18,
+						node_id: 'ZsRjCtYttZkdBUnMBnDAHEh'
+					},
+					{
+						start_offset: 15,
+						end_offset: 16,
+						node_id: 'WCEqfDhjQMjKHkVuRdxXCXV'
+					}
+				]
+			}
+		},
+		nrSCDWdxeAkpQpDkzrvKvJT: {
+			id: 'nrSCDWdxeAkpQpDkzrvKvJT',
 			type: 'strong'
 		},
-		evfXRMxeSsZMxKySzTnGKsC: {
-			id: 'evfXRMxeSsZMxKySzTnGKsC',
+		enfBwMARyyTNCtvepmvUkXf: {
+			id: 'enfBwMARyyTNCtvepmvUkXf',
 			type: 'paragraph',
 			layout: 1,
 			content: {
@@ -591,46 +661,49 @@ const FULL_DOC = {
 					{
 						start_offset: 16,
 						end_offset: 38,
-						node_id: 'rNjwbAzwSBeezHceJNjSdbq'
+						node_id: 'nrSCDWdxeAkpQpDkzrvKvJT'
 					}
 				]
 			}
 		},
-		RYxjfHePFDdjENCfWRaqemY: {
-			id: 'RYxjfHePFDdjENCfWRaqemY',
+		XrdwuVwsZhtyMnKXbkHEHRG: {
+			id: 'XrdwuVwsZhtyMnKXbkHEHRG',
 			type: 'code'
 		},
-		XJJCuZhHEJsWSnmGeurTRes: {
-			id: 'XJJCuZhHEJsWSnmGeurTRes',
-			type: 'paragraph',
-			layout: 1,
+		vkfSmwrvhEvkmUjrwAcvgvA: {
+			id: 'vkfSmwrvhEvkmUjrwAcvgvA',
+			type: 'paragraph_sm',
+			layout: 2,
 			content: {
 				content:
-					'Press Esc to select the parent block. Useful when editing text but wanting to change the parent layout.',
+					'Tip: Press Esc one or more times to select parent blocks. Usually faster and more precise than dragging from a dashed gap.',
 				annotations: [
 					{
-						start_offset: 6,
-						end_offset: 9,
-						node_id: 'RYxjfHePFDdjENCfWRaqemY'
+						start_offset: 11,
+						end_offset: 14,
+						node_id: 'XrdwuVwsZhtyMnKXbkHEHRG'
 					}
 				]
 			}
 		},
-		xKmNqPrStVwYzAbCdEfGh: {
-			id: 'xKmNqPrStVwYzAbCdEfGh',
-			type: 'prose',
+		nGScFVScCanGVSnJXuevuVh: {
+			id: 'nGScFVScCanGVSnJXuevuVh',
+			type: 'feature',
 			layout: 1,
 			colorset: 0,
+			media: 'HKvdPmGRBhfDwPBNEnwGfKw',
 			body: {
 				nodes: [
-					'zrUZReSCBXBtyTpWEnCqfus',
-					'BHmangmnGSWDUkzjJXKbDjt',
-					'ZSgWGxPAGFbMqrCRXRQtnwe',
-					'CvSCfCmvzxqEHqxpMZeaVVF',
-					'jDeYDdttTydQBbCSWUcmSdY',
-					'ehJPXxeANCRWGeZshXDFbuN',
-					'evfXRMxeSsZMxKySzTnGKsC',
-					'XJJCuZhHEJsWSnmGeurTRes'
+					'fhGVryvJNVhDWWKkGYGZsyZ',
+					'evXXtdJpAjyFbbfTxbjxErW',
+					'aDadwdgEhVSbkdeXCUrrwxp',
+					'PstHADVermUQTXZSChbrGbr',
+					'FvkmnCaHKSJbzaCuMpMcBJr',
+					'fZRAvjJsbByhMjcxeWjMABb',
+					'uSggjCXeQZSBHVGJtUVjrWB',
+					'kdzfBXmwsbtGUfPVzXynEUG',
+					'enfBwMARyyTNCtvepmvUkXf',
+					'vkfSmwrvhEvkmUjrwAcvgvA'
 				],
 				annotations: []
 			}
@@ -667,15 +740,15 @@ const FULL_DOC = {
 		jEhPHUyzqvpNeSHYfKCkYgS: {
 			id: 'jEhPHUyzqvpNeSHYfKCkYgS',
 			type: 'image',
-			src: 'user1-desktop.webp',
-			mime_type: 'image/webp',
-			width: 200,
-			height: 150,
-			alt: 'Sample image',
+			src: '',
+			mime_type: '',
+			width: 0,
+			height: 0,
+			alt: '',
 			scale: 1,
 			focal_point_x: 0.5,
 			focal_point_y: 0.5,
-			object_fit: 'cover'
+			object_fit: 'contain'
 		},
 		wtvHDBrCzJVgacTaJqAwNJk: {
 			id: 'wtvHDBrCzJVgacTaJqAwNJk',
@@ -687,15 +760,15 @@ const FULL_DOC = {
 		ZjdBYZdXQedwuTdVFGHdDEj: {
 			id: 'ZjdBYZdXQedwuTdVFGHdDEj',
 			type: 'image',
-			src: 'user1-notebook.webp',
-			mime_type: 'image/webp',
-			width: 200,
-			height: 150,
-			alt: 'Sample image',
+			src: '',
+			mime_type: '',
+			width: 0,
+			height: 0,
+			alt: '',
 			scale: 1,
-			focal_point_x: 0.6705601092896176,
-			focal_point_y: 0.4532274590163934,
-			object_fit: 'cover'
+			focal_point_x: 0.5,
+			focal_point_y: 0.5,
+			object_fit: 'contain'
 		},
 		TQRANBXMrzXXZTtzxAYhhZf: {
 			id: 'TQRANBXMrzXXZTtzxAYhhZf',
@@ -766,15 +839,15 @@ const FULL_DOC = {
 		BnRyDkxJpWyxgsmdAaqBZpc: {
 			id: 'BnRyDkxJpWyxgsmdAaqBZpc',
 			type: 'image',
-			src: 'pattern.svg',
-			mime_type: 'image/svg+xml',
-			width: 1750,
-			height: 1000,
+			src: '',
+			mime_type: '',
+			width: 0,
+			height: 0,
 			alt: '',
 			scale: 1,
 			focal_point_x: 0.5,
 			focal_point_y: 0.5,
-			object_fit: 'cover'
+			object_fit: 'contain'
 		},
 		jkPsBvJwtqCCjUDuByzxAHs: {
 			id: 'jkPsBvJwtqCCjUDuByzxAHs',
@@ -802,26 +875,6 @@ const FULL_DOC = {
 					}
 				]
 			}
-		},
-		MJvxnendhrvWGYYgwbypGzf: {
-			src: 'jellyfish.mp4',
-			mime_type: 'video/mp4',
-			width: 1280,
-			height: 720,
-			alt: '',
-			scale: 1,
-			focal_point_x: 0.46228175811044075,
-			focal_point_y: 0.2649100629740638,
-			object_fit: 'cover',
-			id: 'MJvxnendhrvWGYYgwbypGzf',
-			type: 'video'
-		},
-		SDzUcrBBPfRZkGUestSfCrV: {
-			id: 'SDzUcrBBPfRZkGUestSfCrV',
-			type: 'supporting_media',
-			media: 'MJvxnendhrvWGYYgwbypGzf',
-			media_max_width: 0,
-			media_aspect_ratio: 4.801
 		},
 		hjhjWTaQYQzwFhqQuSzTkFf: {
 			id: 'hjhjWTaQYQzwFhqQuSzTkFf',
@@ -871,7 +924,6 @@ const FULL_DOC = {
 					'pFjJFVqzQzwUQzBhPQAqkuZ',
 					'jkPsBvJwtqCCjUDuByzxAHs',
 					'sBVXkwBDNWSvQvmDSUaQmSh',
-					'SDzUcrBBPfRZkGUestSfCrV',
 					'askXYZSpXVmkUURQpjBUCEd'
 				],
 				annotations: []
@@ -891,9 +943,54 @@ const FULL_DOC = {
 			type: 'paragraph',
 			layout: 1,
 			content: {
-				content:
-					'Click on one of the cards below. A link preview appears at the bottom. Click “EDIT” or press ⌘ / Ctrl + k to bring up the link editor.',
+				content: 'Click on one of the cards below.',
 				annotations: []
+			}
+		},
+		xrCYaJRkGhsssCdSBTutdQk: {
+			id: 'xrCYaJRkGhsssCdSBTutdQk',
+			type: 'paragraph',
+			layout: 1,
+			content: {
+				content: 'A link preview appears at the bottom.',
+				annotations: []
+			}
+		},
+		zsEhwdqMTSXmyydwJfWSrqg: {
+			id: 'zsEhwdqMTSXmyydwJfWSrqg',
+			type: 'code'
+		},
+		caEvHmSFeREgajgRpZEgxaS: {
+			id: 'caEvHmSFeREgajgRpZEgxaS',
+			type: 'code'
+		},
+		kQdCcJgcFccGuKWEDqrYbfq: {
+			id: 'kQdCcJgcFccGuKWEDqrYbfq',
+			type: 'code'
+		},
+		pAjXkSATTMDPZehUxzQazWX: {
+			id: 'pAjXkSATTMDPZehUxzQazWX',
+			type: 'paragraph',
+			layout: 1,
+			content: {
+				content: 'Click “Edit” or press ⌘ or Ctrl + K to bring up the link editor.',
+				annotations: [
+					{
+						start_offset: 22,
+						end_offset: 23,
+						node_id: 'zsEhwdqMTSXmyydwJfWSrqg'
+					},
+					{
+						start_offset: 27,
+						end_offset: 31,
+						node_id: 'caEvHmSFeREgajgRpZEgxaS'
+					},
+					{
+						start_offset: 34,
+						end_offset: 35,
+						node_id: 'kQdCcJgcFccGuKWEDqrYbfq'
+					}
+				]
 			}
 		},
 		descriptive_gallery_intro: {
@@ -902,7 +999,12 @@ const FULL_DOC = {
 			layout: 1,
 			colorset: 0,
 			body: {
-				nodes: ['FWAepzcFxQBWdFUpKazbgSJ', 'FUgwpAMYUEeuvRMvbvJqXEy'],
+				nodes: [
+					'FWAepzcFxQBWdFUpKazbgSJ',
+					'FUgwpAMYUEeuvRMvbvJqXEy',
+					'xrCYaJRkGhsssCdSBTutdQk',
+					'pAjXkSATTMDPZehUxzQazWX'
+				],
 				annotations: []
 			}
 		},
@@ -1070,26 +1172,26 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content:
-					'This site is powered by Svelte and Svedit — an open source rich text editor I’ve created. Editable Website builds on SvelteKit and SQLite to enable full websites with multiple pages and a persistent backend where only an admin can make changes.',
+					'Editable is powered by Svelte and Svedit — an open source rich text editor I’ve created. It builds on SvelteKit and SQLite to enable full websites with multiple pages and a persistent backend where only an admin can make changes.',
 				annotations: [
 					{
-						start_offset: 117,
-						end_offset: 126,
+						start_offset: 102,
+						end_offset: 111,
 						node_id: 'vgwPcMefbMumuCsVyAPHhUz'
 					},
 					{
-						start_offset: 131,
-						end_offset: 137,
+						start_offset: 116,
+						end_offset: 122,
 						node_id: 'qHveqveRzQxJzxGakaarEwb'
 					},
 					{
-						start_offset: 24,
-						end_offset: 30,
+						start_offset: 23,
+						end_offset: 29,
 						node_id: 'sheNSfrhuAfrBWSKfvWPYGg'
 					},
 					{
-						start_offset: 35,
-						end_offset: 41,
+						start_offset: 34,
+						end_offset: 40,
 						node_id: 'NZHwrDvtUBdpyDMvRJEGPcc'
 					}
 				]
@@ -1101,7 +1203,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content:
-					'The source code is not only available for this site, but for all the foundations it is built on:',
+					'The source code is not only available for Editable, but for all the foundations it is built on:',
 				annotations: []
 			}
 		},
@@ -1125,7 +1227,7 @@ const FULL_DOC = {
 				annotations: []
 			},
 			description: {
-				content: 'CMS-free editable websites with Svelte ★1.7k+',
+				content: 'CMS-free, in-place editable websites with Svelte ★1.7k+',
 				annotations: []
 			},
 			meta: {
@@ -1183,7 +1285,7 @@ const FULL_DOC = {
 			type: 'heading_3',
 			layout: 1,
 			content: {
-				content: 'Introductory Pricing',
+				content: 'Early-Adopter Pricing',
 				annotations: []
 			}
 		},
@@ -1360,7 +1462,7 @@ const FULL_DOC = {
 			type: 'paragraph_sm',
 			layout: 2,
 			content: {
-				content: '* Early Access only',
+				content: '* available on request',
 				annotations: []
 			}
 		},
@@ -1440,7 +1542,7 @@ const FULL_DOC = {
 			type: 'paragraph_sm',
 			layout: 2,
 			content: {
-				content: '* Early Access only',
+				content: '* available on request',
 				annotations: []
 			}
 		},
@@ -1560,7 +1662,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content:
-					'Editable Website is a foundational, AI-agnostic tool. That said, it makes perfect sense to utilize AI workflows to help building your custom site. Think prompts like "Create a paragraph block type with layout variants" and "Implement Paragraph.svelte with 2 layout modes".',
+					'Editable is a foundational, AI-agnostic tool. That said, it makes perfect sense to utilize AI workflows to help building your custom site. Think prompts like "Create a paragraph block type with layout variants" and "Implement Paragraph.svelte with 2 layouts".',
 				annotations: []
 			}
 		},
@@ -1582,7 +1684,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content:
-					"Editable Website is modular and you can and should reuse code across projects. However, I purposely don't want to establish a community maintained plugin repository. I want to encourage you to own all your code, for the benefit of simplicity, safety, and control. Share code snippets, not plugins.",
+					"Editable is modular and you can and should reuse code across projects. However, I purposely don't want to establish a community maintained plugin repository. I want to encourage you to own all your code, for the benefit of simplicity, safety, and control. Share code snippets, not plugins.",
 				annotations: []
 			}
 		},
@@ -1604,7 +1706,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content:
-					'Editable Website runs on any VPS. All you need is Node.js and SQLite. The repository includes a Dockerfile and fly.toml for one-command deployment to Fly.io — see Deploying to Fly.io above. The same Dockerfile works with any platform that supports Docker.',
+					'Editable runs on any VPS. All you need is Node.js and SQLite. The repository includes a Dockerfile and fly.toml for one-command deployment to Fly.io — see Deploying to Fly.io above. The same Dockerfile works with any platform that supports Docker.',
 				annotations: []
 			}
 		},
@@ -1626,7 +1728,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content:
-					"There's no point for static builds with Editable Website. The whole idea is that users edit content live, without having to wait for a rebuild to finish. SQLite is fast. Very fast. Web-optimized images are generated client-side before upload: resizing happens in the browser via canvas and toBlob(), and WebP encoding is done with @jsquash/webp. It still makes sense to enable a proxy for images, so they can be delivered from a CDN.",
+					"There's no point for static builds with Editable. The whole idea is that users edit content live, without having to wait for a rebuild to finish. SQLite is fast. Very fast. Web-optimized images are generated client-side before upload: resizing happens in the browser via canvas and toBlob(), and WebP encoding is done with @jsquash/webp. It still makes sense to enable a proxy for images, so they can be delivered from a CDN.",
 				annotations: []
 			}
 		},
@@ -1648,7 +1750,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content:
-					"Editable Website will at least be source-available. There will likely be an affordable one-time registration fee (per domain) for personal use, and a fair fee for commercial projects. I'm still working on the details. If you’re open to discussion, join the technical preview.",
+					"Editable will at least be source-available. There will likely be an affordable one-time registration fee (per domain) for personal use, and a fair fee for commercial projects. I'm still working on the details. If you’re open to discussion, join the technical preview.",
 				annotations: []
 			}
 		},
@@ -1775,8 +1877,8 @@ const FULL_DOC = {
 			id: 'gMEmnxMvAaEMBfvxmUFzzeM',
 			type: 'button',
 			layout: 1,
-			href: '',
-			target: '_blank',
+			href: '#RtYpQwXsZvNmKjHgFdSaLe',
+			target: '_self',
 			label: {
 				content: 'Try',
 				annotations: []
@@ -1853,7 +1955,7 @@ const FULL_DOC = {
 			layout: 2,
 			content: {
 				content:
-					'Big thanks to Johannes Mutter for helping with concept, design, and engineering, Tom Atkins for support with positioning and copywriting, and Sonja Stojanovic for modelling and being the very first happy Editable Website user — followed by Trails, Postlmayr Design, Aufreiter Architektur, and many more.',
+					'Big thanks to Johannes Mutter for helping with concept, design, and engineering, Tom Atkins for support with positioning and copywriting, and Sonja Stojanovic for modelling and being the very first happy Editable user — followed by Trails, Postlmayr Design, Aufreiter Architektur, and many more.',
 				annotations: [
 					{
 						start_offset: 14,
@@ -1871,18 +1973,18 @@ const FULL_DOC = {
 						node_id: 'jdfSXyKXdGPQfUDqVrhGpew'
 					},
 					{
-						start_offset: 240,
-						end_offset: 246,
+						start_offset: 232,
+						end_offset: 238,
 						node_id: 'yFZKjXVRgKtHqNrtFNfBeSS'
 					},
 					{
-						start_offset: 248,
-						end_offset: 264,
+						start_offset: 240,
+						end_offset: 256,
 						node_id: 'NcjxywhftMGtnXhbGyvmcUy'
 					},
 					{
-						start_offset: 266,
-						end_offset: 287,
+						start_offset: 258,
+						end_offset: 279,
 						node_id: 'KKUfXFgJuXJrUSPyzMQrHcU'
 					}
 				]
@@ -1982,7 +2084,7 @@ const FULL_DOC = {
 			id: 'yeYXsdtjqkFgJtvdhjTemtP',
 			type: 'nav_button',
 			layout: 1,
-			href: '',
+			href: '#RtYpQwXsZvNmKjHgFdSaLe',
 			target: '_self',
 			label: {
 				content: 'Try',
@@ -2200,7 +2302,7 @@ const FULL_DOC = {
 			id: 'page_1',
 			type: 'page',
 			title: {
-				content: 'Editable Website',
+				content: 'Editable',
 				annotations: []
 			},
 			description: {
@@ -2212,8 +2314,9 @@ const FULL_DOC = {
 			body: {
 				nodes: [
 					'gRpPsPcYyMPRSWWDXxvNGAF',
+					'RJbHKqVmgTdenaRBmANhAhn',
 					'RtYpQwXsZvNmKjHgFdSaLe',
-					'xKmNqPrStVwYzAbCdEfGh',
+					'nGScFVScCanGVSnJXuevuVh',
 					'dyRWExwbkfuqKyDupbEqaec',
 					'BPdekRaDEUcQZqtEwPwBvyu',
 					'FUeFBwWRRuSJMVAhgxThQqj',
@@ -2232,28 +2335,28 @@ const FULL_DOC = {
 				],
 				annotations: [
 					{
-						start_offset: 3,
-						end_offset: 6,
+						start_offset: 4,
+						end_offset: 7,
 						node_id: 'mACRdEqtkMhwnUcdeKpBfDW'
 					},
 					{
-						start_offset: 6,
-						end_offset: 9,
+						start_offset: 7,
+						end_offset: 10,
 						node_id: 'uucFzvqgQjVkmDFcFhMnbvX'
 					},
 					{
-						start_offset: 9,
-						end_offset: 11,
+						start_offset: 10,
+						end_offset: 12,
 						node_id: 'hPnUrMaKzUxndrvFhzrgvCD'
 					},
 					{
-						start_offset: 11,
-						end_offset: 13,
+						start_offset: 12,
+						end_offset: 14,
 						node_id: 'KgADBhzVGCwhYhBsAkyZvvT'
 					},
 					{
-						start_offset: 13,
-						end_offset: 15,
+						start_offset: 14,
+						end_offset: 16,
 						node_id: 'kKwKQPPJhSmxzuxPnkqZPaT'
 					}
 				]
