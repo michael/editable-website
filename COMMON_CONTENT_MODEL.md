@@ -165,11 +165,10 @@ Document value shape:
 
 `prose` is a text-first editorial section. It contains a rich `body` node array.
 
-| Property   | Type         | Default     | Allowed node types                                                                                                                                                       | Meaning                                   |
-| ---------- | ------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------- |
-| `layout`   | `integer`    | `1`         | app-defined layouts 1–6                                                                                                                                                  | Horizontal alignment and width treatment. |
-| `colorset` | `integer`    | `0`         | theme-defined                                                                                                                                                            | Optional color treatment.                 |
-| `body`     | `node_array` | `paragraph` | `paragraph_sm`, `paragraph`, `paragraph_lg`, `paragraph_xl`, `heading_1`, `heading_2`, `heading_3`, `heading_4`, `heading_5`, `list`, `supporting_media`, `button_group` | Ordered prose children.                   |
+| Property | Type         | Default     | Allowed node types                                                                                                                                                       | Meaning                                   |
+| -------- | ------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------- |
+| `layout` | `integer`    | `1`         | app-defined layouts 1–6                                                                                                                                                  | Horizontal alignment and width treatment. |
+| `body`   | `node_array` | `paragraph` | `paragraph_sm`, `paragraph`, `paragraph_lg`, `paragraph_xl`, `heading_1`, `heading_2`, `heading_3`, `heading_4`, `heading_5`, `list`, `supporting_media`, `button_group` | Ordered prose children.                   |
 
 ## Node: `prose_grid`
 
@@ -184,10 +183,9 @@ Document value shape:
 
 `prose_grid_item` is a prose block used as a child of `prose_grid`.
 
-| Property   | Type         | Default     | Allowed node types                                                                                                                                                       | Meaning                   |
-| ---------- | ------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------- |
-| `colorset` | `integer`    | `0`         | theme-defined                                                                                                                                                            | Optional color treatment. |
-| `body`     | `node_array` | `paragraph` | `paragraph_sm`, `paragraph`, `paragraph_lg`, `paragraph_xl`, `heading_1`, `heading_2`, `heading_3`, `heading_4`, `heading_5`, `list`, `supporting_media`, `button_group` | Ordered prose children.   |
+| Property | Type         | Default     | Allowed node types                                                                                                                                                       | Meaning                 |
+| -------- | ------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------- |
+| `body`   | `node_array` | `paragraph` | `paragraph_sm`, `paragraph`, `paragraph_lg`, `paragraph_xl`, `heading_1`, `heading_2`, `heading_3`, `heading_4`, `heading_5`, `list`, `supporting_media`, `button_group` | Ordered prose children. |
 
 ## Node: `paragraph`
 
@@ -363,7 +361,6 @@ The paragraph and heading family share this property shape:
 | Property        | Type         | Default | Allowed node types or values | Meaning                              |
 | --------------- | ------------ | ------- | ---------------------------- | ------------------------------------ |
 | `layout`        | `integer`    | `1`     | app-defined layouts 1–5      | Visual arrangement of gallery items. |
-| `colorset`      | `integer`    | `0`     | theme-defined                | Optional color treatment.            |
 | `gallery_items` | `node_array` | none    | `gallery_item`               | Ordered media-first items.           |
 
 ## Node: `gallery_item`
@@ -440,12 +437,11 @@ The paragraph and heading family share this property shape:
 
 `feature` is a flexible feature section with media and a rich body.
 
-| Property   | Type         | Default     | Allowed node types or values                                                                                                                                             | Meaning                    |
-| ---------- | ------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------- |
-| `layout`   | `integer`    | `1`         | app-defined layouts 1–2                                                                                                                                                  | Feature layout variant.    |
-| `colorset` | `integer`    | `0`         | theme-defined                                                                                                                                                            | Optional color treatment.  |
-| `media`    | `node`       | `image`     | `image`, `video`                                                                                                                                                         | Feature media.             |
-| `body`     | `node_array` | `paragraph` | `paragraph_sm`, `paragraph`, `paragraph_lg`, `paragraph_xl`, `heading_1`, `heading_2`, `heading_3`, `heading_4`, `heading_5`, `list`, `supporting_media`, `button_group` | Feature text/content body. |
+| Property | Type         | Default     | Allowed node types or values                                                                                                                                             | Meaning                    |
+| -------- | ------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------- |
+| `layout` | `integer`    | `1`         | app-defined layouts 1–2                                                                                                                                                  | Feature layout variant.    |
+| `media`  | `node`       | `image`     | `image`, `video`                                                                                                                                                         | Feature media.             |
+| `body`   | `node_array` | `paragraph` | `paragraph_sm`, `paragraph`, `paragraph_lg`, `paragraph_xl`, `heading_1`, `heading_2`, `heading_3`, `heading_4`, `heading_5`, `list`, `supporting_media`, `button_group` | Feature text/content body. |
 
 ## Annotation: `strong`
 

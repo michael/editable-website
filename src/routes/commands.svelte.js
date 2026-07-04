@@ -1,7 +1,6 @@
 import { Command, is_selection_collapsed, serialize_path } from 'svedit';
 import {
 	get_closest_switchable_layout,
-	get_colorset_node,
 	get_cycle_node_state,
 	is_node_subtree_empty
 } from './app_utils.js';
@@ -123,31 +122,6 @@ export class CycleNodeTypeCommand extends Command {
 			replace_node_with_equivalent_type(tr, node_array_path, node_index, node, new_type);
 		}
 
-		session.apply(tr);
-	}
-}
-
-/**
- * Command that cycles through colorset options (0, 1, 2).
- * Finds the nearest ancestor with a colorset property and cycles it.
- */
-export class CycleColorsetCommand extends Command {
-	colorset_node = $derived(get_colorset_node(this.context.session));
-
-	is_enabled() {
-		return this.context.editable && this.colorset_node !== null;
-	}
-
-	execute() {
-		const session = this.context.session;
-		const node = this.colorset_node;
-		if (!node) return;
-
-		// Cycle through 0, 1, 2
-		const new_colorset = (node.colorset + 1) % 3;
-
-		const tr = session.tr;
-		tr.set([node.id, 'colorset'], new_colorset);
 		session.apply(tr);
 	}
 }
