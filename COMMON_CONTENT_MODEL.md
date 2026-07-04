@@ -82,45 +82,6 @@ The schema uses these practical groups:
 
 [`strong`](#annotation-strong) · [`emphasis`](#annotation-emphasis) · [`code`](#annotation-code) · [`highlight`](#annotation-highlight) · [`link`](#annotation-link) · [`section`](#annotation-section)
 
-## Shared content groups
-
-### Rich content nodes
-
-Used by `prose.body`, `prose_grid_item.body`, `feature.body`, and `footer.body`:
-
-```js
-[
-	'paragraph_sm',
-	'paragraph',
-	'paragraph_lg',
-	'paragraph_xl',
-	'heading_1',
-	'heading_2',
-	'heading_3',
-	'heading_4',
-	'heading_5',
-	'list',
-	'supporting_media',
-	'button_group'
-];
-```
-
-### Rich content nodes without headings
-
-Used by `accordion_item.body`:
-
-```js
-[
-	'paragraph_sm',
-	'paragraph',
-	'paragraph_lg',
-	'paragraph_xl',
-	'list',
-	'supporting_media',
-	'button_group'
-];
-```
-
 ## Node: `page`
 
 `page` is the document root. It stores page metadata, shared chrome references, and the ordered page body.
@@ -179,10 +140,10 @@ Used by `accordion_item.body`:
 
 `footer` is the shared site footer. Its left/content area is generic rich body content, and its link area is a set of columns.
 
-| Property              | Type         | Default              | Allowed node types   | Meaning                                                                        |
-| --------------------- | ------------ | -------------------- | -------------------- | ------------------------------------------------------------------------------ |
-| `body`                | `node_array` | `paragraph`          | rich content nodes   | Main footer content area. This can contain text, headings, media, and buttons. |
-| `footer_link_columns` | `node_array` | `footer_link_column` | `footer_link_column` | Footer link columns.                                                           |
+| Property              | Type         | Default              | Allowed node types                                                                                                                                                       | Meaning                                                                        |
+| --------------------- | ------------ | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| `body`                | `node_array` | `paragraph`          | `paragraph_sm`, `paragraph`, `paragraph_lg`, `paragraph_xl`, `heading_1`, `heading_2`, `heading_3`, `heading_4`, `heading_5`, `list`, `supporting_media`, `button_group` | Main footer content area. This can contain text, headings, media, and buttons. |
+| `footer_link_columns` | `node_array` | `footer_link_column` | `footer_link_column`                                                                                                                                                     | Footer link columns.                                                           |
 
 ## Node: `footer_link_column`
 
@@ -214,11 +175,11 @@ Used by `accordion_item.body`:
 
 `prose` is a text-first editorial section. It contains a rich `body` node array.
 
-| Property   | Type         | Default     | Allowed node types      | Meaning                                   |
-| ---------- | ------------ | ----------- | ----------------------- | ----------------------------------------- |
-| `layout`   | `integer`    | `1`         | app-defined layouts 1–6 | Horizontal alignment and width treatment. |
-| `colorset` | `integer`    | `0`         | theme-defined           | Optional color treatment.                 |
-| `body`     | `node_array` | `paragraph` | rich content nodes      | Ordered prose children.                   |
+| Property   | Type         | Default     | Allowed node types                                                                                                                                                       | Meaning                                   |
+| ---------- | ------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------- |
+| `layout`   | `integer`    | `1`         | app-defined layouts 1–6                                                                                                                                                  | Horizontal alignment and width treatment. |
+| `colorset` | `integer`    | `0`         | theme-defined                                                                                                                                                            | Optional color treatment.                 |
+| `body`     | `node_array` | `paragraph` | `paragraph_sm`, `paragraph`, `paragraph_lg`, `paragraph_xl`, `heading_1`, `heading_2`, `heading_3`, `heading_4`, `heading_5`, `list`, `supporting_media`, `button_group` | Ordered prose children.                   |
 
 ## Node: `prose_grid`
 
@@ -233,10 +194,10 @@ Used by `accordion_item.body`:
 
 `prose_grid_item` is a prose block used as a child of `prose_grid`.
 
-| Property   | Type         | Default     | Allowed node types | Meaning                   |
-| ---------- | ------------ | ----------- | ------------------ | ------------------------- |
-| `colorset` | `integer`    | `0`         | theme-defined      | Optional color treatment. |
-| `body`     | `node_array` | `paragraph` | rich content nodes | Ordered prose children.   |
+| Property   | Type         | Default     | Allowed node types                                                                                                                                                       | Meaning                   |
+| ---------- | ------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------- |
+| `colorset` | `integer`    | `0`         | theme-defined                                                                                                                                                            | Optional color treatment. |
+| `body`     | `node_array` | `paragraph` | `paragraph_sm`, `paragraph`, `paragraph_lg`, `paragraph_xl`, `heading_1`, `heading_2`, `heading_3`, `heading_4`, `heading_5`, `list`, `supporting_media`, `button_group` | Ordered prose children.   |
 
 ## Node: `paragraph`
 
@@ -480,21 +441,21 @@ The paragraph and heading family share this property shape:
 
 `accordion_item` is a collapsible content block with a title and rich body.
 
-| Property | Type         | Default     | Allowed node or annotation types    | Meaning                               |
-| -------- | ------------ | ----------- | ----------------------------------- | ------------------------------------- |
-| `title`  | `text`       | none        | `emphasis`, `highlight`             | Item title. Newlines are not allowed. |
-| `body`   | `node_array` | `paragraph` | rich content nodes without headings | Expandable rich body content.         |
+| Property | Type         | Default     | Allowed node or annotation types                                                                        | Meaning                               |
+| -------- | ------------ | ----------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| `title`  | `text`       | none        | `emphasis`, `highlight`                                                                                 | Item title. Newlines are not allowed. |
+| `body`   | `node_array` | `paragraph` | `paragraph_sm`, `paragraph`, `paragraph_lg`, `paragraph_xl`, `list`, `supporting_media`, `button_group` | Expandable rich body content.         |
 
 ## Node: `feature`
 
 `feature` is a flexible feature section with media and a rich body.
 
-| Property   | Type         | Default     | Allowed node types or values | Meaning                    |
-| ---------- | ------------ | ----------- | ---------------------------- | -------------------------- |
-| `layout`   | `integer`    | `1`         | app-defined layouts 1–2      | Feature layout variant.    |
-| `colorset` | `integer`    | `0`         | theme-defined                | Optional color treatment.  |
-| `media`    | `node`       | `image`     | `image`, `video`             | Feature media.             |
-| `body`     | `node_array` | `paragraph` | rich content nodes           | Feature text/content body. |
+| Property   | Type         | Default     | Allowed node types or values                                                                                                                                             | Meaning                    |
+| ---------- | ------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------- |
+| `layout`   | `integer`    | `1`         | app-defined layouts 1–2                                                                                                                                                  | Feature layout variant.    |
+| `colorset` | `integer`    | `0`         | theme-defined                                                                                                                                                            | Optional color treatment.  |
+| `media`    | `node`       | `image`     | `image`, `video`                                                                                                                                                         | Feature media.             |
+| `body`     | `node_array` | `paragraph` | `paragraph_sm`, `paragraph`, `paragraph_lg`, `paragraph_xl`, `heading_1`, `heading_2`, `heading_3`, `heading_4`, `heading_5`, `list`, `supporting_media`, `button_group` | Feature text/content body. |
 
 ## Annotation: `strong`
 
