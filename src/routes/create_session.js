@@ -427,7 +427,7 @@ const session_config = {
 		prose: function (tr) {
 			const new_heading = {
 				id: nanoid(),
-				type: 'heading_1',
+				type: 'heading_3',
 				content: { content: '', annotations: [] }
 			};
 			tr.create(new_heading);
