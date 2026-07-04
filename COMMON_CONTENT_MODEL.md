@@ -298,33 +298,33 @@ The paragraph and heading family share this property shape:
 
 `image` stores an image asset and its display controls.
 
-| Property        | Type      | Default       | Meaning                                                            |
-| --------------- | --------- | ------------- | ------------------------------------------------------------------ |
-| `src`           | `string`  | none          | Asset id or temporary blob URL before save.                        |
-| `mime_type`     | `string`  | none          | MIME type, such as `image/webp`, `image/jpeg`, or `image/svg+xml`. |
-| `width`         | `integer` | none          | Intrinsic image width in pixels.                                   |
-| `height`        | `integer` | none          | Intrinsic image height in pixels.                                  |
-| `alt`           | `string`  | none          | Alternative text.                                                  |
-| `focal_point_x` | `number`  | media default | Horizontal focal point as a normalized value.                      |
-| `focal_point_y` | `number`  | media default | Vertical focal point as a normalized value.                        |
-| `scale`         | `number`  | media default | Display scale applied inside the media frame.                      |
-| `object_fit`    | `string`  | media default | CSS object-fit behavior.                                           |
+| Property        | Type      | Default   | Meaning                                                            |
+| --------------- | --------- | --------- | ------------------------------------------------------------------ |
+| `src`           | `string`  | `''`      | Asset id or temporary blob URL before save.                        |
+| `mime_type`     | `string`  | `''`      | MIME type, such as `image/webp`, `image/jpeg`, or `image/svg+xml`. |
+| `width`         | `integer` | `0`       | Intrinsic image width in pixels.                                   |
+| `height`        | `integer` | `0`       | Intrinsic image height in pixels.                                  |
+| `alt`           | `string`  | `''`      | Alternative text.                                                  |
+| `focal_point_x` | `number`  | `0.5`     | Horizontal focal point as a normalized value.                      |
+| `focal_point_y` | `number`  | `0.5`     | Vertical focal point as a normalized value.                        |
+| `scale`         | `number`  | `1`       | Display scale applied inside the media frame.                      |
+| `object_fit`    | `string`  | `contain` | CSS object-fit behavior.                                           |
 
 ## Node: `video`
 
 `video` stores a video asset and uses the same display controls as `image`.
 
-| Property        | Type      | Default       | Meaning                                         |
-| --------------- | --------- | ------------- | ----------------------------------------------- |
-| `src`           | `string`  | none          | Asset id or temporary blob URL before save.     |
-| `mime_type`     | `string`  | none          | MIME type, such as `video/mp4` or `video/webm`. |
-| `width`         | `integer` | none          | Intrinsic video width in pixels.                |
-| `height`        | `integer` | none          | Intrinsic video height in pixels.               |
-| `alt`           | `string`  | none          | Accessible label for the video.                 |
-| `focal_point_x` | `number`  | media default | Horizontal focal point as a normalized value.   |
-| `focal_point_y` | `number`  | media default | Vertical focal point as a normalized value.     |
-| `scale`         | `number`  | media default | Display scale applied inside the media frame.   |
-| `object_fit`    | `string`  | media default | CSS object-fit behavior.                        |
+| Property        | Type      | Default   | Meaning                                         |
+| --------------- | --------- | --------- | ----------------------------------------------- |
+| `src`           | `string`  | `''`      | Asset id or temporary blob URL before save.     |
+| `mime_type`     | `string`  | `''`      | MIME type, such as `video/mp4` or `video/webm`. |
+| `width`         | `integer` | `0`       | Intrinsic video width in pixels.                |
+| `height`        | `integer` | `0`       | Intrinsic video height in pixels.               |
+| `alt`           | `string`  | `''`      | Accessible label for the video.                 |
+| `focal_point_x` | `number`  | `0.5`     | Horizontal focal point as a normalized value.   |
+| `focal_point_y` | `number`  | `0.5`     | Vertical focal point as a normalized value.     |
+| `scale`         | `number`  | `1`       | Display scale applied inside the media frame.   |
+| `object_fit`    | `string`  | `contain` | CSS object-fit behavior.                        |
 
 ## Node: `figure`
 
