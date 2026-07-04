@@ -73,7 +73,6 @@ const FULL_DOC = {
 			id: 'gRpPsPcYyMPRSWWDXxvNGAF',
 			type: 'prose',
 			layout: 6,
-			colorset: 0,
 			body: {
 				nodes: ['TSRjJkcjxCEVZUVMwWBPJJT', 'QUyEgDbAcDSNkdtEewwfYGM', 'tgzmEzyQGVDSHZVYnvuFWRp'],
 				annotations: []
@@ -393,7 +392,6 @@ const FULL_DOC = {
 			id: 'RtYpQwXsZvNmKjHgFdSaLe',
 			type: 'feature',
 			layout: 2,
-			colorset: 0,
 			media: 'VbNcMxZaQwErTyUiOpLkJh',
 			body: {
 				nodes: [
@@ -690,7 +688,6 @@ const FULL_DOC = {
 			id: 'nGScFVScCanGVSnJXuevuVh',
 			type: 'feature',
 			layout: 1,
-			colorset: 0,
 			media: 'HKvdPmGRBhfDwPBNEnwGfKw',
 			body: {
 				nodes: [
@@ -731,7 +728,6 @@ const FULL_DOC = {
 			id: 'dyRWExwbkfuqKyDupbEqaec',
 			type: 'prose',
 			layout: 1,
-			colorset: 0,
 			body: {
 				nodes: ['ttqZrWgKByzNJpAZWDjCdkt', 'HjCnaGHNswXGNmDReQhNPjy'],
 				annotations: []
@@ -801,7 +797,6 @@ const FULL_DOC = {
 			id: 'BPdekRaDEUcQZqtEwPwBvyu',
 			type: 'gallery',
 			layout: 1,
-			colorset: 0,
 			gallery_items: {
 				nodes: ['wtvHDBrCzJVgacTaJqAwNJk', 'TQRANBXMrzXXZTtzxAYhhZf', 'HtSTZfjTcDSkttVaTUKMYAj'],
 				annotations: []
@@ -918,7 +913,6 @@ const FULL_DOC = {
 			id: 'FUeFBwWRRuSJMVAhgxThQqj',
 			type: 'prose',
 			layout: 1,
-			colorset: 0,
 			body: {
 				nodes: [
 					'pFjJFVqzQzwUQzBhPQAqkuZ',
@@ -997,7 +991,6 @@ const FULL_DOC = {
 			id: 'descriptive_gallery_intro',
 			type: 'prose',
 			layout: 1,
-			colorset: 0,
 			body: {
 				nodes: [
 					'FWAepzcFxQBWdFUpKazbgSJ',
@@ -1127,7 +1120,6 @@ const FULL_DOC = {
 			id: 'descriptive_gallery_outro',
 			type: 'prose',
 			layout: 1,
-			colorset: 0,
 			body: {
 				nodes: ['KUAHxAZZcZTtjmHHBfbrbfs'],
 				annotations: []
@@ -1211,7 +1203,6 @@ const FULL_DOC = {
 			id: 'XVJGXtwnQMvcrcuByAtcWNa',
 			type: 'prose',
 			layout: 1,
-			colorset: 0,
 			body: {
 				nodes: ['awxJbWfytmnufqPsJCPxPnR', 'fMgsDXKARPqeRZGCmYKuvqj', 'HgJRTPUBDfGQFhEDmwcNQNW'],
 				annotations: []
@@ -1326,7 +1317,6 @@ const FULL_DOC = {
 			id: 'eRkNrkcQvspQsPtkDtuqekV',
 			type: 'prose',
 			layout: 1,
-			colorset: 0,
 			body: {
 				nodes: ['KsFYXQPtmceJKGbEkmHqXTy', 'eJjQwDAYHqfcegtbNPTtQSJ'],
 				annotations: []
@@ -1390,7 +1380,6 @@ const FULL_DOC = {
 		prose_grid_free: {
 			id: 'prose_grid_free',
 			type: 'prose_grid_item',
-			colorset: 0,
 			body: {
 				nodes: [
 					'AJZwMjfQPTRnyPCSjNzhbta',
@@ -1469,7 +1458,6 @@ const FULL_DOC = {
 		prose_grid_supergrok: {
 			id: 'prose_grid_supergrok',
 			type: 'prose_grid_item',
-			colorset: 0,
 			body: {
 				nodes: [
 					'bFTuteKYWEYEJsesbaZQqMW',
@@ -1549,7 +1537,6 @@ const FULL_DOC = {
 		prose_grid_expert: {
 			id: 'prose_grid_expert',
 			type: 'prose_grid_item',
-			colorset: 0,
 			body: {
 				nodes: [
 					'BEXmuGVzZJGECjrTPcSAmtF',
@@ -1584,7 +1571,6 @@ const FULL_DOC = {
 			id: 'xEphsDndbNejaRnnPRBwvBK',
 			type: 'prose',
 			layout: 1,
-			colorset: 0,
 			body: {
 				nodes: ['TYcAwBxbMfUnUnQFHbcnjjK'],
 				annotations: []
@@ -1852,7 +1838,6 @@ const FULL_DOC = {
 			id: 'YTMHBcPkYXJMRUnuSAhrTDE',
 			type: 'feature',
 			layout: 2,
-			colorset: 0,
 			media: 'hqrrTdEbTPaqzEcYMczhBZb',
 			body: {
 				nodes: [
@@ -1907,7 +1892,6 @@ const FULL_DOC = {
 			id: 'zBXuGXXYWMGbSdteMyNFhja',
 			type: 'prose',
 			layout: 4,
-			colorset: 0,
 			body: {
 				nodes: ['CqTEkBNqegxMsErnwufYdHp', 'fxbPhZADdeyCbysuCSwHNcA'],
 				annotations: []
@@ -1994,7 +1978,6 @@ const FULL_DOC = {
 			id: 'wmrbpSFAFUmMRPDumcjKqpF',
 			type: 'prose',
 			layout: 5,
-			colorset: 0,
 			body: {
 				nodes: ['vvqbUaMzgjJXvJGMzHFDnrE'],
 				annotations: []

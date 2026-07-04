@@ -12,7 +12,6 @@
 	let media_aspect_ratio = $derived(
 		media_node.width && media_node.height ? `${media_node.width} / ${media_node.height}` : undefined
 	);
-	let colorset_class = $derived(node.colorset ? `ew-colorset-${node.colorset}` : '');
 	let feature_layout = $derived(node.layout === 2 ? 2 : 1);
 	let padding_top_wide = $derived(!section || section?.is_start);
 	let padding_bottom_wide = $derived(!section || section?.is_end);
@@ -76,7 +75,7 @@
 	</div>
 {/snippet}
 
-<Node class="ew-feature bg-(--background) text-(--foreground) {colorset_class}" {path}>
+<Node class="ew-feature bg-(--background) text-(--foreground)" {path}>
 	{@const layouts = [layout_1, layout_2]}
 	{@render layouts[feature_layout - 1]()}
 </Node>

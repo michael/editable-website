@@ -66,7 +66,6 @@ export function create_empty_doc(shared_documents) {
 				id: prose_id,
 				type: 'prose',
 				layout: 1,
-				colorset: 0,
 				body: { nodes: [heading_id, paragraph_id], annotations: [] }
 			},
 			[heading_id]: {

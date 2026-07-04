@@ -15,7 +15,6 @@ import nanoid from './nanoid.js';
 import {
 	CycleLayoutCommand,
 	CycleNodeTypeCommand,
-	CycleColorsetCommand,
 	ToggleLinkCommand,
 	EditLinkCommand,
 	ReplaceMediaCommand,
@@ -384,7 +383,6 @@ const session_config = {
 			toggle_link: new ToggleLinkCommand(context),
 			edit_link: new EditLinkCommand(context),
 			edit_image: new EditImageCommand(context),
-			cycle_colorset: new CycleColorsetCommand(context),
 			replace_media: new ReplaceMediaCommand(context)
 		};
 
@@ -441,7 +439,6 @@ const session_config = {
 				id: nanoid(),
 				type: 'prose',
 				layout: 1,
-				colorset: 0,
 				body: { nodes: [new_heading.id, new_paragraph.id], annotations: [] }
 			};
 			tr.create(new_prose);
@@ -623,7 +620,6 @@ const session_config = {
 					id: 'new_feature',
 					type: 'feature',
 					layout: 1,
-					colorset: 0,
 					media: 'feature_image',
 					body: { nodes: ['body_text'], annotations: [] }
 				}
@@ -833,7 +829,6 @@ const session_config = {
 				id: nanoid(),
 				type: 'gallery',
 				layout: 1,
-				colorset: 0,
 				gallery_items: { nodes: gallery_items, annotations: [] }
 			};
 			tr.create(gallery);

@@ -7,7 +7,6 @@
 	let { path, annotation: section = null } = $props();
 	let node = $derived(svedit.session.get(path));
 	let layout = $derived(node.layout || 1);
-	let colorset_class = $derived(node.colorset ? `ew-colorset-${node.colorset}` : '');
 	let padding_top_wide = $derived(!section || section?.is_start);
 	let padding_bottom_wide = $derived(!section || section?.is_end);
 
@@ -128,10 +127,7 @@
 	</div>
 {/snippet}
 
-<Node
-	class="ew-prose layout-{layout} bg-(--background) text-(--foreground) {colorset_class}"
-	{path}
->
+<Node class="ew-prose layout-{layout} bg-(--background) text-(--foreground)" {path}>
 	{@const layouts = [layout_1, layout_2, layout_3, layout_4, layout_5, layout_6]}
 	{@render layouts[layout - 1]()}
 </Node>

@@ -6,7 +6,6 @@
 
 	const svedit = getContext('svedit');
 	let node = $derived(svedit.session.get(path));
-	let colorset_class = $derived(node.colorset ? `ew-colorset-${node.colorset}` : '');
 	let padding_top_wide = $derived(!section || section?.is_start);
 	let padding_bottom_wide = $derived(!section || section?.is_end);
 	let grid_layout = $derived.by(get_grid_layout);
@@ -53,7 +52,7 @@
 </script>
 
 <Node {path}>
-	<div class="bg-(--background) text-(--foreground) {colorset_class}">
+	<div class="bg-(--background) text-(--foreground)">
 		<div class="{TW_LIMITER} w-full">
 			<div
 				class={[

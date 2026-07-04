@@ -10,7 +10,6 @@
 	let prose_grid_path = $derived(path.slice(0, -2));
 	let prose_grid_node = $derived(svedit.session.get(prose_grid_path));
 	let layout = $derived(prose_grid_node.layout || 1);
-	let colorset_class = $derived(node.colorset ? `ew-colorset-${node.colorset}` : '');
 
 	setContext('prose', {
 		get is_centered() {
@@ -54,7 +53,7 @@
 	</div>
 {/snippet}
 
-<Node class="ew-prose-grid-item bg-(--background) text-(--foreground) {colorset_class}" {path}>
+<Node class="ew-prose-grid-item bg-(--background) text-(--foreground)" {path}>
 	{@const layouts = [layout_1, layout_2]}
 	{@render layouts[layout - 1]()}
 </Node>
