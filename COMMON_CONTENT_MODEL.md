@@ -238,23 +238,63 @@ Used by `accordion_item.body`:
 | `colorset` | `integer`    | `0`         | theme-defined      | Optional color treatment. |
 | `body`     | `node_array` | `paragraph` | rich content nodes | Ordered prose children.   |
 
-## Text nodes
+## Node: `paragraph`
 
-The paragraph and heading family share the same basic shape:
+`paragraph` is the default rich body copy node.
 
-| Node type      | Meaning                           |
-| -------------- | --------------------------------- |
-| `paragraph`    | Default rich body copy.           |
-| `paragraph_sm` | Small supplementary copy.         |
-| `paragraph_lg` | Larger editorial copy.            |
-| `paragraph_xl` | Very large editorial copy.        |
-| `heading_1`    | Primary editorial heading.        |
-| `heading_2`    | Secondary editorial heading.      |
-| `heading_3`    | Tertiary editorial heading.       |
-| `heading_4`    | Lower-priority editorial heading. |
-| `heading_5`    | Least prominent heading.          |
+See [Text node shape](#text-node-shape).
 
-Each has:
+## Node: `paragraph_sm`
+
+`paragraph_sm` is a small supplementary copy node.
+
+See [Text node shape](#text-node-shape).
+
+## Node: `paragraph_lg`
+
+`paragraph_lg` is a larger editorial copy node.
+
+See [Text node shape](#text-node-shape).
+
+## Node: `paragraph_xl`
+
+`paragraph_xl` is a very large editorial copy node.
+
+See [Text node shape](#text-node-shape).
+
+## Node: `heading_1`
+
+`heading_1` is the primary editorial heading node.
+
+See [Text node shape](#text-node-shape).
+
+## Node: `heading_2`
+
+`heading_2` is the secondary editorial heading node.
+
+See [Text node shape](#text-node-shape).
+
+## Node: `heading_3`
+
+`heading_3` is the tertiary editorial heading node.
+
+See [Text node shape](#text-node-shape).
+
+## Node: `heading_4`
+
+`heading_4` is a lower-priority editorial heading node.
+
+See [Text node shape](#text-node-shape).
+
+## Node: `heading_5`
+
+`heading_5` is the least prominent heading node.
+
+See [Text node shape](#text-node-shape).
+
+## Text node shape
+
+The paragraph and heading family share this property shape:
 
 | Property  | Type      | Default | Allowed values or annotation types                | Meaning                                                         |
 | --------- | --------- | ------- | ------------------------------------------------- | --------------------------------------------------------------- |
