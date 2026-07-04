@@ -1,8 +1,8 @@
-# Editable v2
+# Editable
 
-The next generation of Editable — a complete rewrite designed to make Svelte developers happy.
+Skip the CMS.
 
-> **NOTE:** v2 is a complete rewrite using [Svedit](https://github.com/michael/svedit). It's under active development — feel free to explore locally, but hold off on production deployments for now.
+Editable brings live on-page editing to Svelte. Site owners edit directly in the layout; developers keep full control with ordinary Svelte components.
 
 ## Who is Editable for?
 
