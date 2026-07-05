@@ -41,7 +41,7 @@
 	<div class={TW_LIMITER}>
 		<div
 			class={[
-				`grid grid-cols-1 md:grid-cols-2 ${TW_PAGE_PADDING_X} gap-5 sm:gap-7`,
+				`grid grid-cols-1 md:grid-cols-2 ${TW_PAGE_PADDING_X} gap-x-10 gap-y-5 sm:gap-y-7 lg:gap-x-14`,
 				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
 				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
 			]}
@@ -60,7 +60,7 @@
 	<div class={TW_LIMITER}>
 		<div
 			class={[
-				`grid grid-cols-1 md:grid-cols-2 ${TW_PAGE_PADDING_X} gap-5 sm:gap-7`,
+				`grid grid-cols-1 md:grid-cols-2 ${TW_PAGE_PADDING_X} gap-x-10 gap-y-5 sm:gap-y-7 lg:gap-x-14`,
 				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
 				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
 			]}
