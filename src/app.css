@@ -37,12 +37,12 @@
 	/* Website colors */
 	--background: oklch(1 0 0);
 	--foreground: oklch(0 0 0);
-	--muted: oklch(0.992 0 0);
-	--outline: oklch(0.92 0 0);
+	--muted: oklch(0.98 0 0);
+	--border: oklch(0.92 0 0);
 	--muted-foreground: oklch(0.55 0 0);
 	--accent: oklch(0 0 0);
 	--accent-foreground: oklch(1 0 0);
-	
+
 	/* Editor colors */
 	--svedit-brand: oklch(60% 0.22 283);
 	--svedit-editing-stroke: var(--svedit-brand);
