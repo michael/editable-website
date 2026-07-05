@@ -47,9 +47,7 @@
 			<Footer path={[...path, 'footer']} />
 		</div>
 		{#if svedit.editable}
-			<div
-				class="border-t border-(--foreground)/10 bg-[color-mix(in_oklch,var(--foreground)_1%,transparent)] text-(--foreground)"
-			>
+			<div class="border-t border-(--border) bg-(--muted) text-(--foreground)">
 				<div class={TW_LIMITER}>
 					<div class="{TW_PAGE_PADDING_X} flex flex-col gap-6 py-12 md:py-16">
 						<div
@@ -59,7 +57,7 @@
 							How should this page be displayed in a search result?
 						</div>
 						<div class="grid w-full max-w-2xl grid-cols-[8rem_minmax(0,1fr)] items-center gap-6">
-							<div class="aspect-square w-32 border border-(--foreground)/10">
+							<div class="aspect-square w-32 border border-(--border)">
 								<MediaProperty path={[...path, 'image']} />
 							</div>
 							<div class="flex flex-col justify-center gap-4">

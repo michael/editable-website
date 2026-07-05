@@ -13,7 +13,7 @@
 	<div use:reveal>
 		<TextProperty
 			tag="p"
-			class={`body-lg ${layout === 2 ? 'text-(--foreground)/50' : ''}`}
+			class={`body-lg ${layout === 2 ? 'text-(--muted-foreground)' : ''}`}
 			path={[...path, 'content']}
 			placeholder="Large Paragraph"
 		/>

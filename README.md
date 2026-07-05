@@ -59,6 +59,9 @@ Next, you probably want to adjust the colors and fonts in [app.css](./src/app.cs
 :root {
 	--background: oklch(0.98 0 0);
 	--foreground: oklch(0 0 0);
+	--muted: oklch(1 0 0);
+	--border: oklch(0.88 0 0);
+	--muted-foreground: oklch(0.55 0 0);
 	--accent: oklch(0.21 0.034 264);
 	--accent-foreground: oklch(0.98 0 0);
 }

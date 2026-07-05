@@ -37,24 +37,20 @@
 	/* Website colors */
 	--background: oklch(1 0 0);
 	--foreground: oklch(0 0 0);
-
-	/*--background: oklch(0 0 0);
-	--foreground: oklch(1 0 0);*/
-
+	--muted: oklch(0.992 0 0);
+	--outline: oklch(0.92 0 0);
+	--muted-foreground: oklch(0.55 0 0);
 	--accent: oklch(0 0 0);
 	--accent-foreground: oklch(1 0 0);
-
-	/*--accent: oklch(1 0 0);
-	--accent-foreground: oklch(0 0 0);*/
-
+	
 	/* Editor colors */
 	--svedit-brand: oklch(60% 0.22 283);
-  --svedit-editing-stroke: var(--svedit-brand);
-  --svedit-editing-fill: oklch(from var(--svedit-brand) l c h / 0.1);
-  --svedit-canvas-stroke: color-mix(in oklch, currentColor 25%, transparent);
+	--svedit-editing-stroke: var(--svedit-brand);
+	--svedit-editing-fill: oklch(from var(--svedit-brand) l c h / 0.1);
+	--svedit-canvas-stroke: color-mix(in oklch, currentColor 25%, transparent);
 
-  /* Rounded corners */
-  --button-border-radius: 3rem; /* rounded corners for buttons, nav items */
+	/* Rounded corners */
+	--button-border-radius: 3rem; /* rounded corners for buttons, nav items */
 	--image-border-radius: 0.5rem; /* rounded corners for images */
 }
 
@@ -62,36 +58,37 @@
 @theme {
 	--font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
 	--font-serif: 'Libertinos Serif Display', ui-serif, Georgia, serif;
-	--font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+	--font-mono:
+		'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+		'Courier New', monospace;
 }
-
 
 /* Typography system */
 /******************************************************************/
 
 /* Display 1, ... */
 @utility display-1 {
-  @apply font-sans leading-tight tracking-tight text-6xl lg:text-7xl text-balance;
+	@apply font-sans text-6xl leading-tight tracking-tight text-balance lg:text-7xl;
 }
 
 /* Display 2, ... */
 @utility display-2 {
-  @apply font-sans leading-tight tracking-tight text-5xl lg:text-6xl text-balance;
+	@apply font-sans text-5xl leading-tight tracking-tight text-balance lg:text-6xl;
 }
 
 /* E.g. Heading1 */
 @utility display-3 {
-  @apply font-sans leading-tight tracking-tight text-4xl lg:text-5xl text-balance;
+	@apply font-sans text-4xl leading-tight tracking-tight text-balance lg:text-5xl;
 }
 
 /* E.g. Heading2 */
 @utility display-4 {
-  @apply font-sans leading-tight tracking-tight text-3xl lg:text-4xl text-balance;
+	@apply font-sans text-3xl leading-tight tracking-tight text-balance lg:text-4xl;
 }
 
 /* E.g. Heading3, TitleGallery.title, ... */
 @utility display-5 {
-  @apply font-sans leading-tight tracking-tight text-2xl lg:text-3xl text-balance;
+	@apply font-sans text-2xl leading-tight tracking-tight text-balance lg:text-3xl;
 }
 
 /* ParagraphSM, ListingItem.description, ... */
@@ -135,10 +132,26 @@
 
 @utility ew-bg-checkerboard {
 	background:
-		linear-gradient(45deg, color-mix(in oklch, var(--foreground) 10%, transparent) 25%, transparent 25%),
-		linear-gradient(-45deg, color-mix(in oklch, var(--foreground) 10%, transparent) 25%, transparent 25%),
-		linear-gradient(45deg, transparent 75%, color-mix(in oklch, var(--foreground) 10%, transparent) 75%),
-		linear-gradient(-45deg, transparent 75%, color-mix(in oklch, var(--foreground) 10%, transparent) 75%);
+		linear-gradient(
+			45deg,
+			color-mix(in oklch, var(--foreground) 10%, transparent) 25%,
+			transparent 25%
+		),
+		linear-gradient(
+			-45deg,
+			color-mix(in oklch, var(--foreground) 10%, transparent) 25%,
+			transparent 25%
+		),
+		linear-gradient(
+			45deg,
+			transparent 75%,
+			color-mix(in oklch, var(--foreground) 10%, transparent) 75%
+		),
+		linear-gradient(
+			-45deg,
+			transparent 75%,
+			color-mix(in oklch, var(--foreground) 10%, transparent) 75%
+		);
 	background-size: 20px 20px;
 	background-position:
 		0 0,
@@ -148,16 +161,17 @@
 	background-color: var(--background);
 }
 
-
 /* Scroll-triggered reveal animations
    Comment out the block below to disable */
-.svedit-canvas[contenteditable="false"] .reveal-hidden {
-  opacity: 0;
+.svedit-canvas[contenteditable='false'] .reveal-hidden {
+	opacity: 0;
 	transform: translateY(30px);
 }
 
-.svedit-canvas[contenteditable="false"] .revealed {
-  opacity: 1;
+.svedit-canvas[contenteditable='false'] .revealed {
+	opacity: 1;
 	transform: translateY(0);
-	transition: opacity 0.8s cubic-bezier(0, 0, 0.2, 1), transform 0.8s cubic-bezier(0, 0, 0.2, 1);
+	transition:
+		opacity 0.8s cubic-bezier(0, 0, 0.2, 1),
+		transform 0.8s cubic-bezier(0, 0, 0.2, 1);
 }

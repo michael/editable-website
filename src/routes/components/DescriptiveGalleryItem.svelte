@@ -34,7 +34,7 @@
 				placeholder="Title"
 			/>
 			<TextProperty
-				class="pt-1 body-sm text-(--foreground)/50"
+				class="pt-1 body-sm text-(--muted-foreground)"
 				path={[...path, 'description']}
 				placeholder="Description"
 			/>
@@ -63,7 +63,7 @@
 				placeholder="Title"
 			/>
 			<TextProperty
-				class="pt-2 body-sm text-balance text-(--foreground)/60"
+				class="pt-2 body-sm text-balance text-(--muted-foreground)"
 				path={[...path, 'description']}
 				placeholder="Description"
 			/>
