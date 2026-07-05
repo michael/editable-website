@@ -56,9 +56,7 @@
 			if (!(scroll_container instanceof HTMLElement)) return;
 
 			const scroll_container_rect = scroll_container.getBoundingClientRect();
-			const search_shell = tree_ref
-				.closest('.pages-drawer')
-				?.querySelector('.search-shell');
+			const search_shell = tree_ref.closest('.pages-drawer')?.querySelector('.search-shell');
 			const search_shell_rect =
 				search_shell instanceof HTMLElement ? search_shell.getBoundingClientRect() : null;
 
@@ -103,8 +101,6 @@
 		cancelAnimationFrame(initial_scroll_frame_id);
 		initial_scroll_frame_id = null;
 	}
-
-
 
 	const browser_data_query = $derived.by(() => {
 		page_browser?.version ?? 0;
@@ -396,9 +392,7 @@ Updated: ${updated_at_label}`;
 		if (event.key === 'ArrowDown') {
 			event.preventDefault();
 			const next_enabled_index =
-				current_enabled_index === -1
-					? 0
-					: (current_enabled_index + 1) % enabled_item_refs.length;
+				current_enabled_index === -1 ? 0 : (current_enabled_index + 1) % enabled_item_refs.length;
 			const next_item_ref = enabled_item_refs[next_enabled_index];
 			const next_index = menu_item_refs.findIndex((item_ref) => item_ref === next_item_ref);
 			if (next_index !== -1) {
@@ -742,11 +736,7 @@ Updated: ${updated_at_label}`;
 </script>
 
 <div class="pages-drawer">
-	<button
-		type="button"
-		class="drawer-initial-focus-target"
-		aria-label="Pages drawer"
-		autofocus
+	<button type="button" class="drawer-initial-focus-target" aria-label="Pages drawer" autofocus
 	></button>
 
 	<div class="search-shell">
@@ -780,19 +770,20 @@ Updated: ${updated_at_label}`;
 			<div class="status-message" role="alert">{load_error}</div>
 		{:else}
 			<div class="tree" bind:this={tree_ref}>
-
-
-				{#snippet node_item(node, depth = 0, is_last = true, ancestor_columns = [], ancestor_is_unlisted = false)}
+				{#snippet node_item(
+					node,
+					depth = 0,
+					is_last = true,
+					ancestor_columns = [],
+					ancestor_is_unlisted = false
+				)}
 					{@const node_has_children = has_children(node)}
 					{@const node_is_root = is_root_node(node, depth)}
 					{@const node_is_unlisted = is_unlisted_page(node, depth, ancestor_is_unlisted)}
 					{@const current_column_continues = node_is_root ? false : !is_last}
 					{@const guide_column_count = ancestor_columns.length}
 					<div class="tree-node">
-						<div
-							class="tree-row-shell"
-							style={`--tree-guide-columns: ${guide_column_count};`}
-						>
+						<div class="tree-row-shell" style={`--tree-guide-columns: ${guide_column_count};`}>
 							<div class="tree-guides" aria-hidden="true">
 								{#each ancestor_columns as show_rail, guide_index (`${depth}-${guide_index}`)}
 									<div class="tree-guide-column">
@@ -816,7 +807,8 @@ Updated: ${updated_at_label}`;
 							<a
 								class={`tree-row ${get_match_kind_class(node.match_kind)}`}
 								class:tree-row-root={node_is_root}
-								class:tree-row-keyboard-selected={visible_results[selected_result_index]?.document_id === node.document_id}
+								class:tree-row-keyboard-selected={visible_results[selected_result_index]
+									?.document_id === node.document_id}
 								data-page-browser-row={node.document_id}
 								title={get_page_title_tooltip(node)}
 								href={resolve(get_resolved_page_href(node.page_href))}
@@ -886,7 +878,6 @@ Updated: ${updated_at_label}`;
 								>
 									<span class="tree-actions-dots">⋯</span>
 								</button>
-
 							{/if}
 						</div>
 
@@ -978,10 +969,13 @@ Updated: ${updated_at_label}`;
 	onclick={handle_confirm_click}
 >
 	{#if confirm_item}
-		<form class="confirm-panel" onsubmit={(event) => {
-			event.preventDefault();
-			void confirm_delete();
-		}}>
+		<form
+			class="confirm-panel"
+			onsubmit={(event) => {
+				event.preventDefault();
+				void confirm_delete();
+			}}
+		>
 			<h3 class="confirm-title">Delete page</h3>
 			<p class="confirm-message">{get_delete_confirmation_message()}</p>
 			{#if delete_error}
@@ -991,11 +985,7 @@ Updated: ${updated_at_label}`;
 				<button type="button" class="confirm-btn" onclick={close_confirm} disabled={deleting}>
 					Cancel
 				</button>
-				<button
-					type="submit"
-					class="confirm-btn confirm-btn-danger"
-					disabled={deleting}
-				>
+				<button type="submit" class="confirm-btn confirm-btn-danger" disabled={deleting}>
 					{deleting ? 'Deleting…' : 'Delete'}
 				</button>
 			</div>
@@ -1010,10 +1000,13 @@ Updated: ${updated_at_label}`;
 	onclick={handle_page_url_dialog_click}
 >
 	{#if page_url_dialog_item}
-		<form class="confirm-panel" onsubmit={(event) => {
-			event.preventDefault();
-			void save_page_url();
-		}}>
+		<form
+			class="confirm-panel"
+			onsubmit={(event) => {
+				event.preventDefault();
+				void save_page_url();
+			}}
+		>
 			<h3 class="confirm-title">Edit URL</h3>
 			<div class="page-url-field">
 				<span class="page-url-prefix">{app.origin || 'example.com'}/</span>
@@ -1036,11 +1029,7 @@ Updated: ${updated_at_label}`;
 				>
 					Cancel
 				</button>
-				<button
-					type="submit"
-					class="confirm-btn"
-					disabled={saving_page_url}
-				>
+				<button type="submit" class="confirm-btn" disabled={saving_page_url}>
 					{saving_page_url ? 'Saving…' : 'Save'}
 				</button>
 			</div>
@@ -1058,12 +1047,11 @@ Updated: ${updated_at_label}`;
 		<div class="confirm-panel unlisted-info-panel">
 			<h3 class="confirm-title">Unlisted page</h3>
 			<p class="confirm-message">
-				Unlisted pages are not discoverable from the homepage (and for Google), but can be accessed by anyone who has the link.
+				Unlisted pages are not discoverable from the homepage (and for Google), but can be accessed
+				by anyone who has the link.
 			</p>
 			<div class="confirm-actions">
-				<button type="button" class="confirm-btn" onclick={close_unlisted_info}>
-					Got it
-				</button>
+				<button type="button" class="confirm-btn" onclick={close_unlisted_info}> Got it </button>
 			</div>
 		</div>
 	{/if}
@@ -1349,8 +1337,6 @@ Updated: ${updated_at_label}`;
 		overflow: hidden;
 	}
 
-
-
 	.media-preview {
 		width: 100%;
 		height: 100%;
@@ -1470,8 +1456,6 @@ Updated: ${updated_at_label}`;
 		bottom: 0;
 	}
 
-
-
 	.tree-gutter {
 		padding: 0;
 		border: 0;
@@ -1501,8 +1485,6 @@ Updated: ${updated_at_label}`;
 		background: color-mix(in oklch, var(--background) 88%, var(--foreground));
 	}
 
-
-
 	.tree-leaf-dot {
 		display: none;
 	}
@@ -1528,10 +1510,10 @@ Updated: ${updated_at_label}`;
 		white-space: nowrap;
 	}
 
-
-
 	.page-slug-label {
-		font-family: ui-monospace, 'SFMono-Regular', 'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+		font-family:
+			ui-monospace, 'SFMono-Regular', 'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono',
+			'Courier New', monospace;
 		font-size: 0.68rem;
 		font-weight: 500;
 		line-height: 1.1;
@@ -1607,7 +1589,7 @@ Updated: ${updated_at_label}`;
 		background: var(--background);
 		color: var(--foreground);
 		border: 1px solid color-mix(in oklch, var(--foreground) 18%, transparent);
-		box-shadow: 0 12px 30px color-mix(in oklch, black 12%, transparent);
+		box-shadow: var(--shadow-xl);
 	}
 
 	.menu-item {
@@ -1647,7 +1629,7 @@ Updated: ${updated_at_label}`;
 		background: var(--background);
 		color: var(--foreground);
 		border: 1px solid color-mix(in oklch, var(--foreground) 18%, transparent);
-		box-shadow: 0 12px 30px color-mix(in oklch, black 12%, transparent);
+		box-shadow: var(--shadow-xl);
 	}
 
 	.unlisted-info-panel {

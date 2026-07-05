@@ -67,9 +67,7 @@
 	)}; position-area: block-end span-all; justify-self: anchor-center;"
 >
 	{#if node.href}
-		<div
-			class="border border-[color-mix(in_oklch,var(--foreground)_7%,transparent)] bg-(--background) text-(--foreground)"
-		>
+		<div class="border border-(--border) bg-(--background) text-(--foreground) shadow-xl">
 			<div class="flex items-center gap-3 px-3 py-2">
 				<a
 					{...{
@@ -98,9 +96,7 @@
 			</div>
 
 			{#if internal_page_href}
-				<div
-					class="border-t border-[color-mix(in_oklch,var(--foreground)_7%,transparent)] px-3 py-3"
-				>
+				<div class="border-t border-(--border) px-3 py-3">
 					{#await page_preview}
 						<div class="text-sm text-[color-mix(in_oklch,var(--foreground)_72%,transparent)]">
 							Loading page preview…
@@ -109,9 +105,7 @@
 						{#if resolved_page_preview}
 							<div class="flex items-center gap-3">
 								{#if resolved_page_preview.preview_media_node}
-									<div
-										class="h-12 w-12 shrink-0 overflow-hidden border border-[color-mix(in_oklch,var(--foreground)_7%,transparent)]"
-									>
+									<div class="h-12 w-12 shrink-0 overflow-hidden border border-(--border)">
 										<Media node={resolved_page_preview.preview_media_node} />
 									</div>
 								{/if}
@@ -137,7 +131,7 @@
 	{:else}
 		<button
 			type="button"
-			class="cursor-pointer border border-[color-mix(in_oklch,var(--foreground)_7%,transparent)] bg-(--background) px-12 py-2 text-sm text-(--svedit-editing-stroke) hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))]"
+			class="cursor-pointer border border-(--border) bg-(--background) px-12 py-2 text-sm text-(--svedit-editing-stroke) shadow-xl hover:bg-(--muted)"
 			onclick={handle_edit}
 		>
 			CREATE LINK
