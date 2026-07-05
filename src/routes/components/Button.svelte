@@ -26,7 +26,7 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="ew-button flex items-center justify-center rounded-(--button-border-radius) px-4 py-3 text-sm text-(--foreground) outline-1 outline-(--foreground)/15 focus-visible:outline-(--svedit-editing-stroke) {render_as_link
+		class="ew-button flex items-center justify-center rounded-(--button-border-radius) px-4 py-3 text-sm text-(--foreground) bg-(--background) outline-1 outline-(--foreground)/15 focus-visible:outline-(--svedit-editing-stroke) {render_as_link
 			? 'hover:bg-(--foreground)/5'
 			: ''}"
 	>
