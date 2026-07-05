@@ -36,7 +36,7 @@
 </svelte:head>
 
 <Node {path}>
-	<div class="page flex min-h-screen flex-col">
+	<div class="page flex min-h-screen flex-col [--row:0]">
 		<div class="bg-(--background) text-(--foreground)">
 			<Nav path={[...path, 'nav']} />
 		</div>
@@ -50,12 +50,12 @@
 			<div class="border-t border-(--border) bg-(--muted) text-(--foreground)">
 				<div class={TW_LIMITER}>
 					<div class="{TW_PAGE_PADDING_X} flex flex-col gap-6 py-12 md:py-16">
-						<div
+						<!-- <div
 							contenteditable="false"
-							class="max-w-2xl text-left text-xs tracking-widest uppercase opacity-60"
+							class="max-w-2xl text-left body-base text-(--muted-foreground)"
 						>
 							How should this page be displayed in a search result?
-						</div>
+						</div> -->
 						<div class="grid w-full max-w-2xl grid-cols-[8rem_minmax(0,1fr)] items-center gap-6">
 							<div class="aspect-square w-32 border border-(--border)">
 								<MediaProperty path={[...path, 'image']} />
@@ -64,7 +64,7 @@
 								<TextProperty
 									path={[...path, 'title']}
 									placeholder="Page title"
-									class="block font-serif text-2xl text-(--foreground)"
+									class="block display-5"
 								/>
 								<TextProperty
 									path={[...path, 'description']}
@@ -81,15 +81,3 @@ Aim for specific, human-readable copy rather than keywords."
 		{/if}
 	</div>
 </Node>
-
-<style>
-	.page {
-		--row: 0;
-	}
-	/*:global {
-    .body-node-array {
-      display: grid;
-      grid-template-columns: 1fr;
-    }
-  }*/
-</style>
