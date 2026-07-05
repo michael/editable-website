@@ -63,14 +63,14 @@
 
 <dialog
 	bind:this={dialog_ref}
-	class="edit-media-dialog absolute z-40 m-0 mt-1 max-h-90 overflow-visible border border-[color-mix(in_oklch,var(--foreground)_7%,transparent)] bg-(--background) p-0 text-(--foreground) shadow-xl"
+	class="edit-media-dialog absolute z-40 m-0 mt-1 max-h-90 overflow-visible border border-(--border) bg-(--background) p-0 text-(--foreground) shadow-xl"
 	style="position-anchor: --{serialize_path(
 		path
 	)}; position-area: block-end span-all; justify-self: anchor-center;"
 	onclick={handle_backdrop_click}
 >
 	<div class="flex flex-col">
-		<div class="border-b border-[color-mix(in_oklch,var(--foreground)_7%,transparent)] px-3 py-2">
+		<div class="border-b border-(--border) px-3 py-2">
 			<div class="text-xs tracking-widest uppercase opacity-60">Alt text</div>
 		</div>
 		<div class="px-1 pt-1">
@@ -79,13 +79,11 @@
 				bind:value={alt_input_value}
 				rows="3"
 				placeholder="Describe the media for people using screen readers."
-				class="edit-media-textarea w-72 min-w-0 resize-none border border-[color-mix(in_oklch,var(--foreground)_7%,transparent)] bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:border-(--svedit-editing-stroke) focus:shadow-none focus:ring-0 focus:outline-none"
+				class="edit-media-textarea w-72 min-w-0 resize-none border border-(--border) bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:border-(--svedit-editing-stroke) focus:shadow-none focus:ring-0 focus:outline-none"
 				onkeydown={handle_keydown}
 			></textarea>
 		</div>
-		<div
-			class="flex items-center justify-between border-t border-[color-mix(in_oklch,var(--foreground)_7%,transparent)] px-3 py-2"
-		>
+		<div class="flex items-center justify-between border-t border-(--border) px-3 py-2">
 			<div></div>
 			<button
 				type="button"

@@ -79,58 +79,66 @@
 
 <dialog
 	bind:this={dialog_ref}
-	class="edit-link-dialog absolute z-40 mt-1 m-0 bg-(--background) text-(--foreground) p-0 shadow-xl overflow-visible max-h-90 border border-[color-mix(in_oklch,var(--foreground)_7%,transparent)]"
-	style="position-anchor: --{serialize_path(path)}; position-area: block-end span-all; justify-self: anchor-center;"
+	class="edit-link-dialog absolute z-40 m-0 mt-1 max-h-90 overflow-visible border border-(--border) bg-(--background) p-0 text-(--foreground) shadow-xl"
+	style="position-anchor: --{serialize_path(
+		path
+	)}; position-area: block-end span-all; justify-self: anchor-center;"
 	onclick={handle_backdrop_click}
 >
 	<div class="flex flex-col">
 		<div class="px-1 pt-1">
 			<div class="flex items-stretch">
-			<input
-				id="edit-link-url-input"
-				bind:this={href_input_ref}
-				type="url"
-				bind:value={href_input_value}
-				placeholder="https://example.com"
-				class="edit-link-input w-72 min-w-0 flex-1 border border-[color-mix(in_oklch,var(--foreground)_7%,transparent)] bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:border-(--svedit-editing-stroke) focus:outline-none focus:ring-0 focus:shadow-none"
-				onkeydown={handle_keydown}
-			/>
-			{#if app.has_backend}
-				<button
-					type="button"
-					class="shrink-0 cursor-pointer border border-l-transparent border-[color-mix(in_oklch,var(--foreground)_7%,transparent)] px-3 text-(--svedit-editing-stroke) hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))] focus:border-(--svedit-editing-stroke) focus:outline-none focus:ring-0 focus:shadow-none"
-					title="Select page"
-					aria-label="Select page"
-					onclick={() => {
-						page_browser.open_select((page) => {
-							href_input_value = page.page_href || '/';
-							open_in_new_tab = false;
-							save();
-						});
-					}}
-				>
-					<svg class="size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" fill="none" aria-hidden="true">
-						<rect x="1.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-						<rect x="8.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-						<rect x="1.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-						<rect x="8.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-					</svg>
-				</button>
-			{/if}
+				<input
+					id="edit-link-url-input"
+					bind:this={href_input_ref}
+					type="url"
+					bind:value={href_input_value}
+					placeholder="https://example.com"
+					class="edit-link-input w-72 min-w-0 flex-1 border border-(--border) bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:border-(--svedit-editing-stroke) focus:shadow-none focus:ring-0 focus:outline-none"
+					onkeydown={handle_keydown}
+				/>
+				{#if app.has_backend}
+					<button
+						type="button"
+						class="shrink-0 cursor-pointer border border-(--border) border-l-transparent px-3 text-(--svedit-editing-stroke) hover:bg-(--muted) focus:border-(--svedit-editing-stroke) focus:shadow-none focus:ring-0 focus:outline-none"
+						title="Select page"
+						aria-label="Select page"
+						onclick={() => {
+							page_browser.open_select((page) => {
+								href_input_value = page.page_href || '/';
+								open_in_new_tab = false;
+								save();
+							});
+						}}
+					>
+						<svg
+							class="size-4"
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 15 15"
+							fill="none"
+							aria-hidden="true"
+						>
+							<rect x="1.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+							<rect x="8.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+							<rect x="1.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+							<rect x="8.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+						</svg>
+					</button>
+				{/if}
 			</div>
 		</div>
 		<div class="flex items-center justify-between px-3 py-2">
-			<label class="flex items-center gap-2 cursor-pointer">
+			<label class="flex cursor-pointer items-center gap-2">
 				<input
 					type="checkbox"
 					bind:checked={open_in_new_tab}
-					class="w-4 h-4 cursor-pointer text-(--svedit-editing-stroke) ring-0 focus:ring-0 focus-visible:ring-0 focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+					class="h-4 w-4 cursor-pointer text-(--svedit-editing-stroke) ring-0 focus:ring-0 focus-visible:ring-0 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 				/>
 				<span class="text-sm text-(--foreground)">Open in new tab</span>
 			</label>
 			<button
 				type="button"
-				class="text-sm text-(--svedit-editing-stroke) cursor-pointer shrink-0 hover:opacity-80 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1"
+				class="shrink-0 cursor-pointer text-sm text-(--svedit-editing-stroke) outline-1 outline-transparent hover:opacity-80 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 				onclick={save}
 			>
 				UPDATE

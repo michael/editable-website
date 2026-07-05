@@ -72,6 +72,8 @@ Next, you probably want to adjust the colors and fonts in [app.css](./src/app.cs
 	--font-mono:
 		ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
 		monospace;
+	--shadow-sm: 0 2px 4px -1px oklch(0 0 0 / 0.12), 0 1px 2px -1px oklch(0 0 0 / 0.12);
+	--shadow-xl: 0 20px 25px -5px oklch(0 0 0 / 0.12), 0 8px 10px -6px oklch(0 0 0 / 0.12);
 }
 ```
 

@@ -9,12 +9,7 @@
 	 * - Optional `label` customizes the panel label
 	 */
 
-	let {
-		open = $bindable(),
-		label = 'Pages',
-		drawer_height_mode = 'manual',
-		children
-	} = $props();
+	let { open = $bindable(), label = 'Pages', drawer_height_mode = 'manual', children } = $props();
 
 	const min_drawer_height_ratio = 0;
 	const max_drawer_height_ratio = 0.95;
@@ -66,9 +61,10 @@
 				return snap_drawer_height_ratios.find((ratio) => ratio < value) ?? 0;
 			}
 
-			return [...snap_drawer_height_ratios]
-				.reverse()
-				.find((ratio) => ratio > value) ?? snap_drawer_height_ratios[0];
+			return (
+				[...snap_drawer_height_ratios].reverse().find((ratio) => ratio > value) ??
+				snap_drawer_height_ratios[0]
+			);
 		}
 
 		return get_nearest_snap_drawer_height_ratio(value);
@@ -237,45 +233,42 @@
 	oncancel={handle_dialog_cancel}
 	onclick={handle_backdrop_click}
 >
-
-
+	<div
+		class="drawer-shell"
+		role="complementary"
+		aria-label={label}
+		style={drawer_height_mode === 'manual'
+			? `--drawer-height: ${drawer_height_ratio * 100}dvh;`
+			: undefined}
+	>
 		<div
-			class="drawer-shell"
-			role="complementary"
-			aria-label={label}
-			style={drawer_height_mode === 'manual' ? `--drawer-height: ${drawer_height_ratio * 100}dvh;` : undefined}
+			class="drawer"
+			class:auto-dragging={drawer_height_mode === 'auto' && is_dragging}
+			ontransitionend={handle_drawer_transition_end}
+			style={drawer_height_mode === 'auto' && is_dragging
+				? `--auto-drag-offset: ${drag_offset_y}px;`
+				: undefined}
 		>
 			<div
-				class="drawer"
-				class:auto-dragging={drawer_height_mode === 'auto' && is_dragging}
-				ontransitionend={handle_drawer_transition_end}
-				style={drawer_height_mode === 'auto' && is_dragging
-					? `--auto-drag-offset: ${drag_offset_y}px;`
-					: undefined}
+				class="drawer-handle-area"
+				bind:this={handle_ref}
+				role="presentation"
+				aria-hidden="true"
+				onpointerdown={handle_handle_pointerdown}
+				onpointermove={handle_handle_pointermove}
+				onpointerup={handle_handle_pointerup}
+				onpointercancel={handle_handle_pointercancel}
 			>
-				<div
-					class="drawer-handle-area"
-					bind:this={handle_ref}
-					role="presentation"
-					aria-hidden="true"
-					onpointerdown={handle_handle_pointerdown}
-					onpointermove={handle_handle_pointermove}
-					onpointerup={handle_handle_pointerup}
-					onpointercancel={handle_handle_pointercancel}
-				>
-					<span class="drawer-handle" aria-hidden="true"></span>
-				</div>
+				<span class="drawer-handle" aria-hidden="true"></span>
+			</div>
 
-				<div
-					class:drawer-panel-auto={drawer_height_mode === 'auto'}
-					class="drawer-panel"
-				>
-					<div class="drawer-content">
-						{@render children?.({ close })}
-					</div>
+			<div class:drawer-panel-auto={drawer_height_mode === 'auto'} class="drawer-panel">
+				<div class="drawer-content">
+					{@render children?.({ close })}
 				</div>
 			</div>
 		</div>
+	</div>
 </dialog>
 
 <style>
@@ -348,7 +341,7 @@
 		height: 0.32rem;
 		background: var(--background);
 		border-radius: 9999px;
-		box-shadow: 0 1px 8px oklch(0% 0 0 / 0.18);
+		box-shadow: var(--shadow-sm);
 	}
 
 	.drawer {
@@ -388,7 +381,7 @@
 		height: var(--drawer-height);
 		max-height: 95dvh;
 		background: var(--background);
-		box-shadow: 0 -12px 40px oklch(0% 0 0 / 0.12);
+		box-shadow: var(--shadow-xl);
 		border-top: 0.5px solid color-mix(in oklch, var(--foreground) 18%, transparent);
 		color: var(--foreground);
 		padding-bottom: env(safe-area-inset-bottom);

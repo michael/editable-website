@@ -67,7 +67,7 @@
 
 <dialog
 	bind:this={dialog_ref}
-	class="create-link-dialog absolute z-40 m-0 mt-1 max-h-90 overflow-visible border border-[color-mix(in_oklch,var(--foreground)_7%,transparent)] bg-(--background) p-0 text-(--foreground) shadow-xl"
+	class="create-link-dialog absolute z-40 m-0 mt-1 max-h-90 overflow-visible border border-(--border) bg-(--background) p-0 text-(--foreground) shadow-xl"
 	style="position-anchor: --selection-highlight; position-area: block-end span-all; justify-self: anchor-center;"
 	onclick={handle_backdrop_click}
 >
@@ -79,13 +79,13 @@
 					type="url"
 					bind:value={href_input_value}
 					placeholder="https://example.com"
-					class="create-link-input w-72 min-w-0 flex-1 border border-[color-mix(in_oklch,var(--foreground)_7%,transparent)] bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:border-(--svedit-editing-stroke) focus:shadow-none focus:ring-0 focus:outline-none"
+					class="create-link-input w-72 min-w-0 flex-1 border border-(--border) bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:border-(--svedit-editing-stroke) focus:shadow-none focus:ring-0 focus:outline-none"
 					onkeydown={handle_keydown}
 				/>
 				{#if app.has_backend}
 					<button
 						type="button"
-						class="shrink-0 cursor-pointer border border-[color-mix(in_oklch,var(--foreground)_7%,transparent)] border-l-transparent px-3 text-(--svedit-editing-stroke) hover:bg-[color-mix(in_oklch,var(--foreground)_10%,var(--background))] focus:border-(--svedit-editing-stroke) focus:shadow-none focus:ring-0 focus:outline-none"
+						class="shrink-0 cursor-pointer border border-(--border) border-l-transparent px-3 text-(--svedit-editing-stroke) hover:bg-(--muted) focus:border-(--svedit-editing-stroke) focus:shadow-none focus:ring-0 focus:outline-none"
 						title="Select page"
 						aria-label="Select page"
 						onclick={() => {
