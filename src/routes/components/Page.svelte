@@ -49,29 +49,23 @@
 		{#if svedit.editable}
 			<div class="border-t border-(--border) bg-(--muted) text-(--foreground)">
 				<div class={TW_LIMITER}>
-					<div class="{TW_PAGE_PADDING_X} flex flex-col gap-6 py-12 md:py-16">
-						<!-- <div
-							contenteditable="false"
-							class="max-w-2xl text-left body-base text-(--muted-foreground)"
-						>
-							How should this page be displayed in a search result?
-						</div> -->
-						<div class="grid w-full max-w-2xl grid-cols-[8rem_minmax(0,1fr)] items-center gap-6">
-							<div class="aspect-square w-32 border border-(--border)">
+					<div class="{TW_PAGE_PADDING_X} py-16 lg:py-10">
+						<div class="grid w-full max-w-xl grid-cols-[6rem_minmax(0,1fr)] items-center gap-4">
+							<div class="aspect-square w-24">
 								<MediaProperty path={[...path, 'image']} />
 							</div>
-							<div class="flex flex-col justify-center gap-4">
+							<div class="flex flex-col justify-center gap-2">
 								<TextProperty
 									path={[...path, 'title']}
 									placeholder="Page title"
-									class="block display-5"
+									class="block body-base font-medium"
 								/>
 								<TextProperty
 									path={[...path, 'description']}
 									placeholder="Write a clear summary of this page for search results.
 Explain what people will find here in 1–2 concise sentences.
 Aim for specific, human-readable copy rather than keywords."
-									class="block text-(--foreground)"
+									class="block body-sm text-(--muted-foreground)"
 								/>
 							</div>
 						</div>
