@@ -88,10 +88,10 @@ function get_media_type(file) {
 	return 'image';
 }
 
-function select_inserted_text_property(tr, property_name = 'label') {
+function select_inserted_text_property(tr, property_name = 'label', child_path = []) {
 	tr.set_selection({
 		type: 'text',
-		path: [...tr.selection.path, tr.selection.focus_offset - 1, property_name],
+		path: [...tr.selection.path, tr.selection.focus_offset - 1, ...child_path, property_name],
 		anchor_offset: 0,
 		focus_offset: 0
 	});
@@ -731,19 +731,32 @@ const session_config = {
 			select_inserted_text_property(tr);
 		},
 		button_group: function (tr) {
-			const new_button = {
-				id: nanoid(),
-				type: 'button'
-			};
-			tr.create(new_button);
+			const new_button_group_id = tr.build('new_button_group', {
+				primary_button: {
+					id: 'primary_button',
+					type: 'button',
+					layout: 1,
+					href: '',
+					target: '_self',
+					label: { content: '', annotations: [] }
+				},
+				secondary_button: {
+					id: 'secondary_button',
+					type: 'button',
+					layout: 2,
+					href: '',
+					target: '_self',
+					label: { content: '', annotations: [] }
+				},
+				new_button_group: {
+					id: 'new_button_group',
+					type: 'button_group',
+					buttons: { nodes: ['primary_button', 'secondary_button'], annotations: [] }
+				}
+			});
 
-			const new_button_group = {
-				id: nanoid(),
-				type: 'button_group',
-				buttons: { nodes: [new_button.id], annotations: [] }
-			};
-			tr.create(new_button_group);
-			tr.insert_nodes([new_button_group.id]);
+			tr.insert_nodes([new_button_group_id]);
+			select_inserted_text_property(tr, 'label', ['buttons', 0]);
 		},
 		footer_link: function (tr, content = { content: '', annotations: [] }, layout = 1) {
 			const new_footer_link_id = tr.build('new_footer_link', {
