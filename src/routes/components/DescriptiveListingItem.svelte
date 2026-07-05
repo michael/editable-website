@@ -10,10 +10,7 @@
 	let display_meta = $derived(svedit.editable || !!node.meta?.content?.trim());
 </script>
 
-<Node
-	class="descriptive-listing-item group border-b border-[color-mix(in_oklch,var(--foreground)_7%,transparent)]"
-	{path}
->
+<Node class="descriptive-listing-item group border-b border-(--border)" {path}>
 	<svelte:element
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
@@ -29,7 +26,7 @@
 					placeholder="Title"
 				/>
 				<TextProperty
-					class="pt-1 body-base text-balance text-(--foreground)/50"
+					class="pt-1 body-base text-balance text-(--muted-foreground)"
 					path={[...path, 'description']}
 					placeholder="Description"
 				/>
@@ -38,7 +35,7 @@
 			{#if display_meta}
 				<div class="min-w-0 self-center text-right">
 					<TextProperty
-						class="pt-1 body-base text-(--foreground)/50"
+						class="pt-1 body-base text-(--muted-foreground)"
 						path={[...path, 'meta']}
 						placeholder="Meta"
 					/>

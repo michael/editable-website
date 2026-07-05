@@ -13,7 +13,7 @@
 	<div
 		use:reveal
 		class={layout === 2
-			? 'text-(--foreground)/50'
+			? 'text-(--muted-foreground)'
 			: '[&_a]:text-(--foreground) [&_strong]:font-normal [&_strong]:text-(--foreground)'}
 	>
 		<TextProperty

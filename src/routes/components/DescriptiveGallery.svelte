@@ -22,7 +22,7 @@
 		>
 			<NodeArrayProperty
 				class={layout === 2
-					? 'grid grid-cols-1 gap-x-5 gap-y-8 [--row:1] sm:gap-x-7 md:grid-cols-2 md:gap-y-7'
+					? 'grid grid-cols-1 gap-x-10 gap-y-8 [--row:1] md:grid-cols-2 md:gap-y-7 lg:gap-x-14'
 					: 'grid grid-cols-1 gap-x-5 gap-y-8 [--row:1] sm:gap-x-7 md:grid-cols-2 md:gap-y-7 xl:grid-cols-3'}
 				path={[...path, 'items']}
 			/>

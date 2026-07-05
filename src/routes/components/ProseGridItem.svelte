@@ -1,7 +1,6 @@
 <script>
 	import { getContext, setContext } from 'svelte';
 	import { Node, NodeArrayProperty } from 'svedit';
-	import { TW_LIMITER } from '../tailwind_theme.js';
 
 	const svedit = getContext('svedit');
 	let { path } = $props();
@@ -44,7 +43,7 @@
 <!-- Layout 2: Centered -->
 {#snippet layout_2()}
 	<div
-		class="h-full border border-(--foreground)/7 bg-(--foreground)/5 px-8 py-10"
+		class="h-full border border-(--border) bg-(--muted) px-8 py-10"
 		style:border-radius="var(--image-border-radius)"
 	>
 		<div class="text-center text-balance">
