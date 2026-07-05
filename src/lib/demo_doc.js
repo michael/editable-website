@@ -8,8 +8,8 @@ import { document_schema } from '$lib/document_schema.js';
 const FULL_DOC = {
 	document_id: 'page_1',
 	nodes: {
-		vMaUqeqBAVSyPgDpnxWWPCK: {
-			id: 'vMaUqeqBAVSyPgDpnxWWPCK',
+		TmDfRnszftVyCJHtzUmqAUB: {
+			id: 'TmDfRnszftVyCJHtzUmqAUB',
 			type: 'image',
 			src: 'logo.svg',
 			mime_type: 'image/svg+xml',
@@ -1939,7 +1939,7 @@ const FULL_DOC = {
 			layout: 2,
 			content: {
 				content:
-					'Big thanks to Johannes Mutter for helping with concept, design, and engineering, Tom Atkins for support with positioning and copywriting, and Sonja Stojanovic for modelling and being the very first happy Editable user — followed by Trails, Postlmayr Design, Aufreiter Architektur, and many more.',
+					'Big thanks to Johannes Mutter for helping with concept, design, and engineering, Tom Atkins for support with positioning and copywriting, and Sonja Stojanovic for being the very first happy Editable user — followed by Trails, Postlmayr Design, Aufreiter Architektur, and many more.',
 				annotations: [
 					{
 						start_offset: 14,
@@ -1957,18 +1957,18 @@ const FULL_DOC = {
 						node_id: 'jdfSXyKXdGPQfUDqVrhGpew'
 					},
 					{
-						start_offset: 232,
-						end_offset: 238,
+						start_offset: 218,
+						end_offset: 224,
 						node_id: 'yFZKjXVRgKtHqNrtFNfBeSS'
 					},
 					{
-						start_offset: 240,
-						end_offset: 256,
+						start_offset: 226,
+						end_offset: 242,
 						node_id: 'NcjxywhftMGtnXhbGyvmcUy'
 					},
 					{
-						start_offset: 258,
-						end_offset: 279,
+						start_offset: 244,
+						end_offset: 265,
 						node_id: 'KKUfXFgJuXJrUSPyzMQrHcU'
 					}
 				]
@@ -2029,7 +2029,7 @@ const FULL_DOC = {
 			href: '/#RtYpQwXsZvNmKjHgFdSaLe',
 			target: '_self',
 			label: {
-				content: 'Showcases',
+				content: 'Quickstart',
 				annotations: []
 			}
 		},
@@ -2126,12 +2126,21 @@ const FULL_DOC = {
 			media_max_width: 64,
 			media_aspect_ratio: 1
 		},
-		footer_copyright: {
-			id: 'footer_copyright',
-			type: 'paragraph_sm',
-			layout: 2,
+		ZRYVZgNjcBnCFVRXhJHJxtV: {
+			id: 'ZRYVZgNjcBnCFVRXhJHJxtV',
+			type: 'heading_5',
+			layout: 1,
 			content: {
-				content: '© Ken Experiences GmbH 2026',
+				content: 'Editable',
+				annotations: []
+			}
+		},
+		fWFgvucsMbVzrEDZSSXxhWA: {
+			id: 'fWFgvucsMbVzrEDZSSXxhWA',
+			type: 'paragraph_sm',
+			layout: 1,
+			content: {
+				content: 'The website you can edit right on the page.\nMade in Austria.',
 				annotations: []
 			}
 		},
@@ -2139,47 +2148,57 @@ const FULL_DOC = {
 			id: 'footer_link_category_1',
 			type: 'footer_link_category',
 			title: {
-				content: 'On this page',
+				content: 'Solutions',
 				annotations: []
 			}
 		},
 		EtcfbabRCtPSvSpfFfjPeza: {
 			id: 'EtcfbabRCtPSvSpfFfjPeza',
 			type: 'footer_link',
-			href: '/#RtYpQwXsZvNmKjHgFdSaLe',
+			href: '',
 			target: '_self',
 			label: {
-				content: 'Editing',
+				content: 'For developers',
 				annotations: []
 			}
 		},
 		WVvBSREFCThNYcpgvfUnWkF: {
 			id: 'WVvBSREFCThNYcpgvfUnWkF',
 			type: 'footer_link',
-			href: '/#xKmNqPrStVwYzAbCdEfGh',
+			href: '',
 			target: '_self',
 			label: {
-				content: 'Blocks',
+				content: 'For designers',
 				annotations: []
 			}
 		},
 		eDAnnFjNdZpzYMtpSqReBxf: {
 			id: 'eDAnnFjNdZpzYMtpSqReBxf',
 			type: 'footer_link',
-			href: '/#BPdekRaDEUcQZqtEwPwBvyu',
+			href: '',
 			target: '_self',
 			label: {
-				content: 'Media',
+				content: 'For creators',
+				annotations: []
+			}
+		},
+		KKfjUFNbCJVqtDPNZPuUkdQ: {
+			id: 'KKfjUFNbCJVqtDPNZPuUkdQ',
+			type: 'footer_link',
+			href: '',
+			target: '_self',
+			label: {
+				content: 'For agencies',
 				annotations: []
 			}
 		},
 		GwPeRFYtAyrcCMfpuyzdWZp: {
 			id: 'GwPeRFYtAyrcCMfpuyzdWZp',
 			type: 'footer_link',
-			href: '/#jLnPqRsTuVwXyZaBcDeFg',
+			href: '',
 			target: '_self',
 			label: {
-				content: 'Examples',
+				content: 'For artists',
 				annotations: []
 			}
 		},
@@ -2192,6 +2211,7 @@ const FULL_DOC = {
 					'EtcfbabRCtPSvSpfFfjPeza',
 					'WVvBSREFCThNYcpgvfUnWkF',
 					'eDAnnFjNdZpzYMtpSqReBxf',
+					'KKfjUFNbCJVqtDPNZPuUkdQ',
 					'GwPeRFYtAyrcCMfpuyzdWZp'
 				],
 				annotations: []
@@ -2201,71 +2221,163 @@ const FULL_DOC = {
 			id: 'footer_link_category_2',
 			type: 'footer_link_category',
 			title: {
-				content: 'GitHub',
+				content: 'Learn',
+				annotations: []
+			}
+		},
+		krgAPmEvphScfYJUMmeyQvT: {
+			id: 'krgAPmEvphScfYJUMmeyQvT',
+			type: 'footer_link',
+			href: '',
+			target: '_self',
+			label: {
+				content: 'Quickstart',
 				annotations: []
 			}
 		},
 		uavzfSnSpTRrHSfJpbfvpsh: {
 			id: 'uavzfSnSpTRrHSfJpbfvpsh',
 			type: 'footer_link',
-			href: 'https://github.com/michael/editable-website',
+			href: '',
 			target: '_blank',
 			label: {
-				content: 'Editable',
+				content: 'Manual',
 				annotations: []
 			}
 		},
-		footer_link_2_1: {
-			id: 'footer_link_2_1',
+		ZZfGvcXXCxUWTubUfyWRNHM: {
+			id: 'ZZfGvcXXCxUWTubUfyWRNHM',
 			type: 'footer_link',
-			href: 'https://svedit.dev',
+			href: '',
+			target: '_self',
 			label: {
-				content: 'Svedit',
+				content: 'Examples',
 				annotations: []
-			},
-			target: '_blank'
+			}
 		},
 		footer_column_2: {
 			id: 'footer_column_2',
 			type: 'footer_link_column',
 			items: {
-				nodes: ['footer_link_category_2', 'uavzfSnSpTRrHSfJpbfvpsh', 'footer_link_2_1'],
+				nodes: [
+					'footer_link_category_2',
+					'krgAPmEvphScfYJUMmeyQvT',
+					'uavzfSnSpTRrHSfJpbfvpsh',
+					'ZZfGvcXXCxUWTubUfyWRNHM'
+				],
 				annotations: []
 			}
 		},
-		footer_link_category_3: {
-			id: 'footer_link_category_3',
+		XJPhwEKTDnDGzPEnAjpjqYe: {
+			id: 'XJPhwEKTDnDGzPEnAjpjqYe',
 			type: 'footer_link_category',
 			title: {
-				content: 'Videos',
+				content: 'Community',
 				annotations: []
 			}
 		},
-		ewuBYPxRqFsJXffTuwqssXg: {
-			id: 'ewuBYPxRqFsJXffTuwqssXg',
+		dWjnPPHKrCCqHCgWahtdYUv: {
+			id: 'dWjnPPHKrCCqHCgWahtdYUv',
 			type: 'footer_link',
-			href: 'https://www.youtube.com/watch?v=T2RMYj_1g9E',
+			href: '',
+			target: '_self',
 			label: {
-				content: 'Introduction',
+				content: 'Blog',
+				annotations: []
+			}
+		},
+		XwSHBshPgtBVkfKwwZpmGXz: {
+			id: 'XwSHBshPgtBVkfKwwZpmGXz',
+			type: 'footer_link',
+			href: '',
+			target: '_self',
+			label: {
+				content: 'Discussions',
+				annotations: []
+			}
+		},
+		DCjbSqkDXcnzARnaVVfZgvD: {
+			id: 'DCjbSqkDXcnzARnaVVfZgvD',
+			type: 'footer_link',
+			href: '',
+			target: '_self',
+			label: {
+				content: 'GitHub',
+				annotations: []
+			}
+		},
+		VTRuBHweKUkfXmNUYcmTaHp: {
+			id: 'VTRuBHweKUkfXmNUYcmTaHp',
+			type: 'footer_link_column',
+			items: {
+				nodes: [
+					'XJPhwEKTDnDGzPEnAjpjqYe',
+					'dWjnPPHKrCCqHCgWahtdYUv',
+					'XwSHBshPgtBVkfKwwZpmGXz',
+					'DCjbSqkDXcnzARnaVVfZgvD'
+				],
+				annotations: []
+			}
+		},
+		DdsgvFTegPTjhupNDNDYVTn: {
+			id: 'DdsgvFTegPTjhupNDNDYVTn',
+			type: 'footer_link_category',
+			title: {
+				content: 'Editable',
+				annotations: []
+			}
+		},
+		kjyaBcuYtcjYaQkZczxXmdF: {
+			id: 'kjyaBcuYtcjYaQkZczxXmdF',
+			type: 'footer_link',
+			href: '',
+			target: '_self',
+			label: {
+				content: 'About',
+				annotations: []
+			}
+		},
+		kwdRhJNahFccHcARVdCZcQR: {
+			id: 'kwdRhJNahFccHcARVdCZcQR',
+			type: 'footer_link',
+			href: '',
+			label: {
+				content: 'Privacy',
 				annotations: []
 			},
 			target: '_blank'
 		},
-		cCMbgzNjRjVjrvWuHJCvJkx: {
-			id: 'cCMbgzNjRjVjrvWuHJCvJkx',
+		gHeVqdqKQrhyPMjkThksXMZ: {
+			id: 'gHeVqdqKQrhyPMjkThksXMZ',
 			type: 'footer_link',
-			href: 'https://youtu.be/o4kcABS-XH4?t=3226',
+			href: '',
+			label: {
+				content: 'Imprint',
+				annotations: []
+			},
+			target: '_blank'
+		},
+		UUENAjygpuBGQWeVBzDtgXG: {
+			id: 'UUENAjygpuBGQWeVBzDtgXG',
+			type: 'footer_link',
+			href: '',
 			target: '_blank',
 			label: {
-				content: 'Update 2025-10',
+				content: 'Contact',
 				annotations: []
 			}
 		},
-		footer_column_3: {
-			id: 'footer_column_3',
+		JskzGsAxAjwhbGdQWdMGpDS: {
+			id: 'JskzGsAxAjwhbGdQWdMGpDS',
 			type: 'footer_link_column',
 			items: {
-				nodes: ['footer_link_category_3', 'ewuBYPxRqFsJXffTuwqssXg', 'cCMbgzNjRjVjrvWuHJCvJkx'],
+				nodes: [
+					'DdsgvFTegPTjhupNDNDYVTn',
+					'kjyaBcuYtcjYaQkZczxXmdF',
+					'kwdRhJNahFccHcARVdCZcQR',
+					'gHeVqdqKQrhyPMjkThksXMZ',
+					'UUENAjygpuBGQWeVBzDtgXG'
+				],
 				annotations: []
 			}
 		},
@@ -2273,11 +2385,16 @@ const FULL_DOC = {
 			id: 'footer_1',
 			type: 'footer',
 			body: {
-				nodes: ['WkrTBHKFKjjCphujhzqZrup', 'footer_copyright'],
+				nodes: ['WkrTBHKFKjjCphujhzqZrup', 'ZRYVZgNjcBnCFVRXhJHJxtV', 'fWFgvucsMbVzrEDZSSXxhWA'],
 				annotations: []
 			},
 			footer_link_columns: {
-				nodes: ['fcSSWQUTYajjknPChgGsPZz', 'footer_column_2', 'footer_column_3'],
+				nodes: [
+					'fcSSWQUTYajjknPChgGsPZz',
+					'footer_column_2',
+					'VTRuBHweKUkfXmNUYcmTaHp',
+					'JskzGsAxAjwhbGdQWdMGpDS'
+				],
 				annotations: []
 			}
 		},
@@ -2293,7 +2410,7 @@ const FULL_DOC = {
 					'SvelteKit template for building CMS-free editable websites. Site owners can edit content directly in the layout - no CMS needed.',
 				annotations: []
 			},
-			image: 'vMaUqeqBAVSyPgDpnxWWPCK',
+			image: 'TmDfRnszftVyCJHtzUmqAUB',
 			body: {
 				nodes: [
 					'gRpPsPcYyMPRSWWDXxvNGAF',
