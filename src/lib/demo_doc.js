@@ -36,7 +36,7 @@ const FULL_DOC = {
 			type: 'paragraph_xl',
 			layout: 2,
 			content: {
-				content: 'Editable brings live on-page editing to Svelte.',
+				content: 'Build custom websites you can edit on the page.',
 				marks: [],
 				annotations: []
 			}
@@ -2282,7 +2282,7 @@ const FULL_DOC = {
 			type: 'paragraph_sm',
 			layout: 1,
 			content: {
-				content: 'The website you can edit right on the page.\nMade in Austria.',
+				content: 'The website you can edit on the page.\nMade in Austria.',
 				marks: [],
 				annotations: []
 			}
