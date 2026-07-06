@@ -2,7 +2,7 @@
 // Stored as a single merged document so you can paste console.logged JSON directly.
 // NAV_1, FOOTER_1, PAGE_1 are extracted automatically using svedit's traverse utility.
 
-import { traverse } from 'svedit';
+import { fill_document_defaults, traverse } from 'svedit';
 import { document_schema } from '$lib/document_schema.js';
 
 const FULL_DOC = {
@@ -27,6 +27,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Skip the CMS',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -36,6 +37,7 @@ const FULL_DOC = {
 			layout: 2,
 			content: {
 				content: 'Editable brings live on-page editing to Svelte.',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -47,6 +49,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'Try',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -58,6 +61,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'Download ⤓',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -66,6 +70,7 @@ const FULL_DOC = {
 			type: 'button_group',
 			buttons: {
 				nodes: ['aMhZzGXzvqnSBrQMgrBvNEy', 'XmMkSnbXSwSwVnMJgzkPmer'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -75,6 +80,7 @@ const FULL_DOC = {
 			layout: 6,
 			body: {
 				nodes: ['TSRjJkcjxCEVZUVMwWBPJJT', 'QUyEgDbAcDSNkdtEewwfYGM', 'tgzmEzyQGVDSHZVYnvuFWRp'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -116,6 +122,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Start editing',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -137,7 +144,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Hold ⌘ (Mac) or Ctrl (Windows) and press E to enter edit mode.',
-				annotations: [
+				marks: [
 					{
 						start_offset: 5,
 						end_offset: 6,
@@ -153,7 +160,8 @@ const FULL_DOC = {
 						end_offset: 20,
 						node_id: 'xeFfTFanDDERfWHUcjFRbbB'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		FwDGdCAfycBzYtSdHVMnKBG: {
@@ -162,6 +170,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Click where you want to edit.',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -187,7 +196,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Move around with ← → ↑ ↓.',
-				annotations: [
+				marks: [
 					{
 						start_offset: 17,
 						end_offset: 18,
@@ -208,7 +217,8 @@ const FULL_DOC = {
 						end_offset: 24,
 						node_id: 'McYSzTepjCMEbuWZupfCEXA'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		znRgjawqTbTegrUtGxwDtSE: {
@@ -217,6 +227,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Change anything you see!',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -260,7 +271,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Bold, italics and links with ⌘ or Ctrl + B, I and K.',
-				annotations: [
+				marks: [
 					{
 						start_offset: 34,
 						end_offset: 38,
@@ -301,7 +312,8 @@ const FULL_DOC = {
 						end_offset: 30,
 						node_id: 'GArGdawPrKZYvfxPdveNwrk'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		XtZkqrCsUBAmDnMbvnzKTfd: {
@@ -322,7 +334,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Undo with ⌘ or Ctrl + Z.',
-				annotations: [
+				marks: [
 					{
 						start_offset: 15,
 						end_offset: 19,
@@ -338,7 +350,8 @@ const FULL_DOC = {
 						end_offset: 23,
 						node_id: 'fDrYgEpkMsDvfCcnhVZeNbG'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		NCXQcRsQGtuuZdregZhUCgR: {
@@ -359,7 +372,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Save changes with  ⌘ or Ctrl + S.',
-				annotations: [
+				marks: [
 					{
 						start_offset: 24,
 						end_offset: 28,
@@ -375,7 +388,8 @@ const FULL_DOC = {
 						end_offset: 32,
 						node_id: 'pBzAGGQzdznNkuaPVcBZkMJ'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		JkfchFmwTqBYVZawgntPWxP: {
@@ -385,6 +399,7 @@ const FULL_DOC = {
 			content: {
 				content:
 					'On this demo page, changes are not persisted. On a real site, a logged in user would have their changes persisted to a database.',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -405,6 +420,7 @@ const FULL_DOC = {
 					'bqHNFFXTKuAzfJSgBkBzRqh',
 					'JkfchFmwTqBYVZawgntPWxP'
 				],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -427,6 +443,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Build with blocks',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -440,13 +457,14 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Select the dashed gap below this paragraph to see a flashing purple cursor.',
-				annotations: [
+				marks: [
 					{
 						start_offset: 11,
 						end_offset: 22,
 						node_id: 'AuWEjBDcdcswwFJDSyTzSHK'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		jETAUbRNDUeMJEmdFbHDhWv: {
@@ -459,13 +477,14 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Press Enter to add a block.',
-				annotations: [
+				marks: [
 					{
 						start_offset: 6,
 						end_offset: 11,
 						node_id: 'jETAUbRNDUeMJEmdFbHDhWv'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		RTByAAwgnPEVmZZqtUTsxrb: {
@@ -490,7 +509,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Change the text type from paragraph to heading with Ctrl + Shift + ↓ ↑.',
-				annotations: [
+				marks: [
 					{
 						start_offset: 52,
 						end_offset: 56,
@@ -511,7 +530,8 @@ const FULL_DOC = {
 						end_offset: 70,
 						node_id: 'zNdZdAUVsgmJMFzsMGJFTbC'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		mCAdjAUWSwMQAQKRmCffWkv: {
@@ -524,13 +544,14 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Select one of the full width dashed gap to see a flashing purple cursor.',
-				annotations: [
+				marks: [
 					{
 						start_offset: 18,
 						end_offset: 39,
 						node_id: 'mCAdjAUWSwMQAQKRmCffWkv'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		vxUVaWExgWktgpgfNrfZJhS: {
@@ -543,13 +564,14 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Press Enter to create a new top-level block.',
-				annotations: [
+				marks: [
 					{
 						start_offset: 6,
 						end_offset: 11,
 						node_id: 'vxUVaWExgWktgpgfNrfZJhS'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		BnCeVMRsCBVEKqyZUzPUhpp: {
@@ -574,7 +596,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Ctrl + Shift + ↓ ↑ cycles through block types.',
-				annotations: [
+				marks: [
 					{
 						start_offset: 0,
 						end_offset: 4,
@@ -595,7 +617,8 @@ const FULL_DOC = {
 						end_offset: 18,
 						node_id: 'gTkCsNxCgnNFegxNRcCHhjQ'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		PXyrtZHKKVNtxcfPPEGZbys: {
@@ -620,7 +643,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Ctrl + Shift + ← → lets you flip through available layouts.',
-				annotations: [
+				marks: [
 					{
 						start_offset: 0,
 						end_offset: 4,
@@ -641,7 +664,8 @@ const FULL_DOC = {
 						end_offset: 16,
 						node_id: 'WCEqfDhjQMjKHkVuRdxXCXV'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		nrSCDWdxeAkpQpDkzrvKvJT: {
@@ -655,13 +679,14 @@ const FULL_DOC = {
 			content: {
 				content:
 					'To move blocks, drag from a dashed gap to select multiple, then cut and paste like usual.',
-				annotations: [
+				marks: [
 					{
 						start_offset: 16,
 						end_offset: 38,
 						node_id: 'nrSCDWdxeAkpQpDkzrvKvJT'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		XrdwuVwsZhtyMnKXbkHEHRG: {
@@ -675,13 +700,14 @@ const FULL_DOC = {
 			content: {
 				content:
 					'Tip: Press Esc one or more times to select parent blocks. Usually faster and more precise than dragging from a dashed gap.',
-				annotations: [
+				marks: [
 					{
 						start_offset: 11,
 						end_offset: 14,
 						node_id: 'XrdwuVwsZhtyMnKXbkHEHRG'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		nGScFVScCanGVSnJXuevuVh: {
@@ -702,6 +728,7 @@ const FULL_DOC = {
 					'enfBwMARyyTNCtvepmvUkXf',
 					'vkfSmwrvhEvkmUjrwAcvgvA'
 				],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -711,6 +738,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Add images and videos',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -721,6 +749,7 @@ const FULL_DOC = {
 			content: {
 				content:
 					'Open a folder on your computer that has some images. Select one and copy it to the clipboard. Select the placeholder below and paste it. To replace an image, select it first, then paste the new one on top.',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -730,6 +759,7 @@ const FULL_DOC = {
 			layout: 1,
 			body: {
 				nodes: ['ttqZrWgKByzNJpAZWDjCdkt', 'HjCnaGHNswXGNmDReQhNPjy'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -799,6 +829,7 @@ const FULL_DOC = {
 			layout: 1,
 			gallery_items: {
 				nodes: ['wtvHDBrCzJVgacTaJqAwNJk', 'TQRANBXMrzXXZTtzxAYhhZf', 'HtSTZfjTcDSkttVaTUKMYAj'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -817,7 +848,7 @@ const FULL_DOC = {
 			content: {
 				content:
 					'You can even paste several images at once. Select three or four from your computer and copy to the clipboard. Now select a vertical dashed area before or after an image above. Paste and all the images will be added in one go.',
-				annotations: [
+				marks: [
 					{
 						start_offset: 123,
 						end_offset: 143,
@@ -828,7 +859,8 @@ const FULL_DOC = {
 						end_offset: 33,
 						node_id: 'qQWRsxCRhpAaWYPrQyEtkRH'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		BnRyDkxJpWyxgsmdAaqBZpc: {
@@ -862,13 +894,14 @@ const FULL_DOC = {
 			content: {
 				content:
 					"When you add images in the text flow, like the one above, you'll be able to change its size using the handles at the edges of the image.",
-				annotations: [
+				marks: [
 					{
 						start_offset: 102,
 						end_offset: 122,
 						node_id: 'kWHMWHbzvQqqPpbhPVGepXA'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		hjhjWTaQYQzwFhqQuSzTkFf: {
@@ -890,7 +923,7 @@ const FULL_DOC = {
 			content: {
 				content:
 					'You can even paste short video clips onto any media placeholder. Currently .mp4 , .webm, and of course .gif are supported.',
-				annotations: [
+				marks: [
 					{
 						start_offset: 75,
 						end_offset: 79,
@@ -906,7 +939,8 @@ const FULL_DOC = {
 						end_offset: 107,
 						node_id: 'sVdqncWPDxsghFXYYwJFKBH'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		FUeFBwWRRuSJMVAhgxThQqj: {
@@ -920,6 +954,7 @@ const FULL_DOC = {
 					'sBVXkwBDNWSvQvmDSUaQmSh',
 					'askXYZSpXVmkUURQpjBUCEd'
 				],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -929,6 +964,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Link to other pages',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -938,6 +974,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Click on one of the cards below.',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -947,6 +984,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'A link preview appears at the bottom.',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -968,7 +1006,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Click “Edit” or press ⌘ or Ctrl + K to bring up the link editor.',
-				annotations: [
+				marks: [
 					{
 						start_offset: 22,
 						end_offset: 23,
@@ -984,7 +1022,8 @@ const FULL_DOC = {
 						end_offset: 35,
 						node_id: 'kQdCcJgcFccGuKWEDqrYbfq'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		descriptive_gallery_intro: {
@@ -998,6 +1037,7 @@ const FULL_DOC = {
 					'xrCYaJRkGhsssCdSBTutdQk',
 					'pAjXkSATTMDPZehUxzQazWX'
 				],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1022,10 +1062,12 @@ const FULL_DOC = {
 			media: 'nprCMwYvJvUEmRaHBsxfgUd',
 			title: {
 				content: 'Glücksmaurer',
+				marks: [],
 				annotations: []
 			},
 			description: {
 				content: 'Innovative real estate agent in Worms, Germany.',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1050,10 +1092,12 @@ const FULL_DOC = {
 			media: 'descriptive_gallery_item_2_image',
 			title: {
 				content: 'Colbourns',
+				marks: [],
 				annotations: []
 			},
 			description: {
 				content: 'London-based designer of premium-quality, elegant rugs.',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1078,10 +1122,12 @@ const FULL_DOC = {
 			media: 'ReRqxYxMdAUVaMuudfJhzsS',
 			title: {
 				content: 'Visionaries Tomorrow',
+				marks: [],
 				annotations: []
 			},
 			description: {
 				content: 'An early-stage industrial deep tech fund.',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1091,6 +1137,7 @@ const FULL_DOC = {
 			layout: 1,
 			items: {
 				nodes: ['JUmgwJDKqdxVxJeBHkBdjVq', 'descriptive_gallery_item_2', 'YnBCBuemwpaUxQwHrFJNgMW'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1107,13 +1154,14 @@ const FULL_DOC = {
 			content: {
 				content:
 					'The cards above are links to examples of live in-place editable websites Johannes Mutter and I have already launched using this technology. You can see that any design is possible — it’s just HTML and CSS.',
-				annotations: [
+				marks: [
 					{
 						start_offset: 73,
 						end_offset: 88,
 						node_id: 'VqaqUWzRKUJrZzQYqqurggB'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		descriptive_gallery_outro: {
@@ -1122,6 +1170,7 @@ const FULL_DOC = {
 			layout: 1,
 			body: {
 				nodes: ['KUAHxAZZcZTtjmHHBfbrbfs'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1131,6 +1180,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'How does this work?',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1165,7 +1215,7 @@ const FULL_DOC = {
 			content: {
 				content:
 					'Editable is powered by Svelte and Svedit — an open source rich text editor I’ve created. It builds on SvelteKit and SQLite to enable full websites with multiple pages and a persistent backend where only an admin can make changes.',
-				annotations: [
+				marks: [
 					{
 						start_offset: 102,
 						end_offset: 111,
@@ -1186,7 +1236,8 @@ const FULL_DOC = {
 						end_offset: 40,
 						node_id: 'NZHwrDvtUBdpyDMvRJEGPcc'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		HgJRTPUBDfGQFhEDmwcNQNW: {
@@ -1196,6 +1247,7 @@ const FULL_DOC = {
 			content: {
 				content:
 					'The source code is not only available for Editable, but for all the foundations it is built on:',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1205,6 +1257,7 @@ const FULL_DOC = {
 			layout: 1,
 			body: {
 				nodes: ['awxJbWfytmnufqPsJCPxPnR', 'fMgsDXKARPqeRZGCmYKuvqj', 'HgJRTPUBDfGQFhEDmwcNQNW'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1215,14 +1268,17 @@ const FULL_DOC = {
 			target: '_blank',
 			title: {
 				content: 'Editable',
+				marks: [],
 				annotations: []
 			},
 			description: {
 				content: 'CMS-free, in-place editable websites with Svelte ★1.7k+',
+				marks: [],
 				annotations: []
 			},
 			meta: {
 				content: 'Source available',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1233,14 +1289,17 @@ const FULL_DOC = {
 			target: '_blank',
 			title: {
 				content: 'Svedit',
+				marks: [],
 				annotations: []
 			},
 			description: {
 				content: 'A tiny library for building editable websites in Svelte ★600+',
+				marks: [],
 				annotations: []
 			},
 			meta: {
 				content: 'MIT licensed',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1251,14 +1310,17 @@ const FULL_DOC = {
 			target: '_blank',
 			title: {
 				content: 'Svelte',
+				marks: [],
 				annotations: []
 			},
 			description: {
 				content: 'Web development for the rest of us ★86.7k+',
+				marks: [],
 				annotations: []
 			},
 			meta: {
 				content: 'MIT licensed',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1268,6 +1330,7 @@ const FULL_DOC = {
 			layout: 1,
 			items: {
 				nodes: ['BGYgxNUSXuDtBqxrKfExJnw', 'DEKuXmWSgnDZEhRgHGptcZJ', 'NpbErTcbBZKBxShfRaFXzct'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1277,6 +1340,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Early-Adopter Pricing',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1285,6 +1349,7 @@ const FULL_DOC = {
 			type: 'list_item',
 			content: {
 				content: 'Includes all code and the right to modify it',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1293,6 +1358,7 @@ const FULL_DOC = {
 			type: 'list_item',
 			content: {
 				content: 'No subscription',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1301,6 +1367,7 @@ const FULL_DOC = {
 			type: 'list_item',
 			content: {
 				content: 'No hidden costs',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1310,6 +1377,7 @@ const FULL_DOC = {
 			layout: 2,
 			list_items: {
 				nodes: ['nHaWhmFqqDCzKjYfAYWzeAs', 'gfzZchrRysGcDEeXxAscCzg', 'hhauqXDVvpScWyhmrsmvrqe'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1319,6 +1387,7 @@ const FULL_DOC = {
 			layout: 1,
 			body: {
 				nodes: ['KsFYXQPtmceJKGbEkmHqXTy', 'eJjQwDAYHqfcegtbNPTtQSJ'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1328,6 +1397,7 @@ const FULL_DOC = {
 			layout: 2,
 			content: {
 				content: 'PRE-LAUNCH',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1337,6 +1407,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Free',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1346,6 +1417,7 @@ const FULL_DOC = {
 			layout: 2,
 			content: {
 				content: 'Install Editable and start developing.',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1355,6 +1427,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Setup a website in minutes. Spend the next hour customizing it.',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1366,6 +1439,7 @@ const FULL_DOC = {
 			target: '_blank',
 			label: {
 				content: 'Download and Install ⤓',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1374,6 +1448,7 @@ const FULL_DOC = {
 			type: 'button_group',
 			buttons: {
 				nodes: ['prose_grid_free_button'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1388,6 +1463,7 @@ const FULL_DOC = {
 					'TTEwYweZQbgpAzDJeVgJaQg',
 					'prose_grid_free_action'
 				],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1397,6 +1473,7 @@ const FULL_DOC = {
 			layout: 2,
 			content: {
 				content: 'PERSONAL',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1406,6 +1483,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: '€99',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1415,6 +1493,7 @@ const FULL_DOC = {
 			layout: 2,
 			content: {
 				content: 'Once. Per domain. When you launch.',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1424,6 +1503,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'For personal use or businesses with less than 150,000 EUR in annual revenue.',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1435,6 +1515,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'Purchase →',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1443,6 +1524,7 @@ const FULL_DOC = {
 			type: 'button_group',
 			buttons: {
 				nodes: ['prose_grid_supergrok_button'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1452,6 +1534,7 @@ const FULL_DOC = {
 			layout: 2,
 			content: {
 				content: '* available on request',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1467,6 +1550,7 @@ const FULL_DOC = {
 					'prose_grid_supergrok_action',
 					'zmVKWFqacrbaAWnfhxJnkwH'
 				],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1476,6 +1560,7 @@ const FULL_DOC = {
 			layout: 2,
 			content: {
 				content: 'COMMERCIAL',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1485,6 +1570,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: '€299',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1494,6 +1580,7 @@ const FULL_DOC = {
 			layout: 2,
 			content: {
 				content: 'Once. Per domain. When you launch.',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1503,6 +1590,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'For professional use or businesses with more than 150,000 EUR in annual revenue.',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1514,6 +1602,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'Purchase →',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1522,6 +1611,7 @@ const FULL_DOC = {
 			type: 'button_group',
 			buttons: {
 				nodes: ['prose_grid_expert_button'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1531,6 +1621,7 @@ const FULL_DOC = {
 			layout: 2,
 			content: {
 				content: '* available on request',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1546,6 +1637,7 @@ const FULL_DOC = {
 					'prose_grid_expert_action',
 					'SuNuqxwFCRepmRVXmrwmCjJ'
 				],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1555,6 +1647,7 @@ const FULL_DOC = {
 			layout: 2,
 			items: {
 				nodes: ['prose_grid_free', 'prose_grid_supergrok', 'prose_grid_expert'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1564,6 +1657,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Frequently Asked Questions',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1573,6 +1667,7 @@ const FULL_DOC = {
 			layout: 1,
 			body: {
 				nodes: ['TYcAwBxbMfUnUnQFHbcnjjK'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1583,6 +1678,7 @@ const FULL_DOC = {
 			content: {
 				content:
 					'The editing infrastructure (Svedit) becomes an integral part of your website (at runtime). As a developer, all you do is define content types (e.g. Figure) and implement components (e.g. Figure.svelte) — they are editable by default.',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1591,10 +1687,12 @@ const FULL_DOC = {
 			type: 'accordion_item',
 			title: {
 				content: 'How is this different to using a CMS?',
+				marks: [],
 				annotations: []
 			},
 			body: {
 				nodes: ['PgFkSEuFXmXvecwFNksBFfw'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1605,6 +1703,7 @@ const FULL_DOC = {
 			content: {
 				content:
 					'There is experimental support for mobile editing — it works in principle. The current focus is on desktop UX, but mobile editing will improve over time.',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1613,10 +1712,12 @@ const FULL_DOC = {
 			type: 'accordion_item',
 			title: {
 				content: 'Is mobile editing supported?',
+				marks: [],
 				annotations: []
 			},
 			body: {
 				nodes: ['fWGAzktgaAYgCnbjDDNZqZt'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1627,6 +1728,7 @@ const FULL_DOC = {
 			content: {
 				content:
 					"All content lives in a single data/ directory — an SQLite database (db.sqlite3) and uploaded assets (assets/). Locally this defaults to ./data. On Fly.io it's a persistent volume at /data. To back up your site, copy this directory.",
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1635,10 +1737,12 @@ const FULL_DOC = {
 			type: 'accordion_item',
 			title: {
 				content: 'Where is the data stored?',
+				marks: [],
 				annotations: []
 			},
 			body: {
 				nodes: ['wdKfHzXjUysbpyHBKWnjHPp'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1649,6 +1753,7 @@ const FULL_DOC = {
 			content: {
 				content:
 					'Editable is a foundational, AI-agnostic tool. That said, it makes perfect sense to utilize AI workflows to help building your custom site. Think prompts like "Create a paragraph block type with layout variants" and "Implement Paragraph.svelte with 2 layouts".',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1657,10 +1762,12 @@ const FULL_DOC = {
 			type: 'accordion_item',
 			title: {
 				content: 'How about AI?',
+				marks: [],
 				annotations: []
 			},
 			body: {
 				nodes: ['ahabwjAyHuBbTNMJacqWupQ'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1671,6 +1778,7 @@ const FULL_DOC = {
 			content: {
 				content:
 					"Editable is modular and you can and should reuse code across projects. However, I purposely don't want to establish a community maintained plugin repository. I want to encourage you to own all your code, for the benefit of simplicity, safety, and control. Share code snippets, not plugins.",
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1679,10 +1787,12 @@ const FULL_DOC = {
 			type: 'accordion_item',
 			title: {
 				content: 'Plugins?',
+				marks: [],
 				annotations: []
 			},
 			body: {
 				nodes: ['vuEMUDFAUnxSBXvsvDsYDZe'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1693,6 +1803,7 @@ const FULL_DOC = {
 			content: {
 				content:
 					'Editable runs on any VPS. All you need is Node.js and SQLite. The repository includes a Dockerfile and fly.toml for one-command deployment to Fly.io — see Deploying to Fly.io above. The same Dockerfile works with any platform that supports Docker.',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1701,10 +1812,12 @@ const FULL_DOC = {
 			type: 'accordion_item',
 			title: {
 				content: 'Hosting?',
+				marks: [],
 				annotations: []
 			},
 			body: {
 				nodes: ['ZdwnbaVUbAPYzCZQhyJAYBr'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1715,6 +1828,7 @@ const FULL_DOC = {
 			content: {
 				content:
 					"There's no point for static builds with Editable. The whole idea is that users edit content live, without having to wait for a rebuild to finish. SQLite is fast. Very fast. Web-optimized images are generated client-side before upload: resizing happens in the browser via canvas and toBlob(), and WebP encoding is done with @jsquash/webp. It still makes sense to enable a proxy for images, so they can be delivered from a CDN.",
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1723,10 +1837,12 @@ const FULL_DOC = {
 			type: 'accordion_item',
 			title: {
 				content: 'Static builds?',
+				marks: [],
 				annotations: []
 			},
 			body: {
 				nodes: ['prwbeXWyKVSsJXMPndjHYRS'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1737,6 +1853,7 @@ const FULL_DOC = {
 			content: {
 				content:
 					"Editable will at least be source-available. There will likely be an affordable one-time registration fee (per domain) for personal use, and a fair fee for commercial projects. I'm still working on the details. If you’re open to discussion, join the technical preview.",
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1745,10 +1862,12 @@ const FULL_DOC = {
 			type: 'accordion_item',
 			title: {
 				content: 'License?',
+				marks: [],
 				annotations: []
 			},
 			body: {
 				nodes: ['VmvAPSsWYbVnekGqYyEKPUG'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1766,6 +1885,7 @@ const FULL_DOC = {
 					'gftTVYqqYFbsTAkfMJKbhzH',
 					'gYpxwQwkQNNWWvYbTWBrAfx'
 				],
+				marks: [],
 				annotations: []
 			},
 			layout: 5
@@ -1789,6 +1909,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Hello, I’m Michael',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1805,13 +1926,14 @@ const FULL_DOC = {
 			content: {
 				content:
 					'Since 2011 I’ve been taming web browsers to behave correctly and predictably when editing rich text.',
-				annotations: [
+				marks: [
 					{
 						start_offset: 21,
 						end_offset: 40,
 						node_id: 'gnbpgBsBYZqEwRxqRZSMHdd'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		HTXqugHBTYdFtsEPuJBwdcQ: {
@@ -1821,6 +1943,7 @@ const FULL_DOC = {
 			content: {
 				content:
 					'I want you to be able to launch websites that anyone can edit. No more calls asking you to update someone’s WordPress site! They’ll be able to do it themselves.',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1831,6 +1954,7 @@ const FULL_DOC = {
 			content: {
 				content:
 					'Most CMSs are too complex for clients and too restrictive for developers. Change every pixel of your site, create new content types, or integrate 3rd party data. Everything you can do with Svelte, you can do with Editable.',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1846,6 +1970,7 @@ const FULL_DOC = {
 					'HTXqugHBTYdFtsEPuJBwdcQ',
 					'QEnRdGNnZesaJWpDstgKQhq'
 				],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1855,6 +1980,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Try Editable now',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1866,6 +1992,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'Try',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1877,6 +2004,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'Download ⤓',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1885,6 +2013,7 @@ const FULL_DOC = {
 			type: 'button_group',
 			buttons: {
 				nodes: ['gMEmnxMvAaEMBfvxmUFzzeM', 'qawneFduCjytdSMKSPbhBDk'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1894,6 +2023,7 @@ const FULL_DOC = {
 			layout: 4,
 			body: {
 				nodes: ['CqTEkBNqegxMsErnwufYdHp', 'fxbPhZADdeyCbysuCSwHNcA'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -1940,7 +2070,7 @@ const FULL_DOC = {
 			content: {
 				content:
 					'Big thanks to Johannes Mutter for helping with concept, design, and engineering, Tom Atkins for support with positioning and copywriting, and Sonja Stojanovic for being the very first happy Editable user — followed by Trails, Postlmayr Design, Aufreiter Architektur, and many more.',
-				annotations: [
+				marks: [
 					{
 						start_offset: 14,
 						end_offset: 29,
@@ -1971,7 +2101,8 @@ const FULL_DOC = {
 						end_offset: 265,
 						node_id: 'KKUfXFgJuXJrUSPyzMQrHcU'
 					}
-				]
+				],
+				annotations: []
 			}
 		},
 		wmrbpSFAFUmMRPDumcjKqpF: {
@@ -1980,6 +2111,7 @@ const FULL_DOC = {
 			layout: 5,
 			body: {
 				nodes: ['vvqbUaMzgjJXvJGMzHFDnrE'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2030,6 +2162,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'Quickstart',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2040,6 +2173,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'Manual',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2050,6 +2184,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'Blog',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2060,6 +2195,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'About',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2071,6 +2207,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'Try',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2082,6 +2219,7 @@ const FULL_DOC = {
 			target: '_blank',
 			label: {
 				content: 'Download ⤓',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2090,6 +2228,7 @@ const FULL_DOC = {
 			type: 'nav',
 			start_items: {
 				nodes: ['nav_logo'],
+				marks: [],
 				annotations: []
 			},
 			center_items: {
@@ -2099,10 +2238,12 @@ const FULL_DOC = {
 					'atmQQGpCXBweGkkcSuKpJPS',
 					'GyKyQvRAvkgnywmxTVgvrnF'
 				],
+				marks: [],
 				annotations: []
 			},
 			end_items: {
 				nodes: ['yeYXsdtjqkFgJtvdhjTemtP', 'FKgjxHCeSbVZrdnPuxYkMYp'],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2132,6 +2273,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'Editable',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2141,6 +2283,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content: 'The website you can edit right on the page.\nMade in Austria.',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2149,6 +2292,7 @@ const FULL_DOC = {
 			type: 'footer_link_category',
 			title: {
 				content: 'Solutions',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2159,6 +2303,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'For developers',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2169,6 +2314,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'For designers',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2179,6 +2325,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'For creators',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2189,6 +2336,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'For agencies',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2199,6 +2347,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'For artists',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2214,6 +2363,7 @@ const FULL_DOC = {
 					'KKfjUFNbCJVqtDPNZPuUkdQ',
 					'GwPeRFYtAyrcCMfpuyzdWZp'
 				],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2222,6 +2372,7 @@ const FULL_DOC = {
 			type: 'footer_link_category',
 			title: {
 				content: 'Learn',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2232,6 +2383,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'Quickstart',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2242,6 +2394,7 @@ const FULL_DOC = {
 			target: '_blank',
 			label: {
 				content: 'Manual',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2252,6 +2405,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'Examples',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2265,6 +2419,7 @@ const FULL_DOC = {
 					'uavzfSnSpTRrHSfJpbfvpsh',
 					'ZZfGvcXXCxUWTubUfyWRNHM'
 				],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2273,6 +2428,7 @@ const FULL_DOC = {
 			type: 'footer_link_category',
 			title: {
 				content: 'Community',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2283,6 +2439,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'Blog',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2293,6 +2450,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'Discussions',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2303,6 +2461,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'GitHub',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2316,6 +2475,7 @@ const FULL_DOC = {
 					'XwSHBshPgtBVkfKwwZpmGXz',
 					'DCjbSqkDXcnzARnaVVfZgvD'
 				],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2324,6 +2484,7 @@ const FULL_DOC = {
 			type: 'footer_link_category',
 			title: {
 				content: 'Editable',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2334,6 +2495,7 @@ const FULL_DOC = {
 			target: '_self',
 			label: {
 				content: 'About',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2343,6 +2505,7 @@ const FULL_DOC = {
 			href: '',
 			label: {
 				content: 'Privacy',
+				marks: [],
 				annotations: []
 			},
 			target: '_blank'
@@ -2353,6 +2516,7 @@ const FULL_DOC = {
 			href: '',
 			label: {
 				content: 'Imprint',
+				marks: [],
 				annotations: []
 			},
 			target: '_blank'
@@ -2364,6 +2528,7 @@ const FULL_DOC = {
 			target: '_blank',
 			label: {
 				content: 'Contact',
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2378,6 +2543,7 @@ const FULL_DOC = {
 					'gHeVqdqKQrhyPMjkThksXMZ',
 					'UUENAjygpuBGQWeVBzDtgXG'
 				],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2386,6 +2552,7 @@ const FULL_DOC = {
 			type: 'footer',
 			body: {
 				nodes: ['WkrTBHKFKjjCphujhzqZrup', 'ZRYVZgNjcBnCFVRXhJHJxtV', 'fWFgvucsMbVzrEDZSSXxhWA'],
+				marks: [],
 				annotations: []
 			},
 			footer_link_columns: {
@@ -2395,6 +2562,7 @@ const FULL_DOC = {
 					'VTRuBHweKUkfXmNUYcmTaHp',
 					'JskzGsAxAjwhbGdQWdMGpDS'
 				],
+				marks: [],
 				annotations: []
 			}
 		},
@@ -2403,11 +2571,13 @@ const FULL_DOC = {
 			type: 'page',
 			title: {
 				content: 'Editable',
+				marks: [],
 				annotations: []
 			},
 			description: {
 				content:
 					'SvelteKit template for building CMS-free editable websites. Site owners can edit content directly in the layout - no CMS needed.',
+				marks: [],
 				annotations: []
 			},
 			image: 'TmDfRnszftVyCJHtzUmqAUB',
@@ -2433,7 +2603,7 @@ const FULL_DOC = {
 					'zBXuGXXYWMGbSdteMyNFhja',
 					'wmrbpSFAFUmMRPDumcjKqpF'
 				],
-				annotations: [
+				marks: [
 					{
 						start_offset: 4,
 						end_offset: 7,
@@ -2459,7 +2629,8 @@ const FULL_DOC = {
 						end_offset: 16,
 						node_id: 'kKwKQPPJhSmxzuxPnkqZPaT'
 					}
-				]
+				],
+				annotations: []
 			},
 			nav: 'nav_1',
 			footer: 'footer_1'
@@ -2483,18 +2654,19 @@ function extract_document(nodes, root_id) {
 	return { document_id: root_id, nodes: sub_nodes };
 }
 
-const page_node = FULL_DOC.nodes['page_1'];
+const FILLED_DOC = fill_document_defaults(FULL_DOC, document_schema);
+const page_node = FILLED_DOC.nodes['page_1'];
 const nav_root_id = page_node.nav; // "nav_1"
 const footer_root_id = page_node.footer; // "footer_1"
 
-export const NAV_1 = extract_document(FULL_DOC.nodes, nav_root_id);
-export const FOOTER_1 = extract_document(FULL_DOC.nodes, footer_root_id);
+export const NAV_1 = extract_document(FILLED_DOC.nodes, nav_root_id);
+export const FOOTER_1 = extract_document(FILLED_DOC.nodes, footer_root_id);
 
 // PAGE_1 gets everything reachable from page_1, minus nav/footer subtrees
 const nav_ids = new Set(Object.keys(NAV_1.nodes));
 const footer_ids = new Set(Object.keys(FOOTER_1.nodes));
 const exclude = new Set([...nav_ids, ...footer_ids]);
-const page_nodes_list = traverse('page_1', document_schema, FULL_DOC.nodes);
+const page_nodes_list = traverse('page_1', document_schema, FILLED_DOC.nodes);
 const page_nodes = {};
 for (const node of page_nodes_list) {
 	if (!exclude.has(node.id)) {

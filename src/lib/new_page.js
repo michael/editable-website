@@ -46,16 +46,18 @@ export function create_empty_doc(shared_documents) {
 				type: 'page',
 				title: {
 					content: '',
+					marks: [],
 					annotations: []
 				},
 				description: {
 					content: '',
+					marks: [],
 					annotations: []
 				},
 				image: page_image_id,
 				nav: nav_document.document_id,
 				footer: footer_document.document_id,
-				body: { nodes: [prose_id], annotations: [] }
+				body: { nodes: [prose_id], marks: [], annotations: [] }
 			},
 			[page_image_id]: {
 				id: page_image_id,
@@ -66,13 +68,14 @@ export function create_empty_doc(shared_documents) {
 				id: prose_id,
 				type: 'prose',
 				layout: 1,
-				body: { nodes: [heading_id, paragraph_id], annotations: [] }
+				body: { nodes: [heading_id, paragraph_id], marks: [], annotations: [] }
 			},
 			[heading_id]: {
 				id: heading_id,
 				type: 'heading_1',
 				content: {
 					content: '',
+					marks: [],
 					annotations: []
 				}
 			},
@@ -81,6 +84,7 @@ export function create_empty_doc(shared_documents) {
 				type: 'paragraph',
 				content: {
 					content: '',
+					marks: [],
 					annotations: []
 				}
 			}

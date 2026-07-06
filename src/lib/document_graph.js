@@ -1,8 +1,12 @@
 import { document_schema } from '$lib/document_schema.js';
 
+function get_attached_ranges(value) {
+	return [...(value?.marks ?? []), ...(value?.annotations ?? [])];
+}
+
 /**
  * Collect all node ids reachable from a root node by walking node/node_array
- * properties and annotation references, preserving first-seen traversal order.
+ * properties and mark/annotation references, preserving first-seen traversal order.
  *
  * @param {string} root_id
  * @param {Record<string, any>} nodes
@@ -40,15 +44,15 @@ export function collect_node_ids_in_order(root_id, nodes, exclude_roots) {
 				for (const child_id of value.nodes) {
 					next_ids.push(child_id);
 				}
-				for (const annotation of value.annotations) {
-					if (annotation.node_id) {
-						next_ids.push(annotation.node_id);
+				for (const range of get_attached_ranges(value)) {
+					if (range.node_id) {
+						next_ids.push(range.node_id);
 					}
 				}
-			} else if (prop_def.type === 'text' && value.annotations) {
-				for (const annotation of value.annotations) {
-					if (annotation.node_id) {
-						next_ids.push(annotation.node_id);
+			} else if (prop_def.type === 'text') {
+				for (const range of get_attached_ranges(value)) {
+					if (range.node_id) {
+						next_ids.push(range.node_id);
 					}
 				}
 			}

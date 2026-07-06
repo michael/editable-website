@@ -158,11 +158,11 @@
 		}
 
 		if (sel.type === 'text') {
-			const active_annotation = svedit.session.active_annotation;
-			if (active_annotation?.node.type === 'link') {
-				const annotation_index = active_annotation.index;
-				const link_node = active_annotation.node;
-				const path = [...sel.path, 'annotations', annotation_index, 'node_id'];
+			const active_mark = svedit.session.active_mark;
+			if (active_mark?.node.type === 'link') {
+				const mark_index = active_mark.index;
+				const link_node = active_mark.node;
+				const path = [...sel.path, 'marks', mark_index, 'node_id'];
 				return { node: link_node, path };
 			}
 		}
@@ -241,6 +241,17 @@
 	{/if}
 </div>
 
+<svelte:document
+	onmousemove={handle_mousemove}
+	onpointerdown={(e) => {
+		if (e.pointerType === 'mouse') is_mouse_down = true;
+	}}
+	onpointerup={() => {
+		is_dragging = false;
+		is_mouse_down = false;
+	}}
+/>
+
 <style>
 	.drop-target-overlay {
 		position: absolute;
@@ -262,12 +273,4 @@
 		right: anchor(right);
 		pointer-events: auto;
 	}
-
-
 </style>
-
-<svelte:document
-	onmousemove={handle_mousemove}
-	onpointerdown={(e) => { if (e.pointerType === 'mouse') is_mouse_down = true; }}
-	onpointerup={() => { is_dragging = false; is_mouse_down = false; }}
-/>

@@ -7,6 +7,7 @@ const sql = (strings) => strings.join('');
 function create_empty_text() {
 	return {
 		content: '',
+		marks: [],
 		annotations: []
 	};
 }

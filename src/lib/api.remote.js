@@ -126,9 +126,13 @@ const delete_page_input_schema = v.object({
 
 const sql = (strings) => strings.join('');
 
+function get_attached_ranges(value) {
+	return [...(value?.marks ?? []), ...(value?.annotations ?? [])];
+}
+
 /**
  * Collect all node ids reachable from a root node by walking node/node_array
- * properties and annotation references.
+ * properties and mark/annotation references.
  *
  * @param {string} root_id
  * @param {Record<string, any>} nodes
@@ -162,15 +166,15 @@ function collect_node_ids(root_id, nodes, exclude_roots) {
 				for (const child_id of value.nodes) {
 					stack.push(child_id);
 				}
-				for (const annotation of value.annotations) {
-					if (annotation.node_id) {
-						stack.push(annotation.node_id);
+				for (const range of get_attached_ranges(value)) {
+					if (range.node_id) {
+						stack.push(range.node_id);
 					}
 				}
-			} else if (prop_def.type === 'text' && value.annotations) {
-				for (const annotation of value.annotations) {
-					if (annotation.node_id) {
-						stack.push(annotation.node_id);
+			} else if (prop_def.type === 'text') {
+				for (const range of get_attached_ranges(value)) {
+					if (range.node_id) {
+						stack.push(range.node_id);
 					}
 				}
 			}
@@ -398,15 +402,14 @@ function collect_document_refs(nodes, node_ids, source_document_id) {
 			if (prop_def.type !== 'text') continue;
 
 			const value = node[prop_name];
-			if (!value?.annotations) continue;
 
-			for (const annotation of value.annotations) {
-				const annotation_node = annotation?.node_id ? nodes[annotation.node_id] : null;
-				if (!annotation_node || annotation_node.type !== 'link') continue;
-				if (typeof annotation_node.href !== 'string') continue;
+			for (const range of get_attached_ranges(value)) {
+				const range_node = range?.node_id ? nodes[range.node_id] : null;
+				if (!range_node || range_node.type !== 'link') continue;
+				if (typeof range_node.href !== 'string') continue;
 
 				const target_document_id = normalize_internal_page_href(
-					annotation_node.href,
+					range_node.href,
 					source_document_id
 				);
 
@@ -976,18 +979,13 @@ function rewrite_internal_page_hrefs(nodes, target_document_id, new_slug) {
 			if (prop_def.type !== 'text') continue;
 
 			const value = node[prop_name];
-			if (!value?.annotations) continue;
 
-			for (const annotation of value.annotations) {
-				const annotation_node = annotation?.node_id ? nodes[annotation.node_id] : null;
-				if (!annotation_node || annotation_node.type !== 'link') continue;
-				if (typeof annotation_node.href !== 'string') continue;
+			for (const range of get_attached_ranges(value)) {
+				const range_node = range?.node_id ? nodes[range.node_id] : null;
+				if (!range_node || range_node.type !== 'link') continue;
+				if (typeof range_node.href !== 'string') continue;
 
-				annotation_node.href = rewrite_internal_page_href(
-					annotation_node.href,
-					target_document_id,
-					new_slug
-				);
+				range_node.href = rewrite_internal_page_href(range_node.href, target_document_id, new_slug);
 			}
 		}
 	}

@@ -5,7 +5,7 @@ import {
 	InsertDefaultNodeCommand,
 	AddNewLineCommand,
 	BreakTextNodeCommand,
-	ToggleAnnotationCommand,
+	ToggleMarkCommand,
 	UndoCommand,
 	RedoCommand,
 	SelectParentCommand,
@@ -97,7 +97,12 @@ function select_inserted_text_property(tr, property_name = 'label', child_path =
 	});
 }
 
-function insert_text_node(tr, node_type, content = { content: '', annotations: [] }, layout = 1) {
+function insert_text_node(
+	tr,
+	node_type,
+	content = { content: '', marks: [], annotations: [] },
+	layout = 1
+) {
 	const new_text = {
 		id: nanoid(),
 		type: node_type,
@@ -367,11 +372,11 @@ const session_config = {
 			insert_default_node: new InsertDefaultNodeCommand(context),
 			add_new_line: new AddNewLineCommand(context),
 			break_text_node: new BreakTextNodeCommand(context),
-			toggle_strong: new ToggleAnnotationCommand('strong', context),
-			toggle_emphasis: new ToggleAnnotationCommand('emphasis', context),
-			toggle_code: new ToggleAnnotationCommand('code', context),
-			toggle_highlight: new ToggleAnnotationCommand('highlight', context),
-			toggle_section: new ToggleAnnotationCommand('section', context),
+			toggle_strong: new ToggleMarkCommand('strong', context),
+			toggle_emphasis: new ToggleMarkCommand('emphasis', context),
+			toggle_code: new ToggleMarkCommand('code', context),
+			toggle_highlight: new ToggleMarkCommand('highlight', context),
+			toggle_section: new ToggleMarkCommand('section', context),
 			undo: new UndoCommand(context),
 			redo: new RedoCommand(context),
 			select_parent: new SelectParentCommand(context),
@@ -426,20 +431,20 @@ const session_config = {
 			const new_heading = {
 				id: nanoid(),
 				type: 'heading_3',
-				content: { content: '', annotations: [] }
+				content: { content: '', marks: [], annotations: [] }
 			};
 			tr.create(new_heading);
 			const new_paragraph = {
 				id: nanoid(),
 				type: 'paragraph',
-				content: { content: '', annotations: [] }
+				content: { content: '', marks: [], annotations: [] }
 			};
 			tr.create(new_paragraph);
 			const new_prose = {
 				id: nanoid(),
 				type: 'prose',
 				layout: 1,
-				body: { nodes: [new_heading.id, new_paragraph.id], annotations: [] }
+				body: { nodes: [new_heading.id, new_paragraph.id], marks: [], annotations: [] }
 			};
 			tr.create(new_prose);
 			tr.insert_nodes([new_prose.id]);
@@ -448,19 +453,19 @@ const session_config = {
 			const new_heading = {
 				id: nanoid(),
 				type: 'heading_1',
-				content: { content: '', annotations: [] }
+				content: { content: '', marks: [], annotations: [] }
 			};
 			tr.create(new_heading);
 			const new_paragraph = {
 				id: nanoid(),
 				type: 'paragraph',
-				content: { content: '', annotations: [] }
+				content: { content: '', marks: [], annotations: [] }
 			};
 			tr.create(new_paragraph);
 			const new_prose_grid_item = {
 				id: nanoid(),
 				type: 'prose_grid_item',
-				body: { nodes: [new_heading.id, new_paragraph.id], annotations: [] }
+				body: { nodes: [new_heading.id, new_paragraph.id], marks: [], annotations: [] }
 			};
 			tr.create(new_prose_grid_item);
 			tr.insert_nodes([new_prose_grid_item.id]);
@@ -470,47 +475,47 @@ const session_config = {
 				title_1: {
 					id: 'title_1',
 					type: 'heading_1',
-					content: { content: '', annotations: [] }
+					content: { content: '', marks: [], annotations: [] }
 				},
 				title_2: {
 					id: 'title_2',
 					type: 'heading_1',
-					content: { content: '', annotations: [] }
+					content: { content: '', marks: [], annotations: [] }
 				},
 				title_3: {
 					id: 'title_3',
 					type: 'heading_1',
-					content: { content: '', annotations: [] }
+					content: { content: '', marks: [], annotations: [] }
 				},
 				paragraph_1: {
 					id: 'paragraph_1',
 					type: 'paragraph',
-					content: { content: '', annotations: [] }
+					content: { content: '', marks: [], annotations: [] }
 				},
 				paragraph_2: {
 					id: 'paragraph_2',
 					type: 'paragraph',
-					content: { content: '', annotations: [] }
+					content: { content: '', marks: [], annotations: [] }
 				},
 				paragraph_3: {
 					id: 'paragraph_3',
 					type: 'paragraph',
-					content: { content: '', annotations: [] }
+					content: { content: '', marks: [], annotations: [] }
 				},
 				prose_grid_item_1: {
 					id: 'prose_grid_item_1',
 					type: 'prose_grid_item',
-					body: { nodes: ['title_1', 'paragraph_1'], annotations: [] }
+					body: { nodes: ['title_1', 'paragraph_1'], marks: [], annotations: [] }
 				},
 				prose_grid_item_2: {
 					id: 'prose_grid_item_2',
 					type: 'prose_grid_item',
-					body: { nodes: ['title_2', 'paragraph_2'], annotations: [] }
+					body: { nodes: ['title_2', 'paragraph_2'], marks: [], annotations: [] }
 				},
 				prose_grid_item_3: {
 					id: 'prose_grid_item_3',
 					type: 'prose_grid_item',
-					body: { nodes: ['title_3', 'paragraph_3'], annotations: [] }
+					body: { nodes: ['title_3', 'paragraph_3'], marks: [], annotations: [] }
 				},
 				new_prose_grid: {
 					id: 'new_prose_grid',
@@ -518,44 +523,45 @@ const session_config = {
 					layout: 1,
 					items: {
 						nodes: ['prose_grid_item_1', 'prose_grid_item_2', 'prose_grid_item_3'],
+						marks: [],
 						annotations: []
 					}
 				}
 			});
 			tr.insert_nodes([new_prose_grid_id]);
 		},
-		paragraph: function (tr, content = { content: '', annotations: [] }) {
+		paragraph: function (tr, content = { content: '', marks: [], annotations: [] }) {
 			insert_text_node(tr, 'paragraph', content, 1);
 		},
-		paragraph_sm: function (tr, content = { content: '', annotations: [] }) {
+		paragraph_sm: function (tr, content = { content: '', marks: [], annotations: [] }) {
 			insert_text_node(tr, 'paragraph_sm', content, 1);
 		},
-		paragraph_lg: function (tr, content = { content: '', annotations: [] }) {
+		paragraph_lg: function (tr, content = { content: '', marks: [], annotations: [] }) {
 			insert_text_node(tr, 'paragraph_lg', content, 1);
 		},
-		paragraph_xl: function (tr, content = { content: '', annotations: [] }) {
+		paragraph_xl: function (tr, content = { content: '', marks: [], annotations: [] }) {
 			insert_text_node(tr, 'paragraph_xl', content, 1);
 		},
-		heading_1: function (tr, content = { content: '', annotations: [] }) {
+		heading_1: function (tr, content = { content: '', marks: [], annotations: [] }) {
 			insert_text_node(tr, 'heading_1', content, 1);
 		},
-		heading_2: function (tr, content = { content: '', annotations: [] }) {
+		heading_2: function (tr, content = { content: '', marks: [], annotations: [] }) {
 			insert_text_node(tr, 'heading_2', content, 1);
 		},
-		heading_3: function (tr, content = { content: '', annotations: [] }) {
+		heading_3: function (tr, content = { content: '', marks: [], annotations: [] }) {
 			insert_text_node(tr, 'heading_3', content, 1);
 		},
-		heading_4: function (tr, content = { content: '', annotations: [] }) {
+		heading_4: function (tr, content = { content: '', marks: [], annotations: [] }) {
 			insert_text_node(tr, 'heading_4', content, 1);
 		},
-		heading_5: function (tr, content = { content: '', annotations: [] }) {
+		heading_5: function (tr, content = { content: '', marks: [], annotations: [] }) {
 			insert_text_node(tr, 'heading_5', content, 1);
 		},
-		preformatted: function (tr, content = { content: '', annotations: [] }) {
+		preformatted: function (tr, content = { content: '', marks: [], annotations: [] }) {
 			const new_preformatted = {
 				id: nanoid(),
 				type: 'preformatted',
-				content: { ...content, annotations: [] }
+				content: { ...content, marks: [], annotations: [] }
 			};
 			tr.create(new_preformatted);
 			tr.insert_nodes([new_preformatted.id]);
@@ -570,7 +576,7 @@ const session_config = {
 			const new_list_item = {
 				id: nanoid(),
 				type: 'list_item',
-				content: { content: '', annotations: [] }
+				content: { content: '', marks: [], annotations: [] }
 			};
 			tr.create(new_list_item);
 
@@ -578,7 +584,7 @@ const session_config = {
 				id: nanoid(),
 				type: 'list',
 				layout: 1,
-				list_items: { nodes: [new_list_item.id], annotations: [] }
+				list_items: { nodes: [new_list_item.id], marks: [], annotations: [] }
 			};
 			tr.create(new_list);
 			tr.insert_nodes([new_list.id]);
@@ -589,7 +595,7 @@ const session_config = {
 				focus_offset: 0
 			});
 		},
-		list_item: function (tr, content = { content: '', annotations: [] }) {
+		list_item: function (tr, content = { content: '', marks: [], annotations: [] }) {
 			const new_list_item = {
 				id: nanoid(),
 				type: 'list_item',
@@ -614,20 +620,20 @@ const session_config = {
 				body_text: {
 					id: 'body_text',
 					type: 'heading_1',
-					content: { content: '', annotations: [] }
+					content: { content: '', marks: [], annotations: [] }
 				},
 				new_feature: {
 					id: 'new_feature',
 					type: 'feature',
 					layout: 1,
 					media: 'feature_image',
-					body: { nodes: ['body_text'], annotations: [] }
+					body: { nodes: ['body_text'], marks: [], annotations: [] }
 				}
 			});
 
 			tr.insert_nodes([new_feature_id]);
 		},
-		figure: function (tr, content = { content: '', annotations: [] }, layout = 1) {
+		figure: function (tr, content = { content: '', marks: [], annotations: [] }, layout = 1) {
 			const new_figure_id = tr.build('new_figure', {
 				image_one: {
 					id: 'image_one',
@@ -644,7 +650,11 @@ const session_config = {
 
 			tr.insert_nodes([new_figure_id]);
 		},
-		captioned_figure: function (tr, content = { content: '', annotations: [] }, layout = 1) {
+		captioned_figure: function (
+			tr,
+			content = { content: '', marks: [], annotations: [] },
+			layout = 1
+		) {
 			const new_captioned_figure_id = tr.build('new_captioned_figure', {
 				image_one: {
 					id: 'image_one',
@@ -655,13 +665,17 @@ const session_config = {
 					id: 'new_captioned_figure',
 					type: 'captioned_figure',
 					media: 'image_one',
-					caption: { content: '', annotations: [] }
+					caption: { content: '', marks: [], annotations: [] }
 				}
 			});
 
 			tr.insert_nodes([new_captioned_figure_id]);
 		},
-		supporting_media: function (tr, content = { content: '', annotations: [] }, layout = 1) {
+		supporting_media: function (
+			tr,
+			content = { content: '', marks: [], annotations: [] },
+			layout = 1
+		) {
 			const new_supporting_media_id = tr.build('new_supporting_media', {
 				image_one: {
 					id: 'image_one',
@@ -677,7 +691,7 @@ const session_config = {
 
 			tr.insert_nodes([new_supporting_media_id]);
 		},
-		nav_link: function (tr, content = { content: '', annotations: [] }, layout = 1) {
+		nav_link: function (tr, content = { content: '', marks: [], annotations: [] }, layout = 1) {
 			const new_nav_link_id = tr.build('new_nav_link', {
 				new_nav_link: {
 					id: 'new_nav_link',
@@ -688,7 +702,7 @@ const session_config = {
 			tr.insert_nodes([new_nav_link_id]);
 			select_inserted_text_property(tr);
 		},
-		nav_button: function (tr, content = { content: '', annotations: [] }, layout = 1) {
+		nav_button: function (tr, content = { content: '', marks: [], annotations: [] }, layout = 1) {
 			const new_nav_button_id = tr.build('new_nav_button', {
 				new_nav_button: {
 					id: 'new_nav_button',
@@ -719,7 +733,7 @@ const session_config = {
 			tr.insert_nodes([new_nav_image_id]);
 		},
 
-		button: function (tr, content = { content: '', annotations: [] }, layout = 1) {
+		button: function (tr, content = { content: '', marks: [], annotations: [] }, layout = 1) {
 			const new_button_id = tr.build('new_button', {
 				new_button: {
 					id: 'new_button',
@@ -738,7 +752,7 @@ const session_config = {
 					layout: 1,
 					href: '',
 					target: '_self',
-					label: { content: '', annotations: [] }
+					label: { content: '', marks: [], annotations: [] }
 				},
 				secondary_button: {
 					id: 'secondary_button',
@@ -746,19 +760,19 @@ const session_config = {
 					layout: 2,
 					href: '',
 					target: '_self',
-					label: { content: '', annotations: [] }
+					label: { content: '', marks: [], annotations: [] }
 				},
 				new_button_group: {
 					id: 'new_button_group',
 					type: 'button_group',
-					buttons: { nodes: ['primary_button', 'secondary_button'], annotations: [] }
+					buttons: { nodes: ['primary_button', 'secondary_button'], marks: [], annotations: [] }
 				}
 			});
 
 			tr.insert_nodes([new_button_group_id]);
 			select_inserted_text_property(tr, 'label', ['buttons', 0]);
 		},
-		footer_link: function (tr, content = { content: '', annotations: [] }, layout = 1) {
+		footer_link: function (tr, content = { content: '', marks: [], annotations: [] }, layout = 1) {
 			const new_footer_link_id = tr.build('new_footer_link', {
 				new_footer_link: {
 					id: 'new_footer_link',
@@ -769,7 +783,11 @@ const session_config = {
 			tr.insert_nodes([new_footer_link_id]);
 			select_inserted_text_property(tr);
 		},
-		footer_link_category: function (tr, content = { content: '', annotations: [] }, layout = 1) {
+		footer_link_category: function (
+			tr,
+			content = { content: '', marks: [], annotations: [] },
+			layout = 1
+		) {
 			const new_footer_link_category_id = tr.build('new_footer_link_category', {
 				new_footer_link_category: {
 					id: 'new_footer_link_category',
@@ -781,12 +799,16 @@ const session_config = {
 			tr.insert_nodes([new_footer_link_category_id]);
 			select_inserted_text_property(tr, 'title');
 		},
-		footer_link_column: function (tr, content = { content: '', annotations: [] }, layout = 1) {
+		footer_link_column: function (
+			tr,
+			content = { content: '', marks: [], annotations: [] },
+			layout = 1
+		) {
 			const new_footer_link_column_id = tr.build('new_footer_link_column', {
 				new_footer_link_category: {
 					id: 'new_footer_link_category',
 					type: 'footer_link_category',
-					title: { content: '', annotations: [] }
+					title: { content: '', marks: [], annotations: [] }
 				},
 				new_footer_link_1: {
 					id: 'new_footer_link_1',
@@ -810,6 +832,7 @@ const session_config = {
 							'new_footer_link_2',
 							'new_footer_link_3'
 						],
+						marks: [],
 						annotations: []
 					}
 				}
@@ -842,7 +865,7 @@ const session_config = {
 				id: nanoid(),
 				type: 'gallery',
 				layout: 1,
-				gallery_items: { nodes: gallery_items, annotations: [] }
+				gallery_items: { nodes: gallery_items, marks: [], annotations: [] }
 			};
 			tr.create(gallery);
 			tr.insert_nodes([gallery.id]);
@@ -891,8 +914,8 @@ const session_config = {
 					href: '',
 					target: '_self',
 					media: image_id,
-					title: { content: '', annotations: [] },
-					description: { content: '', annotations: [] }
+					title: { content: '', marks: [], annotations: [] },
+					description: { content: '', marks: [], annotations: [] }
 				};
 				tr.create(descriptive_gallery_item);
 				items.push(descriptive_gallery_item.id);
@@ -902,7 +925,7 @@ const session_config = {
 				id: nanoid(),
 				type: 'descriptive_gallery',
 				layout: 1,
-				items: { nodes: items, annotations: [] }
+				items: { nodes: items, marks: [], annotations: [] }
 			};
 			tr.create(descriptive_gallery);
 			tr.insert_nodes([descriptive_gallery.id]);
@@ -922,8 +945,8 @@ const session_config = {
 				href: '',
 				target: '_self',
 				media: image_id,
-				title: { content: '', annotations: [] },
-				description: { content: '', annotations: [] }
+				title: { content: '', marks: [], annotations: [] },
+				description: { content: '', marks: [], annotations: [] }
 			};
 			tr.create(descriptive_gallery_item);
 			tr.insert_nodes([descriptive_gallery_item.id]);
@@ -943,9 +966,9 @@ const session_config = {
 					type: 'descriptive_listing_item',
 					href: '',
 					target: '_self',
-					title: { content: '', annotations: [] },
-					description: { content: '', annotations: [] },
-					meta: { content: '', annotations: [] }
+					title: { content: '', marks: [], annotations: [] },
+					description: { content: '', marks: [], annotations: [] },
+					meta: { content: '', marks: [], annotations: [] }
 				};
 				tr.create(descriptive_listing_item);
 				items.push(descriptive_listing_item.id);
@@ -955,7 +978,7 @@ const session_config = {
 				id: nanoid(),
 				type: 'descriptive_listing',
 				layout: 1,
-				items: { nodes: items, annotations: [] }
+				items: { nodes: items, marks: [], annotations: [] }
 			};
 			tr.create(descriptive_listing);
 			tr.insert_nodes([descriptive_listing.id]);
@@ -967,9 +990,9 @@ const session_config = {
 				type: 'descriptive_listing_item',
 				href: '',
 				target: '_self',
-				title: { content: '', annotations: [] },
-				description: { content: '', annotations: [] },
-				meta: { content: '', annotations: [] }
+				title: { content: '', marks: [], annotations: [] },
+				description: { content: '', marks: [], annotations: [] },
+				meta: { content: '', marks: [], annotations: [] }
 			};
 			tr.create(descriptive_listing_item);
 			tr.insert_nodes([descriptive_listing_item.id]);
@@ -985,15 +1008,15 @@ const session_config = {
 			const body_text = {
 				id: nanoid(),
 				type: 'paragraph',
-				content: { content: '', annotations: [] }
+				content: { content: '', marks: [], annotations: [] }
 			};
 			tr.create(body_text);
 
 			const accordion_item = {
 				id: nanoid(),
 				type: 'accordion_item',
-				title: { content: '', annotations: [] },
-				body: { nodes: [body_text.id], annotations: [] }
+				title: { content: '', marks: [], annotations: [] },
+				body: { nodes: [body_text.id], marks: [], annotations: [] }
 			};
 			tr.create(accordion_item);
 
@@ -1001,7 +1024,7 @@ const session_config = {
 				id: nanoid(),
 				type: 'accordion',
 				layout: 1,
-				items: { nodes: [accordion_item.id], annotations: [] }
+				items: { nodes: [accordion_item.id], marks: [], annotations: [] }
 			};
 			tr.create(accordion);
 			tr.insert_nodes([accordion.id]);
@@ -1011,15 +1034,15 @@ const session_config = {
 			const body_text = {
 				id: nanoid(),
 				type: 'paragraph',
-				content: { content: '', annotations: [] }
+				content: { content: '', marks: [], annotations: [] }
 			};
 			tr.create(body_text);
 
 			const accordion_item = {
 				id: nanoid(),
 				type: 'accordion_item',
-				title: { content: '', annotations: [] },
-				body: { nodes: [body_text.id], annotations: [] }
+				title: { content: '', marks: [], annotations: [] },
+				body: { nodes: [body_text.id], marks: [], annotations: [] }
 			};
 			tr.create(accordion_item);
 			tr.insert_nodes([accordion_item.id]);

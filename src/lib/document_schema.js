@@ -1,9 +1,9 @@
 import { define_document_schema } from 'svedit';
 import { MEDIA_DEFAULTS } from '$lib/config.js';
 
-const ALL_ANNOTATIONS = ['strong', 'emphasis', 'code', 'highlight', 'link'];
-const MINIMAL_ANNOTATIONS = ['emphasis', 'highlight'];
-const NO_ANNOTATIONS = [];
+const ALL_MARKS = ['strong', 'emphasis', 'code', 'highlight', 'link'];
+const MINIMAL_MARKS = ['emphasis', 'highlight'];
+const NO_MARKS = [];
 const TEXT_NODE_TYPES = [
 	'paragraph_sm',
 	'paragraph',
@@ -32,12 +32,12 @@ export const document_schema = define_document_schema({
 		properties: {
 			title: {
 				type: 'text',
-				annotation_types: [],
+				mark_types: [],
 				allow_newlines: false
 			},
 			description: {
 				type: 'text',
-				annotation_types: [],
+				mark_types: [],
 				allow_newlines: true
 			},
 			image: {
@@ -59,7 +59,7 @@ export const document_schema = define_document_schema({
 					'accordion',
 					'preformatted'
 				],
-				annotation_types: ['section'],
+				mark_types: ['section'],
 				default_node_type: 'prose'
 			},
 			nav: {
@@ -104,7 +104,7 @@ export const document_schema = define_document_schema({
 		properties: {
 			title: {
 				type: 'text',
-				annotation_types: [],
+				mark_types: [],
 				allow_newlines: false
 			}
 		}
@@ -116,7 +116,7 @@ export const document_schema = define_document_schema({
 			target: { type: 'string', default: '_self' },
 			label: {
 				type: 'text',
-				annotation_types: [],
+				mark_types: [],
 				allow_newlines: false
 			}
 		}
@@ -148,7 +148,7 @@ export const document_schema = define_document_schema({
 			target: { type: 'string', default: '_self' },
 			label: {
 				type: 'text',
-				annotation_types: [],
+				mark_types: [],
 				allow_newlines: false
 			}
 		}
@@ -161,7 +161,7 @@ export const document_schema = define_document_schema({
 			target: { type: 'string', default: '_self' },
 			label: {
 				type: 'text',
-				annotation_types: [],
+				mark_types: [],
 				allow_newlines: false
 			}
 		}
@@ -187,7 +187,7 @@ export const document_schema = define_document_schema({
 			target: { type: 'string', default: '_self' },
 			label: {
 				type: 'text',
-				annotation_types: [],
+				mark_types: [],
 				allow_newlines: false
 			}
 		}
@@ -239,7 +239,7 @@ export const document_schema = define_document_schema({
 		properties: {
 			content: {
 				type: 'text',
-				annotation_types: NO_ANNOTATIONS,
+				mark_types: NO_MARKS,
 				allow_newlines: true
 			}
 		}
@@ -250,7 +250,7 @@ export const document_schema = define_document_schema({
 			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'text',
-				annotation_types: ALL_ANNOTATIONS,
+				mark_types: ALL_MARKS,
 				allow_newlines: true
 			}
 		}
@@ -261,7 +261,7 @@ export const document_schema = define_document_schema({
 			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'text',
-				annotation_types: ALL_ANNOTATIONS,
+				mark_types: ALL_MARKS,
 				allow_newlines: true
 			}
 		}
@@ -272,7 +272,7 @@ export const document_schema = define_document_schema({
 			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'text',
-				annotation_types: ALL_ANNOTATIONS,
+				mark_types: ALL_MARKS,
 				allow_newlines: true
 			}
 		}
@@ -283,7 +283,7 @@ export const document_schema = define_document_schema({
 			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'text',
-				annotation_types: ALL_ANNOTATIONS,
+				mark_types: ALL_MARKS,
 				allow_newlines: true
 			}
 		}
@@ -295,7 +295,7 @@ export const document_schema = define_document_schema({
 			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'text',
-				annotation_types: ALL_ANNOTATIONS,
+				mark_types: ALL_MARKS,
 				allow_newlines: true
 			}
 		}
@@ -306,7 +306,7 @@ export const document_schema = define_document_schema({
 			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'text',
-				annotation_types: ALL_ANNOTATIONS,
+				mark_types: ALL_MARKS,
 				allow_newlines: true
 			}
 		}
@@ -318,7 +318,7 @@ export const document_schema = define_document_schema({
 			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'text',
-				annotation_types: ALL_ANNOTATIONS,
+				mark_types: ALL_MARKS,
 				allow_newlines: true
 			}
 		}
@@ -329,7 +329,7 @@ export const document_schema = define_document_schema({
 			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'text',
-				annotation_types: ALL_ANNOTATIONS,
+				mark_types: ALL_MARKS,
 				allow_newlines: true
 			}
 		}
@@ -340,7 +340,7 @@ export const document_schema = define_document_schema({
 			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
 			content: {
 				type: 'text',
-				annotation_types: ALL_ANNOTATIONS,
+				mark_types: ALL_MARKS,
 				allow_newlines: true
 			}
 		}
@@ -350,7 +350,7 @@ export const document_schema = define_document_schema({
 		properties: {
 			content: {
 				type: 'text',
-				annotation_types: ALL_ANNOTATIONS,
+				mark_types: ALL_MARKS,
 				allow_newlines: false
 			}
 		}
@@ -415,7 +415,7 @@ export const document_schema = define_document_schema({
 			},
 			caption: {
 				type: 'text',
-				annotation_types: ALL_ANNOTATIONS,
+				mark_types: ALL_MARKS,
 				allow_newlines: false
 			}
 		}
@@ -476,12 +476,12 @@ export const document_schema = define_document_schema({
 			},
 			title: {
 				type: 'text',
-				annotation_types: MINIMAL_ANNOTATIONS,
+				mark_types: MINIMAL_MARKS,
 				allow_newlines: false
 			},
 			description: {
 				type: 'text',
-				annotation_types: MINIMAL_ANNOTATIONS,
+				mark_types: MINIMAL_MARKS,
 				allow_newlines: true
 			}
 		}
@@ -503,17 +503,17 @@ export const document_schema = define_document_schema({
 			target: { type: 'string', default: '_self' },
 			title: {
 				type: 'text',
-				annotation_types: MINIMAL_ANNOTATIONS,
+				mark_types: MINIMAL_MARKS,
 				allow_newlines: false
 			},
 			description: {
 				type: 'text',
-				annotation_types: MINIMAL_ANNOTATIONS,
+				mark_types: MINIMAL_MARKS,
 				allow_newlines: true
 			},
 			meta: {
 				type: 'text',
-				annotation_types: MINIMAL_ANNOTATIONS,
+				mark_types: MINIMAL_MARKS,
 				allow_newlines: false
 			}
 		}
@@ -533,7 +533,7 @@ export const document_schema = define_document_schema({
 		properties: {
 			title: {
 				type: 'text',
-				annotation_types: MINIMAL_ANNOTATIONS,
+				mark_types: MINIMAL_MARKS,
 				allow_newlines: false
 			},
 			body: {
@@ -561,30 +561,30 @@ export const document_schema = define_document_schema({
 	},
 
 	link: {
-		kind: 'annotation',
+		kind: 'mark',
 		properties: {
 			href: { type: 'string' },
 			target: { type: 'string', default: '_self' }
 		}
 	},
 	strong: {
-		kind: 'annotation',
+		kind: 'mark',
 		properties: {}
 	},
 	emphasis: {
-		kind: 'annotation',
+		kind: 'mark',
 		properties: {}
 	},
 	code: {
-		kind: 'annotation',
+		kind: 'mark',
 		properties: {}
 	},
 	highlight: {
-		kind: 'annotation',
+		kind: 'mark',
 		properties: {}
 	},
 	section: {
-		kind: 'annotation',
+		kind: 'mark',
 		properties: {}
 	}
 });
