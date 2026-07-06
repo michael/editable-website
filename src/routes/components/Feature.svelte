@@ -6,7 +6,7 @@
 	import { reveal } from '../reveal.js';
 
 	const svedit = getContext('svedit');
-	let { path, annotation: section = null } = $props();
+	let { path, mark: section = null } = $props();
 	let node = $derived(svedit.session.get(path));
 	let media_node = $derived(svedit.session.get([...path, 'media']));
 	let media_aspect_ratio = $derived(

@@ -26,7 +26,7 @@ Schema type:
 ```js
 {
   type: 'text',
-  annotation_types: ['strong', 'emphasis'],
+  mark_types: ['strong', 'emphasis'],
   allow_newlines: true
 }
 ```
@@ -36,6 +36,7 @@ Document value shape:
 ```js
 {
   content: 'Editable text',
+  marks: [],
   annotations: []
 }
 ```
@@ -48,7 +49,7 @@ Schema type:
 {
   type: 'node_array',
   node_types: ['paragraph', 'heading_2'],
-  annotation_types: ['section'],
+  mark_types: ['section'],
   default_node_type: 'paragraph'
 }
 ```
@@ -58,32 +59,33 @@ Document value shape:
 ```js
 {
   nodes: ['node_id_1', 'node_id_2'],
+  marks: [],
   annotations: []
 }
 ```
 
-`annotation_types` on a node array enables annotations over child-node ranges. The current shared page body supports `section` annotations.
+`mark_types` on a node array enables wrapper marks over child-node ranges. The current shared page body supports `section` marks.
 
 ## Node types
 
 [`page`](#node-page) · [`nav`](#node-nav) · [`nav_link`](#node-nav_link) · [`nav_button`](#node-nav_button) · [`nav_image`](#node-nav_image) · [`footer`](#node-footer) · [`footer_link_column`](#node-footer_link_column) · [`footer_link_category`](#node-footer_link_category) · [`footer_link`](#node-footer_link) · [`prose`](#node-prose) · [`prose_grid`](#node-prose_grid) · [`prose_grid_item`](#node-prose_grid_item) · [`paragraph`](#node-paragraph) · [`paragraph_sm`](#node-paragraph_sm) · [`paragraph_lg`](#node-paragraph_lg) · [`paragraph_xl`](#node-paragraph_xl) · [`heading_1`](#node-heading_1) · [`heading_2`](#node-heading_2) · [`heading_3`](#node-heading_3) · [`heading_4`](#node-heading_4) · [`heading_5`](#node-heading_5) · [`list`](#node-list) · [`list_item`](#node-list_item) · [`preformatted`](#node-preformatted) · [`button_group`](#node-button_group) · [`button`](#node-button) · [`image`](#node-image) · [`video`](#node-video) · [`figure`](#node-figure) · [`captioned_figure`](#node-captioned_figure) · [`supporting_media`](#node-supporting_media) · [`gallery`](#node-gallery) · [`gallery_item`](#node-gallery_item) · [`descriptive_gallery`](#node-descriptive_gallery) · [`descriptive_gallery_item`](#node-descriptive_gallery_item) · [`descriptive_listing`](#node-descriptive_listing) · [`descriptive_listing_item`](#node-descriptive_listing_item) · [`accordion`](#node-accordion) · [`accordion_item`](#node-accordion_item) · [`feature`](#node-feature)
 
-## Annotation types
+## Mark types
 
-[`strong`](#annotation-strong) · [`emphasis`](#annotation-emphasis) · [`code`](#annotation-code) · [`highlight`](#annotation-highlight) · [`link`](#annotation-link) · [`section`](#annotation-section)
+[`strong`](#mark-strong) · [`emphasis`](#mark-emphasis) · [`code`](#mark-code) · [`highlight`](#mark-highlight) · [`link`](#mark-link) · [`section`](#mark-section)
 
 ## Node: `page`
 
 `page` is the document root. It stores page metadata, shared chrome references, and the ordered page body.
 
-| Property      | Type         | Default  | Allowed node or annotation types                                                                                                                                             | Meaning                                                                    |
-| ------------- | ------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| `title`       | `text`       | none     | no annotations                                                                                                                                                               | Page title for metadata and editable previews. Newlines are not allowed.   |
-| `description` | `text`       | none     | no annotations                                                                                                                                                               | Page description for metadata and editable previews. Newlines are allowed. |
-| `image`       | `node`       | `image`  | `image`                                                                                                                                                                      | Preview image used for page metadata.                                      |
-| `body`        | `node_array` | `prose`  | `prose`, `prose_grid`, `figure`, `captioned_figure`, `gallery`, `feature`, `descriptive_gallery`, `descriptive_listing`, `accordion`, `preformatted`; annotations: `section` | Ordered page body blocks.                                                  |
-| `nav`         | `node`       | `nav`    | `nav`                                                                                                                                                                        | Shared navigation node.                                                    |
-| `footer`      | `node`       | `footer` | `footer`                                                                                                                                                                     | Shared footer node.                                                        |
+| Property      | Type         | Default  | Allowed node or mark types                                                                                                                                             | Meaning                                                                    |
+| ------------- | ------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `title`       | `text`       | none     | no marks                                                                                                                                                               | Page title for metadata and editable previews. Newlines are not allowed.   |
+| `description` | `text`       | none     | no marks                                                                                                                                                               | Page description for metadata and editable previews. Newlines are allowed. |
+| `image`       | `node`       | `image`  | `image`                                                                                                                                                                | Preview image used for page metadata.                                      |
+| `body`        | `node_array` | `prose`  | `prose`, `prose_grid`, `figure`, `captioned_figure`, `gallery`, `feature`, `descriptive_gallery`, `descriptive_listing`, `accordion`, `preformatted`; marks: `section` | Ordered page body blocks.                                                  |
+| `nav`         | `node`       | `nav`    | `nav`                                                                                                                                                                  | Shared navigation node.                                                    |
+| `footer`      | `node`       | `footer` | `footer`                                                                                                                                                               | Shared footer node.                                                        |
 
 ## Node: `nav`
 
@@ -99,22 +101,22 @@ Document value shape:
 
 `nav_link` is a plain navigation link.
 
-| Property | Type     | Default | Allowed annotation types | Meaning                                   |
-| -------- | -------- | ------- | ------------------------ | ----------------------------------------- |
-| `href`   | `string` | none    | N/A                      | Link destination.                         |
-| `target` | `string` | `_self` | N/A                      | Link target, such as `_self` or `_blank`. |
-| `label`  | `text`   | none    | no annotations           | Link label. Newlines are not allowed.     |
+| Property | Type     | Default | Allowed mark types | Meaning                                   |
+| -------- | -------- | ------- | ------------------ | ----------------------------------------- |
+| `href`   | `string` | none    | N/A                | Link destination.                         |
+| `target` | `string` | `_self` | N/A                | Link target, such as `_self` or `_blank`. |
+| `label`  | `text`   | none    | no marks           | Link label. Newlines are not allowed.     |
 
 ## Node: `nav_button`
 
 `nav_button` is a navigation link rendered with button styling. It intentionally shares `label`, `href`, and `target` with `nav_link`, so users can type-switch between link and button without losing content.
 
-| Property | Type      | Default | Allowed values or annotation types | Meaning                                   |
-| -------- | --------- | ------- | ---------------------------------- | ----------------------------------------- |
-| `layout` | `integer` | `1`     | `1`, `2`                           | Button visual style.                      |
-| `href`   | `string`  | none    | N/A                                | Link destination.                         |
-| `target` | `string`  | `_self` | N/A                                | Link target, such as `_self` or `_blank`. |
-| `label`  | `text`    | none    | no annotations                     | Button label. Newlines are not allowed.   |
+| Property | Type      | Default | Allowed values or mark types | Meaning                                   |
+| -------- | --------- | ------- | ---------------------------- | ----------------------------------------- |
+| `layout` | `integer` | `1`     | `1`, `2`                     | Button visual style.                      |
+| `href`   | `string`  | none    | N/A                          | Link destination.                         |
+| `target` | `string`  | `_self` | N/A                          | Link target, such as `_self` or `_blank`. |
+| `label`  | `text`    | none    | no marks                     | Button label. Newlines are not allowed.   |
 
 ## Node: `nav_image`
 
@@ -147,19 +149,19 @@ Document value shape:
 
 `footer_link_category` labels a group of footer links.
 
-| Property | Type   | Default | Allowed annotation types | Meaning                                   |
-| -------- | ------ | ------- | ------------------------ | ----------------------------------------- |
-| `title`  | `text` | none    | no annotations           | Category title. Newlines are not allowed. |
+| Property | Type   | Default | Allowed mark types | Meaning                                   |
+| -------- | ------ | ------- | ------------------ | ----------------------------------------- |
+| `title`  | `text` | none    | no marks           | Category title. Newlines are not allowed. |
 
 ## Node: `footer_link`
 
 `footer_link` is a plain footer link.
 
-| Property | Type     | Default | Allowed annotation types | Meaning                                   |
-| -------- | -------- | ------- | ------------------------ | ----------------------------------------- |
-| `href`   | `string` | none    | N/A                      | Link destination.                         |
-| `target` | `string` | `_self` | N/A                      | Link target, such as `_self` or `_blank`. |
-| `label`  | `text`   | none    | no annotations           | Link label. Newlines are not allowed.     |
+| Property | Type     | Default | Allowed mark types | Meaning                                   |
+| -------- | -------- | ------- | ------------------ | ----------------------------------------- |
+| `href`   | `string` | none    | N/A                | Link destination.                         |
+| `target` | `string` | `_self` | N/A                | Link target, such as `_self` or `_blank`. |
+| `label`  | `text`   | none    | no marks           | Link label. Newlines are not allowed.     |
 
 ## Node: `prose`
 
@@ -245,7 +247,7 @@ See [Text node shape](#text-node-shape).
 
 The paragraph and heading family share this property shape:
 
-| Property  | Type      | Default | Allowed values or annotation types                | Meaning                                                         |
+| Property  | Type      | Default | Allowed values or mark types                      | Meaning                                                         |
 | --------- | --------- | ------- | ------------------------------------------------- | --------------------------------------------------------------- |
 | `layout`  | `integer` | `1`     | `1`, `2`                                          | Layout 1 is the normal style. Layout 2 is muted secondary copy. |
 | `content` | `text`    | none    | `strong`, `emphasis`, `code`, `highlight`, `link` | Editable text. Newlines are allowed.                            |
@@ -263,7 +265,7 @@ The paragraph and heading family share this property shape:
 
 `list_item` is a single list row inside `list`.
 
-| Property  | Type   | Default | Allowed annotation types                          | Meaning                                            |
+| Property  | Type   | Default | Allowed mark types                                | Meaning                                            |
 | --------- | ------ | ------- | ------------------------------------------------- | -------------------------------------------------- |
 | `content` | `text` | none    | `strong`, `emphasis`, `code`, `highlight`, `link` | Editable list item text. Newlines are not allowed. |
 
@@ -271,9 +273,9 @@ The paragraph and heading family share this property shape:
 
 `preformatted` is a monospaced text block that preserves spacing and line breaks.
 
-| Property  | Type   | Default | Allowed annotation types | Meaning                                       |
-| --------- | ------ | ------- | ------------------------ | --------------------------------------------- |
-| `content` | `text` | none    | no annotations           | Preserved text content. Newlines are allowed. |
+| Property  | Type   | Default | Allowed mark types | Meaning                                       |
+| --------- | ------ | ------- | ------------------ | --------------------------------------------- |
+| `content` | `text` | none    | no marks           | Preserved text content. Newlines are allowed. |
 
 ## Node: `button_group`
 
@@ -287,12 +289,12 @@ The paragraph and heading family share this property shape:
 
 `button` is a call-to-action link.
 
-| Property | Type      | Default | Allowed values or annotation types | Meaning                                   |
-| -------- | --------- | ------- | ---------------------------------- | ----------------------------------------- |
-| `layout` | `integer` | `1`     | app-defined layouts 1–2            | Visual button style.                      |
-| `href`   | `string`  | none    | N/A                                | Link destination.                         |
-| `target` | `string`  | `_self` | N/A                                | Link target, such as `_self` or `_blank`. |
-| `label`  | `text`    | none    | no annotations                     | Button label. Newlines are not allowed.   |
+| Property | Type      | Default | Allowed values or mark types | Meaning                                   |
+| -------- | --------- | ------- | ---------------------------- | ----------------------------------------- |
+| `layout` | `integer` | `1`     | app-defined layouts 1–2      | Visual button style.                      |
+| `href`   | `string`  | none    | N/A                          | Link destination.                         |
+| `target` | `string`  | `_self` | N/A                          | Link target, such as `_self` or `_blank`. |
+| `label`  | `text`    | none    | no marks                     | Button label. Newlines are not allowed.   |
 
 ## Node: `image`
 
@@ -339,7 +341,7 @@ The paragraph and heading family share this property shape:
 
 `captioned_figure` is a media block with a single caption.
 
-| Property  | Type   | Default | Allowed node or annotation types                  | Meaning                                  |
+| Property  | Type   | Default | Allowed node or mark types                        | Meaning                                  |
 | --------- | ------ | ------- | ------------------------------------------------- | ---------------------------------------- |
 | `media`   | `node` | `image` | `image`, `video`                                  | Media displayed by the figure.           |
 | `caption` | `text` | none    | `strong`, `emphasis`, `code`, `highlight`, `link` | Short caption. Newlines are not allowed. |
@@ -386,13 +388,13 @@ The paragraph and heading family share this property shape:
 
 `descriptive_gallery_item` is a media-first item with title and description. It may optionally link somewhere.
 
-| Property      | Type     | Default | Allowed node or annotation types | Meaning                                                        |
-| ------------- | -------- | ------- | -------------------------------- | -------------------------------------------------------------- |
-| `href`        | `string` | none    | N/A                              | Optional link destination. Empty means the item is not linked. |
-| `target`      | `string` | `_self` | N/A                              | Link target, such as `_self` or `_blank`.                      |
-| `media`       | `node`   | `image` | `image`, `video`                 | Media shown by the item.                                       |
-| `title`       | `text`   | none    | `emphasis`, `highlight`          | Item title. Newlines are not allowed.                          |
-| `description` | `text`   | none    | `emphasis`, `highlight`          | Item description. Newlines are allowed.                        |
+| Property      | Type     | Default | Allowed node or mark types | Meaning                                                        |
+| ------------- | -------- | ------- | -------------------------- | -------------------------------------------------------------- |
+| `href`        | `string` | none    | N/A                        | Optional link destination. Empty means the item is not linked. |
+| `target`      | `string` | `_self` | N/A                        | Link target, such as `_self` or `_blank`.                      |
+| `media`       | `node`   | `image` | `image`, `video`           | Media shown by the item.                                       |
+| `title`       | `text`   | none    | `emphasis`, `highlight`    | Item title. Newlines are not allowed.                          |
+| `description` | `text`   | none    | `emphasis`, `highlight`    | Item description. Newlines are allowed.                        |
 
 ## Node: `descriptive_listing`
 
@@ -407,13 +409,13 @@ The paragraph and heading family share this property shape:
 
 `descriptive_listing_item` is a text-first row with title, description, and optional meta text. It may optionally link somewhere.
 
-| Property      | Type     | Default | Allowed annotation types | Meaning                                                        |
-| ------------- | -------- | ------- | ------------------------ | -------------------------------------------------------------- |
-| `href`        | `string` | none    | N/A                      | Optional link destination. Empty means the item is not linked. |
-| `target`      | `string` | `_self` | N/A                      | Link target, such as `_self` or `_blank`.                      |
-| `title`       | `text`   | none    | `emphasis`, `highlight`  | Item title. Newlines are not allowed.                          |
-| `description` | `text`   | none    | `emphasis`, `highlight`  | Item description. Newlines are allowed.                        |
-| `meta`        | `text`   | none    | `emphasis`, `highlight`  | Optional metadata. Newlines are not allowed.                   |
+| Property      | Type     | Default | Allowed mark types      | Meaning                                                        |
+| ------------- | -------- | ------- | ----------------------- | -------------------------------------------------------------- |
+| `href`        | `string` | none    | N/A                     | Optional link destination. Empty means the item is not linked. |
+| `target`      | `string` | `_self` | N/A                     | Link target, such as `_self` or `_blank`.                      |
+| `title`       | `text`   | none    | `emphasis`, `highlight` | Item title. Newlines are not allowed.                          |
+| `description` | `text`   | none    | `emphasis`, `highlight` | Item description. Newlines are allowed.                        |
+| `meta`        | `text`   | none    | `emphasis`, `highlight` | Optional metadata. Newlines are not allowed.                   |
 
 ## Node: `accordion`
 
@@ -428,7 +430,7 @@ The paragraph and heading family share this property shape:
 
 `accordion_item` is a collapsible content block with a title and rich body.
 
-| Property | Type         | Default     | Allowed node or annotation types                                                                        | Meaning                               |
+| Property | Type         | Default     | Allowed node or mark types                                                                              | Meaning                               |
 | -------- | ------------ | ----------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------- |
 | `title`  | `text`       | none        | `emphasis`, `highlight`                                                                                 | Item title. Newlines are not allowed. |
 | `body`   | `node_array` | `paragraph` | `paragraph_sm`, `paragraph`, `paragraph_lg`, `paragraph_xl`, `list`, `supporting_media`, `button_group` | Expandable rich body content.         |
@@ -443,23 +445,23 @@ The paragraph and heading family share this property shape:
 | `media`  | `node`       | `image`     | `image`, `video`                                                                                                                                                         | Feature media.             |
 | `body`   | `node_array` | `paragraph` | `paragraph_sm`, `paragraph`, `paragraph_lg`, `paragraph_xl`, `heading_1`, `heading_2`, `heading_3`, `heading_4`, `heading_5`, `list`, `supporting_media`, `button_group` | Feature text/content body. |
 
-## Annotation: `strong`
+## Mark: `strong`
 
 `strong` marks a text range as strongly emphasized.
 
-## Annotation: `emphasis`
+## Mark: `emphasis`
 
 `emphasis` marks a text range as emphasized.
 
-## Annotation: `code`
+## Mark: `code`
 
 `code` marks a text range as inline code.
 
-## Annotation: `highlight`
+## Mark: `highlight`
 
 `highlight` marks a text range as highlighted.
 
-## Annotation: `link`
+## Mark: `link`
 
 `link` marks a text range as a hyperlink.
 
@@ -468,6 +470,6 @@ The paragraph and heading family share this property shape:
 | `href`   | `string` | none    | Link destination. Internal page links use root-relative page URLs. |
 | `target` | `string` | `_self` | Link target, such as `_self` or `_blank`.                          |
 
-## Annotation: `section`
+## Mark: `section`
 
-`section` annotates a range in a node array, currently used for page body section grouping.
+`section` marks a range in a node array, currently used for page body section grouping.

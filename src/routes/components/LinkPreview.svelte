@@ -9,7 +9,7 @@
 
 	let { node, path } = $props();
 
-	let is_annotation = $derived(svedit.session.kind(node) === 'annotation');
+	let is_mark = $derived(svedit.session.kind(node) === 'mark');
 	let internal_page_href = $derived(get_internal_page_href(node?.href));
 
 	let page_preview = $derived.by(async () => {
@@ -29,8 +29,8 @@
 	}
 
 	function handle_remove() {
-		if (is_annotation) {
-			svedit.session.apply(svedit.session.tr.toggle_annotation('link'));
+		if (is_mark) {
+			svedit.session.apply(svedit.session.tr.toggle_mark('link'));
 		} else {
 			const tr = svedit.session.tr;
 			tr.set([node.id, 'href'], '');

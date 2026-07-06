@@ -177,7 +177,7 @@ export class EditImageCommand extends Command {
 }
 
 /**
- * Command that toggles link annotations on text selections.
+ * Command that toggles link marks on text selections.
  * Shows a custom prompt for URL when creating a link.
  */
 export class ToggleLinkCommand extends Command {
@@ -197,8 +197,8 @@ export class ToggleLinkCommand extends Command {
 	}
 
 	is_active() {
-		const selected_annotations = this.context.session.selected_annotations;
-		return selected_annotations.length === 1 && selected_annotations[0].node.type === 'link';
+		const selected_marks = this.context.session.selected_marks;
+		return selected_marks.length === 1 && selected_marks[0].node.type === 'link';
 	}
 
 	is_enabled() {
@@ -206,11 +206,10 @@ export class ToggleLinkCommand extends Command {
 
 		if (!editable || session.selection?.type !== 'text') return false;
 
-		const selected_annotations = session.selected_annotations;
-		const can_remove_link =
-			selected_annotations.length === 1 && selected_annotations[0].node.type === 'link';
+		const selected_marks = session.selected_marks;
+		const can_remove_link = selected_marks.length === 1 && selected_marks[0].node.type === 'link';
 		const can_create_link =
-			selected_annotations.length === 0 && !is_selection_collapsed(session.selection);
+			selected_marks.length === 0 && !is_selection_collapsed(session.selection);
 
 		return can_remove_link || can_create_link;
 	}
@@ -219,13 +218,12 @@ export class ToggleLinkCommand extends Command {
 		if (!this.is_enabled()) return;
 
 		const session = this.context.session;
-		const selected_annotations = session.selected_annotations;
-		const has_selected_link =
-			selected_annotations.length === 1 && selected_annotations[0].node.type === 'link';
+		const selected_marks = session.selected_marks;
+		const has_selected_link = selected_marks.length === 1 && selected_marks[0].node.type === 'link';
 
 		if (has_selected_link) {
 			// Delete link
-			session.apply(session.tr.toggle_annotation('link'));
+			session.apply(session.tr.toggle_mark('link'));
 		} else {
 			// Show prompt for creating link
 			this.show_prompt = true;
@@ -281,8 +279,8 @@ export class EditLinkCommand extends Command {
 		const selected_node = session.selected_node;
 		if (selected_node && 'href' in selected_node) return true;
 
-		// Check for active link annotation (text link)
-		const active_link = session.active_annotation;
+		// Check for active link mark (text link)
+		const active_link = session.active_mark;
 		if (active_link?.node.type === 'link') return true;
 
 		return false;
@@ -291,8 +289,8 @@ export class EditLinkCommand extends Command {
 	execute() {
 		if (this.is_enabled()) {
 			const { session } = this.context;
-			// Select the parent node if a property is selected (but not for annotation links)
-			const active_link = session.active_annotation?.node.type === 'link';
+			// Select the parent node if a property is selected (but not for text link marks)
+			const active_link = session.active_mark?.node.type === 'link';
 			if (
 				!active_link &&
 				(session.selection?.type === 'text' || session.selection?.type === 'property')
