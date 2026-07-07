@@ -1,5 +1,5 @@
 import { process_asset } from './process_asset.js';
-import { MAX_IMAGE_WIDTH } from '$lib/config.js';
+import { EXT_TO_MIME, MAX_IMAGE_WIDTH } from '$lib/config.js';
 import { get_video_dimensions, get_media_dimensions } from './media_dimensions.js';
 
 /**
@@ -246,15 +246,8 @@ function upload_blob(url, blob, headers, on_progress) {
  * @returns {Promise<{ asset_id: string, width: number, height: number }>}
  */
 async function upload_asset(entry) {
-	const content_type = entry.asset_id.endsWith('.svg')
-		? 'image/svg+xml'
-		: entry.asset_id.endsWith('.gif')
-			? 'image/gif'
-			: entry.asset_id.endsWith('.mp4')
-				? 'video/mp4'
-				: entry.asset_id.endsWith('.webm')
-					? 'video/webm'
-					: 'image/webp';
+	const ext = entry.asset_id.slice(entry.asset_id.lastIndexOf('.') + 1);
+	const content_type = EXT_TO_MIME[ext];
 
 	// Upload original
 	const result = await upload_blob('/api/assets', entry.original.blob, {

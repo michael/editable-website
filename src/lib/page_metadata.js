@@ -1,4 +1,4 @@
-import { ASSET_BASE, VARIANT_WIDTHS_SET } from '$lib/config.js';
+import { ASSET_BASE, ASSET_ID_REGEX, VARIANT_WIDTHS_SET } from '$lib/config.js';
 import { collect_node_ids_in_order } from '$lib/document_graph.js';
 
 // Shared helpers for deriving page and site metadata from documents.
@@ -26,9 +26,6 @@ export const SOCIAL_IMAGE_WIDTH = 1536;
 
 /** Width of the resized variant used for the favicon. */
 export const FAVICON_WIDTH = 320;
-
-/** Saved assets are content-addressed: {sha256}.{ext}. Only those have resized variants. */
-const HASHED_ASSET_REGEX = /^[a-f0-9]{64}\.\w+$/;
 
 /**
  * @typedef {Object} PreviewMediaNode
@@ -88,7 +85,7 @@ function is_saved_media(media_node) {
  * @returns {boolean}
  */
 function has_variants(media_node) {
-	if (!HASHED_ASSET_REGEX.test(media_node.src)) return false;
+	if (!ASSET_ID_REGEX.test(media_node.src)) return false;
 	const mime_type = media_node.mime_type;
 	if (mime_type) return mime_type !== 'image/svg+xml' && mime_type !== 'image/gif';
 	return !media_node.src.endsWith('.svg') && !media_node.src.endsWith('.gif');

@@ -2,6 +2,7 @@ import { error } from '@sveltejs/kit';
 import { Readable } from 'node:stream';
 import { existsSync } from 'node:fs';
 import { extname } from 'node:path';
+import { EXT_TO_MIME } from '$lib/config.js';
 import {
 	asset_exists,
 	asset_size,
@@ -18,17 +19,10 @@ const INERT_CONTENT_HEADERS = {
 	'X-Content-Type-Options': 'nosniff'
 };
 
-/** Map file extensions to MIME types */
-const EXT_TO_MIME = /** @type {Record<string, string>} */ ({
-	'.webp': 'image/webp',
-	'.gif': 'image/gif',
-	'.svg': 'image/svg+xml',
-	'.png': 'image/png',
-	'.jpg': 'image/jpeg',
-	'.jpeg': 'image/jpeg',
-	'.mp4': 'video/mp4',
-	'.webm': 'video/webm'
-});
+/** Extensions a variant's original can have (variants exist only for images). */
+const IMAGE_EXTS = Object.keys(EXT_TO_MIME).filter((ext) =>
+	EXT_TO_MIME[ext].startsWith('image/')
+);
 
 /**
  * Convert a Node.js Readable stream to a Web ReadableStream.
@@ -102,11 +96,11 @@ export async function GET({ params, request }) {
 		const asset_stem = variant_match[1];
 		const width = parseInt(variant_match[2], 10);
 
-		// Find the original asset id by checking common extensions
+		// Find the original asset id by checking known image extensions
 		let original_id = null;
-		for (const ext of ['.webp', '.gif', '.svg', '.png', '.jpg', '.jpeg']) {
-			if (asset_exists(`${asset_stem}${ext}`)) {
-				original_id = `${asset_stem}${ext}`;
+		for (const ext of IMAGE_EXTS) {
+			if (asset_exists(`${asset_stem}.${ext}`)) {
+				original_id = `${asset_stem}.${ext}`;
 				break;
 			}
 		}
@@ -144,7 +138,7 @@ export async function GET({ params, request }) {
 	}
 
 	const ext = extname(asset_id);
-	const mime_type = EXT_TO_MIME[ext] || 'application/octet-stream';
+	const mime_type = EXT_TO_MIME[ext.slice(1)] || 'application/octet-stream';
 	const size = await asset_size(asset_id);
 	const range_header = request.headers.get('range');
 	const is_video = mime_type.startsWith('video/');
