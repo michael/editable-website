@@ -1,6 +1,6 @@
 <script>
 	import { setContext } from 'svelte';
-	import { goto, invalidateAll } from '$app/navigation';
+	import { goto, invalidate, invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { Svedit, KeyMapper, Command, define_keymap } from 'svedit';
 	import Toolbar from './Toolbar.svelte';
@@ -381,6 +381,7 @@
 				this.context.editable = false;
 
 				invalidate_page_browser_data();
+				await invalidate('app:site_metadata');
 
 				// When a new document has been created, return and redirect to the new url
 				if (result?.created && result.document_id && result.slug) {

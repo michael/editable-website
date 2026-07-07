@@ -3,7 +3,10 @@ import { demo_doc } from '$lib/demo_doc.js';
 import { extract_site_metadata } from '$lib/page_metadata.js';
 
 /** @type {import('./$types').LayoutServerLoad} */
-export async function load({ locals }) {
+export async function load({ locals, depends }) {
+	// Re-derived after saving a page, so favicon and site name update live.
+	depends('app:site_metadata');
+
 	const has_backend = !env.VERCEL;
 
 	let site_metadata;
