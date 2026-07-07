@@ -1,7 +1,9 @@
 import { getRequestEvent, query, command } from '$app/server';
+import { error } from '@sveltejs/kit';
 import * as v from 'valibot';
 import slugify from 'slugify';
 import crypto from 'node:crypto';
+import { validate_document } from 'svedit';
 import db from '$lib/server/db.js';
 import { document_schema } from '$lib/document_schema.js';
 import { collect_node_ids_in_order } from '$lib/document_graph.js';
@@ -1066,8 +1068,16 @@ export const save_document = command(save_document_input_schema, async (combined
 	const all_nodes = structuredClone(combined_doc.nodes);
 	const page_node = all_nodes[combined_doc.document_id];
 
-	if (!page_node) {
-		throw new Error(`Root node not found: ${combined_doc.document_id}`);
+	if (page_node?.type !== 'page') {
+		error(400, `Root node must be a page: ${combined_doc.document_id}`);
+	}
+
+	// Enforce document invariants at the write boundary — a malformed graph
+	// must never be persisted, since it would break rendering for visitors.
+	try {
+		validate_document({ document_id: combined_doc.document_id, nodes: all_nodes }, document_schema);
+	} catch (err) {
+		error(400, `Invalid document: ${err instanceof Error ? err.message : String(err)}`);
 	}
 
 	if (combined_doc.create) {
