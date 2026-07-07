@@ -15,6 +15,9 @@ export const MAX_IMAGE_WIDTH = VARIANT_WIDTHS[VARIANT_WIDTHS.length - 1];
 /** URL prefix for serving assets */
 export const ASSET_BASE = '/assets';
 
+/** Assets are content-addressed: {sha256}.{ext}. Everything else is rejected. */
+export const ASSET_ID_REGEX = /^[a-f0-9]{64}\.[a-z0-9]+$/;
+
 /** Default values for media node properties (image and video). */
 export const MEDIA_DEFAULTS = {
 	src: '',
