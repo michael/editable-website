@@ -1,11 +1,12 @@
 import crypto from 'node:crypto';
 import { createReadStream, createWriteStream, existsSync } from 'node:fs';
-import { mkdir, unlink, rm, stat } from 'node:fs/promises';
+import { mkdir, readdir, unlink, rm, stat, utimes } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 import { pipeline } from 'node:stream/promises';
 import { Readable, Transform } from 'node:stream';
 import { mkdirSync } from 'node:fs';
-import { ASSET_PATH } from '$lib/server_config.js';
+import { ASSET_ID_REGEX } from '$lib/config.js';
+import { ASSET_GRACE_PERIOD_DAYS, ASSET_PATH } from '$lib/server_config.js';
 
 // Ensure the asset directory exists on module load
 mkdirSync(ASSET_PATH, { recursive: true });
@@ -177,4 +178,54 @@ export function create_variant_read_stream(asset_id, width, options = {}) {
 export async function asset_size(asset_id) {
 	const s = await stat(asset_path(asset_id));
 	return s.size;
+}
+
+/**
+ * An asset's mtime marks when it was uploaded or last dereferenced —
+ * touch_asset resets it when the last reference disappears. Unreferenced
+ * files are kept for the grace period from that moment, so the period is
+ * also the safe window for rolling back a database backup against the live
+ * assets folder, and it protects uploads that precede their document save.
+ */
+const ORPHAN_GRACE_PERIOD_MS = ASSET_GRACE_PERIOD_DAYS * 24 * 60 * 60 * 1000;
+
+/**
+ * Start the orphan clock for an asset by setting its mtime to now. Called
+ * when an asset loses its last reference. Missing files are ignored.
+ *
+ * @param {string} asset_id
+ * @returns {Promise<void>}
+ */
+export async function touch_asset(asset_id) {
+	const now = new Date();
+	try {
+		await utimes(asset_path(asset_id), now, now);
+	} catch {
+		// File may not exist (already purged or never uploaded)
+	}
+}
+
+/**
+ * Delete asset files (and their variants) that are no longer referenced by
+ * any document.
+ *
+ * @param {Set<string>} referenced_asset_ids
+ * @returns {Promise<number>} number of deleted assets
+ */
+export async function delete_orphaned_assets(referenced_asset_ids) {
+	const entries = await readdir(ASSET_PATH, { withFileTypes: true });
+	let deleted = 0;
+
+	for (const entry of entries) {
+		if (!entry.isFile() || !ASSET_ID_REGEX.test(entry.name)) continue;
+		if (referenced_asset_ids.has(entry.name)) continue;
+
+		const { mtimeMs } = await stat(asset_path(entry.name));
+		if (Date.now() - mtimeMs < ORPHAN_GRACE_PERIOD_MS) continue;
+
+		await delete_asset(entry.name);
+		deleted += 1;
+	}
+
+	return deleted;
 }

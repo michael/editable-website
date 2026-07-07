@@ -5,6 +5,7 @@ import slugify from 'slugify';
 import crypto from 'node:crypto';
 import { validate_document } from 'svedit';
 import db, { with_transaction } from '$lib/server/db.js';
+import { delete_orphaned_assets, touch_asset } from '$lib/server/asset_storage.js';
 import { document_schema } from '$lib/document_schema.js';
 import { collect_node_ids_in_order } from '$lib/document_graph.js';
 import {
@@ -196,6 +197,42 @@ function collect_node_ids(root_id, nodes, exclude_roots) {
 	}
 
 	return collected;
+}
+
+/**
+ * @returns {Set<string>}
+ */
+function get_referenced_asset_ids() {
+	const rows = /** @type {Array<{ asset_id: string }>} */ (
+		db.prepare('SELECT DISTINCT asset_id FROM asset_refs').all()
+	);
+	return new Set(rows.map((row) => row.asset_id));
+}
+
+/**
+ * Remove asset files no longer referenced by any document. Runs after
+ * successful writes; a cleanup failure must not fail the request.
+ *
+ * Assets that lost their last reference in the write (refs_before minus
+ * refs_after) get their orphan clock started via touch_asset, so the grace
+ * period runs from dereferencing — not from upload.
+ *
+ * @param {Set<string>} refs_before - referenced asset ids captured before the write
+ */
+async function cleanup_orphaned_assets(refs_before) {
+	try {
+		const refs_after = get_referenced_asset_ids();
+
+		for (const asset_id of refs_before) {
+			if (!refs_after.has(asset_id)) {
+				await touch_asset(asset_id);
+			}
+		}
+
+		await delete_orphaned_assets(refs_after);
+	} catch (err) {
+		console.error('Orphaned asset cleanup failed:', err);
+	}
 }
 
 /**
@@ -930,6 +967,8 @@ export const delete_page = command(delete_page_input_schema, async ({ document_i
 	);
 	const delete_document_slugs = db.prepare('DELETE FROM document_slugs WHERE document_id = ?');
 
+	const refs_before = get_referenced_asset_ids();
+
 	with_transaction(() => {
 		delete_asset_refs.run(document_id);
 		delete_outgoing_document_refs.run(document_id);
@@ -937,6 +976,8 @@ export const delete_page = command(delete_page_input_schema, async ({ document_i
 		delete_document_slugs.run(document_id);
 		delete_document.run(document_id, 'page');
 	});
+
+	await cleanup_orphaned_assets(refs_before);
 
 	return {
 		ok: true,
@@ -1111,6 +1152,8 @@ export const save_document = command(save_document_input_schema, async (combined
 		'INSERT INTO document_slugs (slug, document_id, is_active, created_at) VALUES (?, ?, ?, ?)'
 	);
 
+	const refs_before = get_referenced_asset_ids();
+
 	with_transaction(() => {
 		const existing_page_row = /** @type {DocumentRow | undefined} */ (
 			db
@@ -1199,6 +1242,8 @@ export const save_document = command(save_document_input_schema, async (combined
 			throw new Error(`Failed to persist page document: ${combined_doc.document_id}`);
 		}
 	});
+
+	await cleanup_orphaned_assets(refs_before);
 
 	return {
 		ok: true,

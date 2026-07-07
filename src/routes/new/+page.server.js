@@ -1,20 +1,16 @@
 import { redirect } from '@sveltejs/kit';
+import { env } from '$env/dynamic/private';
 
+// Deliberately no `await parent()` here — see routes/+page.server.js.
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ parent }) {
-	const parent_data = await parent();
-	const has_backend = parent_data.has_backend;
-	const is_admin = parent_data.is_admin ?? false;
-
-	if (!has_backend) {
+export async function load({ locals }) {
+	if (env.VERCEL) {
 		return {
-			has_backend,
-			is_admin,
 			shared_documents: null
 		};
 	}
 
-	if (!is_admin) {
+	if (!locals.is_admin) {
 		throw redirect(303, '/');
 	}
 
@@ -22,8 +18,6 @@ export async function load({ parent }) {
 	const shared_documents = await get_shared_documents();
 
 	return {
-		has_backend,
-		is_admin,
 		shared_documents
 	};
 }

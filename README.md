@@ -98,6 +98,8 @@ fly secrets set -a my-editable-website \
   ADMIN_PASSWORD='change-me'
 ```
 
+Optionally set `ASSET_GRACE_PERIOD_DAYS` (default 7): unreferenced asset files are kept on disk this many days after losing their last reference. This is also the safe window for rolling back a database backup against the live assets folder without ending up with dead image references.
+
 ```
 fly deploy -a my-editable-website --primary-region fra --vm-size shared-cpu-1x --vm-memory 256 --volume-initial-size 1
 ```
