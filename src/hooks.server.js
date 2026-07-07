@@ -3,6 +3,8 @@ import {
 	admin_session_cookie_name,
 	clear_admin_session_cookie,
 	get_session_expires_at,
+	session_duration_seconds,
+	session_renewal_interval_seconds,
 	set_admin_session_cookie
 } from '$lib/server/auth.js';
 
@@ -31,17 +33,23 @@ export const handle = async ({ event, resolve }) => {
 				db.prepare('SELECT expires FROM sessions WHERE session_id = ?').get(session_id)
 			);
 
+			const now = Math.floor(Date.now() / 1000);
+
 			if (!row) {
 				clear_admin_session_cookie(event.cookies);
-			} else if (row.expires <= Math.floor(Date.now() / 1000)) {
+			} else if (row.expires <= now) {
 				db.prepare('DELETE FROM sessions WHERE session_id = ?').run(session_id);
 				clear_admin_session_cookie(event.cookies);
 			} else {
-				db.prepare('UPDATE sessions SET expires = ? WHERE session_id = ?').run(
-					get_session_expires_at(),
-					session_id
-				);
-				set_admin_session_cookie(event.cookies, session_id);
+				// Sliding renewal, at most once per renewal interval
+				const last_renewed_at = row.expires - session_duration_seconds;
+				if (now - last_renewed_at >= session_renewal_interval_seconds) {
+					db.prepare('UPDATE sessions SET expires = ? WHERE session_id = ?').run(
+						get_session_expires_at(),
+						session_id
+					);
+					set_admin_session_cookie(event.cookies, session_id);
+				}
 				event.locals.is_admin = true;
 			}
 		}
