@@ -4,7 +4,7 @@ import * as v from 'valibot';
 import slugify from 'slugify';
 import crypto from 'node:crypto';
 import { validate_document } from 'svedit';
-import db from '$lib/server/db.js';
+import db, { with_transaction } from '$lib/server/db.js';
 import { document_schema } from '$lib/document_schema.js';
 import { collect_node_ids_in_order } from '$lib/document_graph.js';
 import {
@@ -139,8 +139,6 @@ const update_page_slug_input_schema = v.object({
 const delete_page_input_schema = v.object({
 	document_id: v.string()
 });
-
-const sql = (strings) => strings.join('');
 
 function get_attached_ranges(value) {
 	return [...(value?.marks ?? []), ...(value?.annotations ?? [])];
@@ -932,26 +930,13 @@ export const delete_page = command(delete_page_input_schema, async ({ document_i
 	);
 	const delete_document_slugs = db.prepare('DELETE FROM document_slugs WHERE document_id = ?');
 
-	db.exec(sql`
-		BEGIN IMMEDIATE
-	`);
-
-	try {
+	with_transaction(() => {
 		delete_asset_refs.run(document_id);
 		delete_outgoing_document_refs.run(document_id);
 		delete_incoming_document_refs.run(document_id);
 		delete_document_slugs.run(document_id);
 		delete_document.run(document_id, 'page');
-
-		db.exec(sql`
-			COMMIT
-		`);
-	} catch (err) {
-		db.exec(sql`
-			ROLLBACK
-		`);
-		throw err;
-	}
+	});
 
 	return {
 		ok: true,
@@ -1126,11 +1111,7 @@ export const save_document = command(save_document_input_schema, async (combined
 		'INSERT INTO document_slugs (slug, document_id, is_active, created_at) VALUES (?, ?, ?, ?)'
 	);
 
-	db.exec(sql`
-		BEGIN IMMEDIATE
-	`);
-
-	try {
+	with_transaction(() => {
 		const existing_page_row = /** @type {DocumentRow | undefined} */ (
 			db
 				.prepare('SELECT created_at FROM documents WHERE document_id = ?')
@@ -1217,16 +1198,7 @@ export const save_document = command(save_document_input_schema, async (combined
 		if (!persisted_page) {
 			throw new Error(`Failed to persist page document: ${combined_doc.document_id}`);
 		}
-
-		db.exec(sql`
-			COMMIT
-		`);
-	} catch (err) {
-		db.exec(sql`
-			ROLLBACK
-		`);
-		throw err;
-	}
+	});
 
 	return {
 		ok: true,
@@ -1303,13 +1275,7 @@ export const update_page_slug = command(update_page_slug_input_schema, async (in
 		'INSERT INTO document_slugs (slug, document_id, is_active, created_at) VALUES (?, ?, ?, ?)'
 	);
 
-	db.exec(sql`
-		BEGIN IMMEDIATE
-	`);
-
-	let new_active_slug = null;
-
-	try {
+	const new_active_slug = with_transaction(() => {
 		move_active_slug_to_history(
 			input.document_id,
 			insert_slug,
@@ -1324,8 +1290,8 @@ export const update_page_slug = command(update_page_slug_input_schema, async (in
 			delete_slug
 		);
 
-		new_active_slug = get_active_slug_for_document_id(input.document_id);
-		if (!new_active_slug) {
+		const active_slug = get_active_slug_for_document_id(input.document_id);
+		if (!active_slug) {
 			throw new Error('Failed to assign new active slug');
 		}
 
@@ -1349,7 +1315,7 @@ export const update_page_slug = command(update_page_slug_input_schema, async (in
 
 		for (const row of page_rows) {
 			const doc = JSON.parse(row.data);
-			rewrite_internal_page_hrefs(doc.nodes, input.document_id, new_active_slug);
+			rewrite_internal_page_hrefs(doc.nodes, input.document_id, active_slug);
 			upsert.run(
 				row.document_id,
 				row.type,
@@ -1368,15 +1334,8 @@ export const update_page_slug = command(update_page_slug_input_schema, async (in
 			);
 		}
 
-		db.exec(sql`
-			COMMIT
-		`);
-	} catch (err) {
-		db.exec(sql`
-			ROLLBACK
-		`);
-		throw err;
-	}
+		return active_slug;
+	});
 
 	return {
 		ok: true,
