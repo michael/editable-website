@@ -18,4 +18,24 @@ const db = new DatabaseSync(DB_PATH);
 // Enable WAL mode for better concurrent read performance
 db.exec('PRAGMA journal_mode=WAL');
 
+/**
+ * Run fn inside an immediate transaction, committing on return and
+ * rolling back on error.
+ *
+ * @template T
+ * @param {() => T} fn
+ * @returns {T}
+ */
+export function with_transaction(fn) {
+	db.exec('BEGIN IMMEDIATE');
+	try {
+		const result = fn();
+		db.exec('COMMIT');
+		return result;
+	} catch (err) {
+		db.exec('ROLLBACK');
+		throw err;
+	}
+}
+
 export default db;

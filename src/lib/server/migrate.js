@@ -1,5 +1,5 @@
 import migrations from './migrations.js';
-import db from './db.js';
+import db, { with_transaction } from './db.js';
 
 function sleep_sync(ms) {
 	const start = Date.now();
@@ -58,9 +58,7 @@ export default function migrate() {
 	// rolled back. When migrations are done as part of the deploy process this means the deploy failed.
 	// You likely have a bug in the migration code, which needs to be fixed before you can make a
 	// successful deploy.
-	db.exec('BEGIN TRANSACTION');
-
-	try {
+	with_transaction(() => {
 		for (const migration of remaining_migrations) {
 			const migration_name = migration.name;
 			if (!migration_name) throw new Error('Migration name (e.g. add_name_to_user) is required.');
@@ -78,9 +76,5 @@ export default function migrate() {
 
 			sleep_sync(100); // this makes sure we don't end up with the same timestamp for multiple migrations (if they run too fast)
 		}
-		db.exec('COMMIT');
-	} catch (error) {
-		db.exec('ROLLBACK');
-		throw error;
-	}
+	});
 }
