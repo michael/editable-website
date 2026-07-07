@@ -1,20 +1,35 @@
-import { ASSET_BASE } from '$lib/config.js';
+import { ASSET_BASE, VARIANT_WIDTHS_SET } from '$lib/config.js';
 import { collect_node_ids_in_order } from '$lib/document_graph.js';
 
-const TEXT_NODE_TYPES = [
-	'paragraph',
+// Shared helpers for deriving page and site metadata from documents.
+//
+// Derivation rules (explicit values always win):
+// - title: page.title → first heading → first paragraph-like text
+// - description: page.description → first paragraph-like text that didn't supply the title
+// - preview media: page.image (when saved) → first image → first video
+// - site name: the home page's title
+// - favicon: the home page's page.image (pick a square logo there)
+//
+// Derived titles/descriptions may be empty strings — callers decide on
+// presentation fallbacks like 'Untitled page'.
+
+const TITLE_NODE_TYPES = ['heading_1', 'heading_2', 'heading_3', 'heading_4', 'heading_5'];
+const DESCRIPTION_NODE_TYPES = [
 	'paragraph_sm',
+	'paragraph',
 	'paragraph_lg',
 	'paragraph_xl',
-	'heading_1',
-	'heading_2',
-	'heading_3',
-	'heading_4',
-	'heading_5'
+	'list_item'
 ];
-const TITLE_NODE_TYPES = ['heading_1', 'heading_2', 'heading_3', 'heading_4', 'heading_5'];
 
-// Shared helpers for extracting page-level metadata from a page document.
+/** Width of the resized variant used for social preview images (og:image). */
+export const SOCIAL_IMAGE_WIDTH = 1536;
+
+/** Width of the resized variant used for the favicon. */
+export const FAVICON_WIDTH = 320;
+
+/** Saved assets are content-addressed: {sha256}.{ext}. Only those have resized variants. */
+const HASHED_ASSET_REGEX = /^[a-f0-9]{64}\.\w+$/;
 
 /**
  * @typedef {Object} PreviewMediaNode
@@ -38,12 +53,100 @@ const TITLE_NODE_TYPES = ['heading_1', 'heading_2', 'heading_3', 'heading_4', 'h
  */
 
 /**
+ * @typedef {Object} SocialImage
+ * @property {string} url
+ * @property {number | null} width
+ * @property {number | null} height
+ * @property {string} alt
+ */
+
+/**
+ * @typedef {Object} SiteMetadata
+ * @property {string | null} site_name
+ * @property {{ href: string, type: string | null } | null} favicon
+ */
+
+/**
  * @param {{ content?: string } | null | undefined} text
  * @returns {string}
  */
 export function extract_plain_text(text) {
 	if (!text || typeof text.content !== 'string') return '';
 	return text.content.trim();
+}
+
+/**
+ * @param {PreviewMediaNode | null | undefined} media_node
+ * @returns {boolean}
+ */
+function is_saved_media(media_node) {
+	return !!media_node?.src && !media_node.src.startsWith('blob:');
+}
+
+/**
+ * Resized variants exist only for saved raster images (not SVGs, not GIFs).
+ *
+ * @param {PreviewMediaNode} media_node
+ * @returns {boolean}
+ */
+function has_variants(media_node) {
+	if (!HASHED_ASSET_REGEX.test(media_node.src)) return false;
+	const mime_type = media_node.mime_type;
+	if (mime_type) return mime_type !== 'image/svg+xml' && mime_type !== 'image/gif';
+	return !media_node.src.endsWith('.svg') && !media_node.src.endsWith('.gif');
+}
+
+/**
+ * Resolve the asset URL for a media node, preferring a resized variant when
+ * one exists for the given target width.
+ *
+ * @param {PreviewMediaNode | null | undefined} media_node
+ * @param {number} [target_width]
+ * @returns {string | null}
+ */
+export function get_media_asset_url(media_node, target_width) {
+	if (!is_saved_media(media_node)) return null;
+
+	const node = /** @type {PreviewMediaNode} */ (media_node);
+
+	if (
+		target_width &&
+		VARIANT_WIDTHS_SET.has(target_width) &&
+		node.width > target_width &&
+		has_variants(node)
+	) {
+		const asset_stem = node.src.slice(0, node.src.lastIndexOf('.'));
+		return `${ASSET_BASE}/${asset_stem}/w${target_width}.webp`;
+	}
+
+	return `${ASSET_BASE}/${node.src}`;
+}
+
+/**
+ * Resolve the social preview image (og:image) for a preview media node.
+ * Videos are skipped — social cards need a raster image.
+ *
+ * @param {PreviewMediaNode | null | undefined} media_node
+ * @returns {SocialImage | null}
+ */
+export function get_social_image(media_node) {
+	if (media_node?.type !== 'image' || !is_saved_media(media_node)) return null;
+
+	const url = get_media_asset_url(media_node, SOCIAL_IMAGE_WIDTH);
+	if (!url) return null;
+
+	const is_variant = url !== `${ASSET_BASE}/${media_node.src}`;
+	const width = is_variant ? SOCIAL_IMAGE_WIDTH : media_node.width || null;
+	const height = is_variant
+		? Math.round((SOCIAL_IMAGE_WIDTH * media_node.height) / media_node.width)
+		: media_node.height || null;
+
+	return {
+		url,
+		width,
+		height,
+		alt: media_node.alt || ''
+	};
 }
 
 /**
@@ -82,27 +185,25 @@ export function collect_page_body_node_ids(page_doc) {
  */
 export function extract_page_metadata(page_doc) {
 	if (!page_doc?.document_id || !page_doc.nodes) {
-		return {
-			title: 'Editable',
-			description: null,
-			preview_media_node: null
-		};
+		return { title: '', description: null, preview_media_node: null };
 	}
 
-	const body_node_ids = collect_page_body_node_ids(page_doc);
 	const page_root = page_doc.nodes[page_doc.document_id];
+	const explicit_title = extract_plain_text(page_root?.title);
+	const explicit_description = extract_plain_text(page_root?.description);
 	const explicit_image_node =
 		typeof page_root?.image === 'string' ? (page_doc.nodes[page_root.image] ?? null) : null;
 
-	let explicit_title = extract_plain_text(page_root?.title);
-	let explicit_description = extract_plain_text(page_root?.description);
 	let heading_title = '';
-	let fallback_title = '';
-	let fallback_description = '';
+	let text_title = '';
+	let text_title_node_id = null;
 	let first_image_node = null;
 	let first_video_node = null;
 
-	for (const node_id of body_node_ids) {
+	/** @type {Array<{ node_id: string, text: string }>} */
+	const description_candidates = [];
+
+	for (const node_id of collect_page_body_node_ids(page_doc)) {
 		const node = page_doc.nodes[node_id];
 		if (!node) continue;
 
@@ -112,61 +213,70 @@ export function extract_page_metadata(page_doc) {
 			first_video_node = node;
 		}
 
-		if (TEXT_NODE_TYPES.includes(node.type) || node.type === 'list_item') {
+		if (!heading_title && TITLE_NODE_TYPES.includes(node.type)) {
+			heading_title = extract_plain_text(node.content);
+		}
+
+		if (DESCRIPTION_NODE_TYPES.includes(node.type)) {
 			const text = extract_plain_text(node.content);
 			if (!text) continue;
 
-			if (!heading_title && TITLE_NODE_TYPES.includes(node.type)) {
-				heading_title = text;
+			if (!text_title) {
+				text_title = text;
+				text_title_node_id = node_id;
 			}
 
-			if (!fallback_title) {
-				fallback_title = text;
-			}
-
-			if (!fallback_description) {
-				fallback_description = text;
-			}
-		}
-
-		if (node.type === 'descriptive_gallery_item') {
-			const item_title = extract_plain_text(node.title);
-			if (!fallback_title && item_title) {
-				fallback_title = item_title;
-			}
-
-			const item_description = extract_plain_text(node.description);
-			if (!fallback_description && item_description) {
-				fallback_description = item_description;
+			if (description_candidates.length < 2) {
+				description_candidates.push({ node_id, text });
 			}
 		}
 	}
 
-	const preview_media_node =
-		explicit_image_node?.type === 'image' && explicit_image_node.src
-			? explicit_image_node
-			: first_image_node || first_video_node;
+	const title = explicit_title || heading_title || text_title;
+
+	// The description must not repeat the node that supplied the derived title.
+	const title_source_node_id = !explicit_title && !heading_title ? text_title_node_id : null;
+	const derived_description =
+		description_candidates.find((candidate) => candidate.node_id !== title_source_node_id)?.text ??
+		'';
+
+	const preview_media_node = is_saved_media(explicit_image_node)
+		? explicit_image_node
+		: first_image_node || first_video_node;
 
 	return {
-		title: explicit_title || heading_title || fallback_title || 'Untitled page',
-		description: explicit_description || fallback_description || null,
+		title,
+		description: explicit_description || derived_description || null,
 		preview_media_node
 	};
 }
 
 /**
- * @param {PreviewMediaNode | null | undefined} media_node
- * @returns {string | null}
+ * Derive site-level metadata from the home page document. The favicon is the
+ * home page's explicit page.image — by convention a square logo.
+ *
+ * @param {{ document_id: string, nodes: Record<string, any> } | null | undefined} home_page_doc
+ * @returns {SiteMetadata}
  */
-export function get_media_asset_url(media_node) {
-	if (!media_node?.src) return null;
-	return `${ASSET_BASE}/${media_node.src}`;
-}
+export function extract_site_metadata(home_page_doc) {
+	const site_name = extract_page_metadata(home_page_doc).title || null;
+	const page_root = home_page_doc?.nodes?.[home_page_doc.document_id];
+	const image_node =
+		typeof page_root?.image === 'string' ? home_page_doc.nodes[page_root.image] : null;
+	const favicon_media_node = image_node?.type === 'image' ? image_node : null;
+	const favicon_href = get_media_asset_url(favicon_media_node, FAVICON_WIDTH);
 
-/**
- * @param {{ document_id: string, nodes: Record<string, any> } | null | undefined} page_doc
- * @returns {PageMetadata}
- */
-export function get_head_metadata(page_doc) {
-	return extract_page_metadata(page_doc);
+	if (!favicon_media_node || !favicon_href) {
+		return { site_name, favicon: null };
+	}
+
+	const is_variant = favicon_href !== `${ASSET_BASE}/${favicon_media_node.src}`;
+
+	return {
+		site_name,
+		favicon: {
+			href: favicon_href,
+			type: is_variant ? 'image/webp' : favicon_media_node.mime_type || null
+		}
+	};
 }
