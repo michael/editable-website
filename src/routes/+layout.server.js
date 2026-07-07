@@ -21,7 +21,6 @@ export async function load({ locals, depends }) {
 		has_backend,
 		is_admin: !!locals.is_admin,
 		origin: env.ORIGIN ?? '',
-		site_name: site_metadata.site_name,
 		favicon: site_metadata.favicon
 	};
 }
