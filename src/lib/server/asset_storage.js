@@ -1,3 +1,4 @@
+import crypto from 'node:crypto';
 import { createReadStream, createWriteStream, existsSync } from 'node:fs';
 import { mkdir, unlink, rm, stat } from 'node:fs/promises';
 import { join, extname } from 'node:path';
@@ -52,12 +53,13 @@ export function variant_path(asset_id, width) {
 }
 
 /**
- * Stream a ReadableStream (web), Buffer, or Uint8Array to a file on disk.
- * Returns the number of bytes written.
+ * Stream a ReadableStream (web), Buffer, or Uint8Array to a file on disk,
+ * counting bytes and hashing the content. Size limiting is the deployment's
+ * job (BODY_SIZE_LIMIT), enforced by the adapter while streaming.
  *
  * @param {string} file_path
  * @param {ReadableStream | Buffer | Uint8Array} data
- * @returns {Promise<number>}
+ * @returns {Promise<{ bytes_written: number, sha256: string }>}
  */
 async function stream_to_file(file_path, data) {
 	/** @type {import('node:stream').Readable} */
@@ -70,10 +72,12 @@ async function stream_to_file(file_path, data) {
 	}
 
 	let bytes_written = 0;
+	const hash = crypto.createHash('sha256');
 
 	const counter = new Transform({
 		transform(chunk, _encoding, callback) {
 			bytes_written += chunk.length;
+			hash.update(chunk);
 			callback(null, chunk);
 		}
 	});
@@ -81,7 +85,7 @@ async function stream_to_file(file_path, data) {
 	const dest = createWriteStream(file_path);
 	await pipeline(source, counter, dest);
 
-	return bytes_written;
+	return { bytes_written, sha256: hash.digest('hex') };
 }
 
 /**
@@ -89,7 +93,7 @@ async function stream_to_file(file_path, data) {
  *
  * @param {string} asset_id
  * @param {ReadableStream | Buffer | Uint8Array} data
- * @returns {Promise<number>} bytes written
+ * @returns {Promise<{ bytes_written: number, sha256: string }>}
  */
 export async function write_asset(asset_id, data) {
 	return stream_to_file(asset_path(asset_id), data);
@@ -102,7 +106,7 @@ export async function write_asset(asset_id, data) {
  * @param {string} asset_id
  * @param {number} width
  * @param {ReadableStream | Buffer | Uint8Array} data
- * @returns {Promise<number>} bytes written
+ * @returns {Promise<{ bytes_written: number, sha256: string }>}
  */
 export async function write_variant(asset_id, width, data) {
 	const dir = variant_dir(asset_id);

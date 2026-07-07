@@ -1,6 +1,7 @@
+import { unlink } from 'node:fs/promises';
 import { error, json } from '@sveltejs/kit';
 import { ASSET_ID_REGEX, VARIANT_WIDTHS_SET } from '$lib/config.js';
-import { asset_exists, write_variant } from '$lib/server/asset_storage.js';
+import { asset_exists, write_variant, variant_path } from '$lib/server/asset_storage.js';
 import { require_admin_session } from '$lib/server/auth.js';
 
 /** @type {import('./$types').RequestHandler} */
@@ -44,15 +45,17 @@ export async function POST({ params, request, locals }) {
 	}
 
 	// Stream the variant directly to disk
-	let bytes_written;
+	let write_result;
 	try {
-		bytes_written = await write_variant(asset_id, width, request.body);
+		write_result = await write_variant(asset_id, width, request.body);
 	} catch (err) {
+		await unlink(variant_path(asset_id, width)).catch(() => {});
 		console.error('Failed to write variant to disk:', err);
 		error(500, 'Failed to store variant');
 	}
 
-	if (bytes_written === 0) {
+	if (write_result.bytes_written === 0) {
+		await unlink(variant_path(asset_id, width)).catch(() => {});
 		error(400, 'Empty variant data');
 	}
 
