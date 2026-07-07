@@ -767,7 +767,7 @@ export const get_document = query(v.string(), async (slug) => {
 	const resolved = resolve_slug(slug);
 
 	if (!resolved) {
-		throw new Error(`Page not found for slug: ${slug}`);
+		error(404, `Page not found for slug: ${slug}`);
 	}
 
 	return {
@@ -908,16 +908,16 @@ export const delete_page = command(delete_page_input_schema, async ({ document_i
 	const home_page_id = get_home_page_id_from_db();
 
 	if (!document_id) {
-		throw new Error('Document id is required');
+		error(400, 'Document id is required');
 	}
 
 	if (document_id === home_page_id) {
-		throw new Error('The home page cannot be deleted');
+		error(400, 'The home page cannot be deleted');
 	}
 
 	const existing_doc = get_optional_doc_from_db(document_id);
 	if (!existing_doc) {
-		throw new Error(`Document not found: ${document_id}`);
+		error(404, `Document not found: ${document_id}`);
 	}
 
 	const delete_document = db.prepare('DELETE FROM documents WHERE document_id = ? AND type = ?');
@@ -1068,7 +1068,7 @@ export const save_document = command(save_document_input_schema, async (combined
 	if (combined_doc.create) {
 		const existing_doc = get_optional_doc_from_db(combined_doc.document_id);
 		if (existing_doc) {
-			throw new Error(`Document already exists: ${combined_doc.document_id}`);
+			error(409, `Document already exists: ${combined_doc.document_id}`);
 		}
 	}
 

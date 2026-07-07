@@ -18,6 +18,34 @@ export const ASSET_BASE = '/assets';
 /** Assets are content-addressed: {sha256}.{ext}. Everything else is rejected. */
 export const ASSET_ID_REGEX = /^[a-f0-9]{64}\.[a-z0-9]+$/;
 
+/**
+ * MIME types accepted for upload → stored file extension. The client encodes
+ * all static raster images to WebP before uploading, so this is the complete
+ * set of stored formats.
+ */
+export const UPLOAD_MIME_TO_EXT = {
+	'image/webp': 'webp',
+	'image/gif': 'gif',
+	'image/svg+xml': 'svg',
+	'video/mp4': 'mp4',
+	'video/webm': 'webm'
+};
+
+/**
+ * Stored file extension → MIME type for serving. A superset of the upload
+ * formats: legacy raster formats may still exist on disk from seed data.
+ */
+export const EXT_TO_MIME = {
+	webp: 'image/webp',
+	gif: 'image/gif',
+	svg: 'image/svg+xml',
+	png: 'image/png',
+	jpg: 'image/jpeg',
+	jpeg: 'image/jpeg',
+	mp4: 'video/mp4',
+	webm: 'video/webm'
+};
+
 /** Default values for media node properties (image and video). */
 export const MEDIA_DEFAULTS = {
 	src: '',

@@ -1,15 +1,7 @@
 import { json, error } from '@sveltejs/kit';
+import { UPLOAD_MIME_TO_EXT } from '$lib/config.js';
 import { asset_exists, write_asset, delete_asset } from '$lib/server/asset_storage.js';
 import { require_admin_session } from '$lib/server/auth.js';
-
-/** Map content types to stored file extensions */
-const CONTENT_TYPE_TO_EXT = {
-	'image/webp': 'webp',
-	'image/gif': 'gif',
-	'image/svg+xml': 'svg',
-	'video/mp4': 'mp4',
-	'video/webm': 'webm'
-};
 
 /** @type {import('./$types').RequestHandler} */
 export async function POST({ request, locals }) {
@@ -18,9 +10,12 @@ export async function POST({ request, locals }) {
 	const content_type_raw = request.headers.get('content-type') ?? '';
 	const content_type = content_type_raw.split(';')[0].trim().toLowerCase();
 
-	const ext = CONTENT_TYPE_TO_EXT[content_type];
+	const ext = UPLOAD_MIME_TO_EXT[content_type];
 	if (!ext) {
-		error(400, `Unsupported content type: ${content_type}. Expected image/webp, image/gif, image/svg+xml, video/mp4, or video/webm.`);
+		error(
+			400,
+			`Unsupported content type: ${content_type}. Expected one of: ${Object.keys(UPLOAD_MIME_TO_EXT).join(', ')}.`
+		);
 	}
 
 	const hash = request.headers.get('x-content-hash');
