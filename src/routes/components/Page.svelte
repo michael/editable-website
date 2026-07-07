@@ -13,10 +13,6 @@
 	let node = $derived(svedit.session.get(path));
 	let head_metadata = $derived(extract_page_metadata(svedit.session.doc));
 	let page_title = $derived(head_metadata.title || 'Untitled page');
-	let site_name = $derived(app.site_name);
-	let full_title = $derived(
-		site_name && site_name !== page_title ? `${page_title} — ${site_name}` : page_title
-	);
 	let canonical_url = $derived(
 		app.origin && !app.is_new ? `${app.origin}${app.slug ? `/${app.slug}` : '/'}` : null
 	);
@@ -25,7 +21,7 @@
 </script>
 
 <svelte:head>
-	<title>{full_title}</title>
+	<title>{page_title}</title>
 	{#if head_metadata.description}
 		<meta name="description" content={head_metadata.description} />
 		<meta property="og:description" content={head_metadata.description} />
@@ -33,9 +29,6 @@
 	{/if}
 	<meta property="og:title" content={page_title} />
 	<meta property="og:type" content="website" />
-	{#if site_name}
-		<meta property="og:site_name" content={site_name} />
-	{/if}
 	{#if canonical_url}
 		<link rel="canonical" href={canonical_url} />
 		<meta property="og:url" content={canonical_url} />

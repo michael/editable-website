@@ -781,13 +781,13 @@ export const get_home_document = query(v.void(), async () => {
 });
 
 /**
- * Derive site-level metadata (site name, favicon) from the home page document.
+ * Derive site-level metadata (favicon) from the home page document.
  */
 export const get_site_metadata = query(v.void(), async () => {
 	const home_page_id = get_home_page_id_from_db();
 
 	if (!home_page_id) {
-		return { site_name: null, favicon: null };
+		return { favicon: null };
 	}
 
 	return extract_site_metadata(get_doc_from_db(home_page_id));

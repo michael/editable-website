@@ -7,7 +7,6 @@ import { collect_node_ids_in_order } from '$lib/document_graph.js';
 // - title: page.title → first heading → first paragraph-like text
 // - description: page.description → first paragraph-like text that didn't supply the title
 // - preview media: page.image (when saved) → first image → first video
-// - site name: the home page's title
 // - favicon: the home page's page.image (pick a square logo there)
 //
 // Derived titles/descriptions may be empty strings — callers decide on
@@ -62,7 +61,6 @@ const HASHED_ASSET_REGEX = /^[a-f0-9]{64}\.\w+$/;
 
 /**
  * @typedef {Object} SiteMetadata
- * @property {string | null} site_name
  * @property {{ href: string, type: string | null } | null} favicon
  */
 
@@ -259,7 +257,6 @@ export function extract_page_metadata(page_doc) {
  * @returns {SiteMetadata}
  */
 export function extract_site_metadata(home_page_doc) {
-	const site_name = extract_page_metadata(home_page_doc).title || null;
 	const page_root = home_page_doc?.nodes?.[home_page_doc.document_id];
 	const image_node =
 		typeof page_root?.image === 'string' ? home_page_doc.nodes[page_root.image] : null;
@@ -267,13 +264,12 @@ export function extract_site_metadata(home_page_doc) {
 	const favicon_href = get_media_asset_url(favicon_media_node, FAVICON_WIDTH);
 
 	if (!favicon_media_node || !favicon_href) {
-		return { site_name, favicon: null };
+		return { favicon: null };
 	}
 
 	const is_variant = favicon_href !== `${ASSET_BASE}/${favicon_media_node.src}`;
 
 	return {
-		site_name,
 		favicon: {
 			href: favicon_href,
 			type: is_variant ? 'image/webp' : favicon_media_node.mime_type || null
