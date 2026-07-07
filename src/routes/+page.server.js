@@ -1,24 +1,18 @@
-/** @type {import('./$types').PageServerLoad} */
-export async function load({ parent }) {
-	const parent_data = await parent();
-	const has_backend = parent_data.has_backend;
-	const is_admin = parent_data.is_admin ?? false;
+import { env } from '$env/dynamic/private';
 
-	if (!has_backend) {
+// Deliberately no `await parent()` here: depending on layout data would rerun
+// this load (and rebuild the editing session) whenever the layout is
+// invalidated, e.g. for the favicon refresh after a save. has_backend and
+// is_admin reach the page via the layout data merge.
+/** @type {import('./$types').PageServerLoad} */
+export async function load() {
+	if (env.VERCEL) {
 		return {
-			has_backend,
-			is_admin,
 			document: null,
 			slug: null
 		};
 	}
 
 	const { get_home_document } = await import('$lib/api.remote.js');
-	const result = await get_home_document();
-
-	return {
-		...result,
-		has_backend,
-		is_admin
-	};
+	return await get_home_document();
 }
