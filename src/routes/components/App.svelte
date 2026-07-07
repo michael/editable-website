@@ -11,13 +11,15 @@
 
 	import { demo_doc } from '$lib/demo_doc.js';
 
-	/** @type {{ document?: any, slug?: string | null, has_backend?: boolean, is_new?: boolean, is_admin?: boolean, origin?: string | null }} */
+	/** @type {{ document?: any, slug?: string | null, has_backend?: boolean, is_new?: boolean, is_admin?: boolean, origin?: string | null, site_name?: string | null }} */
 	let {
 		document: doc,
+		slug = null,
 		has_backend = false,
 		is_new = false,
 		is_admin: server_is_admin = false,
-		origin = null
+		origin = null,
+		site_name = null
 	} = $props();
 
 	let initial_doc = $derived(has_backend ? doc : demo_doc);
@@ -52,6 +54,15 @@
 		},
 		get origin() {
 			return origin;
+		},
+		get slug() {
+			return slug;
+		},
+		get site_name() {
+			return site_name;
+		},
+		get is_new() {
+			return current_is_new;
 		},
 		get auth_dialog_open() {
 			return auth_dialog_open;

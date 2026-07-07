@@ -4,33 +4,53 @@
 	import Nav from './Nav.svelte';
 	import Footer from './Footer.svelte';
 	import MediaProperty from './MediaProperty.svelte';
-	import { get_head_metadata, get_media_asset_url } from '$lib/page_metadata.js';
+	import { extract_page_metadata, get_social_image } from '$lib/page_metadata.js';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 
 	const svedit = getContext('svedit');
+	const app = getContext('app');
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
-	let head_metadata = $derived(get_head_metadata(svedit.session.doc));
-	let social_image_url = $derived(
-		head_metadata.preview_media_node?.type === 'image'
-			? get_media_asset_url(head_metadata.preview_media_node)
-			: null
+	let head_metadata = $derived(extract_page_metadata(svedit.session.doc));
+	let page_title = $derived(head_metadata.title || 'Untitled page');
+	let site_name = $derived(app.site_name);
+	let full_title = $derived(
+		site_name && site_name !== page_title ? `${page_title} — ${site_name}` : page_title
 	);
+	let canonical_url = $derived(
+		app.origin && !app.is_new ? `${app.origin}${app.slug ? `/${app.slug}` : '/'}` : null
+	);
+	let social_image = $derived(get_social_image(head_metadata.preview_media_node));
+	let social_image_url = $derived(social_image ? `${app.origin || ''}${social_image.url}` : null);
 </script>
 
 <svelte:head>
-	<title>{head_metadata.title}</title>
+	<title>{full_title}</title>
 	{#if head_metadata.description}
 		<meta name="description" content={head_metadata.description} />
 		<meta property="og:description" content={head_metadata.description} />
 		<meta name="twitter:description" content={head_metadata.description} />
 	{/if}
-	<meta property="og:title" content={head_metadata.title} />
+	<meta property="og:title" content={page_title} />
 	<meta property="og:type" content="website" />
-	<meta name="twitter:card" content="summary" />
-	<meta name="twitter:title" content={head_metadata.title} />
-	{#if social_image_url}
+	{#if site_name}
+		<meta property="og:site_name" content={site_name} />
+	{/if}
+	{#if canonical_url}
+		<link rel="canonical" href={canonical_url} />
+		<meta property="og:url" content={canonical_url} />
+	{/if}
+	<meta name="twitter:card" content={social_image_url ? 'summary_large_image' : 'summary'} />
+	<meta name="twitter:title" content={page_title} />
+	{#if social_image_url && social_image}
 		<meta property="og:image" content={social_image_url} />
+		{#if social_image.width && social_image.height}
+			<meta property="og:image:width" content={String(social_image.width)} />
+			<meta property="og:image:height" content={String(social_image.height)} />
+		{/if}
+		{#if social_image.alt}
+			<meta property="og:image:alt" content={social_image.alt} />
+		{/if}
 		<meta name="twitter:image" content={social_image_url} />
 	{/if}
 </svelte:head>

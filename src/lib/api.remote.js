@@ -7,7 +7,7 @@ import { document_schema } from '$lib/document_schema.js';
 import { collect_node_ids_in_order } from '$lib/document_graph.js';
 import {
 	extract_page_metadata,
-	extract_plain_text,
+	extract_site_metadata,
 	collect_page_body_node_ids
 } from '$lib/page_metadata.js';
 import {
@@ -519,7 +519,7 @@ function summarize_page_document(page_doc) {
 	// must have an active slug, so a missing slug here implies `/`.
 	return {
 		document_id: page_doc.document_id,
-		title: metadata.title,
+		title: metadata.title || 'Untitled page',
 		description: metadata.description,
 		preview_media_node: metadata.preview_media_node,
 		page_href: active_slug ? `/${active_slug}` : '/',
@@ -781,6 +781,19 @@ export const get_home_document = query(v.void(), async () => {
 });
 
 /**
+ * Derive site-level metadata (site name, favicon) from the home page document.
+ */
+export const get_site_metadata = query(v.void(), async () => {
+	const home_page_id = get_home_page_id_from_db();
+
+	if (!home_page_id) {
+		return { site_name: null, favicon: null };
+	}
+
+	return extract_site_metadata(get_doc_from_db(home_page_id));
+});
+
+/**
  * Return the current shared nav and footer documents used for composing new pages.
  */
 export const get_shared_documents = query(v.void(), async () => {
@@ -945,7 +958,7 @@ export const get_internal_link_preview = query(v.string(), async (href) => {
 
 	return /** @type {InternalLinkPreview} */ ({
 		document_id: resolved.document_id,
-		title: metadata.title,
+		title: metadata.title || 'Untitled page',
 		description: metadata.description,
 		preview_media_node: metadata.preview_media_node
 	});
@@ -1152,7 +1165,10 @@ export const save_document = command(save_document_input_schema, async (combined
 			!is_home_page_document_id(combined_doc.document_id)
 		) {
 			const metadata = extract_page_metadata(page_doc);
-			const base_slug = create_slug_candidate(metadata.title, combined_doc.document_id);
+			const base_slug = create_slug_candidate(
+				metadata.title || 'Untitled page',
+				combined_doc.document_id
+			);
 			active_slug = create_unique_slug(base_slug);
 			insert_active_slug(
 				combined_doc.document_id,

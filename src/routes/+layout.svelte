@@ -1,8 +1,12 @@
 <script>
 	import '../app.css';
 
-	let { children } = $props();
+	let { data, children } = $props();
 </script>
 
-<svelte:head><link rel="icon" type="image/svg+xml" href="/assets/logo.svg" /></svelte:head>
+<svelte:head>
+	{#if data.favicon}
+		<link rel="icon" type={data.favicon.type ?? undefined} href={data.favicon.href} />
+	{/if}
+</svelte:head>
 {@render children()}
