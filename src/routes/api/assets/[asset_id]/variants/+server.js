@@ -1,10 +1,17 @@
 import { error, json } from '@sveltejs/kit';
-import { VARIANT_WIDTHS_SET } from '$lib/config.js';
+import { ASSET_ID_REGEX, VARIANT_WIDTHS_SET } from '$lib/config.js';
 import { asset_exists, write_variant } from '$lib/server/asset_storage.js';
+import { require_admin_session } from '$lib/server/auth.js';
 
 /** @type {import('./$types').RequestHandler} */
-export async function POST({ params, request }) {
+export async function POST({ params, request, locals }) {
+	require_admin_session(locals);
+
 	const { asset_id } = params;
+
+	if (!ASSET_ID_REGEX.test(asset_id)) {
+		error(400, 'Invalid asset id');
+	}
 
 	// Validate the original asset exists on disk
 	if (!asset_exists(asset_id)) {

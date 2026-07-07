@@ -1,5 +1,6 @@
 import { json, error } from '@sveltejs/kit';
 import { asset_exists, write_asset, delete_asset } from '$lib/server/asset_storage.js';
+import { require_admin_session } from '$lib/server/auth.js';
 
 /** Map content types to stored file extensions */
 const CONTENT_TYPE_TO_EXT = {
@@ -11,7 +12,9 @@ const CONTENT_TYPE_TO_EXT = {
 };
 
 /** @type {import('./$types').RequestHandler} */
-export async function POST({ request }) {
+export async function POST({ request, locals }) {
+	require_admin_session(locals);
+
 	const content_type_raw = request.headers.get('content-type') ?? '';
 	const content_type = content_type_raw.split(';')[0].trim().toLowerCase();
 

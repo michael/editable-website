@@ -1,3 +1,4 @@
+import { error } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 
 export const admin_session_cookie_name = 'ew_admin_session';
@@ -59,12 +60,9 @@ export async function delete_session(session_id) {
 
 /**
  * @param {{ is_admin?: boolean }} locals
- * @returns {true}
  */
 export function require_admin_session(locals) {
 	if (!locals.is_admin) {
-		throw new Error('Unauthorized');
+		error(401, 'Unauthorized');
 	}
-
-	return true;
 }
