@@ -52,18 +52,24 @@ export async function POST({ request, locals }) {
 	}
 
 	// Stream the request body directly to disk
-	let bytes_written;
+	let write_result;
 	try {
-		bytes_written = await write_asset(asset_id, request.body);
+		write_result = await write_asset(asset_id, request.body);
 	} catch (err) {
 		await delete_asset(asset_id).catch(() => {});
 		console.error('Failed to write asset to disk:', err);
 		error(500, 'Failed to store asset');
 	}
 
-	if (bytes_written === 0) {
+	if (write_result.bytes_written === 0) {
 		await delete_asset(asset_id).catch(() => {});
 		error(400, 'Empty file');
+	}
+
+	// Enforce content-addressing: the stored bytes must hash to the claimed id.
+	if (write_result.sha256 !== hash) {
+		await delete_asset(asset_id).catch(() => {});
+		error(400, 'Content does not match X-Content-Hash');
 	}
 
 	return json({ asset_id, width, height, deduplicated: false });

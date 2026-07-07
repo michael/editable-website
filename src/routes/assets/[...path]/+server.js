@@ -10,6 +10,14 @@ import {
 	variant_path
 } from '$lib/server/asset_storage.js';
 
+// Served assets are user-uploaded content and must be inert: `sandbox` puts
+// directly-opened files (e.g. SVGs with scripts) in an opaque origin so they
+// can't run code against the site, `nosniff` stops MIME guessing.
+const INERT_CONTENT_HEADERS = {
+	'Content-Security-Policy': 'sandbox',
+	'X-Content-Type-Options': 'nosniff'
+};
+
 /** Map file extensions to MIME types */
 const EXT_TO_MIME = /** @type {Record<string, string>} */ ({
 	'.webp': 'image/webp',
@@ -115,6 +123,7 @@ export async function GET({ params, request }) {
 		const stream = create_variant_read_stream(original_id, width);
 		return new Response(to_web_stream(stream), {
 			headers: {
+				...INERT_CONTENT_HEADERS,
 				'Content-Type': 'image/webp',
 				'Cache-Control': 'public, max-age=31536000, immutable',
 				'Content-Disposition': `inline; filename="${short_filename(asset_stem, '.webp')}"`
@@ -142,6 +151,7 @@ export async function GET({ params, request }) {
 	const byte_range = is_video ? parse_byte_range(range_header, size) : null;
 
 	const headers = {
+		...INERT_CONTENT_HEADERS,
 		'Content-Type': mime_type,
 		'Cache-Control': 'public, max-age=31536000, immutable',
 		'Content-Disposition': `inline; filename="${short_filename(asset_id, ext)}"`

@@ -130,27 +130,27 @@ export async function start_processing(blob_url, file) {
 	}
 
 	try {
-		// Hash and type detection run concurrently with processing
 		const is_svg = file.type === 'image/svg+xml';
 		const animated = await is_animated_gif(file);
 		const ext = get_stored_extension(file, animated);
-		const hash = await hash_blob(file);
-
-		entry.hash = hash;
-		entry.asset_id = `${hash}.${ext}`;
 
 		if (is_svg || animated) {
 			// Passthrough — no WASM processing
-			const dims = await get_media_dimensions(file);
+			const [hash, dims] = await Promise.all([hash_blob(file), get_media_dimensions(file)]);
+			entry.hash = hash;
 			entry.original = { blob: file, width: dims.width, height: dims.height };
 			entry.variants = [];
 		} else {
-			// Static raster image — process via WASM worker
+			// Static raster image — process via WASM worker. The hash is computed
+			// over the re-encoded blob: the asset id must always be the SHA-256 of
+			// the stored bytes (the server verifies this on upload).
 			const result = await process_asset(file);
+			entry.hash = await hash_blob(result.original.blob);
 			entry.original = result.original;
 			entry.variants = result.variants;
 		}
 
+		entry.asset_id = `${entry.hash}.${ext}`;
 		entry.status = 'ready';
 	} catch (err) {
 		entry.status = 'error';
