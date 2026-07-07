@@ -5,6 +5,11 @@ import { env } from '$env/dynamic/private';
 export const admin_session_cookie_name = 'ew_admin_session';
 export const session_duration_seconds = 14 * 24 * 60 * 60;
 
+// Sliding sessions are renewed at most once per interval, not on every
+// request — a page load with dozens of asset requests must not write to the
+// sessions table dozens of times.
+export const session_renewal_interval_seconds = 24 * 60 * 60;
+
 // Login throttle: the first `free_attempts` failures are free, then each
 // failure locks login for `base_lockout_seconds`, doubling per failure up to
 // `max_lockout_seconds`. Global (there is only one admin), persisted in
