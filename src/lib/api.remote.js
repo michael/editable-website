@@ -17,7 +17,11 @@ import {
 	delete_session,
 	clear_admin_session_cookie,
 	set_admin_session_cookie,
-	require_admin_session
+	require_admin_session,
+	passwords_match,
+	get_login_lockout_seconds,
+	register_failed_login,
+	reset_login_throttle
 } from '$lib/server/auth.js';
 
 const admin_login_input_schema = v.object({
@@ -38,6 +42,16 @@ function create_auth_error_result(code, message) {
 		code,
 		message
 	};
+}
+
+/**
+ * @param {number} seconds
+ * @returns {string}
+ */
+function format_lockout_duration(seconds) {
+	if (seconds < 60) return `${seconds} seconds`;
+	const minutes = Math.ceil(seconds / 60);
+	return minutes === 1 ? '1 minute' : `${minutes} minutes`;
 }
 
 /**
@@ -835,9 +849,20 @@ export const login_admin = command(admin_login_input_schema, async ({ password }
 	const { cookies } = getRequestEvent();
 	const admin_password = get_required_admin_password();
 
-	if (password !== admin_password) {
+	const lockout_seconds = get_login_lockout_seconds(db);
+	if (lockout_seconds > 0) {
+		return create_auth_error_result(
+			'too_many_attempts',
+			`Too many failed attempts. Try again in ${format_lockout_duration(lockout_seconds)}.`
+		);
+	}
+
+	if (!passwords_match(password, admin_password)) {
+		register_failed_login(db);
 		return create_auth_error_result('invalid_password', 'Incorrect admin password.');
 	}
+
+	reset_login_throttle(db);
 
 	const session_id = crypto.randomUUID();
 	db.prepare('INSERT INTO sessions (session_id, expires) VALUES (?, ?)').run(
