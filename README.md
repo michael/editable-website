@@ -1,7 +1,5 @@
 # Editable
 
-Skip the CMS.
-
 Editable brings live on-page editing to Svelte. Site owners edit directly in the layout; developers keep full control with ordinary Svelte components.
 
 ## Who is Editable for?
