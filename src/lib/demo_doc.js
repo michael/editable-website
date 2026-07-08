@@ -1671,6 +1671,10 @@ const FULL_DOC = {
 				annotations: []
 			}
 		},
+		navFfBzJvxhkmRxFcGmhUhP: {
+			id: 'navFfBzJvxhkmRxFcGmhUhP',
+			type: 'code'
+		},
 		PgFkSEuFXmXvecwFNksBFfw: {
 			id: 'PgFkSEuFXmXvecwFNksBFfw',
 			type: 'paragraph',
@@ -1678,7 +1682,13 @@ const FULL_DOC = {
 			content: {
 				content:
 					'The editing infrastructure (Svedit) becomes an integral part of your website (at runtime). As a developer, all you do is define content types (e.g. Figure) and implement components (e.g. Figure.svelte) — they are editable by default.',
-				marks: [],
+				marks: [
+					{
+						start_offset: 187,
+						end_offset: 200,
+						node_id: 'navFfBzJvxhkmRxFcGmhUhP'
+					}
+				],
 				annotations: []
 			}
 		},
@@ -1721,14 +1731,60 @@ const FULL_DOC = {
 				annotations: []
 			}
 		},
+		HmtqQwebJfNZTxkxVPXYqmS: {
+			id: 'HmtqQwebJfNZTxkxVPXYqmS',
+			type: 'code'
+		},
+		jVSUMJCtymDbRBzQkYZxFBS: {
+			id: 'jVSUMJCtymDbRBzQkYZxFBS',
+			type: 'code'
+		},
+		EMykhKxbwJwtpjUjWNsbjux: {
+			id: 'EMykhKxbwJwtpjUjWNsbjux',
+			type: 'code'
+		},
+		rpcWCuxfwwtdcynuWRSHTtD: {
+			id: 'rpcWCuxfwwtdcynuWRSHTtD',
+			type: 'code'
+		},
+		aKmsDyWMzqfhZDZmuBJjWke: {
+			id: 'aKmsDyWMzqfhZDZmuBJjWke',
+			type: 'code'
+		},
 		wdKfHzXjUysbpyHBKWnjHPp: {
 			id: 'wdKfHzXjUysbpyHBKWnjHPp',
 			type: 'paragraph',
 			layout: 1,
 			content: {
 				content:
-					"All content lives in a single data/ directory — an SQLite database (db.sqlite3) and uploaded assets (assets/). Locally this defaults to ./data. On Fly.io it's a persistent volume at /data. To back up your site, copy this directory.",
-				marks: [],
+					"All content lives in a single data directory — an SQLite database (db.sqlite3) and uploaded assets (data/assets). Locally this defaults to ./data. On Fly.io it's a persistent volume at /data. To back up your site, copy this directory.",
+				marks: [
+					{
+						start_offset: 30,
+						end_offset: 34,
+						node_id: 'HmtqQwebJfNZTxkxVPXYqmS'
+					},
+					{
+						start_offset: 67,
+						end_offset: 77,
+						node_id: 'jVSUMJCtymDbRBzQkYZxFBS'
+					},
+					{
+						start_offset: 139,
+						end_offset: 145,
+						node_id: 'EMykhKxbwJwtpjUjWNsbjux'
+					},
+					{
+						start_offset: 185,
+						end_offset: 190,
+						node_id: 'rpcWCuxfwwtdcynuWRSHTtD'
+					},
+					{
+						start_offset: 100,
+						end_offset: 111,
+						node_id: 'aKmsDyWMzqfhZDZmuBJjWke'
+					}
+				],
 				annotations: []
 			}
 		},
@@ -1761,7 +1817,7 @@ const FULL_DOC = {
 			id: 'EjhqKzYMTknJuyFwbhJzyCA',
 			type: 'accordion_item',
 			title: {
-				content: 'How about AI?',
+				content: 'What about AI?',
 				marks: [],
 				annotations: []
 			},
@@ -1796,14 +1852,24 @@ const FULL_DOC = {
 				annotations: []
 			}
 		},
+		kSFbJCrUHPHdAYNZMvQhpYt: {
+			id: 'kSFbJCrUHPHdAYNZMvQhpYt',
+			type: 'code'
+		},
 		ZdwnbaVUbAPYzCZQhyJAYBr: {
 			id: 'ZdwnbaVUbAPYzCZQhyJAYBr',
 			type: 'paragraph',
 			layout: 1,
 			content: {
 				content:
-					'Editable runs on any VPS. All you need is Node.js and SQLite. The repository includes a Dockerfile and fly.toml for one-command deployment to Fly.io — see Deploying to Fly.io above. The same Dockerfile works with any platform that supports Docker.',
-				marks: [],
+					'Editable runs on any VPS. All you need is Node.js and SQLite. The repository includes a Dockerfile and fly.toml for one-command deployment to Fly.io. The same Dockerfile works with any platform that supports Docker.',
+				marks: [
+					{
+						start_offset: 103,
+						end_offset: 111,
+						node_id: 'kSFbJCrUHPHdAYNZMvQhpYt'
+					}
+				],
 				annotations: []
 			}
 		},
@@ -1821,6 +1887,10 @@ const FULL_DOC = {
 				annotations: []
 			}
 		},
+		JKJfShXHCwsmthNuJNtdJXx: {
+			id: 'JKJfShXHCwsmthNuJNtdJXx',
+			type: 'code'
+		},
 		prwbeXWyKVSsJXMPndjHYRS: {
 			id: 'prwbeXWyKVSsJXMPndjHYRS',
 			type: 'paragraph',
@@ -1828,7 +1898,13 @@ const FULL_DOC = {
 			content: {
 				content:
 					"There's no point for static builds with Editable. The whole idea is that users edit content live, without having to wait for a rebuild to finish. SQLite is fast. Very fast. Web-optimized images are generated client-side before upload: resizing happens in the browser via canvas and toBlob(), and WebP encoding is done with @jsquash/webp. It still makes sense to enable a proxy for images, so they can be delivered from a CDN.",
-				marks: [],
+				marks: [
+					{
+						start_offset: 323,
+						end_offset: 336,
+						node_id: 'JKJfShXHCwsmthNuJNtdJXx'
+					}
+				],
 				annotations: []
 			}
 		},
@@ -1852,7 +1928,7 @@ const FULL_DOC = {
 			layout: 1,
 			content: {
 				content:
-					"Editable will at least be source-available. There will likely be an affordable one-time registration fee (per domain) for personal use, and a fair fee for commercial projects. I'm still working on the details. If you’re open to discussion, join the technical preview.",
+					'Editable is source-available software. You can download it, run it locally, and modify it without restrictions. If you publicly launch a website backed by Editable, we ask you for a one-time registration fee for each launched domain.',
 				marks: [],
 				annotations: []
 			}
