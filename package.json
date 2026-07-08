@@ -41,7 +41,7 @@
 		"@sveltejs/adapter-node": "^5.5.4",
 		"nanoid": "^5.1.6",
 		"slugify": "^1.6.6",
-		"svedit": "^0.11.0",
+		"svedit": "^0.12.0",
 		"valibot": "^1.4.1"
 	}
 }
