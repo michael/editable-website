@@ -12,6 +12,12 @@ Adapt colors and fonts to deploy a beautiful site within minutes — or customiz
 
 ## Getting started
 
+### Prerequisites
+
+- **Node.js 24+** — Editable uses Node's built-in SQLite (`node:sqlite`), which needs a recent Node. This is also the version the production Docker image runs, so you develop against what you deploy. With [nvm](https://github.com/nvm-sh/nvm), `nvm use` picks it up from `.nvmrc`.
+- **git**
+- The [Fly.io CLI](https://fly.io/docs/flyctl/install/) (`flyctl`) — only needed later, for deployment and the sync/backup scripts.
+
 Clone the repository:
 
 ```sh
@@ -44,6 +50,8 @@ And run the development server:
 ```sh
 npm run dev
 ```
+
+On startup you'll see an `ExperimentalWarning` about `node:sqlite` — that's expected and harmless.
 
 To re-seed the database with the initial demo content, use:
 
@@ -85,28 +93,92 @@ For detailed documentation on building with Editable see [MANUAL.md](./MANUAL.md
 
 ## Deploy
 
-```
-fly apps create my-editable-website
+Editable deploys to [Fly.io](https://fly.io). Install [`flyctl`](https://fly.io/docs/flyctl/install/), then sign in (opens your browser; creates a free account if you don't have one):
+
+```sh
+fly auth login
 ```
 
+Pick a globally-unique app name and set it once for the rest of this terminal session — every command below reuses it:
+
+```sh
+APP=your-unique-app-name
 ```
-fly secrets set -a my-editable-website \
-  ORIGIN='https://my-editable-website.fly.dev' \
+
+Create the app:
+
+```sh
+fly apps create "$APP"
+```
+
+Set the secrets. `ORIGIN` must be your app's public URL, so canonical links and social preview images resolve correctly:
+
+```sh
+fly secrets set -a "$APP" \
+  ORIGIN="https://$APP.fly.dev" \
   BODY_SIZE_LIMIT='30000000' \
   ADMIN_PASSWORD='change-me'
 ```
 
 Optionally set `ASSET_GRACE_PERIOD_DAYS` (default 7): unreferenced asset files are kept on disk this many days after losing their last reference. This is also the safe window for rolling back a database backup against the live assets folder without ending up with dead image references.
 
-```
-fly deploy -a my-editable-website --primary-region fra --vm-size shared-cpu-1x --vm-memory 256 --volume-initial-size 1
+Deploy. The first deploy also creates the 1 GB `data` volume declared under `[mounts]` in `fly.toml`:
+
+```sh
+fly deploy -a "$APP" --primary-region fra --vm-size shared-cpu-1x --vm-memory 256 --volume-initial-size 1
 ```
 
-You now probably want to watch the logs as the app is booting up.
+Watch it boot, and confirm the volume was created:
+
+```sh
+fly logs -a "$APP"
+fly volumes list -a "$APP"
+```
+
+Then open your site and log in with the `ADMIN_PASSWORD` you set:
+
+```sh
+fly open -a "$APP"
+```
+
+That same name is what you pass as `FLY_APP` to the sync and backup scripts below. Because those scripts read it from the environment (not the command line), export it: `export FLY_APP="$APP"`.
+
+## Backup, sync & recovery
+
+`scripts/data.sh` moves the `data/` folder between your machine and a Fly.io deployment. Set `FLY_APP` to your app name.
 
 ```
-fly logs -a my-editable-website
+FLY_APP=my-editable-website npm run data:pull   # remote → local (for local development)
+FLY_APP=my-editable-website npm run data:push    # local → remote
 ```
+
+Pull the live site down to work on it locally, or push a local state up to production. Both directions sync the database and any missing assets.
+
+### Why not just copy the folder?
+
+The database runs in SQLite [WAL mode](https://www.sqlite.org/wal.html): recent writes live in a `db.sqlite3-wal` sidecar, not the main file. Copying the files of a running database loses or corrupts data. `data.sh` instead takes a consistent `VACUUM INTO` snapshot, which is safe even while the site is being edited. **Do not** back up by copying `data/` of a running instance.
+
+Assets are content-addressed and immutable, so they only ever need to be added, never overwritten — syncs transfer just the files the other side is missing.
+
+### Safety and undo
+
+`push` is guarded so a bad push can't quietly break production:
+
+- The local database is validated (integrity check + every referenced asset present) before anything is sent.
+- The current remote database is backed up first — on the volume **and** mirrored to `data-backups/` locally — before the new one is applied.
+- The new database is swapped in at boot, when no connection is open, so the live database can never be corrupted mid-write.
+- After the swap, the remote database is re-validated; if it fails, you're told the exact restore command.
+
+Every push prints an undo command. To roll back:
+
+```
+FLY_APP=my-editable-website ./scripts/data.sh backups              # list restore points
+FLY_APP=my-editable-website ./scripts/data.sh restore <name>       # roll back to one
+```
+
+A rollback restores only the database; it re-points at the same immutable asset pool, which is why `ASSET_GRACE_PERIOD_DAYS` (see above) defines how far back you can safely go. Take an on-demand backup any time with `./scripts/data.sh backup`.
+
+> Don't edit the site while a push is in progress — the safeguard assumes the remote state is stable for the moment it takes to snapshot and swap.
 
 ## FAQs
 
@@ -120,7 +192,7 @@ There is experimental support for mobile editing — it works in principle. The 
 
 ### Where is the data stored?
 
-All content lives in a single `data/` directory — an SQLite database (`db.sqlite3`) and uploaded assets (`assets/`). Locally this defaults to `./data`. On Fly.io it's a persistent volume at `/data`. To back up your site, copy this directory.
+All content lives in a single `data/` directory — an SQLite database (`db.sqlite3`) and uploaded assets (`assets/`). Locally this defaults to `./data`. On Fly.io it's a persistent volume at `/data`. See [Backup, sync & recovery](#backup-sync--recovery) for how to snapshot and move it safely (don't just copy the folder of a running instance — the database is in WAL mode).
 
 ### How about AI?
 
@@ -132,7 +204,7 @@ Editable is modular and you can and should reuse code across projects. However, 
 
 ### Hosting?
 
-Editable runs on any VPS. All you need is Node.js and SQLite. The repository includes a `Dockerfile` and `fly.toml` for one-command deployment to [Fly.io](https://fly.io) — see [Deploying to Fly.io](#deploying-to-flyio) above. The same Dockerfile works with any platform that supports Docker.
+Editable runs on any VPS. All you need is Node.js and SQLite. The repository includes a `Dockerfile` and `fly.toml` for one-command deployment to [Fly.io](https://fly.io) — see [Deploy](#deploy) above. The same Dockerfile works with any platform that supports Docker.
 
 ### Static builds?
 
