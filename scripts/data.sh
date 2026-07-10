@@ -15,13 +15,14 @@
 #     DB at boot with no live connection open.
 #
 # Usage
-#   ./scripts/data.sh pull -a <app>            # remote -> local
-#   ./scripts/data.sh push -a <app> [--yes]    # local  -> remote
-#   ./scripts/data.sh restore <name> -a <app>  # roll remote back to a backup
-#   ./scripts/data.sh backups -a <app>         # list remote backups
-#   ./scripts/data.sh backup -a <app>          # take a remote backup only
+#   ./scripts/data.sh pull             # remote -> local
+#   ./scripts/data.sh push [--yes]     # local  -> remote
+#   ./scripts/data.sh restore <name>   # roll remote back to a backup
+#   ./scripts/data.sh backups          # list remote backups
+#   ./scripts/data.sh backup           # take a remote backup only
 #
-# The app can also be set via the FLY_APP environment variable; -a wins.
+# The target app is read from fly.toml (app = '...'), same as the fly CLI.
+# Override with -a <app> or the FLY_APP environment variable (-a wins).
 #
 set -euo pipefail
 
@@ -48,6 +49,12 @@ done
 set -- ${ARGS[@]+"${ARGS[@]}"}
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Fall back to the app declared in fly.toml (-a and FLY_APP take precedence).
+if [ -z "$APP" ] && [ -f "$SCRIPT_DIR/../fly.toml" ]; then
+	APP="$(sed -n -E "s/^app[[:space:]]*=[[:space:]]*[\"']?([A-Za-z0-9-]+).*/\1/p" "$SCRIPT_DIR/../fly.toml" | sed -n '1p')"
+fi
+
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
@@ -55,7 +62,7 @@ die() { echo "Error: $*" >&2; exit 1; }
 info() { echo "→ $*"; }
 
 need_app() {
-	[ -n "$APP" ] || die "Pass your Fly.io app name with -a (e.g. $0 $1 -a my-site)"
+	[ -n "$APP" ] || die "No app configured — set app = 'my-site' in fly.toml, or pass -a <app>"
 }
 
 confirm() {
@@ -282,7 +289,7 @@ case "${1:-}" in
 	backup) cmd_backup ;;
 	backups) cmd_backups ;;
 	*)
-		echo "Usage: $0 {pull|push [--yes]|restore <name> [--yes]|backup|backups} -a <app>" >&2
+		echo "Usage: $0 {pull|push [--yes]|restore <name> [--yes]|backup|backups} [-a <app>]" >&2
 		exit 2
 		;;
 esac

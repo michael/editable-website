@@ -18,12 +18,27 @@ Adapt colors and fonts to deploy a beautiful site within minutes — or customiz
 - **git**
 - The [Fly.io CLI](https://fly.io/docs/flyctl/install/) (`flyctl`) — only needed later, for deployment and the sync/backup scripts.
 
-Clone the repository:
+### Your site is your repo
+
+Each Editable site lives in its own checkout with its own git repository — one folder, one app, one deployment. You start from Editable as a template, own all the code from day one, and keep Editable connected as `upstream` so you can pull in improvements later (see [Upgrading](#upgrading)).
+
+Clone Editable into a folder named after your site, and make Editable the `upstream` remote:
 
 ```sh
-git clone https://github.com/michael/editable-website.git
-cd editable-website
+git clone https://github.com/michael/editable-website.git my-site
+cd my-site
+git remote rename origin upstream
 ```
+
+Then create a private repository of your own and make it `origin` — your content is backed up by the [data scripts](#backup-sync--recovery), this backs up your code:
+
+```sh
+gh repo create my-site --private --source=. --push
+```
+
+(Without the [GitHub CLI](https://cli.github.com): create an empty private repository on GitHub, then `git remote add origin <url>` and `git push -u origin main`.)
+
+From here on, `git push` saves your work to your own repo, and `git pull upstream main` fetches Editable updates.
 
 Install dependencies:
 
@@ -59,33 +74,19 @@ To re-seed the database with the initial demo content, use:
 npm run dev:seed
 ```
 
-Next, you probably want to adjust the colors and fonts in [app.css](./src/app.css) to match your style.
+Next, you probably want to adjust the colors and fonts to match your style. Put your overrides in [custom.css](./src/custom.css) — that file is yours, upstream Editable updates never touch it, which keeps future upgrades conflict-free. It loads after [app.css](./src/app.css), so any variable defined there can be overridden:
 
 ```css
 :root {
 	--background: oklch(0.98 0 0);
 	--foreground: oklch(0 0 0);
-	--muted: oklch(1 0 0);
-	--border: oklch(0.88 0 0);
-	--muted-foreground: oklch(0.55 0 0);
 	--accent: oklch(0.21 0.034 264);
-	--accent-foreground: oklch(0.98 0 0);
-}
-
-@theme {
 	--font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
 	--font-serif: 'Libertinos Serif Display', ui-serif, Georgia, serif;
-	--font-mono:
-		ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
-		monospace;
-	--shadow-sm: 0 2px 4px -1px oklch(0 0 0 / 0.12), 0 1px 2px -1px oklch(0 0 0 / 0.12);
-	--shadow-xl: 0 20px 25px -5px oklch(0 0 0 / 0.12), 0 8px 10px -6px oklch(0 0 0 / 0.12);
 }
 ```
 
 However, likely you'll want to customize more than that. E.g. edit [Button.svelte](./src/routes/components/Button.svelte) to create your very own distinct button style. Anything in [src/routes](./src/routes/) is meant to be customized by you for your project.
-
-<!--**Note:** After `git pull`, delete `data/site.sqlite3` to pick up schema changes.-->
 
 ## Manual
 
@@ -99,16 +100,28 @@ Editable deploys to [Fly.io](https://fly.io). Install [`flyctl`](https://fly.io/
 fly auth login
 ```
 
-Create the app. Pick a globally-unique name — the commands below use `my-site` as the example name; replace it with yours everywhere it appears:
+Create the app. Pick a globally-unique name:
 
 ```sh
 fly apps create my-site
 ```
 
+Now pin that name in [fly.toml](./fly.toml) — uncomment the `app` line and set it:
+
+```toml
+app = "my-site"
+```
+
+This is your checkout's deployment identity: every `fly` command and data script from here on reads its target from it, so nothing needs an app name on the command line anymore. `fly.toml` also holds the region and VM sizing — adjust `primary_region` to a [region near you](https://fly.io/docs/reference/regions/) and commit:
+
+```sh
+git commit -am "Deploy target: my-site" && git push
+```
+
 Set the secrets. `ORIGIN` must be your app's public URL, so canonical links and social preview images resolve correctly. Pick a strong `ADMIN_PASSWORD` — it's the login to your live site:
 
 ```sh
-fly secrets set -a my-site \
+fly secrets set \
   ORIGIN="https://my-site.fly.dev" \
   BODY_SIZE_LIMIT='30000000' \
   ADMIN_PASSWORD='pick-a-strong-password'
@@ -116,34 +129,34 @@ fly secrets set -a my-site \
 
 Optionally set `ASSET_GRACE_PERIOD_DAYS` (default 7): unreferenced asset files are kept on disk this many days after losing their last reference. This is also the safe window for rolling back a database backup against the live assets folder without ending up with dead image references.
 
-Deploy. Replace `fra` with a [region near you](https://fly.io/docs/reference/regions/). The first deploy also creates the 1 GB `data` volume declared under `[mounts]` in `fly.toml`:
+Deploy. The first deploy also creates the 1 GB `data` volume declared under `[mounts]` in `fly.toml`:
 
 ```sh
-fly deploy -a my-site --primary-region fra --vm-size shared-cpu-1x --vm-memory 256 --volume-initial-size 1
+fly deploy
 ```
 
 Watch it boot, and confirm the volume was created:
 
 ```sh
-fly logs -a my-site
-fly volumes list -a my-site
+fly logs
+fly volumes list
 ```
 
 Then open your site and log in with the `ADMIN_PASSWORD` you set:
 
 ```sh
-fly open -a my-site
+fly open
 ```
 
-The sync and backup scripts below take the app name the same way, via `-a`. Every command names its target explicitly — there is no stored default, so nothing ever deploys or pushes to the wrong app because of leftover state.
+Because each checkout manages exactly one app (see [Your site is your repo](#your-site-is-your-repo)), the target always comes from `fly.toml` — there's no app name to get wrong. If you ever do need to address a different app (say, a staging copy), every `fly` command and data script accepts `-a <app>` as an explicit override.
 
 ## Backup, sync & recovery
 
-`scripts/data.sh` moves the `data/` folder between your machine and a Fly.io deployment. Like the `fly` commands above, it takes your app name via `-a`:
+The data scripts move the `data/` folder between your machine and your deployment. Like the `fly` commands, they read the target app from `fly.toml`:
 
 ```
-./scripts/data.sh pull -a my-site   # remote → local (for local development)
-./scripts/data.sh push -a my-site   # local → remote
+npm run data:pull   # remote → local (for local development)
+npm run data:push   # local → remote
 ```
 
 Pull the live site down to work on it locally, or push a local state up to production. Both directions sync the database and any missing assets.
@@ -166,13 +179,31 @@ Assets are content-addressed and immutable, so they only ever need to be added, 
 Every push prints an undo command. To roll back:
 
 ```
-./scripts/data.sh backups -a my-site          # list restore points
-./scripts/data.sh restore <name> -a my-site   # roll back to one
+npm run data:backups          # list restore points
+npm run data:restore <name>   # roll back to one
 ```
 
-A rollback restores only the database; it re-points at the same immutable asset pool, which is why `ASSET_GRACE_PERIOD_DAYS` (see above) defines how far back you can safely go. Take an on-demand backup any time with `./scripts/data.sh backup -a my-site`.
+A rollback restores only the database; it re-points at the same immutable asset pool, which is why `ASSET_GRACE_PERIOD_DAYS` (see above) defines how far back you can safely go. Take an on-demand backup any time with `npm run data:backup`.
 
 > Don't edit the site while a push is in progress — the safeguard assumes the remote state is stable for the moment it takes to snapshot and swap.
+
+## Upgrading
+
+Editable improves over time, and because your site keeps it as the `upstream` remote (see [Your site is your repo](#your-site-is-your-repo)), upgrading is a git pull. The ritual, in order:
+
+```sh
+npm run data:backup       # snapshot the live database first
+git pull upstream main    # get the latest Editable
+npm install               # update dependencies (including svedit)
+npm run data:pull         # bring your live content local
+npm run dev               # test the new code against your real content
+fly deploy                # ship it
+git push                  # your repo now holds the upgraded state
+```
+
+The order is the safety net: back up before touching anything, and test the new code against your real content locally before deploying it. Database schema migrations run automatically when the new code boots, locally and on the server.
+
+Merge conflicts can only occur in files you changed. If your customizations live in the files meant for you — [custom.css](./src/custom.css), the `app` line in `fly.toml`, and your own code in [src/routes](./src/routes/) — pulls are typically conflict-free, since upstream never touches `custom.css` and rarely touches the rest. The more you've rewritten, the more the pull becomes a starting point for a manual merge — at that point, review what changed upstream and adopt what applies.
 
 ## FAQs
 

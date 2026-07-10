@@ -17,7 +17,10 @@
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint .",
 		"data:pull": "./scripts/data.sh pull",
-		"data:push": "./scripts/data.sh push"
+		"data:push": "./scripts/data.sh push",
+		"data:backup": "./scripts/data.sh backup",
+		"data:backups": "./scripts/data.sh backups",
+		"data:restore": "./scripts/data.sh restore"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.3",

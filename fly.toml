@@ -1,3 +1,10 @@
+# Your app's identity — uncomment and set after `fly apps create` (see README → Deploy),
+# then commit. Every fly command and data script in this checkout targets this app.
+# app = "my-site"
+
+# Pick a region near you: https://fly.io/docs/reference/regions/
+primary_region = "fra"
+
 [build]
   dockerfile = "Dockerfile"
 
@@ -7,9 +14,14 @@
 [deploy]
   strategy = "immediate"
 
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"
+
 [mounts]
   source = "data"
   destination = "/data"
+  initial_size = "1GB"
   auto_extend_size_threshold = 80
   auto_extend_size_increment = "1GB"
   auto_extend_size_limit = "5GB"
