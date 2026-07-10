@@ -99,57 +99,51 @@ Editable deploys to [Fly.io](https://fly.io). Install [`flyctl`](https://fly.io/
 fly auth login
 ```
 
-Pick a globally-unique app name and set it once for the rest of this terminal session — every command below reuses it:
+Create the app. Pick a globally-unique name — the commands below use `my-site` as the example name; replace it with yours everywhere it appears:
 
 ```sh
-APP=your-unique-app-name
+fly apps create my-site
 ```
 
-Create the app:
+Set the secrets. `ORIGIN` must be your app's public URL, so canonical links and social preview images resolve correctly. Pick a strong `ADMIN_PASSWORD` — it's the login to your live site:
 
 ```sh
-fly apps create "$APP"
-```
-
-Set the secrets. `ORIGIN` must be your app's public URL, so canonical links and social preview images resolve correctly:
-
-```sh
-fly secrets set -a "$APP" \
-  ORIGIN="https://$APP.fly.dev" \
+fly secrets set -a my-site \
+  ORIGIN="https://my-site.fly.dev" \
   BODY_SIZE_LIMIT='30000000' \
-  ADMIN_PASSWORD='change-me'
+  ADMIN_PASSWORD='pick-a-strong-password'
 ```
 
 Optionally set `ASSET_GRACE_PERIOD_DAYS` (default 7): unreferenced asset files are kept on disk this many days after losing their last reference. This is also the safe window for rolling back a database backup against the live assets folder without ending up with dead image references.
 
-Deploy. The first deploy also creates the 1 GB `data` volume declared under `[mounts]` in `fly.toml`:
+Deploy. Replace `fra` with a [region near you](https://fly.io/docs/reference/regions/). The first deploy also creates the 1 GB `data` volume declared under `[mounts]` in `fly.toml`:
 
 ```sh
-fly deploy -a "$APP" --primary-region fra --vm-size shared-cpu-1x --vm-memory 256 --volume-initial-size 1
+fly deploy -a my-site --primary-region fra --vm-size shared-cpu-1x --vm-memory 256 --volume-initial-size 1
 ```
 
 Watch it boot, and confirm the volume was created:
 
 ```sh
-fly logs -a "$APP"
-fly volumes list -a "$APP"
+fly logs -a my-site
+fly volumes list -a my-site
 ```
 
 Then open your site and log in with the `ADMIN_PASSWORD` you set:
 
 ```sh
-fly open -a "$APP"
+fly open -a my-site
 ```
 
-That same name is what you pass as `FLY_APP` to the sync and backup scripts below. Because those scripts read it from the environment (not the command line), export it: `export FLY_APP="$APP"`.
+The sync and backup scripts below take the app name the same way, via `-a`. Every command names its target explicitly — there is no stored default, so nothing ever deploys or pushes to the wrong app because of leftover state.
 
 ## Backup, sync & recovery
 
-`scripts/data.sh` moves the `data/` folder between your machine and a Fly.io deployment. Set `FLY_APP` to your app name.
+`scripts/data.sh` moves the `data/` folder between your machine and a Fly.io deployment. Like the `fly` commands above, it takes your app name via `-a`:
 
 ```
-FLY_APP=my-editable-website npm run data:pull   # remote → local (for local development)
-FLY_APP=my-editable-website npm run data:push    # local → remote
+./scripts/data.sh pull -a my-site   # remote → local (for local development)
+./scripts/data.sh push -a my-site   # local → remote
 ```
 
 Pull the live site down to work on it locally, or push a local state up to production. Both directions sync the database and any missing assets.
@@ -172,11 +166,11 @@ Assets are content-addressed and immutable, so they only ever need to be added, 
 Every push prints an undo command. To roll back:
 
 ```
-FLY_APP=my-editable-website ./scripts/data.sh backups              # list restore points
-FLY_APP=my-editable-website ./scripts/data.sh restore <name>       # roll back to one
+./scripts/data.sh backups -a my-site          # list restore points
+./scripts/data.sh restore <name> -a my-site   # roll back to one
 ```
 
-A rollback restores only the database; it re-points at the same immutable asset pool, which is why `ASSET_GRACE_PERIOD_DAYS` (see above) defines how far back you can safely go. Take an on-demand backup any time with `./scripts/data.sh backup`.
+A rollback restores only the database; it re-points at the same immutable asset pool, which is why `ASSET_GRACE_PERIOD_DAYS` (see above) defines how far back you can safely go. Take an on-demand backup any time with `./scripts/data.sh backup -a my-site`.
 
 > Don't edit the site while a push is in progress — the safeguard assumes the remote state is stable for the moment it takes to snapshot and swap.
 

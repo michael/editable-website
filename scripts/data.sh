@@ -15,11 +15,13 @@
 #     DB at boot with no live connection open.
 #
 # Usage
-#   FLY_APP=<app> ./scripts/data.sh pull            # remote -> local
-#   FLY_APP=<app> ./scripts/data.sh push [--yes]    # local  -> remote
-#   FLY_APP=<app> ./scripts/data.sh restore <name>  # roll remote back to a backup
-#   FLY_APP=<app> ./scripts/data.sh backups         # list remote backups
-#   FLY_APP=<app> ./scripts/data.sh backup          # take a remote backup only
+#   ./scripts/data.sh pull -a <app>            # remote -> local
+#   ./scripts/data.sh push -a <app> [--yes]    # local  -> remote
+#   ./scripts/data.sh restore <name> -a <app>  # roll remote back to a backup
+#   ./scripts/data.sh backups -a <app>         # list remote backups
+#   ./scripts/data.sh backup -a <app>          # take a remote backup only
+#
+# The app can also be set via the FLY_APP environment variable; -a wins.
 #
 set -euo pipefail
 
@@ -30,6 +32,21 @@ KEEP_BACKUPS="${KEEP_BACKUPS:-10}"
 APP="${FLY_APP:-}"
 ASSET_RE='^[a-f0-9]{64}(\.|$)'
 
+# Strip -a <app> from anywhere in the arg list (like fly's own commands).
+ARGS=()
+while [ $# -gt 0 ]; do
+	case "$1" in
+		-a)
+			[ $# -ge 2 ] || { echo "Error: -a requires an app name" >&2; exit 2; }
+			APP="$2"
+			shift
+			;;
+		*) ARGS+=("$1") ;;
+	esac
+	shift
+done
+set -- ${ARGS[@]+"${ARGS[@]}"}
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
@@ -38,7 +55,7 @@ die() { echo "Error: $*" >&2; exit 1; }
 info() { echo "→ $*"; }
 
 need_app() {
-	[ -n "$APP" ] || die "Set FLY_APP to your Fly.io app name (e.g. FLY_APP=my-site $0 $1)"
+	[ -n "$APP" ] || die "Pass your Fly.io app name with -a (e.g. $0 $1 -a my-site)"
 }
 
 confirm() {
@@ -51,7 +68,8 @@ confirm() {
 MID=""
 ensure_running() {
 	# sed (not head) reads all input, avoiding a SIGPIPE that pipefail would trip.
-	MID="$(fly machine list -a "$APP" -q | sed -n '1p')"
+	# flyctl pads the -q output with whitespace, so strip it.
+	MID="$(fly machine list -a "$APP" -q | sed -n '1p' | tr -d '[:space:]')"
 	[ -n "$MID" ] || die "No machine found for app '$APP'."
 	fly machine start "$MID" -a "$APP" >/dev/null 2>&1 || true
 }
@@ -74,8 +92,9 @@ sftp_get() { fly ssh sftp get -a "$APP" --machine "$MID" "$1" "$2"; }
 sftp_put() { fly ssh sftp put -a "$APP" --machine "$MID" "$1" "$2"; }
 
 # Backup names double as identifiers, so they must be unique even for two
-# operations in the same second (a random suffix, not just seconds).
-timestamp() { printf '%s-%04x' "$(date +%Y%m%d-%H%M%S)" "$RANDOM"; }
+# operations in the same second (a random suffix, not just seconds). They
+# carry the app name so backups of multiple apps can share data-backups/.
+timestamp() { printf '%s-%s-%04x' "$APP" "$(date +%Y%m%d-%H%M%S)" "$RANDOM"; }
 
 # Consistent local DB snapshot to $1; verifies integrity + referenced assets.
 snapshot_local_db() {
@@ -136,7 +155,7 @@ cmd_push() {
 
 	echo
 	echo "✓ Pushed to '$APP'. Undo with:"
-	echo "    FLY_APP=$APP $0 restore $ts"
+	echo "    $0 restore $ts -a $APP"
 }
 
 # ---- pull: remote -> local -------------------------------------------------
@@ -263,7 +282,7 @@ case "${1:-}" in
 	backup) cmd_backup ;;
 	backups) cmd_backups ;;
 	*)
-		echo "Usage: FLY_APP=<app> $0 {pull|push [--yes]|restore <name> [--yes]|backup|backups}" >&2
+		echo "Usage: $0 {pull|push [--yes]|restore <name> [--yes]|backup|backups} -a <app>" >&2
 		exit 2
 		;;
 esac
