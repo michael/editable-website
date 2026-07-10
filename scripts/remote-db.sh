@@ -35,7 +35,9 @@ case "$cmd" in
 	promote-stage)
 		# Validate an uploaded snapshot, then move it into the swap slot.
 		part="$DATA/incoming/db.sqlite3.part"
-		res=$(sqlite3 "$part" 'PRAGMA integrity_check')
+		# -list -noheader: newer sqlite3 CLIs render box tables on a tty (fly ssh
+		# allocates one), which would break the string comparison below.
+		res=$(sqlite3 -list -noheader "$part" 'PRAGMA integrity_check')
 		[ "$res" = "ok" ] || { echo "integrity_check failed: $res" >&2; exit 1; }
 		mv "$part" "$DATA/incoming/db.sqlite3"
 		;;
@@ -48,7 +50,8 @@ case "$cmd" in
 		;;
 
 	integrity)
-		sqlite3 "${1:-$DATA/db.sqlite3}" 'PRAGMA integrity_check'
+		# -list -noheader: callers compare this output to 'ok' (see promote-stage).
+		sqlite3 -list -noheader "${1:-$DATA/db.sqlite3}" 'PRAGMA integrity_check'
 		;;
 
 	check-assets)

@@ -133,6 +133,8 @@ cmd_push() {
 
 	info "Backing up current remote database ($ts)…"
 	remote prepare
+	# Clear leftovers from any interrupted run — sftp put refuses to overwrite.
+	remote clean-incoming
 	remote backup "$ts" >/dev/null
 	sftp_get "$REMOTE_DATA/backups/$ts.db" "$BACKUP_DIR_LOCAL/$ts.db"
 	remote prune-backups "$KEEP_BACKUPS"
@@ -143,7 +145,9 @@ cmd_push() {
 	comm -23 "$TMP/local_assets" "$TMP/remote_assets" >"$TMP/to_push" || true
 	if [ -s "$TMP/to_push" ]; then
 		info "  $(wc -l <"$TMP/to_push" | tr -d ' ') new asset entr(y/ies)"
-		tar -czf "$TMP/assets.tgz" -C "$DATA_DIR_LOCAL/assets" --exclude '.DS_Store' -T "$TMP/to_push"
+		# COPYFILE_DISABLE: keep macOS tar from embedding xattr headers that
+		# GNU tar on the server warns about.
+		COPYFILE_DISABLE=1 tar -czf "$TMP/assets.tgz" -C "$DATA_DIR_LOCAL/assets" --exclude '.DS_Store' -T "$TMP/to_push"
 		sftp_put "$TMP/assets.tgz" "$REMOTE_DATA/incoming/assets.tgz"
 		remote extract-assets
 	else
@@ -179,6 +183,9 @@ cmd_pull() {
 
 	info "Snapshotting remote database…"
 	remote prepare
+	# Clear leftovers from any interrupted run — VACUUM INTO and sftp put both
+	# refuse to overwrite existing files.
+	remote clean-incoming
 	remote snapshot "$REMOTE_DATA/incoming/pull.db"
 	sftp_get "$REMOTE_DATA/incoming/pull.db" "$TMP/pull.db"
 	[ "$(sqlite3 "$TMP/pull.db" 'PRAGMA integrity_check')" = "ok" ] || die "Downloaded snapshot failed integrity_check"
@@ -234,6 +241,8 @@ cmd_restore() {
 	local ts; ts="$(timestamp)"
 	info "Backing up current remote database before restore ($ts)…"
 	remote prepare
+	# Clear leftovers from any interrupted run — sftp put refuses to overwrite.
+	remote clean-incoming
 	remote backup "$ts" >/dev/null
 	sftp_get "$REMOTE_DATA/backups/$ts.db" "$BACKUP_DIR_LOCAL/$ts.db"
 
