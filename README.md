@@ -187,6 +187,46 @@ A rollback restores only the database; it re-points at the same immutable asset 
 
 > Don't edit the site while a push is in progress — the safeguard assumes the remote state is stable for the moment it takes to snapshot and swap.
 
+## Automated backups (optional)
+
+> **Status**: planned, not yet implemented — see [PLAN_AUTOMATED_BACKUP.md](./PLAN_AUTOMATED_BACKUP.md). This section documents the intended behavior.
+
+The manual snapshots above are deliberate actions you take. Optionally, Editable can also back itself up continuously to an S3-compatible bucket: the database is replicated on every write via [Litestream](https://litestream.io) (with point-in-time recovery), and uploaded assets are mirrored to the bucket as they arrive. Everything is write-driven — there are no cron jobs, and suspend mode (`auto_stop_machines = "suspend"`) is fully supported: a suspended machine isn't writing anything, so there's nothing to miss.
+
+### Enabling
+
+Create a bucket and set the secrets. On Fly, [Tigris](https://fly.io/docs/tigris/) does both in one command:
+
+```sh
+fly storage create
+```
+
+That's it — the presence of the `BUCKET_NAME` secret enables automated backups; without it, nothing changes. Any S3-compatible provider (Cloudflare R2, AWS S3, MinIO) works by setting the same secrets manually:
+
+```sh
+fly secrets set \
+  BUCKET_NAME='my-site-backup' \
+  AWS_ENDPOINT_URL_S3='https://...' \
+  AWS_REGION='auto' \
+  AWS_ACCESS_KEY_ID='...' \
+  AWS_SECRET_ACCESS_KEY='...'
+```
+
+Use one bucket per site. The bucket is append-only: local asset cleanup is never mirrored to it, so unlike volume-local rollbacks, restores from the bucket are not bounded by `ASSET_GRACE_PERIOD_DAYS` — every asset ever uploaded is still there.
+
+### What you get
+
+- **Disaster recovery, automatically.** On boot, a machine with an empty volume restores the database from the bucket and reconciles assets. If your volume (or app, or region) is ever lost: `fly deploy` against a fresh volume brings your site back.
+- **Point-in-time restore to production.** Roll the live database back to any moment, shipped through the same guarded swap as a push (pre-restore backup, verification):
+
+  ```sh
+  npm run data:restore-cloud -- --at "2026-07-10T15:00"
+  ```
+
+- **Restore to local.** Rebuild a full local working copy from nothing but the bucket — new laptop, or inspecting what the site looked like at a point in time, without touching production.
+
+Continuous backups complement the manual snapshots rather than replacing them: `data:push`/`data:pull`/`data:backup`/`data:restore` remain the tools for deliberate, operational state moves.
+
 ## Upgrading
 
 Editable improves over time, and because your site keeps it as the `upstream` remote (see [Your site is your repo](#your-site-is-your-repo)), upgrading is a git pull. The ritual, in order:
