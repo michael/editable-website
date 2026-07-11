@@ -1,104 +1,82 @@
 # Plan: automated remote backups
 
-Status: draft, not implemented. This plan adds continuous, automated off-site backups (database + assets) to an S3-compatible bucket, with point-in-time recovery — while keeping Fly's suspend mode a first-class option.
+Status: draft, not implemented. Continuous off-site backups (database + assets) to an S3-compatible bucket, with point-in-time recovery. Suspend mode stays fully supported.
 
 ## Design principle: write-driven, not time-driven
 
-No cron jobs, on the machine or anywhere else. A suspended machine is by definition one where nothing is being written, so a backup system that reacts to writes has nothing to miss while suspended. Every piece below is triggered by a write or by boot — never by a clock.
+No cron jobs, on the machine or anywhere else. Every backup action is triggered by a write or by boot, never by a clock. A suspended machine writes nothing, so there is nothing to miss — which is what makes suspend mode (`auto_stop_machines = "suspend"`) safe to keep.
 
-This is what makes suspend mode (`auto_stop_machines = "suspend"`) fully supported: small sites get scale-to-zero economics and lower energy use without a weaker backup story.
+## Backing up (server → bucket)
 
-## The two data streams
+Three mechanisms, all upload-only. None of them ever changes anything on the server.
 
-### Database → Litestream (continuous replication)
+### Database: Litestream
 
-[Litestream](https://litestream.io) tails the SQLite WAL (Editable already runs WAL mode) and streams segments to the bucket. It provides point-in-time recovery: restore the database to any moment, not just to discrete snapshots.
+[Litestream](https://litestream.io) tails the SQLite WAL (Editable already runs WAL mode) and streams every change to the bucket. This gives point-in-time recovery, not just discrete snapshots. It wraps the app process (`litestream replicate -exec "<app start command>"`), so it runs exactly when the app runs and suspends with it.
 
-- Runs inside the machine, wrapping the app process: `litestream replicate -exec "<app start command>"`. Its lifecycle is the app's lifecycle — awake when the app is awake, suspended when it suspends.
-- Idle when nothing writes. No writes can happen while suspended, so nothing is missed.
+### Assets: mirror on upload
 
-### Assets → mirror on upload + reconcile on boot
+When a user uploads an asset, the server also puts it to the bucket. Async and best-effort — a bucket hiccup must never fail the user's upload, so a mirror can occasionally be missed.
 
-Assets only enter the system through an HTTP upload to the app — the machine is guaranteed awake at that moment. Two mechanisms, both write/boot-driven:
+### Assets: reconciliation sweep at boot
 
-1. **Mirror on upload**: when an asset is saved, also put it to the bucket (async, non-blocking — an S3 hiccup must not fail the user's upload).
-2. **Reconciliation sweep on boot**: compare the local `assets/` directory against the bucket listing and upload whatever is missing. Content-addressed, immutable names make this trivially correct and cheap. Boot happens on every deploy and every data-push swap, so the sweep runs often without any scheduler.
-
-Deliberately *not* coupled to Litestream activity — the app's own write path is the simpler, more direct hook.
+Catches those misses. At boot, the server diffs the filenames in `/data/assets` against the bucket's `assets/` listing and uploads whatever the bucket lacks. Filenames are content hashes and files are immutable, so a name present on both sides proves the content matches — the sweep is a plain set difference. Boots happen on every deploy and every data-push swap, so misses are repaired promptly.
 
 ### The bucket is append-only
 
-Local asset garbage collection (`ASSET_GRACE_PERIOD_DAYS`) is never mirrored to the bucket. Consequence: restoring an old database against the bucket has **no grace-period bound** — every asset ever uploaded is still there. The grace period only limits restores against the volume's local asset pool. Storage is cheap; an optional S3 lifecycle rule can archive cold objects later if needed.
+Local asset garbage collection (`ASSET_GRACE_PERIOD_DAYS`) is never mirrored to the bucket, so restores from the bucket are not bounded by the grace period — every asset ever uploaded is still there. An optional S3 lifecycle rule can archive cold objects if storage ever matters.
 
-## Suspend mode analysis
+## Restoring (bucket → server or laptop)
 
-- While suspended: zero writes, zero backup work needed. "Nothing happening" is a correct state, not a missed schedule.
-- The one real window: Litestream syncs on an interval (default 1s). A suspend arriving immediately after a write can freeze a not-yet-shipped segment in memory. Fly's suspend preserves memory and resumes on the next request, so the segment ships on wake. Data is at risk only in the scenario "write → suspend → volume destroyed before any future wake" — a seconds-wide window on a site someone was actively editing. Documented honestly; not worth engineering around.
+Restores are separate mechanisms and run only in two cases: explicitly invoked, or at boot when the volume has **no database at all** (disaster recovery). A normal boot on a healthy machine never downloads anything.
 
-## User-facing behavior
+All restores download **only the assets the restored database references** — the database lists its asset hashes, so despite the bucket holding full history, a restore transfers just the site's working set as of that moment, never the accumulated past. Unreferenced assets inside the grace window are not restored either: they stay in the bucket, and any later restore to an earlier point fetches its own referenced set — against the bucket, every database state is self-sufficient.
 
-### Setup: create bucket, set secrets, done
+1. **Disaster recovery, automatic**: if the volume is empty at boot, `litestream restore -if-db-not-exists` pulls the database from the bucket, then the assets that database references are downloaded. "Your volume died" recovery = `fly deploy` against a fresh volume.
+2. **Point-in-time restore to production**: `npm run data:restore-cloud -- --at "2026-07-10T15:00"` — restores the database to that moment and ships it through the existing staged-swap path, inheriting the push safeguards (pre-restore backup, swap at boot, verification).
+3. **Restore to local**: rebuild a full working copy on your machine from nothing but the bucket — database via litestream restore, then the assets it references. Covers "new laptop" and "inspect the site as of time X" without touching production.
 
-- Default documented path: [Tigris](https://fly.io/docs/tigris/) via `fly storage create` — one command, Fly-native, injects the S3 credentials as secrets automatically.
-- Any S3-compatible store (Cloudflare R2, AWS S3, MinIO) works via the same env vars: endpoint, bucket, access key, secret key.
-- **Opt-in by presence**: if `BUCKET_NAME` is set, replication runs; if not, everything behaves exactly as today. No config file, no flag.
+## Boot order
 
-### Configuration (env vars / secrets)
+1. Promote staged database if present (existing swap mechanism, unchanged)
+2. `litestream restore -if-db-not-exists` (no-op unless the volume is empty)
+3. Asset reconciliation sweep (upload-only)
+4. Start the app under `litestream replicate -exec`
 
-The names match what `fly storage create` (Tigris) injects, so the default path is zero-config. Any S3-compatible provider works by setting the same variables manually:
+## Configuration
+
+Opt-in by presence: if `BUCKET_NAME` is set, automated backups run; if not, nothing changes. The variable names match what Tigris injects, so on Fly the whole setup is one command (`fly storage create`). Any S3-compatible provider (R2, AWS S3, MinIO) works by setting the same secrets manually:
 
 | Variable | Purpose | Example |
 | --- | --- | --- |
-| `BUCKET_NAME` | Bucket to replicate into. Presence enables automated backups. | `my-site-backup` |
+| `BUCKET_NAME` | Bucket to back up into. Presence enables the feature. | `my-site-backup` |
 | `AWS_ENDPOINT_URL_S3` | S3 endpoint of the provider | `https://fly.storage.tigris.dev` |
 | `AWS_REGION` | Bucket region | `auto` |
 | `AWS_ACCESS_KEY_ID` | Access key | — |
 | `AWS_SECRET_ACCESS_KEY` | Secret key | — |
 
-Litestream reads the AWS credential variables natively; endpoint and bucket feed its replica config. The asset mirror uses the same five variables. Bucket layout: `db/` for the Litestream replica, `assets/` for the asset mirror — one bucket per site, mirroring the one-checkout-per-app rule.
+Bucket layout: `db/` for the Litestream replica, `assets/` for the asset mirror. One bucket per site, matching the one-checkout-per-app rule.
 
-### Disaster recovery is automatic
+## Relation to the manual data scripts
 
-Boot order becomes:
+Unchanged and complementary: `data:push`/`data:pull`/`data:backup`/`data:restore` remain the tools for deliberate, operational state moves (including the pre-push backup ritual). The bucket is the always-on disaster-recovery and point-in-time layer underneath.
 
-1. Promote staged database if present (existing swap mechanism, unchanged)
-2. `litestream restore -if-db-not-exists` — a fresh volume self-restores from the bucket
-3. Asset reconciliation sweep
-4. Start the app under `litestream replicate -exec`
+## Suspend edge case
 
-Meaning: "your volume died" recovery is `fly deploy` against a fresh volume. The database comes back from the bucket; assets referenced by it are re-downloaded (or served from the bucket mirror — implementation detail to settle).
-
-### Restore to production, point-in-time
-
-A command that restores the database to a given moment and ships it through the **existing staged-swap path**, inheriting all the push safeguards (pre-restore backup, swap at boot with no open connection, post-swap verification):
-
-```sh
-npm run data:restore-cloud -- --at "2026-07-10T15:00"
-```
-
-### Restore to local
-
-Rebuild a full local working copy from nothing but the bucket: litestream-restore the database into `data/`, then download the assets it references. Covers "new laptop" and "audit what the site looked like at time X" without touching production.
-
-### Roles of the existing tools (unchanged)
-
-- `data:push` / `data:pull` / `data:backup` / `data:restore` — deliberate, operational snapshots you take and move by hand. The pre-push backup ritual does not change.
-- Litestream + bucket — always-on disaster recovery and point-in-time history.
-
-They complement each other; neither replaces the other.
+Litestream syncs on an interval (default 1s), so a suspend arriving immediately after a write can hold an unshipped segment in memory. Fly's suspend preserves memory, so the segment ships on the next wake. Data is lost only if the volume is destroyed before any future wake — a seconds-wide window. Documented, not engineered around.
 
 ## Implementation order
 
-Each step is independently shippable:
+Each step independently shippable:
 
-1. **Litestream core**: binary in the Docker image, conditional wrap in the start script, `restore -if-db-not-exists` at boot. Highest value per line — continuous DB backup plus disaster recovery.
-2. **Asset mirroring**: put-to-bucket in the asset save path + boot reconciliation sweep.
-3. **Restore commands**: `data:restore-cloud` (production PITR) and local cloud restore.
-4. **Documentation**: "Automated backups" README section — setup, the suspend statement, both restore paths, and the roles table above.
+1. **Litestream core**: binary in the image, conditional wrap in the start script, `restore -if-db-not-exists` at boot.
+2. **Asset mirroring**: put-to-bucket in the save path + boot sweep.
+3. **Restore commands**: `data:restore-cloud` and restore-to-local.
+4. **Documentation**: finalize the README "Automated backups" section (remove its "planned" status note).
 
 ## Invariants and open questions
 
-- **Litestream starts after the promote step, always.** A database swap must be followed by Litestream opening a fresh replication generation; the boot ordering above guarantees this because swaps only happen at boot.
-- **Process supervision semantics** (settle before coding step 1): signal forwarding through `litestream -exec`, exit-code propagation, and crash policy — a Litestream failure should degrade to "no replication + loud logs", never take the site down.
-- **Checkpointing**: Litestream wants to control WAL checkpointing. Verify `node:sqlite` doesn't fight it (default auto-checkpoint vs. Litestream's read lock); may need to disable auto-checkpoint in the app when replication is active.
-- **Serving assets from the bucket** on a fresh volume vs. re-downloading them locally at restore time — pick one for the disaster-recovery path.
+- **Litestream always starts after the promote step.** A swapped-in database needs a fresh replication generation; the boot order above guarantees it.
+- **Process supervision** (settle before step 1): signal forwarding and exit codes through `litestream -exec`; a Litestream failure must degrade to "no replication + loud logs", never take the site down.
+- **Checkpointing**: Litestream wants to control WAL checkpointing — verify `node:sqlite`'s auto-checkpoint doesn't fight it; may need disabling when replication is active.
+- **Fresh-volume assets**: re-download to the volume vs. serve from the bucket — pick one for the disaster-recovery path.
