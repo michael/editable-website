@@ -43,11 +43,19 @@ case "$cmd" in
 		;;
 
 	cloud-snapshots)
-		# List restore points available in the backup bucket (LTX files with
-		# their timestamp ranges), for picking a restore-cloud --at value.
-		# -level all: without it only level-0 files show, and those get
-		# compacted into higher levels (and deleted) within minutes.
-		litestream ltx -config "$SCRIPT_DIR/litestream.yml" -level all "$DATA/db.sqlite3"
+		# User-facing list of restore points: one timestamp per stored change
+		# set, chronological. Litestream internals (compaction levels, txids)
+		# stay out of sight: the same transaction range exists at several
+		# levels, so ranges are deduped keeping the lowest level, whose
+		# 'created' stamp is the original write time — higher-level copies
+		# carry misleading compaction-time stamps.
+		litestream ltx -config "$SCRIPT_DIR/litestream.yml" -level all "$DATA/db.sqlite3" |
+			awk 'NR > 1 && NF >= 5 {
+				key = $2 "-" $3
+				if (!(key in lvl) || $1 + 0 < lvl[key] + 0) { lvl[key] = $1; created[key] = $5 }
+			}
+			END { for (k in created) print created[k] }' |
+			sort -u
 		;;
 
 	cloud-restore)
@@ -71,6 +79,16 @@ case "$cmd" in
 		ts="$1"
 		mkdir -p "$DATA/incoming"
 		cp "$DATA/backups/$ts.db" "$DATA/incoming/db.sqlite3"
+		;;
+
+	summary)
+		# One-line content summary of the live database, shown after restores
+		# so the operator immediately sees what state they produced.
+		sqlite3 -list -noheader "$DATA/db.sqlite3" \
+			"SELECT count(*) || ' document(s), last edited ' || COALESCE(max(updated_at), 'unknown') FROM documents"
+		node --disable-warning=ExperimentalWarning "$SCRIPT_DIR/check-assets.js" \
+			"$DATA/db.sqlite3" "$DATA/assets" 2>/dev/null |
+			sed -n 's/^OK: all \(.*\) referenced assets present$/\1 referenced asset(s)/p'
 		;;
 
 	integrity)

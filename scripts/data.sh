@@ -314,7 +314,8 @@ cmd_restore_cloud() {
 	verify_remote "roll back with: $0 restore $ts"
 
 	echo
-	echo "✓ Restored '$APP' from the bucket. The pre-restore state is backup '$ts'."
+	echo "✓ Restored '$APP' from the bucket${at:+ (as of $at)}: $(remote summary 2>/dev/null | tr '\n' ' ' | sed 's/ $//')."
+	echo "  The pre-restore state is backup '$ts'."
 }
 
 # ---- pull-cloud: rebuild the local data/ folder from the backup bucket -----
@@ -400,7 +401,8 @@ cmd_backups() {
 cmd_cloud_snapshots() {
 	need_app cloud-snapshots
 	ensure_running
-	echo "Restore points in the backup bucket for '$APP' (use a timestamp with restore-cloud/pull-cloud --at):"
+	echo "Restore points for '$APP', oldest first — restore one with restore-cloud/pull-cloud --at <timestamp>."
+	echo "Older points get consolidated over time: recent history is fine-grained, old history coarser."
 	remote cloud-snapshots
 }
 

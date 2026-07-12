@@ -29,6 +29,17 @@ const db = new DatabaseSync(DB_PATH, { readOnly: true });
 const rows = /** @type {Array<{ data: string }>} */ (
 	db.prepare('SELECT data FROM documents').all()
 );
+
+// Content summary, so a restore immediately shows what state it produced.
+// updated_at may not exist in databases predating the timestamps migration.
+let last_edited = null;
+try {
+	last_edited = /** @type {{ m: string | null }} */ (
+		db.prepare('SELECT max(updated_at) AS m FROM documents').get()
+	).m;
+} catch {
+	// Old schema — no updated_at column.
+}
 db.close();
 
 const referenced = new Set();
@@ -78,4 +89,6 @@ if (failed > 0) {
 	console.error(`[backup] ${failed} asset file(s) failed to restore — re-run to retry.`);
 	process.exit(1);
 }
-console.log('[backup] Asset restore complete.');
+console.log(
+	`[backup] Restored state: ${rows.length} document(s), last edited ${last_edited ?? 'unknown'}, ${referenced.size} referenced asset(s).`
+);
