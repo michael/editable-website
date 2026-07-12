@@ -10,6 +10,13 @@ export function s3_enabled() {
 	return Boolean(process.env.BUCKET_NAME);
 }
 
+// The automatic backup triggers (asset mirror, daily snapshot) run only in
+// the deployed runtime. Local dev must never write to the bucket, even with
+// credentials in .env — reads (pull-cloud, restore-assets) stay available.
+export function backup_enabled() {
+	return s3_enabled() && process.env.NODE_ENV === 'production';
+}
+
 /** @type {AwsClient | undefined} */
 let client;
 
@@ -110,7 +117,7 @@ function decode_xml(s) {
  * @param {string} file_path
  */
 export function mirror_file(key, file_path) {
-	if (!s3_enabled()) return;
+	if (!backup_enabled()) return;
 	put_file(key, file_path).catch((err) => {
 		console.error(`[backup] Asset mirror failed for ${key} (boot sweep will retry):`, err.message);
 	});

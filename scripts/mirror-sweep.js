@@ -10,6 +10,7 @@
 import { readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { s3_enabled, list_keys, put_file } from './s3.js';
+import { snapshot_if_stale } from './db-snapshot.js';
 
 const DATA_DIR = process.env.DATA_DIR || '/data';
 const ASSETS_DIR = join(DATA_DIR, 'assets');
@@ -48,21 +49,23 @@ const missing = local.filter((rel) => !remote.has(`assets/${rel}`));
 
 if (missing.length === 0) {
 	console.log(`[backup] Sweep: bucket in sync (${plural(local.length, 'asset file')}).`);
-	process.exit(0);
+} else {
+	console.log(`[backup] Sweep: uploading ${plural(missing.length, 'asset file')} missing from bucket…`);
+	let failed = 0;
+	for (const rel of missing) {
+		try {
+			await put_file(`assets/${rel}`, join(ASSETS_DIR, rel));
+		} catch (err) {
+			failed += 1;
+			console.error(`[backup] Sweep upload failed for assets/${rel}:`, err.message);
+		}
+	}
+	console.log(
+		failed === 0
+			? `[backup] Sweep complete: ${plural(missing.length, 'file')} uploaded.`
+			: `[backup] Sweep finished with ${plural(failed, 'failure')} — next boot retries.`
+	);
 }
 
-console.log(`[backup] Sweep: uploading ${plural(missing.length, 'asset file')} missing from bucket…`);
-let failed = 0;
-for (const rel of missing) {
-	try {
-		await put_file(`assets/${rel}`, join(ASSETS_DIR, rel));
-	} catch (err) {
-		failed += 1;
-		console.error(`[backup] Sweep upload failed for assets/${rel}:`, err.message);
-	}
-}
-console.log(
-	failed === 0
-		? `[backup] Sweep complete: ${plural(missing.length, 'file')} uploaded.`
-		: `[backup] Sweep finished with ${plural(failed, 'failure')} — next boot retries.`
-);
+// Boot-time trigger for the daily full-database safety snapshot.
+await snapshot_if_stale();

@@ -212,7 +212,7 @@ Create a bucket and set the secrets. On Fly, [Tigris](https://fly.io/docs/tigris
 fly storage create
 ```
 
-Then `fly deploy`. That's it — the presence of the `BUCKET_NAME` secret enables automated backups; without it, nothing changes. Any S3-compatible provider (Cloudflare R2, AWS S3, MinIO) works by setting the same secrets manually:
+Then `fly deploy`. That's it — the presence of the `BUCKET_NAME` secret enables automated backups; without it, nothing changes. Inspect the bucket's raw contents any time with `fly storage dashboard` (`db/` holds the Litestream replica, `assets/` the asset mirror, `snapshots/` the daily full-database snapshots). Any S3-compatible provider (Cloudflare R2, AWS S3, MinIO) works by setting the same secrets manually:
 
 ```sh
 fly secrets set \
@@ -224,6 +224,10 @@ fly secrets set \
 ```
 
 Use one bucket per site. The bucket is append-only: local asset cleanup is never mirrored to it, so unlike volume-local rollbacks, restores from the bucket are not bounded by `ASSET_GRACE_PERIOD_DAYS` — every asset ever uploaded is still there. Replication runs as a supervised sidecar: if it ever fails, your site stays up and the logs say so loudly.
+
+As an extra safety net independent of Litestream, a plain full-database `.sqlite3` snapshot is also uploaded to the bucket's `snapshots/` folder at most once per day (triggered by edits and boots) — restorable with no tooling at all.
+
+All automatic uploads run only in the deployed app: local development never writes to the bucket, even with credentials in your `.env` (those exist for the read-only [local restores](#local-restores)).
 
 ### What you get
 

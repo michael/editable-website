@@ -22,6 +22,10 @@ When a user uploads an asset, the server also puts it to the bucket. Async and b
 
 Catches those misses. At boot, the server diffs the filenames in `/data/assets` against the bucket's `assets/` listing and uploads whatever the bucket lacks. Filenames are content hashes and files are immutable, so a name present on both sides proves the content matches — the sweep is a plain set difference. Boots happen on every deploy and every data-push swap, so misses are repaired promptly.
 
+### Database: daily full snapshot (Litestream-independent)
+
+As a last line of defense against a Litestream-specific failure (e.g. a replication or compaction bug making the restore chain unusable), a plain `VACUUM INTO` snapshot is uploaded to the bucket's `snapshots/` prefix at most once per 24 hours. Triggers: document saves (debounced) and boots (via the sweep) — write-driven like everything else, and it shares no code or format with Litestream. Restoring one requires no tooling: it's a complete SQLite file.
+
 ### The bucket is append-only
 
 Local asset garbage collection (`ASSET_GRACE_PERIOD_DAYS`) is never mirrored to the bucket, so restores from the bucket are not bounded by the grace period — every asset ever uploaded is still there. An optional S3 lifecycle rule can archive cold objects if storage ever matters.
