@@ -1,7 +1,7 @@
-// Asset reconciliation sweep (PLAN_AUTOMATED_BACKUP.md): upload every local
-// asset file the bucket is missing. Upload-only — never downloads, never
-// deletes. Content-addressed immutable names make a set difference of key
-// listings sufficient proof of sync.
+// Asset reconciliation sweep: upload every local asset file the bucket is
+// missing. Upload-only — never downloads, never deletes. Content-addressed
+// immutable names make a set difference of key listings sufficient proof of
+// sync.
 //
 // Runs at every boot (spawned by run-cloud-boot.js, non-blocking alongside
 // the server) as the self-healing pass for upload-time mirrors that failed.

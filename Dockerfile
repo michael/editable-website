@@ -28,7 +28,7 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y sqlite3 procps curl nano less ca-certificates && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Litestream for continuous database replication (see PLAN_AUTOMATED_BACKUP.md)
+# Litestream for continuous database replication (see README → Automated backups)
 ARG LITESTREAM_VERSION=0.5.14
 ADD https://github.com/benbjohnson/litestream/releases/download/v${LITESTREAM_VERSION}/litestream-${LITESTREAM_VERSION}-linux-x86_64.deb /tmp/litestream.deb
 RUN dpkg -i /tmp/litestream.deb && rm /tmp/litestream.deb

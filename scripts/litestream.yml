@@ -1,7 +1,11 @@
-# Litestream configuration for continuous database replication
-# (PLAN_AUTOMATED_BACKUP.md). Env vars are expanded at load time — the same
-# five secrets that enable the whole backup layer (see README → Automated
-# backups). Also used locally by `data.sh pull-cloud` with DATA_DIR exported.
+# Litestream configuration for continuous database replication. Env vars are
+# expanded at load time — the same five secrets that enable the whole backup
+# layer (see README → Automated backups). Also used locally by
+# `data.sh pull-cloud` with DATA_DIR exported.
+#
+# Checkpointing: litestream holds a long-lived read lock that turns the
+# app's WAL auto-checkpoints into no-ops and checkpoints on its own schedule
+# — no node:sqlite configuration is needed for them to coexist.
 
 # Litestream's INFO level logs every sync check (~2s heartbeat); warn keeps
 # errors loud without drowning the app logs.

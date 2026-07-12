@@ -1,7 +1,8 @@
-// Independent full-database safety snapshots (PLAN_AUTOMATED_BACKUP.md).
-// At most one plain .sqlite3 file per day is uploaded to the bucket's
-// snapshots/ prefix — a last line of defense that shares no code or format
-// with Litestream, restorable with no tooling at all.
+// Independent full-database safety snapshots. At most one plain .sqlite3
+// file per day is uploaded to the bucket's snapshots/ prefix — a last line
+// of defense that shares no code or format with Litestream (hedging against
+// e.g. a replication bug corrupting the restore chain), restorable with no
+// tooling at all.
 //
 // Triggered by writes (debounced, from the document save path) and at boot
 // (from the reconciliation sweep). Standalone: no $lib imports.

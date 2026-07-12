@@ -1,8 +1,13 @@
-// Side-effect boot module for the automated backup layer
-// (PLAN_AUTOMATED_BACKUP.md). Imported by start-app.js after run-promote.js
-// and before the server module opens the database. No-op unless BUCKET_NAME
-// is set. Synchronous work uses spawnSync — a top-level await here would trip
-// the same Node top-level-await exit issue run-promote.js documents.
+// Side-effect boot module for the automated backup layer. Imported by
+// start-app.js after run-promote.js and before the server module opens the
+// database. No-op unless BUCKET_NAME is set. Synchronous work uses spawnSync
+// — a top-level await here would trip the same Node top-level-await exit
+// issue run-promote.js documents.
+//
+// Litestream runs as a supervised sidecar, deliberately NOT via
+// `litestream replicate -exec`: with -exec, litestream is the parent and a
+// litestream crash takes the site down. Replication failure must degrade to
+// "no replication + loud logs", never to an outage.
 //
 // In order:
 //   1. Disaster recovery (blocking): empty volume → restore DB from bucket,

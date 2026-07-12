@@ -202,7 +202,7 @@ A rollback restores only the database; it re-points at the same immutable asset 
 
 ## Automated backups (optional)
 
-The manual snapshots above are deliberate actions you take. Optionally, Editable can also back itself up continuously to an S3-compatible bucket: the database is replicated on every write via [Litestream](https://litestream.io) (with point-in-time recovery), and uploaded assets are mirrored to the bucket as they arrive, with a reconciliation sweep at every boot catching anything missed. Everything is write-driven — there are no cron jobs, and suspend mode (`auto_stop_machines = "suspend"`) is fully supported: a suspended machine isn't writing anything, so there's nothing to miss.
+The manual snapshots above are deliberate actions you take. Optionally, Editable can also back itself up continuously to an S3-compatible bucket: the database is replicated on every write via [Litestream](https://litestream.io) (with point-in-time recovery), and uploaded assets are mirrored to the bucket as they arrive, with a reconciliation sweep at every boot catching anything missed. Everything is write-driven — there are no cron jobs, and suspend mode (`auto_stop_machines = "suspend"`) is fully supported: a suspended machine isn't writing anything, so there's nothing to miss. (One honest edge: replication ships changes on a ~1s interval, so a suspend arriving immediately after a write can hold the last segment in memory until the next wake — data is at risk only if the volume is destroyed before the machine ever wakes again, a seconds-wide window.)
 
 ### Enabling
 
@@ -246,7 +246,7 @@ All automatic uploads run only in the deployed app: local development never writ
 
 Restores always download only the assets the restored database references — the bucket holds full history, but a restore transfers just the site's working set as of that moment.
 
-Continuous backups complement the manual snapshots rather than replacing them: `data:push`/`data:pull`/`data:backup`/`data:restore` remain the tools for deliberate, operational state moves. Design details in [PLAN_AUTOMATED_BACKUP.md](./PLAN_AUTOMATED_BACKUP.md).
+Continuous backups complement the manual snapshots rather than replacing them: `data:push`/`data:pull`/`data:backup`/`data:restore` remain the tools for deliberate, operational state moves.
 
 ### Local restores
 
