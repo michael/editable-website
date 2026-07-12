@@ -38,7 +38,7 @@ gh repo create my-site --private --source=. --push
 
 (Without the [GitHub CLI](https://cli.github.com): create an empty private repository on GitHub, then `git remote add origin <url>` and `git push -u origin main`.)
 
-From here on, `git push` saves your work to your own repo, and `git pull upstream main` fetches Editable updates.
+From here on, `git push` saves your work to your own repo, and `git pull upstream stable` fetches Editable updates. The `stable` branch always points at the latest release — development happens on `main`, which you can ignore.
 
 Install dependencies:
 
@@ -271,7 +271,7 @@ Editable improves over time, and because your site keeps it as the `upstream` re
 
 ```sh
 npm run data:backup       # snapshot the live database first
-git pull upstream main    # get the latest Editable
+git pull upstream stable  # get the latest Editable release
 npm install               # update dependencies (including svedit)
 npm run data:pull         # bring your live content local
 npm run dev               # test the new code against your real content
@@ -280,6 +280,8 @@ git push                  # your repo now holds the upgraded state
 ```
 
 The order is the safety net: back up before touching anything, and test the new code against your real content locally before deploying it. Database schema migrations run automatically when the new code boots, locally and on the server.
+
+Releases are also tagged: to upgrade to a specific version instead of the latest, use `git fetch upstream` followed by `git merge v2.1.0`.
 
 Merge conflicts can only occur in files you changed. If your customizations live in the files meant for you — [custom.css](./src/custom.css), the `app` line in `fly.toml`, and your own code in [src/routes](./src/routes/) — pulls are typically conflict-free, since upstream never touches `custom.css` and rarely touches the rest. The more you've rewritten, the more the pull becomes a starting point for a manual merge — at that point, review what changed upstream and adopt what applies.
 
