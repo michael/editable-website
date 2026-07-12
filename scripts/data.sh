@@ -170,7 +170,9 @@ cmd_push() {
 
 	info "Syncing assets (additive)…"
 	list_local_assets >"$TMP/local_assets"
-	remote list-assets | sort >"$TMP/remote_assets" || true
+	# remote_retry: a transient ssh failure returning an empty listing would
+	# make push re-upload everything and pull silently miss new assets.
+	remote_retry list-assets | sort >"$TMP/remote_assets" || true
 	comm -23 "$TMP/local_assets" "$TMP/remote_assets" >"$TMP/to_push" || true
 	if [ -s "$TMP/to_push" ]; then
 		info "  $(plural "$(wc -l <"$TMP/to_push" | tr -d ' ')" 'new asset entry' 'new asset entries')"
@@ -220,7 +222,9 @@ cmd_pull() {
 	[ "$(sqlite3 "$TMP/pull.db" 'PRAGMA integrity_check')" = "ok" ] || die "Downloaded snapshot failed integrity_check"
 
 	info "Syncing assets (additive)…"
-	remote list-assets | sort >"$TMP/remote_assets" || true
+	# remote_retry: a transient ssh failure returning an empty listing would
+	# make push re-upload everything and pull silently miss new assets.
+	remote_retry list-assets | sort >"$TMP/remote_assets" || true
 	list_local_assets >"$TMP/local_assets"
 	comm -13 "$TMP/local_assets" "$TMP/remote_assets" >"$TMP/to_pull" || true
 	if [ -s "$TMP/to_pull" ]; then
