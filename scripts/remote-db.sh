@@ -87,10 +87,10 @@ case "$cmd" in
 		# One-line content summary of the live database, shown after restores
 		# so the operator immediately sees what state they produced.
 		sqlite3 -list -noheader "$DATA/db.sqlite3" \
-			"SELECT count(*) || ' document(s), last edited ' || COALESCE(max(updated_at), 'unknown') FROM documents"
+			"SELECT count(*) || CASE count(*) WHEN 1 THEN ' document' ELSE ' documents' END || ', last edited ' || COALESCE(max(updated_at), 'unknown') FROM documents"
 		node --disable-warning=ExperimentalWarning "$SCRIPT_DIR/check-assets.js" \
 			"$DATA/db.sqlite3" "$DATA/assets" 2>/dev/null |
-			sed -n 's/^OK: all \(.*\) referenced assets present$/\1 referenced asset(s)/p'
+			sed -n 's/^OK: all \([0-9]* referenced assets\{0,1\}\) present$/\1/p'
 		;;
 
 	integrity)

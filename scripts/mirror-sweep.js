@@ -14,6 +14,8 @@ import { s3_enabled, list_keys, put_file } from './s3.js';
 const DATA_DIR = process.env.DATA_DIR || '/data';
 const ASSETS_DIR = join(DATA_DIR, 'assets');
 
+const plural = (n, word, words = `${word}s`) => `${n} ${n === 1 ? word : words}`;
+
 if (!s3_enabled()) process.exit(0);
 
 // All asset files as bucket-relative keys: "<id>" and "<stem>/w<width>.webp".
@@ -45,11 +47,11 @@ const remote = new Set(await list_keys('assets/'));
 const missing = local.filter((rel) => !remote.has(`assets/${rel}`));
 
 if (missing.length === 0) {
-	console.log(`[backup] Sweep: bucket in sync (${local.length} asset file(s)).`);
+	console.log(`[backup] Sweep: bucket in sync (${plural(local.length, 'asset file')}).`);
 	process.exit(0);
 }
 
-console.log(`[backup] Sweep: uploading ${missing.length} asset file(s) missing from bucket…`);
+console.log(`[backup] Sweep: uploading ${plural(missing.length, 'asset file')} missing from bucket…`);
 let failed = 0;
 for (const rel of missing) {
 	try {
@@ -61,6 +63,6 @@ for (const rel of missing) {
 }
 console.log(
 	failed === 0
-		? `[backup] Sweep complete: ${missing.length} file(s) uploaded.`
-		: `[backup] Sweep finished with ${failed} failure(s) — next boot retries.`
+		? `[backup] Sweep complete: ${plural(missing.length, 'file')} uploaded.`
+		: `[backup] Sweep finished with ${plural(failed, 'failure')} — next boot retries.`
 );

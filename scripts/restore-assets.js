@@ -19,6 +19,8 @@ const DATA_DIR = process.env.DATA_DIR || '/data';
 const DB_PATH = join(DATA_DIR, 'db.sqlite3');
 const ASSETS_DIR = join(DATA_DIR, 'assets');
 
+const plural = (n, word, words = `${word}s`) => `${n} ${n === 1 ? word : words}`;
+
 if (!s3_enabled()) {
 	console.error('BUCKET_NAME not set — nothing to restore from.');
 	process.exit(2);
@@ -71,7 +73,9 @@ for (const key of await list_keys('assets/')) {
 	}
 }
 
-console.log(`[backup] Restoring ${wanted.length} asset file(s) for ${referenced.size} referenced asset(s)…`);
+console.log(
+	`[backup] Restoring ${plural(wanted.length, 'asset file')} for ${plural(referenced.size, 'referenced asset')}…`
+);
 
 let failed = 0;
 for (const rel of wanted) {
@@ -86,9 +90,9 @@ for (const rel of wanted) {
 }
 
 if (failed > 0) {
-	console.error(`[backup] ${failed} asset file(s) failed to restore — re-run to retry.`);
+	console.error(`[backup] ${plural(failed, 'asset file')} failed to restore — re-run to retry.`);
 	process.exit(1);
 }
 console.log(
-	`[backup] Restored state: ${rows.length} document(s), last edited ${last_edited ?? 'unknown'}, ${referenced.size} referenced asset(s).`
+	`[backup] Restored state: ${plural(rows.length, 'document')}, last edited ${last_edited ?? 'unknown'}, ${plural(referenced.size, 'referenced asset')}.`
 );

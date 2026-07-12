@@ -66,6 +66,9 @@ trap 'rm -rf "$TMP"' EXIT
 die() { echo "Error: $*" >&2; exit 1; }
 info() { echo "→ $*"; }
 
+# plural <n> <singular> [<plural>] → "1 entry" / "3 entries"
+plural() { [ "$1" -eq 1 ] && echo "$1 $2" || echo "$1 ${3:-${2}s}"; }
+
 need_app() {
 	[ -n "$APP" ] || die "No app configured — set app = 'my-site' in fly.toml, or pass -a <app>"
 }
@@ -151,7 +154,7 @@ cmd_push() {
 	remote list-assets | sort >"$TMP/remote_assets" || true
 	comm -23 "$TMP/local_assets" "$TMP/remote_assets" >"$TMP/to_push" || true
 	if [ -s "$TMP/to_push" ]; then
-		info "  $(wc -l <"$TMP/to_push" | tr -d ' ') new asset entr(y/ies)"
+		info "  $(plural "$(wc -l <"$TMP/to_push" | tr -d ' ')" 'new asset entry' 'new asset entries')"
 		# COPYFILE_DISABLE: keep macOS tar from embedding xattr headers that
 		# GNU tar on the server warns about.
 		COPYFILE_DISABLE=1 tar -czf "$TMP/assets.tgz" -C "$DATA_DIR_LOCAL/assets" --exclude '.DS_Store' -T "$TMP/to_push"
@@ -202,7 +205,7 @@ cmd_pull() {
 	list_local_assets >"$TMP/local_assets"
 	comm -13 "$TMP/local_assets" "$TMP/remote_assets" >"$TMP/to_pull" || true
 	if [ -s "$TMP/to_pull" ]; then
-		info "  $(wc -l <"$TMP/to_pull" | tr -d ' ') new asset entr(y/ies)"
+		info "  $(plural "$(wc -l <"$TMP/to_pull" | tr -d ' ')" 'new asset entry' 'new asset entries')"
 		sftp_put "$TMP/to_pull" "$REMOTE_DATA/incoming/asset-list"
 		remote tar-assets
 		sftp_get "$REMOTE_DATA/incoming/assets.tgz" "$TMP/assets.tgz"

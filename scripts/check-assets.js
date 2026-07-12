@@ -40,10 +40,13 @@ for (const row of rows) {
 
 const missing = [...referenced].filter((asset_id) => !existsSync(join(assets_dir, asset_id)));
 
+const plural = (n, word, words = `${word}s`) => `${n} ${n === 1 ? word : words}`;
+
 if (missing.length > 0) {
-	console.error(`Missing ${missing.length} referenced asset(s):`);
+	console.error(`Missing ${plural(missing.length, 'referenced asset')}:`);
 	for (const asset_id of missing) console.error(`  ${asset_id}`);
 	process.exit(1);
 }
 
-console.log(`OK: all ${referenced.size} referenced assets present`);
+// Parsed by remote-db.sh (summary) and data.sh (verify) — keep the shape.
+console.log(`OK: all ${plural(referenced.size, 'referenced asset')} present`);
