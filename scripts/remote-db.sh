@@ -42,6 +42,14 @@ case "$cmd" in
 		mv "$part" "$DATA/incoming/db.sqlite3"
 		;;
 
+	cloud-snapshots)
+		# List restore points available in the backup bucket (LTX files with
+		# their timestamp ranges), for picking a restore-cloud --at value.
+		# -level all: without it only level-0 files show, and those get
+		# compacted into higher levels (and deleted) within minutes.
+		litestream ltx -config "$SCRIPT_DIR/litestream.yml" -level all "$DATA/db.sqlite3"
+		;;
+
 	cloud-restore)
 		# Restore the database from the backup bucket into the staging file,
 		# to be validated and promoted like any push. Optional arg: RFC3339

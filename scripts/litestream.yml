@@ -3,6 +3,11 @@
 # five secrets that enable the whole backup layer (see README → Automated
 # backups). Also used locally by `data.sh pull-cloud` with DATA_DIR exported.
 
+# Litestream's INFO level logs every sync check (~2s heartbeat); warn keeps
+# errors loud without drowning the app logs.
+logging:
+  level: warn
+
 dbs:
   - path: ${DATA_DIR}/db.sqlite3
     replica:

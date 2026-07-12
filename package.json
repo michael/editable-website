@@ -22,7 +22,9 @@
 		"data:backups": "./scripts/data.sh backups",
 		"data:restore": "./scripts/data.sh restore",
 		"data:restore-cloud": "./scripts/data.sh restore-cloud",
-		"data:pull-cloud": "./scripts/data.sh pull-cloud"
+		"data:pull-cloud": "./scripts/data.sh pull-cloud",
+		"data:cloud-snapshots": "./scripts/data.sh cloud-snapshots",
+		"litestream:install": "./scripts/install-litestream.sh"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.3",

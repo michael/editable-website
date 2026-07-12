@@ -1,16 +1,14 @@
 import migrations from './migrations.js';
 import db, { with_transaction } from './db.js';
 
-function sleep_sync(ms) {
-	const start = Date.now();
-	while (Date.now() - start < ms) {
-		// Blocking loop
-	}
-}
-
 export default function migrate() {
-	// Invariants
+	// Invariants — fail before running anything.
 	const migration_names = migrations.map((migration) => migration.name);
+	if (migration_names.some((name) => !name)) {
+		throw new Error(
+			'Every migration must be a named function (e.g. add_name_to_user). Check migrations.js for anonymous functions.'
+		);
+	}
 	if (new Set(migration_names).size !== migration_names.length) {
 		throw new Error('Duplicate migration names. Check migrations.js for unique function names.');
 	}
@@ -23,36 +21,29 @@ export default function migrate() {
 		)
 	`);
 
-	// Fetch latest migration that has already been applied
-	const latest = db
-		.prepare(
-			`
-		SELECT id, timestamp FROM _migrations
-		ORDER BY timestamp DESC
-		LIMIT 1
-		`
+	// A migration is pending iff its name was never recorded. Identity, not
+	// ordering: deciding via "newest timestamp + array position" breaks on
+	// timestamp ties (migrations applied in the same millisecond) and when a
+	// migration is inserted before an already-applied one.
+	const applied = new Set(
+		/** @type {Array<{ id: string }>} */ (db.prepare('SELECT id FROM _migrations').all()).map(
+			(row) => row.id
 		)
-		.get();
+	);
+	const remaining_migrations = migrations.filter((migration) => !applied.has(migration.name));
 
-	let remaining_migrations;
-	if (latest) {
-		console.log(`Latest migration: ${latest.id} at ${latest.timestamp}`);
-		const latest_index = migrations.findIndex((migration) => migration.name === latest.id);
-
-		if (latest_index >= 0) {
-			remaining_migrations = migrations.slice(latest_index + 1);
-		} else {
-			console.log(
-				`Migration ${latest.id} is not found in migrations.js. Make sure to keep all migrations in sync between your local and production environment.`
-			);
-			remaining_migrations = []; // we just skip migrations
-		}
-	} else {
-		console.log(`No previous migrations found.`);
-		remaining_migrations = migrations;
+	// Recorded names missing from migrations.js are normal for a database
+	// that is ahead of this code — but they are also the symptom of renaming
+	// an applied migration (never do that), so make them visible.
+	const known = new Set(migration_names);
+	const unknown = [...applied].filter((id) => !known.has(id));
+	if (unknown.length > 0) {
+		console.log(
+			`Note: ${unknown.length} recorded migration(s) not present in migrations.js: ${unknown.join(', ')}`
+		);
 	}
 
-	console.log(`${remaining_migrations.length} migrations to be applied...`);
+	console.log(`${applied.size} migrations applied, ${remaining_migrations.length} to be applied...`);
 
 	// The whole migration operation is wrapped in a transaction, so if something fails, everything is
 	// rolled back. When migrations are done as part of the deploy process this means the deploy failed.
@@ -61,8 +52,6 @@ export default function migrate() {
 	with_transaction(() => {
 		for (const migration of remaining_migrations) {
 			const migration_name = migration.name;
-			if (!migration_name) throw new Error('Migration name (e.g. add_name_to_user) is required.');
-
 			console.log('Running migration... ', migration_name);
 			// Run the migration and provide db as context
 			migration({ db });
@@ -73,8 +62,6 @@ export default function migrate() {
 				VALUES (?, ?)
 			`
 			).run(migration_name, new Date().toISOString());
-
-			sleep_sync(100); // this makes sure we don't end up with the same timestamp for multiple migrations (if they run too fast)
 		}
 	});
 }

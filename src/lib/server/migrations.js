@@ -38,6 +38,16 @@ const nav_1 = reset_media_nodes(NAV_1);
 const footer_1 = reset_media_nodes(FOOTER_1);
 const page_1 = reset_media_nodes(PAGE_1);
 
+// The migration contract (enforced by migrate.js where possible):
+// - This array is append-only, and its order is the execution order.
+// - Every migration is a named function; the name is its permanent identity.
+//   A migration runs exactly once per database, tracked by name.
+// - Never rename or remove a migration that may have run somewhere — the
+//   tracker would see a renamed migration as new and run it again. If it
+//   happened anyway, update the record on every affected database instead:
+//   UPDATE _migrations SET id = 'new_name' WHERE id = 'old_name';
+// - Unique names and named functions are enforced at boot; violations fail
+//   before anything runs.
 export default [
 	function initial_schema({ db }) {
 		db.exec(sql`

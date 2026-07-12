@@ -19,9 +19,10 @@
 #   ./scripts/data.sh push [--yes]                # local  -> remote
 #   ./scripts/data.sh restore <name>              # roll remote back to a backup
 #   ./scripts/data.sh restore-cloud [--at <ts>]   # roll remote back via the backup bucket (PITR)
-#   ./scripts/data.sh pull-cloud                  # rebuild local data/ from the backup bucket
+#   ./scripts/data.sh pull-cloud [--at <ts>]      # rebuild local data/ from the backup bucket
 #   ./scripts/data.sh backups                     # list remote backups
 #   ./scripts/data.sh backup                      # take a remote backup only
+#   ./scripts/data.sh cloud-snapshots             # list restore points in the backup bucket
 #
 # The target app is read from fly.toml (app = '...'), same as the fly CLI.
 # Override with -a <app> or the FLY_APP environment variable (-a wins).
@@ -318,8 +319,23 @@ cmd_restore_cloud() {
 
 # ---- pull-cloud: rebuild the local data/ folder from the backup bucket -----
 cmd_pull_cloud() {
+	local at=""
+	while [ $# -gt 0 ]; do
+		case "$1" in
+			--at)
+				shift
+				at="${1:-}"
+				[ -n "$at" ] || die "--at requires an RFC3339 timestamp (e.g. 2026-07-12T13:00:00Z)"
+				;;
+			*) die "Unknown argument: $1   (usage: $0 pull-cloud [--at <timestamp>])" ;;
+		esac
+		shift
+	done
+
+	# Prefer the project-local, version-pinned binary (npm run litestream:install).
+	PATH="$SCRIPT_DIR/../node_modules/.bin:$PATH"
 	command -v litestream >/dev/null 2>&1 ||
-		die "litestream is not installed locally (e.g. brew install litestream)"
+		die "litestream is not installed — run: npm run litestream:install"
 
 	# Bucket credentials from the environment, falling back to .env.
 	if [ -z "${BUCKET_NAME:-}" ] && [ -f .env ]; then
@@ -337,9 +353,13 @@ cmd_pull_cloud() {
 	mkdir -p "$BACKUP_DIR_LOCAL" "$DATA_DIR_LOCAL/assets"
 	local ts; ts="$(date +%Y%m%d-%H%M%S)"
 
-	info "Restoring database from bucket…"
+	info "Restoring database from bucket${at:+ (as of $at)}…"
 	export DATA_DIR="$DATA_DIR_LOCAL"
-	litestream restore -config "$SCRIPT_DIR/litestream.yml" -o "$TMP/cloud.db" "$DATA_DIR_LOCAL/db.sqlite3"
+	if [ -n "$at" ]; then
+		litestream restore -config "$SCRIPT_DIR/litestream.yml" -timestamp "$at" -o "$TMP/cloud.db" "$DATA_DIR_LOCAL/db.sqlite3"
+	else
+		litestream restore -config "$SCRIPT_DIR/litestream.yml" -o "$TMP/cloud.db" "$DATA_DIR_LOCAL/db.sqlite3"
+	fi
 	[ "$(sqlite3 "$TMP/cloud.db" 'PRAGMA integrity_check')" = "ok" ] || die "Restored snapshot failed integrity_check"
 
 	if [ -f "$DATA_DIR_LOCAL/db.sqlite3" ]; then
@@ -377,16 +397,24 @@ cmd_backups() {
 	remote list-backups
 }
 
+cmd_cloud_snapshots() {
+	need_app cloud-snapshots
+	ensure_running
+	echo "Restore points in the backup bucket for '$APP' (use a timestamp with restore-cloud/pull-cloud --at):"
+	remote cloud-snapshots
+}
+
 case "${1:-}" in
 	push) shift; cmd_push "${1:-}" ;;
 	pull) cmd_pull ;;
 	restore) shift; cmd_restore "$@" ;;
 	restore-cloud) shift; cmd_restore_cloud "$@" ;;
-	pull-cloud) cmd_pull_cloud ;;
+	pull-cloud) shift; cmd_pull_cloud "$@" ;;
 	backup) cmd_backup ;;
 	backups) cmd_backups ;;
+	cloud-snapshots) cmd_cloud_snapshots ;;
 	*)
-		echo "Usage: $0 {pull|push [--yes]|restore <name> [--yes]|restore-cloud [--at <ts>] [--yes]|pull-cloud|backup|backups} [-a <app>]" >&2
+		echo "Usage: $0 {pull|push [--yes]|restore <name> [--yes]|restore-cloud [--at <ts>] [--yes]|pull-cloud [--at <ts>]|backup|backups|cloud-snapshots} [-a <app>]" >&2
 		exit 2
 		;;
 esac

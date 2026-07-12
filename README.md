@@ -215,22 +215,40 @@ Use one bucket per site. The bucket is append-only: local asset cleanup is never
 ### What you get
 
 - **Disaster recovery, automatically.** On boot, a machine with an empty volume restores the database from the bucket, then downloads the assets it references. If your volume (or app, or region) is ever lost: `fly deploy` against a fresh volume brings your site back.
-- **Point-in-time restore to production.** Roll the live database back to any moment, shipped through the same guarded swap as a push (pre-restore backup, integrity validation, verification):
+- **Point-in-time restore to production.** Roll the live database back to any moment, shipped through the same guarded swap as a push (pre-restore backup, integrity validation, verification). List the available restore points, then pick one:
 
   ```sh
+  npm run data:cloud-snapshots                              # what moments can I restore to?
   npm run data:restore-cloud                                # latest bucket state
   npm run data:restore-cloud -- --at "2026-07-10T15:00:00Z" # a specific moment
   ```
 
-- **Restore to local.** Rebuild your local `data/` folder from nothing but the bucket — new laptop, or inspecting a past state without touching production. Requires [Litestream installed locally](https://litestream.io/install/) (`brew install litestream`) and the bucket credentials in your `.env` (see `.env.example`):
-
-  ```sh
-  npm run data:pull-cloud
-  ```
+- **Local restores** — rebuild your local `data/` from the bucket, e.g. to investigate a past state without touching production. See [Local restores](#local-restores) below.
 
 Restores always download only the assets the restored database references — the bucket holds full history, but a restore transfers just the site's working set as of that moment.
 
 Continuous backups complement the manual snapshots rather than replacing them: `data:push`/`data:pull`/`data:backup`/`data:restore` remain the tools for deliberate, operational state moves. Design details in [PLAN_AUTOMATED_BACKUP.md](./PLAN_AUTOMATED_BACKUP.md).
+
+### Local restores
+
+Rebuild your local `data/` folder from nothing but the bucket — a new laptop, or forensic work: say the site was vandalized and you need to find the last good state. Try timestamps locally until you find it, then restore production to that exact moment. Iterating is cheap: each round downloads a small database plus only the missing assets, and your previous local database is backed up to `data-backups/` first. Nothing here ever writes to the bucket or touches production.
+
+One-time setup — install Litestream into the project (pinned to the same version the server runs, so local restores always read the exact format the server writes) and put the bucket credentials into your `.env` (see `.env.example`; read them from the machine with `fly ssh console -C env`):
+
+```sh
+npm run litestream:install
+```
+
+Then:
+
+```sh
+npm run data:cloud-snapshots                           # list restore points
+npm run data:pull-cloud                                # latest bucket state
+npm run data:pull-cloud -- --at "2026-07-10T15:00:00Z" # a specific moment
+npm run dev                                            # inspect the restored state
+```
+
+When you've found the state you want live, restore production to it with `npm run data:restore-cloud -- --at <timestamp>`.
 
 ## Upgrading
 
