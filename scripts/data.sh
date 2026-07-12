@@ -23,6 +23,7 @@
 #   ./scripts/data.sh backups                     # list remote backups
 #   ./scripts/data.sh backup                      # take a remote backup only
 #   ./scripts/data.sh cloud-snapshots             # list restore points in the backup bucket
+#   ./scripts/data.sh reset                       # put local data/ back to fresh demo content
 #
 # The target app is read from fly.toml (app = '...'), same as the fly CLI.
 # Override with -a <app> or the FLY_APP environment variable (-a wins).
@@ -380,6 +381,36 @@ cmd_pull_cloud() {
 	echo "✓ Restored local data/ from the bucket."
 }
 
+# ---- reset: put local data/ back to fresh demo content ---------------------
+cmd_reset() {
+	local yes="${1:-}"
+
+	if command -v lsof >/dev/null 2>&1 && lsof "$DATA_DIR_LOCAL/db.sqlite3" >/dev/null 2>&1; then
+		die "Local database is open — stop the dev server before resetting."
+	fi
+
+	[ "$yes" = "--yes" ] || confirm "Replace your local data/ (database AND assets) with fresh demo content?"
+
+	local ts; ts="$(date +%Y%m%d-%H%M%S)"
+	if [ -f "$DATA_DIR_LOCAL/db.sqlite3" ]; then
+		info "Backing up current local database…"
+		mkdir -p "$BACKUP_DIR_LOCAL"
+		sqlite3 "$DATA_DIR_LOCAL/db.sqlite3" "VACUUM INTO '$BACKUP_DIR_LOCAL/local-$ts.db'"
+	fi
+
+	# Empty the directory rather than removing it, so a symlinked or mounted
+	# data/ keeps working.
+	if [ -d "$DATA_DIR_LOCAL" ]; then
+		find "$DATA_DIR_LOCAL" -mindepth 1 -delete
+	fi
+
+	echo
+	echo "✓ Local data cleared. Start the dev server (npm run dev) to get a freshly seeded site."
+	if [ -f "$BACKUP_DIR_LOCAL/local-$ts.db" ]; then
+		echo "  Previous local DB: $BACKUP_DIR_LOCAL/local-$ts.db"
+	fi
+}
+
 cmd_backup() {
 	need_app backup
 	ensure_running
@@ -416,8 +447,9 @@ case "${1:-}" in
 	backup) cmd_backup ;;
 	backups) cmd_backups ;;
 	cloud-snapshots) cmd_cloud_snapshots ;;
+	reset) shift; cmd_reset "${1:-}" ;;
 	*)
-		echo "Usage: $0 {pull|push [--yes]|restore <name> [--yes]|restore-cloud [--at <ts>] [--yes]|pull-cloud [--at <ts>]|backup|backups|cloud-snapshots} [-a <app>]" >&2
+		echo "Usage: $0 {pull|push [--yes]|restore <name> [--yes]|restore-cloud [--at <ts>] [--yes]|pull-cloud [--at <ts>]|backup|backups|cloud-snapshots|reset [--yes]} [-a <app>]" >&2
 		exit 2
 		;;
 esac

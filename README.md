@@ -68,10 +68,10 @@ npm run dev
 
 On startup you'll see an `ExperimentalWarning` about `node:sqlite` — that's expected and harmless.
 
-To re-seed the database with the initial demo content, use:
+To reset your local data to the initial demo content (asks for confirmation and backs up your current database first; the fresh content appears on the next dev server start):
 
 ```sh
-npm run dev:seed
+npm run data:reset
 ```
 
 Next, you probably want to adjust the colors and fonts to match your style. Put your overrides in [custom.css](./src/custom.css) — that file is yours, upstream Editable updates never touch it, which keeps future upgrades conflict-free. It loads after [app.css](./src/app.css), so any variable defined there can be overridden:
@@ -164,6 +164,7 @@ The data commands move the `data/` folder (database + assets) between your machi
 | `npm run data:cloud-snapshots` | List points in time you can restore to † |
 | `npm run data:restore-cloud [-- --at <ts>]` | Roll the live site back to a point in time † |
 | `npm run data:pull-cloud [-- --at <ts>]` | Rebuild your local `data/` from the bucket † |
+| `npm run data:reset` | Put your local `data/` back to fresh demo content |
 | `npm run litestream:install` | One-time local setup for `data:pull-cloud` † |
 
 † requires [Automated backups](#automated-backups-optional). Every command reads the target app from `fly.toml`; append `-- -a <app>` to override. Every restore prints a summary of the restored state (documents, last edited, assets) so you can confirm you got the moment you meant, and backs up the state it replaces first.
@@ -244,7 +245,7 @@ Continuous backups complement the manual snapshots rather than replacing them: `
 
 Rebuild your local `data/` folder from nothing but the bucket — a new laptop, or forensic work: say the site was vandalized and you need to find the last good state. Try timestamps locally until you find it, then restore production to that exact moment. Iterating is cheap: each round downloads a small database plus only the missing assets, and your previous local database is backed up to `data-backups/` first. Nothing here ever writes to the bucket or touches production.
 
-One-time setup — install Litestream into the project (pinned to the same version the server runs, so local restores always read the exact format the server writes) and put the bucket credentials into your `.env` (see `.env.example`; read them from the machine with `fly ssh console -C env`):
+One-time setup — install Litestream into the project (pinned to the same version the server runs, so local restores always read the exact format the server writes) and put the bucket credentials into your `.env` (see `.env.example`; read them from the machine with `fly ssh console -C env`). Local restores only ever read, so consider using read-only credentials here — most providers let you create a second, read-only access key for the bucket; how (and whether) is up to you:
 
 ```sh
 npm run litestream:install
