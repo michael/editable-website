@@ -24,6 +24,7 @@
 #   ./scripts/data.sh backup                      # take a remote backup only
 #   ./scripts/data.sh cloud-snapshots             # list restore points in the backup bucket
 #   ./scripts/data.sh reset                       # put local data/ back to fresh demo content
+#   ./scripts/data.sh help                        # print the command reference
 #
 # The target app is read from fly.toml (app = '...'), same as the fly CLI.
 # Override with -a <app> or the FLY_APP environment variable (-a wins).
@@ -105,7 +106,9 @@ sftp_put() { fly ssh sftp put -a "$APP" --machine "$MID" "$1" "$2"; }
 # Backup names double as identifiers, so they must be unique even for two
 # operations in the same second (a random suffix, not just seconds). They
 # carry the app name so backups of multiple apps can share data-backups/.
-timestamp() { printf '%s-%s-%04x' "$APP" "$(date +%Y%m%d-%H%M%S)" "$RANDOM"; }
+# Timestamps are UTC in ISO 8601 basic format (20260712T143535Z) — filename-
+# safe, and directly comparable to cloud restore points and fly logs.
+timestamp() { printf '%s-%s-%04x' "$APP" "$(date -u +%Y%m%dT%H%M%SZ)" "$RANDOM"; }
 
 # Consistent local DB snapshot to $1; verifies integrity + referenced assets.
 snapshot_local_db() {
@@ -354,7 +357,7 @@ cmd_pull_cloud() {
 	fi
 
 	mkdir -p "$BACKUP_DIR_LOCAL" "$DATA_DIR_LOCAL/assets"
-	local ts; ts="$(date +%Y%m%d-%H%M%S)"
+	local ts; ts="$(date -u +%Y%m%dT%H%M%SZ)"
 
 	info "Restoring database from bucket${at:+ (as of $at)}…"
 	export DATA_DIR="$DATA_DIR_LOCAL"
@@ -391,11 +394,19 @@ cmd_reset() {
 
 	[ "$yes" = "--yes" ] || confirm "Replace your local data/ (database AND assets) with fresh demo content?"
 
-	local ts; ts="$(date +%Y%m%d-%H%M%S)"
+	local ts; ts="$(date -u +%Y%m%dT%H%M%SZ)"
 	if [ -f "$DATA_DIR_LOCAL/db.sqlite3" ]; then
 		info "Backing up current local database…"
 		mkdir -p "$BACKUP_DIR_LOCAL"
 		sqlite3 "$DATA_DIR_LOCAL/db.sqlite3" "VACUUM INTO '$BACKUP_DIR_LOCAL/local-$ts.db'"
+	fi
+
+	# Assets are moved aside, not deleted — together with the database backup
+	# above, the pre-reset state stays fully recoverable.
+	if [ -d "$DATA_DIR_LOCAL/assets" ] && [ -n "$(ls -A "$DATA_DIR_LOCAL/assets" 2>/dev/null)" ]; then
+		info "Moving assets aside…"
+		mkdir -p "$BACKUP_DIR_LOCAL"
+		mv "$DATA_DIR_LOCAL/assets" "$BACKUP_DIR_LOCAL/local-$ts-assets"
 	fi
 
 	# Empty the directory rather than removing it, so a symlinked or mounted
@@ -407,7 +418,8 @@ cmd_reset() {
 	echo
 	echo "✓ Local data cleared. Start the dev server (npm run dev) to get a freshly seeded site."
 	if [ -f "$BACKUP_DIR_LOCAL/local-$ts.db" ]; then
-		echo "  Previous local DB: $BACKUP_DIR_LOCAL/local-$ts.db"
+		echo "  Previous state: $BACKUP_DIR_LOCAL/local-$ts.db + $BACKUP_DIR_LOCAL/local-$ts-assets/"
+		echo "  Undo: stop the dev server, copy the .db back to $DATA_DIR_LOCAL/db.sqlite3 and the assets back to $DATA_DIR_LOCAL/assets/."
 	fi
 }
 
@@ -438,6 +450,28 @@ cmd_cloud_snapshots() {
 	remote cloud-snapshots
 }
 
+usage() {
+	cat <<'EOF'
+Data commands (via npm run; positional arguments work directly, flags need a -- separator):
+
+  npm run data:pull                            copy the live site's data to your machine
+  npm run data:push [-- --yes]                 replace the live site's data with your local state
+  npm run data:backup                          snapshot the live database
+  npm run data:backups                         list the live site's snapshots
+  npm run data:restore <name> [-- --yes]       roll the live site back to a snapshot
+  npm run data:cloud-snapshots                 list restore points in the backup bucket
+  npm run data:restore-cloud [-- --at <ts>]    roll the live site back to a point in time
+  npm run data:pull-cloud [-- --at <ts>]       rebuild local data/ from the backup bucket
+  npm run data:reset [-- --yes]                put local data/ back to fresh demo content
+  npm run litestream:install                   one-time local setup for the cloud commands
+
+The target app comes from fly.toml; override with:  -- -a <app>
+Snapshot names (<name>) look like my-site-20260712T143535Z-3f2a (trailing .db optional) — list them with data:backups.
+Timestamps (<ts>) are RFC3339 UTC, e.g. 2026-07-12T14:35:35Z — list them with data:cloud-snapshots.
+See README → Backup, sync & recovery for details.
+EOF
+}
+
 case "${1:-}" in
 	push) shift; cmd_push "${1:-}" ;;
 	pull) cmd_pull ;;
@@ -448,8 +482,6 @@ case "${1:-}" in
 	backups) cmd_backups ;;
 	cloud-snapshots) cmd_cloud_snapshots ;;
 	reset) shift; cmd_reset "${1:-}" ;;
-	*)
-		echo "Usage: $0 {pull|push [--yes]|restore <name> [--yes]|restore-cloud [--at <ts>] [--yes]|pull-cloud [--at <ts>]|backup|backups|cloud-snapshots|reset [--yes]} [-a <app>]" >&2
-		exit 2
-		;;
+	help) usage ;;
+	*) usage >&2; exit 2 ;;
 esac

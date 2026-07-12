@@ -15,6 +15,7 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint .",
+		"data:help": "./scripts/data.sh help",
 		"data:pull": "./scripts/data.sh pull",
 		"data:push": "./scripts/data.sh push",
 		"data:backup": "./scripts/data.sh backup",

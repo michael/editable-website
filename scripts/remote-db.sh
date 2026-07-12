@@ -49,6 +49,8 @@ case "$cmd" in
 		# levels, so ranges are deduped keeping the lowest level, whose
 		# 'created' stamp is the original write time — higher-level copies
 		# carry misleading compaction-time stamps.
+		# Timestamps are shown verbatim in litestream's native RFC3339 — the
+		# same format --at takes, and what manual litestream commands expect.
 		litestream ltx -config "$SCRIPT_DIR/litestream.yml" -level all "$DATA/db.sqlite3" |
 			awk 'NR > 1 && NF >= 5 {
 				key = $2 "-" $3

@@ -68,7 +68,7 @@ npm run dev
 
 On startup you'll see an `ExperimentalWarning` about `node:sqlite` — that's expected and harmless.
 
-To reset your local data to the initial demo content (asks for confirmation and backs up your current database first; the fresh content appears on the next dev server start):
+To reset your local data to the initial demo content (asks for confirmation, and moves your current database and assets into `data-backups/` first; the fresh content appears on the next dev server start):
 
 ```sh
 npm run data:reset
@@ -159,15 +159,15 @@ The data commands move the `data/` folder (database + assets) between your machi
 | `npm run data:pull` | Copy the live site's data to your machine |
 | `npm run data:push` | Replace the live site's data with your local state (guarded, undoable) |
 | `npm run data:backup` | Snapshot the live database (kept on the server + mirrored locally) |
-| `npm run data:backups` | List snapshots |
-| `npm run data:restore <name>` | Roll the live database back to a snapshot |
+| `npm run data:backups` | List the live site's snapshots |
+| `npm run data:restore <name>` | Roll the live database back to a snapshot (`<name>` from `data:backups`) |
 | `npm run data:cloud-snapshots` | List points in time you can restore to † |
 | `npm run data:restore-cloud [-- --at <ts>]` | Roll the live site back to a point in time † |
 | `npm run data:pull-cloud [-- --at <ts>]` | Rebuild your local `data/` from the bucket † |
 | `npm run data:reset` | Put your local `data/` back to fresh demo content |
 | `npm run litestream:install` | One-time local setup for `data:pull-cloud` † |
 
-† requires [Automated backups](#automated-backups-optional). Every command reads the target app from `fly.toml`; append `-- -a <app>` to override. Every restore prints a summary of the restored state (documents, last edited, assets) so you can confirm you got the moment you meant, and backs up the state it replaces first.
+† requires [Automated backups](#automated-backups-optional). Every command reads the target app from `fly.toml`; append `-- -a <app>` to override. Every restore prints a summary of the restored state (documents, last edited, assets) so you can confirm you got the moment you meant, and backs up the state it replaces first. `npm run data:help` prints this reference, with arguments, in the terminal.
 
 Pull the live site down to work on it locally, or push a local state up to production. Both directions sync the database and any missing assets.
 
@@ -189,8 +189,8 @@ Assets are content-addressed and immutable, so they only ever need to be added, 
 Every push prints an undo command. To roll back:
 
 ```
-npm run data:backups          # list snapshots
-npm run data:restore <name>   # roll back to one (name from the listing; trailing .db optional)
+npm run data:backups          # list the live site's snapshots
+npm run data:restore <name>   # roll the live site back to one (name from the listing; trailing .db optional)
 ```
 
 Snapshots are taken automatically before every push and restore, and on demand with `npm run data:backup` — each lives on the server (last 10 kept) and is mirrored to `data-backups/` on your machine (kept forever, prune by hand). `restore` finds it in either place.
@@ -234,6 +234,8 @@ Use one bucket per site. The bucket is append-only: local asset cleanup is never
   npm run data:restore-cloud                                # latest bucket state
   npm run data:restore-cloud -- --at "2026-07-10T15:00:00Z" # a specific moment
   ```
+
+  `--at` takes the UTC timestamps exactly as `data:cloud-snapshots` shows them.
 
 - **Local restores** — rebuild your local `data/` from the bucket, e.g. to investigate a past state without touching production. See [Local restores](#local-restores) below.
 
