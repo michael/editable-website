@@ -7,6 +7,7 @@ import { Readable, Transform } from 'node:stream';
 import { mkdirSync } from 'node:fs';
 import { ASSET_ID_REGEX } from '$lib/config.js';
 import { ASSET_GRACE_PERIOD_DAYS, ASSET_PATH } from '$lib/server_config.js';
+import { mirror_file } from './s3.js';
 
 // Ensure the asset directory exists on module load
 mkdirSync(ASSET_PATH, { recursive: true });
@@ -97,7 +98,9 @@ async function stream_to_file(file_path, data) {
  * @returns {Promise<{ bytes_written: number, sha256: string }>}
  */
 export async function write_asset(asset_id, data) {
-	return stream_to_file(asset_path(asset_id), data);
+	const result = await stream_to_file(asset_path(asset_id), data);
+	mirror_file(`assets/${asset_id}`, asset_path(asset_id));
+	return result;
 }
 
 /**
@@ -112,7 +115,9 @@ export async function write_asset(asset_id, data) {
 export async function write_variant(asset_id, width, data) {
 	const dir = variant_dir(asset_id);
 	await mkdir(dir, { recursive: true });
-	return stream_to_file(variant_path(asset_id, width), data);
+	const result = await stream_to_file(variant_path(asset_id, width), data);
+	mirror_file(`assets/${stem(asset_id)}/w${width}.webp`, variant_path(asset_id, width));
+	return result;
 }
 
 /**

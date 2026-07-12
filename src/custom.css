@@ -1,0 +1,12 @@
+/*
+ * Your styles. This file belongs to you — upstream Editable updates never
+ * touch it, so `git pull upstream main` stays conflict-free.
+ *
+ * It loads after app.css, so you can override any variable defined there
+ * (colors, fonts, shadows) or add your own rules. For example:
+ *
+ *   :root {
+ *     --accent: oklch(0.55 0.2 25);
+ *     --font-serif: 'Playfair Display', ui-serif, Georgia, serif;
+ *   }
+ */

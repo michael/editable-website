@@ -3,16 +3,30 @@
 	"private": true,
 	"version": "2.0.0",
 	"type": "module",
+	"engines": {
+		"node": ">=24"
+	},
 	"scripts": {
 		"dev": "vite dev",
-		"dev:seed": "SEED=1 vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
 		"format": "prettier --write .",
-		"lint": "prettier --check . && eslint ."
+		"lint": "prettier --check . && eslint .",
+		"data:help": "./scripts/data.sh help",
+		"data:pull": "./scripts/data.sh pull",
+		"data:push": "./scripts/data.sh push",
+		"data:backup": "./scripts/data.sh backup",
+		"data:backups": "./scripts/data.sh backups",
+		"data:restore": "./scripts/data.sh restore",
+		"data:restore-cloud": "./scripts/data.sh restore-cloud",
+		"data:pull-cloud": "./scripts/data.sh pull-cloud",
+		"data:cloud-snapshots": "./scripts/data.sh cloud-snapshots",
+		"data:verify": "./scripts/data.sh verify",
+		"data:reset": "./scripts/data.sh reset",
+		"litestream:install": "./scripts/install-litestream.sh"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.3",
@@ -39,6 +53,7 @@
 	"dependencies": {
 		"@jsquash/webp": "^1.5.0",
 		"@sveltejs/adapter-node": "^5.5.7",
+		"aws4fetch": "^1.0.20",
 		"nanoid": "^5.1.6",
 		"slugify": "^1.6.6",
 		"svedit": "^0.12.0",
