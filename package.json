@@ -24,6 +24,7 @@
 		"data:restore-cloud": "./scripts/data.sh restore-cloud",
 		"data:pull-cloud": "./scripts/data.sh pull-cloud",
 		"data:cloud-snapshots": "./scripts/data.sh cloud-snapshots",
+		"data:verify": "./scripts/data.sh verify",
 		"data:reset": "./scripts/data.sh reset",
 		"litestream:install": "./scripts/install-litestream.sh"
 	},

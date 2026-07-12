@@ -164,6 +164,7 @@ The data commands move the `data/` folder (database + assets) between your machi
 | `npm run data:cloud-snapshots` | List points in time you can restore to † |
 | `npm run data:restore-cloud [-- --at <ts>]` | Roll the live site back to a point in time † |
 | `npm run data:pull-cloud [-- --at <ts>]` | Rebuild your local `data/` from the bucket † |
+| `npm run data:verify` | Health-check the deployed database + assets |
 | `npm run data:reset` | Reset your local database to fresh demo content (assets stay) |
 | `npm run litestream:install` | One-time local setup for `data:pull-cloud` † |
 

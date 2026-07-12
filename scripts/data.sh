@@ -23,6 +23,7 @@
 #   ./scripts/data.sh backups                     # list remote backups
 #   ./scripts/data.sh backup                      # take a remote backup only
 #   ./scripts/data.sh cloud-snapshots             # list restore points in the backup bucket
+#   ./scripts/data.sh verify                      # health-check the deployed database + assets
 #   ./scripts/data.sh reset                       # reset local database to fresh demo content
 #   ./scripts/data.sh help                        # print the command reference
 #
@@ -89,13 +90,31 @@ ensure_running() {
 	fly machine start "$MID" -a "$APP" >/dev/null 2>&1 || true
 }
 
+# Run a remote helper command, retrying while the machine comes back after a
+# restart. Prints the first non-empty output; fails only after all attempts —
+# a failed ssh connection must never read as a failed check.
+remote_retry() {
+	local out
+	for _ in 1 2 3 4 5 6; do
+		out="$(remote "$@" 2>/dev/null || true)"
+		if [ -n "$out" ]; then
+			printf '%s' "$out"
+			return 0
+		fi
+		sleep 5
+	done
+	return 1
+}
+
 # Verify remote DB health from command *output*, not exit code (fly ssh does
 # not reliably propagate the remote exit status).
 verify_remote() {
 	local ctx="$1" out
-	out="$(remote integrity 2>/dev/null || true)"
+	out="$(remote_retry integrity)" ||
+		die "Could not reach '$APP' to verify (the machine may still be coming up) — the data operation itself succeeded; verify later with: $0 verify"
 	printf '%s' "$out" | grep -qx 'ok' || die "Remote integrity_check failed — $ctx"
-	out="$(remote check-assets 2>/dev/null || true)"
+	out="$(remote_retry check-assets)" ||
+		die "Could not reach '$APP' to verify assets — the data operation itself succeeded; verify later with: $0 verify"
 	printf '%s' "$out" | grep -q '^OK:' || die "Remote references missing assets — $ctx"
 }
 
@@ -272,9 +291,10 @@ cmd_restore() {
 
 	info "Verifying…"
 	local out
-	out="$(remote integrity 2>/dev/null || true)"
+	out="$(remote_retry integrity)" ||
+		die "Could not reach '$APP' to verify (the machine may still be coming up) — the restore itself succeeded; verify later with: $0 verify"
 	printf '%s' "$out" | grep -qx 'ok' || die "Remote integrity_check failed"
-	out="$(remote check-assets 2>/dev/null || true)"
+	out="$(remote_retry check-assets)" || out=""
 	printf '%s' "$out" | grep -q '^OK:' ||
 		echo "Warning: restored DB references assets no longer on disk (past grace period?)"
 
@@ -435,6 +455,15 @@ cmd_backups() {
 	remote list-backups
 }
 
+# ---- verify: health-check the deployment ------------------------------------
+cmd_verify() {
+	need_app verify
+	ensure_running
+	info "Verifying '$APP'…"
+	verify_remote "list restore points with: $0 backups"
+	echo "✓ '$APP' is healthy: $(remote summary 2>/dev/null | tr '\n' ' ' | sed 's/ $//')."
+}
+
 cmd_cloud_snapshots() {
 	need_app cloud-snapshots
 	ensure_running
@@ -455,6 +484,7 @@ Data commands (via npm run; positional arguments work directly, flags need a -- 
   npm run data:cloud-snapshots                 list restore points in the backup bucket
   npm run data:restore-cloud [-- --at <ts>]    roll the live site back to a point in time
   npm run data:pull-cloud [-- --at <ts>]       rebuild local data/ from the backup bucket
+  npm run data:verify                          health-check the deployed database + assets
   npm run data:reset [-- --yes]                reset local database to fresh demo content (assets stay)
   npm run litestream:install                   one-time local setup for the cloud commands
 
@@ -474,6 +504,7 @@ case "${1:-}" in
 	backup) cmd_backup ;;
 	backups) cmd_backups ;;
 	cloud-snapshots) cmd_cloud_snapshots ;;
+	verify) cmd_verify ;;
 	reset) shift; cmd_reset "${1:-}" ;;
 	help) usage ;;
 	*) usage >&2; exit 2 ;;
