@@ -275,7 +275,11 @@ cmd_restore() {
 	remote backup "$ts" >/dev/null
 	sftp_get "$REMOTE_DATA/backups/$ts.sqlite3" "$BACKUP_DIR_LOCAL/$ts.sqlite3"
 
-	if remote list-backups | grep -qx "$name.sqlite3"; then
+	# remote_retry: a transient ssh failure returning an empty listing must
+	# not read as "backup not on volume".
+	local vol_backups
+	vol_backups="$(remote_retry list-backups || true)"
+	if printf '%s\n' "$vol_backups" | grep -qx "$name.sqlite3"; then
 		info "Staging backup from remote volume…"
 		remote stage-backup "$name"
 	elif [ -f "$BACKUP_DIR_LOCAL/$name.sqlite3" ]; then
