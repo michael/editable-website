@@ -4,13 +4,15 @@
 # version the production image runs, so local restores read the exact bucket
 # format the server writes. No sudo, no global install; npm run scripts find
 # it automatically. Re-run any time (e.g. after node_modules was recreated).
-#
-# Keep the version in sync with LITESTREAM_VERSION in the Dockerfile.
 set -euo pipefail
 
-VERSION="0.5.14"
-
 die() { echo "Error: $*" >&2; exit 1; }
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Single source of truth: the version the Dockerfile ships.
+VERSION="$(sed -n 's/^ARG LITESTREAM_VERSION=\(.*\)$/\1/p' "$SCRIPT_DIR/../Dockerfile")"
+[ -n "$VERSION" ] || die "Could not read LITESTREAM_VERSION from the Dockerfile"
 
 case "$(uname -s)" in
 	Darwin) os="darwin" ;;
@@ -24,7 +26,6 @@ case "$(uname -m)" in
 	*) die "Unsupported architecture: $(uname -m) — install litestream manually from https://litestream.io/install/" ;;
 esac
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEST_DIR="$SCRIPT_DIR/../node_modules/.bin"
 [ -d "$DEST_DIR" ] || die "node_modules/.bin not found — run npm install first"
 
