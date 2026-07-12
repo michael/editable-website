@@ -5,7 +5,8 @@
 // tooling at all.
 //
 // Triggered by writes (debounced, from the document save path) and at boot
-// (from the reconciliation sweep). Standalone: no $lib imports.
+// (from the reconciliation sweep). Also imported by plain-node scripts —
+// keep this file free of $lib imports (see s3.js).
 
 import { DatabaseSync } from 'node:sqlite';
 import { readFile, unlink } from 'node:fs/promises';

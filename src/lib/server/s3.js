@@ -1,7 +1,10 @@
-// Minimal S3 client for the automated backup layer.
-// Standalone: plain Node, no $lib imports — used by the server (asset
-// mirroring) and by the boot/restore scripts. The whole layer is enabled by
-// the presence of BUCKET_NAME; without it every export is a no-op or error.
+// Minimal S3 client for the automated backup layer. The whole layer is
+// enabled by the presence of BUCKET_NAME; without it every export is a
+// no-op or error.
+//
+// Also imported by the plain-node boot/restore scripts in scripts/ via
+// relative paths — keep this file free of $lib imports (the alias only
+// resolves inside the bundled app).
 
 import { readFile } from 'node:fs/promises';
 import { AwsClient } from 'aws4fetch';

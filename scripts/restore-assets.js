@@ -17,7 +17,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { existsSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join, dirname, extname, resolve, sep } from 'node:path';
-import { s3_enabled, get_object, list_keys } from './s3.js';
+import { s3_enabled, get_object, list_keys } from '../src/lib/server/s3.js';
 
 const DATA_DIR = process.env.DATA_DIR || '/data';
 const DB_PATH = process.argv[2] || join(DATA_DIR, 'db.sqlite3');

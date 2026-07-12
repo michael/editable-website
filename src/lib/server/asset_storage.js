@@ -7,7 +7,7 @@ import { Readable, Transform } from 'node:stream';
 import { mkdirSync } from 'node:fs';
 import { ASSET_ID_REGEX } from '$lib/config.js';
 import { ASSET_GRACE_PERIOD_DAYS, ASSET_PATH } from '$lib/server_config.js';
-import { mirror_file } from '../../../scripts/s3.js';
+import { mirror_file } from './s3.js';
 
 // Ensure the asset directory exists on module load
 mkdirSync(ASSET_PATH, { recursive: true });

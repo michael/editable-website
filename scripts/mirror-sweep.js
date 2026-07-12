@@ -9,8 +9,8 @@
 
 import { readdirSync, statSync } from 'node:fs';
 import { join, sep } from 'node:path';
-import { s3_enabled, list_keys, put_file } from './s3.js';
-import { snapshot_if_stale } from './db-snapshot.js';
+import { s3_enabled, list_keys, put_file } from '../src/lib/server/s3.js';
+import { snapshot_if_stale } from '../src/lib/server/db_snapshot.js';
 
 const DATA_DIR = process.env.DATA_DIR || '/data';
 const ASSETS_DIR = join(DATA_DIR, 'assets');
