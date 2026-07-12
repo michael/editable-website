@@ -111,10 +111,10 @@ remote_retry() {
 verify_remote() {
 	local ctx="$1" out
 	out="$(remote_retry integrity)" ||
-		die "Could not reach '$APP' to verify (the machine may still be coming up) — the data operation itself succeeded; verify later with: $0 verify"
+		die "Could not reach '$APP' to verify (the machine may still be coming up) — the data operation itself succeeded; verify later with: npm run data:verify"
 	printf '%s' "$out" | grep -qx 'ok' || die "Remote integrity_check failed — $ctx"
 	out="$(remote_retry check-assets)" ||
-		die "Could not reach '$APP' to verify assets — the data operation itself succeeded; verify later with: $0 verify"
+		die "Could not reach '$APP' to verify assets — the data operation itself succeeded; verify later with: npm run data:verify"
 	printf '%s' "$out" | grep -q '^OK:' || die "Remote references missing assets — $ctx"
 }
 
@@ -191,11 +191,11 @@ cmd_push() {
 	fly machine restart "$MID" -a "$APP"
 
 	info "Verifying…"
-	verify_remote "restore with: $0 restore $ts"
+	verify_remote "restore with: npm run data:restore $ts"
 
 	echo
 	echo "✓ Pushed to '$APP'. Undo with:"
-	echo "    $0 restore $ts -a $APP"
+	echo "    npm run data:restore $ts -- -a $APP"
 }
 
 # ---- pull: remote -> local -------------------------------------------------
@@ -260,7 +260,7 @@ cmd_restore() {
 			*) name="$arg" ;;
 		esac
 	done
-	[ -n "$name" ] || die "Usage: $0 restore <name> [--yes]   (see: $0 backups)"
+	[ -n "$name" ] || die "Usage: npm run data:restore <name> [-- --yes]   (see: npm run data:backups)"
 	name="${name%.sqlite3}"
 
 	ensure_running
@@ -292,7 +292,7 @@ cmd_restore() {
 	info "Verifying…"
 	local out
 	out="$(remote_retry integrity)" ||
-		die "Could not reach '$APP' to verify (the machine may still be coming up) — the restore itself succeeded; verify later with: $0 verify"
+		die "Could not reach '$APP' to verify (the machine may still be coming up) — the restore itself succeeded; verify later with: npm run data:verify"
 	printf '%s' "$out" | grep -qx 'ok' || die "Remote integrity_check failed"
 	out="$(remote_retry check-assets)" || out=""
 	printf '%s' "$out" | grep -q '^OK:' ||
@@ -315,7 +315,7 @@ cmd_restore_cloud() {
 				at="${1:-}"
 				[ -n "$at" ] || die "--at requires an RFC3339 timestamp (e.g. 2026-07-10T15:00:00Z)"
 				;;
-			*) die "Unknown argument: $1   (usage: $0 restore-cloud [--at <timestamp>] [--yes])" ;;
+			*) die "Unknown argument: $1   (usage: npm run data:restore-cloud [-- --at <timestamp>] [-- --yes])" ;;
 		esac
 		shift
 	done
@@ -339,7 +339,7 @@ cmd_restore_cloud() {
 	fly machine restart "$MID" -a "$APP"
 
 	info "Verifying…"
-	verify_remote "roll back with: $0 restore $ts"
+	verify_remote "roll back with: npm run data:restore $ts"
 
 	echo
 	echo "✓ Restored '$APP' from the bucket${at:+ (as of $at)}: $(remote summary 2>/dev/null | tr '\n' ' ' | sed 's/ $//')."
@@ -356,7 +356,7 @@ cmd_pull_cloud() {
 				at="${1:-}"
 				[ -n "$at" ] || die "--at requires an RFC3339 timestamp (e.g. 2026-07-12T13:00:00Z)"
 				;;
-			*) die "Unknown argument: $1   (usage: $0 pull-cloud [--at <timestamp>])" ;;
+			*) die "Unknown argument: $1   (usage: npm run data:pull-cloud [-- --at <timestamp>])" ;;
 		esac
 		shift
 	done
@@ -460,7 +460,7 @@ cmd_verify() {
 	need_app verify
 	ensure_running
 	info "Verifying '$APP'…"
-	verify_remote "list restore points with: $0 backups"
+	verify_remote "list restore points with: npm run data:backups"
 	echo "✓ '$APP' is healthy: $(remote summary 2>/dev/null | tr '\n' ' ' | sed 's/ $//')."
 }
 
