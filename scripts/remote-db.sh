@@ -104,7 +104,18 @@ case "$cmd" in
 		;;
 
 	list-assets)
+		# The header guarantees non-empty output on success, so callers can
+		# tell "no assets yet" apart from a failed ssh connection.
+		echo "# assets"
 		ls -1 "$DATA/assets" 2>/dev/null | grep "$ASSET_RE" || true
+		;;
+
+	restore-assets)
+		# Download the assets referenced by a database (default: the live one,
+		# or a staged path passed as arg) from the backup bucket. Used by
+		# restore-cloud so a point-in-time database finds its media even past
+		# the local grace period.
+		node --disable-warning=ExperimentalWarning "$SCRIPT_DIR/restore-assets.js" ${1:+"$1"}
 		;;
 
 	tar-assets)

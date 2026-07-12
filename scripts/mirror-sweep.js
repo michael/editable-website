@@ -8,7 +8,7 @@
 // Standalone: no $lib imports.
 
 import { readdirSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, sep } from 'node:path';
 import { s3_enabled, list_keys, put_file } from './s3.js';
 import { snapshot_if_stale } from './db-snapshot.js';
 
@@ -19,28 +19,22 @@ const plural = (n, word, words = `${word}s`) => `${n} ${n === 1 ? word : words}`
 
 if (!s3_enabled()) process.exit(0);
 
-// All asset files as bucket-relative keys: "<id>" and "<stem>/w<width>.webp".
+// All asset files as bucket-relative keys, at any depth — the sweep must not
+// assume today's layout, or a future asset structure would silently go
+// unbacked. Separators are normalized to '/' for bucket keys.
 function local_asset_files() {
-	const files = [];
 	let entries;
 	try {
-		entries = readdirSync(ASSETS_DIR, { withFileTypes: true });
+		entries = readdirSync(ASSETS_DIR, { recursive: true });
 	} catch {
-		return files; // No assets directory yet.
+		return []; // No assets directory yet.
 	}
-	for (const entry of entries) {
-		if (entry.name === '.DS_Store') continue;
-		if (entry.isFile()) {
-			files.push(entry.name);
-		} else if (entry.isDirectory()) {
-			for (const variant of readdirSync(join(ASSETS_DIR, entry.name))) {
-				if (statSync(join(ASSETS_DIR, entry.name, variant)).isFile()) {
-					files.push(`${entry.name}/${variant}`);
-				}
-			}
-		}
-	}
-	return files;
+	return entries
+		.map(String)
+		.filter(
+			(rel) => !rel.endsWith('.DS_Store') && statSync(join(ASSETS_DIR, rel)).isFile()
+		)
+		.map((rel) => rel.split(sep).join('/'));
 }
 
 const local = local_asset_files();

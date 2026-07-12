@@ -1,23 +1,38 @@
-// Download the assets referenced by the local database from the backup
-// bucket. Restores only the working set: originals the database references,
-// plus their width variants. Unreferenced history stays in the bucket.
-// Skips files already on disk, so it is resumable and cheap to re-run.
+// Download the assets referenced by a database from the backup bucket.
+// Restores only the working set: originals the database references, plus
+// their width variants. Unreferenced history stays in the bucket. Skips
+// files already on disk, so it is resumable and cheap to re-run.
 //
-// Used by disaster recovery at boot (run-cloud-boot.js) and by
-// `data.sh pull-cloud`. Standalone: no $lib imports.
+// Fails (exit 1) if any referenced original is still missing afterwards —
+// a restore that would leave broken media must never report success.
 //
-// Usage: node --disable-warning=ExperimentalWarning restore-assets.js
-// Paths derive from DATA_DIR (default /data).
+// Used by disaster recovery at boot (run-cloud-boot.js), by
+// `data.sh pull-cloud`, and by `data.sh restore-cloud` against the staged
+// database. Standalone: no $lib imports.
+//
+// Usage: node --disable-warning=ExperimentalWarning restore-assets.js [db_path]
+// db_path defaults to $DATA_DIR/db.sqlite3; assets always go to $DATA_DIR/assets.
 
 import { DatabaseSync } from 'node:sqlite';
 import { existsSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
-import { join, dirname, extname } from 'node:path';
+import { join, dirname, extname, resolve, sep } from 'node:path';
 import { s3_enabled, get_object, list_keys } from './s3.js';
 
 const DATA_DIR = process.env.DATA_DIR || '/data';
-const DB_PATH = join(DATA_DIR, 'db.sqlite3');
+const DB_PATH = process.argv[2] || join(DATA_DIR, 'db.sqlite3');
 const ASSETS_DIR = join(DATA_DIR, 'assets');
+
+// Security boundary, not schema validation: a bucket key may have any shape
+// (future asset layouts included) as long as it resolves strictly beneath
+// the assets directory. A malformed or hostile bucket must never turn a
+// download into a write elsewhere on the filesystem.
+const ASSETS_ROOT = resolve(ASSETS_DIR);
+function safe_dest(rel) {
+	if (!rel || rel.endsWith('/')) return null;
+	const dest = resolve(ASSETS_ROOT, rel);
+	return dest.startsWith(ASSETS_ROOT + sep) ? dest : null;
+}
 
 const plural = (n, word, words = `${word}s`) => `${n} ${n === 1 ? word : words}`;
 
@@ -66,10 +81,14 @@ const stems = new Set([...referenced].map(stem));
 const wanted = [];
 for (const key of await list_keys('assets/')) {
 	const rel = key.slice('assets/'.length);
-	if (!rel) continue;
+	const dest = safe_dest(rel);
+	if (!dest) {
+		if (rel) console.error(`[backup] Skipping unsafe bucket key: ${key}`);
+		continue;
+	}
 	const is_variant = rel.includes('/');
 	if (is_variant ? stems.has(rel.split('/')[0]) : referenced.has(rel)) {
-		if (!existsSync(join(ASSETS_DIR, rel))) wanted.push(rel);
+		if (!existsSync(dest)) wanted.push({ rel, dest });
 	}
 }
 
@@ -78,9 +97,8 @@ console.log(
 );
 
 let failed = 0;
-for (const rel of wanted) {
+for (const { rel, dest } of wanted) {
 	try {
-		const dest = join(ASSETS_DIR, rel);
 		await mkdir(dirname(dest), { recursive: true });
 		await writeFile(dest, await get_object(`assets/${rel}`));
 	} catch (err) {
@@ -89,6 +107,19 @@ for (const rel of wanted) {
 	}
 }
 
+// The success criterion is the expected set, not the download list: a
+// referenced original absent from the bucket would otherwise pass silently.
+const still_missing = [...referenced].filter((id) => {
+	const dest = safe_dest(id);
+	return !dest || !existsSync(dest);
+});
+if (still_missing.length > 0) {
+	console.error(
+		`[backup] ${plural(still_missing.length, 'referenced asset')} missing after restore (not on disk, not in bucket):`
+	);
+	for (const id of still_missing) console.error(`  ${id}`);
+	process.exit(1);
+}
 if (failed > 0) {
 	console.error(`[backup] ${plural(failed, 'asset file')} failed to restore — re-run to retry.`);
 	process.exit(1);

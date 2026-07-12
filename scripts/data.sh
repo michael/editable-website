@@ -170,9 +170,12 @@ cmd_push() {
 
 	info "Syncing assets (additive)…"
 	list_local_assets >"$TMP/local_assets"
-	# remote_retry: a transient ssh failure returning an empty listing would
-	# make push re-upload everything and pull silently miss new assets.
-	remote_retry list-assets | sort >"$TMP/remote_assets" || true
+	# The listing must provably succeed — a failed connection must not read
+	# as an empty asset list (pull would silently miss media). list-assets
+	# prints a '#' header, so success is never empty even with zero assets.
+	remote_retry list-assets >"$TMP/remote_assets_raw" ||
+		die "Could not list remote assets — try again in a moment"
+	grep -v '^#' "$TMP/remote_assets_raw" | sort >"$TMP/remote_assets" || true
 	comm -23 "$TMP/local_assets" "$TMP/remote_assets" >"$TMP/to_push" || true
 	if [ -s "$TMP/to_push" ]; then
 		info "  $(plural "$(wc -l <"$TMP/to_push" | tr -d ' ')" 'new asset entry' 'new asset entries')"
@@ -222,9 +225,12 @@ cmd_pull() {
 	[ "$(sqlite3 "$TMP/pull.db" 'PRAGMA integrity_check')" = "ok" ] || die "Downloaded snapshot failed integrity_check"
 
 	info "Syncing assets (additive)…"
-	# remote_retry: a transient ssh failure returning an empty listing would
-	# make push re-upload everything and pull silently miss new assets.
-	remote_retry list-assets | sort >"$TMP/remote_assets" || true
+	# The listing must provably succeed — a failed connection must not read
+	# as an empty asset list (pull would silently miss media). list-assets
+	# prints a '#' header, so success is never empty even with zero assets.
+	remote_retry list-assets >"$TMP/remote_assets_raw" ||
+		die "Could not list remote assets — try again in a moment"
+	grep -v '^#' "$TMP/remote_assets_raw" | sort >"$TMP/remote_assets" || true
 	list_local_assets >"$TMP/local_assets"
 	comm -13 "$TMP/local_assets" "$TMP/remote_assets" >"$TMP/to_pull" || true
 	if [ -s "$TMP/to_pull" ]; then
@@ -237,6 +243,12 @@ cmd_pull() {
 		info "  assets already in sync"
 	fi
 	remote clean-incoming
+
+	# Never install a database whose media isn't actually here.
+	info "Validating pulled database against local assets…"
+	node --disable-warning=ExperimentalWarning "$SCRIPT_DIR/check-assets.js" \
+		"$TMP/pull.db" "$DATA_DIR_LOCAL/assets" ||
+		die "Pulled database references assets that are missing locally — nothing was installed"
 
 	if [ -f "$DATA_DIR_LOCAL/db.sqlite3" ]; then
 		info "Backing up current local database…"
@@ -341,6 +353,19 @@ cmd_restore_cloud() {
 
 	info "Restoring database from bucket${at:+ (as of $at)}…"
 	remote cloud-restore "$at"
+
+	# A point-in-time database may reference assets already purged from the
+	# volume (past the grace period) — fetch them from the bucket against the
+	# staged database, before promoting, so the swap never goes live with
+	# broken media. Success is judged by output: fly ssh does not reliably
+	# propagate exit codes.
+	info "Restoring referenced assets from bucket…"
+	local assets_out
+	assets_out="$(remote restore-assets "$REMOTE_DATA/incoming/db.sqlite3.part" 2>&1 || true)"
+	printf '%s\n' "$assets_out"
+	printf '%s' "$assets_out" | grep -q '^\[backup\] Restored state:' ||
+		die "Could not restore the referenced assets — aborting before the database swap"
+
 	remote promote-stage
 
 	info "Restarting to swap in the restored database…"
@@ -399,6 +424,12 @@ cmd_pull_cloud() {
 	fi
 	[ "$(sqlite3 "$TMP/cloud.db" 'PRAGMA integrity_check')" = "ok" ] || die "Restored snapshot failed integrity_check"
 
+	# Assets first, against the not-yet-installed database: if a referenced
+	# asset can't be produced, nothing is installed and local data/ is untouched.
+	info "Downloading referenced assets…"
+	node --disable-warning=ExperimentalWarning "$SCRIPT_DIR/restore-assets.js" "$TMP/cloud.db" ||
+		die "Could not restore all referenced assets — nothing was installed"
+
 	if [ -f "$DATA_DIR_LOCAL/db.sqlite3" ]; then
 		info "Backing up current local database…"
 		sqlite3 "$DATA_DIR_LOCAL/db.sqlite3" "VACUUM INTO '$BACKUP_DIR_LOCAL/local-$ts.sqlite3'"
@@ -407,9 +438,6 @@ cmd_pull_cloud() {
 	info "Swapping in restored database…"
 	rm -f "$DATA_DIR_LOCAL/db.sqlite3-wal" "$DATA_DIR_LOCAL/db.sqlite3-shm"
 	mv "$TMP/cloud.db" "$DATA_DIR_LOCAL/db.sqlite3"
-
-	info "Downloading referenced assets…"
-	node --disable-warning=ExperimentalWarning "$SCRIPT_DIR/restore-assets.js"
 
 	echo
 	echo "✓ Restored local data/ from the bucket."
