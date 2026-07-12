@@ -11,10 +11,12 @@ export function s3_enabled() {
 }
 
 // The automatic backup triggers (asset mirror, daily snapshot) run only in
-// the deployed runtime. Local dev must never write to the bucket, even with
-// credentials in .env — reads (pull-cloud, restore-assets) stay available.
+// the deployed runtime — marked by the production entrypoint (run-cloud-boot
+// via start-app.js), which dev servers and local previews never pass through.
+// Local processes must never write to the bucket, even with credentials in
+// .env; reads (pull-cloud, restore-assets) stay available everywhere.
 export function backup_enabled() {
-	return s3_enabled() && process.env.NODE_ENV === 'production';
+	return s3_enabled() && process.env.EDITABLE_DEPLOYED === '1';
 }
 
 /** @type {AwsClient | undefined} */
