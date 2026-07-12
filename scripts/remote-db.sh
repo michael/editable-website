@@ -42,6 +42,22 @@ case "$cmd" in
 		mv "$part" "$DATA/incoming/db.sqlite3"
 		;;
 
+	cloud-restore)
+		# Restore the database from the backup bucket into the staging file,
+		# to be validated and promoted like any push. Optional arg: RFC3339
+		# timestamp for point-in-time restore. Secrets come from the machine env.
+		ts="${1:-}"
+		mkdir -p "$DATA/incoming"
+		rm -f "$DATA/incoming/db.sqlite3.part"
+		if [ -n "$ts" ]; then
+			litestream restore -config "$SCRIPT_DIR/litestream.yml" -timestamp "$ts" \
+				-o "$DATA/incoming/db.sqlite3.part" "$DATA/db.sqlite3"
+		else
+			litestream restore -config "$SCRIPT_DIR/litestream.yml" \
+				-o "$DATA/incoming/db.sqlite3.part" "$DATA/db.sqlite3"
+		fi
+		;;
+
 	stage-backup)
 		# Copy an existing on-volume backup into the swap slot (restore path).
 		ts="$1"

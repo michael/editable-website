@@ -1,6 +1,6 @@
 # Plan: automated remote backups
 
-Status: draft, not implemented. Continuous off-site backups (database + assets) to an S3-compatible bucket, with point-in-time recovery. Suspend mode stays fully supported.
+Status: implemented (see README → Automated backups for the user-facing docs). Continuous off-site backups (database + assets) to an S3-compatible bucket, with point-in-time recovery. Suspend mode stays fully supported. Implementation notes: Litestream runs as a supervised sidecar spawned from `scripts/run-cloud-boot.js` (not `-exec` — a Litestream crash must not take the site down); asset S3 access uses `aws4fetch` in `scripts/s3.js`; Litestream is pinned in the Dockerfile.
 
 ## Design principle: write-driven, not time-driven
 

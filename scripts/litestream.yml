@@ -1,0 +1,14 @@
+# Litestream configuration for continuous database replication
+# (PLAN_AUTOMATED_BACKUP.md). Env vars are expanded at load time — the same
+# five secrets that enable the whole backup layer (see README → Automated
+# backups). Also used locally by `data.sh pull-cloud` with DATA_DIR exported.
+
+dbs:
+  - path: ${DATA_DIR}/db.sqlite3
+    replica:
+      type: s3
+      bucket: ${BUCKET_NAME}
+      path: db
+      endpoint: ${AWS_ENDPOINT_URL_S3}
+      region: ${AWS_REGION}
+      force-path-style: true

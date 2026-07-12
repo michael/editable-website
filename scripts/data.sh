@@ -15,11 +15,13 @@
 #     DB at boot with no live connection open.
 #
 # Usage
-#   ./scripts/data.sh pull             # remote -> local
-#   ./scripts/data.sh push [--yes]     # local  -> remote
-#   ./scripts/data.sh restore <name>   # roll remote back to a backup
-#   ./scripts/data.sh backups          # list remote backups
-#   ./scripts/data.sh backup           # take a remote backup only
+#   ./scripts/data.sh pull                        # remote -> local
+#   ./scripts/data.sh push [--yes]                # local  -> remote
+#   ./scripts/data.sh restore <name>              # roll remote back to a backup
+#   ./scripts/data.sh restore-cloud [--at <ts>]   # roll remote back via the backup bucket (PITR)
+#   ./scripts/data.sh pull-cloud                  # rebuild local data/ from the backup bucket
+#   ./scripts/data.sh backups                     # list remote backups
+#   ./scripts/data.sh backup                      # take a remote backup only
 #
 # The target app is read from fly.toml (app = '...'), same as the fly CLI.
 # Override with -a <app> or the FLY_APP environment variable (-a wins).
@@ -272,6 +274,90 @@ cmd_restore() {
 	echo "✓ Restored '$APP' to '$name'. The pre-restore state is backup '$ts'."
 }
 
+# ---- restore-cloud: point-in-time restore from the backup bucket -----------
+cmd_restore_cloud() {
+	need_app restore-cloud
+	local at="" yes=""
+	while [ $# -gt 0 ]; do
+		case "$1" in
+			--yes) yes="--yes" ;;
+			--at)
+				shift
+				at="${1:-}"
+				[ -n "$at" ] || die "--at requires an RFC3339 timestamp (e.g. 2026-07-10T15:00:00Z)"
+				;;
+			*) die "Unknown argument: $1   (usage: $0 restore-cloud [--at <timestamp>] [--yes])" ;;
+		esac
+		shift
+	done
+
+	ensure_running
+	[ "$yes" = "--yes" ] || confirm "Roll the database on '$APP' back to ${at:-the latest bucket state}?"
+
+	mkdir -p "$BACKUP_DIR_LOCAL"
+	local ts; ts="$(timestamp)"
+	info "Backing up current remote database before restore ($ts)…"
+	remote prepare
+	remote clean-incoming
+	remote backup "$ts" >/dev/null
+	sftp_get "$REMOTE_DATA/backups/$ts.db" "$BACKUP_DIR_LOCAL/$ts.db"
+
+	info "Restoring database from bucket${at:+ (as of $at)}…"
+	remote cloud-restore "$at"
+	remote promote-stage
+
+	info "Restarting to swap in the restored database…"
+	fly machine restart "$MID" -a "$APP"
+
+	info "Verifying…"
+	verify_remote "roll back with: $0 restore $ts"
+
+	echo
+	echo "✓ Restored '$APP' from the bucket. The pre-restore state is backup '$ts'."
+}
+
+# ---- pull-cloud: rebuild the local data/ folder from the backup bucket -----
+cmd_pull_cloud() {
+	command -v litestream >/dev/null 2>&1 ||
+		die "litestream is not installed locally (e.g. brew install litestream)"
+
+	# Bucket credentials from the environment, falling back to .env.
+	if [ -z "${BUCKET_NAME:-}" ] && [ -f .env ]; then
+		set -a
+		# shellcheck disable=SC1091
+		. ./.env
+		set +a
+	fi
+	[ -n "${BUCKET_NAME:-}" ] || die "Set BUCKET_NAME (and the AWS_* credentials) in .env or the environment"
+
+	if command -v lsof >/dev/null 2>&1 && lsof "$DATA_DIR_LOCAL/db.sqlite3" >/dev/null 2>&1; then
+		die "Local database is open — stop the dev server before pulling."
+	fi
+
+	mkdir -p "$BACKUP_DIR_LOCAL" "$DATA_DIR_LOCAL/assets"
+	local ts; ts="$(date +%Y%m%d-%H%M%S)"
+
+	info "Restoring database from bucket…"
+	export DATA_DIR="$DATA_DIR_LOCAL"
+	litestream restore -config "$SCRIPT_DIR/litestream.yml" -o "$TMP/cloud.db" "$DATA_DIR_LOCAL/db.sqlite3"
+	[ "$(sqlite3 "$TMP/cloud.db" 'PRAGMA integrity_check')" = "ok" ] || die "Restored snapshot failed integrity_check"
+
+	if [ -f "$DATA_DIR_LOCAL/db.sqlite3" ]; then
+		info "Backing up current local database…"
+		sqlite3 "$DATA_DIR_LOCAL/db.sqlite3" "VACUUM INTO '$BACKUP_DIR_LOCAL/local-$ts.db'"
+	fi
+
+	info "Swapping in restored database…"
+	rm -f "$DATA_DIR_LOCAL/db.sqlite3-wal" "$DATA_DIR_LOCAL/db.sqlite3-shm"
+	mv "$TMP/cloud.db" "$DATA_DIR_LOCAL/db.sqlite3"
+
+	info "Downloading referenced assets…"
+	node --disable-warning=ExperimentalWarning "$SCRIPT_DIR/restore-assets.js"
+
+	echo
+	echo "✓ Restored local data/ from the bucket."
+}
+
 cmd_backup() {
 	need_app backup
 	ensure_running
@@ -295,10 +381,12 @@ case "${1:-}" in
 	push) shift; cmd_push "${1:-}" ;;
 	pull) cmd_pull ;;
 	restore) shift; cmd_restore "$@" ;;
+	restore-cloud) shift; cmd_restore_cloud "$@" ;;
+	pull-cloud) cmd_pull_cloud ;;
 	backup) cmd_backup ;;
 	backups) cmd_backups ;;
 	*)
-		echo "Usage: $0 {pull|push [--yes]|restore <name> [--yes]|backup|backups} [-a <app>]" >&2
+		echo "Usage: $0 {pull|push [--yes]|restore <name> [--yes]|restore-cloud [--at <ts>] [--yes]|pull-cloud|backup|backups} [-a <app>]" >&2
 		exit 2
 		;;
 esac

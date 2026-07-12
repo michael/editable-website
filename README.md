@@ -189,9 +189,7 @@ A rollback restores only the database; it re-points at the same immutable asset 
 
 ## Automated backups (optional)
 
-> **Status**: planned, not yet implemented — see [PLAN_AUTOMATED_BACKUP.md](./PLAN_AUTOMATED_BACKUP.md). This section documents the intended behavior.
-
-The manual snapshots above are deliberate actions you take. Optionally, Editable can also back itself up continuously to an S3-compatible bucket: the database is replicated on every write via [Litestream](https://litestream.io) (with point-in-time recovery), and uploaded assets are mirrored to the bucket as they arrive. Everything is write-driven — there are no cron jobs, and suspend mode (`auto_stop_machines = "suspend"`) is fully supported: a suspended machine isn't writing anything, so there's nothing to miss.
+The manual snapshots above are deliberate actions you take. Optionally, Editable can also back itself up continuously to an S3-compatible bucket: the database is replicated on every write via [Litestream](https://litestream.io) (with point-in-time recovery), and uploaded assets are mirrored to the bucket as they arrive, with a reconciliation sweep at every boot catching anything missed. Everything is write-driven — there are no cron jobs, and suspend mode (`auto_stop_machines = "suspend"`) is fully supported: a suspended machine isn't writing anything, so there's nothing to miss.
 
 ### Enabling
 
@@ -201,7 +199,7 @@ Create a bucket and set the secrets. On Fly, [Tigris](https://fly.io/docs/tigris
 fly storage create
 ```
 
-That's it — the presence of the `BUCKET_NAME` secret enables automated backups; without it, nothing changes. Any S3-compatible provider (Cloudflare R2, AWS S3, MinIO) works by setting the same secrets manually:
+Then `fly deploy`. That's it — the presence of the `BUCKET_NAME` secret enables automated backups; without it, nothing changes. Any S3-compatible provider (Cloudflare R2, AWS S3, MinIO) works by setting the same secrets manually:
 
 ```sh
 fly secrets set \
@@ -212,20 +210,27 @@ fly secrets set \
   AWS_SECRET_ACCESS_KEY='...'
 ```
 
-Use one bucket per site. The bucket is append-only: local asset cleanup is never mirrored to it, so unlike volume-local rollbacks, restores from the bucket are not bounded by `ASSET_GRACE_PERIOD_DAYS` — every asset ever uploaded is still there.
+Use one bucket per site. The bucket is append-only: local asset cleanup is never mirrored to it, so unlike volume-local rollbacks, restores from the bucket are not bounded by `ASSET_GRACE_PERIOD_DAYS` — every asset ever uploaded is still there. Replication runs as a supervised sidecar: if it ever fails, your site stays up and the logs say so loudly.
 
 ### What you get
 
-- **Disaster recovery, automatically.** On boot, a machine with an empty volume restores the database from the bucket and reconciles assets. If your volume (or app, or region) is ever lost: `fly deploy` against a fresh volume brings your site back.
-- **Point-in-time restore to production.** Roll the live database back to any moment, shipped through the same guarded swap as a push (pre-restore backup, verification):
+- **Disaster recovery, automatically.** On boot, a machine with an empty volume restores the database from the bucket, then downloads the assets it references. If your volume (or app, or region) is ever lost: `fly deploy` against a fresh volume brings your site back.
+- **Point-in-time restore to production.** Roll the live database back to any moment, shipped through the same guarded swap as a push (pre-restore backup, integrity validation, verification):
 
   ```sh
-  npm run data:restore-cloud -- --at "2026-07-10T15:00"
+  npm run data:restore-cloud                                # latest bucket state
+  npm run data:restore-cloud -- --at "2026-07-10T15:00:00Z" # a specific moment
   ```
 
-- **Restore to local.** Rebuild a full local working copy from nothing but the bucket — new laptop, or inspecting what the site looked like at a point in time, without touching production.
+- **Restore to local.** Rebuild your local `data/` folder from nothing but the bucket — new laptop, or inspecting a past state without touching production. Requires [Litestream installed locally](https://litestream.io/install/) (`brew install litestream`) and the bucket credentials in your `.env` (see `.env.example`):
 
-Continuous backups complement the manual snapshots rather than replacing them: `data:push`/`data:pull`/`data:backup`/`data:restore` remain the tools for deliberate, operational state moves.
+  ```sh
+  npm run data:pull-cloud
+  ```
+
+Restores always download only the assets the restored database references — the bucket holds full history, but a restore transfers just the site's working set as of that moment.
+
+Continuous backups complement the manual snapshots rather than replacing them: `data:push`/`data:pull`/`data:backup`/`data:restore` remain the tools for deliberate, operational state moves. Design details in [PLAN_AUTOMATED_BACKUP.md](./PLAN_AUTOMATED_BACKUP.md).
 
 ## Upgrading
 
