@@ -74,19 +74,36 @@ To reset your local database to the initial demo content (asks for confirmation 
 npm run data:reset
 ```
 
-Next, you probably want to adjust the colors and fonts to match your style. Put your overrides in [custom.css](./src/custom.css) — that file is yours, upstream Editable updates never touch it, which keeps future upgrades conflict-free. It loads after [app.css](./src/app.css), so any variable defined there can be overridden:
+Next, you probably want to adjust the colors and fonts to match your style. Put your overrides in [custom.css](./src/custom.css) — that file is yours, upstream Editable updates never touch it, which keeps future upgrades conflict-free. It loads after [app.css](./src/app.css), so anything defined there can be overridden. For example:
 
 ```css
+/* src/custom.css */
+
 :root {
-	--background: oklch(0.98 0 0);
+	/* Colors (these are the defaults from app.css; a dark theme
+	   example is commented out there too) */
+	--background: oklch(1 0 0);
 	--foreground: oklch(0 0 0);
-	--accent: oklch(0.21 0.034 264);
+	--muted: oklch(0.98 0 0);
+	--border: oklch(0.92 0 0);
+	--muted-foreground: oklch(0.55 0 0);
+	--accent: oklch(0 0 0);
+	--accent-foreground: oklch(1 0 0);
+
+	/* Typefaces — add your own with @font-face rules right here */
 	--font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
 	--font-serif: 'Libertinos Serif Display', ui-serif, Georgia, serif;
 }
+
+/* Type scale — copy any of app.css's classes (display-1 … display-5,
+   body-sm … body-xl) and adjust. @apply works here via the @reference
+   line that custom.css ships with. */
+.display-1 {
+	@apply font-serif text-6xl leading-tight tracking-tight text-balance lg:text-7xl;
+}
 ```
 
-However, likely you'll want to customize more than that. E.g. edit [Button.svelte](./src/routes/components/Button.svelte) to create your very own distinct button style. Anything in [src/routes](./src/routes/) is meant to be customized by you for your project.
+However, likely you'll want to customize more than that. E.g. edit [Button.svelte](./src/routes/components/Button.svelte) to create your very own distinct button style. Anything in [src/routes](./src/routes/) is meant to be customized by you for your project. And if you're redesigning heavily anyway, feel free to edit `app.css` itself — it just means upstream updates to it may need a manual merge, same as your changes in `src/routes`. `custom.css` is the conflict-free lane for light-touch styling, not a fence.
 
 ## Manual
 

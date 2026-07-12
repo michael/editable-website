@@ -1,12 +1,22 @@
 /*
  * Your styles. This file belongs to you — upstream Editable updates never
- * touch it, so `git pull upstream main` stays conflict-free.
+ * touch it, so `git pull upstream stable` stays conflict-free.
  *
- * It loads after app.css, so you can override any variable defined there
- * (colors, fonts, shadows) or add your own rules. For example:
+ * It loads after app.css, so you can override any variable or class defined
+ * there. The @reference below makes Tailwind's @apply work in this file, so
+ * you can copy a type-scale class from app.css and adjust it. For example:
  *
  *   :root {
  *     --accent: oklch(0.55 0.2 25);
  *     --font-serif: 'Playfair Display', ui-serif, Georgia, serif;
  *   }
+ *
+ *   .display-1 {
+ *     @apply font-serif text-6xl leading-tight tracking-tight text-balance lg:text-7xl;
+ *   }
+ *
+ * Note: use plain classes with @apply, as above. A Tailwind `@utility` block
+ * defined in this file would silently emit nothing — utilities are only
+ * generated from app.css.
  */
+@reference './app.css';
