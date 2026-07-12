@@ -272,7 +272,8 @@ cmd_restore() {
 		echo "Warning: restored DB references assets no longer on disk (past grace period?)"
 
 	echo
-	echo "✓ Restored '$APP' to '$name'. The pre-restore state is backup '$ts'."
+	echo "✓ Restored '$APP' to '$name': $(remote summary 2>/dev/null | tr '\n' ' ' | sed 's/ $//')."
+	echo "  The pre-restore state is backup '$ts'."
 }
 
 # ---- restore-cloud: point-in-time restore from the backup bucket -----------

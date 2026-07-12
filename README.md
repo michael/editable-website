@@ -152,12 +152,21 @@ Because each checkout manages exactly one app (see [Your site is your repo](#you
 
 ## Backup, sync & recovery
 
-The data scripts move the `data/` folder between your machine and your deployment. Like the `fly` commands, they read the target app from `fly.toml`:
+The data commands move the `data/` folder (database + assets) between your machine, your deployment, and — optionally — a backup bucket. The complete toolbox:
 
-```
-npm run data:pull   # remote → local (for local development)
-npm run data:push   # local → remote
-```
+| Command | What it does |
+| --- | --- |
+| `npm run data:pull` | Copy the live site's data to your machine |
+| `npm run data:push` | Replace the live site's data with your local state (guarded, undoable) |
+| `npm run data:backup` | Snapshot the live database (kept on the server + mirrored locally) |
+| `npm run data:backups` | List snapshots |
+| `npm run data:restore <name>` | Roll the live database back to a snapshot |
+| `npm run data:cloud-snapshots` | List points in time you can restore to † |
+| `npm run data:restore-cloud [-- --at <ts>]` | Roll the live site back to a point in time † |
+| `npm run data:pull-cloud [-- --at <ts>]` | Rebuild your local `data/` from the bucket † |
+| `npm run litestream:install` | One-time local setup for `data:pull-cloud` † |
+
+† requires [Automated backups](#automated-backups-optional). Every command reads the target app from `fly.toml`; append `-- -a <app>` to override. Every restore prints a summary of the restored state (documents, last edited, assets) so you can confirm you got the moment you meant, and backs up the state it replaces first.
 
 Pull the live site down to work on it locally, or push a local state up to production. Both directions sync the database and any missing assets.
 
@@ -179,11 +188,13 @@ Assets are content-addressed and immutable, so they only ever need to be added, 
 Every push prints an undo command. To roll back:
 
 ```
-npm run data:backups          # list restore points
-npm run data:restore <name>   # roll back to one
+npm run data:backups          # list snapshots
+npm run data:restore <name>   # roll back to one (name from the listing; trailing .db optional)
 ```
 
-A rollback restores only the database; it re-points at the same immutable asset pool, which is why `ASSET_GRACE_PERIOD_DAYS` (see above) defines how far back you can safely go. Take an on-demand backup any time with `npm run data:backup`.
+Snapshots are taken automatically before every push and restore, and on demand with `npm run data:backup` — each lives on the server (last 10 kept) and is mirrored to `data-backups/` on your machine (kept forever, prune by hand). `restore` finds it in either place.
+
+A rollback restores only the database; it re-points at the same immutable asset pool, which is why `ASSET_GRACE_PERIOD_DAYS` (see above) defines how far back you can safely go — restores from the backup bucket don't have this limit.
 
 > Don't edit the site while a push is in progress — the safeguard assumes the remote state is stable for the moment it takes to snapshot and swap.
 
