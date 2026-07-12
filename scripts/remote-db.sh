@@ -21,8 +21,8 @@ case "$cmd" in
 		# Consistent point-in-time snapshot of the live DB (safe under writes).
 		ts="$1"
 		mkdir -p "$DATA/backups"
-		sqlite3 "$DATA/db.sqlite3" "VACUUM INTO '$DATA/backups/$ts.db'"
-		echo "$DATA/backups/$ts.db"
+		sqlite3 "$DATA/db.sqlite3" "VACUUM INTO '$DATA/backups/$ts.sqlite3'"
+		echo "$DATA/backups/$ts.sqlite3"
 		;;
 
 	snapshot)
@@ -80,7 +80,7 @@ case "$cmd" in
 		# Copy an existing on-volume backup into the swap slot (restore path).
 		ts="$1"
 		mkdir -p "$DATA/incoming"
-		cp "$DATA/backups/$ts.db" "$DATA/incoming/db.sqlite3"
+		cp "$DATA/backups/$ts.sqlite3" "$DATA/incoming/db.sqlite3"
 		;;
 
 	summary)
@@ -129,13 +129,13 @@ case "$cmd" in
 		;;
 
 	list-backups)
-		ls -1t "$DATA/backups"/*.db 2>/dev/null | xargs -r -n1 basename || true
+		ls -1t "$DATA/backups"/*.sqlite3 2>/dev/null | xargs -r -n1 basename || true
 		;;
 
 	prune-backups)
 		keep="$1"
 		cd "$DATA/backups" 2>/dev/null || exit 0
-		ls -1t ./*.db 2>/dev/null | tail -n +"$((keep + 1))" | xargs -r rm -f
+		ls -1t ./*.sqlite3 2>/dev/null | tail -n +"$((keep + 1))" | xargs -r rm -f
 		;;
 
 	*)

@@ -23,7 +23,7 @@
 #   ./scripts/data.sh backups                     # list remote backups
 #   ./scripts/data.sh backup                      # take a remote backup only
 #   ./scripts/data.sh cloud-snapshots             # list restore points in the backup bucket
-#   ./scripts/data.sh reset                       # put local data/ back to fresh demo content
+#   ./scripts/data.sh reset                       # reset local database to fresh demo content
 #   ./scripts/data.sh help                        # print the command reference
 #
 # The target app is read from fly.toml (app = '...'), same as the fly CLI.
@@ -143,7 +143,7 @@ cmd_push() {
 	# Clear leftovers from any interrupted run — sftp put refuses to overwrite.
 	remote clean-incoming
 	remote backup "$ts" >/dev/null
-	sftp_get "$REMOTE_DATA/backups/$ts.db" "$BACKUP_DIR_LOCAL/$ts.db"
+	sftp_get "$REMOTE_DATA/backups/$ts.sqlite3" "$BACKUP_DIR_LOCAL/$ts.sqlite3"
 	remote prune-backups "$KEEP_BACKUPS"
 
 	info "Syncing assets (additive)…"
@@ -214,7 +214,7 @@ cmd_pull() {
 
 	if [ -f "$DATA_DIR_LOCAL/db.sqlite3" ]; then
 		info "Backing up current local database…"
-		sqlite3 "$DATA_DIR_LOCAL/db.sqlite3" "VACUUM INTO '$BACKUP_DIR_LOCAL/local-$ts.db'"
+		sqlite3 "$DATA_DIR_LOCAL/db.sqlite3" "VACUUM INTO '$BACKUP_DIR_LOCAL/local-$ts.sqlite3'"
 	fi
 
 	info "Swapping in pulled database…"
@@ -223,8 +223,8 @@ cmd_pull() {
 
 	echo
 	echo "✓ Pulled from '$APP'."
-	if [ -f "$BACKUP_DIR_LOCAL/local-$ts.db" ]; then
-		echo "  Previous local DB: $BACKUP_DIR_LOCAL/local-$ts.db"
+	if [ -f "$BACKUP_DIR_LOCAL/local-$ts.sqlite3" ]; then
+		echo "  Previous local DB: $BACKUP_DIR_LOCAL/local-$ts.sqlite3"
 	fi
 }
 
@@ -239,7 +239,7 @@ cmd_restore() {
 		esac
 	done
 	[ -n "$name" ] || die "Usage: $0 restore <name> [--yes]   (see: $0 backups)"
-	name="${name%.db}"
+	name="${name%.sqlite3}"
 
 	ensure_running
 	[ "$yes" = "--yes" ] || confirm "Roll the database on '$APP' back to backup '$name'?"
@@ -251,14 +251,14 @@ cmd_restore() {
 	# Clear leftovers from any interrupted run — sftp put refuses to overwrite.
 	remote clean-incoming
 	remote backup "$ts" >/dev/null
-	sftp_get "$REMOTE_DATA/backups/$ts.db" "$BACKUP_DIR_LOCAL/$ts.db"
+	sftp_get "$REMOTE_DATA/backups/$ts.sqlite3" "$BACKUP_DIR_LOCAL/$ts.sqlite3"
 
-	if remote list-backups | grep -qx "$name.db"; then
+	if remote list-backups | grep -qx "$name.sqlite3"; then
 		info "Staging backup from remote volume…"
 		remote stage-backup "$name"
-	elif [ -f "$BACKUP_DIR_LOCAL/$name.db" ]; then
+	elif [ -f "$BACKUP_DIR_LOCAL/$name.sqlite3" ]; then
 		info "Backup not on volume — staging from local mirror…"
-		sftp_put "$BACKUP_DIR_LOCAL/$name.db" "$REMOTE_DATA/incoming/db.sqlite3.part"
+		sftp_put "$BACKUP_DIR_LOCAL/$name.sqlite3" "$REMOTE_DATA/incoming/db.sqlite3.part"
 		remote promote-stage
 	else
 		die "Backup '$name' not found on volume or in $BACKUP_DIR_LOCAL/"
@@ -306,7 +306,7 @@ cmd_restore_cloud() {
 	remote prepare
 	remote clean-incoming
 	remote backup "$ts" >/dev/null
-	sftp_get "$REMOTE_DATA/backups/$ts.db" "$BACKUP_DIR_LOCAL/$ts.db"
+	sftp_get "$REMOTE_DATA/backups/$ts.sqlite3" "$BACKUP_DIR_LOCAL/$ts.sqlite3"
 
 	info "Restoring database from bucket${at:+ (as of $at)}…"
 	remote cloud-restore "$at"
@@ -370,7 +370,7 @@ cmd_pull_cloud() {
 
 	if [ -f "$DATA_DIR_LOCAL/db.sqlite3" ]; then
 		info "Backing up current local database…"
-		sqlite3 "$DATA_DIR_LOCAL/db.sqlite3" "VACUUM INTO '$BACKUP_DIR_LOCAL/local-$ts.db'"
+		sqlite3 "$DATA_DIR_LOCAL/db.sqlite3" "VACUUM INTO '$BACKUP_DIR_LOCAL/local-$ts.sqlite3'"
 	fi
 
 	info "Swapping in restored database…"
@@ -384,7 +384,7 @@ cmd_pull_cloud() {
 	echo "✓ Restored local data/ from the bucket."
 }
 
-# ---- reset: put local data/ back to fresh demo content ---------------------
+# ---- reset: reset the local database to fresh demo content -----------------
 cmd_reset() {
 	local yes="${1:-}"
 
@@ -392,34 +392,24 @@ cmd_reset() {
 		die "Local database is open — stop the dev server before resetting."
 	fi
 
-	[ "$yes" = "--yes" ] || confirm "Replace your local data/ (database AND assets) with fresh demo content?"
+	[ "$yes" = "--yes" ] || confirm "Reset your local database to fresh demo content? (assets stay in place)"
 
 	local ts; ts="$(date -u +%Y%m%dT%H%M%SZ)"
 	if [ -f "$DATA_DIR_LOCAL/db.sqlite3" ]; then
 		info "Backing up current local database…"
 		mkdir -p "$BACKUP_DIR_LOCAL"
-		sqlite3 "$DATA_DIR_LOCAL/db.sqlite3" "VACUUM INTO '$BACKUP_DIR_LOCAL/local-$ts.db'"
+		sqlite3 "$DATA_DIR_LOCAL/db.sqlite3" "VACUUM INTO '$BACKUP_DIR_LOCAL/local-$ts.sqlite3'"
 	fi
 
-	# Assets are moved aside, not deleted — together with the database backup
-	# above, the pre-reset state stays fully recoverable.
-	if [ -d "$DATA_DIR_LOCAL/assets" ] && [ -n "$(ls -A "$DATA_DIR_LOCAL/assets" 2>/dev/null)" ]; then
-		info "Moving assets aside…"
-		mkdir -p "$BACKUP_DIR_LOCAL"
-		mv "$DATA_DIR_LOCAL/assets" "$BACKUP_DIR_LOCAL/local-$ts-assets"
-	fi
-
-	# Empty the directory rather than removing it, so a symlinked or mounted
-	# data/ keeps working.
-	if [ -d "$DATA_DIR_LOCAL" ]; then
-		find "$DATA_DIR_LOCAL" -mindepth 1 -delete
-	fi
+	# Only the database is reset. Assets stay in place: the pool is
+	# content-addressed, and files the fresh database doesn't reference are
+	# cleaned up by the grace-period sweep.
+	rm -f "$DATA_DIR_LOCAL/db.sqlite3" "$DATA_DIR_LOCAL/db.sqlite3-wal" "$DATA_DIR_LOCAL/db.sqlite3-shm"
 
 	echo
-	echo "✓ Local data cleared. Start the dev server (npm run dev) to get a freshly seeded site."
-	if [ -f "$BACKUP_DIR_LOCAL/local-$ts.db" ]; then
-		echo "  Previous state: $BACKUP_DIR_LOCAL/local-$ts.db + $BACKUP_DIR_LOCAL/local-$ts-assets/"
-		echo "  Undo: stop the dev server, copy the .db back to $DATA_DIR_LOCAL/db.sqlite3 and the assets back to $DATA_DIR_LOCAL/assets/."
+	echo "✓ Local database cleared. Start the dev server (npm run dev) to get a freshly seeded site."
+	if [ -f "$BACKUP_DIR_LOCAL/local-$ts.sqlite3" ]; then
+		echo "  Previous database: $BACKUP_DIR_LOCAL/local-$ts.sqlite3"
 	fi
 }
 
@@ -430,9 +420,9 @@ cmd_backup() {
 	local ts; ts="$(timestamp)"
 	remote prepare
 	remote backup "$ts" >/dev/null
-	sftp_get "$REMOTE_DATA/backups/$ts.db" "$BACKUP_DIR_LOCAL/$ts.db"
+	sftp_get "$REMOTE_DATA/backups/$ts.sqlite3" "$BACKUP_DIR_LOCAL/$ts.sqlite3"
 	remote prune-backups "$KEEP_BACKUPS"
-	echo "✓ Backup '$ts' (remote volume + $BACKUP_DIR_LOCAL/$ts.db)"
+	echo "✓ Backup '$ts' (remote volume + $BACKUP_DIR_LOCAL/$ts.sqlite3)"
 }
 
 cmd_backups() {
@@ -462,11 +452,11 @@ Data commands (via npm run; positional arguments work directly, flags need a -- 
   npm run data:cloud-snapshots                 list restore points in the backup bucket
   npm run data:restore-cloud [-- --at <ts>]    roll the live site back to a point in time
   npm run data:pull-cloud [-- --at <ts>]       rebuild local data/ from the backup bucket
-  npm run data:reset [-- --yes]                put local data/ back to fresh demo content
+  npm run data:reset [-- --yes]                reset local database to fresh demo content (assets stay)
   npm run litestream:install                   one-time local setup for the cloud commands
 
 The target app comes from fly.toml; override with:  -- -a <app>
-Snapshot names (<name>) look like my-site-20260712T143535Z-3f2a (trailing .db optional) — list them with data:backups.
+Snapshot names (<name>) look like my-site-20260712T143535Z-3f2a (file extension optional) — list them with data:backups.
 Timestamps (<ts>) are RFC3339 UTC, e.g. 2026-07-12T14:35:35Z — list them with data:cloud-snapshots.
 See README → Backup, sync & recovery for details.
 EOF
