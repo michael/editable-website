@@ -81,7 +81,7 @@ describe('convert_markdown', () => {
 	});
 
 	it('rejects multi-block list items', () => {
-		expect(() => convert('- a\n\n  second paragraph')).toThrow(/single line of text/);
+		expect(() => convert('- a\n\n  second paragraph')).toThrow(/single paragraph/);
 	});
 
 	it('converts strong, emphasis, and inline code to mark nodes with ranges', () => {
@@ -148,8 +148,11 @@ describe('convert_markdown', () => {
 		expect(flat_text_nodes(doc)[0].content.content).toBe('first\nsecond');
 	});
 
-	it('rejects hard breaks in list items', () => {
-		expect(() => convert('- first\\\nsecond')).toThrow(/Hard line breaks/);
+	it('follows the schema for hard breaks in list items (allow_newlines)', () => {
+		// list_item.content currently has allow_newlines: true in document_schema.
+		const doc = convert('- first\\\nsecond');
+		const list = flat_text_nodes(doc).find((node) => node.type === 'list');
+		expect(doc.nodes[list.list_items.nodes[0]].content.content).toBe('first\nsecond');
 	});
 
 	it('rejects blockquotes, tables, raw HTML, and thematic breaks', () => {
@@ -225,6 +228,66 @@ describe('convert_markdown', () => {
 			const toc = flat_text_nodes(doc).find((node) => node.type === 'list');
 			const items = toc.list_items.nodes.map((id) => doc.nodes[id].content.content);
 			expect(items).toEqual(['Chapter A', 'Chapter B']);
+		});
+
+		it('places the toc in its own prose node between intro and first section', () => {
+			const doc = convert(MANUAL, TOC_MAPPING);
+			const body = page_body_nodes(doc);
+			expect(body.map((node) => node.type)).toEqual(['prose', 'prose', 'prose', 'prose']);
+			const toc_prose = body[1];
+			expect(toc_prose.body.nodes.map((id) => doc.nodes[id].type)).toEqual(['list']);
+			// Section marks cover the two chapters and skip intro and toc.
+			const marks = doc.nodes[doc.document_id].body.marks;
+			expect(marks.map((mark) => [mark.start_offset, mark.end_offset])).toEqual([
+				[2, 3],
+				[3, 4]
+			]);
+		});
+
+		it('inserts the toc inline when chapters are below level 2', () => {
+			const doc = convert('## Top\n\n### A\n\nx\n\n### B\n\nx', TOC_MAPPING);
+			const types = flat_text_nodes(doc).map((node) => node.type);
+			expect(types).toEqual([
+				'heading_2',
+				'list',
+				'heading_3',
+				'paragraph',
+				'heading_3',
+				'paragraph'
+			]);
+		});
+	});
+
+	describe('sections', () => {
+		it('starts a section at each level-2 heading, keeping code blocks inside', () => {
+			const doc = convert('# T\n\nIntro.\n\n## A\n\nx\n\n```\ncode\n```\n\ny\n\n## B\n\nz');
+			const page = doc.nodes[doc.document_id];
+			expect(page.body.nodes.map((id) => doc.nodes[id].type)).toEqual([
+				'prose',
+				'prose',
+				'preformatted',
+				'prose',
+				'prose'
+			]);
+			const marks = page.body.marks.map((mark) => ({
+				start: mark.start_offset,
+				end: mark.end_offset,
+				type: doc.nodes[mark.node_id].type
+			}));
+			expect(marks).toEqual([
+				{ start: 1, end: 4, type: 'section' },
+				{ start: 4, end: 5, type: 'section' }
+			]);
+		});
+
+		it('leaves documents without level-2 headings unsectioned', () => {
+			const doc = convert('# T\n\nText.\n\n### Deep\n\nMore.');
+			expect(doc.nodes[doc.document_id].body.marks).toEqual([]);
+		});
+
+		it('produces a valid composed document with sections', () => {
+			const doc = convert('# T\n\nIntro.\n\n## A\n\nx\n\n## B\n\ny');
+			expect(() => compose_markdown_document(doc, SHARED_DOCUMENTS)).not.toThrow();
 		});
 	});
 });

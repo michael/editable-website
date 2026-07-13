@@ -12,4 +12,8 @@
 // With no entries, the site behaves exactly as if this feature did not exist.
 // Do not import this module (or anything under `src/lib/server/`) from client
 // code — use `src/lib/config.js` for universal constants instead.
-export const MARKDOWN_SOURCES = [];
+export const MARKDOWN_SOURCES = [
+	// Demo page exercising every supported markdown construct.
+	{ source: 'kitchen-sink.md', pathname: '/kitchen-sink', toc: true },
+	{ source: 'svedit.md', pathname: '/svedit', toc: true }
+];

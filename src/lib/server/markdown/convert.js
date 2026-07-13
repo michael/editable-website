@@ -11,9 +11,20 @@ import { fromMarkdown } from 'mdast-util-from-markdown';
 import slugify from 'slugify';
 import { get_char_length } from 'svedit';
 import { MEDIA_DEFAULTS } from '$lib/config.js';
+import { document_schema } from '$lib/document_schema.js';
 import { select_toc_headings } from './toc.js';
 
 const SAFE_LINK_SCHEMES = new Set(['http', 'https', 'mailto']);
+
+/**
+ * Whether the schema allows newlines in a node type's content property.
+ *
+ * @param {string} node_type
+ * @returns {boolean}
+ */
+function content_allows_newlines(node_type) {
+	return document_schema[node_type]?.properties?.content?.allow_newlines === true;
+}
 
 export class MarkdownConversionError extends Error {
 	/**
@@ -59,6 +70,11 @@ export function convert_markdown(markdown_text, mapping) {
 	let prose_items = null;
 	/** @type {{ id: string, depth: number, container: string[] }[]} */
 	const headings = [];
+	// Body indexes where a level-2 heading starts a new section.
+	/** @type {number[]} */
+	const section_boundaries = [];
+	/** @type {Map<string[], string>} prose body array -> prose node id */
+	const prose_ids_by_container = new Map();
 
 	function flush_prose() {
 		if (!prose_items || prose_items.length === 0) {
@@ -69,9 +85,11 @@ export function convert_markdown(markdown_text, mapping) {
 		ctx.nodes[prose_id] = {
 			id: prose_id,
 			type: 'prose',
+			// Layout 1: left-oriented column (Prose.svelte).
 			layout: 1,
 			body: { nodes: prose_items, marks: [], annotations: [] }
 		};
+		prose_ids_by_container.set(prose_items, prose_id);
 		body_ids.push(prose_id);
 		prose_items = null;
 	}
@@ -90,7 +108,9 @@ export function convert_markdown(markdown_text, mapping) {
 					id,
 					type: 'paragraph',
 					layout: 1,
-					content: convert_inline(ctx, block.children, { allow_newlines: true })
+					content: convert_inline(ctx, block.children, {
+						allow_newlines: content_allows_newlines('paragraph')
+					})
 				};
 				push_prose_item(id);
 				break;
@@ -107,8 +127,16 @@ export function convert_markdown(markdown_text, mapping) {
 					id,
 					type: `heading_${block.depth}`,
 					layout: 1,
-					content: convert_inline(ctx, block.children, { allow_newlines: false })
+					content: convert_inline(ctx, block.children, {
+						allow_newlines: content_allows_newlines(`heading_${block.depth}`)
+					})
 				};
+				// Level-2 headings start a new visual section: close the current
+				// prose run and remember where the section begins in the body.
+				if (block.depth === 2) {
+					flush_prose();
+					section_boundaries.push(body_ids.length);
+				}
 				push_prose_item(id);
 				if (!prose_items) throw new Error('unreachable');
 				headings.push({ id, depth: block.depth, container: prose_items });
@@ -149,7 +177,20 @@ export function convert_markdown(markdown_text, mapping) {
 	flush_prose();
 
 	if (toc) {
-		insert_toc(ctx, headings);
+		insert_toc(ctx, headings, { body_ids, prose_ids_by_container, section_boundaries });
+	}
+
+	// Wrap each section's body range (its prose plus interleaved code blocks,
+	// up to the next section) in a section mark, so it renders as one visual
+	// group. Content before the first level-2 heading stays unwrapped.
+	/** @type {{ start_offset: number, end_offset: number, node_id: string }[]} */
+	const body_marks = [];
+	for (const [boundary_index, start] of section_boundaries.entries()) {
+		const end = section_boundaries[boundary_index + 1] ?? body_ids.length;
+		if (end <= start) continue;
+		const section_id = next_id(ctx);
+		ctx.nodes[section_id] = { id: section_id, type: 'section' };
+		body_marks.push({ start_offset: start, end_offset: end, node_id: section_id });
 	}
 
 	const image_id = next_id(ctx);
@@ -161,7 +202,7 @@ export function convert_markdown(markdown_text, mapping) {
 		title: { content: '', marks: [], annotations: [] },
 		description: { content: '', marks: [], annotations: [] },
 		image: image_id,
-		body: { nodes: body_ids, marks: [], annotations: [] }
+		body: { nodes: body_ids, marks: body_marks, annotations: [] }
 	};
 
 	return { document_id: ctx.doc_id, nodes: ctx.nodes };
@@ -239,7 +280,7 @@ function convert_list(ctx, block) {
 		}
 		if (blocks.length > 1 || (blocks.length === 1 && blocks[0].type !== 'paragraph')) {
 			throw new MarkdownConversionError(
-				'List items must contain a single line of text (no multiple blocks).',
+				'List items must contain a single paragraph (no multiple blocks).',
 				{ source: ctx.source, position: item.position }
 			);
 		}
@@ -251,7 +292,9 @@ function convert_list(ctx, block) {
 			content:
 				blocks.length === 0
 					? { content: '', marks: [], annotations: [] }
-					: convert_inline(ctx, blocks[0].children, { allow_newlines: false })
+					: convert_inline(ctx, blocks[0].children, {
+							allow_newlines: content_allows_newlines('list_item')
+						})
 		};
 		item_ids.push(id);
 	}
@@ -446,10 +489,16 @@ function to_grapheme_marks(ctx, content, utf16_ranges) {
 /**
  * Insert a generated table of contents in front of the first chapter heading.
  *
+ * When that heading starts a section (the level-2 case), the list becomes its
+ * own prose node placed between the intro and the first section, so it does
+ * not render as part of the first chapter. Otherwise it is inserted inline,
+ * directly before the heading.
+ *
  * @param {any} ctx
  * @param {{ id: string, depth: number, container: string[] }[]} headings
+ * @param {{ body_ids: string[], prose_ids_by_container: Map<string[], string>, section_boundaries: number[] }} body
  */
-function insert_toc(ctx, headings) {
+function insert_toc(ctx, headings, { body_ids, prose_ids_by_container, section_boundaries }) {
 	const selection = select_toc_headings(headings);
 	if (!selection) return;
 
@@ -482,5 +531,23 @@ function insert_toc(ctx, headings) {
 	};
 
 	const { container, id } = selection.insert_before;
-	container.splice(container.indexOf(id), 0, list_id);
+
+	if (container[0] === id) {
+		// The heading opens its prose container, so the toc gets its own prose
+		// node in front of it; section ranges after the insertion shift by one.
+		const toc_prose_id = next_id(ctx);
+		ctx.nodes[toc_prose_id] = {
+			id: toc_prose_id,
+			type: 'prose',
+			layout: 1,
+			body: { nodes: [list_id], marks: [], annotations: [] }
+		};
+		const body_index = body_ids.indexOf(prose_ids_by_container.get(container) ?? '');
+		body_ids.splice(body_index, 0, toc_prose_id);
+		for (const [index, boundary] of section_boundaries.entries()) {
+			if (boundary >= body_index) section_boundaries[index] = boundary + 1;
+		}
+	} else {
+		container.splice(container.indexOf(id), 0, list_id);
+	}
 }

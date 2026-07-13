@@ -351,7 +351,7 @@ export const document_schema = define_document_schema({
 			content: {
 				type: 'text',
 				mark_types: ALL_MARKS,
-				allow_newlines: false
+				allow_newlines: true
 			}
 		}
 	},

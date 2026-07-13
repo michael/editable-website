@@ -92,13 +92,17 @@ With `MARKDOWN_SOURCES = []` (the default) the feature is inert and no `content/
 
 With `toc: true`, the headings one level below the file's first heading become a linked list, inserted before the first of them. A typical manual has one `#` title followed by `##` chapters: the title and intro prose render first, then the table of contents, then the chapters. Headings get stable, human-readable ids derived from their text (`## Getting started` → `#getting-started`), so the links scroll in place and can be shared as URL fragments. Files with fewer than two chapter headings get no table of contents.
 
+### Sections
+
+Every `##` heading starts a new visual section: the heading and everything up to the next `##` (paragraphs, lists, code blocks) are grouped under one section mark on the page body, which renders them tightly together with more space between sections — the same section mechanism editable pages use. Content before the first `##` (typically the `#` title and intro) and the generated table of contents stay outside any section.
+
 ### Supported markdown
 
 The converter accepts the subset of CommonMark that maps onto the built-in content model, and rejects everything else with an error naming the file, line, and column — authored text is never silently dropped or restructured:
 
 - paragraphs, headings 1–5 (heading 6 is rejected)
 - `**strong**`, `*emphasis*`, `` `inline code` ``, and `[links](/page)` — but not nested inside one another (marks are mutually exclusive in the content model, so e.g. bold text inside a link is rejected)
-- unordered lists (rendered with dash markers) and ordered lists (rendered numbered); list items are single lines — nested lists and multi-paragraph items are rejected
+- unordered lists (rendered with dash markers) and ordered lists (rendered numbered); nested lists and multi-paragraph items are rejected
 - fenced and indented code blocks (no syntax highlighting)
 - link targets: `http(s):`, `mailto:`, site-absolute paths, and `#fragments`; other protocols and links to `.md` files are rejected
 
