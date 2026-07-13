@@ -1,19 +1,31 @@
-// Server/build-only configuration for filesystem markdown content.
+// Server/build-only configuration for markdown pages.
 //
-// Each entry maps one markdown file below the repository-level `content/`
-// directory to one public URL, rendered as a read-only page:
+// Each entry maps one markdown file in the repository to one public URL,
+// rendered as a read-only page. Reference the file with a `?raw` import —
+// Vite inlines the content at build time and fails the build if the file is
+// missing. Any markdown file in the repo works, e.g. a root-level MANUAL.md:
 //
-//   { source: 'manual.md', pathname: '/manual', toc: true }
+//   import manual_md from '../../MANUAL.md?raw';
+//   { markdown: manual_md, source: 'MANUAL.md', pathname: '/manual', toc: true }
 //
-// - `source`: relative path of a `.md` file below `content/`
+// - `markdown`: the imported file content
+// - `source`: the file's repo-relative path, so error messages point at the file
 // - `pathname`: absolute single-segment URL the page is served at
 // - `toc` (optional): generate a table of contents from the file's headings
 //
 // With no entries, the site behaves exactly as if this feature did not exist.
 // Do not import this module (or anything under `src/lib/server/`) from client
 // code — use `src/lib/config.js` for universal constants instead.
+import kitchen_sink_md from '../../content/kitchen-sink.md?raw';
+import svedit_md from '../../content/svedit.md?raw';
+
 export const MARKDOWN_SOURCES = [
 	// Demo page exercising every supported markdown construct.
-	{ source: 'kitchen-sink.md', pathname: '/kitchen-sink', toc: true },
-	{ source: 'svedit.md', pathname: '/svedit', toc: true }
+	{
+		markdown: kitchen_sink_md,
+		source: 'content/kitchen-sink.md',
+		pathname: '/kitchen-sink',
+		toc: true
+	},
+	{ markdown: svedit_md, source: 'content/svedit.md', pathname: '/svedit', toc: true }
 ];

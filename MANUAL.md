@@ -76,17 +76,22 @@ A deployment can expose selected repository markdown files as read-only pages re
 
 ### Configuration
 
-Markdown files live below the repository-level `content/` directory. Map a file to a URL in `src/lib/content_config.js` (server/build-only — never import it from client code):
+Any markdown file in the repository can be mapped to a URL in `src/lib/content_config.js` (server/build-only — never import it from client code). Reference the file with an explicit `?raw` import, so Vite inlines exactly the mapped files and a missing file fails the build:
 
 ```js
-export const MARKDOWN_SOURCES = [{ source: 'manual.md', pathname: '/manual', toc: true }];
+import manual_md from '../../MANUAL.md?raw';
+
+export const MARKDOWN_SOURCES = [
+	{ markdown: manual_md, source: 'MANUAL.md', pathname: '/manual', toc: true }
+];
 ```
 
-- `source` — relative path of a `.md` file below `content/`
+- `markdown` — the imported file content
+- `source` — the file's repo-relative path, so error messages point at the file to fix
 - `pathname` — absolute single-segment URL the page is served at (nested paths are not supported yet)
 - `toc` (optional) — generate a table of contents from the file's headings
 
-With `MARKDOWN_SOURCES = []` (the default) the feature is inert and no `content/` directory is required. A configured pathname wins over a database page with the same slug. Configuration errors — unknown fields, duplicate sources or pathnames, missing files — fail the dev server or production build immediately.
+With `MARKDOWN_SOURCES = []` the feature is inert. A configured pathname wins over a database page with the same slug. Configuration errors — unknown fields, duplicate pathnames, missing content — fail the dev server or production build immediately.
 
 ### Table of contents
 

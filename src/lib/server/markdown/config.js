@@ -3,13 +3,13 @@
 // Configuration errors throw at startup/build so a misconfigured deployment
 // fails fast instead of silently serving the wrong pages.
 
-const ALLOWED_ENTRY_KEYS = new Set(['source', 'pathname', 'toc']);
+const ALLOWED_ENTRY_KEYS = new Set(['markdown', 'source', 'pathname', 'toc']);
 
 /**
  * Validate and normalize markdown source mappings.
  *
  * @param {unknown} sources - The raw MARKDOWN_SOURCES value
- * @returns {{ source: string, pathname: string, toc: boolean }[]}
+ * @returns {{ markdown: string, source: string, pathname: string, toc: boolean }[]}
  * @throws {Error} Throws when the configuration is invalid
  */
 export function validate_markdown_sources(sources) {
@@ -17,16 +17,15 @@ export function validate_markdown_sources(sources) {
 		throw new Error('MARKDOWN_SOURCES must be an array.');
 	}
 
-	/** @type {{ source: string, pathname: string, toc: boolean }[]} */
+	/** @type {{ markdown: string, source: string, pathname: string, toc: boolean }[]} */
 	const normalized = [];
-	const seen_sources = new Set();
 	const seen_pathnames = new Set();
 
 	for (const [index, entry] of sources.entries()) {
 		const label = `MARKDOWN_SOURCES[${index}]`;
 
 		if (!entry || typeof entry !== 'object' || Array.isArray(entry)) {
-			throw new Error(`${label} must be an object with source and pathname.`);
+			throw new Error(`${label} must be an object with markdown, source, and pathname.`);
 		}
 
 		for (const key of Object.keys(entry)) {
@@ -35,55 +34,38 @@ export function validate_markdown_sources(sources) {
 			}
 		}
 
-		const source = validate_source(entry.source, label);
+		if (typeof entry.markdown !== 'string') {
+			throw new Error(`${label}.markdown must be the imported file content (use a ?raw import).`);
+		}
+
+		// The file's repo-relative path, so conversion errors point straight at
+		// the file to fix (e.g. "content/manual.md:585:45").
+		if (typeof entry.source !== 'string' || !entry.source.endsWith('.md')) {
+			throw new Error(
+				`${label}.source must be the file's repo-relative .md path (used in error messages).`
+			);
+		}
+
 		const pathname = validate_pathname(entry.pathname, label);
 
 		if (entry.toc !== undefined && typeof entry.toc !== 'boolean') {
 			throw new Error(`${label}.toc must be a boolean.`);
 		}
 
-		if (seen_sources.has(source)) {
-			throw new Error(`${label} duplicates source "${source}".`);
-		}
 		if (seen_pathnames.has(pathname)) {
 			throw new Error(`${label} duplicates pathname "${pathname}".`);
 		}
-		seen_sources.add(source);
 		seen_pathnames.add(pathname);
 
-		normalized.push({ source, pathname, toc: entry.toc === true });
+		normalized.push({
+			markdown: entry.markdown,
+			source: entry.source,
+			pathname,
+			toc: entry.toc === true
+		});
 	}
 
 	return normalized;
-}
-
-/**
- * @param {unknown} source
- * @param {string} label
- * @returns {string}
- */
-function validate_source(source, label) {
-	if (typeof source !== 'string' || source.length === 0) {
-		throw new Error(`${label}.source must be a non-empty string.`);
-	}
-	if (source.includes('\\')) {
-		throw new Error(`${label}.source must use forward slashes: "${source}".`);
-	}
-	if (source.startsWith('/')) {
-		throw new Error(`${label}.source must be relative to the content/ directory: "${source}".`);
-	}
-	if (!source.endsWith('.md')) {
-		throw new Error(`${label}.source must point to a .md file: "${source}".`);
-	}
-
-	const segments = source.split('/');
-	for (const segment of segments) {
-		if (segment === '' || segment === '.' || segment === '..') {
-			throw new Error(`${label}.source contains an invalid path segment: "${source}".`);
-		}
-	}
-
-	return source;
 }
 
 /**
