@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import adapter_auto from '@sveltejs/adapter-auto';
 import adapter_node from '@sveltejs/adapter-node';
 import tailwindcss from '@tailwindcss/vite';
@@ -29,5 +30,8 @@ export default defineConfig({
 	},
 	worker: {
 		format: 'es'
+	},
+	test: {
+		include: ['src/**/*.test.js']
 	}
 });

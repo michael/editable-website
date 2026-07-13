@@ -6,10 +6,10 @@ Renders an editable image or video slot. The media fills whatever container you 
 
 ### Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `path` | `any[]` | required | Path to the media node |
-| `class` | `string` | — | Class on the outer element |
+| Prop    | Type     | Default  | Description                |
+| ------- | -------- | -------- | -------------------------- |
+| `path`  | `any[]`  | required | Path to the media node     |
+| `class` | `string` | —        | Class on the outer element |
 
 ### Basic usage
 
@@ -19,7 +19,7 @@ Renders an editable image or video slot. The media fills whatever container you 
 
 ```svelte
 <div class="overflow-hidden" style:aspect-ratio="4 / 3">
-    <MediaProperty path={[...path, 'media']} />
+	<MediaProperty path={[...path, 'media']} />
 </div>
 ```
 
@@ -27,16 +27,16 @@ Renders an editable image or video slot. The media fills whatever container you 
 
 ```svelte
 <script>
-    let media_node = $derived(svedit.session.get([...path, 'media']));
+	let media_node = $derived(svedit.session.get([...path, 'media']));
 </script>
 
 <div
-    class="overflow-hidden"
-    style:aspect-ratio={media_node.width && media_node.height
-        ? `${media_node.width} / ${media_node.height}`
-        : '16 / 9'}
+	class="overflow-hidden"
+	style:aspect-ratio={media_node.width && media_node.height
+		? `${media_node.width} / ${media_node.height}`
+		: '16 / 9'}
 >
-    <MediaProperty path={[...path, 'media']} />
+	<MediaProperty path={[...path, 'media']} />
 </div>
 ```
 
@@ -50,7 +50,7 @@ The node at `path` needs `{media_property}_max_width` (integer) and `{media_prop
 
 ```svelte
 <SizableViewbox {path}>
-    <MediaProperty path={[...path, 'media']} />
+	<MediaProperty path={[...path, 'media']} />
 </SizableViewbox>
 ```
 
@@ -58,7 +58,7 @@ For a different media property name (e.g. `logo` on a footer node):
 
 ```svelte
 <SizableViewbox {path} media_property="logo" placeholder_aspect_ratio={1}>
-    <MediaProperty path={[...path, 'logo']} />
+	<MediaProperty path={[...path, 'logo']} />
 </SizableViewbox>
 ```
 
@@ -69,3 +69,37 @@ Layout is the caller's responsibility — pass a class for centering, etc:
 ```
 
 In edit mode, three handles appear when the media inside is selected: left/right edges for width (snapped to 4px grid), bottom edge for aspect ratio. Dragging beyond the container snaps width back to `0`; dragging close to the media's natural ratio snaps aspect ratio back to `0`. The viewbox uses `max-width` + `width: 100%` so it never overflows its parent.
+
+## Markdown pages
+
+A deployment can expose selected repository markdown files as read-only pages rendered through the regular page components. Markdown stays the source of truth — nothing is written to the database, and the pages cannot be edited through any UI path (not even as admin).
+
+### Configuration
+
+Markdown files live below the repository-level `content/` directory. Map a file to a URL in `src/lib/content_config.js` (server/build-only — never import it from client code):
+
+```js
+export const MARKDOWN_SOURCES = [{ source: 'manual.md', pathname: '/manual', toc: true }];
+```
+
+- `source` — relative path of a `.md` file below `content/`
+- `pathname` — absolute single-segment URL the page is served at (nested paths are not supported yet)
+- `toc` (optional) — generate a table of contents from the file's headings
+
+With `MARKDOWN_SOURCES = []` (the default) the feature is inert and no `content/` directory is required. A configured pathname wins over a database page with the same slug. Configuration errors — unknown fields, duplicate sources or pathnames, missing files — fail the dev server or production build immediately.
+
+### Table of contents
+
+With `toc: true`, the headings one level below the file's first heading become a linked list, inserted before the first of them. A typical manual has one `#` title followed by `##` chapters: the title and intro prose render first, then the table of contents, then the chapters. Headings get stable, human-readable ids derived from their text (`## Getting started` → `#getting-started`), so the links scroll in place and can be shared as URL fragments. Files with fewer than two chapter headings get no table of contents.
+
+### Supported markdown
+
+The converter accepts the subset of CommonMark that maps onto the built-in content model, and rejects everything else with an error naming the file, line, and column — authored text is never silently dropped or restructured:
+
+- paragraphs, headings 1–5 (heading 6 is rejected)
+- `**strong**`, `*emphasis*`, `` `inline code` ``, and `[links](/page)` — but not nested inside one another (marks are mutually exclusive in the content model, so e.g. bold text inside a link is rejected)
+- unordered lists (rendered with dash markers) and ordered lists (rendered numbered); list items are single lines — nested lists and multi-paragraph items are rejected
+- fenced and indented code blocks (no syntax highlighting)
+- link targets: `http(s):`, `mailto:`, site-absolute paths, and `#fragments`; other protocols and links to `.md` files are rejected
+
+Not supported (rejected with an error): images, tables, blockquotes, raw HTML, thematic breaks, footnotes, YAML frontmatter, and GFM extensions. Page metadata (title, description) is derived from the first heading and paragraph, as for regular pages. Soft line wraps render as spaces; hard breaks (trailing backslash) render as line breaks.

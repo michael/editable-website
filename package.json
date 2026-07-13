@@ -13,6 +13,8 @@
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
+		"test": "vitest run",
+		"test:unit": "vitest",
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint .",
 		"data:help": "./scripts/data.sh help",
@@ -48,12 +50,14 @@
 		"svelte-check": "^4.6.0",
 		"tailwindcss": "^4.2.2",
 		"typescript": "^5.9.3",
-		"vite": "^8.0.1"
+		"vite": "^8.0.1",
+		"vitest": "^4.1.10"
 	},
 	"dependencies": {
 		"@jsquash/webp": "^1.5.0",
 		"@sveltejs/adapter-node": "^5.5.7",
 		"aws4fetch": "^1.0.20",
+		"mdast-util-from-markdown": "^2.0.3",
 		"nanoid": "^5.1.6",
 		"slugify": "^1.6.6",
 		"svedit": "^0.12.0",

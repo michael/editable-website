@@ -11,17 +11,21 @@
 
 	import { demo_doc } from '$lib/demo_doc.js';
 
-	/** @type {{ document?: any, slug?: string | null, has_backend?: boolean, is_new?: boolean, is_admin?: boolean, origin?: string | null }} */
+	/** @type {{ document?: any, slug?: string | null, has_backend?: boolean, is_new?: boolean, is_admin?: boolean, can_edit?: boolean, origin?: string | null }} */
 	let {
 		document: doc,
 		slug = null,
 		has_backend = false,
 		is_new = false,
 		is_admin: server_is_admin = false,
+		can_edit = true,
 		origin = null
 	} = $props();
 
-	let initial_doc = $derived(has_backend ? doc : demo_doc);
+	// Backend availability and document editability are independent: read-only
+	// documents (e.g. markdown pages) arrive with can_edit false but must still
+	// render their own content, even without a backend.
+	let initial_doc = $derived(doc ?? demo_doc);
 
 	let initial_doc_json = $derived(JSON.stringify(initial_doc));
 
@@ -47,6 +51,9 @@
 	const app = {
 		get has_backend() {
 			return has_backend;
+		},
+		get can_edit() {
+			return can_edit;
 		},
 		get is_admin() {
 			return is_admin;
@@ -165,7 +172,7 @@
 	}
 
 	function handle_mobile_overscroll_check() {
-		if (!is_mobile_touch_device() || editable || is_admin || auth_dialog_open || !mobile_touch_active) {
+		if (!can_edit || !is_mobile_touch_device() || editable || is_admin || auth_dialog_open || !mobile_touch_active) {
 			clear_mobile_overscroll_timeout();
 			return;
 		}
@@ -201,7 +208,7 @@
 	}
 
 	function handle_mobile_touchstart() {
-		if (!is_mobile_touch_device() || editable || is_admin || auth_dialog_open) return;
+		if (!can_edit || !is_mobile_touch_device() || editable || is_admin || auth_dialog_open) return;
 		mobile_touch_active = true;
 		mobile_touch_started_at_page_end = is_at_page_end();
 		if (!mobile_touch_started_at_page_end) {
@@ -235,10 +242,12 @@
 
 	class EditCommand extends Command {
 		is_enabled() {
-			return !this.context.editable;
+			return can_edit && !this.context.editable;
 		}
 
 		execute() {
+			if (!can_edit) return;
+
 			const browser_check = check_browser_support();
 			if (!browser_check.supported) {
 				alert(
@@ -275,7 +284,7 @@
 
 	class SaveCommand extends Command {
 		is_enabled() {
-			return editable;
+			return can_edit && editable;
 		}
 
 		async execute() {
