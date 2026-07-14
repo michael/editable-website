@@ -29,7 +29,7 @@ And run the development server:
 npm run dev
 ```
 
-That's it — press `⌘E` (or `Ctrl+E`) on the site and log in with your `ADMIN_PASSWORD` to edit it live. On startup you'll see an `ExperimentalWarning` about `node:sqlite` — that's expected and harmless.
+That's it — press `⌘` + `E` (or `Ctrl` + `E`) on the site and log in with your `ADMIN_PASSWORD` to edit it live. On startup you'll see an `ExperimentalWarning` about `node:sqlite` — that's expected and harmless.
 
 ## Make it yours
 
@@ -478,7 +478,7 @@ import Hero from './components/Hero.svelte';
 hero: Hero,
 ```
 
-Declare how many layouts it has in `node_layouts`, which powers layout switching (toolbar and `Ctrl+Shift+←/→`):
+Declare how many layouts it has in `node_layouts`, which powers layout switching (toolbar and `Ctrl` + `Shift` + `←` / `→`):
 
 ```js
 // in session_config.node_layouts:
@@ -507,13 +507,15 @@ hero: function (tr) {
 
 ### 4. Try it
 
-Run `npm run dev`, press `⌘E` and log in. Select a top-level block on a page and cycle node types with `Ctrl+Shift+↑/↓` until it becomes a hero, or insert one fresh at a node gap. `Ctrl+Shift+←/→` flips between your two layouts, paste an image onto the media slot, and `⌘S` saves — undo, selection, and copy/paste all work without any additional code, because they operate on the schema, not on your component.
+Run `npm run dev`, press `⌘` + `E` and log in. Select a top-level block on a page and cycle node types with `Ctrl` + `Shift` + `↑` / `↓` until it becomes a hero, or insert one fresh at a node gap. `Ctrl` + `Shift` + `←` / `→` flips between your two layouts, paste an image onto the media slot, and `⌘` + `S` saves — undo, selection, and copy/paste all work without any additional code, because they operate on the schema, not on your component.
 
 From here it's just iteration: add calls to action, give editors control over the image size, add a third layout, or ask your AI assistant to do it — the three-file pattern above is all the context it needs. The next chapter makes those extensions while unpacking the primitives used inside the component.
 
 ## Primitives
 
-A node component is ordinary Svelte layout wrapped around a small set of editing primitives. The schema defines what the content may contain; the primitives connect that content to the editor; your HTML and CSS decide how it looks.
+Build editable node components from a small set of Svelte primitives.
+
+The schema defines what the content may contain; the primitives connect that content to the editor; your HTML and CSS decide how it looks.
 
 The Hero above already uses three of them. We'll take it apart, then extend it with composable buttons and editor-controlled media sizing.
 
@@ -576,7 +578,7 @@ The Hero's fixed text fields use `TextProperty`:
 
 `TextProperty` renders the current content and becomes directly editable when the editor is active. `path` is required. `tag` defaults to `div`; `class`, `style`, and other element attributes pass through, and `placeholder` appears while the field is empty.
 
-The component controls presentation, but the schema controls the content rules. In the Hero schema, `allow_newlines` decides whether Enter is allowed and `mark_types` decides which inline formats are available. The same `TextProperty` can therefore be a plain button label, a marked-up paragraph, or a heading without acquiring type-specific editing code.
+The component controls presentation, but the schema controls the content rules. In the Hero schema, `allow_newlines` decides whether `Enter` is allowed and `mark_types` decides which inline formats are available. The same `TextProperty` can therefore be a plain button label, a marked-up paragraph, or a heading without acquiring type-specific editing code.
 
 ### MediaProperty: render editable media
 
