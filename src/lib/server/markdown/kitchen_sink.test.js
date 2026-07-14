@@ -39,6 +39,8 @@ describe('kitchen-sink.md', () => {
 			'heading_5',
 			'list',
 			'list_item',
+			'descriptive_listing',
+			'descriptive_listing_item',
 			'strong',
 			'emphasis',
 			'code',
@@ -65,7 +67,7 @@ describe('kitchen-sink.md', () => {
 		const doc = convert_markdown(kitchen_sink, MAPPING);
 		const body = doc.nodes[doc.document_id].body;
 		// One section per ## chapter.
-		expect(body.marks).toHaveLength(6);
+		expect(body.marks).toHaveLength(7);
 		for (const mark of body.marks) {
 			expect(doc.nodes[mark.node_id].type).toBe('section');
 		}
@@ -89,6 +91,7 @@ describe('kitchen-sink.md', () => {
 			'#arranging-objects',
 			'#the-command-line',
 			'#troubleshooting',
+			'#parts-and-accessories',
 			'#h-2038-and-beyond',
 			'#colophon'
 		]) {

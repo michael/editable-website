@@ -1,6 +1,6 @@
 # Field guide to the Aurora workbench
 
-The Aurora workbench is a fictional tool for arranging small glowing objects on a desk. This guide exists to exercise **every content type** the markdown adapter supports, while still reading like a *real* manual. If you can read this page comfortably from top to bottom, rendering works.
+The Aurora workbench is a fictional tool for arranging small glowing objects on a desk. This guide exists to exercise **every content type** the markdown adapter supports, while still reading like a _real_ manual. If you can read this page comfortably from top to bottom, rendering works.
 
 Everything below the table of contents is organized into chapters. The table of contents itself is generated from the chapter headings — it is not written in this file.
 
@@ -12,7 +12,7 @@ Before the first run you should check three things:
 
 - The base plate sits level and does not wobble
 - The **calibration dial** points at zero
-- No *stray objects* rest on the sensor strip
+- No _stray objects_ rest on the sensor strip
 - The label on the back reads:\
   Aurora Mark II, 40 watts
 
@@ -93,6 +93,16 @@ Work through this list from top to bottom. Most problems are the first item.
 4. `freeze` exits with code 2 — the round is empty, place objects first
 
 If none of that helps, thaw the last round and start over. Details on the freeze/thaw cycle are back in the [arranging chapter](/kitchen-sink#arranging-objects).
+
+## Parts and accessories
+
+A markdown list where every item follows the `**title** — description — meta` convention renders as a descriptive listing instead of a plain list. The meta segment is optional:
+
+- **Soft brush** — Sweeps the surface between rounds without scratching it
+- **Calibration weight** — Exactly 40 grams, for verifying the dial — sold separately
+- **Travel case** — Foam-lined, fits the workbench and twelve satellites
+
+<!-- This comment is invisible on the rendered page — HTML comments are the only raw HTML the converter accepts. -->
 
 ## 2038 and beyond
 

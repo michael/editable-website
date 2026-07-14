@@ -61,10 +61,27 @@ describe('convert_markdown', () => {
 		expect(() => convert('###### Deep')).toThrow(/Heading level 6/);
 	});
 
-	it('gives headings slugified ids and dedupes duplicates', () => {
+	it('gives headings GitHub-style anchor ids and dedupes duplicates', () => {
 		const doc = convert('## Getting started\n\n## Getting started\n\n## 2024 roadmap');
 		const ids = flat_text_nodes(doc).map((node) => node.id);
-		expect(ids).toEqual(['getting-started', 'getting-started-2', 'h-2024-roadmap']);
+		expect(ids).toEqual(['getting-started', 'getting-started-1', 'h-2024-roadmap']);
+	});
+
+	it('matches GitHub anchors for punctuation and ampersands', () => {
+		const doc = convert('## Backup, sync & recovery\n\n## Automated backups (optional)');
+		const ids = flat_text_nodes(doc).map((node) => node.id);
+		expect(ids).toEqual(['backup-sync--recovery', 'automated-backups-optional']);
+	});
+
+	it('skips html comments in blocks and inline text', () => {
+		const doc = convert('Before.\n\n<!-- a\nmulti-line comment -->\n\nAfter <!-- inline --> text.');
+		const nodes = flat_text_nodes(doc);
+		expect(nodes.map((node) => node.content.content)).toEqual(['Before.', 'After  text.']);
+	});
+
+	it('still rejects raw html', () => {
+		expect(() => convert('<div>raw</div>')).toThrow(/Raw HTML is not supported/);
+		expect(() => convert('text with <em>inline</em> html')).toThrow(/Inline HTML/);
 	});
 
 	it('converts unordered lists to layout 1 and ordered lists to layout 3', () => {
@@ -155,9 +172,8 @@ describe('convert_markdown', () => {
 		expect(doc.nodes[list.list_items.nodes[0]].content.content).toBe('first\nsecond');
 	});
 
-	it('rejects blockquotes, tables, raw HTML, and thematic breaks', () => {
+	it('rejects blockquotes and thematic breaks', () => {
 		expect(() => convert('> quote')).toThrow(/Unsupported markdown block/);
-		expect(() => convert('<div>raw</div>')).toThrow(/Unsupported markdown block/);
 		expect(() => convert('text\n\n---\n\nmore')).toThrow(/Thematic breaks/);
 	});
 
@@ -255,6 +271,61 @@ describe('convert_markdown', () => {
 				'heading_3',
 				'paragraph'
 			]);
+		});
+	});
+
+	describe('descriptive listings', () => {
+		it('converts a matching list into a top-level descriptive_listing', () => {
+			const doc = convert(
+				'Intro.\n\n' +
+					'- **data:pull** — Copy the live data to your machine\n' +
+					'- **data:push** — Replace the live data — guarded, undoable\n\n' +
+					'Outro.'
+			);
+			const body = page_body_nodes(doc);
+			expect(body.map((node) => node.type)).toEqual(['prose', 'descriptive_listing', 'prose']);
+			const rows = body[1].items.nodes.map((id) => doc.nodes[id]);
+			expect(rows.map((row) => row.type)).toEqual([
+				'descriptive_listing_item',
+				'descriptive_listing_item'
+			]);
+			expect(rows[0].title.content).toBe('data:pull');
+			expect(rows[0].description.content).toBe('Copy the live data to your machine');
+			expect(rows[0].meta.content).toBe('');
+			expect(rows[1].description.content).toBe('Replace the live data');
+			expect(rows[1].meta.content).toBe('guarded, undoable');
+		});
+
+		it('validates against the schema when composed', () => {
+			const doc = convert('- **a** — b — c\n- **d** — e');
+			expect(() => compose_markdown_document(doc, SHARED_DOCUMENTS)).not.toThrow();
+		});
+
+		it('falls back to a plain list unless every item matches', () => {
+			const doc = convert('- **a** — description\n- plain item without title');
+			const types = flat_text_nodes(doc).map((node) => node.type);
+			expect(types).toEqual(['list']);
+		});
+
+		it('leaves ordered lists and marked-up items as plain lists', () => {
+			const ordered = convert('1. **a** — b\n2. **c** — d');
+			expect(flat_text_nodes(ordered).some((node) => node.type === 'list')).toBe(true);
+
+			const marked = convert('- **a** — has `code` in it\n- **b** — plain');
+			expect(flat_text_nodes(marked).some((node) => node.type === 'list')).toBe(true);
+		});
+
+		it('rejects items with more than two separator segments', () => {
+			const doc = convert('- **a** — b — c — d\n- **e** — f');
+			expect(flat_text_nodes(doc).map((node) => node.type)).toEqual(['list']);
+		});
+
+		it('stays inside its section', () => {
+			const doc = convert('# T\n\n## Chapter\n\n- **a** — b\n- **c** — d\n\nText.');
+			const marks = doc.nodes[doc.document_id].body.marks;
+			const body = doc.nodes[doc.document_id].body.nodes;
+			expect(marks).toHaveLength(1);
+			expect([marks[0].start_offset, marks[0].end_offset]).toEqual([1, body.length]);
 		});
 	});
 

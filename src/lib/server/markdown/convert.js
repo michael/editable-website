@@ -8,7 +8,6 @@
 // being silently dropped or degraded.
 
 import { fromMarkdown } from 'mdast-util-from-markdown';
-import slugify from 'slugify';
 import { get_char_length } from 'svedit';
 import { MEDIA_DEFAULTS } from '$lib/config.js';
 import { document_schema } from '$lib/document_schema.js';
@@ -24,6 +23,17 @@ const SAFE_LINK_SCHEMES = new Set(['http', 'https', 'mailto']);
  */
 function content_allows_newlines(node_type) {
 	return document_schema[node_type]?.properties?.content?.allow_newlines === true;
+}
+
+/**
+ * Whether an html node consists only of comments (which render as nothing in
+ * every markdown renderer, so skipping them drops no visible content).
+ *
+ * @param {string} value
+ * @returns {boolean}
+ */
+function is_html_comment(value) {
+	return value.replace(/<!--[\s\S]*?-->/g, '').trim() === '';
 }
 
 export class MarkdownConversionError extends Error {
@@ -143,7 +153,13 @@ export function convert_markdown(markdown_text, mapping) {
 				break;
 			}
 			case 'list': {
-				push_prose_item(convert_list(ctx, block));
+				const listing_id = convert_descriptive_listing(ctx, block);
+				if (listing_id) {
+					flush_prose();
+					body_ids.push(listing_id);
+				} else {
+					push_prose_item(convert_list(ctx, block));
+				}
 				break;
 			}
 			case 'code': {
@@ -156,6 +172,13 @@ export function convert_markdown(markdown_text, mapping) {
 				};
 				body_ids.push(id);
 				break;
+			}
+			case 'html': {
+				if (is_html_comment(block.value ?? '')) break;
+				throw new MarkdownConversionError('Raw HTML is not supported (only comments).', {
+					source,
+					position: block.position
+				});
 			}
 			case 'thematicBreak': {
 				const hint =
@@ -226,19 +249,27 @@ function next_id(ctx) {
  * Derive a stable, human-readable id for a heading so it can be targeted with
  * `#fragment` links (svedit's Node component renders `id={node.id}` in the DOM).
  *
+ * Uses GitHub's anchor algorithm (lowercase, strip punctuation, each
+ * whitespace character becomes a dash, duplicates get -1/-2 suffixes) so the
+ * same fragment links work in the repo view and on the website. One
+ * divergence: node ids must start with a letter or underscore, so slugs with
+ * a leading digit get an "h-" prefix.
+ *
  * @param {any} ctx
  * @param {any} block - mdast heading node
  * @returns {string}
  */
 function heading_id(ctx, block) {
 	const text = collect_plain_text(block.children);
-	let slug = slugify(text, { lower: true, strict: true });
+	let slug = text
+		.toLowerCase()
+		.replace(/[^\p{L}\p{N}\s_-]/gu, '')
+		.replace(/\s/g, '-');
 	if (slug === '') slug = 'heading';
-	// Node ids must start with a letter or underscore.
-	if (!/^[a-z_]/.test(slug)) slug = `h-${slug}`;
+	if (!/^[\p{L}_]/u.test(slug)) slug = `h-${slug}`;
 
 	let id = slug;
-	let suffix = 2;
+	let suffix = 1;
 	while (ctx.used_ids.has(id)) {
 		id = `${slug}-${suffix}`;
 		suffix += 1;
@@ -258,6 +289,80 @@ function collect_plain_text(children) {
 		else if (Array.isArray(child.children)) text += collect_plain_text(child.children);
 	}
 	return text;
+}
+
+/**
+ * Convert an unordered list into a `descriptive_listing` when every item
+ * follows the convention:
+ *
+ *   - **title** — description
+ *   - **title** — description — meta
+ *
+ * (bold leading title, " — " separators, plain text otherwise). Returns the
+ * listing node id, or null when the list does not match — it then converts as
+ * a plain list. `descriptive_listing` lives at the page body level, next to
+ * prose and preformatted blocks.
+ *
+ * @param {any} ctx
+ * @param {any} block - mdast list node
+ * @returns {string | null} the descriptive_listing node id, or null
+ */
+function convert_descriptive_listing(ctx, block) {
+	if (block.ordered === true) return null;
+
+	/** @type {{ title: string, description: string, meta: string }[]} */
+	const rows = [];
+
+	for (const item of block.children) {
+		const blocks = item.children ?? [];
+		if (blocks.length !== 1 || blocks[0].type !== 'paragraph') return null;
+
+		const [first, ...rest] = blocks[0].children;
+		if (first?.type !== 'strong') return null;
+		if (!first.children.every((child) => child.type === 'text')) return null;
+		if (!rest.every((child) => child.type === 'text')) return null;
+
+		const title = collect_plain_text(first.children).replaceAll('\n', ' ');
+		const remainder = rest
+			.map((child) => child.value)
+			.join('')
+			.replaceAll('\n', ' ');
+		if (!remainder.startsWith(' — ')) return null;
+
+		const segments = remainder.slice(3).split(' — ');
+		if (segments.length > 2) return null;
+
+		rows.push({
+			title,
+			description: segments[0].trim(),
+			meta: (segments[1] ?? '').trim()
+		});
+	}
+
+	if (rows.length === 0) return null;
+
+	/** @type {string[]} */
+	const item_ids = [];
+	for (const row of rows) {
+		const id = next_id(ctx);
+		ctx.nodes[id] = {
+			id,
+			type: 'descriptive_listing_item',
+			title: { content: row.title, marks: [], annotations: [] },
+			description: { content: row.description, marks: [], annotations: [] },
+			meta: { content: row.meta, marks: [], annotations: [] }
+		};
+		item_ids.push(id);
+	}
+
+	const listing_id = next_id(ctx);
+	ctx.nodes[listing_id] = {
+		id: listing_id,
+		type: 'descriptive_listing',
+		layout: 1,
+		items: { nodes: item_ids, marks: [], annotations: [] }
+	};
+	return listing_id;
 }
 
 /**
@@ -375,7 +480,8 @@ function convert_inline(ctx, children, { allow_newlines }) {
 					break;
 				}
 				case 'html':
-					throw new MarkdownConversionError('Inline HTML is not supported.', {
+					if (is_html_comment(inline.value ?? '')) break;
+					throw new MarkdownConversionError('Inline HTML is not supported (only comments).', {
 						source: ctx.source,
 						position: inline.position
 					});
