@@ -423,6 +423,8 @@ export const document_schema = define_document_schema({
 	supporting_media: {
 		kind: 'block',
 		properties: {
+			href: { type: 'string' },
+			target: { type: 'string', default: '_self' },
 			media_max_width: { type: 'integer', default: 0 },
 			media_aspect_ratio: { type: 'number', default: 0 },
 			media: {

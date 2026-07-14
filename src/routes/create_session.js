@@ -685,6 +685,8 @@ const session_config = {
 				new_supporting_media: {
 					id: 'new_supporting_media',
 					type: 'supporting_media',
+					href: '',
+					target: '_self',
 					media: 'image_one'
 				}
 			});
