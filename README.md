@@ -163,18 +163,18 @@ Your whole site lives in one folder — pull it, push it, snapshot it, roll it b
 That folder is `data/`: an SQLite database (`db.sqlite3`) and uploaded assets (`assets/`). Locally it defaults to `./data`; on Fly.io it's a persistent volume at `/data`. The data commands move that folder between your machine, your deployment, and — optionally — a backup bucket. The complete toolbox:
 
 - **npm run data:pull** — Copy the live site's data to your machine
-- **npm run data:push** — Replace the live site's data with your local state — guarded, undoable
+- **npm run data:push [-- --yes]** — Replace the live site's data with your local state — guarded, undoable
 - **npm run data:backup** — Snapshot the live database, kept on the server and mirrored locally
 - **npm run data:backups** — List the live site's snapshots
-- **npm run data:restore** — Roll the live database back to a snapshot — pass a name from data:backups
+- **npm run data:restore &lt;name> [-- --yes]** — Roll the live database back to a snapshot — pass a name from data:backups
 - **npm run data:cloud-snapshots** — List points in time you can restore to — requires automated backups
-- **npm run data:restore-cloud** — Roll the live site back to a point in time — requires automated backups
-- **npm run data:pull-cloud** — Rebuild your local data folder from the bucket — requires automated backups
+- **npm run data:restore-cloud [-- --at &lt;timestamp>] [-- --yes]** — Roll the live site back to a point in time — requires automated backups
+- **npm run data:pull-cloud [-- --at &lt;timestamp>]** — Rebuild your local data folder from the bucket — requires automated backups
 - **npm run data:verify** — Health-check the deployed database and assets
-- **npm run data:reset** — Reset your local database to fresh demo content, keeping assets
+- **npm run data:reset [-- --yes]** — Reset your local database to fresh demo content, keeping assets
 - **npm run litestream:install** — One-time local setup for data:pull-cloud — requires automated backups
 
-The cloud commands require [Automated backups](#automated-backups-optional). Every command reads the target app from `fly.toml`; append `-- -a <app>` to override. Every restore prints a summary of the restored state (documents, last edited, assets) so you can confirm you got the moment you meant, and backs up the state it replaces first. `npm run data:help` prints this reference, with arguments, in the terminal.
+Arguments in brackets are optional; npm flags need the `--` separator shown above. The cloud commands require [Automated backups](#automated-backups-optional). Every command reads the target app from `fly.toml`; only append `-- -a <app>` if no app name is set there, or to override it. Every restore prints a summary of the restored state (documents, last edited, assets) so you can confirm you got the moment you meant, and backs up the state it replaces first. `npm run data:help` prints this reference, with arguments, in the terminal.
 
 Pull the live site down to work on it locally, or push a local state up to production. Both directions sync the database and any missing assets.
 
