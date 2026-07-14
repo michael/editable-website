@@ -1,4 +1,4 @@
-# Editable
+# The Editable Manual
 
 Editable brings live on-page editing to Svelte. Site owners edit directly in the layout as they browse their site; developers keep full control with ordinary Svelte components.
 
