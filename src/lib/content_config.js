@@ -17,12 +17,20 @@
 // Do not import this module (or anything under `src/lib/server/`) from client
 // code — use `src/lib/config.js` for universal constants instead.
 import readme_md from '../../README.md?raw';
+import target_groups_md from '../../TARGET_GROUPS.md?raw';
 import kitchen_sink_md from '../../content/kitchen-sink.md?raw';
 import svedit_md from '../../content/svedit.md?raw';
 
 export const MARKDOWN_SOURCES = [
 	// The developer manual is the repository README.
 	{ markdown: readme_md, source: 'README.md', pathname: '/manual', toc: true },
+	// Audience stories and use cases.
+	{
+		markdown: target_groups_md,
+		source: 'TARGET_GROUPS.md',
+		pathname: '/solutions',
+		toc: true
+	},
 	// Demo page exercising every supported markdown construct.
 	{
 		markdown: kitchen_sink_md,
