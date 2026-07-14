@@ -8,10 +8,10 @@
 /**
  * Pick the headings a table of contents should link to.
  *
- * @param {{ id: string, depth: number, container: string[] }[]} headings -
+ * @param {{ id: string, depth: number, container: string[], subtitle: string }[]} headings -
  *   Converted headings in document order; `container` is the prose body array
- *   holding the heading id.
- * @returns {{ targets: { id: string, depth: number }[], insert_before: { id: string, container: string[] } } | null}
+ *   holding the heading id, `subtitle` the first paragraph of its section.
+ * @returns {{ targets: { id: string, depth: number, container: string[], subtitle: string }[], insert_before: { id: string, container: string[] } } | null}
  *   Null when the document has no meaningful TOC (fewer than two chapter
  *   headings).
  */

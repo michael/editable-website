@@ -83,7 +83,7 @@ describe('kitchen-sink.md', () => {
 	it('generates a table of contents linking every chapter', () => {
 		const doc = convert_markdown(kitchen_sink, MAPPING);
 		const toc_hrefs = Object.values(doc.nodes)
-			.filter((node) => node.type === 'link' && node.href.startsWith('#'))
+			.filter((node) => node.type === 'descriptive_listing_item' && node.href?.startsWith('#'))
 			.map((node) => node.href);
 
 		for (const anchor of [

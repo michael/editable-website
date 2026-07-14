@@ -8,7 +8,6 @@
 // being silently dropped or degraded.
 
 import { fromMarkdown } from 'mdast-util-from-markdown';
-import { get_char_length } from 'svedit';
 import { MEDIA_DEFAULTS } from '$lib/config.js';
 import { document_schema } from '$lib/document_schema.js';
 import { select_toc_headings } from './toc.js';
@@ -78,8 +77,12 @@ export function convert_markdown(markdown_text, mapping) {
 	const body_ids = [];
 	/** @type {string[] | null} */
 	let prose_items = null;
-	/** @type {{ id: string, depth: number, container: string[] }[]} */
+	/** @type {{ id: string, depth: number, container: string[], subtitle: string }[]} */
 	const headings = [];
+	// Headings whose section has not yet seen a paragraph — the first paragraph
+	// becomes their subtitle, used as the toc description.
+	/** @type {{ subtitle: string }[]} */
+	let pending_subtitle_headings = [];
 	// Body indexes where a level-2 heading starts a new section.
 	/** @type {number[]} */
 	const section_boundaries = [];
@@ -123,6 +126,10 @@ export function convert_markdown(markdown_text, mapping) {
 					})
 				};
 				push_prose_item(id);
+				for (const heading of pending_subtitle_headings) {
+					heading.subtitle = ctx.nodes[id].content.content;
+				}
+				pending_subtitle_headings = [];
 				break;
 			}
 			case 'heading': {
@@ -149,7 +156,9 @@ export function convert_markdown(markdown_text, mapping) {
 				}
 				push_prose_item(id);
 				if (!prose_items) throw new Error('unreachable');
-				headings.push({ id, depth: block.depth, container: prose_items });
+				const heading_record = { id, depth: block.depth, container: prose_items, subtitle: '' };
+				headings.push(heading_record);
+				pending_subtitle_headings.push(heading_record);
 				break;
 			}
 			case 'list': {
@@ -595,13 +604,14 @@ function to_grapheme_marks(ctx, content, utf16_ranges) {
 /**
  * Insert a generated table of contents in front of the first chapter heading.
  *
- * When that heading starts a section (the level-2 case), the list becomes its
- * own prose node placed between the intro and the first section, so it does
- * not render as part of the first chapter. Otherwise it is inserted inline,
- * directly before the heading.
+ * The toc is a two-column `descriptive_listing`: each row links to a chapter
+ * via the heading anchor, with the chapter title and — as description — the
+ * first sentence of the chapter's first paragraph. It is inserted at the page
+ * body level, before the block holding the first chapter heading (between the
+ * intro and the first section in the typical `#` title + `##` chapters case).
  *
  * @param {any} ctx
- * @param {{ id: string, depth: number, container: string[] }[]} headings
+ * @param {{ id: string, depth: number, container: string[], subtitle: string }[]} headings
  * @param {{ body_ids: string[], prose_ids_by_container: Map<string[], string>, section_boundaries: number[] }} body
  */
 function insert_toc(ctx, headings, { body_ids, prose_ids_by_container, section_boundaries }) {
@@ -611,49 +621,42 @@ function insert_toc(ctx, headings, { body_ids, prose_ids_by_container, section_b
 	/** @type {string[]} */
 	const item_ids = [];
 	for (const heading of selection.targets) {
-		const heading_node = ctx.nodes[heading.id];
-		const label = heading_node.content.content;
-		const link_id = next_id(ctx);
-		ctx.nodes[link_id] = { id: link_id, type: 'link', href: `#${heading.id}`, target: '_self' };
 		const item_id = next_id(ctx);
 		ctx.nodes[item_id] = {
 			id: item_id,
-			type: 'list_item',
-			content: {
-				content: label,
-				marks: [{ start_offset: 0, end_offset: get_char_length(label), node_id: link_id }],
-				annotations: []
-			}
+			type: 'descriptive_listing_item',
+			href: `#${heading.id}`,
+			target: '_self',
+			title: { content: ctx.nodes[heading.id].content.content, marks: [], annotations: [] },
+			description: { content: first_sentence(heading.subtitle), marks: [], annotations: [] },
+			meta: { content: '', marks: [], annotations: [] }
 		};
 		item_ids.push(item_id);
 	}
 
-	const list_id = next_id(ctx);
-	ctx.nodes[list_id] = {
-		id: list_id,
-		type: 'list',
-		layout: 1,
-		list_items: { nodes: item_ids, marks: [], annotations: [] }
+	const listing_id = next_id(ctx);
+	ctx.nodes[listing_id] = {
+		id: listing_id,
+		type: 'descriptive_listing',
+		// Layout 5: two-column grid (DescriptiveListing.svelte).
+		layout: 5,
+		items: { nodes: item_ids, marks: [], annotations: [] }
 	};
 
-	const { container, id } = selection.insert_before;
-
-	if (container[0] === id) {
-		// The heading opens its prose container, so the toc gets its own prose
-		// node in front of it; section ranges after the insertion shift by one.
-		const toc_prose_id = next_id(ctx);
-		ctx.nodes[toc_prose_id] = {
-			id: toc_prose_id,
-			type: 'prose',
-			layout: 1,
-			body: { nodes: [list_id], marks: [], annotations: [] }
-		};
-		const body_index = body_ids.indexOf(prose_ids_by_container.get(container) ?? '');
-		body_ids.splice(body_index, 0, toc_prose_id);
-		for (const [index, boundary] of section_boundaries.entries()) {
-			if (boundary >= body_index) section_boundaries[index] = boundary + 1;
-		}
-	} else {
-		container.splice(container.indexOf(id), 0, list_id);
+	const container_prose_id = prose_ids_by_container.get(selection.insert_before.container);
+	const prose_index = body_ids.indexOf(container_prose_id ?? '');
+	const body_index = prose_index === -1 ? 0 : prose_index;
+	body_ids.splice(body_index, 0, listing_id);
+	for (const [index, boundary] of section_boundaries.entries()) {
+		if (boundary >= body_index) section_boundaries[index] = boundary + 1;
 	}
+}
+
+/**
+ * @param {string} text
+ * @returns {string}
+ */
+function first_sentence(text) {
+	const match = text.match(/^[\s\S]*?[.!?](?=\s|$)/);
+	return (match ? match[0] : text).trim();
 }

@@ -313,7 +313,7 @@ With `MARKDOWN_SOURCES = []` the feature is inert. A configured pathname wins ov
 
 ### Table of contents
 
-With `toc: true`, the headings one level below the file's first heading become a linked list, inserted before the first of them. A typical manual has one `#` title followed by `##` chapters: the title and intro prose render first, then the table of contents, then the chapters. Files with fewer than two chapter headings get no table of contents.
+With `toc: true`, the headings one level below the file's first heading become a linked two-column listing, inserted before the first of them. A typical manual has one `#` title followed by `##` chapters: the title and intro prose render first, then the table of contents, then the chapters. Each row links to its chapter and shows the first sentence of the chapter's first paragraph as a description. Files with fewer than two chapter headings get no table of contents.
 
 Headings get stable ids using GitHub's anchor algorithm, so the same `#fragment` links work in the repo view and on the website (`## Getting started` → `#getting-started`, and duplicates get `-1`/`-2` suffixes). One divergence: anchors starting with a digit get an `h-` prefix on the website.
 

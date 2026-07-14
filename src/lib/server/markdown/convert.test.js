@@ -201,24 +201,25 @@ describe('convert_markdown', () => {
 		const TOC_MAPPING = { ...MAPPING, toc: true };
 		const MANUAL = '# Manual\n\nIntro prose.\n\n## Install\n\nText.\n\n## Usage\n\nMore text.';
 
-		it('inserts a linked list before the first chapter heading', () => {
+		it('inserts a linked descriptive listing before the first chapter heading', () => {
 			const doc = convert(MANUAL, TOC_MAPPING);
 			const nodes = flat_text_nodes(doc);
 			const types = nodes.map((node) => node.type);
 			expect(types).toEqual([
 				'heading_1',
 				'paragraph',
-				'list',
+				'descriptive_listing',
 				'heading_2',
 				'paragraph',
 				'heading_2',
 				'paragraph'
 			]);
 			const toc = nodes[2];
-			const items = toc.list_items.nodes.map((id) => doc.nodes[id]);
-			expect(items.map((item) => item.content.content)).toEqual(['Install', 'Usage']);
-			const hrefs = items.map((item) => doc.nodes[item.content.marks[0].node_id].href);
-			expect(hrefs).toEqual(['#install', '#usage']);
+			expect(toc.layout).toBe(5);
+			const items = toc.items.nodes.map((id) => doc.nodes[id]);
+			expect(items.map((item) => item.title.content)).toEqual(['Install', 'Usage']);
+			expect(items.map((item) => item.href)).toEqual(['#install', '#usage']);
+			expect(items.map((item) => item.description.content)).toEqual(['Text.', 'More text.']);
 		});
 
 		it('produces a valid composed document', () => {
@@ -228,12 +229,12 @@ describe('convert_markdown', () => {
 
 		it('omits the toc with fewer than two chapter headings', () => {
 			const doc = convert('# Title\n\n## Only chapter\n\nText.', TOC_MAPPING);
-			expect(flat_text_nodes(doc).some((node) => node.type === 'list')).toBe(false);
+			expect(flat_text_nodes(doc).some((node) => node.type === 'descriptive_listing')).toBe(false);
 		});
 
 		it('omits the toc when there are no headings below the first depth', () => {
 			const doc = convert('# One\n\nText.\n\n# Two\n\nText.', TOC_MAPPING);
-			expect(flat_text_nodes(doc).some((node) => node.type === 'list')).toBe(false);
+			expect(flat_text_nodes(doc).some((node) => node.type === 'descriptive_listing')).toBe(false);
 		});
 
 		it('uses the shallowest depth below the first heading', () => {
@@ -241,17 +242,20 @@ describe('convert_markdown', () => {
 				...MAPPING,
 				toc: true
 			});
-			const toc = flat_text_nodes(doc).find((node) => node.type === 'list');
-			const items = toc.list_items.nodes.map((id) => doc.nodes[id].content.content);
+			const toc = flat_text_nodes(doc).find((node) => node.type === 'descriptive_listing');
+			const items = toc.items.nodes.map((id) => doc.nodes[id].title.content);
 			expect(items).toEqual(['Chapter A', 'Chapter B']);
 		});
 
-		it('places the toc in its own prose node between intro and first section', () => {
+		it('places the toc between intro and first section, outside section marks', () => {
 			const doc = convert(MANUAL, TOC_MAPPING);
 			const body = page_body_nodes(doc);
-			expect(body.map((node) => node.type)).toEqual(['prose', 'prose', 'prose', 'prose']);
-			const toc_prose = body[1];
-			expect(toc_prose.body.nodes.map((id) => doc.nodes[id].type)).toEqual(['list']);
+			expect(body.map((node) => node.type)).toEqual([
+				'prose',
+				'descriptive_listing',
+				'prose',
+				'prose'
+			]);
 			// Section marks cover the two chapters and skip intro and toc.
 			const marks = doc.nodes[doc.document_id].body.marks;
 			expect(marks.map((mark) => [mark.start_offset, mark.end_offset])).toEqual([
@@ -260,17 +264,26 @@ describe('convert_markdown', () => {
 			]);
 		});
 
-		it('inserts the toc inline when chapters are below level 2', () => {
-			const doc = convert('## Top\n\n### A\n\nx\n\n### B\n\nx', TOC_MAPPING);
-			const types = flat_text_nodes(doc).map((node) => node.type);
-			expect(types).toEqual([
-				'heading_2',
-				'list',
-				'heading_3',
-				'paragraph',
-				'heading_3',
-				'paragraph'
+		it('uses the first sentence of the first paragraph as the description', () => {
+			const doc = convert(
+				'# T\n\n## Setup\n\nFirst sentence here. Second sentence is skipped.\n\n## Usage\n\n### Sub first\n\nParagraph under a subheading still describes Usage.',
+				TOC_MAPPING
+			);
+			const toc = flat_text_nodes(doc).find((node) => node.type === 'descriptive_listing');
+			const descriptions = toc.items.nodes.map((id) => doc.nodes[id].description.content);
+			expect(descriptions).toEqual([
+				'First sentence here.',
+				'Paragraph under a subheading still describes Usage.'
 			]);
+		});
+
+		it('inserts the toc before the containing block when chapters are below level 2', () => {
+			const doc = convert('## Top\n\n### A\n\nx\n\n### B\n\nx', TOC_MAPPING);
+			const body = page_body_nodes(doc);
+			expect(body.map((node) => node.type)).toEqual(['descriptive_listing', 'prose']);
+			// The single section shifts behind the inserted toc.
+			const marks = doc.nodes[doc.document_id].body.marks;
+			expect(marks.map((mark) => [mark.start_offset, mark.end_offset])).toEqual([[1, 2]]);
 		});
 	});
 
