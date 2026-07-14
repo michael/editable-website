@@ -18,6 +18,7 @@
 // code — use `src/lib/config.js` for universal constants instead.
 import kitchen_sink_md from '../../content/kitchen-sink.md?raw';
 import svedit_md from '../../content/svedit.md?raw';
+import manual_md from '../../MANUAL.md?raw';
 
 export const MARKDOWN_SOURCES = [
 	// Demo page exercising every supported markdown construct.
@@ -27,5 +28,6 @@ export const MARKDOWN_SOURCES = [
 		pathname: '/kitchen-sink',
 		toc: true
 	},
-	{ markdown: svedit_md, source: 'content/svedit.md', pathname: '/svedit', toc: true }
+	{ markdown: svedit_md, source: 'content/svedit.md', pathname: '/svedit', toc: true },
+	{ markdown: manual_md, source: 'MANUAL.md', pathname: '/manual', toc: true },
 ];

@@ -6,10 +6,14 @@ Renders an editable image or video slot. The media fills whatever container you 
 
 ### Props
 
-| Prop    | Type     | Default  | Description                |
-| ------- | -------- | -------- | -------------------------- |
-| `path`  | `any[]`  | required | Path to the media node     |
-| `class` | `string` | —        | Class on the outer element |
+```ts
+interface MediaPropertyProps {
+	/** Path to the media node */
+	path: any[];
+	/** Class on the outer element */
+	class?: string;
+}
+```
 
 ### Basic usage
 
@@ -111,4 +115,4 @@ The converter accepts the subset of CommonMark that maps onto the built-in conte
 - fenced and indented code blocks (no syntax highlighting)
 - link targets: `http(s):`, `mailto:`, site-absolute paths, and `#fragments`; other protocols and links to `.md` files are rejected
 
-Not supported (rejected with an error): images, tables, blockquotes, raw HTML, thematic breaks, footnotes, YAML frontmatter, and GFM extensions. Page metadata (title, description) is derived from the first heading and paragraph, as for regular pages. Soft line wraps render as spaces; hard breaks (trailing backslash) render as line breaks.
+Not supported (rejected with an error): images, tables, blockquotes, raw HTML, thematic breaks, footnotes, YAML frontmatter, and GFM extensions. Page metadata (title, description) is derived from the first heading and paragraph, as for regular pages. Soft line wraps render as spaces and hard breaks render as line breaks (trailing backslash or two trailing spaces), matching how CommonMark renderers like GitHub's display the same file.
