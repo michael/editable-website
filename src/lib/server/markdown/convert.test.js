@@ -247,7 +247,7 @@ describe('convert_markdown', () => {
 			expect(items).toEqual(['Chapter A', 'Chapter B']);
 		});
 
-		it('places the toc between intro and first section, outside section marks', () => {
+		it('places the toc between intro and first section, sharing a section with the intro', () => {
 			const doc = convert(MANUAL, TOC_MAPPING);
 			const body = page_body_nodes(doc);
 			expect(body.map((node) => node.type)).toEqual([
@@ -256,9 +256,10 @@ describe('convert_markdown', () => {
 				'prose',
 				'prose'
 			]);
-			// Section marks cover the two chapters and skip intro and toc.
+			// Intro and toc form one leading section, followed by the chapters.
 			const marks = doc.nodes[doc.document_id].body.marks;
 			expect(marks.map((mark) => [mark.start_offset, mark.end_offset])).toEqual([
+				[0, 2],
 				[2, 3],
 				[3, 4]
 			]);
@@ -281,9 +282,12 @@ describe('convert_markdown', () => {
 			const doc = convert('## Top\n\n### A\n\nx\n\n### B\n\nx', TOC_MAPPING);
 			const body = page_body_nodes(doc);
 			expect(body.map((node) => node.type)).toEqual(['descriptive_listing', 'prose']);
-			// The single section shifts behind the inserted toc.
+			// The toc gets a leading section; the content section follows.
 			const marks = doc.nodes[doc.document_id].body.marks;
-			expect(marks.map((mark) => [mark.start_offset, mark.end_offset])).toEqual([[1, 2]]);
+			expect(marks.map((mark) => [mark.start_offset, mark.end_offset])).toEqual([
+				[0, 1],
+				[1, 2]
+			]);
 		});
 	});
 

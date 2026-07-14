@@ -333,7 +333,7 @@ Headings get stable ids using GitHub's anchor algorithm, so the same `#fragment`
 
 ### Sections
 
-Every `##` heading starts a new visual section: the heading and everything up to the next `##` (paragraphs, lists, code blocks) are grouped under one section mark on the page body, which renders them tightly together with more space between sections — the same section mechanism editable pages use. Content before the first `##` (typically the `#` title and intro) and the generated table of contents stay outside any section.
+Every `##` heading starts a new visual section: the heading and everything up to the next `##` (paragraphs, lists, code blocks) are grouped under one section mark on the page body, which renders them tightly together with more space between sections — the same section mechanism editable pages use. Content before the first `##` (typically the `#` title and intro) forms a leading section together with the generated table of contents.
 
 ### Descriptive listings
 

@@ -650,6 +650,12 @@ function insert_toc(ctx, headings, { body_ids, prose_ids_by_container, section_b
 	for (const [index, boundary] of section_boundaries.entries()) {
 		if (boundary >= body_index) section_boundaries[index] = boundary + 1;
 	}
+
+	// Group the intro and the toc into one leading section, so the page opens
+	// with the same visual structure the chapters have.
+	if (section_boundaries.length > 0 && section_boundaries[0] !== 0) {
+		section_boundaries.unshift(0);
+	}
 }
 
 /**

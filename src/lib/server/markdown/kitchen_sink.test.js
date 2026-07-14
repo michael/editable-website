@@ -66,13 +66,14 @@ describe('kitchen-sink.md', () => {
 	it('wraps every chapter in a section mark', () => {
 		const doc = convert_markdown(kitchen_sink, MAPPING);
 		const body = doc.nodes[doc.document_id].body;
-		// One section per ## chapter.
-		expect(body.marks).toHaveLength(7);
+		// One leading intro+toc section plus one section per ## chapter.
+		expect(body.marks).toHaveLength(8);
 		for (const mark of body.marks) {
 			expect(doc.nodes[mark.node_id].type).toBe('section');
 		}
-		// Sections tile the body after intro and toc without gaps or overlap.
+		// Sections tile the whole body without gaps or overlap.
 		const ranges = body.marks.map((mark) => [mark.start_offset, mark.end_offset]);
+		expect(ranges[0][0]).toBe(0);
 		for (const [index, [start, end]] of ranges.entries()) {
 			expect(end).toBeGreaterThan(start);
 			if (index > 0) expect(start).toBe(ranges[index - 1][1]);
