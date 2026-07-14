@@ -1,5 +1,3 @@
-# Editable Website License
-
 Copyright © 2026 Michael Aufreiter. Licensed by Ken Experiences GmbH (the “Licensor”).
 
 Permission is hereby granted to any person obtaining a copy of Editable and its documentation (the “Software”) to use, copy, and modify the Software locally, free of charge. A purchased license also permits its deployment as a website, subject to the following conditions:
