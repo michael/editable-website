@@ -6,6 +6,8 @@ For your next website project, you might not need a Content Management System an
 
 ## Quickstart
 
+From zero to a live-editable site in four commands.
+
 You need **Node.js 24+** (Editable uses Node's built-in SQLite; with [nvm](https://github.com/nvm-sh/nvm), `nvm use` picks the version up from `.nvmrc`) and **git**.
 
 ```sh
@@ -30,6 +32,8 @@ npm run dev
 That's it — press `⌘E` (or `Ctrl+E`) on the site and log in with your `ADMIN_PASSWORD` to edit it live. On startup you'll see an `ExperimentalWarning` about `node:sqlite` — that's expected and harmless.
 
 ## Make it yours
+
+Your repository, your styles, your components.
 
 ### Your site is your repo
 
@@ -94,6 +98,8 @@ npm run data:reset
 
 ## Deploy
 
+From localhost to a URL you can send around, in a handful of commands.
+
 Editable runs on any VPS — all you need is Node.js, and the included `Dockerfile` works with any platform that supports Docker. The repository ships ready-made for [Fly.io](https://fly.io): install [flyctl](https://fly.io/docs/flyctl/install/), then sign in (opens your browser; creates a free account if you don't have one):
 
 ```sh
@@ -152,7 +158,9 @@ Because each checkout manages exactly one app (see [Your site is your repo](#you
 
 ## Backup, sync & recovery
 
-All content lives in a single `data/` directory — an SQLite database (`db.sqlite3`) and uploaded assets (`assets/`). Locally this defaults to `./data`; on Fly.io it's a persistent volume at `/data`. The data commands move that folder between your machine, your deployment, and — optionally — a backup bucket. The complete toolbox:
+Your whole site lives in one folder — pull it, push it, snapshot it, roll it back.
+
+That folder is `data/`: an SQLite database (`db.sqlite3`) and uploaded assets (`assets/`). Locally it defaults to `./data`; on Fly.io it's a persistent volume at `/data`. The data commands move that folder between your machine, your deployment, and — optionally — a backup bucket. The complete toolbox:
 
 - **npm run data:pull** — Copy the live site's data to your machine
 - **npm run data:push** — Replace the live site's data with your local state — guarded, undoable
@@ -199,6 +207,8 @@ A rollback restores only the database; it re-points at the same immutable asset 
 **Note:** don't edit the site while a push is in progress — the safeguard assumes the remote state is stable for the moment it takes to snapshot and swap.
 
 ## Automated backups (optional)
+
+Make the site back itself up on every write, restorable to any moment.
 
 The manual snapshots above are deliberate actions you take. Optionally, Editable can also back itself up continuously to an S3-compatible bucket: the database is replicated on every write via [Litestream](https://litestream.io) (with point-in-time recovery), and uploaded assets are mirrored to the bucket as they arrive, with a reconciliation sweep at every boot catching anything missed. Everything is write-driven — there are no cron jobs, and suspend mode (`auto_stop_machines = "suspend"`) is fully supported: a suspended machine isn't writing anything, so there's nothing to miss. (One honest edge: replication ships changes on a ~1s interval, so a suspend arriving immediately after a write can hold the last segment in memory until the next wake — data is at risk only if the volume is destroyed before the machine ever wakes again, a seconds-wide window.)
 
@@ -270,7 +280,9 @@ When you've found the state you want live, restore production to it with `npm ru
 
 ## Upgrading
 
-Editable improves over time, and because your site keeps it as the `upstream` remote (see [Your site is your repo](#your-site-is-your-repo)), upgrading is a git pull. The ritual, in order:
+New Editable releases are one `git pull` away.
+
+Because your site keeps Editable as the `upstream` remote (see [Your site is your repo](#your-site-is-your-repo)), improvements flow in with ordinary git. The ritual, in order:
 
 ```sh
 npm run data:backup       # snapshot the live database first
@@ -289,6 +301,8 @@ Releases are also tagged: to upgrade to a specific version instead of the latest
 Merge conflicts can only occur in files you changed. If your customizations live in the files meant for you — `src/custom.css`, the `app` line in `fly.toml`, and your own code in `src/routes` — pulls are typically conflict-free, since upstream never touches `custom.css` and rarely touches the rest. The more you've rewritten, the more the pull becomes a starting point for a manual merge — at that point, review what changed upstream and adopt what applies.
 
 ## Markdown pages
+
+Ship docs and long-form pages straight from markdown files in your repo.
 
 A deployment can expose selected repository markdown files as read-only pages rendered through the regular page components. Markdown stays the source of truth — nothing is written to the database, and the pages cannot be edited through any UI path (not even as admin). This very README is served as `/manual` on the Editable website.
 
@@ -346,6 +360,8 @@ The converter accepts the subset of CommonMark that maps onto the built-in conte
 Not supported (rejected with an error): images, tables, blockquotes, raw HTML, thematic breaks, footnotes, YAML frontmatter, and GFM extensions. Page metadata (title, description) is derived from the first heading and paragraph, as for regular pages. Soft line wraps render as spaces and hard breaks render as line breaks (trailing backslash or two trailing spaces), matching how CommonMark renderers like GitHub's display the same file.
 
 ## Components
+
+The building blocks you'll reach for when writing your own components.
 
 ### MediaProperty
 
@@ -418,6 +434,8 @@ Layout is the caller's responsibility — pass a class for centering, etc:
 In edit mode, three handles appear when the media inside is selected: left/right edges for width (snapped to 4px grid), bottom edge for aspect ratio. Dragging beyond the container snaps width back to `0`; dragging close to the media's natural ratio snaps aspect ratio back to `0`. The viewbox uses `max-width` + `width: 100%` so it never overflows its parent.
 
 ## Content model
+
+A small, typed vocabulary that describes every page.
 
 Editable ships with the Common Content Model (CCM) — a portable content schema that covers the common structures most websites need while staying small enough to understand and edit directly. It's defined in `src/lib/document_schema.js`; this section is the reference.
 
