@@ -433,6 +433,158 @@ Layout is the caller's responsibility — pass a class for centering, etc:
 
 In edit mode, three handles appear when the media inside is selected: left/right edges for width (snapped to 4px grid), bottom edge for aspect ratio. Dragging beyond the container snaps width back to `0`; dragging close to the media's natural ratio snaps aspect ratio back to `0`. The viewbox uses `max-width` + `width: 100%` so it never overflows its parent.
 
+## Create a custom content type
+
+Model your own block in three files — a hero with two layouts, from schema to screen.
+
+Editable's built-in types are a starting set, not a boundary. This walkthrough adds a `hero` type — a title, a description, and an image, with two layouts — and it touches exactly three files: the schema, one new component, and the session registration.
+
+### 1. Define the type in the schema
+
+In `src/lib/document_schema.js`, add the node type definition. A hero is a `block` with a `layout` variant, two text properties, and a media reference:
+
+```js
+hero: {
+	kind: 'block',
+	properties: {
+		layout: { type: 'integer', default: 1 },
+		title: {
+			type: 'text',
+			mark_types: MINIMAL_MARKS,
+			allow_newlines: false
+		},
+		description: {
+			type: 'text',
+			mark_types: MINIMAL_MARKS,
+			allow_newlines: true
+		},
+		media: {
+			type: 'node',
+			node_types: ['image', 'video'],
+			default_node_type: 'image'
+		}
+	}
+},
+```
+
+`MINIMAL_MARKS` (emphasis and highlight) keeps the hero copy clean — swap in `ALL_MARKS` if you want links and inline code in there too. Then allow the hero on pages by adding `'hero'` to the `body` node types of the `page` definition in the same file:
+
+```js
+body: {
+	type: 'node_array',
+	node_types: [
+		'hero',
+		'prose',
+		// …the existing types
+	],
+	mark_types: ['section'],
+	default_node_type: 'prose'
+},
+```
+
+That's the whole data model. Documents containing heroes now validate, and every property is editable and undoable by default — you haven't written any editing code.
+
+### 2. Write the component
+
+Create `src/routes/components/Hero.svelte`. It reads the node at `path`, renders each property through an editable primitive (`TextProperty` for text, `MediaProperty` for the image), and picks a snippet per layout:
+
+```svelte
+<script>
+	import { getContext } from 'svelte';
+	import { Node, TextProperty } from 'svedit';
+	import MediaProperty from './MediaProperty.svelte';
+	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
+
+	const svedit = getContext('svedit');
+	let { path } = $props();
+	let node = $derived(svedit.session.get(path));
+	let layout = $derived(node.layout === 2 ? 2 : 1);
+</script>
+
+{#snippet text()}
+	<TextProperty tag="h1" class="display-1" path={[...path, 'title']} placeholder="Hero title" />
+	<TextProperty
+		class="pt-4 body-xl text-(--muted-foreground)"
+		path={[...path, 'description']}
+		placeholder="Say what this page is about"
+	/>
+{/snippet}
+
+{#snippet media()}
+	<div
+		class="overflow-hidden"
+		style:aspect-ratio="16 / 9"
+		style:border-radius="var(--image-border-radius)"
+	>
+		<MediaProperty path={[...path, 'media']} />
+	</div>
+{/snippet}
+
+<Node class="ew-hero bg-(--background) text-(--foreground)" {path}>
+	<div class={TW_LIMITER}>
+		{#if layout === 1}
+			<!-- Layout 1: text and media side by side -->
+			<div class="{TW_PAGE_PADDING_X} grid items-center gap-10 py-16 md:grid-cols-2">
+				<div>{@render text()}</div>
+				{@render media()}
+			</div>
+		{:else}
+			<!-- Layout 2: centered text above the media -->
+			<div class="{TW_PAGE_PADDING_X} flex flex-col gap-10 py-16 text-center">
+				<div class="mx-auto max-w-2xl">{@render text()}</div>
+				{@render media()}
+			</div>
+		{/if}
+	</div>
+</Node>
+```
+
+There is no read-only twin to keep in sync: this one component is the live page **and** the editor. For fancier variants, `src/routes/components/Feature.svelte` shows the same pattern with a rich `body` node array, reveal animations, and section-aware padding.
+
+### 3. Register it in the session
+
+In `src/routes/create_session.js`, three small registrations wire the type into the editor. Import the component and add it to `node_components`, so Svedit knows what to render:
+
+```js
+import Hero from './components/Hero.svelte';
+
+// in session_config.node_components:
+hero: Hero,
+```
+
+Declare how many layouts it has in `node_layouts`, which powers layout switching (toolbar and `Ctrl+Shift+←/→`):
+
+```js
+// in session_config.node_layouts:
+hero: 2,
+```
+
+And add an inserter — the factory that builds a blank hero when one is inserted on a page:
+
+```js
+// in session_config.inserters:
+hero: function (tr) {
+	const new_hero_id = tr.build('new_hero', {
+		hero_media: { id: 'hero_media', type: 'image', ...MEDIA_DEFAULTS },
+		new_hero: {
+			id: 'new_hero',
+			type: 'hero',
+			layout: 1,
+			title: { content: '', marks: [], annotations: [] },
+			description: { content: '', marks: [], annotations: [] },
+			media: 'hero_media'
+		}
+	});
+	tr.insert_nodes([new_hero_id]);
+},
+```
+
+### 4. Try it
+
+Run `npm run dev`, press `⌘E` and log in. Select a top-level block on a page and cycle node types with `Ctrl+Shift+↑/↓` until it becomes a hero, or insert one fresh at a node gap. `Ctrl+Shift+←/→` flips between your two layouts, paste an image onto the media slot, and `⌘S` saves — undo, selection, and copy/paste all work without any additional code, because they operate on the schema, not on your component.
+
+From here it's just iteration: add a `button_group` property for CTAs (see the [content model](#content-model) for the vocabulary), add a third layout by extending the component and bumping `node_layouts`, or ask your AI assistant to do it — the three-file pattern above is all the context it needs.
+
 ## Content model
 
 A small, typed vocabulary that describes every page.
