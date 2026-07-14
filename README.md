@@ -359,80 +359,6 @@ The converter accepts the subset of CommonMark that maps onto the built-in conte
 
 Not supported (rejected with an error): images, tables, blockquotes, raw HTML, thematic breaks, footnotes, YAML frontmatter, and GFM extensions. Page metadata (title, description) is derived from the first heading and paragraph, as for regular pages. Soft line wraps render as spaces and hard breaks render as line breaks (trailing backslash or two trailing spaces), matching how CommonMark renderers like GitHub's display the same file.
 
-## Components
-
-The building blocks you'll reach for when writing your own components.
-
-### MediaProperty
-
-Renders an editable image or video slot. The media fills whatever container you give it — you control the dimensions from the outside.
-
-```ts
-interface MediaPropertyProps {
-	/** Path to the media node */
-	path: any[];
-	/** Class on the outer element */
-	class?: string;
-}
-```
-
-`MediaProperty` always uses `width: 100%; height: 100%` and fills its parent. You control the size and shape by setting dimensions on a wrapping container.
-
-**Fixed aspect ratio** — the layout defines the shape, the image fills it via `object-fit`:
-
-```svelte
-<div class="overflow-hidden" style:aspect-ratio="4 / 3">
-	<MediaProperty path={[...path, 'media']} />
-</div>
-```
-
-**Intrinsic aspect ratio** — read the media node's dimensions so the container matches the image's natural shape:
-
-```svelte
-<script>
-	let media_node = $derived(svedit.session.get([...path, 'media']));
-</script>
-
-<div
-	class="overflow-hidden"
-	style:aspect-ratio={media_node.width && media_node.height
-		? `${media_node.width} / ${media_node.height}`
-		: '16 / 9'}
->
-	<MediaProperty path={[...path, 'media']} />
-</div>
-```
-
-The ternary provides a placeholder aspect ratio (`16 / 9`) shown when no image has been pasted yet. Once the user pastes an image, `media_node.width` and `media_node.height` are populated and the container adopts the image's natural proportions.
-
-### SizableViewbox
-
-Wraps a `MediaProperty` and gives the user drag handles to control `max-width` and `aspect-ratio`. Useful for inline images, logos, or anywhere the user should control the container size.
-
-The node at `path` needs `{media_property}_max_width` (integer) and `{media_property}_aspect_ratio` (number) properties in the schema. A value of `0` means no constraint (full width / natural aspect ratio).
-
-```svelte
-<SizableViewbox {path}>
-	<MediaProperty path={[...path, 'media']} />
-</SizableViewbox>
-```
-
-For a different media property name (e.g. `logo` on a footer node):
-
-```svelte
-<SizableViewbox {path} media_property="logo" placeholder_aspect_ratio={1}>
-	<MediaProperty path={[...path, 'logo']} />
-</SizableViewbox>
-```
-
-Layout is the caller's responsibility — pass a class for centering, etc:
-
-```svelte
-<SizableViewbox {path} class="mx-auto">
-```
-
-In edit mode, three handles appear when the media inside is selected: left/right edges for width (snapped to 4px grid), bottom edge for aspect ratio. Dragging beyond the container snaps width back to `0`; dragging close to the media's natural ratio snaps aspect ratio back to `0`. The viewbox uses `max-width` + `width: 100%` so it never overflows its parent.
-
 ## Create a custom content type
 
 Model your own block in three files — a hero with two layouts, from schema to screen.
@@ -583,7 +509,210 @@ hero: function (tr) {
 
 Run `npm run dev`, press `⌘E` and log in. Select a top-level block on a page and cycle node types with `Ctrl+Shift+↑/↓` until it becomes a hero, or insert one fresh at a node gap. `Ctrl+Shift+←/→` flips between your two layouts, paste an image onto the media slot, and `⌘S` saves — undo, selection, and copy/paste all work without any additional code, because they operate on the schema, not on your component.
 
-From here it's just iteration: add a `button_group` property for CTAs (see the [content model](#content-model) for the vocabulary), add a third layout by extending the component and bumping `node_layouts`, or ask your AI assistant to do it — the three-file pattern above is all the context it needs.
+From here it's just iteration: add calls to action, give editors control over the image size, add a third layout, or ask your AI assistant to do it — the three-file pattern above is all the context it needs. The next chapter makes those extensions while unpacking the primitives used inside the component.
+
+## Primitives
+
+A node component is ordinary Svelte layout wrapped around a small set of editing primitives. The schema defines what the content may contain; the primitives connect that content to the editor; your HTML and CSS decide how it looks.
+
+The Hero above already uses three of them. We'll take it apart, then extend it with composable buttons and editor-controlled media sizing.
+
+### Everything starts with a path
+
+Every registered node component receives `path`. It identifies the node being rendered, wherever that node happens to live in the document. Append a property name to address something inside it:
+
+```js
+path                           // the hero node
+[...path, 'title']             // its title text
+[...path, 'description']       // its description text
+[...path, 'media']             // its image or video node
+```
+
+Pass those paths to primitives and use the same paths to read values when layout depends on content:
+
+```svelte
+<script>
+	const svedit = getContext('svedit');
+	let { path } = $props();
+	let hero = $derived(svedit.session.get(path));
+	let media = $derived(svedit.session.get([...path, 'media']));
+</script>
+```
+
+`session.get` follows node references for you, so the last expression returns the media node rather than its stored id. Components do not need to know whether they are on a page, inside another block, or nested several arrays deep.
+
+### Node: establish the editing boundary
+
+`Node` wraps the output of a node component. It gives the rendered element its document identity and connects selection, visibility tracking, node-array marks, and editor positioning:
+
+```svelte
+<Node tag="section" class="ew-hero bg-(--background) text-(--foreground)" {path}>
+	<!-- The Hero's ordinary Svelte layout -->
+</Node>
+```
+
+`path` is required. `tag` defaults to `div`; `class`, `style`, and other element attributes pass through to the rendered element. `Node` adds no visual layout of its own. If you need `position: relative` or `position: absolute`, put it on an element inside `Node`, because the node element itself stays statically positioned so editor overlays can anchor to it reliably.
+
+Most block components have one outer `Node`. Mark components are the exception: they render inline content or wrap a range supplied by `TextProperty` or `NodeArrayProperty`.
+
+### TextProperty: make text editable
+
+The Hero's fixed text fields use `TextProperty`:
+
+```svelte
+<TextProperty
+	tag="h1"
+	class="display-1"
+	path={[...path, 'title']}
+	placeholder="Hero title"
+/>
+
+<TextProperty
+	class="pt-4 body-xl text-(--muted-foreground)"
+	path={[...path, 'description']}
+	placeholder="Say what this page is about"
+/>
+```
+
+`TextProperty` renders the current content and becomes directly editable when the editor is active. `path` is required. `tag` defaults to `div`; `class`, `style`, and other element attributes pass through, and `placeholder` appears while the field is empty.
+
+The component controls presentation, but the schema controls the content rules. In the Hero schema, `allow_newlines` decides whether Enter is allowed and `mark_types` decides which inline formats are available. The same `TextProperty` can therefore be a plain button label, a marked-up paragraph, or a heading without acquiring type-specific editing code.
+
+### MediaProperty: render editable media
+
+`MediaProperty` is Editable's project-level primitive for the `image` and `video` nodes in its schema. It makes the property selectable and renders the correct media component. Like `TextProperty`, it only needs a path:
+
+```svelte
+<MediaProperty path={[...path, 'media']} />
+```
+
+Media always fills the container, so the Hero layout owns its size and shape. For a fixed crop, give the wrapper an aspect ratio:
+
+```svelte
+<div
+	class="overflow-hidden"
+	style:aspect-ratio="16 / 9"
+	style:border-radius="var(--image-border-radius)"
+>
+	<MediaProperty path={[...path, 'media']} />
+</div>
+```
+
+For the uploaded media's natural shape, read its dimensions and use a placeholder ratio until something has been pasted:
+
+```svelte
+<script>
+	let media = $derived(svedit.session.get([...path, 'media']));
+</script>
+
+<div
+	class="overflow-hidden"
+	style:aspect-ratio={media.width && media.height
+		? `${media.width} / ${media.height}`
+		: '16 / 9'}
+>
+	<MediaProperty path={[...path, 'media']} />
+</div>
+```
+
+The only props are the required `path` and an optional `class` on the outer element. Sizing, border radius, and placement remain the caller's responsibility.
+
+### NodeArrayProperty: compose nodes inside nodes
+
+The Hero currently has a fixed title, description, and media slot. Suppose it should also accept any number of calls to action. Add an array of existing `button` nodes to its schema:
+
+```js
+actions: {
+	type: 'node_array',
+	node_types: ['button'],
+	default_node_type: 'button'
+}
+```
+
+Initialize the new property in the Hero inserter:
+
+```js
+new_hero: {
+	id: 'new_hero',
+	type: 'hero',
+	layout: 1,
+	title: { content: '', marks: [], annotations: [] },
+	description: { content: '', marks: [], annotations: [] },
+	media: 'hero_media',
+	actions: { nodes: [], marks: [], annotations: [] }
+}
+```
+
+Import `NodeArrayProperty` from `svedit` and place the array wherever the layout should show its buttons:
+
+```svelte
+<NodeArrayProperty
+	class="flex flex-wrap gap-4"
+	path={[...path, 'actions']}
+/>
+```
+
+That one primitive renders each referenced node through `session_config.node_components`. The existing `Button.svelte` component still owns how a button looks; the Hero owns where the group sits. In edit mode the array also gets insertion points, selection, reordering, copy and paste, and an empty-state insertion point. The schema limits what may be inserted and identifies the default type.
+
+`path` is required. `tag` defaults to `div`; `class`, `style`, and other element attributes pass through to the array container. Arrays may also carry marks and annotations, which `NodeArrayProperty` resolves and passes to their registered components.
+
+Use a text property when the structure is fixed and only its words change. Use a node array when editors should be able to add, remove, reorder, or switch the types of the things inside.
+
+### CustomProperty: build a new property UI
+
+`CustomProperty` is the escape hatch for a property that is neither editable text nor an array of rendered nodes. It establishes a selectable property boundary and renders whatever visual representation you put inside:
+
+```svelte
+<CustomProperty path={[...path, 'media']}>
+	<!-- Your representation of the property's current value -->
+</CustomProperty>
+```
+
+`path` and a child snippet are required. `tag` defaults to `div`; `class`, `style`, and other attributes pass through. `CustomProperty` deliberately does not decide how the value changes—you pair it with your own controls, overlay, paste handler, or transaction logic.
+
+`MediaProperty` is the concrete example in this project: it wraps `CustomProperty`, displays `Media.svelte`, and lets the shared editing overlays handle image and video replacement. Reach for `CustomProperty` when adding something similarly visual, such as a color swatch, map position, or product picker. Most content components only need the higher-level primitives above.
+
+### SizableViewbox: let the editor shape media
+
+`SizableViewbox` is an Editable helper rather than a Svedit core primitive. It wraps `MediaProperty` and gives the editor drag handles for maximum width and aspect ratio. To add it to the Hero, extend the schema with two presentation properties:
+
+```js
+media_max_width: { type: 'integer', default: 0 },
+media_aspect_ratio: { type: 'number', default: 0 }
+```
+
+Import `SizableViewbox` from `./SizableViewbox.svelte`, then replace the fixed-ratio wrapper:
+
+```svelte
+<SizableViewbox {path} class="mx-auto">
+	<MediaProperty path={[...path, 'media']} />
+</SizableViewbox>
+```
+
+A value of `0` means unconstrained width or the media's natural aspect ratio. In edit mode, the left and right handles change width on a 4px grid and the bottom handle changes aspect ratio. Dragging back to the container width or close to the natural ratio resets the corresponding value to `0`. The viewbox uses `max-width` with `width: 100%`, so it does not overflow its parent.
+
+The default property name is `media`. For another name, the helper derives the corresponding fields automatically:
+
+```svelte
+<SizableViewbox {path} media_property="logo" placeholder_aspect_ratio={1}>
+	<MediaProperty path={[...path, 'logo']} />
+</SizableViewbox>
+```
+
+That expects `logo_max_width` and `logo_aspect_ratio` on the containing node. `placeholder_aspect_ratio` defaults to `16 / 9`; `class` and `style` apply to the viewbox itself.
+
+### The complete set
+
+For ordinary content components, the vocabulary is small:
+
+- `Node` identifies the node component's outer boundary.
+- `TextProperty` renders and edits a schema `text` property.
+- `NodeArrayProperty` renders and edits a schema `node_array` property.
+- `CustomProperty` supplies a selectable boundary for a custom property UI.
+- `MediaProperty` is Editable's ready-made `CustomProperty` for images and videos.
+- `SizableViewbox` optionally adds editor-controlled sizing around media.
+
+The first four come from `svedit`; the last two live in `src/routes/components`. Components such as `Display`, `ButtonGroup`, and `SupportingMedia` are useful compositions of these pieces, not additional editing primitives. System components such as node gaps, carets, and selection markers are wired into the editor shell and normally do not appear in your content components.
 
 ## Content model
 
