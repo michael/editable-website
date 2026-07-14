@@ -12,7 +12,7 @@
 	function get_marker(index, layout) {
 		switch (layout) {
 			case 1:
-				return '—';
+				return '▪';
 			case 2:
 				return '✓';
 			case 3:
@@ -20,7 +20,7 @@
 			case 4:
 				return `${to_latin(index)}.`;
 			default:
-				return '—';
+				return '▪';
 		}
 	}
 

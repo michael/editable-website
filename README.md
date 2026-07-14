@@ -352,7 +352,7 @@ The converter accepts the subset of CommonMark that maps onto the built-in conte
 
 - paragraphs, headings 1–5 (heading 6 is rejected)
 - `**strong**`, `*emphasis*`, `` `inline code` ``, and `[links](/page)` — but not nested inside one another (marks are mutually exclusive in the content model, so e.g. bold text inside a link is rejected)
-- unordered lists (rendered with dash markers) and ordered lists (rendered numbered); nested lists and multi-paragraph items are rejected
+- unordered lists (rendered with square markers) and ordered lists (rendered numbered); nested lists and multi-paragraph items are rejected
 - fenced and indented code blocks (no syntax highlighting)
 - HTML comments (skipped — they render as nothing, same as everywhere else)
 - link targets: `http(s):`, `mailto:`, site-absolute paths, and `#fragments`; other protocols and links to `.md` files are rejected
