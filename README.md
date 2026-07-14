@@ -1,14 +1,12 @@
 # The Editable Manual
 
-Editable brings live on-page editing to Svelte. Site owners edit directly in the layout as they browse their site; developers keep full control with ordinary Svelte components.
-
-For your next website project, you might not need a Content Management System anymore. Start from a fully functional, user-editable website that supports common content types: prose, heroes, features, galleries, and listings. Adapt colors and fonts to deploy a beautiful site within minutes — or customize the entire layout and model your own content types using the [Svedit APIs](https://github.com/michael/svedit).
+Editable lets people edit a Svelte website directly on the page, while developers retain control over its structure and presentation. It starts with editable prose, media, features, galleries, and listings — much of what you would otherwise use a separate CMS for — while keeping the styling, layouts, and content model in your code. This manual explains how to build and run a site with it.
 
 ## Quickstart
 
 From zero to a live-editable site in four commands.
 
-You need **Node.js 24+** (Editable uses Node's built-in SQLite; with [nvm](https://github.com/nvm-sh/nvm), `nvm use` picks the version up from `.nvmrc`) and **git**.
+Install [Node.js 24+](https://nodejs.org/) and [Git](https://git-scm.com/). Editable uses Node's built-in SQLite. If you use [nvm](https://github.com/nvm-sh/nvm), `nvm use` reads the included `.nvmrc`.
 
 ```sh
 git clone https://github.com/michael/editable-website.git my-site
@@ -98,7 +96,7 @@ npm run data:reset
 
 ## Deploy
 
-From localhost to a URL you can send around, in a handful of commands.
+Deploy your local site to a public URL in a few steps.
 
 Editable runs on any VPS — all you need is Node.js, and the included `Dockerfile` works with any platform that supports Docker. The repository ships ready-made for [Fly.io](https://fly.io): install [flyctl](https://fly.io/docs/flyctl/install/), then sign in (opens your browser; creates a free account if you don't have one):
 
@@ -361,9 +359,9 @@ Not supported (rejected with an error): images, tables, blockquotes, raw HTML, t
 
 ## Create a custom content type
 
-Model your own block in three files — a hero with two layouts, from schema to screen.
+Define a node schema and wire it up with a custom component.
 
-Editable's built-in types are a starting set, not a boundary. This walkthrough adds a `hero` type — a title, a description, and an image, with two layouts — and it touches exactly three files: the schema, one new component, and the session registration.
+Editable's built-in types are just a starting set. This walkthrough adds a `hero` type — a title, a description, and an image, with two layouts — and it touches exactly three files: the schema, one new component, and the session registration.
 
 ### 1. Define the type in the schema
 
@@ -513,11 +511,13 @@ From here it's just iteration: add calls to action, give editors control over th
 
 ## Primitives
 
-Build editable node components from a small set of Svelte primitives.
+Make Svelte components editable by composing a small set of primitives.
 
 The schema defines what the content may contain; the primitives connect that content to the editor; your HTML and CSS decide how it looks.
 
 The Hero above already uses three of them. We'll take it apart, then extend it with composable buttons and editor-controlled media sizing.
+
+Editable uses [Svedit](https://github.com/michael/svedit) as its editing engine. This chapter covers the Svedit primitives used to render content, but Svedit's separate API documentation is the reference for schemas, sessions, transactions, transforms, commands, marks, and annotations. Study that API to move beyond adapting Editable's existing patterns and build new editing behavior of your own.
 
 ### Everything starts with a path
 
@@ -545,7 +545,7 @@ Pass those paths to primitives and use the same paths to read values when layout
 
 ### Node: establish the editing boundary
 
-`Node` wraps the output of a node component. It gives the rendered element its document identity and connects selection, visibility tracking, node-array marks, and editor positioning:
+`Node` wraps the output of a node component. It gives the rendered element its document identity and connects selection, visibility tracking, node-array marks and annotations, and editor positioning:
 
 ```svelte
 <Node tag="section" class="ew-hero bg-(--background) text-(--foreground)" {path}>
@@ -578,7 +578,7 @@ The Hero's fixed text fields use `TextProperty`:
 
 `TextProperty` renders the current content and becomes directly editable when the editor is active. `path` is required. `tag` defaults to `div`; `class`, `style`, and other element attributes pass through, and `placeholder` appears while the field is empty.
 
-The component controls presentation, but the schema controls the content rules. In the Hero schema, `allow_newlines` decides whether `Enter` is allowed and `mark_types` decides which inline formats are available. The same `TextProperty` can therefore be a plain button label, a marked-up paragraph, or a heading without acquiring type-specific editing code.
+The component controls presentation, but the schema controls the content rules. In the Hero schema, `allow_newlines` decides whether `Enter` is allowed and `mark_types` decides which inline formats are available; `annotation_types` can allow data-only ranges such as comments. The same `TextProperty` can therefore be a plain button label, a marked-up paragraph, or a heading without acquiring type-specific editing code.
 
 ### MediaProperty: render editable media
 
@@ -718,13 +718,13 @@ The first four come from `svedit`; the last two live in `src/routes/components`.
 
 ## Content model
 
-A small, typed vocabulary that describes every page.
+A small, typed vocabulary for Editable's pages and shared site content.
 
-Editable ships with the Common Content Model (CCM) — a portable content schema that covers the common structures most websites need while staying small enough to understand and edit directly. It's defined in `src/lib/document_schema.js`; this section is the reference.
+Editable's content model defines the nodes and properties available to pages and shared site content. Its schema lives in `src/lib/document_schema.js`; this section is the reference.
 
 Documents are graphs of nodes stored by id. Each node has an `id`, a `type`, and type-specific properties. A few naming conventions hold throughout: `content` is the string payload of text properties, `body` holds authored nested content, `items` holds repeated structured children, and `label`/`title`/`description`/`meta` are text properties with semantic meaning.
 
-A **text property** value looks like this in a document (marks reference separate mark nodes by id):
+A **text property** value looks like this in a document. Marks and annotations reference separate nodes by id:
 
 ```js
 {
@@ -734,7 +734,7 @@ A **text property** value looks like this in a document (marks reference separat
 }
 ```
 
-A **node array** value holds ordered child node ids; `marks` can wrap ranges of children (the page body uses this for `section` grouping):
+A **node array** value holds ordered child node ids. Marks and annotations can cover ranges of children; the page body uses a `section` mark for visual grouping:
 
 ```js
 {
@@ -862,13 +862,42 @@ button_group { buttons: [button] }
 button { layout: 1 | 2, href, target, label: text }
 ```
 
-**Marks** — applied to text ranges, stored as separate nodes referenced by `{ start_offset, end_offset, node_id }` ranges. Ranges must not overlap:
+**Marks and annotations** — both attach a separate node to a half-open range using the same shape. For text, offsets address character positions; for node arrays, they address child-node positions. `start_offset` is included and `end_offset` is excluded:
+
+```js
+{
+	start_offset: 0,
+	end_offset: 5,
+	node_id: 'strong_1'
+}
+```
+
+Marks are part of the rendered content: formatting such as emphasis and links for text, or grouping such as sections for node arrays. They are mutually exclusive within a property, so marked ranges cannot overlap. Editable defines these mark types:
 
 ```ts
 strong, emphasis, code, highlight   // no properties
 link { href, target }               // internal links use root-relative page URLs
 section                             // groups a range of page body blocks
 ```
+
+Annotations are metadata layered over content, such as comments, review markers, or application-specific labels. They may overlap marks and other annotations. Svedit preserves and transforms their ranges, but does not render them in place; your application interprets them through CSS classes, component props, or overlay UI.
+
+Editable does not enable an annotation type by default. To add one, define an annotation node and allow it on the relevant text or node-array property:
+
+```js
+comment: {
+	kind: 'annotation',
+	properties: {
+		author: { type: 'string' },
+		body: { type: 'string' }
+	}
+}
+
+// On a text or node_array property:
+annotation_types: ['comment']
+```
+
+Annotation nodes must not have registered rendering components. For node arrays, child components receive every covering annotation through their `annotations` prop, and `Node` adds classes such as `anno-comment`, `anno-comment-start`, and `anno-comment-end`. Text annotations remain data-only, so comments or other interactive annotations usually need an overlay. The [Svedit API](https://github.com/michael/svedit) documents selection state, annotation commands, transactions, and rendering integration in full.
 
 <!--
 
