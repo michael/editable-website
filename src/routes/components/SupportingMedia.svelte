@@ -14,21 +14,24 @@
 	let is_centered = $derived(prose?.is_centered);
 </script>
 
-<Node {path}>
-	<svelte:element
-		this={render_as_link ? 'a' : 'div'}
-		href={render_as_link ? node.href : undefined}
-		target={render_as_link ? node.target : undefined}
-		class="group contents"
+{#snippet viewbox(linked = false)}
+	<SizableViewbox
+		{path}
+		class="{is_centered ? 'mx-auto ' : ''}outline-1 outline-transparent {linked
+			? 'group-focus-visible:outline-offset-1 group-focus-visible:outline-(--svedit-editing-stroke)'
+			: ''}"
+		style="border-radius: var(--image-border-radius)"
 	>
-		<SizableViewbox
-			{path}
-			class="{is_centered
-				? 'mx-auto '
-				: ''}outline-1 outline-transparent group-focus-visible:outline-offset-1 group-focus-visible:outline-(--svedit-editing-stroke)"
-			style="border-radius: var(--image-border-radius)"
-		>
-			<MediaProperty class="supporting-media" path={[...path, 'media']} />
-		</SizableViewbox>
-	</svelte:element>
+		<MediaProperty class="supporting-media" path={[...path, 'media']} />
+	</SizableViewbox>
+{/snippet}
+
+<Node {path}>
+	{#if render_as_link}
+		<a href={node.href} target={node.target} class="group contents">
+			{@render viewbox(true)}
+		</a>
+	{:else}
+		{@render viewbox()}
+	{/if}
 </Node>

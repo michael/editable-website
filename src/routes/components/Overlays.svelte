@@ -136,6 +136,12 @@
 
 	let link_preview = $derived(get_link_preview());
 
+	function get_link_anchor_path(node, path) {
+		// These node wrappers are wider than their visible media frames, so their
+		// link UI anchors to the media property instead.
+		return ['supporting_media', 'feature'].includes(node.type) ? [...path, 'media'] : path;
+	}
+
 	function get_link_preview() {
 		const sel = svedit.session.selection;
 		if (!sel) return null;
@@ -147,13 +153,13 @@
 				const end = Math.max(sel.anchor_offset, sel.focus_offset);
 				if (end - start === 1) {
 					const path = [...sel.path, start];
-					return { node: selected_node, path };
+					return { node: selected_node, path: get_link_anchor_path(selected_node, path) };
 				}
 			}
 
 			if (sel.type === 'text' || sel.type === 'property') {
 				const path = sel.path.slice(0, -1);
-				return { node: selected_node, path };
+				return { node: selected_node, path: get_link_anchor_path(selected_node, path) };
 			}
 		}
 

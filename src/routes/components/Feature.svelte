@@ -9,6 +9,7 @@
 	let { path, mark: section = null } = $props();
 	let node = $derived(svedit.session.get(path));
 	let media_node = $derived(svedit.session.get([...path, 'media']));
+	let render_as_link = $derived(!svedit.editable && node.href);
 	let media_aspect_ratio = $derived(
 		media_node.width && media_node.height ? `${media_node.width} / ${media_node.height}` : undefined
 	);
@@ -20,13 +21,16 @@
 <!-- Primitives -->
 {#snippet image(placeholder_aspect_ratio = '3 / 4', border_radius = false)}
 	<div class="flex h-full w-full items-center">
-		<div
-			class="w-full overflow-hidden"
+		<svelte:element
+			this={render_as_link ? 'a' : 'div'}
+			href={render_as_link ? node.href : undefined}
+			target={render_as_link ? node.target : undefined}
+			class="block w-full overflow-hidden outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 			style:border-radius={border_radius ? 'var(--image-border-radius)' : undefined}
 			style:aspect-ratio={media_aspect_ratio ?? placeholder_aspect_ratio}
 		>
 			<MediaProperty path={[...path, 'media']} />
-		</div>
+		</svelte:element>
 	</div>
 {/snippet}
 

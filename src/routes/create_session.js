@@ -465,7 +465,7 @@ const session_config = {
 		prose_grid_item: function (tr) {
 			const new_heading = {
 				id: nanoid(),
-				type: 'heading_1_xl',
+				type: 'heading_2',
 				content: { content: '', marks: [], annotations: [] }
 			};
 			tr.create(new_heading);
@@ -487,17 +487,17 @@ const session_config = {
 			const new_prose_grid_id = tr.build('new_prose_grid', {
 				title_1: {
 					id: 'title_1',
-					type: 'heading_1_xl',
+					type: 'heading_2',
 					content: { content: '', marks: [], annotations: [] }
 				},
 				title_2: {
 					id: 'title_2',
-					type: 'heading_1_xl',
+					type: 'heading_2',
 					content: { content: '', marks: [], annotations: [] }
 				},
 				title_3: {
 					id: 'title_3',
-					type: 'heading_1_xl',
+					type: 'heading_2',
 					content: { content: '', marks: [], annotations: [] }
 				},
 				paragraph_1: {
@@ -632,13 +632,15 @@ const session_config = {
 				},
 				body_text: {
 					id: 'body_text',
-					type: 'heading_1_xl',
+					type: 'heading_2',
 					content: { content: '', marks: [], annotations: [] }
 				},
 				new_feature: {
 					id: 'new_feature',
 					type: 'feature',
 					layout: 'image-right',
+					href: '',
+					target: '_self',
 					media: 'feature_image',
 					body: { nodes: ['body_text'], marks: [], annotations: [] }
 				}
@@ -657,6 +659,8 @@ const session_config = {
 					id: 'new_figure',
 					type: 'figure',
 					layout,
+					href: '',
+					target: '_self',
 					media: 'image_one'
 				}
 			});
@@ -677,6 +681,8 @@ const session_config = {
 				new_captioned_figure: {
 					id: 'new_captioned_figure',
 					type: 'captioned_figure',
+					href: '',
+					target: '_self',
 					media: 'image_one',
 					caption: { content: '', marks: [], annotations: [] }
 				}
