@@ -6,13 +6,13 @@
 	const svedit = getContext('svedit');
 	let { path, mark: section = null } = $props();
 	let node = $derived(svedit.session.get(path));
-	let layout = $derived(node.layout || 1);
+	let layout = $derived(node.layout || 'narrow-left');
 	let padding_top_wide = $derived(!section || section?.is_start);
 	let padding_bottom_wide = $derived(!section || section?.is_end);
 
 	setContext('prose', {
 		get is_centered() {
-			return layout === 4 || layout === 6;
+			return layout === 'narrow-centered-text' || layout === 'wide-centered-text';
 		}
 	});
 
@@ -31,8 +31,7 @@
 	/>
 {/snippet}
 
-<!-- Layout 1: Left-aligned -->
-{#snippet layout_1()}
+{#snippet narrow_left()}
 	<div class={TW_LIMITER}>
 		<div
 			class={[
@@ -47,8 +46,7 @@
 	</div>
 {/snippet}
 
-<!-- Layout 2: Center-oriented -->
-{#snippet layout_2()}
+{#snippet narrow_center()}
 	<div class={TW_LIMITER}>
 		<div
 			class={[
@@ -63,8 +61,7 @@
 	</div>
 {/snippet}
 
-<!-- Layout 3: Right-oriented -->
-{#snippet layout_3()}
+{#snippet narrow_right()}
 	<div class={TW_LIMITER}>
 		<div
 			class={[
@@ -79,8 +76,7 @@
 	</div>
 {/snippet}
 
-<!-- Layout 4: Centered -->
-{#snippet layout_4()}
+{#snippet narrow_centered_text()}
 	<div class={TW_LIMITER}>
 		<div
 			class={[
@@ -95,8 +91,7 @@
 	</div>
 {/snippet}
 
-<!-- Layout 5: Full width, left-oriented -->
-{#snippet layout_5()}
+{#snippet wide_left()}
 	<div class={TW_LIMITER}>
 		<div
 			class={[
@@ -111,8 +106,7 @@
 	</div>
 {/snippet}
 
-<!-- Layout 6: Full width, centered -->
-{#snippet layout_6()}
+{#snippet wide_centered_text()}
 	<div class={TW_LIMITER}>
 		<div
 			class={[
@@ -128,6 +122,13 @@
 {/snippet}
 
 <Node class="ew-prose layout-{layout} bg-(--background) text-(--foreground)" {path}>
-	{@const layouts = [layout_1, layout_2, layout_3, layout_4, layout_5, layout_6]}
-	{@render layouts[layout - 1]()}
+	{@const layouts = {
+		'narrow-left': narrow_left,
+		'narrow-center': narrow_center,
+		'narrow-right': narrow_right,
+		'narrow-centered-text': narrow_centered_text,
+		'wide-left': wide_left,
+		'wide-centered-text': wide_centered_text
+	}}
+	{@render layouts[layout]()}
 </Node>

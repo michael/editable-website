@@ -6,13 +6,13 @@
 	const svedit = getContext('svedit');
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
-	let layout = $derived(node.layout || 1);
+	let layout = $derived(node.layout || 'default');
 </script>
 
 <Node class="ew-paragraph-sm" {path}>
 	<div
 		use:reveal
-		class={layout === 2
+		class={layout === 'muted'
 			? 'text-(--muted-foreground)'
 			: '[&_a]:text-(--foreground) [&_strong]:font-normal [&_strong]:text-(--foreground)'}
 	>

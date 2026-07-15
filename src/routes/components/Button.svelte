@@ -6,10 +6,10 @@
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
 	let render_as_link = $derived(!svedit.editable && node.href);
-	let layout = $derived(node.layout || 1);
+	let layout = $derived(node.layout || 'primary');
 </script>
 
-{#snippet layout_1()}
+{#snippet primary()}
 	<svelte:element
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
@@ -21,12 +21,12 @@
 	</svelte:element>
 {/snippet}
 
-{#snippet layout_2()}
+{#snippet secondary()}
 	<svelte:element
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="ew-button flex items-center justify-center rounded-(--button-border-radius) px-4 py-3 text-sm text-(--foreground) bg-(--background) outline-1 outline-(--foreground)/15 focus-visible:outline-(--svedit-editing-stroke) {render_as_link
+		class="ew-button flex items-center justify-center rounded-(--button-border-radius) bg-(--background) px-4 py-3 text-sm text-(--foreground) outline-1 outline-(--foreground)/15 focus-visible:outline-(--svedit-editing-stroke) {render_as_link
 			? 'hover:bg-(--foreground)/5'
 			: ''}"
 	>
@@ -35,9 +35,9 @@
 {/snippet}
 
 <Node {path}>
-	{#if layout === 2}
-		{@render layout_2()}
+	{#if layout === 'secondary'}
+		{@render secondary()}
 	{:else}
-		{@render layout_1()}
+		{@render primary()}
 	{/if}
 </Node>

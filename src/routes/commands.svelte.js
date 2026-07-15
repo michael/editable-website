@@ -62,14 +62,13 @@ export class CycleLayoutCommand extends Command {
 	execute() {
 		const session = this.context.session;
 		const { node, node_array_path, node_index } = this.closest_switchable_layout;
-		const layout_count = session.config.node_layouts[node.type];
+		const layouts = session.config.node_layouts[node.type];
+		const current_layout_index = layouts.indexOf(node.layout);
+		if (current_layout_index === -1) return;
 
-		let new_layout;
-		if (this.direction === 'next') {
-			new_layout = (node.layout % layout_count) + 1;
-		} else {
-			new_layout = ((node.layout - 2 + layout_count) % layout_count) + 1;
-		}
+		const offset = this.direction === 'next' ? 1 : -1;
+		const new_layout_index = (current_layout_index + offset + layouts.length) % layouts.length;
+		const new_layout = layouts[new_layout_index];
 
 		const tr = session.tr;
 		// Set node selection so it's clear which node's layout changed

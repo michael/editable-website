@@ -7,17 +7,17 @@
 	let { path } = $props();
 	let list_node = $derived(svedit.session.get(path.slice(0, -2)));
 	let item_index = $derived(Number(path.at(-1)) || 0);
-	let marker = $derived(get_marker(item_index + 1, list_node?.layout || 3));
+	let marker = $derived(get_marker(item_index + 1, list_node?.layout || 'decimal'));
 
 	function get_marker(index, layout) {
 		switch (layout) {
-			case 1:
+			case 'square':
 				return '▪';
-			case 2:
+			case 'check':
 				return '✓';
-			case 3:
+			case 'decimal':
 				return `${String(index).padStart(2, '0')}.`;
-			case 4:
+			case 'lower-alpha':
 				return `${to_latin(index)}.`;
 			default:
 				return '▪';

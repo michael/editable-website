@@ -147,12 +147,7 @@ Most block components have one outer `Node`. Mark components are the exception: 
 The Hero's fixed text fields use `TextProperty`:
 
 ```svelte
-<TextProperty
-	tag="h1"
-	class="display-1"
-	path={[...path, 'title']}
-	placeholder="Hero title"
-/>
+<TextProperty tag="h1" class="display-1" path={[...path, 'title']} placeholder="Hero title" />
 
 <TextProperty
 	class="pt-4 body-xl text-(--muted-foreground)"
@@ -194,9 +189,7 @@ For the uploaded media's natural shape, read its dimensions and use a placeholde
 
 <div
 	class="overflow-hidden"
-	style:aspect-ratio={media.width && media.height
-		? `${media.width} / ${media.height}`
-		: '16 / 9'}
+	style:aspect-ratio={media.width && media.height ? `${media.width} / ${media.height}` : '16 / 9'}
 >
 	<MediaProperty path={[...path, 'media']} />
 </div>
@@ -222,7 +215,7 @@ Initialize the new property in the Hero inserter:
 new_hero: {
 	id: 'new_hero',
 	type: 'hero',
-	layout: 1,
+	layout: 'side-by-side',
 	title: { content: '', marks: [], annotations: [] },
 	description: { content: '', marks: [], annotations: [] },
 	media: 'hero_media',
@@ -233,10 +226,7 @@ new_hero: {
 Import `NodeArrayProperty` from `svedit` and place the array wherever the layout should show its buttons:
 
 ```svelte
-<NodeArrayProperty
-	class="flex flex-wrap gap-4"
-	path={[...path, 'actions']}
-/>
+<NodeArrayProperty class="flex flex-wrap gap-4" path={[...path, 'actions']} />
 ```
 
 That one primitive renders each referenced node through `session_config.node_components`. The existing `Button.svelte` component still owns how a button looks; the Hero owns where the group sits. In edit mode the array also gets insertion points, selection, reordering, copy and paste, and an empty-state insertion point. The schema limits what may be inserted and identifies the default type.
@@ -331,7 +321,7 @@ A **node array** value holds ordered child node ids. Marks and annotations can c
 
 ### Node reference
 
-Notation: `text` is an editable text value (allowed marks in the comment), `[a | b]` is a node array of those types, a bare type name is a single node reference, and `1–4` are the app-defined layout variants. `href` is a string where empty means unlinked; `target` defaults to `'_self'`.
+Notation: `text` is an editable text value (allowed marks in the comment), `[a | b]` is a node array of those types, and a bare type name is a single node reference. Layout values are app-defined string ids. `href` is a string where empty means unlinked; `target` defaults to `'_self'`.
 
 **Page and site chrome** — the document root plus the shared navigation and footer:
 
@@ -354,7 +344,7 @@ nav {
 }
 
 nav_link { href, target, label: text }
-nav_button { layout: 1 | 2, href, target, label: text }   // type-switches with nav_link
+nav_button { layout: primary | secondary, href, target, label: text }   // type-switches with nav_link
 nav_media { href, target, media: image | video }
 
 footer {
@@ -372,18 +362,19 @@ footer_link { href, target, label: text }
 // rich content = paragraph_sm | paragraph | paragraph_lg | paragraph_xl |
 //                heading_1_xl | heading_1 … heading_4 | list | supporting_media | button_group
 
-prose { layout: 1–6, body: [rich content] }        // layouts: alignment and width
-prose_grid { layout: 1 | 2, items: [prose_grid_item] }
+prose { layout: narrow-left | narrow-center | narrow-right | narrow-centered-text |
+                wide-left | wide-centered-text, body: [rich content] }
+prose_grid { layout: plain | cards, items: [prose_grid_item] }
 prose_grid_item { body: [rich content] }
 
 // the paragraph and heading family share one shape:
 paragraph, paragraph_sm, paragraph_lg, paragraph_xl,
 heading_1_xl, heading_1 … heading_4 {
-	layout: 1 | 2      // 2 = muted secondary copy
+	layout: default | muted
 	content: text      // marks: strong, emphasis, code, highlight, link
 }
 
-list { layout: 1–4, list_items: [list_item] }      // layouts: marker styles
+list { layout: square | check | decimal | lower-alpha, list_items: [list_item] }
 list_item { content: text }                        // marks: strong, emphasis, code, highlight, link
 
 preformatted { content: text }                     // monospaced, preserves whitespace, no marks
@@ -404,7 +395,8 @@ image, video {
 	object_fit: string       // CSS object-fit, default 'contain'
 }
 
-figure { layout: 1–6, media: image | video }
+figure { layout: wide | narrow-left | narrow-center | narrow-right | flush | full-bleed,
+         media: image | video }
 captioned_figure { media: image | video, caption: text }   // caption marks: strong, emphasis, code, highlight, link
 supporting_media {
 	media_max_width: integer      // 0 = no maximum
@@ -416,10 +408,11 @@ supporting_media {
 **Collections and buttons**:
 
 ```ts
-gallery { layout: 1–5, gallery_items: [gallery_item] }
+gallery { layout: mixed | portraits | squares | landscapes | compact-landscapes,
+          gallery_items: [gallery_item] }
 gallery_item { href, target, media: image | video }
 
-descriptive_gallery { layout: 1 | 2, items: [descriptive_gallery_item] }
+descriptive_gallery { layout: cards | compact, items: [descriptive_gallery_item] }
 descriptive_gallery_item {
 	href, target
 	media: image | video
@@ -427,7 +420,8 @@ descriptive_gallery_item {
 	description: text    // marks: emphasis, highlight
 }
 
-descriptive_listing { layout: 1–5, items: [descriptive_listing_item] }
+descriptive_listing { layout: narrow-left | narrow-center | narrow-right | full-width | two-columns,
+                      items: [descriptive_listing_item] }
 descriptive_listing_item {
 	href, target
 	title: text          // single line; marks: emphasis, highlight
@@ -435,16 +429,17 @@ descriptive_listing_item {
 	meta: text           // single line, optional; marks: emphasis, highlight
 }
 
-accordion { layout: 1–5, items: [accordion_item] }
+accordion { layout: narrow-left | narrow-center | narrow-right | full-width | two-columns,
+            items: [accordion_item] }
 accordion_item {
 	title: text          // single line; marks: emphasis, highlight
 	body: [rich content without headings]
 }
 
-feature { layout: 1 | 2, media: image | video, body: [rich content] }
+feature { layout: image-right | image-left, media: image | video, body: [rich content] }
 
 button_group { buttons: [button] }
-button { layout: 1 | 2, href, target, label: text }
+button { layout: primary | secondary, href, target, label: text }
 ```
 
 **Marks and annotations** — both attach a separate node to a half-open range using the same shape. For text, offsets address character positions; for node arrays, they address child-node positions. `start_offset` is included and `end_offset` is excluded:
@@ -484,7 +479,6 @@ annotation_types: ['comment']
 
 Annotation nodes must not have registered rendering components. For node arrays, child components receive every covering annotation through their `annotations` prop, and `Node` adds classes such as `anno-comment`, `anno-comment-start`, and `anno-comment-end`. Text annotations remain data-only, so comments or other interactive annotations usually need an overlay. The [Svedit API](https://github.com/michael/svedit) documents selection state, annotation commands, transactions, and rendering integration in full.
 
-
 ## Create a custom node type
 
 Define a node schema and wire it up with a custom component.
@@ -499,7 +493,7 @@ In `src/lib/document_schema.js`, add the node type definition. A hero is a `bloc
 hero: {
 	kind: 'block',
 	properties: {
-		layout: { type: 'integer', default: 1 },
+		layout: { type: 'string', default: 'side-by-side' },
 		title: {
 			type: 'text',
 			mark_types: MINIMAL_MARKS,
@@ -550,7 +544,7 @@ Create `src/routes/components/Hero.svelte`. It reads the node at `path`, renders
 	const svedit = getContext('svedit');
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
-	let layout = $derived(node.layout === 2 ? 2 : 1);
+	let layout = $derived(node.layout || 'side-by-side');
 </script>
 
 {#snippet text()}
@@ -574,14 +568,12 @@ Create `src/routes/components/Hero.svelte`. It reads the node at `path`, renders
 
 <Node class="ew-hero bg-(--background) text-(--foreground)" {path}>
 	<div class={TW_LIMITER}>
-		{#if layout === 1}
-			<!-- Layout 1: text and media side by side -->
+		{#if layout === 'side-by-side'}
 			<div class="{TW_PAGE_PADDING_X} grid items-center gap-10 py-16 md:grid-cols-2">
 				<div>{@render text()}</div>
 				{@render media()}
 			</div>
 		{:else}
-			<!-- Layout 2: centered text above the media -->
 			<div class="{TW_PAGE_PADDING_X} flex flex-col gap-10 py-16 text-center">
 				<div class="mx-auto max-w-2xl">{@render text()}</div>
 				{@render media()}
@@ -604,11 +596,11 @@ import Hero from './components/Hero.svelte';
 hero: Hero,
 ```
 
-Declare how many layouts it has in `node_layouts`, which powers layout switching (toolbar and `Ctrl` + `Shift` + `←` / `→`):
+Declare its layout ids in cycling order in `node_layouts`, which powers layout switching (toolbar and `Ctrl` + `Shift` + `←` / `→`):
 
 ```js
 // in session_config.node_layouts:
-hero: 2,
+hero: ['side-by-side', 'stacked'],
 ```
 
 And add an inserter — the factory that builds a blank hero when one is inserted on a page:
@@ -621,7 +613,7 @@ hero: function (tr) {
 		new_hero: {
 			id: 'new_hero',
 			type: 'hero',
-			layout: 1,
+			layout: 'side-by-side',
 			title: { content: '', marks: [], annotations: [] },
 			description: { content: '', marks: [], annotations: [] },
 			media: 'hero_media'
@@ -934,7 +926,6 @@ The converter accepts the subset of CommonMark that maps onto the built-in conte
 - link targets: `http(s):`, `mailto:`, site-absolute paths, and `#fragments`; other protocols and links to `.md` files are rejected
 
 Not supported (rejected with an error): images, tables, blockquotes, raw HTML, thematic breaks, footnotes, YAML frontmatter, and GFM extensions. Page metadata (title, description) is derived from the first heading and paragraph, as for regular pages. Soft line wraps render as spaces and hard breaks render as line breaks (trailing backslash or two trailing spaces), matching how CommonMark renderers like GitHub's display the same file.
-
 
 <!--
 ## FAQs

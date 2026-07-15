@@ -84,10 +84,10 @@ describe('convert_markdown', () => {
 		expect(() => convert('text with <em>inline</em> html')).toThrow(/Inline HTML/);
 	});
 
-	it('converts unordered lists to layout 1 and ordered lists to layout 3', () => {
+	it('converts unordered and ordered lists to semantic layout ids', () => {
 		const doc = convert('- a\n- b\n\n1. one\n2. two');
 		const lists = flat_text_nodes(doc).filter((node) => node.type === 'list');
-		expect(lists.map((list) => list.layout)).toEqual([1, 3]);
+		expect(lists.map((list) => list.layout)).toEqual(['square', 'decimal']);
 		const first_item = doc.nodes[lists[0].list_items.nodes[0]];
 		expect(first_item.type).toBe('list_item');
 		expect(first_item.content.content).toBe('a');
@@ -215,7 +215,7 @@ describe('convert_markdown', () => {
 				'paragraph'
 			]);
 			const toc = nodes[2];
-			expect(toc.layout).toBe(5);
+			expect(toc.layout).toBe('two-columns');
 			const items = toc.items.nodes.map((id) => doc.nodes[id]);
 			expect(items.map((item) => item.title.content)).toEqual(['Install', 'Usage']);
 			expect(items.map((item) => item.href)).toEqual(['#install', '#usage']);

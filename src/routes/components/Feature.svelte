@@ -12,7 +12,7 @@
 	let media_aspect_ratio = $derived(
 		media_node.width && media_node.height ? `${media_node.width} / ${media_node.height}` : undefined
 	);
-	let feature_layout = $derived(node.layout === 2 ? 2 : 1);
+	let feature_layout = $derived(node.layout === 'image-left' ? 'image-left' : 'image-right');
 	let padding_top_wide = $derived(!section || section?.is_start);
 	let padding_bottom_wide = $derived(!section || section?.is_end);
 </script>
@@ -37,7 +37,7 @@
 	/>
 {/snippet}
 
-{#snippet layout_1()}
+{#snippet image_right()}
 	<div class={TW_LIMITER}>
 		<div
 			class={[
@@ -56,7 +56,7 @@
 	</div>
 {/snippet}
 
-{#snippet layout_2()}
+{#snippet image_left()}
 	<div class={TW_LIMITER}>
 		<div
 			class={[
@@ -76,6 +76,9 @@
 {/snippet}
 
 <Node class="ew-feature bg-(--background) text-(--foreground)" {path}>
-	{@const layouts = [layout_1, layout_2]}
-	{@render layouts[feature_layout - 1]()}
+	{#if feature_layout === 'image-left'}
+		{@render image_left()}
+	{:else}
+		{@render image_right()}
+	{/if}
 </Node>

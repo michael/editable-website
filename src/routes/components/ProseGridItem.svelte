@@ -8,11 +8,11 @@
 
 	let prose_grid_path = $derived(path.slice(0, -2));
 	let prose_grid_node = $derived(svedit.session.get(prose_grid_path));
-	let layout = $derived(prose_grid_node.layout || 1);
+	let layout = $derived(prose_grid_node.layout || 'plain');
 
 	setContext('prose', {
 		get is_centered() {
-			return layout === 2;
+			return layout === 'cards';
 		}
 	});
 
@@ -31,8 +31,7 @@
 	/>
 {/snippet}
 
-<!-- Layout 1: Left-aligned -->
-{#snippet layout_1()}
+{#snippet plain()}
 	<div class="py-10 sm:py-14 md:py-16 lg:py-28">
 		<div class="max-w-4xl">
 			{@render body()}
@@ -40,8 +39,7 @@
 	</div>
 {/snippet}
 
-<!-- Layout 2: Centered -->
-{#snippet layout_2()}
+{#snippet card()}
 	<div
 		class="h-full border border-(--border) bg-(--muted) px-8 py-10"
 		style:border-radius="var(--image-border-radius)"
@@ -53,6 +51,9 @@
 {/snippet}
 
 <Node class="ew-prose-grid-item bg-(--background) text-(--foreground)" {path}>
-	{@const layouts = [layout_1, layout_2]}
-	{@render layouts[layout - 1]()}
+	{#if layout === 'cards'}
+		{@render card()}
+	{:else}
+		{@render plain()}
+	{/if}
 </Node>

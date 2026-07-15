@@ -98,8 +98,7 @@ export function convert_markdown(markdown_text, mapping) {
 		ctx.nodes[prose_id] = {
 			id: prose_id,
 			type: 'prose',
-			// Layout 1: left-oriented column (Prose.svelte).
-			layout: 1,
+			layout: 'narrow-left',
 			body: { nodes: prose_items, marks: [], annotations: [] }
 		};
 		prose_ids_by_container.set(prose_items, prose_id);
@@ -120,7 +119,7 @@ export function convert_markdown(markdown_text, mapping) {
 				ctx.nodes[id] = {
 					id,
 					type: 'paragraph',
-					layout: 1,
+					layout: 'default',
 					content: convert_inline(ctx, block.children, {
 						allow_newlines: content_allows_newlines('paragraph')
 					})
@@ -144,7 +143,7 @@ export function convert_markdown(markdown_text, mapping) {
 				ctx.nodes[id] = {
 					id,
 					type: heading_type,
-					layout: 1,
+					layout: 'default',
 					content: convert_inline(ctx, block.children, {
 						allow_newlines: content_allows_newlines(heading_type)
 					})
@@ -369,7 +368,7 @@ function convert_descriptive_listing(ctx, block) {
 	ctx.nodes[listing_id] = {
 		id: listing_id,
 		type: 'descriptive_listing',
-		layout: 1,
+		layout: 'narrow-left',
 		items: { nodes: item_ids, marks: [], annotations: [] }
 	};
 	return listing_id;
@@ -418,8 +417,7 @@ function convert_list(ctx, block) {
 	ctx.nodes[list_id] = {
 		id: list_id,
 		type: 'list',
-		// Layouts per ListItem.svelte: 1 = dash bullets, 3 = numbered.
-		layout: block.ordered === true ? 3 : 1,
+		layout: block.ordered === true ? 'decimal' : 'square',
 		list_items: { nodes: item_ids, marks: [], annotations: [] }
 	};
 	return list_id;
@@ -639,8 +637,7 @@ function insert_toc(ctx, headings, { body_ids, prose_ids_by_container, section_b
 	ctx.nodes[listing_id] = {
 		id: listing_id,
 		type: 'descriptive_listing',
-		// Layout 5: two-column grid (DescriptiveListing.svelte).
-		layout: 5,
+		layout: 'two-columns',
 		items: { nodes: item_ids, marks: [], annotations: [] }
 	};
 

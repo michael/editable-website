@@ -6,12 +6,12 @@
 	const svedit = getContext('svedit');
 	let { path, mark: section = null } = $props();
 	let node = $derived(svedit.session.get(path));
-	let listing_layout = $derived(node.layout || 1);
+	let listing_layout = $derived(node.layout || 'narrow-left');
 	let padding_top_wide = $derived(!section || section?.is_start);
 	let padding_bottom_wide = $derived(!section || section?.is_end);
 </script>
 
-{#snippet layout_1()}
+{#snippet narrow_left()}
 	<Node class="ew-descriptive-listing" {path}>
 		<div class="{TW_LIMITER} w-full">
 			<div
@@ -28,7 +28,7 @@
 	</Node>
 {/snippet}
 
-{#snippet layout_2()}
+{#snippet narrow_center()}
 	<Node class="ew-descriptive-listing" {path}>
 		<div class="{TW_LIMITER} w-full">
 			<div
@@ -45,7 +45,7 @@
 	</Node>
 {/snippet}
 
-{#snippet layout_3()}
+{#snippet narrow_right()}
 	<Node class="ew-descriptive-listing" {path}>
 		<div class="{TW_LIMITER} w-full">
 			<div
@@ -62,7 +62,7 @@
 	</Node>
 {/snippet}
 
-{#snippet layout_4()}
+{#snippet full_width()}
 	<Node class="ew-descriptive-listing" {path}>
 		<div class="{TW_LIMITER} w-full">
 			<div
@@ -80,7 +80,7 @@
 	</Node>
 {/snippet}
 
-{#snippet layout_5()}
+{#snippet two_columns()}
 	<Node class="ew-descriptive-listing" {path}>
 		<div class="{TW_LIMITER} w-full">
 			<div
@@ -101,14 +101,14 @@
 	</Node>
 {/snippet}
 
-{#if listing_layout === 2}
-	{@render layout_2()}
-{:else if listing_layout === 3}
-	{@render layout_3()}
-{:else if listing_layout === 4}
-	{@render layout_4()}
-{:else if listing_layout === 5}
-	{@render layout_5()}
+{#if listing_layout === 'narrow-center'}
+	{@render narrow_center()}
+{:else if listing_layout === 'narrow-right'}
+	{@render narrow_right()}
+{:else if listing_layout === 'full-width'}
+	{@render full_width()}
+{:else if listing_layout === 'two-columns'}
+	{@render two_columns()}
 {:else}
-	{@render layout_1()}
+	{@render narrow_left()}
 {/if}

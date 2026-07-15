@@ -12,7 +12,7 @@
 
 	function get_grid_layout() {
 		const layouts = {
-			1: `
+			mixed: `
 	    	[--row:1]
 				grid grid-cols-6
 
@@ -20,29 +20,29 @@
 				[&>:nth-child(6n+2_of_[data-type=node])]:col-span-3 [&>:nth-child(6n+2_of_[data-type=node])]:**:[.image-wrapper]:aspect-square [&>:nth-child(6n+3_of_[data-type=node])]:col-span-3
 				[&>:nth-child(6n+3_of_[data-type=node])]:**:[.image-wrapper]:aspect-square [&>:nth-child(6n+4_of_[data-type=node])]:col-span-2 [&>:nth-child(6n+4_of_[data-type=node])]:**:[.image-wrapper]:aspect-[4/6] [&>:nth-child(6n+5_of_[data-type=node])]:col-span-2 [&>:nth-child(6n+5_of_[data-type=node])]:**:[.image-wrapper]:aspect-[4/6] [&>:nth-child(6n+6_of_[data-type=node])]:col-span-2 [&>:nth-child(6n+6_of_[data-type=node])]:**:[.image-wrapper]:aspect-[4/6]
    		`,
-			2: `
+			portraits: `
 	     	[--row:1]
 				grid grid-cols-3
 				**:[.image-wrapper]:aspect-[3/4]
    		`,
-			3: `
+			squares: `
 	     	[--row:1]
 				grid grid-cols-2 md:grid-cols-4
 				**:[.image-wrapper]:aspect-square
    		`,
-			4: `
+			landscapes: `
 	     	[--row:1]
 				grid grid-cols-1 md:grid-cols-2
 				**:[.image-wrapper]:aspect-[2/1]
    		`,
-			5: `
+			'compact-landscapes': `
 	     	[--row:1]
 				grid grid-cols-4 lg:grid-cols-5 xl:grid-cols-6
 				**:[.image-wrapper]:aspect-[2/1]
    		`
 		};
 
-		return layouts[node.layout ?? 2];
+		return layouts[node.layout ?? 'mixed'];
 	}
 	const heading_spacing = `
 		[&>div:has(h1)~div>h1]:pt-8

@@ -6,14 +6,14 @@
 	const svedit = getContext('svedit');
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
-	let layout = $derived(node.layout || 1);
+	let layout = $derived(node.layout || 'default');
 </script>
 
 <Node class="ew-paragraph-xl" {path}>
 	<div use:reveal>
 		<TextProperty
 			tag="p"
-			class={`body-xl ${layout === 2 ? 'text-(--muted-foreground)' : ''}`}
+			class={`body-xl ${layout === 'muted' ? 'text-(--muted-foreground)' : ''}`}
 			path={[...path, 'content']}
 			placeholder="Extra Large Paragraph"
 		/>

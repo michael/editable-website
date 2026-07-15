@@ -6,14 +6,14 @@
 	const svedit = getContext('svedit');
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
-	let layout = $derived(node.layout || 1);
+	let layout = $derived(node.layout || 'default');
 </script>
 
 <Node class="ew-heading-4" {path}>
 	<div use:reveal>
 		<TextProperty
 			tag="h4"
-			class={`display-5 ${layout === 2 ? 'text-(--muted-foreground)' : ''}`}
+			class={`display-5 ${layout === 'muted' ? 'text-(--muted-foreground)' : ''}`}
 			path={[...path, 'content']}
 			placeholder="Heading 4"
 		/>

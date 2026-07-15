@@ -235,7 +235,7 @@ export function get_cycle_node_state(session) {
 
 /**
  * Find the closest ancestor node whose layout can be switched
- * (has a layout property and `node_layouts[type] > 1`).
+ * (has a layout property and more than one registered layout id).
  *
  * @param {import('svedit').Session} session - The session instance
  * @param {object} session_config - The session config (session.config), used to check node_layouts
@@ -253,7 +253,7 @@ export function get_closest_switchable_layout(session, session_config) {
 		const node_index = get_node_index_at(full_path, path);
 		if (node_index !== null) {
 			const node = session.get([...path, node_index]);
-			if (node?.layout && session_config.node_layouts?.[node.type] > 1) {
+			if (node?.layout && session_config.node_layouts?.[node.type]?.length > 1) {
 				return { node, node_array_path: path, node_index };
 			}
 		}
