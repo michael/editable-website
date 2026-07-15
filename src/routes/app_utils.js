@@ -40,6 +40,30 @@ function get_ancestor_walk_paths(session) {
 }
 
 /**
+ * Return the nodes between the document root and the current canonical selection.
+ * The document node itself is omitted because it is editor infrastructure rather
+ * than a useful place in the content breadcrumb.
+ *
+ * @param {import('svedit').Session} session
+ * @returns {{ node: object, path: (string|number)[] }[]}
+ */
+export function get_selection_node_ancestors(session) {
+	const paths = get_ancestor_walk_paths(session);
+	if (!paths) return [];
+
+	const ancestors = [];
+	for (let path_length = 1; path_length <= paths.full_path.length; path_length += 1) {
+		const path = paths.full_path.slice(0, path_length);
+		const node = session.get(path);
+		if (!node || typeof node.type !== 'string' || !session.schema[node.type]) continue;
+		if (session.schema[node.type].kind === 'document') continue;
+		ancestors.push({ node, path });
+	}
+
+	return ancestors;
+}
+
+/**
  * Extract the numeric node index from full_path at the given ancestor level.
  *
  * @param {(string|number)[]} full_path

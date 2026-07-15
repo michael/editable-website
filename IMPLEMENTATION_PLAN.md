@@ -1,5 +1,15 @@
 # Implementation plan
 
+## Node navigator and variant switcher
+
+- While editing above 1024px viewport width, show the closest node with variants as a compact control in the bottom-left corner.
+- Derive the hierarchy and every switch target from the canonical editor selection; do not introduce a separate scope or navigator selection.
+- Generate variant labels directly from stored ids in the form “Type (layout)”, visually emphasizing the type and de-emphasizing the layout.
+- Treat a node as having variants when its type, layout, or both can currently be switched; omit non-switchable descendants from the display.
+- Flatten valid type/layout combinations into named variants: use previous/next arrows for cycling and a native select for direct choice and keyboard type-ahead.
+- Place the ordinary select-parent command beside the variant control so deeper selections can be moved outward without another scope mechanism.
+- Do not require a parallel variant-label registry; new schema types and layouts should appear automatically.
+
 ## Human-readable layout ids
 
 - Replace numeric `layout` values in the schema, renderers, inserters, seed content, Markdown conversion, tests, and documentation with descriptive string ids.

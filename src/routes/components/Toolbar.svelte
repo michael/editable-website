@@ -3,6 +3,7 @@
 	import { resolve } from '$app/paths';
 	import { get_page_browser } from './page_browser_context.svelte.js';
 	import { is_node_subtree_empty } from '../app_utils.js';
+	import NodeNavigator from './NodeNavigator.svelte';
 
 	let { session, app_commands, editable, focus_canvas } = $props();
 
@@ -119,6 +120,8 @@
 		command.execute();
 	}
 </script>
+
+<NodeNavigator {session} {editable} {focus_canvas} />
 
 <div class="fixed {TW_TOOLBAR_POSITION} {TW_TOOLBAR_LEFT} z-50">
 	<div class="overflow-x-auto">
