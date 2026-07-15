@@ -484,7 +484,6 @@ annotation_types: ['comment']
 
 Annotation nodes must not have registered rendering components. For node arrays, child components receive every covering annotation through their `annotations` prop, and `Node` adds classes such as `anno-comment`, `anno-comment-start`, and `anno-comment-end`. Text annotations remain data-only, so comments or other interactive annotations usually need an overlay. The [Svedit API](https://github.com/michael/svedit) documents selection state, annotation commands, transactions, and rendering integration in full.
 
-<!--
 
 ## Create a custom node type
 
@@ -879,7 +878,7 @@ The generated `before` array overrides timestamp order for that relationship onl
 
 ## Markdown pages (experimental)
 
-Ship docs and long-form pages straight from markdown files in your repo.
+Publish docs and long-form pages straight from markdown files in your repo.
 
 A deployment can expose selected repository markdown files as read-only pages rendered through the regular page components. Markdown stays the source of truth — nothing is written to the database, and the pages cannot be edited through any UI path (not even as admin). This very README is served as `/manual` on the Editable website.
 
@@ -916,7 +915,7 @@ Every `##` heading starts a new visual section: the heading and everything up to
 
 An unordered list where every item follows the pattern below is rendered as a `descriptive_listing` (title, description, and optional meta rows) instead of a plain list — the command reference in [Backup, sync & recovery](#backup-sync--recovery) is one:
 
-```
+```s
 - **title** — description
 - **title** — description — meta
 ```
@@ -936,6 +935,8 @@ The converter accepts the subset of CommonMark that maps onto the built-in conte
 
 Not supported (rejected with an error): images, tables, blockquotes, raw HTML, thematic breaks, footnotes, YAML frontmatter, and GFM extensions. Page metadata (title, description) is derived from the first heading and paragraph, as for regular pages. Soft line wraps render as spaces and hard breaks render as line breaks (trailing backslash or two trailing spaces), matching how CommonMark renderers like GitHub's display the same file.
 
+
+<!--
 ## FAQs
 
 ### How is this different to using a CMS?
@@ -961,5 +962,4 @@ There's no point for static builds with Editable. The whole idea is that users e
 ### License?
 
 Editable will at least be source-available. There will likely be an affordable one-time registration fee (per domain) for personal use, and a fair fee for commercial projects. I'm still working on the details. If you're open to discussion, join the technical preview: https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform
-
 -->
