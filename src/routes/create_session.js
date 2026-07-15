@@ -101,7 +101,7 @@ function insert_text_node(
 	tr,
 	node_type,
 	content = { content: '', marks: [], annotations: [] },
-	layout = 1
+	layout = 'default'
 ) {
 	const new_text = {
 		id: nanoid(),
@@ -330,32 +330,45 @@ const session_config = {
 		list_item: (node) => `<li>${node.content.content}</li>\n`
 	},
 	node_layouts: {
-		prose: 6,
-		prose_grid: 2,
-		prose_grid_item: 1,
-		paragraph: 2,
-		paragraph_sm: 2,
-		paragraph_lg: 2,
-		paragraph_xl: 2,
-		heading_1_xl: 2,
-		heading_1: 2,
-		heading_2: 2,
-		heading_3: 2,
-		heading_4: 2,
-		preformatted: 1,
-		list: 4,
-		list_item: 1,
-		figure: 6,
-		descriptive_listing: 5,
-		accordion: 5,
-		captioned_figure: 1,
-		supporting_media: 1,
-		feature: 2,
-		gallery: 5,
-		descriptive_gallery: 2,
-		nav_button: 2,
-		nav_media: 1,
-		button: 2
+		prose: [
+			'narrow-left',
+			'narrow-center',
+			'narrow-right',
+			'narrow-centered-text',
+			'wide-left',
+			'wide-centered-text'
+		],
+		prose_grid: ['plain', 'cards'],
+		prose_grid_item: ['default'],
+		paragraph: ['default', 'muted'],
+		paragraph_sm: ['default', 'muted'],
+		paragraph_lg: ['default', 'muted'],
+		paragraph_xl: ['default', 'muted'],
+		heading_1_xl: ['default', 'muted'],
+		heading_1: ['default', 'muted'],
+		heading_2: ['default', 'muted'],
+		heading_3: ['default', 'muted'],
+		heading_4: ['default', 'muted'],
+		preformatted: ['default'],
+		list: ['square', 'check', 'decimal', 'lower-alpha'],
+		list_item: ['default'],
+		figure: ['wide', 'narrow-left', 'narrow-center', 'narrow-right', 'flush', 'full-bleed'],
+		descriptive_listing: [
+			'narrow-left',
+			'narrow-center',
+			'narrow-right',
+			'full-width',
+			'two-columns'
+		],
+		accordion: ['narrow-left', 'narrow-center', 'narrow-right', 'full-width', 'two-columns'],
+		captioned_figure: ['default'],
+		supporting_media: ['default'],
+		feature: ['image-right', 'image-left'],
+		gallery: ['mixed', 'portraits', 'squares', 'landscapes', 'compact-landscapes'],
+		descriptive_gallery: ['cards', 'compact'],
+		nav_button: ['primary', 'secondary'],
+		nav_media: ['default'],
+		button: ['primary', 'secondary']
 	},
 
 	/**
@@ -443,7 +456,7 @@ const session_config = {
 			const new_prose = {
 				id: nanoid(),
 				type: 'prose',
-				layout: 1,
+				layout: 'narrow-left',
 				body: { nodes: [new_heading.id, new_paragraph.id], marks: [], annotations: [] }
 			};
 			tr.create(new_prose);
@@ -520,7 +533,7 @@ const session_config = {
 				new_prose_grid: {
 					id: 'new_prose_grid',
 					type: 'prose_grid',
-					layout: 1,
+					layout: 'plain',
 					items: {
 						nodes: ['prose_grid_item_1', 'prose_grid_item_2', 'prose_grid_item_3'],
 						marks: [],
@@ -531,31 +544,31 @@ const session_config = {
 			tr.insert_nodes([new_prose_grid_id]);
 		},
 		paragraph: function (tr, content = { content: '', marks: [], annotations: [] }) {
-			insert_text_node(tr, 'paragraph', content, 1);
+			insert_text_node(tr, 'paragraph', content, 'default');
 		},
 		paragraph_sm: function (tr, content = { content: '', marks: [], annotations: [] }) {
-			insert_text_node(tr, 'paragraph_sm', content, 1);
+			insert_text_node(tr, 'paragraph_sm', content, 'default');
 		},
 		paragraph_lg: function (tr, content = { content: '', marks: [], annotations: [] }) {
-			insert_text_node(tr, 'paragraph_lg', content, 1);
+			insert_text_node(tr, 'paragraph_lg', content, 'default');
 		},
 		paragraph_xl: function (tr, content = { content: '', marks: [], annotations: [] }) {
-			insert_text_node(tr, 'paragraph_xl', content, 1);
+			insert_text_node(tr, 'paragraph_xl', content, 'default');
 		},
 		heading_1_xl: function (tr, content = { content: '', marks: [], annotations: [] }) {
-			insert_text_node(tr, 'heading_1_xl', content, 1);
+			insert_text_node(tr, 'heading_1_xl', content, 'default');
 		},
 		heading_1: function (tr, content = { content: '', marks: [], annotations: [] }) {
-			insert_text_node(tr, 'heading_1', content, 1);
+			insert_text_node(tr, 'heading_1', content, 'default');
 		},
 		heading_2: function (tr, content = { content: '', marks: [], annotations: [] }) {
-			insert_text_node(tr, 'heading_2', content, 1);
+			insert_text_node(tr, 'heading_2', content, 'default');
 		},
 		heading_3: function (tr, content = { content: '', marks: [], annotations: [] }) {
-			insert_text_node(tr, 'heading_3', content, 1);
+			insert_text_node(tr, 'heading_3', content, 'default');
 		},
 		heading_4: function (tr, content = { content: '', marks: [], annotations: [] }) {
-			insert_text_node(tr, 'heading_4', content, 1);
+			insert_text_node(tr, 'heading_4', content, 'default');
 		},
 		preformatted: function (tr, content = { content: '', marks: [], annotations: [] }) {
 			const new_preformatted = {
@@ -583,7 +596,7 @@ const session_config = {
 			const new_list = {
 				id: nanoid(),
 				type: 'list',
-				layout: 1,
+				layout: 'square',
 				list_items: { nodes: [new_list_item.id], marks: [], annotations: [] }
 			};
 			tr.create(new_list);
@@ -625,7 +638,7 @@ const session_config = {
 				new_feature: {
 					id: 'new_feature',
 					type: 'feature',
-					layout: 1,
+					layout: 'image-right',
 					media: 'feature_image',
 					body: { nodes: ['body_text'], marks: [], annotations: [] }
 				}
@@ -633,7 +646,7 @@ const session_config = {
 
 			tr.insert_nodes([new_feature_id]);
 		},
-		figure: function (tr, content = { content: '', marks: [], annotations: [] }, layout = 1) {
+		figure: function (tr, content = { content: '', marks: [], annotations: [] }, layout = 'wide') {
 			const new_figure_id = tr.build('new_figure', {
 				image_one: {
 					id: 'image_one',
@@ -653,7 +666,7 @@ const session_config = {
 		captioned_figure: function (
 			tr,
 			content = { content: '', marks: [], annotations: [] },
-			layout = 1
+			layout = 'default'
 		) {
 			const new_captioned_figure_id = tr.build('new_captioned_figure', {
 				image_one: {
@@ -674,7 +687,7 @@ const session_config = {
 		supporting_media: function (
 			tr,
 			content = { content: '', marks: [], annotations: [] },
-			layout = 1
+			layout = 'default'
 		) {
 			const new_supporting_media_id = tr.build('new_supporting_media', {
 				image_one: {
@@ -693,7 +706,11 @@ const session_config = {
 
 			tr.insert_nodes([new_supporting_media_id]);
 		},
-		nav_link: function (tr, content = { content: '', marks: [], annotations: [] }, layout = 1) {
+		nav_link: function (
+			tr,
+			content = { content: '', marks: [], annotations: [] },
+			layout = 'default'
+		) {
 			const new_nav_link_id = tr.build('new_nav_link', {
 				new_nav_link: {
 					id: 'new_nav_link',
@@ -704,7 +721,11 @@ const session_config = {
 			tr.insert_nodes([new_nav_link_id]);
 			select_inserted_text_property(tr);
 		},
-		nav_button: function (tr, content = { content: '', marks: [], annotations: [] }, layout = 1) {
+		nav_button: function (
+			tr,
+			content = { content: '', marks: [], annotations: [] },
+			layout = 'primary'
+		) {
 			const new_nav_button_id = tr.build('new_nav_button', {
 				new_nav_button: {
 					id: 'new_nav_button',
@@ -735,7 +756,11 @@ const session_config = {
 			tr.insert_nodes([new_nav_media_id]);
 		},
 
-		button: function (tr, content = { content: '', marks: [], annotations: [] }, layout = 1) {
+		button: function (
+			tr,
+			content = { content: '', marks: [], annotations: [] },
+			layout = 'primary'
+		) {
 			const new_button_id = tr.build('new_button', {
 				new_button: {
 					id: 'new_button',
@@ -751,7 +776,7 @@ const session_config = {
 				primary_button: {
 					id: 'primary_button',
 					type: 'button',
-					layout: 1,
+					layout: 'primary',
 					href: '',
 					target: '_self',
 					label: { content: '', marks: [], annotations: [] }
@@ -759,7 +784,7 @@ const session_config = {
 				secondary_button: {
 					id: 'secondary_button',
 					type: 'button',
-					layout: 2,
+					layout: 'secondary',
 					href: '',
 					target: '_self',
 					label: { content: '', marks: [], annotations: [] }
@@ -774,7 +799,11 @@ const session_config = {
 			tr.insert_nodes([new_button_group_id]);
 			select_inserted_text_property(tr, 'label', ['buttons', 0]);
 		},
-		footer_link: function (tr, content = { content: '', marks: [], annotations: [] }, layout = 1) {
+		footer_link: function (
+			tr,
+			content = { content: '', marks: [], annotations: [] },
+			layout = 'default'
+		) {
 			const new_footer_link_id = tr.build('new_footer_link', {
 				new_footer_link: {
 					id: 'new_footer_link',
@@ -788,7 +817,7 @@ const session_config = {
 		footer_link_category: function (
 			tr,
 			content = { content: '', marks: [], annotations: [] },
-			layout = 1
+			layout = 'default'
 		) {
 			const new_footer_link_category_id = tr.build('new_footer_link_category', {
 				new_footer_link_category: {
@@ -804,7 +833,7 @@ const session_config = {
 		footer_link_column: function (
 			tr,
 			content = { content: '', marks: [], annotations: [] },
-			layout = 1
+			layout = 'default'
 		) {
 			const new_footer_link_column_id = tr.build('new_footer_link_column', {
 				new_footer_link_category: {
@@ -866,7 +895,7 @@ const session_config = {
 			const gallery = {
 				id: nanoid(),
 				type: 'gallery',
-				layout: 1,
+				layout: 'mixed',
 				gallery_items: { nodes: gallery_items, marks: [], annotations: [] }
 			};
 			tr.create(gallery);
@@ -926,7 +955,7 @@ const session_config = {
 			const descriptive_gallery = {
 				id: nanoid(),
 				type: 'descriptive_gallery',
-				layout: 1,
+				layout: 'cards',
 				items: { nodes: items, marks: [], annotations: [] }
 			};
 			tr.create(descriptive_gallery);
@@ -979,7 +1008,7 @@ const session_config = {
 			const descriptive_listing = {
 				id: nanoid(),
 				type: 'descriptive_listing',
-				layout: 1,
+				layout: 'narrow-left',
 				items: { nodes: items, marks: [], annotations: [] }
 			};
 			tr.create(descriptive_listing);
@@ -1025,7 +1054,7 @@ const session_config = {
 			const accordion = {
 				id: nanoid(),
 				type: 'accordion',
-				layout: 1,
+				layout: 'narrow-left',
 				items: { nodes: [accordion_item.id], marks: [], annotations: [] }
 			};
 			tr.create(accordion);

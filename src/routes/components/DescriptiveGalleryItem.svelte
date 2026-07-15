@@ -8,11 +8,11 @@
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
 	let gallery = $derived(svedit.session.get(path.slice(0, -2)));
-	let layout = $derived(gallery?.layout || 1);
+	let layout = $derived(gallery?.layout || 'cards');
 	let render_as_link = $derived(!svedit.editable && node.href);
 </script>
 
-{#snippet layout_1()}
+{#snippet card()}
 	<svelte:element
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
@@ -42,7 +42,7 @@
 	</svelte:element>
 {/snippet}
 
-{#snippet layout_2()}
+{#snippet compact()}
 	<svelte:element
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
@@ -72,9 +72,9 @@
 {/snippet}
 
 <Node class="descriptive-gallery-item group" {path}>
-	{#if layout === 2}
-		{@render layout_2()}
+	{#if layout === 'compact'}
+		{@render compact()}
 	{:else}
-		{@render layout_1()}
+		{@render card()}
 	{/if}
 </Node>

@@ -6,7 +6,7 @@
 	let { path } = $props();
 	let node = $derived(svedit.session.get(path));
 	let render_as_link = $derived(!svedit.editable && node.href);
-	let layout = $derived(node.layout || 1);
+	let layout = $derived(node.layout || 'primary');
 </script>
 
 {#snippet primary()}
@@ -35,7 +35,7 @@
 {/snippet}
 
 <Node {path}>
-	{#if layout === 2}
+	{#if layout === 'secondary'}
 		{@render secondary()}
 	{:else}
 		{@render primary()}

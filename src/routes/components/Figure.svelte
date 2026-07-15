@@ -8,7 +8,7 @@
 	let { path, mark: section = null } = $props();
 	let node = $derived(svedit.session.get(path));
 	let media_node = $derived(svedit.session.get([...path, 'media']));
-	let figure_layout = $derived(node.layout || 1);
+	let figure_layout = $derived(node.layout || 'wide');
 	let padding_top_wide = $derived(!section || section?.is_start);
 	let padding_bottom_wide = $derived(!section || section?.is_end);
 	let media_aspect_ratio = $derived(
@@ -26,7 +26,7 @@
 	</div>
 {/snippet}
 
-{#snippet layout_1()}
+{#snippet wide()}
 	<div class={TW_LIMITER}>
 		<div
 			class={[
@@ -40,7 +40,7 @@
 	</div>
 {/snippet}
 
-{#snippet layout_2()}
+{#snippet narrow_left()}
 	<div class={TW_LIMITER}>
 		<div
 			class={[
@@ -56,7 +56,7 @@
 	</div>
 {/snippet}
 
-{#snippet layout_3()}
+{#snippet narrow_center()}
 	<div class={TW_LIMITER}>
 		<div
 			class={[
@@ -72,7 +72,7 @@
 	</div>
 {/snippet}
 
-{#snippet layout_4()}
+{#snippet narrow_right()}
 	<div class={TW_LIMITER}>
 		<div
 			class={[
@@ -88,7 +88,7 @@
 	</div>
 {/snippet}
 
-{#snippet layout_5()}
+{#snippet flush()}
 	<div class={TW_LIMITER}>
 		<div class="figure {TW_PAGE_PADDING_X} py-0">
 			{@render media_frame()}
@@ -96,7 +96,7 @@
 	</div>
 {/snippet}
 
-{#snippet layout_6()}
+{#snippet full_bleed()}
 	<div class="w-full">
 		<div class="figure">
 			{@render media_frame(false)}
@@ -105,6 +105,13 @@
 {/snippet}
 
 <Node {path}>
-	{@const layouts = [layout_1, layout_2, layout_3, layout_4, layout_5, layout_6]}
-	{@render layouts[figure_layout - 1]()}
+	{@const layouts = {
+		wide,
+		'narrow-left': narrow_left,
+		'narrow-center': narrow_center,
+		'narrow-right': narrow_right,
+		flush,
+		'full-bleed': full_bleed
+	}}
+	{@render layouts[figure_layout]()}
 </Node>

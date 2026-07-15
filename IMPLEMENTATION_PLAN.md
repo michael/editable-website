@@ -1,5 +1,12 @@
 # Implementation plan
 
+## Human-readable layout ids
+
+- Replace numeric `layout` values in the schema, renderers, inserters, seed content, Markdown conversion, tests, and documentation with descriptive string ids.
+- Define every node type's available layout ids and cycling order in `session_config.node_layouts`.
+- Cycle layouts by looking up the current id in that ordered list rather than using numeric arithmetic.
+- Add a frozen database migration that maps each legacy numeric layout to the corresponding string id in stored document graphs.
+
 This document tracks what to implement next. One step at a time. All implementation must conform to the design decisions in [ARCHITECTURE.md](ARCHITECTURE.md) — if a conflict arises, update the architecture first, then implement.
 
 ## Next implementation draft — safer node type cycling
@@ -50,8 +57,8 @@ Add a second `paragraph` layout that renders muted secondary body copy.
 
 ### Scope
 
-- Add a `layout` property to `paragraph` with values `1` and `2`.
-- Make `paragraph` layout 2 render with muted foreground styling.
+- Add a `layout` property to `paragraph` with `default` and `muted` values.
+- Make the `muted` layout render with muted foreground styling.
 - Register `paragraph` as a two-layout node in the session config so the layout cycling command can switch between the two styles.
 
 ## Next implementation draft — paragraph_xl text node
@@ -165,13 +172,13 @@ Rework `Nav.svelte` to render the desktop nav through fixed start, center, and e
 
 ### Goal
 
-Move the horizontal padding for `Feature.svelte` layouts 1 and 2 onto the top-level grid wrapper and add a `gap-5 sm:gap-7` column gap so the side padding and the middle spacing stay consistent.
+Move the horizontal padding for `Feature.svelte`'s `image-right` and `image-left` layouts onto the top-level grid wrapper and add a `gap-5 sm:gap-7` column gap so the side padding and the middle spacing stay consistent.
 
 ### Scope
 
 - Keep the existing feature content model unchanged.
-- Update layouts 1 and 2 so the outer grid owns the horizontal padding.
-- Add `gap-5 sm:gap-7` to the grid wrapper in layouts 1 and 2.
+- Update both feature layouts so the outer grid owns the horizontal padding.
+- Add `gap-5 sm:gap-7` to both layouts' grid wrapper.
 - Make the top and bottom padding match `Prose.svelte` (`py-10 sm:py-14 md:py-16 lg:py-28`) and keep it symmetric.
 - Keep the current layout order and the two-layout limit unchanged.
 
@@ -184,9 +191,9 @@ Remove the full-bleed feature layouts and keep `Feature.svelte` on two layouts o
 ### Scope
 
 - Keep the existing feature content model unchanged.
-- Preserve layout 1 as the current left-text/right-image version.
-- Preserve layout 2 as the current flipped version.
-- Remove layouts 3 and 4 entirely.
+- Preserve `image-right` as the current left-text/right-image version.
+- Preserve `image-left` as the current flipped version.
+- Remove the full-bleed variants entirely.
 - Register `feature` as a two-layout node so the layout cycling command only offers those two layouts.
 
 ## Next implementation draft — accordion layouts
@@ -198,11 +205,11 @@ Add five layout variants for `Accordion.svelte` so the accordion can render left
 ### Scope
 
 - Keep the existing accordion content model unchanged.
-- Layout 1 should be a left-aligned `max-w-4xl` version.
-- Layout 2 should be a centered `max-w-4xl` version using `mx-auto`.
-- Layout 3 should be a right-aligned `max-w-4xl` version using `ml-auto`.
-- Layout 4 should be full width within `TW_LIMITER`.
-- Layout 5 should preserve the current `lg` two-column grid version.
+- `narrow-left` should be a left-aligned `max-w-4xl` version.
+- `narrow-center` should be a centered `max-w-4xl` version using `mx-auto`.
+- `narrow-right` should be a right-aligned `max-w-4xl` version using `ml-auto`.
+- `full-width` should fill `TW_LIMITER`.
+- `two-columns` should preserve the current `lg` two-column grid version.
 - Register `accordion` as a five-layout node so the layout cycling command can switch between the versions.
 
 ## Next implementation draft — descriptive listing layouts
@@ -214,11 +221,11 @@ Add five layout variants for `DescriptiveListing.svelte` so the listing can rend
 ### Scope
 
 - Keep the existing descriptive listing content model unchanged.
-- Layout 1 should be a left-aligned `max-w-4xl` version.
-- Layout 2 should be a centered `max-w-4xl` version using `mx-auto`.
-- Layout 3 should be a right-aligned `max-w-4xl` version using `ml-auto`.
-- Layout 4 should be full width within `TW_LIMITER`, matching the Figure-style full-width limiter layout.
-- Layout 5 should preserve the current `lg` two-column grid version.
+- `narrow-left` should be a left-aligned `max-w-4xl` version.
+- `narrow-center` should be a centered `max-w-4xl` version using `mx-auto`.
+- `narrow-right` should be a right-aligned `max-w-4xl` version using `ml-auto`.
+- `full-width` should fill `TW_LIMITER`, matching the Figure-style full-width limiter layout.
+- `two-columns` should preserve the current `lg` two-column grid version.
 - Register `descriptive_listing` as a five-layout node so the layout cycling command can switch between the versions.
 
 ## Next implementation draft — figure layouts
@@ -229,12 +236,11 @@ Add six layout variants for `Figure.svelte` so figure media can render at the de
 
 ### Scope
 
-- Add a `layout` property to `figure` with values `1` through `6`.
-- Render layouts 1–5 inside `TW_LIMITER`.
-- Use `TW_PAGE_PADDING_X` inside the `max-w-4xl` container for layouts 2–4 so they line up with `Prose.svelte`.
-- Use `max-w-4xl` for layouts 2–4, with layout 3 centered and layout 4 right-oriented following `Prose.svelte`.
-- Render layout 5 like layout 1 but with zero vertical padding.
-- Render layout 6 as full-bleed screen width with no `TW_LIMITER`, no horizontal page padding, and no border radius.
+- Add `wide`, `narrow-left`, `narrow-center`, `narrow-right`, `flush`, and `full-bleed` figure layouts.
+- Render every layout except `full-bleed` inside `TW_LIMITER`.
+- Use `TW_PAGE_PADDING_X` inside the `max-w-4xl` container for the three `narrow-*` layouts so they line up with `Prose.svelte`.
+- Render `flush` like `wide` but with zero vertical padding.
+- Render `full-bleed` at screen width with no `TW_LIMITER`, no horizontal page padding, and no border radius.
 
 ## Next implementation draft — captioned figure
 
