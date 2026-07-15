@@ -763,14 +763,14 @@ page {
 }
 
 nav {
-	start_items: [nav_image | nav_link | nav_button]    // usually logo first
-	center_items: [nav_link | nav_button | nav_image]   // usually page links
-	end_items: [nav_link | nav_button | nav_image]      // usually calls to action
+	start_items: [nav_media | nav_link | nav_button]    // usually logo first
+	center_items: [nav_link | nav_button | nav_media]   // usually page links
+	end_items: [nav_link | nav_button | nav_media]      // usually calls to action
 }
 
 nav_link { href, target, label: text }
 nav_button { layout: 1 | 2, href, target, label: text }   // type-switches with nav_link
-nav_image { href, target, media: image | video }
+nav_media { href, target, media: image | video }
 
 footer {
 	body: [rich content]   // see below

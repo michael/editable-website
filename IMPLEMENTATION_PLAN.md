@@ -155,7 +155,7 @@ Rework `Nav.svelte` to render the desktop nav through fixed start, center, and e
 ### Scope
 
 - Split the nav content model into `start_nav_items`, `center_nav_items`, and `end_nav_items`.
-- Use `nav_image` and `nav_item` nodes in all three nav slots.
+- Use `nav_media` and `nav_item` nodes in all three nav slots.
 - Do not use `nav_spacer` in the nav slots.
 - Use a shared desktop layout snippet in both editable and non-editable branches.
 - Keep the mobile nav menu working for non-editable users.

@@ -30,7 +30,7 @@ import Page from './components/Page.svelte';
 import Nav from './components/Nav.svelte';
 import NavLink from './components/NavLink.svelte';
 import NavButton from './components/NavButton.svelte';
-import NavImage from './components/NavImage.svelte';
+import NavMedia from './components/NavMedia.svelte';
 
 import Footer from './components/Footer.svelte';
 import FooterLinkColumn from './components/FooterLinkColumn.svelte';
@@ -187,7 +187,7 @@ const session_config = {
 		nav: Nav,
 		nav_link: NavLink,
 		nav_button: NavButton,
-		nav_image: NavImage,
+		nav_media: NavMedia,
 		footer: Footer,
 		footer_link_column: FooterLinkColumn,
 		footer_link_category: FooterLinkCategory,
@@ -354,7 +354,7 @@ const session_config = {
 		gallery: 5,
 		descriptive_gallery: 2,
 		nav_button: 2,
-		nav_image: 1,
+		nav_media: 1,
 		button: 2
 	},
 
@@ -716,23 +716,23 @@ const session_config = {
 			tr.insert_nodes([new_nav_button_id]);
 			select_inserted_text_property(tr);
 		},
-		nav_image: function (tr) {
-			const new_nav_image_id = tr.build('new_nav_image', {
-				nav_image_media: {
-					id: 'nav_image_media',
+		nav_media: function (tr) {
+			const new_nav_media_id = tr.build('new_nav_media', {
+				nav_media_media: {
+					id: 'nav_media_media',
 					type: 'image',
 					...MEDIA_DEFAULTS
 				},
-				new_nav_image: {
-					id: 'new_nav_image',
-					type: 'nav_image',
+				new_nav_media: {
+					id: 'new_nav_media',
+					type: 'nav_media',
 					href: '',
 					target: '_self',
-					media: 'nav_image_media'
+					media: 'nav_media_media'
 				}
 			});
 
-			tr.insert_nodes([new_nav_image_id]);
+			tr.insert_nodes([new_nav_media_id]);
 		},
 
 		button: function (tr, content = { content: '', marks: [], annotations: [] }, layout = 1) {

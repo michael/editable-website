@@ -126,17 +126,17 @@ export const document_schema = define_document_schema({
 		properties: {
 			start_items: {
 				type: 'node_array',
-				node_types: ['nav_image', 'nav_link', 'nav_button'],
-				default_node_type: 'nav_image'
+				node_types: ['nav_media', 'nav_link', 'nav_button'],
+				default_node_type: 'nav_media'
 			},
 			center_items: {
 				type: 'node_array',
-				node_types: ['nav_link', 'nav_button', 'nav_image'],
+				node_types: ['nav_link', 'nav_button', 'nav_media'],
 				default_node_type: 'nav_link'
 			},
 			end_items: {
 				type: 'node_array',
-				node_types: ['nav_link', 'nav_button', 'nav_image'],
+				node_types: ['nav_link', 'nav_button', 'nav_media'],
 				default_node_type: 'nav_button'
 			}
 		}
@@ -166,7 +166,7 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
-	nav_image: {
+	nav_media: {
 		kind: 'block',
 		properties: {
 			href: { type: 'string' },

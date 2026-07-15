@@ -2226,7 +2226,7 @@ const FULL_DOC = {
 		},
 		nav_logo: {
 			id: 'nav_logo',
-			type: 'nav_image',
+			type: 'nav_media',
 			href: '/',
 			target: '_self',
 			media: 'nav_logo_media'
