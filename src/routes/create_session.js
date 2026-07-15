@@ -657,6 +657,8 @@ const session_config = {
 					id: 'new_figure',
 					type: 'figure',
 					layout,
+					href: '',
+					target: '_self',
 					media: 'image_one'
 				}
 			});
@@ -677,6 +679,8 @@ const session_config = {
 				new_captioned_figure: {
 					id: 'new_captioned_figure',
 					type: 'captioned_figure',
+					href: '',
+					target: '_self',
 					media: 'image_one',
 					caption: { content: '', marks: [], annotations: [] }
 				}

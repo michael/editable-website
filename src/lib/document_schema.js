@@ -398,6 +398,8 @@ export const document_schema = define_document_schema({
 		kind: 'block',
 		properties: {
 			layout: { type: 'string', default: 'wide' },
+			href: { type: 'string' },
+			target: { type: 'string', default: '_self' },
 			media: {
 				type: 'node',
 				node_types: ['image', 'video'],
@@ -408,6 +410,8 @@ export const document_schema = define_document_schema({
 	captioned_figure: {
 		kind: 'block',
 		properties: {
+			href: { type: 'string' },
+			target: { type: 'string', default: '_self' },
 			media: {
 				type: 'node',
 				node_types: ['image', 'video'],

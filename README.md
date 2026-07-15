@@ -396,8 +396,8 @@ image, video {
 }
 
 figure { layout: wide | narrow-left | narrow-center | narrow-right | flush | full-bleed,
-         media: image | video }
-captioned_figure { media: image | video, caption: text }   // caption marks: strong, emphasis, code, highlight, link
+         href, target, media: image | video }
+captioned_figure { href, target, media: image | video, caption: text }   // caption marks: strong, emphasis, code, highlight, link
 supporting_media {
 	media_max_width: integer      // 0 = no maximum
 	media_aspect_ratio: number    // 0 = natural ratio

@@ -101,6 +101,8 @@ const FULL_DOC = {
 			id: 'RJbHKqVmgTdenaRBmANhAhn',
 			type: 'figure',
 			layout: 'flush',
+			href: '',
+			target: '_self',
 			media: 'mFEZbHhacnMvZEfegMSNGQH'
 		},
 		VbNcMxZaQwErTyUiOpLkJh: {

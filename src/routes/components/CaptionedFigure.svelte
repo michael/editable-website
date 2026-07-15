@@ -6,7 +6,9 @@
 
 	const svedit = getContext('svedit');
 	let { path, mark: section = null } = $props();
+	let node = $derived(svedit.session.get(path));
 	let media_node = $derived(svedit.session.get([...path, 'media']));
+	let render_as_link = $derived(!svedit.editable && node.href);
 	let padding_top_wide = $derived(!section || section?.is_start);
 	let padding_bottom_wide = $derived(!section || section?.is_end);
 </script>
@@ -20,15 +22,18 @@
 				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
 			]}
 		>
-			<div
-				class="overflow-hidden"
+			<svelte:element
+				this={render_as_link ? 'a' : 'div'}
+				href={render_as_link ? node.href : undefined}
+				target={render_as_link ? node.target : undefined}
+				class="block overflow-hidden outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 				style:border-radius="var(--image-border-radius)"
 				style:aspect-ratio={media_node.width && media_node.height
 					? `${media_node.width} / ${media_node.height}`
 					: '2 / 1'}
 			>
 				<MediaProperty path={[...path, 'media']} />
-			</div>
+			</svelte:element>
 			<TextProperty
 				tag="figcaption"
 				class="mt-4 text-sm leading-6 sm:text-base"

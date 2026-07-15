@@ -8,6 +8,7 @@
 	let { path, mark: section = null } = $props();
 	let node = $derived(svedit.session.get(path));
 	let media_node = $derived(svedit.session.get([...path, 'media']));
+	let render_as_link = $derived(!svedit.editable && node.href);
 	let figure_layout = $derived(node.layout || 'wide');
 	let padding_top_wide = $derived(!section || section?.is_start);
 	let padding_bottom_wide = $derived(!section || section?.is_end);
@@ -17,13 +18,16 @@
 </script>
 
 {#snippet media_frame(border_radius = true)}
-	<div
-		class="overflow-hidden"
+	<svelte:element
+		this={render_as_link ? 'a' : 'div'}
+		href={render_as_link ? node.href : undefined}
+		target={render_as_link ? node.target : undefined}
+		class="block overflow-hidden outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 		style:border-radius={border_radius ? 'var(--image-border-radius)' : undefined}
 		style:aspect-ratio={media_aspect_ratio}
 	>
 		<MediaProperty path={[...path, 'media']} />
-	</div>
+	</svelte:element>
 {/snippet}
 
 {#snippet wide()}
