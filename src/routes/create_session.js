@@ -465,7 +465,7 @@ const session_config = {
 		prose_grid_item: function (tr) {
 			const new_heading = {
 				id: nanoid(),
-				type: 'heading_1_xl',
+				type: 'heading_2',
 				content: { content: '', marks: [], annotations: [] }
 			};
 			tr.create(new_heading);
@@ -487,17 +487,17 @@ const session_config = {
 			const new_prose_grid_id = tr.build('new_prose_grid', {
 				title_1: {
 					id: 'title_1',
-					type: 'heading_1_xl',
+					type: 'heading_2',
 					content: { content: '', marks: [], annotations: [] }
 				},
 				title_2: {
 					id: 'title_2',
-					type: 'heading_1_xl',
+					type: 'heading_2',
 					content: { content: '', marks: [], annotations: [] }
 				},
 				title_3: {
 					id: 'title_3',
-					type: 'heading_1_xl',
+					type: 'heading_2',
 					content: { content: '', marks: [], annotations: [] }
 				},
 				paragraph_1: {
@@ -632,7 +632,7 @@ const session_config = {
 				},
 				body_text: {
 					id: 'body_text',
-					type: 'heading_1_xl',
+					type: 'heading_2',
 					content: { content: '', marks: [], annotations: [] }
 				},
 				new_feature: {
