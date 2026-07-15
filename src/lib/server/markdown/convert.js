@@ -83,7 +83,7 @@ export function convert_markdown(markdown_text, mapping) {
 	// becomes their subtitle, used as the toc description.
 	/** @type {{ subtitle: string }[]} */
 	let pending_subtitle_headings = [];
-	// Body indexes where a level-2 heading starts a new section.
+	// Body indexes where a Markdown level-2 heading starts a new section.
 	/** @type {number[]} */
 	const section_boundaries = [];
 	/** @type {Map<string[], string>} prose body array -> prose node id */
@@ -133,22 +133,23 @@ export function convert_markdown(markdown_text, mapping) {
 				break;
 			}
 			case 'heading': {
-				if (block.depth > 5) {
+				if (block.depth > 4) {
 					throw new MarkdownConversionError(
-						'Heading level 6 is not supported (the schema defines heading_1 through heading_5).',
+						`Heading level ${block.depth} is not supported (the schema defines heading_1 through heading_4).`,
 						{ source, position: block.position }
 					);
 				}
+				const heading_type = `heading_${block.depth}`;
 				const id = heading_id(ctx, block);
 				ctx.nodes[id] = {
 					id,
-					type: `heading_${block.depth}`,
+					type: heading_type,
 					layout: 1,
 					content: convert_inline(ctx, block.children, {
-						allow_newlines: content_allows_newlines(`heading_${block.depth}`)
+						allow_newlines: content_allows_newlines(heading_type)
 					})
 				};
-				// Level-2 headings start a new visual section: close the current
+				// Markdown level-2 headings start a new visual section: close the current
 				// prose run and remember where the section begins in the body.
 				if (block.depth === 2) {
 					flush_prose();
@@ -201,7 +202,7 @@ export function convert_markdown(markdown_text, mapping) {
 			}
 			default:
 				throw new MarkdownConversionError(
-					`Unsupported markdown block "${block.type}". Supported blocks: paragraphs, headings (1-5), lists, code blocks.`,
+					`Unsupported markdown block "${block.type}". Supported blocks: paragraphs, headings (1-4), lists, code blocks.`,
 					{ source, position: block.position }
 				);
 		}
@@ -214,7 +215,7 @@ export function convert_markdown(markdown_text, mapping) {
 
 	// Wrap each section's body range (its prose plus interleaved code blocks,
 	// up to the next section) in a section mark, so it renders as one visual
-	// group. Content before the first level-2 heading stays unwrapped.
+	// group. Content before the first Markdown level-2 heading stays unwrapped.
 	/** @type {{ start_offset: number, end_offset: number, node_id: string }[]} */
 	const body_marks = [];
 	for (const [boundary_index, start] of section_boundaries.entries()) {

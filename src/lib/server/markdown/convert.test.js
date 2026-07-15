@@ -45,20 +45,20 @@ describe('convert_markdown', () => {
 		expect(body[1].content.content).toBe('code');
 	});
 
-	it('maps headings 1-5 and paragraphs', () => {
-		const doc = convert('# A\n\n## B\n\n### C\n\n#### D\n\n##### E\n\nText.');
+	it('maps markdown headings 1-4 directly to Editable headings 1-4', () => {
+		const doc = convert('# A\n\n## B\n\n### C\n\n#### D\n\nText.');
 		expect(flat_text_nodes(doc).map((node) => node.type)).toEqual([
 			'heading_1',
 			'heading_2',
 			'heading_3',
 			'heading_4',
-			'heading_5',
 			'paragraph'
 		]);
 	});
 
-	it('rejects heading level 6', () => {
-		expect(() => convert('###### Deep')).toThrow(/Heading level 6/);
+	it('rejects heading levels 5 and 6', () => {
+		expect(() => convert('##### Deep')).toThrow(/Heading level 5/);
+		expect(() => convert('###### Deeper')).toThrow(/Heading level 6/);
 	});
 
 	it('gives headings GitHub-style anchor ids and dedupes duplicates', () => {

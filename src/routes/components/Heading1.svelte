@@ -13,7 +13,7 @@
 	<div use:reveal>
 		<TextProperty
 			tag="h1"
-			class={`display-1 ${layout === 2 ? 'text-(--muted-foreground)' : ''}`}
+			class={`display-2 ${layout === 2 ? 'text-(--muted-foreground)' : ''}`}
 			path={[...path, 'content']}
 			placeholder="Heading 1"
 		/>

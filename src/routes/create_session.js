@@ -45,11 +45,11 @@ import Paragraph from './components/Paragraph.svelte';
 import ParagraphLG from './components/ParagraphLG.svelte';
 import ParagraphXL from './components/ParagraphXL.svelte';
 import ParagraphSM from './components/ParagraphSM.svelte';
+import Heading1XL from './components/Heading1XL.svelte';
 import Heading1 from './components/Heading1.svelte';
 import Heading2 from './components/Heading2.svelte';
 import Heading3 from './components/Heading3.svelte';
 import Heading4 from './components/Heading4.svelte';
-import Heading5 from './components/Heading5.svelte';
 import List from './components/List.svelte';
 import ListItem from './components/ListItem.svelte';
 import Gallery from './components/Gallery.svelte';
@@ -202,11 +202,11 @@ const session_config = {
 		paragraph_lg: ParagraphLG,
 		paragraph_xl: ParagraphXL,
 		paragraph_sm: ParagraphSM,
+		heading_1_xl: Heading1XL,
 		heading_1: Heading1,
 		heading_2: Heading2,
 		heading_3: Heading3,
 		heading_4: Heading4,
-		heading_5: Heading5,
 		list: List,
 		list_item: ListItem,
 		image: Image,
@@ -314,11 +314,11 @@ const session_config = {
 		paragraph_sm: (node) => `<p>${node.content.content}</p>\n`,
 		paragraph_lg: (node) => `<p>${node.content.content}</p>\n`,
 		paragraph_xl: (node) => `<p>${node.content.content}</p>\n`,
+		heading_1_xl: (node) => `<h1>${node.content.content}</h1>\n`,
 		heading_1: (node) => `<h1>${node.content.content}</h1>\n`,
 		heading_2: (node) => `<h2>${node.content.content}</h2>\n`,
 		heading_3: (node) => `<h3>${node.content.content}</h3>\n`,
 		heading_4: (node) => `<h4>${node.content.content}</h4>\n`,
-		heading_5: (node) => `<h5>${node.content.content}</h5>\n`,
 		preformatted: (node) => `<pre>${node.content.content}</pre>\n`,
 		list: (node, session, html_exporters) => {
 			let html = '<ul>\n';
@@ -337,11 +337,11 @@ const session_config = {
 		paragraph_sm: 2,
 		paragraph_lg: 2,
 		paragraph_xl: 2,
+		heading_1_xl: 2,
 		heading_1: 2,
 		heading_2: 2,
 		heading_3: 2,
 		heading_4: 2,
-		heading_5: 2,
 		preformatted: 1,
 		list: 4,
 		list_item: 1,
@@ -430,7 +430,7 @@ const session_config = {
 		prose: function (tr) {
 			const new_heading = {
 				id: nanoid(),
-				type: 'heading_3',
+				type: 'heading_2',
 				content: { content: '', marks: [], annotations: [] }
 			};
 			tr.create(new_heading);
@@ -452,7 +452,7 @@ const session_config = {
 		prose_grid_item: function (tr) {
 			const new_heading = {
 				id: nanoid(),
-				type: 'heading_1',
+				type: 'heading_1_xl',
 				content: { content: '', marks: [], annotations: [] }
 			};
 			tr.create(new_heading);
@@ -474,17 +474,17 @@ const session_config = {
 			const new_prose_grid_id = tr.build('new_prose_grid', {
 				title_1: {
 					id: 'title_1',
-					type: 'heading_1',
+					type: 'heading_1_xl',
 					content: { content: '', marks: [], annotations: [] }
 				},
 				title_2: {
 					id: 'title_2',
-					type: 'heading_1',
+					type: 'heading_1_xl',
 					content: { content: '', marks: [], annotations: [] }
 				},
 				title_3: {
 					id: 'title_3',
-					type: 'heading_1',
+					type: 'heading_1_xl',
 					content: { content: '', marks: [], annotations: [] }
 				},
 				paragraph_1: {
@@ -542,6 +542,9 @@ const session_config = {
 		paragraph_xl: function (tr, content = { content: '', marks: [], annotations: [] }) {
 			insert_text_node(tr, 'paragraph_xl', content, 1);
 		},
+		heading_1_xl: function (tr, content = { content: '', marks: [], annotations: [] }) {
+			insert_text_node(tr, 'heading_1_xl', content, 1);
+		},
 		heading_1: function (tr, content = { content: '', marks: [], annotations: [] }) {
 			insert_text_node(tr, 'heading_1', content, 1);
 		},
@@ -553,9 +556,6 @@ const session_config = {
 		},
 		heading_4: function (tr, content = { content: '', marks: [], annotations: [] }) {
 			insert_text_node(tr, 'heading_4', content, 1);
-		},
-		heading_5: function (tr, content = { content: '', marks: [], annotations: [] }) {
-			insert_text_node(tr, 'heading_5', content, 1);
 		},
 		preformatted: function (tr, content = { content: '', marks: [], annotations: [] }) {
 			const new_preformatted = {
@@ -619,7 +619,7 @@ const session_config = {
 				},
 				body_text: {
 					id: 'body_text',
-					type: 'heading_1',
+					type: 'heading_1_xl',
 					content: { content: '', marks: [], annotations: [] }
 				},
 				new_feature: {

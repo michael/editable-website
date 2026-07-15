@@ -36,7 +36,6 @@ describe('kitchen-sink.md', () => {
 			'heading_2',
 			'heading_3',
 			'heading_4',
-			'heading_5',
 			'list',
 			'list_item',
 			'descriptive_listing',

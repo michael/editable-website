@@ -9,11 +9,11 @@ const TEXT_NODE_TYPES = [
 	'paragraph',
 	'paragraph_lg',
 	'paragraph_xl',
+	'heading_1_xl',
 	'heading_1',
 	'heading_2',
 	'heading_3',
-	'heading_4',
-	'heading_5'
+	'heading_4'
 ];
 const RICH_CONTENT_NODE_TYPES = [...TEXT_NODE_TYPES, 'list', 'supporting_media', 'button_group'];
 const RICH_CONTENT_NODE_TYPES_WITHOUT_HEADINGS = [
@@ -289,6 +289,17 @@ export const document_schema = define_document_schema({
 		}
 	},
 
+	heading_1_xl: {
+		kind: 'text',
+		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
+			content: {
+				type: 'text',
+				mark_types: ALL_MARKS,
+				allow_newlines: true
+			}
+		}
+	},
 	heading_1: {
 		kind: 'text',
 		properties: {
@@ -300,6 +311,7 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
+
 	heading_2: {
 		kind: 'text',
 		properties: {
@@ -311,7 +323,6 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
-
 	heading_3: {
 		kind: 'text',
 		properties: {
@@ -324,17 +335,6 @@ export const document_schema = define_document_schema({
 		}
 	},
 	heading_4: {
-		kind: 'text',
-		properties: {
-			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
-			content: {
-				type: 'text',
-				mark_types: ALL_MARKS,
-				allow_newlines: true
-			}
-		}
-	},
-	heading_5: {
 		kind: 'text',
 		properties: {
 			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },

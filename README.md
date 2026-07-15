@@ -348,7 +348,7 @@ Bold leading title, `—` separators (em dash), plain text otherwise. If any ite
 
 The converter accepts the subset of CommonMark that maps onto the built-in content model, and rejects everything else with an error naming the file, line, and column — authored text is never silently dropped or restructured:
 
-- paragraphs, headings 1–5 (heading 6 is rejected)
+- paragraphs and headings 1–4, mapped directly to Editable's Heading 1–4 (Markdown headings 5 and 6 are rejected)
 - `**strong**`, `*emphasis*`, `` `inline code` ``, and `[links](/page)` — but not nested inside one another (marks are mutually exclusive in the content model, so e.g. bold text inside a link is rejected)
 - unordered lists (rendered with square markers) and ordered lists (rendered numbered); nested lists and multi-paragraph items are rejected
 - fenced and indented code blocks (no syntax highlighting)
@@ -785,7 +785,7 @@ footer_link { href, target, label: text }
 
 ```ts
 // rich content = paragraph_sm | paragraph | paragraph_lg | paragraph_xl |
-//                heading_1 … heading_5 | list | supporting_media | button_group
+//                heading_1_xl | heading_1 … heading_4 | list | supporting_media | button_group
 
 prose { layout: 1–6, body: [rich content] }        // layouts: alignment and width
 prose_grid { layout: 1 | 2, items: [prose_grid_item] }
@@ -793,7 +793,7 @@ prose_grid_item { body: [rich content] }
 
 // the paragraph and heading family share one shape:
 paragraph, paragraph_sm, paragraph_lg, paragraph_xl,
-heading_1 … heading_5 {
+heading_1_xl, heading_1 … heading_4 {
 	layout: 1 | 2      // 2 = muted secondary copy
 	content: text      // marks: strong, emphasis, code, highlight, link
 }

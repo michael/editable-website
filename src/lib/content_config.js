@@ -18,8 +18,6 @@
 // code — use `src/lib/config.js` for universal constants instead.
 import readme_md from '../../README.md?raw';
 import target_groups_md from '../../TARGET_GROUPS.md?raw';
-import kitchen_sink_md from '../../content/kitchen-sink.md?raw';
-import svedit_md from '../../content/svedit.md?raw';
 
 export const MARKDOWN_SOURCES = [
 	// The developer manual is the repository README.
@@ -31,12 +29,4 @@ export const MARKDOWN_SOURCES = [
 		pathname: '/solutions',
 		toc: true
 	},
-	// Demo page exercising every supported markdown construct.
-	{
-		markdown: kitchen_sink_md,
-		source: 'content/kitchen-sink.md',
-		pathname: '/kitchen-sink',
-		toc: true
-	},
-	{ markdown: svedit_md, source: 'content/svedit.md', pathname: '/svedit', toc: true }
 ];

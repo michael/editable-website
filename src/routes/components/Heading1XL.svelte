@@ -9,13 +9,13 @@
 	let layout = $derived(node.layout || 1);
 </script>
 
-<Node class="ew-heading-5" {path}>
+<Node class="ew-heading-1-xl" {path}>
 	<div use:reveal>
 		<TextProperty
-			tag="h4"
-			class={`display-5 ${layout === 2 ? 'text-(--muted-foreground)' : ''}`}
+			tag="h1"
+			class={`display-1 ${layout === 2 ? 'text-(--muted-foreground)' : ''}`}
 			path={[...path, 'content']}
-			placeholder="Heading 5"
+			placeholder="Heading 1 XL"
 		/>
 	</div>
 </Node>
