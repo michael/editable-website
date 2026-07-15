@@ -409,6 +409,8 @@ const FULL_DOC = {
 			id: 'RtYpQwXsZvNmKjHgFdSaLe',
 			type: 'feature',
 			layout: 'image-left',
+			href: '',
+			target: '_self',
 			media: 'VbNcMxZaQwErTyUiOpLkJh',
 			body: {
 				nodes: [
@@ -716,6 +718,8 @@ const FULL_DOC = {
 			id: 'nGScFVScCanGVSnJXuevuVh',
 			type: 'feature',
 			layout: 'image-right',
+			href: '',
+			target: '_self',
 			media: 'HKvdPmGRBhfDwPBNEnwGfKw',
 			body: {
 				nodes: [
@@ -2040,6 +2044,8 @@ const FULL_DOC = {
 			id: 'YTMHBcPkYXJMRUnuSAhrTDE',
 			type: 'feature',
 			layout: 'image-left',
+			href: '',
+			target: '_self',
 			media: 'hqrrTdEbTPaqzEcYMczhBZb',
 			body: {
 				nodes: [

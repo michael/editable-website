@@ -436,7 +436,7 @@ accordion_item {
 	body: [rich content without headings]
 }
 
-feature { layout: image-right | image-left, media: image | video, body: [rich content] }
+feature { layout: image-right | image-left, href, target, media: image | video, body: [rich content] }
 
 button_group { buttons: [button] }
 button { layout: primary | secondary, href, target, label: text }

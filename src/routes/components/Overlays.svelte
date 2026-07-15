@@ -137,9 +137,9 @@
 	let link_preview = $derived(get_link_preview());
 
 	function get_link_anchor_path(node, path) {
-		// SupportingMedia's node wrapper spans the whole prose row, so its link
-		// UI is the one special case that anchors to the visible media frame.
-		return node.type === 'supporting_media' ? [...path, 'media'] : path;
+		// These node wrappers are wider than their visible media frames, so their
+		// link UI anchors to the media property instead.
+		return ['supporting_media', 'feature'].includes(node.type) ? [...path, 'media'] : path;
 	}
 
 	function get_link_preview() {

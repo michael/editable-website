@@ -639,6 +639,8 @@ const session_config = {
 					id: 'new_feature',
 					type: 'feature',
 					layout: 'image-right',
+					href: '',
+					target: '_self',
 					media: 'feature_image',
 					body: { nodes: ['body_text'], marks: [], annotations: [] }
 				}
