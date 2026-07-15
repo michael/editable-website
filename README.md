@@ -298,6 +298,41 @@ Releases are also tagged: to upgrade to a specific version instead of the latest
 
 Merge conflicts can only occur in files you changed. If your customizations live in the files meant for you — `src/custom.css`, the `app` line in `fly.toml`, and your own code in `src/routes` — pulls are typically conflict-free, since upstream never touches `custom.css` and rarely touches the rest. The more you've rewritten, the more the pull becomes a starting point for a manual merge — at that point, review what changed upstream and adopt what applies.
 
+## Database migrations
+
+Keep stored content and database structure in step with changes to your site.
+
+Migration files in `src/lib/server/migrations` are discovered when SvelteKit builds the server and run automatically when it boots. Their UTC timestamp determines the normal order, and all pending migrations plus their tracking records run in one transaction: either the complete upgrade succeeds or nothing changes.
+
+Create a project migration with:
+
+```sh
+npm run migration:create -- add-project-metadata
+```
+
+This creates a timestamped `custom` migration. Its filename is its permanent ID:
+
+```js
+export default {
+	up({ db }) {
+		// Transform the database here.
+	}
+};
+```
+
+Adding a custom content type usually needs no migration because documents are stored as JSON. Write one when existing documents or database structure must be transformed. Migrations are synchronous and may only change SQLite; filesystem, network, and other external side effects cannot be rolled back. Migrations are forward-only: never rename, delete, or edit one that has been applied. Roll back an upgrade by restoring the database snapshot made before deployment.
+
+Editable's own migrations use the `editable` source name; `custom` migrations belong to your project. The timestamp-first filenames keep both sources in one chronological list without a central registry or sequence-number conflicts.
+
+Exceptionally, a project migration may need to prepare customized data before a pending Editable migration. Generate it with an explicit constraint:
+
+```sh
+npm run migration:create -- reconcile-heading \
+	--before 20260712T125641379Z_editable_add_page_metadata_fields
+```
+
+The generated `before` array overrides timestamp order for that relationship only. The target must exist and still be pending; missing targets, already-applied targets, and dependency cycles abort the upgrade before any changes are committed. Prefer tolerant migrations that safely do nothing when their source shape is absent, and reserve `before` for genuine conflicts.
+
 ## Markdown pages
 
 Ship docs and long-form pages straight from markdown files in your repo.

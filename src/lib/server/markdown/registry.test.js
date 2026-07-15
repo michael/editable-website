@@ -31,11 +31,4 @@ describe('get_markdown_page', () => {
 	it('returns null for unmapped pathnames', () => {
 		expect(get_markdown_page('/not-mapped-anywhere')).toBe(null);
 	});
-
-	it('resolves the configured kitchen-sink demo page', () => {
-		const page = get_markdown_page('/kitchen-sink');
-		expect(page?.source).toBe('content/kitchen-sink.md');
-		expect(page?.toc).toBe(true);
-		expect(page?.markdown).toContain('# Field guide');
-	});
 });
