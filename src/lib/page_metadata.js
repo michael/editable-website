@@ -12,7 +12,7 @@ import { collect_node_ids_in_order } from '$lib/document_graph.js';
 // Derived titles/descriptions may be empty strings — callers decide on
 // presentation fallbacks like 'Untitled page'.
 
-const TITLE_NODE_TYPES = ['heading_1', 'heading_2', 'heading_3', 'heading_4', 'heading_5'];
+const TITLE_NODE_TYPES = ['heading_1_xl', 'heading_1', 'heading_2', 'heading_3', 'heading_4'];
 const DESCRIPTION_NODE_TYPES = [
 	'paragraph_sm',
 	'paragraph',

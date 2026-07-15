@@ -60,7 +60,7 @@
 
 	/* Rounded corners */
 	--button-border-radius: 3rem; /* rounded corners for buttons, nav items */
-	--image-border-radius: 0.5rem; /* rounded corners for images */
+	--image-border-radius: 0rem; /* rounded corners for images */
 }
 
 /* Website fonts */
@@ -77,27 +77,27 @@
 /* Typography system */
 /******************************************************************/
 
-/* Display 1, ... */
+/* E.g. Heading1XL */
 @utility display-1 {
 	@apply font-sans text-6xl leading-tight tracking-tight text-balance lg:text-7xl;
 }
 
-/* Display 2, ... */
+/* E.g. Heading1 */
 @utility display-2 {
 	@apply font-sans text-5xl leading-tight tracking-tight text-balance lg:text-6xl;
 }
 
-/* E.g. Heading1 */
+/* E.g. Heading2 */
 @utility display-3 {
 	@apply font-sans text-4xl leading-tight tracking-tight text-balance lg:text-5xl;
 }
 
-/* E.g. Heading2 */
+/* E.g. Heading3 */
 @utility display-4 {
 	@apply font-sans text-3xl leading-tight tracking-tight text-balance lg:text-4xl;
 }
 
-/* E.g. Heading3, TitleGallery.title, ... */
+/* E.g. Heading4, TitleGallery.title, ... */
 @utility display-5 {
 	@apply font-sans text-2xl leading-tight tracking-tight text-balance lg:text-3xl;
 }

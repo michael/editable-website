@@ -12,8 +12,8 @@
 <Node class="ew-heading-3" {path}>
 	<div use:reveal>
 		<TextProperty
-			tag="h2"
-			class={`display-3 ${layout === 2 ? 'text-(--muted-foreground)' : ''}`}
+			tag="h3"
+			class={`display-4 ${layout === 2 ? 'text-(--muted-foreground)' : ''}`}
 			path={[...path, 'content']}
 			placeholder="Heading 3"
 		/>

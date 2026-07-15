@@ -9,11 +9,11 @@ const TEXT_NODE_TYPES = [
 	'paragraph',
 	'paragraph_lg',
 	'paragraph_xl',
+	'heading_1_xl',
 	'heading_1',
 	'heading_2',
 	'heading_3',
-	'heading_4',
-	'heading_5'
+	'heading_4'
 ];
 const RICH_CONTENT_NODE_TYPES = [...TEXT_NODE_TYPES, 'list', 'supporting_media', 'button_group'];
 const RICH_CONTENT_NODE_TYPES_WITHOUT_HEADINGS = [
@@ -126,17 +126,17 @@ export const document_schema = define_document_schema({
 		properties: {
 			start_items: {
 				type: 'node_array',
-				node_types: ['nav_image', 'nav_link', 'nav_button'],
-				default_node_type: 'nav_image'
+				node_types: ['nav_media', 'nav_link', 'nav_button'],
+				default_node_type: 'nav_media'
 			},
-			center_items: {
+			middle_items: {
 				type: 'node_array',
-				node_types: ['nav_link', 'nav_button', 'nav_image'],
+				node_types: ['nav_link', 'nav_button', 'nav_media'],
 				default_node_type: 'nav_link'
 			},
 			end_items: {
 				type: 'node_array',
-				node_types: ['nav_link', 'nav_button', 'nav_image'],
+				node_types: ['nav_link', 'nav_button', 'nav_media'],
 				default_node_type: 'nav_button'
 			}
 		}
@@ -166,7 +166,7 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
-	nav_image: {
+	nav_media: {
 		kind: 'block',
 		properties: {
 			href: { type: 'string' },
@@ -289,6 +289,17 @@ export const document_schema = define_document_schema({
 		}
 	},
 
+	heading_1_xl: {
+		kind: 'text',
+		properties: {
+			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
+			content: {
+				type: 'text',
+				mark_types: ALL_MARKS,
+				allow_newlines: true
+			}
+		}
+	},
 	heading_1: {
 		kind: 'text',
 		properties: {
@@ -300,6 +311,7 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
+
 	heading_2: {
 		kind: 'text',
 		properties: {
@@ -311,7 +323,6 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
-
 	heading_3: {
 		kind: 'text',
 		properties: {
@@ -334,24 +345,13 @@ export const document_schema = define_document_schema({
 			}
 		}
 	},
-	heading_5: {
-		kind: 'text',
-		properties: {
-			layout: { type: 'integer', default: 1, allowed_values: [1, 2] },
-			content: {
-				type: 'text',
-				mark_types: ALL_MARKS,
-				allow_newlines: true
-			}
-		}
-	},
 	list_item: {
 		kind: 'text',
 		properties: {
 			content: {
 				type: 'text',
 				mark_types: ALL_MARKS,
-				allow_newlines: false
+				allow_newlines: true
 			}
 		}
 	},
@@ -423,6 +423,8 @@ export const document_schema = define_document_schema({
 	supporting_media: {
 		kind: 'block',
 		properties: {
+			href: { type: 'string' },
+			target: { type: 'string', default: '_self' },
 			media_max_width: { type: 'integer', default: 0 },
 			media_aspect_ratio: { type: 'number', default: 0 },
 			media: {

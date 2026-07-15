@@ -23,7 +23,7 @@ const FULL_DOC = {
 		},
 		TSRjJkcjxCEVZUVMwWBPJJT: {
 			id: 'TSRjJkcjxCEVZUVMwWBPJJT',
-			type: 'heading_2',
+			type: 'heading_1',
 			layout: 1,
 			content: {
 				content: 'Skip the CMS',
@@ -118,7 +118,7 @@ const FULL_DOC = {
 		},
 		XEZYvKrndUKmFeRwPskjXSb: {
 			id: 'XEZYvKrndUKmFeRwPskjXSb',
-			type: 'heading_3',
+			type: 'heading_2',
 			layout: 1,
 			content: {
 				content: 'Start editing',
@@ -439,7 +439,7 @@ const FULL_DOC = {
 		},
 		fhGVryvJNVhDWWKkGYGZsyZ: {
 			id: 'fhGVryvJNVhDWWKkGYGZsyZ',
-			type: 'heading_3',
+			type: 'heading_2',
 			layout: 1,
 			content: {
 				content: 'Build with blocks',
@@ -734,7 +734,7 @@ const FULL_DOC = {
 		},
 		ttqZrWgKByzNJpAZWDjCdkt: {
 			id: 'ttqZrWgKByzNJpAZWDjCdkt',
-			type: 'heading_3',
+			type: 'heading_2',
 			layout: 1,
 			content: {
 				content: 'Add images and videos',
@@ -960,7 +960,7 @@ const FULL_DOC = {
 		},
 		FWAepzcFxQBWdFUpKazbgSJ: {
 			id: 'FWAepzcFxQBWdFUpKazbgSJ',
-			type: 'heading_3',
+			type: 'heading_2',
 			layout: 1,
 			content: {
 				content: 'Link to other pages',
@@ -1176,7 +1176,7 @@ const FULL_DOC = {
 		},
 		awxJbWfytmnufqPsJCPxPnR: {
 			id: 'awxJbWfytmnufqPsJCPxPnR',
-			type: 'heading_3',
+			type: 'heading_2',
 			layout: 1,
 			content: {
 				content: 'How does this work?',
@@ -1336,7 +1336,7 @@ const FULL_DOC = {
 		},
 		KsFYXQPtmceJKGbEkmHqXTy: {
 			id: 'KsFYXQPtmceJKGbEkmHqXTy',
-			type: 'heading_3',
+			type: 'heading_2',
 			layout: 1,
 			content: {
 				content: 'Early-Adopter Pricing',
@@ -1403,7 +1403,7 @@ const FULL_DOC = {
 		},
 		pnyZxASHjrYVDxxYJpwpaUd: {
 			id: 'pnyZxASHjrYVDxxYJpwpaUd',
-			type: 'heading_3',
+			type: 'heading_2',
 			layout: 1,
 			content: {
 				content: 'Free',
@@ -1479,7 +1479,7 @@ const FULL_DOC = {
 		},
 		VZTbMkwXXkstnDCNDdKnEVc: {
 			id: 'VZTbMkwXXkstnDCNDdKnEVc',
-			type: 'heading_3',
+			type: 'heading_2',
 			layout: 1,
 			content: {
 				content: '€99',
@@ -1566,7 +1566,7 @@ const FULL_DOC = {
 		},
 		vCyXCUGQbCqDSeWhQrgxUfP: {
 			id: 'vCyXCUGQbCqDSeWhQrgxUfP',
-			type: 'heading_3',
+			type: 'heading_2',
 			layout: 1,
 			content: {
 				content: '€299',
@@ -1653,7 +1653,7 @@ const FULL_DOC = {
 		},
 		TYcAwBxbMfUnUnQFHbcnjjK: {
 			id: 'TYcAwBxbMfUnUnQFHbcnjjK',
-			type: 'heading_3',
+			type: 'heading_2',
 			layout: 1,
 			content: {
 				content: 'Frequently Asked Questions',
@@ -1981,7 +1981,7 @@ const FULL_DOC = {
 		},
 		TnMQYKQSSvPJySzxMfgqvge: {
 			id: 'TnMQYKQSSvPJySzxMfgqvge',
-			type: 'heading_3',
+			type: 'heading_2',
 			layout: 1,
 			content: {
 				content: 'Hello, I’m Michael',
@@ -2052,7 +2052,7 @@ const FULL_DOC = {
 		},
 		CqTEkBNqegxMsErnwufYdHp: {
 			id: 'CqTEkBNqegxMsErnwufYdHp',
-			type: 'heading_2',
+			type: 'heading_1',
 			layout: 1,
 			content: {
 				content: 'Try Editable now',
@@ -2226,7 +2226,7 @@ const FULL_DOC = {
 		},
 		nav_logo: {
 			id: 'nav_logo',
-			type: 'nav_image',
+			type: 'nav_media',
 			href: '/',
 			target: '_self',
 			media: 'nav_logo_media'
@@ -2307,7 +2307,7 @@ const FULL_DOC = {
 				marks: [],
 				annotations: []
 			},
-			center_items: {
+			middle_items: {
 				nodes: [
 					'DDmmrQzcAxWJfdhatTbkRTh',
 					'BESRZnRsUbbWapdUTzGNxFH',
@@ -2345,7 +2345,7 @@ const FULL_DOC = {
 		},
 		ZRYVZgNjcBnCFVRXhJHJxtV: {
 			id: 'ZRYVZgNjcBnCFVRXhJHJxtV',
-			type: 'heading_5',
+			type: 'heading_4',
 			layout: 1,
 			content: {
 				content: 'Editable',
