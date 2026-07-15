@@ -2307,7 +2307,7 @@ const FULL_DOC = {
 				marks: [],
 				annotations: []
 			},
-			center_items: {
+			middle_items: {
 				nodes: [
 					'DDmmrQzcAxWJfdhatTbkRTh',
 					'BESRZnRsUbbWapdUTzGNxFH',

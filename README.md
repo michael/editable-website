@@ -764,7 +764,7 @@ page {
 
 nav {
 	start_items: [nav_media | nav_link | nav_button]    // usually logo first
-	center_items: [nav_link | nav_button | nav_media]   // usually page links
+	middle_items: [nav_link | nav_button | nav_media]   // usually page links
 	end_items: [nav_link | nav_button | nav_media]      // usually calls to action
 }
 

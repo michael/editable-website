@@ -10,13 +10,13 @@
 
 	const svedit = getContext('svedit');
 	let node = $derived(svedit.session.get(path));
-	let center_item_ids = $derived(node.center_items.nodes);
+	let middle_item_ids = $derived(node.middle_items.nodes);
 	let mobile_nav_media_path = $derived(find_mobile_nav_media_path());
 	let mobile_nav_cta_path = $derived(find_mobile_nav_cta_path());
 	let mobile_nav_open = $state(false);
 
 	function find_mobile_nav_media_path() {
-		for (const item_property_name of ['start_items', 'center_items', 'end_items']) {
+		for (const item_property_name of ['start_items', 'middle_items', 'end_items']) {
 			const items = node?.[item_property_name]?.nodes || [];
 			for (let index = 0; index < items.length; index++) {
 				const item = svedit.session.get([...path, item_property_name, index]);
@@ -30,7 +30,7 @@
 	}
 
 	function find_mobile_nav_cta_path() {
-		for (const item_property_name of ['start_items', 'center_items', 'end_items']) {
+		for (const item_property_name of ['start_items', 'middle_items', 'end_items']) {
 			const items = node?.[item_property_name]?.nodes || [];
 			for (let index = 0; index < items.length; index++) {
 				const item = svedit.session.get([...path, item_property_name, index]);
@@ -96,7 +96,7 @@
 			<NodeArrayProperty
 				tag="nav"
 				class="flex w-max items-center gap-7 [--row:1] *:min-w-max"
-				path={[...path, 'center_items']}
+				path={[...path, 'middle_items']}
 			/>
 			<NodeArrayProperty
 				tag="div"
@@ -144,8 +144,8 @@
 			</button>
 
 			<nav class="flex flex-col px-3 pt-16 pb-5">
-				{#each center_item_ids as _node_id, index (index)}
-					{@const item = svedit.session.get([...path, 'center_items', index])}
+				{#each middle_item_ids as _node_id, index (index)}
+					{@const item = svedit.session.get([...path, 'middle_items', index])}
 					{#if item.type === 'nav_link'}
 						<a
 							href={item.href || '#'}

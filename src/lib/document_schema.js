@@ -129,7 +129,7 @@ export const document_schema = define_document_schema({
 				node_types: ['nav_media', 'nav_link', 'nav_button'],
 				default_node_type: 'nav_media'
 			},
-			center_items: {
+			middle_items: {
 				type: 'node_array',
 				node_types: ['nav_link', 'nav_button', 'nav_media'],
 				default_node_type: 'nav_link'
