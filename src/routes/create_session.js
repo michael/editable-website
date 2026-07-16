@@ -803,7 +803,6 @@ const session_config = {
 			});
 
 			tr.insert_nodes([new_button_group_id]);
-			select_inserted_text_property(tr, 'label', ['buttons', 0]);
 		},
 		footer_link: function (
 			tr,

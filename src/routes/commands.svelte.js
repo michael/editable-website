@@ -13,8 +13,16 @@ import {
  * @param {number} node_index
  * @param {object} node
  * @param {string} new_type
+ * @param {string | null} [new_layout]
  */
-function replace_node_with_equivalent_type(tr, node_array_path, node_index, node, new_type) {
+function replace_node_with_equivalent_type(
+	tr,
+	node_array_path,
+	node_index,
+	node,
+	new_type,
+	new_layout = null
+) {
 	const node_schema = tr.schema[node.type];
 	const new_node_schema = tr.schema[new_type];
 	const new_node = {
@@ -27,6 +35,7 @@ function replace_node_with_equivalent_type(tr, node_array_path, node_index, node
 			new_node[property_name] = structuredClone(node[property_name]);
 		}
 	}
+	if (new_layout && 'layout' in new_node_schema.properties) new_node.layout = new_layout;
 
 	tr.create(new_node);
 
@@ -70,6 +79,19 @@ export class CycleLayoutCommand extends Command {
 		const new_layout_index = (current_layout_index + offset + layouts.length) % layouts.length;
 		const new_layout = layouts[new_layout_index];
 
+		this.execute_with_layout(new_layout);
+	}
+
+	/** @param {string} new_layout */
+	execute_with_layout(new_layout) {
+		const session = this.context.session;
+		const closest_switchable_layout = this.closest_switchable_layout;
+		if (!closest_switchable_layout) return;
+
+		const { node, node_array_path, node_index } = closest_switchable_layout;
+		const layouts = session.config.node_layouts[node.type] ?? [];
+		if (!layouts.includes(new_layout) || new_layout === node.layout) return;
+
 		const tr = session.tr;
 		// Set node selection so it's clear which node's layout changed
 		tr.set_selection({
@@ -100,12 +122,28 @@ export class CycleNodeTypeCommand extends Command {
 	}
 
 	execute() {
-		const session = this.context.session;
 		const cycle_node_state = this.cycle_node_state;
 		if (!cycle_node_state || cycle_node_state.available_types.length === 0) return;
 
-		const { node, node_array_path, node_index, available_types } = cycle_node_state;
+		const { available_types } = cycle_node_state;
 		const new_type = this.direction === 'next' ? available_types[0] : available_types.at(-1);
+		this.execute_with_type(new_type);
+	}
+
+	/**
+	 * Replace the derived switchable node with an explicitly chosen type/variant.
+	 *
+	 * @param {string} new_type
+	 * @param {string | null} [new_layout]
+	 */
+	execute_with_type(new_type, new_layout = null) {
+		const session = this.context.session;
+		const cycle_node_state = this.cycle_node_state;
+		if (!cycle_node_state?.available_types.includes(new_type)) return;
+
+		const { node, node_array_path, node_index } = cycle_node_state;
+		const allowed_layouts = session.config.node_layouts?.[new_type] ?? [];
+		const selected_layout = allowed_layouts.includes(new_layout) ? new_layout : null;
 		const tr = session.tr;
 
 		tr.set_selection({
@@ -117,8 +155,19 @@ export class CycleNodeTypeCommand extends Command {
 
 		if (is_node_subtree_empty(session, node)) {
 			session.config.inserters[new_type](tr);
+			const replacement_id = tr.get(node_array_path)?.nodes?.[node_index];
+			if (replacement_id && selected_layout && 'layout' in tr.schema[new_type].properties) {
+				tr.set([replacement_id, 'layout'], selected_layout);
+			}
 		} else {
-			replace_node_with_equivalent_type(tr, node_array_path, node_index, node, new_type);
+			replace_node_with_equivalent_type(
+				tr,
+				node_array_path,
+				node_index,
+				node,
+				new_type,
+				selected_layout
+			);
 		}
 
 		session.apply(tr);

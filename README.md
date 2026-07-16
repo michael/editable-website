@@ -1,6 +1,6 @@
 # The Editable Manual
 
-Editable lets people edit a Svelte website directly on the page, while developers retain control over its structure and presentation. It starts with editable prose, media, features, galleries, and listings — much of what you would otherwise use a separate CMS for — while keeping the styling, layouts, and content model in your code. This manual explains how to build and run a site with it.
+Editable lets you build and edit a Svelte website without adding a separate CMS. Editors work directly on the page, while the content model, components, layouts, and styling remain in the codebase you own. Use the included defaults and adapt the colors and fonts to deploy a beautiful site within minutes — or customize the entire layout and model your own content types. This manual explains how to build and run a site with Editable.
 
 ## Quickstart
 
@@ -8,8 +8,10 @@ From zero to a live-editable site in four commands.
 
 Install [Node.js 24+](https://nodejs.org/) and [Git](https://git-scm.com/). Editable uses Node's built-in SQLite. If you use [nvm](https://github.com/nvm-sh/nvm), `nvm use` reads the included `.nvmrc`.
 
+The Quickstart intentionally clones `stable`, which always points at the latest tested release. The repository's default `main` branch contains active development and may include unfinished changes.
+
 ```sh
-git clone https://github.com/michael/editable-website.git my-site
+git clone --branch stable https://github.com/michael/editable-website.git my-site
 cd my-site
 npm install
 cp .env.example .env
@@ -37,10 +39,11 @@ Your repository, your styles, your components.
 
 Each Editable site lives in its own checkout with its own git repository — one folder, one app, one deployment. You start from Editable as a template, own all the code from day one, and keep Editable connected as `upstream` so you can pull in improvements later (see [Upgrading](#upgrading)).
 
-Make Editable the `upstream` remote:
+Make Editable the `upstream` remote, then rename your local release checkout to `main` for your own site:
 
 ```sh
 git remote rename origin upstream
+git branch -m main
 ```
 
 Then create a private repository of your own and make it `origin` — your content is backed up by the [data scripts](#backup-sync--recovery), this backs up your code:
@@ -51,7 +54,7 @@ gh repo create my-site --private --source=. --push
 
 (Without the [GitHub CLI](https://cli.github.com): create an empty private repository on GitHub, then `git remote add origin <url>` and `git push -u origin main`.)
 
-From here on, `git push` saves your work to your own repo, and `git pull upstream stable` fetches Editable updates. The `stable` branch always points at the latest release — development happens on `main`, which you can ignore.
+From here on, `git push` saves your work to your own repo, and `git pull upstream stable` fetches Editable updates. The upstream `stable` branch always points at the latest release; active development happens on `upstream/main`, which your site does not need to follow.
 
 ### Styling
 
