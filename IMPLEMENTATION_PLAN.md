@@ -2,12 +2,14 @@
 
 ## Node navigator and variant switcher
 
-- While editing above 1024px viewport width, show the closest node with variants as a compact control in the bottom-left corner.
+- While editing at every viewport size, show the closest node with variants inside the main toolbar.
 - Derive the hierarchy and every switch target from the canonical editor selection; do not introduce a separate scope or navigator selection.
 - Generate variant labels directly from stored ids in the form “Type (layout)”, visually emphasizing the type and de-emphasizing the layout.
 - Treat a node as having variants when its type, layout, or both can currently be switched; omit non-switchable descendants from the display.
 - Flatten valid type/layout combinations into named variants: use previous/next arrows for cycling and a native select for direct choice and keyboard type-ahead.
-- Place the ordinary select-parent command beside the variant control so deeper selections can be moved outward without another scope mechanism.
+- Keep the ordinary select-parent command in the existing selection tool group; do not duplicate it inside the variant selector.
+- Split the variant selector to the left and the existing toolbar actions to the right when space permits, collapsing the flexible gap before horizontal overflow on narrow screens.
+- Keep type/layout cycle commands and keyboard shortcuts registered, but hide their redundant toolbar buttons while the variant selector is the primary visible UI.
 - Do not require a parallel variant-label registry; new schema types and layouts should appear automatically.
 
 ## Human-readable layout ids

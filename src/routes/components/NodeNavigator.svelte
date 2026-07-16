@@ -2,7 +2,7 @@
 	import { serialize_path } from 'svedit';
 	import { get_selection_node_ancestors } from '../app_utils.js';
 
-	let { session, editable, focus_canvas } = $props();
+	let { session, focus_canvas } = $props();
 
 	let ancestors = $derived(get_selection_node_ancestors(session));
 	let type_state = $derived(session.commands.cycle_node_type_next?.cycle_node_state ?? null);
@@ -120,11 +120,6 @@
 		}
 	}
 
-	function handle_select_parent_mousedown(event) {
-		event.preventDefault();
-		if (!session.commands.select_parent?.disabled) session.commands.select_parent.execute();
-	}
-
 	function restore_canvas_selection() {
 		// Native selects move DOM focus outside Svedit. Re-focus after the
 		// select event finishes, then assign a fresh selection object so Svedit
@@ -145,77 +140,60 @@
 	}
 </script>
 
-{#if editable && variant_item}
-	<nav
-		class="fixed bottom-5 left-5 z-50 hidden max-w-[calc(100vw-2.5rem)] items-center gap-3 text-xs leading-5 text-(--foreground) min-[1025px]:flex sm:left-7"
+{#if variant_item}
+	<div
+		class="flex shrink-0 items-center rounded-full border border-(--border) bg-(--background)/95 p-1 text-xs leading-5 text-(--foreground) shadow-sm backdrop-blur-sm"
 		aria-label="Current node variant"
 	>
 		<button
-			class="flex size-9 items-center justify-center rounded-full border border-(--border) bg-(--background)/95 text-(--foreground) shadow-sm backdrop-blur-sm transition-all duration-150 hover:bg-(--muted) active:translate-y-px active:scale-95 disabled:cursor-not-allowed disabled:text-(--muted-foreground) disabled:shadow-none"
-			onmousedown={handle_select_parent_mousedown}
-			disabled={session.commands.select_parent?.disabled}
-			title="Select parent (Esc)"
-			aria-label="Select parent"
+			class="flex size-7 items-center justify-center rounded-full text-(--muted-foreground) transition-colors hover:bg-(--muted) hover:text-(--foreground)"
+			onmousedown={(event) => handle_arrow_mousedown(event, variant_item, 'previous')}
+			title="Previous variant"
+			aria-label="Previous variant for {variant_item.label}">←</button
 		>
-			<svg class="size-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-				<rect x="3" y="5" width="18" height="14" stroke="currentColor" stroke-width="1.5" />
-				<rect x="10.25" y="10.25" width="3.5" height="3.5" fill="currentColor" />
-			</svg>
-		</button>
-
-		<div
-			class="flex items-center rounded-full border border-(--border) bg-(--background)/95 p-1 shadow-sm backdrop-blur-sm"
+		<button
+			class="flex size-7 items-center justify-center rounded-full text-(--muted-foreground) transition-colors hover:bg-(--muted) hover:text-(--foreground)"
+			onmousedown={(event) => handle_arrow_mousedown(event, variant_item, 'next')}
+			title="Next variant"
+			aria-label="Next variant for {variant_item.label}">→</button
 		>
-			<button
-				class="flex size-7 items-center justify-center rounded-full text-(--muted-foreground) transition-colors hover:bg-(--muted) hover:text-(--foreground)"
-				onmousedown={(event) => handle_arrow_mousedown(event, variant_item, 'previous')}
-				title="Previous variant"
-				aria-label="Previous variant for {variant_item.label}">←</button
-			>
-			<button
-				class="flex size-7 items-center justify-center rounded-full text-(--muted-foreground) transition-colors hover:bg-(--muted) hover:text-(--foreground)"
-				onmousedown={(event) => handle_arrow_mousedown(event, variant_item, 'next')}
-				title="Next variant"
-				aria-label="Next variant for {variant_item.label}">→</button
-			>
 
-			<label
-				class="relative flex cursor-pointer items-center rounded-full px-2 py-1 hover:bg-(--muted)"
+		<label
+			class="relative flex cursor-pointer items-center rounded-full px-2 py-1 hover:bg-(--muted)"
+		>
+			<span class="sr-only">Choose variant for {variant_item.node.type}</span>
+			<span aria-hidden="true">
+				<span class="font-medium">{variant_item.type_label}</span>
+				{#if variant_item.layout_label}
+					<span class="ml-1 font-mono text-[11px] text-(--muted-foreground)"
+						>({variant_item.layout_label})</span
+					>
+				{/if}
+			</span>
+			<select
+				class="variant-select absolute inset-0 size-full cursor-pointer opacity-0"
+				value={variant_item.current_value}
+				aria-label="Choose variant; current variant is {variant_item.label}"
+				onchange={(event) => handle_variant_change(event, variant_item)}
+				onblur={restore_canvas_selection}
+				onkeydown={handle_variant_keydown}
 			>
-				<span class="sr-only">Choose variant for {variant_item.node.type}</span>
-				<span aria-hidden="true">
-					<span class="font-medium">{variant_item.type_label}</span>
-					{#if variant_item.layout_label}
-						<span class="ml-1 font-mono text-[11px] text-(--muted-foreground)"
-							>({variant_item.layout_label})</span
-						>
-					{/if}
-				</span>
-				<select
-					class="variant-select absolute inset-0 size-full cursor-pointer opacity-0"
-					value={variant_item.current_value}
-					aria-label="Choose variant; current variant is {variant_item.label}"
-					onchange={(event) => handle_variant_change(event, variant_item)}
-					onblur={restore_canvas_selection}
-					onkeydown={handle_variant_keydown}
-				>
-					{#each variant_item.groups as group}
-						{#if variant_item.groups.length > 1}
-							<optgroup label={humanize_node_id(group.node_type, true)}>
-								{#each group.options as option}
-									<option value={option.value}>{option.label}</option>
-								{/each}
-							</optgroup>
-						{:else}
+				{#each variant_item.groups as group}
+					{#if variant_item.groups.length > 1}
+						<optgroup label={humanize_node_id(group.node_type, true)}>
 							{#each group.options as option}
 								<option value={option.value}>{option.label}</option>
 							{/each}
-						{/if}
-					{/each}
-				</select>
-			</label>
-		</div>
-	</nav>
+						</optgroup>
+					{:else}
+						{#each group.options as option}
+							<option value={option.value}>{option.label}</option>
+						{/each}
+					{/if}
+				{/each}
+			</select>
+		</label>
+	</div>
 {/if}
 
 <style>

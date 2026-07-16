@@ -103,8 +103,8 @@
 	}
 
 	const TW_TOOLBAR_POSITION = 'bottom-0 sm:bottom-3 right-5 sm:right-7 md:right-10 lg:right-14';
-	// On mobile also pin to left edge so the toolbar can scroll horizontally
-	const TW_TOOLBAR_LEFT = 'left-5 sm:left-7 md:left-auto';
+	// Span the viewport so the variant selector and action tools can split left/right.
+	const TW_TOOLBAR_LEFT = 'left-5 sm:left-7 md:left-10 lg:left-14';
 
 	const TW_TOOLBAR_BTN =
 		'flex items-center justify-center size-9 rounded-full text-(--foreground) bg-(--background) border border-(--border) cursor-pointer pointer-events-auto shadow-sm transition-all duration-150 active:scale-95 active:translate-y-px outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--border) focus-visible:outline-offset-1';
@@ -121,11 +121,12 @@
 	}
 </script>
 
-<NodeNavigator {session} {editable} {focus_canvas} />
-
 <div class="fixed {TW_TOOLBAR_POSITION} {TW_TOOLBAR_LEFT} z-50">
 	<div class="overflow-x-auto">
-		<div class="ml-auto flex w-max items-center gap-1.5 px-2 py-2 sm:gap-3">
+		<div
+			class="flex w-full min-w-max items-center gap-1.5 px-2 py-2 sm:gap-3"
+			class:justify-end={!editable}
+		>
 			{#if !editable}
 				<!-- Read mode: New page + Edit + Pages buttons -->
 				<div class="flex items-center gap-1">
@@ -215,6 +216,8 @@
 				</div>
 			{:else}
 				<!-- Edit mode -->
+				<NodeNavigator {session} {focus_canvas} />
+				<div class="min-w-0 flex-1"></div>
 
 				<!-- Text formatting group (visible during text selection) -->
 				{#if session.selection?.type === 'text'}
@@ -468,7 +471,8 @@
 				{#if can_show_selection_tool_group}
 					<!-- Type / Layout group (always visible, disabled when not applicable) -->
 					<div class="flex items-center gap-1">
-						{#if can_show_cycle_tools}
+						<!-- Keep these commands/keybindings, but use the variant selector as the visible UI. -->
+						{#if false && can_show_cycle_tools}
 							<!-- Type: cycle to next node type -->
 							<button
 								class="{TW_TOOLBAR_BTN} {should_pulse_cycle_type
