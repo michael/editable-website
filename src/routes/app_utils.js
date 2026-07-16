@@ -4,8 +4,9 @@ import { get_property_default } from 'svedit';
  * Build the full path (including selected node index) and the starting
  * node_array path for walking up the tree from the current selection.
  *
- * For node selections the selected node index is the lower edge of the
- * selection range. For text/property selections the path already contains all indices.
+ * For node selections the selected node index is the lower edge of a single-node
+ * range. A collapsed node selection points at the node that owns the selected gap.
+ * For text/property selections the path already contains all indices.
  *
  * @param {import('svedit').Session} session
  * @returns {{ full_path: (string|number)[], start_path: (string|number)[] } | null}
@@ -16,6 +17,14 @@ function get_ancestor_walk_paths(session) {
 	if (session.selection.type === 'node') {
 		const start = Math.min(session.selection.anchor_offset, session.selection.focus_offset);
 		const end = Math.max(session.selection.anchor_offset, session.selection.focus_offset);
+		if (end === start) {
+			const owner_path = session.selection.path.slice(0, -1);
+			if (owner_path.length === 0) return null;
+			return {
+				full_path: owner_path,
+				start_path: session.selection.path.slice(0, -2)
+			};
+		}
 
 		// Only walk from a single selected node. Multi-node selections do not
 		// identify one unambiguous node whose type/layout should change.
@@ -41,8 +50,8 @@ function get_ancestor_walk_paths(session) {
 
 /**
  * Return the nodes between the document root and the current canonical selection.
- * The document node itself is omitted because it is editor infrastructure rather
- * than a useful place in the content breadcrumb.
+ * The document node itself is normally omitted because it is editor infrastructure.
+ * It is retained as the owning-node fallback for a collapsed top-level node gap.
  *
  * @param {import('svedit').Session} session
  * @returns {{ node: object, path: (string|number)[] }[]}
@@ -50,13 +59,16 @@ function get_ancestor_walk_paths(session) {
 export function get_selection_node_ancestors(session) {
 	const paths = get_ancestor_walk_paths(session);
 	if (!paths) return [];
+	const include_document =
+		session.selection?.type === 'node' &&
+		session.selection.anchor_offset === session.selection.focus_offset;
 
 	const ancestors = [];
 	for (let path_length = 1; path_length <= paths.full_path.length; path_length += 1) {
 		const path = paths.full_path.slice(0, path_length);
 		const node = session.get(path);
 		if (!node || typeof node.type !== 'string' || !session.schema[node.type]) continue;
-		if (session.schema[node.type].kind === 'document') continue;
+		if (session.schema[node.type].kind === 'document' && !include_document) continue;
 		ancestors.push({ node, path });
 	}
 

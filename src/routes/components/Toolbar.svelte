@@ -608,7 +608,7 @@
 				<div class="flex items-center gap-1">
 					{#if cancel_command && !cancel_command.disabled}
 						<button
-							class="pointer-events-auto inline-flex cursor-pointer items-center justify-center rounded-full border border-(--border) bg-(--background) px-4 py-2 text-sm font-semibold text-(--foreground) shadow-sm outline-1 outline-transparent transition-all duration-150 hover:border-(--border) hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--border) active:translate-y-px active:scale-95 active:border-(--border) active:bg-(--muted)"
+							class="pointer-events-auto inline-flex cursor-pointer items-center justify-center rounded-full border border-(--border) bg-(--background) px-4 py-2 text-xs font-medium text-(--foreground) shadow-sm outline-1 outline-transparent transition-all duration-150 hover:border-(--border) hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--border) active:translate-y-px active:scale-95 active:border-(--border) active:bg-(--muted)"
 							onclick={() => cancel_command.execute()}
 							title="Cancel (⌘ ⎋)"
 						>
@@ -618,7 +618,7 @@
 
 					{#if !app_commands.save_document.disabled}
 						<button
-							class="pointer-events-auto inline-flex cursor-pointer items-center justify-center rounded-full border border-(--svedit-editing-stroke) bg-(--background) px-4 py-2 text-sm font-semibold text-(--svedit-editing-stroke) shadow-sm outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-95 active:bg-(--muted)"
+							class="pointer-events-auto inline-flex cursor-pointer items-center justify-center rounded-full border border-(--svedit-editing-stroke) bg-(--background) px-4 py-2 text-xs font-medium text-(--svedit-editing-stroke) shadow-sm outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-95 active:bg-(--muted)"
 							onclick={() => app_commands.save_document.execute()}
 							title="Save (⌘ S)"
 						>

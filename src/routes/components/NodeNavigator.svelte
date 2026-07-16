@@ -149,7 +149,11 @@
 		>
 			<span class="flex items-center" aria-hidden="true">
 				<span>
-					<span class="font-medium">{variant_item.type_label}</span>
+					<span
+						class={variant_item.option_count > 1
+							? 'font-medium'
+							: 'font-normal text-(--muted-foreground)'}>{variant_item.type_label}</span
+					>
 					{#if variant_item.layout_label}
 						<span class="ml-1 font-mono text-[11px] text-(--muted-foreground)"
 							>({variant_item.layout_label})</span
