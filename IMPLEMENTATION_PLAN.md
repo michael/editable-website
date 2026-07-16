@@ -6,10 +6,13 @@
 - Derive the hierarchy and every switch target from the canonical editor selection; do not introduce a separate scope or navigator selection.
 - Generate variant labels directly from stored ids in the form “Type (layout)”, visually emphasizing the type and de-emphasizing the layout.
 - Treat a node as having variants when its type, layout, or both can currently be switched; omit non-switchable descendants from the display.
-- Flatten valid type/layout combinations into named variants: use previous/next arrows for cycling and a native select for direct choice and keyboard type-ahead.
+- When no ancestor has multiple variants, fall back to the closest selected node and render its `Type (layout)` identity without dropdown behavior or a chevron.
+- Flatten valid type/layout combinations into a native select for direct choice and keyboard type-ahead; do not add a misleading combined next/previous control when keyboard cycling remains dimension-specific.
 - Keep the ordinary select-parent command in the existing selection tool group; do not duplicate it inside the variant selector.
 - Split the variant selector to the left and the existing toolbar actions to the right when space permits, collapsing the flexible gap before horizontal overflow on narrow screens.
 - Keep type/layout cycle commands and keyboard shortcuts registered, but hide their redundant toolbar buttons while the variant selector is the primary visible UI.
+- Expose the type up/down and layout left/right keyboard shortcuts in the variant selector's hover tooltip rather than as persistent UI chrome.
+- Pulse the selector when its displayed type-switch target is still empty and every alternative type remains safely available, hinting at type choice immediately after insertion.
 - Do not require a parallel variant-label registry; new schema types and layouts should appear automatically.
 
 ## Human-readable layout ids
