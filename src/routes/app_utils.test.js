@@ -67,12 +67,15 @@ describe('get_selection_node_ancestors', () => {
 					page: { kind: 'document', properties: {} },
 					prose: {
 						kind: 'block',
-						properties: { layout: { type: 'string', default: 'narrow-left' } }
+						properties: {
+							layout: {
+								type: 'string',
+								values: ['narrow-left', 'narrow-center'],
+								default: 'narrow-left'
+							}
+						}
 					},
 					figure: { kind: 'block', properties: {} }
-				},
-				config: {
-					node_layouts: { prose: ['narrow-left', 'narrow-center'] }
 				},
 				get(path) {
 					return values.get(JSON.stringify(path));
@@ -96,7 +99,7 @@ describe('get_selection_node_ancestors', () => {
 			node_index: 0,
 			available_types: ['figure']
 		});
-		expect(get_closest_switchable_layout(session, session.config)).toMatchObject({
+		expect(get_closest_switchable_layout(session)).toMatchObject({
 			node: prose,
 			node_array_path: ['page_1', 'body'],
 			node_index: 0

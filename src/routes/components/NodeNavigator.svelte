@@ -31,7 +31,7 @@
 
 	function get_layouts(node_type) {
 		if (!('layout' in (session.schema[node_type]?.properties ?? {}))) return [null];
-		const layouts = session.config.node_layouts?.[node_type] ?? [];
+		const layouts = session.schema[node_type].properties.layout.values ?? [];
 		return layouts.length > 0 ? layouts : [null];
 	}
 

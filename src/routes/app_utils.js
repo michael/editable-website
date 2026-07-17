@@ -271,13 +271,12 @@ export function get_cycle_node_state(session) {
 
 /**
  * Find the closest ancestor node whose layout can be switched
- * (has a layout property and more than one registered layout id).
+ * (has a layout property with more than one allowed value).
  *
  * @param {import('svedit').Session} session - The session instance
- * @param {object} session_config - The session config (session.config), used to check node_layouts
  * @returns {{ node: object, node_array_path: (string|number)[], node_index: number } | null}
  */
-export function get_closest_switchable_layout(session, session_config) {
+export function get_closest_switchable_layout(session) {
 	const paths = get_ancestor_walk_paths(session);
 	if (!paths) return null;
 
@@ -289,7 +288,9 @@ export function get_closest_switchable_layout(session, session_config) {
 		const node_index = get_node_index_at(full_path, path);
 		if (node_index !== null) {
 			const node = session.get([...path, node_index]);
-			if (node?.layout && session_config.node_layouts?.[node.type]?.length > 1) {
+			const layout_property = session.schema[node?.type]?.properties?.layout;
+			const layouts = layout_property?.type === 'string' ? layout_property.values : undefined;
+			if (node?.layout && layouts?.length > 1) {
 				return { node, node_array_path: path, node_index };
 			}
 		}

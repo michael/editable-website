@@ -156,7 +156,7 @@ export const document_schema = define_document_schema({
 	nav_button: {
 		kind: 'block',
 		properties: {
-			layout: { type: 'string', default: 'primary' },
+			layout: { type: 'string', values: ['primary', 'secondary'], default: 'primary' },
 			href: { type: 'string' },
 			target: { type: 'string', default: '_self' },
 			label: {
@@ -182,7 +182,7 @@ export const document_schema = define_document_schema({
 	button: {
 		kind: 'block',
 		properties: {
-			layout: { type: 'string', default: 'primary' },
+			layout: { type: 'string', values: ['primary', 'secondary'], default: 'primary' },
 			href: { type: 'string' },
 			target: { type: 'string', default: '_self' },
 			label: {
@@ -205,7 +205,7 @@ export const document_schema = define_document_schema({
 	prose_grid: {
 		kind: 'block',
 		properties: {
-			layout: { type: 'string', default: 'plain' },
+			layout: { type: 'string', values: ['plain', 'cards'], default: 'plain' },
 			items: {
 				type: 'node_array',
 				node_types: ['prose_grid_item'],
@@ -226,7 +226,18 @@ export const document_schema = define_document_schema({
 	prose: {
 		kind: 'block',
 		properties: {
-			layout: { type: 'string', default: 'narrow-left' },
+			layout: {
+				type: 'string',
+				values: [
+					'narrow-left',
+					'narrow-center',
+					'narrow-right',
+					'narrow-centered-text',
+					'wide-left',
+					'wide-centered-text'
+				],
+				default: 'narrow-left'
+			},
 			body: {
 				type: 'node_array',
 				node_types: RICH_CONTENT_NODE_TYPES,
@@ -247,7 +258,7 @@ export const document_schema = define_document_schema({
 	paragraph: {
 		kind: 'text',
 		properties: {
-			layout: { type: 'string', default: 'default' },
+			layout: { type: 'string', values: ['default', 'muted'], default: 'default' },
 			content: {
 				type: 'text',
 				mark_types: ALL_MARKS,
@@ -258,7 +269,7 @@ export const document_schema = define_document_schema({
 	paragraph_sm: {
 		kind: 'text',
 		properties: {
-			layout: { type: 'string', default: 'default' },
+			layout: { type: 'string', values: ['default', 'muted'], default: 'default' },
 			content: {
 				type: 'text',
 				mark_types: ALL_MARKS,
@@ -269,7 +280,7 @@ export const document_schema = define_document_schema({
 	paragraph_lg: {
 		kind: 'text',
 		properties: {
-			layout: { type: 'string', default: 'default' },
+			layout: { type: 'string', values: ['default', 'muted'], default: 'default' },
 			content: {
 				type: 'text',
 				mark_types: ALL_MARKS,
@@ -280,7 +291,7 @@ export const document_schema = define_document_schema({
 	paragraph_xl: {
 		kind: 'text',
 		properties: {
-			layout: { type: 'string', default: 'default' },
+			layout: { type: 'string', values: ['default', 'muted'], default: 'default' },
 			content: {
 				type: 'text',
 				mark_types: ALL_MARKS,
@@ -292,7 +303,7 @@ export const document_schema = define_document_schema({
 	heading_1_xl: {
 		kind: 'text',
 		properties: {
-			layout: { type: 'string', default: 'default' },
+			layout: { type: 'string', values: ['default', 'muted'], default: 'default' },
 			content: {
 				type: 'text',
 				mark_types: ALL_MARKS,
@@ -303,7 +314,7 @@ export const document_schema = define_document_schema({
 	heading_1: {
 		kind: 'text',
 		properties: {
-			layout: { type: 'string', default: 'default' },
+			layout: { type: 'string', values: ['default', 'muted'], default: 'default' },
 			content: {
 				type: 'text',
 				mark_types: ALL_MARKS,
@@ -315,7 +326,7 @@ export const document_schema = define_document_schema({
 	heading_2: {
 		kind: 'text',
 		properties: {
-			layout: { type: 'string', default: 'default' },
+			layout: { type: 'string', values: ['default', 'muted'], default: 'default' },
 			content: {
 				type: 'text',
 				mark_types: ALL_MARKS,
@@ -326,7 +337,7 @@ export const document_schema = define_document_schema({
 	heading_3: {
 		kind: 'text',
 		properties: {
-			layout: { type: 'string', default: 'default' },
+			layout: { type: 'string', values: ['default', 'muted'], default: 'default' },
 			content: {
 				type: 'text',
 				mark_types: ALL_MARKS,
@@ -337,7 +348,7 @@ export const document_schema = define_document_schema({
 	heading_4: {
 		kind: 'text',
 		properties: {
-			layout: { type: 'string', default: 'default' },
+			layout: { type: 'string', values: ['default', 'muted'], default: 'default' },
 			content: {
 				type: 'text',
 				mark_types: ALL_MARKS,
@@ -358,7 +369,11 @@ export const document_schema = define_document_schema({
 	list: {
 		kind: 'block',
 		properties: {
-			layout: { type: 'string', default: 'square' },
+			layout: {
+				type: 'string',
+				values: ['square', 'check', 'decimal', 'lower-alpha'],
+				default: 'square'
+			},
 			list_items: {
 				type: 'node_array',
 				node_types: ['list_item'],
@@ -397,7 +412,11 @@ export const document_schema = define_document_schema({
 	figure: {
 		kind: 'block',
 		properties: {
-			layout: { type: 'string', default: 'wide' },
+			layout: {
+				type: 'string',
+				values: ['wide', 'narrow-left', 'narrow-center', 'narrow-right', 'flush', 'full-bleed'],
+				default: 'wide'
+			},
 			href: { type: 'string' },
 			target: { type: 'string', default: '_self' },
 			media: {
@@ -441,7 +460,11 @@ export const document_schema = define_document_schema({
 	gallery: {
 		kind: 'block',
 		properties: {
-			layout: { type: 'string', default: 'mixed' },
+			layout: {
+				type: 'string',
+				values: ['mixed', 'portraits', 'squares', 'landscapes', 'compact-landscapes'],
+				default: 'mixed'
+			},
 			gallery_items: {
 				type: 'node_array',
 				node_types: ['gallery_item']
@@ -463,7 +486,7 @@ export const document_schema = define_document_schema({
 	descriptive_gallery: {
 		kind: 'block',
 		properties: {
-			layout: { type: 'string', default: 'cards' },
+			layout: { type: 'string', values: ['cards', 'compact'], default: 'cards' },
 			items: {
 				type: 'node_array',
 				node_types: ['descriptive_gallery_item']
@@ -495,7 +518,11 @@ export const document_schema = define_document_schema({
 	descriptive_listing: {
 		kind: 'block',
 		properties: {
-			layout: { type: 'string', default: 'narrow-left' },
+			layout: {
+				type: 'string',
+				values: ['narrow-left', 'narrow-center', 'narrow-right', 'full-width', 'two-columns'],
+				default: 'narrow-left'
+			},
 			items: {
 				type: 'node_array',
 				node_types: ['descriptive_listing_item']
@@ -527,7 +554,11 @@ export const document_schema = define_document_schema({
 	accordion: {
 		kind: 'block',
 		properties: {
-			layout: { type: 'string', default: 'narrow-left' },
+			layout: {
+				type: 'string',
+				values: ['narrow-left', 'narrow-center', 'narrow-right', 'full-width', 'two-columns'],
+				default: 'narrow-left'
+			},
 			items: {
 				type: 'node_array',
 				node_types: ['accordion_item']
@@ -552,7 +583,7 @@ export const document_schema = define_document_schema({
 	feature: {
 		kind: 'block',
 		properties: {
-			layout: { type: 'string', default: 'image-right' },
+			layout: { type: 'string', values: ['image-right', 'image-left'], default: 'image-right' },
 			href: { type: 'string' },
 			target: { type: 'string', default: '_self' },
 			media: {

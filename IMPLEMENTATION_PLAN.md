@@ -18,7 +18,7 @@
 ## Human-readable layout ids
 
 - Replace numeric `layout` values in the schema, renderers, inserters, seed content, Markdown conversion, tests, and documentation with descriptive string ids.
-- Define every node type's available layout ids and cycling order in `session_config.node_layouts`.
+- Define every node type's available layout ids and cycling order in the `values` array of its schema `layout` property.
 - Cycle layouts by looking up the current id in that ordered list rather than using numeric arithmetic.
 - Add a frozen database migration that maps each legacy numeric layout to the corresponding string id in stored document graphs.
 
@@ -130,7 +130,7 @@ Add a reusable `list` node that can appear anywhere regular `text` nodes can app
 - Allow `list` inside `prose.content` and `accordion_item.body`, while keeping `text` as the default inserted node type.
 - Add `List.svelte` and `ListItem.svelte`, styled consistently with the existing app.
 - Register both components and add `list` / `list_item` inserters.
-- Add `list` to `node_layouts` so the existing layout cycling command can switch list marker styles.
+- Add the list marker styles to the `values` array of `list`'s schema `layout` property so the existing layout cycling command can switch them.
 
 ### Validation
 

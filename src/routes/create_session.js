@@ -329,47 +329,6 @@ const session_config = {
 		},
 		list_item: (node) => `<li>${node.content.content}</li>\n`
 	},
-	node_layouts: {
-		prose: [
-			'narrow-left',
-			'narrow-center',
-			'narrow-right',
-			'narrow-centered-text',
-			'wide-left',
-			'wide-centered-text'
-		],
-		prose_grid: ['plain', 'cards'],
-		prose_grid_item: ['default'],
-		paragraph: ['default', 'muted'],
-		paragraph_sm: ['default', 'muted'],
-		paragraph_lg: ['default', 'muted'],
-		paragraph_xl: ['default', 'muted'],
-		heading_1_xl: ['default', 'muted'],
-		heading_1: ['default', 'muted'],
-		heading_2: ['default', 'muted'],
-		heading_3: ['default', 'muted'],
-		heading_4: ['default', 'muted'],
-		preformatted: ['default'],
-		list: ['square', 'check', 'decimal', 'lower-alpha'],
-		list_item: ['default'],
-		figure: ['wide', 'narrow-left', 'narrow-center', 'narrow-right', 'flush', 'full-bleed'],
-		descriptive_listing: [
-			'narrow-left',
-			'narrow-center',
-			'narrow-right',
-			'full-width',
-			'two-columns'
-		],
-		accordion: ['narrow-left', 'narrow-center', 'narrow-right', 'full-width', 'two-columns'],
-		captioned_figure: ['default'],
-		supporting_media: ['default'],
-		feature: ['image-right', 'image-left'],
-		gallery: ['mixed', 'portraits', 'squares', 'landscapes', 'compact-landscapes'],
-		descriptive_gallery: ['cards', 'compact'],
-		nav_button: ['primary', 'secondary'],
-		nav_media: ['default'],
-		button: ['primary', 'secondary']
-	},
 
 	/**
 	 * Factory function to create Svedit commands and keymap.

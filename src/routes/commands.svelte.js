@@ -55,9 +55,7 @@ function replace_node_with_equivalent_type(
  * Direction can be 'next' or 'previous'.
  */
 export class CycleLayoutCommand extends Command {
-	closest_switchable_layout = $derived(
-		get_closest_switchable_layout(this.context.session, this.context.session.config)
-	);
+	closest_switchable_layout = $derived(get_closest_switchable_layout(this.context.session));
 
 	constructor(direction, context) {
 		super(context);
@@ -71,7 +69,7 @@ export class CycleLayoutCommand extends Command {
 	execute() {
 		const session = this.context.session;
 		const { node, node_array_path, node_index } = this.closest_switchable_layout;
-		const layouts = session.config.node_layouts[node.type];
+		const layouts = session.schema[node.type].properties.layout.values;
 		const current_layout_index = layouts.indexOf(node.layout);
 		if (current_layout_index === -1) return;
 
@@ -89,7 +87,7 @@ export class CycleLayoutCommand extends Command {
 		if (!closest_switchable_layout) return;
 
 		const { node, node_array_path, node_index } = closest_switchable_layout;
-		const layouts = session.config.node_layouts[node.type] ?? [];
+		const layouts = session.schema[node.type]?.properties?.layout?.values ?? [];
 		if (!layouts.includes(new_layout) || new_layout === node.layout) return;
 
 		const tr = session.tr;
@@ -142,7 +140,7 @@ export class CycleNodeTypeCommand extends Command {
 		if (!cycle_node_state?.available_types.includes(new_type)) return;
 
 		const { node, node_array_path, node_index } = cycle_node_state;
-		const allowed_layouts = session.config.node_layouts?.[new_type] ?? [];
+		const allowed_layouts = session.schema[new_type]?.properties?.layout?.values ?? [];
 		const selected_layout = allowed_layouts.includes(new_layout) ? new_layout : null;
 		const tr = session.tr;
 

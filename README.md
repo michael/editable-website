@@ -496,7 +496,11 @@ In `src/lib/document_schema.js`, add the node type definition. A hero is a `bloc
 hero: {
 	kind: 'block',
 	properties: {
-		layout: { type: 'string', default: 'side-by-side' },
+		layout: {
+			type: 'string',
+			values: ['side-by-side', 'stacked'],
+			default: 'side-by-side'
+		},
 		title: {
 			type: 'text',
 			mark_types: MINIMAL_MARKS,
@@ -590,7 +594,7 @@ There is no read-only twin to keep in sync: this one component is the live page 
 
 ### 3. Register it in the session
 
-In `src/routes/create_session.js`, three small registrations wire the type into the editor. Import the component and add it to `node_components`, so Svedit knows what to render:
+In `src/routes/create_session.js`, import the component and add it to `node_components`, so Svedit knows what to render:
 
 ```js
 import Hero from './components/Hero.svelte';
@@ -599,14 +603,7 @@ import Hero from './components/Hero.svelte';
 hero: Hero,
 ```
 
-Declare its layout ids in cycling order in `node_layouts`, which powers layout switching (toolbar and `Ctrl` + `Shift` + `←` / `→`):
-
-```js
-// in session_config.node_layouts:
-hero: ['side-by-side', 'stacked'],
-```
-
-And add an inserter — the factory that builds a blank hero when one is inserted on a page:
+The `values` array declares the valid layout ids in cycling order and powers layout switching (toolbar and `Ctrl` + `Shift` + `←` / `→`). Then add an inserter — the factory that builds a blank hero when one is inserted on a page:
 
 ```js
 // in session_config.inserters:
