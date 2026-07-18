@@ -61,18 +61,37 @@ export function get_video_dimensions(blob) {
 		const video = document.createElement('video');
 		video.preload = 'metadata';
 		const object_url = URL.createObjectURL(blob);
+		let poll_id;
 
-		video.onloadedmetadata = () => {
+		function cleanup() {
+			clearInterval(poll_id);
 			URL.revokeObjectURL(object_url);
-			resolve({ width: video.videoWidth, height: video.videoHeight });
-		};
+			video.removeAttribute('src');
+			video.load();
+		}
+
+		function resolve_dimensions() {
+			const { videoWidth, videoHeight } = video;
+			cleanup();
+			resolve({ width: videoWidth, height: videoHeight });
+		}
+
+		video.onloadedmetadata = resolve_dimensions;
 
 		video.onerror = () => {
-			URL.revokeObjectURL(object_url);
+			cleanup();
 			reject(new Error('Failed to load video metadata'));
 		};
 
 		video.src = object_url;
+
+		// Firefox sometimes never fires loadedmetadata for detached video
+		// elements, so poll readyState as a fallback (HAVE_METADATA = 1).
+		poll_id = setInterval(() => {
+			if (video.readyState >= 1) {
+				resolve_dimensions();
+			}
+		}, 100);
 	});
 }
 
