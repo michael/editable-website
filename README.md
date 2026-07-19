@@ -499,18 +499,20 @@ Videos are transcoded to a single web-optimized MP4 (H.264 + AAC). Drop an iPhon
 Each dropped video goes through this decision tree:
 
 1. **Filename escape hatch** — a file named `*_optimized.mp4` (or `*.optimized.mp4`) is uploaded byte-identical, bypassing all processing and all caps. Use this when you've deliberately prepared a file — say a high-bitrate 4K export — and want it kept exactly as exported.
-2. **Already good** — if the video is already H.264, within the resolution cap and within the bitrate budget (with 25% tolerance, since re-encoding a marginally-over file costs quality and saves little), nothing is re-encoded: an MP4 is uploaded untouched, and other containers (e.g. an H.264 `.mov`) are losslessly repackaged into an MP4 container.
-3. **Everything else** is transcoded: downscaled so the short side is at most the resolution cap (1080 means landscape 1920×1080 *and* portrait 1080×1920; videos are never upscaled), compressed to the target bitrate, rotation preserved.
+2. **Already good** — if the video is already H.264, within the resolution cap and within the size goal (with 25% tolerance, since re-encoding a marginally-over file costs quality and saves little), nothing is re-encoded: an MP4 is uploaded untouched, and other containers (e.g. an H.264 `.mov`) are losslessly repackaged into an MP4 container.
+3. **Everything else** is transcoded to fit the size goal: the bitrate is derived from the video's duration, and the resolution is chosen as the largest that still looks good at that bitrate — starting from the resolution cap (1080 means landscape 1920×1080 *and* portrait 1080×1920; videos are never upscaled) and stepping down (720, 540, …) for long videos where the size budget would otherwise spread too thin. Rotation is preserved.
 
 Two knobs in `src/lib/config.js`:
 
 ```js
-export const MAX_VIDEO_RESOLUTION = 1080; // cap on the short side: 720, 1080, …
-export const VIDEO_BITRATE = 8_000_000;   // target bitrate for transcoded videos
+export const MAX_VIDEO_RESOLUTION = 1080;            // cap on the short side: 720, 1080, …
+export const MAX_VIDEO_FILESIZE = 50 * 1024 * 1024;  // size goal for transcoded videos
 ```
 
 Things worth knowing:
 
+- The size limit is a goal, not a hard guarantee: browser encoders treat bitrate as a target, so the output may overshoot by a few percent. Short clips usually land well under it — bitrate is also capped where extra bits stop visibly improving quality.
+- For very long videos the goal wins over quality: the encoder goes down to the bottom of the resolution ladder and, past that, simply spreads the budget thin. If the result looks too rough, split the video into parts or upload a deliberate export via the escape hatch.
 - Transcoding uses the browser's hardware-accelerated codecs and shows its progress in the save dialog, but a long 4K clip still takes a while — the "already good" path exists precisely so that well-prepared files skip it entirely.
 - Input files are limited to 2 GB (the converted output is assembled in memory).
 - Decoding HEVC (the default iPhone format) requires an HEVC decoder on your platform; most browsers have one, Firefox on some systems doesn't. If the video can't be converted you get a clear error on save — convert the file manually and re-drop it.

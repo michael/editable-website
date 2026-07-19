@@ -1,4 +1,4 @@
-import { MAX_VIDEO_RESOLUTION, VIDEO_BITRATE } from '$lib/config.js';
+import { MAX_VIDEO_RESOLUTION, MAX_VIDEO_FILESIZE } from '$lib/config.js';
 
 /**
  * @typedef {{
@@ -16,7 +16,8 @@ import { MAX_VIDEO_RESOLUTION, VIDEO_BITRATE } from '$lib/config.js';
 
 /**
  * Transcode a video file off the main thread using a Web Worker.
- * Produces a web-optimized MP4 (H.264 + AAC) capped at MAX_VIDEO_RESOLUTION.
+ * Produces a web-optimized MP4 (H.264 + AAC) capped at MAX_VIDEO_RESOLUTION,
+ * with bitrate and resolution chosen to land within MAX_VIDEO_FILESIZE.
  * Files that are already web-optimized are detected and passed through
  * (as-is for MP4, losslessly remuxed for other containers like MOV).
  *
@@ -74,7 +75,7 @@ export function process_video(file, options = {}) {
 			type: 'process',
 			file,
 			max_resolution: MAX_VIDEO_RESOLUTION,
-			video_bitrate: VIDEO_BITRATE
+			max_filesize: MAX_VIDEO_FILESIZE
 		});
 	});
 }

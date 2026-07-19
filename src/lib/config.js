@@ -14,13 +14,19 @@ export const MAX_IMAGE_WIDTH = VARIANT_WIDTHS[VARIANT_WIDTHS.length - 1];
 
 /**
  * Maximum video resolution for transcoded videos, as a cap on the short side
- * (e.g. 1080 means landscape 1920×1080 and portrait 1080×1920). Set to 720
- * for smaller files. Videos within the cap are not upscaled.
+ * (e.g. 1080 means landscape 1920×1080 and portrait 1080×1920). Videos are
+ * never upscaled, and long videos may be stored below this cap when needed
+ * to stay within MAX_VIDEO_FILESIZE.
  */
 export const MAX_VIDEO_RESOLUTION = 1080;
 
-/** Target video bitrate in bits per second for transcoded videos. */
-export const VIDEO_BITRATE = 8_000_000;
+/**
+ * Target maximum file size for transcoded videos. The video bitrate (and,
+ * for long videos, the resolution) is chosen so the output lands within
+ * this size. It is a goal, not a hard limit: browser encoders treat
+ * bitrate as a target, so the result may overshoot by a few percent.
+ */
+export const MAX_VIDEO_FILESIZE = 50 * 1024 * 1024; // 50 MB
 
 /**
  * Maximum size of a video file we attempt to transcode in the browser.
