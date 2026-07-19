@@ -5,13 +5,14 @@
 // tooling at all.
 //
 // Triggered by writes (debounced, from the document save path) and at boot
-// (from the reconciliation sweep). Also imported by plain-node scripts —
-// keep this file free of $lib imports (see s3.js).
+// (from the reconciliation sweep). Also imported by plain-node scripts,
+// which don't remap .js specifiers to .ts files — so the s3 import uses an
+// explicit .ts extension, and this file must stay free of $lib imports.
 
 import { DatabaseSync } from 'node:sqlite';
 import { readFile, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
-import { backup_enabled, list_keys, put_object } from './s3.js';
+import { backup_enabled, list_keys, put_object } from './s3.ts';
 
 const SNAPSHOT_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 const PREFIX = 'snapshots/';

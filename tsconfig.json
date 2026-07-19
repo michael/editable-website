@@ -9,6 +9,7 @@
 		"skipLibCheck": true,
 		"sourceMap": false,
 		"strict": false,
-		"moduleResolution": "bundler"
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true
 	}
 }

@@ -1,6 +1,6 @@
 const MIGRATION_FILENAME_PATTERN = /^\d{8}T\d{9}Z_[a-z][a-z0-9-]*_[a-z0-9]+(?:_[a-z0-9]+)*\.ts$/;
 
-export type MigrationModule = { before?: string[]; up: (context: { db: any }) => unknown };
+type MigrationModule = { before?: string[]; up: (context: { db: any }) => unknown };
 export type Migration = MigrationModule & { id: string };
 
 const migration_modules = import.meta.glob('./migrations/*.ts', {

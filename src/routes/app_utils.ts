@@ -187,7 +187,7 @@ function have_same_property_schema(
  * Find the closest ancestor node whose type can be switched
  * (lives in a node_array with multiple node_types).
  */
-export function get_closest_switchable_type(
+function get_closest_switchable_type(
 	session: Session
 ): { node: DocumentNode; node_array_path: DocumentPath; node_index: number } | null {
 	const paths = get_ancestor_walk_paths(session);

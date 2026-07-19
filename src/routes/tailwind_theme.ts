@@ -3,5 +3,3 @@
 
 export const TW_LIMITER = 'mx-auto max-w-7xl'; // px-2 md:px-4 lg:px-6 xl:px-8
 export const TW_PAGE_PADDING_X = 'px-5 sm:px-7';
-// When you want to sync vertical padding with the horizontal page padding
-export const TW_PAGE_PADDING = 'p-5 sm:p-7';

@@ -23,10 +23,10 @@ const DESCRIPTION_NODE_TYPES = [
 ];
 
 /** Width of the resized variant used for social preview images (og:image). */
-export const SOCIAL_IMAGE_WIDTH = 1536;
+const SOCIAL_IMAGE_WIDTH = 1536;
 
 /** Width of the resized variant used for the favicon. */
-export const FAVICON_WIDTH = 320;
+const FAVICON_WIDTH = 320;
 
 export type PreviewMediaNode = {
 	type: string;
@@ -58,7 +58,7 @@ export type SiteMetadata = {
 	favicon: { href: string; type: string | null } | null;
 };
 
-export function extract_plain_text(text: { content?: string } | null | undefined): string {
+function extract_plain_text(text: { content?: string } | null | undefined): string {
 	if (!text || typeof text.content !== 'string') return '';
 	return text.content.trim();
 }
@@ -81,7 +81,7 @@ function has_variants(media_node: PreviewMediaNode): boolean {
  * Resolve the asset URL for a media node, preferring a resized variant when
  * one exists for the given target width.
  */
-export function get_media_asset_url(
+function get_media_asset_url(
 	media_node: PreviewMediaNode | null | undefined,
 	target_width?: number
 ): string | null {

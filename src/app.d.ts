@@ -7,8 +7,6 @@ declare global {
 		// an interface.
 		// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 		interface Locals {
-			db: import('node:sqlite').DatabaseSync;
-			user: string;
 			is_admin: boolean;
 		}
 		// interface PageData {}

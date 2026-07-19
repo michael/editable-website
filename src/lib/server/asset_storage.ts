@@ -17,7 +17,7 @@ mkdirSync(ASSET_PATH, { recursive: true });
  * Get the full filesystem path for an original asset (asset_id is
  * e.g. "c4b519da...fabdb.webp").
  */
-export function asset_path(asset_id: string): string {
+function asset_path(asset_id: string): string {
 	return join(ASSET_PATH, asset_id);
 }
 
@@ -32,7 +32,7 @@ function stem(asset_id: string): string {
 /**
  * Get the directory path for an asset's variants.
  */
-export function variant_dir(asset_id: string): string {
+function variant_dir(asset_id: string): string {
 	return join(ASSET_PATH, stem(asset_id));
 }
 
