@@ -482,6 +482,42 @@ annotation_types: ['comment']
 
 Annotation nodes must not have registered rendering components. For node arrays, child components receive every covering annotation through their `annotations` prop, and `Node` adds classes such as `anno-comment`, `anno-comment-start`, and `anno-comment-end`. Text annotations remain data-only, so comments or other interactive annotations usually need an overlay. The [Svedit API](https://github.com/michael/svedit) documents selection state, annotation commands, transactions, and rendering integration in full.
 
+## Media uploads
+
+When you paste or drop media into the page, it shows up instantly — the file is displayed straight from memory while processing happens in the background. Nothing touches the server until you hit save: only then are the processed files uploaded and the temporary references in the document replaced by content-addressed asset ids (`{sha256}.{ext}`). Identical files are deduplicated automatically.
+
+All processing happens in your browser, in a background worker — there is no server-side encoding pipeline and no external service.
+
+### Images
+
+Static raster images (JPEG, PNG, …) are converted to WebP, capped at 4096px wide, and encoded into a fixed set of responsive size variants so pages never ship more pixels than the layout needs. SVGs and animated GIFs are stored as-is.
+
+### Videos
+
+Videos are transcoded to a single web-optimized MP4 (H.264 + AAC). Drop an iPhone `.mov` fresh off the camera and it comes out as a downscaled, compressed MP4 that plays everywhere. Anything your browser can decode works as input: MOV, MP4, WebM, MKV, with H.264, HEVC, VP8/VP9 or AV1 inside.
+
+Each dropped video goes through this decision tree:
+
+1. **Filename escape hatch** — a file named `*_optimized.mp4` (or `*.optimized.mp4`) is uploaded byte-identical, bypassing all processing and all caps. Use this when you've deliberately prepared a file — say a high-bitrate 4K export — and want it kept exactly as exported.
+2. **Already good** — if the video is already H.264, within the resolution cap and within the size goal (with 25% tolerance, since re-encoding a marginally-over file costs quality and saves little), nothing is re-encoded: an MP4 is uploaded untouched, and other containers (e.g. an H.264 `.mov`) are losslessly repackaged into an MP4 container.
+3. **Everything else** is transcoded to fit the size goal: the bitrate is derived from the video's duration, and the resolution is chosen as the largest that still looks good at that bitrate — starting from the resolution cap (1080 means landscape 1920×1080 *and* portrait 1080×1920; videos are never upscaled) and stepping down (720, 540, …) for long videos where the size budget would otherwise spread too thin. Rotation is preserved.
+
+Two knobs in `src/lib/config.js`:
+
+```js
+export const MAX_VIDEO_RESOLUTION = 1080;            // cap on the short side: 720, 1080, …
+export const MAX_VIDEO_FILESIZE = 50 * 1024 * 1024;  // size goal for transcoded videos
+```
+
+Things worth knowing:
+
+- The size limit is a goal, not a hard guarantee: browser encoders treat bitrate as a target, so the output may overshoot by a few percent. Short clips usually land well under it — bitrate is also capped where extra bits stop visibly improving quality.
+- For very long videos the goal wins over quality: the encoder goes down to the bottom of the resolution ladder and, past that, simply spreads the budget thin. If the result looks too rough, split the video into parts or upload a deliberate export via the escape hatch.
+- Transcoding uses the browser's hardware-accelerated codecs and shows its progress in the save dialog, but a long 4K clip still takes a while — the "already good" path exists precisely so that well-prepared files skip it entirely.
+- Input files are limited to 2 GB (the converted output is assembled in memory).
+- Decoding HEVC (the default iPhone format) requires an HEVC decoder on your platform; most browsers have one, Firefox on some systems doesn't. If the video can't be converted you get a clear error on save — convert the file manually and re-drop it.
+- A video with an audio track that can't be converted fails loudly rather than uploading without sound.
+
 ## Create a custom node type
 
 Define a node schema and wire it up with a custom component.

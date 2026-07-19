@@ -1,5 +1,11 @@
 import { process_asset } from './process_asset.js';
-import { EXT_TO_MIME, MAX_IMAGE_WIDTH } from '$lib/config.js';
+import { process_video } from './process_video.js';
+import {
+	EXT_TO_MIME,
+	MAX_IMAGE_WIDTH,
+	MAX_VIDEO_INPUT_BYTES,
+	OPTIMIZED_VIDEO_REGEX
+} from '$lib/config.js';
 import { get_video_dimensions, get_media_dimensions } from './media_dimensions.js';
 
 /**
@@ -9,6 +15,7 @@ import { get_video_dimensions, get_media_dimensions } from './media_dimensions.j
  *   original: { blob: Blob, width: number, height: number },
  *   variants: Array<{ width: number, blob: Blob }>,
  *   status: 'processing' | 'ready' | 'error',
+ *   progress: number,
  *   error: string | null
  * }} PendingAsset
  */
@@ -79,14 +86,34 @@ function is_video(file) {
 }
 
 /**
- * Get the stored file extension for a video file.
+ * Check if a video file is marked as already web-optimized via the filename
+ * convention (e.g. my_video_optimized.mp4). Such files are uploaded as-is.
  *
  * @param {File} file
- * @returns {string}
+ * @returns {boolean}
  */
-function get_video_extension(file) {
-	if (file.type === 'video/webm') return 'webm';
-	return 'mp4';
+function is_preoptimized_video(file) {
+	return file.type === 'video/mp4' && OPTIMIZED_VIDEO_REGEX.test(file.name);
+}
+
+/**
+ * Serialize video transcode jobs: parallel transcodes would compete for
+ * memory and hardware encoders, so run them one at a time.
+ *
+ * @type {Promise<any>}
+ */
+let video_queue = Promise.resolve();
+
+/**
+ * @param {File} file
+ * @param {import('./process_video.js').ProcessVideoOptions} options
+ * @returns {Promise<import('./process_video.js').ProcessedVideo>}
+ */
+function enqueue_video_processing(file, options) {
+	const job = video_queue.then(() => process_video(file, options));
+	// Keep the queue chain alive even if this job fails
+	video_queue = job.catch(() => {});
+	return job;
 }
 
 /**
@@ -105,21 +132,43 @@ export async function start_processing(blob_url, file) {
 		original: { blob: file, width: 0, height: 0 },
 		variants: [],
 		status: 'processing',
+		progress: 0,
 		error: null
 	};
 	pending_assets.set(blob_url, entry);
 
 	if (is_video(file)) {
 		try {
-			const [hash, dims] = await Promise.all([
-				hash_blob(file),
-				get_video_dimensions(file)
-			]);
-			const ext = get_video_extension(file);
-			entry.hash = hash;
-			entry.asset_id = `${hash}.${ext}`;
-			entry.original = { blob: file, width: dims.width, height: dims.height };
+			if (is_preoptimized_video(file)) {
+				// Escape hatch: filename marks the file as already optimized —
+				// upload the raw bytes without transcoding.
+				const [hash, dims] = await Promise.all([
+					hash_blob(file),
+					get_video_dimensions(file)
+				]);
+				entry.hash = hash;
+				entry.asset_id = `${hash}.mp4`;
+				entry.original = { blob: file, width: dims.width, height: dims.height };
+			} else {
+				if (file.size > MAX_VIDEO_INPUT_BYTES) {
+					const max_gb = MAX_VIDEO_INPUT_BYTES / (1024 * 1024 * 1024);
+					throw new Error(
+						`Video is too large to convert in the browser (max ${max_gb} GB). Please compress it first.`
+					);
+				}
+				const result = await enqueue_video_processing(file, {
+					onProgress: (progress) => {
+						entry.progress = progress;
+					}
+				});
+				// The asset id must be the SHA-256 of the stored (transcoded) bytes —
+				// the server verifies this on upload.
+				entry.hash = await hash_blob(result.blob);
+				entry.asset_id = `${entry.hash}.mp4`;
+				entry.original = { blob: result.blob, width: result.width, height: result.height };
+			}
 			entry.variants = [];
+			entry.progress = 1;
 			entry.status = 'ready';
 		} catch (err) {
 			entry.status = 'error';
@@ -173,11 +222,14 @@ export function has_pending_processing() {
 
 /**
  * @callback ProcessingProgressCallback
- * @param {{ done: number, total: number }} progress
+ * @param {{ done: number, total: number, progress: number }} progress
  */
 
 /**
  * Wait until all pending assets have finished processing.
+ * The reported progress is the average completion across all entries (0–1);
+ * video transcodes report incremental progress, other entries count as
+ * 0 while processing and 1 when done.
  *
  * @param {ProcessingProgressCallback} [on_progress] - optional progress callback
  * @returns {Promise<void>}
@@ -187,11 +239,17 @@ export async function wait_for_processing(on_progress) {
 		if (on_progress) {
 			let done = 0;
 			let total = 0;
+			let progress_sum = 0;
 			for (const entry of pending_assets.values()) {
 				total++;
-				if (entry.status !== 'processing') done++;
+				if (entry.status !== 'processing') {
+					done++;
+					progress_sum += 1;
+				} else {
+					progress_sum += entry.progress;
+				}
 			}
-			on_progress({ done, total });
+			on_progress({ done, total, progress: total > 0 ? progress_sum / total : 1 });
 		}
 		await new Promise((resolve) => setTimeout(resolve, 100));
 	}
@@ -327,7 +385,8 @@ export async function upload_pending(blob_urls, on_progress) {
 
 /**
  * Replace blob URLs in document nodes with asset ids using the upload mapping.
- * Also updates width and height to the processed dimensions.
+ * Also updates width, height and mime_type to the processed values (e.g. a
+ * dropped .mov is stored as video/mp4 after transcoding).
  *
  * @param {Record<string, any>} nodes - The document's nodes map (mutated in place)
  * @param {Map<string, { asset_id: string, width: number, height: number }>} mapping
@@ -337,9 +396,13 @@ export function replace_blob_urls(nodes, mapping) {
 		if ((node.type === 'image' || node.type === 'video') && typeof node.src === 'string' && node.src.startsWith('blob:')) {
 			const entry = mapping.get(node.src);
 			if (entry) {
+				const ext = entry.asset_id.slice(entry.asset_id.lastIndexOf('.') + 1);
 				node.src = entry.asset_id;
 				node.width = entry.width;
 				node.height = entry.height;
+				if (EXT_TO_MIME[ext]) {
+					node.mime_type = EXT_TO_MIME[ext];
+				}
 			}
 		}
 	}
@@ -375,6 +438,7 @@ export async function ensure_processing(blob_urls) {
 				original: { blob: new Blob(), width: 0, height: 0 },
 				variants: [],
 				status: 'error',
+				progress: 0,
 				error: `Failed to re-fetch blob URL: ${err instanceof Error ? err.message : err}`
 			});
 		}
