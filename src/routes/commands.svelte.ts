@@ -64,7 +64,7 @@ export class CycleLayoutCommand extends Command {
 
 	execute() {
 		const session = this.context.session;
-		const { node, node_array_path, node_index } = this.closest_switchable_layout;
+		const { node } = this.closest_switchable_layout;
 		const layouts = session.schema[node.type].properties.layout.values;
 		const current_layout_index = layouts.indexOf(node.layout);
 		if (current_layout_index === -1) return;

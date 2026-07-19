@@ -22,14 +22,14 @@
 	let is_media_selected = $derived(
 		selected_property?.type === 'image' || selected_property?.type === 'video'
 	);
-	let is_multi_node_selection = $derived(
-		session.selection?.type === 'node' &&
-			Math.abs(session.selection.focus_offset - session.selection.anchor_offset) > 1
-	);
 	let is_single_node_selection = $derived(
 		session.selection?.type === 'node' &&
 			Math.abs(session.selection.focus_offset - session.selection.anchor_offset) === 1
 	);
+	// The cycle-type/-layout buttons stay implemented (commands and shortcuts
+	// remain registered), but the variant selector is the primary visible UI.
+	const SHOW_CYCLE_TOOLS = false;
+
 	let can_show_cycle_tools = $derived(
 		is_single_node_selection ||
 			session.selection?.type === 'text' ||
@@ -472,7 +472,7 @@
 					<!-- Type / Layout group (always visible, disabled when not applicable) -->
 					<div class="flex items-center gap-1">
 						<!-- Keep these commands/keybindings, but use the variant selector as the visible UI. -->
-						{#if false && can_show_cycle_tools}
+						{#if SHOW_CYCLE_TOOLS && can_show_cycle_tools}
 							<!-- Type: cycle to next node type -->
 							<button
 								class="{TW_TOOLBAR_BTN} {should_pulse_cycle_type

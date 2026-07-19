@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { get_svedit_context } from '../svedit_context.js';
 	import { get_app_context } from '../app_context.js';
-	import type { Nodes } from '$lib/document_schema.js';
 	import type { DocumentPath } from 'svedit';
 	import { TextProperty, Node, NodeArrayProperty } from 'svedit';
 	import Nav from './Nav.svelte';
@@ -13,7 +12,6 @@
 	const svedit = get_svedit_context();
 	const app = get_app_context();
 	let { path }: { path: DocumentPath } = $props();
-	let node: Nodes['page'] = $derived(svedit.session.get(path));
 	let head_metadata = $derived(extract_page_metadata(svedit.session.doc));
 	let page_title = $derived(head_metadata.title || 'Untitled page');
 	let canonical_url = $derived(

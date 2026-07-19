@@ -1062,7 +1062,6 @@ export const save_document = command(save_document_input_schema, async (combined
 		'INSERT OR REPLACE INTO document_refs (target_document_id, source_document_id, ref_order) VALUES (?, ?, ?)'
 	);
 
-	const delete_slug = db.prepare('DELETE FROM document_slugs WHERE slug = ?');
 	const deactivate_active_slug = db.prepare(
 		'UPDATE document_slugs SET is_active = 0 WHERE document_id = ? AND is_active = 1'
 	);

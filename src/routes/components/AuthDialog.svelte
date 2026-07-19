@@ -1,10 +1,8 @@
 <script lang="ts">
 	let {
-		onclose = () => {},
 		onedit_for_fun = () => {},
 		onlogin_success = () => {}
 	}: {
-		onclose?: () => void;
 		onedit_for_fun?: () => void;
 		onlogin_success?: () => Promise<void> | void;
 	} = $props();
@@ -42,11 +40,6 @@
 		pending = false;
 		step = 'choice';
 		should_focus_password_input = false;
-	}
-
-	function close_auth_dialog() {
-		reset_dialog();
-		onclose();
 	}
 
 	function handle_edit_for_fun() {

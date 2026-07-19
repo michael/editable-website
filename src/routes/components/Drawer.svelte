@@ -21,7 +21,6 @@
 	let dialog_ref = $state<HTMLDialogElement>();
 	let handle_ref = $state<HTMLElement>();
 
-	let is_visible = $state(open);
 	let is_mounted = $state(false);
 	let is_closing = $state(false);
 	let is_dragging = $state(false);
@@ -181,7 +180,6 @@
 
 		if (!is_mounted && dialog_ref?.open) {
 			dialog_ref.close();
-			is_visible = false;
 			is_closing = false;
 			open = false;
 			drawer_height_ratio = last_open_drawer_height_ratio;
@@ -196,7 +194,6 @@
 			document.documentElement.classList.add('drawer-open');
 			document.body.classList.add('drawer-open');
 
-			is_visible = true;
 			is_closing = false;
 			drawer_height_ratio = last_open_drawer_height_ratio;
 

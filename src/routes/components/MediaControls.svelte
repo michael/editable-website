@@ -129,7 +129,6 @@
 
 <!-- Either the pan mode is armed (after a pointer selection) or there's no pointer involved -->
 {#if pan_mode_armed || !is_mouse_down}
-	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		bind:this={controls_ref}
 		class="media-controls"

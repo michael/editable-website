@@ -45,11 +45,6 @@
 
 		return layouts[node.layout ?? 'mixed'];
 	}
-	const heading_spacing = `
-		[&>div:has(h1)~div>h1]:pt-8
-		[&>div:has(h2)~div>h2]:pt-6
-		[&>div:has(h3)~div>h3]:pt-4
-	`;
 </script>
 
 <Node {path}>

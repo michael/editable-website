@@ -40,7 +40,10 @@ let backoff_ms = 1000;
 function start_replication() {
 	sidecar = spawn('litestream', ['replicate', '-config', CONFIG], { stdio: 'inherit' });
 	sidecar.on('error', (err) => {
-		console.error('[backup] Failed to start litestream (replication OFF, site stays up):', err.message);
+		console.error(
+			'[backup] Failed to start litestream (replication OFF, site stays up):',
+			err.message
+		);
 	});
 	sidecar.on('exit', (code) => {
 		if (shutting_down) return;
@@ -68,11 +71,9 @@ if (process.env.BUCKET_NAME) {
 		});
 		if (existsSync(DB_PATH)) {
 			console.log('[backup] Database restored — downloading referenced assets…');
-			spawnSync(
-				'node',
-				['--disable-warning=ExperimentalWarning', script('./restore-assets.js')],
-				{ stdio: 'inherit' }
-			);
+			spawnSync('node', ['--disable-warning=ExperimentalWarning', script('./restore-assets.js')], {
+				stdio: 'inherit'
+			});
 		} else {
 			console.log('[backup] Nothing to restore (empty bucket) — starting fresh.');
 		}

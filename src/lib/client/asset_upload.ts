@@ -1,12 +1,7 @@
 import { process_asset } from './process_asset.js';
 import { process_video } from './process_video.js';
 import type { ProcessVideoOptions, ProcessedVideo } from './process_video.js';
-import {
-	EXT_TO_MIME,
-	MAX_IMAGE_WIDTH,
-	MAX_VIDEO_INPUT_BYTES,
-	OPTIMIZED_VIDEO_REGEX
-} from '$lib/config.js';
+import { EXT_TO_MIME, MAX_VIDEO_INPUT_BYTES, OPTIMIZED_VIDEO_REGEX } from '$lib/config.js';
 import { get_video_dimensions, get_media_dimensions } from './media_dimensions.js';
 import type { DocumentNode } from 'svedit';
 
@@ -309,7 +304,8 @@ async function upload_asset(entry: PendingAsset): Promise<UploadedAsset> {
 				/* best effort cleanup */
 			}
 			throw new Error(
-				`Variant upload failed (w${variant.width}): ${err instanceof Error ? err.message : err}`
+				`Variant upload failed (w${variant.width}): ${err instanceof Error ? err.message : err}`,
+				{ cause: err }
 			);
 		}
 	}

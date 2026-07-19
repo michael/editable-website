@@ -7,7 +7,6 @@
 
 	const svedit = get_svedit_context();
 	let { path }: { path: DocumentPath } = $props();
-	let node: Nodes['prose_grid_item'] = $derived(svedit.session.get(path));
 
 	let prose_grid_path = $derived(path.slice(0, -2));
 	let prose_grid_node: Nodes['prose_grid'] = $derived(svedit.session.get(prose_grid_path));

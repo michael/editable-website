@@ -31,9 +31,7 @@ function local_asset_files() {
 	}
 	return entries
 		.map(String)
-		.filter(
-			(rel) => !rel.endsWith('.DS_Store') && statSync(join(ASSETS_DIR, rel)).isFile()
-		)
+		.filter((rel) => !rel.endsWith('.DS_Store') && statSync(join(ASSETS_DIR, rel)).isFile())
 		.map((rel) => rel.split(sep).join('/'));
 }
 
@@ -44,7 +42,9 @@ const missing = local.filter((rel) => !remote.has(`assets/${rel}`));
 if (missing.length === 0) {
 	console.log(`[backup] Sweep: bucket in sync (${plural(local.length, 'asset file')}).`);
 } else {
-	console.log(`[backup] Sweep: uploading ${plural(missing.length, 'asset file')} missing from bucket…`);
+	console.log(
+		`[backup] Sweep: uploading ${plural(missing.length, 'asset file')} missing from bucket…`
+	);
 	let failed = 0;
 	for (const rel of missing) {
 		try {

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { get_app_context } from '../app_context.js';
-	import { goto, invalidateAll } from '$app/navigation';
+	import { invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
 
 	import { get_page_browser_data } from '$lib/api.remote.js';
@@ -14,7 +14,6 @@
 	let browser_data = $state(null);
 	let loading = $state(false);
 	let load_error = $state('');
-	let loaded_version = $state(-1);
 
 	let menu_item = $state(null);
 	let menu_anchor_name = $state('');
@@ -38,6 +37,10 @@
 
 	let search_query = $state('');
 	let search_input_ref = $state(null);
+	// selected_result_index is genuinely hybrid state: reset by search changes,
+	// clamped against visible results, and driven by keyboard navigation — a
+	// writable $derived would obscure those interacting writers.
+	// eslint-disable-next-line svelte/prefer-writable-derived
 	let selected_result_index = $state(0);
 	let tree_ref = $state(null);
 	let initialized_selection_version = $state(-1);
@@ -121,7 +124,6 @@
 		loading = query.loading;
 		load_error = query.error ? 'Failed to load pages.' : '';
 		browser_data = query.current ?? null;
-		loaded_version = page_browser?.version ?? 0;
 
 		const current_page_id = query.current
 			? ((query.current.current_document_id ?? null) as string | null)
@@ -480,7 +482,6 @@ Updated: ${updated_at_label}`;
 
 			close_page_url_dialog();
 			browser_data = null;
-			loaded_version = -1;
 			page_browser.invalidate?.();
 			await invalidateAll();
 		} catch (err) {
@@ -512,7 +513,6 @@ Updated: ${updated_at_label}`;
 
 			close_confirm();
 			browser_data = null;
-			loaded_version = -1;
 
 			if (deleted_current_page) {
 				await page_browser.handle_page_deleted?.(
@@ -529,10 +529,6 @@ Updated: ${updated_at_label}`;
 		} finally {
 			deleting = false;
 		}
-	}
-
-	function get_count_label(count, singular_label, plural_label) {
-		return `${count} ${count === 1 ? singular_label : plural_label}`;
 	}
 
 	function normalize_search_text(value) {
@@ -647,7 +643,7 @@ Updated: ${updated_at_label}`;
 		}));
 	}
 
-	function get_match_kind_class(match_kind) {
+	function get_match_kind_class(_match_kind) {
 		return '';
 	}
 
@@ -722,9 +718,7 @@ Updated: ${updated_at_label}`;
 	let filtered_page_forest = $derived(filter_page_forest(page_forest, normalized_search_query));
 	let visible_results = $derived(get_visible_results(filtered_page_forest));
 	let page_count = $derived(get_page_forest_count(page_forest));
-	let filtered_page_count = $derived(get_page_forest_count(filtered_page_forest));
 	let is_picker_mode = $derived(page_browser.state.mode === 'select');
-	let drawer_title = $derived(is_picker_mode ? 'Select page' : 'Pages');
 
 	$effect(() => {
 		normalized_search_query;
