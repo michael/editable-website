@@ -136,50 +136,7 @@ function collect_node_ids(
 	nodes: Record<string, DocumentNode>,
 	exclude_roots?: Set<string>
 ): Set<string> {
-	const collected = new Set<string>();
-	const stack: string[] = [root_id];
-
-	while (stack.length > 0) {
-		const id = stack.pop();
-		if (!id || collected.has(id)) continue;
-		if (exclude_roots && exclude_roots.has(id) && id !== root_id) continue;
-
-		collected.add(id);
-
-		const node = nodes[id];
-		if (!node) continue;
-
-		const type_schema: NodeSchema | undefined = document_schema[node.type];
-		if (!type_schema) continue;
-
-		for (const [prop_name, prop_def] of Object.entries<PropertyDefinition>(
-			type_schema.properties
-		)) {
-			const value = node[prop_name];
-			if (value == null) continue;
-
-			if (prop_def.type === 'node' && typeof value === 'string') {
-				stack.push(value);
-			} else if (prop_def.type === 'node_array') {
-				for (const child_id of value.nodes) {
-					stack.push(child_id);
-				}
-				for (const range of get_attached_ranges(value)) {
-					if (range.node_id) {
-						stack.push(range.node_id);
-					}
-				}
-			} else if (prop_def.type === 'text') {
-				for (const range of get_attached_ranges(value)) {
-					if (range.node_id) {
-						stack.push(range.node_id);
-					}
-				}
-			}
-		}
-	}
-
-	return collected;
+	return new Set(collect_node_ids_in_order(root_id, nodes, exclude_roots));
 }
 
 function get_referenced_asset_ids(): Set<string> {

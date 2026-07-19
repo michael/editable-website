@@ -77,22 +77,20 @@ Guidelines:
 
 ## SvelteKit configuration
 
-The app uses Svelte's experimental async features and SvelteKit's remote functions. Both are enabled in `svelte.config.js`:
+The app uses Svelte's experimental async features and SvelteKit's remote functions. All SvelteKit configuration is passed to the `sveltekit()` plugin in `vite.config.ts` (the newer configuration style, expected to become the default in SvelteKit 3); `svelte.config.js` stays an empty stub so tools that require its presence keep working. The "svelte.config.js is ignored" warning printed by dev/build/check commands is expected with this setup.
 
-```js
-const config = {
-	kit: {
-		adapter: adapter(),
-		experimental: {
-			remoteFunctions: true
-		}
+```ts
+sveltekit({
+	adapter: adapter(),
+	experimental: {
+		remoteFunctions: true
 	},
 	compilerOptions: {
 		experimental: {
 			async: true
 		}
 	}
-};
+});
 ```
 
 **Experimental async** allows `await` in Svelte markup and top-level `await` in `<script>` tags, enabling components to load data inline without separate `+page.server.js` load functions.
