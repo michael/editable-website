@@ -6,10 +6,18 @@ import {
 	BlobSource,
 	BufferSource,
 	BufferTarget,
+	Mp4InputFormat,
 	Mp4OutputFormat,
 	canEncodeAudio
 } from 'mediabunny';
 import { registerAacEncoder } from '@mediabunny/aac-encoder';
+
+/**
+ * Tolerance factor applied to the bitrate budget when deciding whether a
+ * video needs re-encoding. Re-encoding a file that is only marginally over
+ * budget saves little space but always costs quality.
+ */
+const BITRATE_TOLERANCE = 1.25;
 
 /**
  * @param {string} status
@@ -85,20 +93,49 @@ async function handle_process(data) {
 		const display_height = await video_track.getDisplayHeight();
 		const resize = build_resize_options(display_width, display_height, max_resolution);
 
+		// Skip-if-already-good detection: an H.264 video within the resolution
+		// cap and bitrate budget gains nothing from re-encoding.
+		const codec = await video_track.getCodec();
+		const duration = await input.computeDuration();
+		const average_bitrate = duration > 0 ? (file.size * 8) / duration : Infinity;
+		const already_good =
+			codec === 'avc' &&
+			Math.min(display_width, display_height) <= max_resolution &&
+			average_bitrate <= video_bitrate * BITRATE_TOLERANCE;
+
+		if (already_good) {
+			const format = await input.getFormat();
+			if (format instanceof Mp4InputFormat) {
+				// Already a good MP4 — upload the original bytes untouched.
+				post_status('Video already optimized');
+				self.postMessage({
+					type: 'result',
+					passthrough: true,
+					width: display_width,
+					height: display_height
+				});
+				return;
+			}
+		}
+
 		const target = new BufferTarget();
 		const output = new Output({
 			format: new Mp4OutputFormat({ fastStart: 'in-memory' }),
 			target
 		});
 
+		// For an already-good video in a non-MP4 container (e.g. an H.264 .mov),
+		// omit codec/bitrate so mediabunny losslessly copies the tracks into the
+		// MP4 container instead of re-encoding.
+		/** @type {import('mediabunny').ConversionVideoOptions} */
+		const video_options = already_good
+			? resize
+			: { ...resize, codec: 'avc', bitrate: video_bitrate };
+
 		const conversion = await Conversion.init({
 			input,
 			output,
-			video: {
-				...resize,
-				codec: 'avc',
-				bitrate: video_bitrate
-			}
+			video: video_options
 		});
 
 		if (!conversion.isValid) {
@@ -121,7 +158,7 @@ async function handle_process(data) {
 			self.postMessage({ type: 'progress', progress });
 		};
 
-		post_status('Transcoding video…');
+		post_status(already_good ? 'Repackaging video…' : 'Transcoding video…');
 		await conversion.execute();
 
 		const buffer = target.buffer;

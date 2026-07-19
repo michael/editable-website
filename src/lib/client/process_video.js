@@ -4,7 +4,8 @@ import { MAX_VIDEO_RESOLUTION, VIDEO_BITRATE } from '$lib/config.js';
  * @typedef {{
  *   blob: Blob,
  *   width: number,
- *   height: number
+ *   height: number,
+ *   passthrough: boolean
  * }} ProcessedVideo
  *
  * @typedef {{
@@ -16,6 +17,8 @@ import { MAX_VIDEO_RESOLUTION, VIDEO_BITRATE } from '$lib/config.js';
 /**
  * Transcode a video file off the main thread using a Web Worker.
  * Produces a web-optimized MP4 (H.264 + AAC) capped at MAX_VIDEO_RESOLUTION.
+ * Files that are already web-optimized are detected and passed through
+ * (as-is for MP4, losslessly remuxed for other containers like MOV).
  *
  * @param {File} file - The original video file
  * @param {ProcessVideoOptions} [options]
@@ -52,9 +55,12 @@ export function process_video(file, options = {}) {
 			if (msg.type === 'result') {
 				worker.terminate();
 				resolve({
-					blob: new Blob([msg.buffer], { type: 'video/mp4' }),
+					// Passthrough: the file is already a web-optimized MP4 —
+					// upload the original bytes untouched.
+					blob: msg.passthrough ? file : new Blob([msg.buffer], { type: 'video/mp4' }),
 					width: msg.width,
-					height: msg.height
+					height: msg.height,
+					passthrough: Boolean(msg.passthrough)
 				});
 			}
 		});
