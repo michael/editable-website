@@ -56,9 +56,11 @@
 	},
 	"dependencies": {
 		"@jsquash/webp": "^1.5.0",
+		"@mediabunny/aac-encoder": "^1.50.9",
 		"@sveltejs/adapter-node": "^5.5.7",
 		"aws4fetch": "^1.0.20",
 		"mdast-util-from-markdown": "^2.0.3",
+		"mediabunny": "^1.50.9",
 		"nanoid": "^5.1.6",
 		"slugify": "^1.6.6",
 		"svedit": "^0.12.0",

@@ -12,6 +12,29 @@ export const VARIANT_WIDTHS_SET = new Set(VARIANT_WIDTHS);
 /** Maximum image width — derived from the largest variant width */
 export const MAX_IMAGE_WIDTH = VARIANT_WIDTHS[VARIANT_WIDTHS.length - 1];
 
+/**
+ * Maximum video resolution for transcoded videos, as a cap on the short side
+ * (e.g. 1080 means landscape 1920×1080 and portrait 1080×1920). Set to 720
+ * for smaller files. Videos within the cap are not upscaled.
+ */
+export const MAX_VIDEO_RESOLUTION = 1080;
+
+/** Target video bitrate in bits per second for transcoded videos. */
+export const VIDEO_BITRATE = 8_000_000;
+
+/**
+ * Maximum size of a video file we attempt to transcode in the browser.
+ * The transcoded output is held in memory, so very large inputs are rejected.
+ */
+export const MAX_VIDEO_INPUT_BYTES = 2 * 1024 * 1024 * 1024; // 2 GB
+
+/**
+ * Filename convention that marks a video as already web-optimized.
+ * Matching MP4 files are uploaded as-is, skipping the transcode
+ * (e.g. my_video_optimized.mp4, clip.optimized.mp4).
+ */
+export const OPTIMIZED_VIDEO_REGEX = /[._-]optimized\./i;
+
 /** URL prefix for serving assets */
 export const ASSET_BASE = '/assets';
 

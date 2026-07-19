@@ -6,6 +6,7 @@
 	import Toolbar from './Toolbar.svelte';
 	import SaveProgressModal from './SaveProgressModal.svelte';
 
+	import { EXT_TO_MIME } from '$lib/config.js';
 	import { create_session } from '../create_session.js';
 	import { create_page_browser, set_page_browser } from './page_browser_context.svelte.js';
 
@@ -338,18 +339,20 @@
 
 					if (has_pending_processing()) {
 						save_progress_message =
-							total === 1 ? 'Processing image…' : `Processing ${total} images…`;
+							total === 1 ? 'Processing media…' : `Processing ${total} media files…`;
 
-						await wait_for_processing(({ done, total: processing_total }) => {
-							if (processing_total > 1) {
-								save_progress_message = `Processing image ${done + 1}/${processing_total}…`;
-							}
+						await wait_for_processing(({ done, total: processing_total, progress }) => {
+							const percent = Math.round(progress * 100);
+							save_progress_message =
+								processing_total > 1
+									? `Processing media ${done + 1}/${processing_total}… ${percent}%`
+									: `Processing media… ${percent}%`;
 						});
 					}
 
 					mapping = await upload_pending(blob_urls, ({ phase, index, total: upload_total }) => {
 						if (phase === 'uploading') {
-							save_progress_message = `Uploading image ${index}/${upload_total}…`;
+							save_progress_message = `Uploading media ${index}/${upload_total}…`;
 						}
 					});
 				}
@@ -372,9 +375,13 @@
 					for (const [blob_url, entry] of mapping.entries()) {
 						for (const node of Object.values(pre_check.nodes)) {
 							if ((node.type === 'image' || node.type === 'video') && node.src === blob_url) {
+								const ext = entry.asset_id.slice(entry.asset_id.lastIndexOf('.') + 1);
 								tr.set([node.id, 'src'], entry.asset_id);
 								tr.set([node.id, 'width'], entry.width);
 								tr.set([node.id, 'height'], entry.height);
+								if (EXT_TO_MIME[ext]) {
+									tr.set([node.id, 'mime_type'], EXT_TO_MIME[ext]);
+								}
 							}
 						}
 					}
