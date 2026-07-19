@@ -1,9 +1,12 @@
-<script>
+<script lang="ts">
 	import Image from './Image.svelte';
 	import Video from './Video.svelte';
 
-	/** @type {{ node: any, editable?: boolean }} */
-	let { node, editable = false } = $props();
+	import type { PreviewMediaNode } from '$lib/page_metadata.js';
+
+	// Accepts both document media nodes (Nodes['image'] / Nodes['video']) and
+	// derived preview nodes — anything with the media display shape.
+	let { node, editable = false }: { node: PreviewMediaNode; editable?: boolean } = $props();
 </script>
 
 {#if node?.type === 'video'}

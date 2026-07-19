@@ -1,5 +1,8 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import { get_svedit_context } from '../svedit_context.js';
+	import { get_app_context } from '../app_context.js';
+	import type { Nodes } from '$lib/document_schema.js';
+	import type { DocumentPath } from 'svedit';
 	import { TextProperty, Node, NodeArrayProperty } from 'svedit';
 	import Nav from './Nav.svelte';
 	import Footer from './Footer.svelte';
@@ -7,10 +10,10 @@
 	import { extract_page_metadata, get_social_image } from '$lib/page_metadata.js';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 
-	const svedit = getContext('svedit');
-	const app = getContext('app');
-	let { path } = $props();
-	let node = $derived(svedit.session.get(path));
+	const svedit = get_svedit_context();
+	const app = get_app_context();
+	let { path }: { path: DocumentPath } = $props();
+	let node: Nodes['page'] = $derived(svedit.session.get(path));
 	let head_metadata = $derived(extract_page_metadata(svedit.session.doc));
 	let page_title = $derived(head_metadata.title || 'Untitled page');
 	let canonical_url = $derived(

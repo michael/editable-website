@@ -1,10 +1,11 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import type { DocumentPath } from 'svedit';
+	import { get_svedit_context } from '../svedit_context.js';
 	import { Node, TextProperty } from 'svedit';
 
-	const svedit = getContext('svedit');
+	const svedit = get_svedit_context();
 
-	let { path } = $props();
+	let { path }: { path: DocumentPath } = $props();
 	let list_node = $derived(svedit.session.get(path.slice(0, -2)));
 	let item_index = $derived(Number(path.at(-1)) || 0);
 	let marker = $derived(get_marker(item_index + 1, list_node?.layout || 'decimal'));

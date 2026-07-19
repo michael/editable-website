@@ -3,10 +3,13 @@
 declare global {
 	namespace App {
 		// interface Error {}
+		// SvelteKit's App types rely on declaration merging, so this must stay
+		// an interface.
+		// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 		interface Locals {
-			db: DatabaseSync,
-			user: string,
-			is_admin: boolean,
+			db: import('node:sqlite').DatabaseSync;
+			user: string;
+			is_admin: boolean;
 		}
 		// interface PageData {}
 		// interface PageState {}

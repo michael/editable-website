@@ -20,13 +20,52 @@ export default [
 	{
 		languageOptions: {
 			globals: { ...globals.browser, ...globals.node }
+		},
+		rules: {
+			'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }]
 		}
 	},
 	{
-		files: ['**/*.svelte', '**/*.svelte.js'],
-		languageOptions: { parserOptions: { svelteConfig } },
+		files: ['**/*.svelte', '**/*.svelte.js', '**/*.svelte.ts'],
+		languageOptions: { parserOptions: { svelteConfig, parser: typescriptParser } },
+		plugins: {
+			'@typescript-eslint': typescript
+		},
 		rules: {
-			'svelte/no-navigation-without-resolve': 'off'
+			'svelte/no-navigation-without-resolve': 'off',
+			// The base rule reports parameters in type annotations; use the
+			// TypeScript-aware variant.
+			'no-unused-vars': 'off',
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{ argsIgnorePattern: '^_', varsIgnorePattern: '^_' }
+			]
+		}
+	},
+	// TypeScript configuration for regular .ts modules (.svelte.ts files are
+	// handled by the svelte plugin configs above so runes stay defined)
+	{
+		files: ['**/*.ts'],
+		ignores: ['**/*.d.ts', '**/*.svelte.ts'],
+		languageOptions: {
+			parser: typescriptParser,
+			parserOptions: {
+				ecmaVersion: 2022,
+				sourceType: 'module'
+			}
+		},
+		plugins: {
+			'@typescript-eslint': typescript
+		},
+		rules: {
+			// TypeScript itself checks undefined names and unused variables of
+			// type-only constructs; use the TS-aware variants.
+			'no-undef': 'off',
+			'no-unused-vars': 'off',
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{ argsIgnorePattern: '^_', varsIgnorePattern: '^_' }
+			]
 		}
 	},
 	// TypeScript configuration for .d.ts files
@@ -35,7 +74,7 @@ export default [
 		languageOptions: {
 			parser: typescriptParser,
 			parserOptions: {
-				project: './jsconfig.json',
+				project: './tsconfig.json',
 				ecmaVersion: 2022,
 				sourceType: 'module'
 			}
@@ -45,15 +84,14 @@ export default [
 		},
 		rules: {
 			// Enable TypeScript-specific rules for .d.ts files
+			'no-undef': 'off',
 			'@typescript-eslint/no-unused-vars': 'error',
 			'@typescript-eslint/consistent-type-definitions': ['error', 'type'],
 			'@typescript-eslint/no-explicit-any': 'warn',
 			'@typescript-eslint/prefer-namespace-keyword': 'error',
 			'@typescript-eslint/triple-slash-reference': 'error',
-			'@typescript-eslint/no-var-requires': 'off', // Often needed in .d.ts files
-			'@typescript-eslint/ban-types': 'error',
 			'@typescript-eslint/no-duplicate-enum-values': 'error',
-			'@typescript-eslint/no-empty-interface': 'error',
+			'@typescript-eslint/no-empty-object-type': 'error',
 			'@typescript-eslint/no-inferrable-types': 'off',
 			'@typescript-eslint/no-misused-new': 'error',
 			'@typescript-eslint/no-namespace': 'error',

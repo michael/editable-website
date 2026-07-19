@@ -1,13 +1,14 @@
-<script>
+<script lang="ts">
+	import { get_app_context } from '../app_context.js';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import { getContext } from 'svelte';
 
 	import { get_page_browser_data } from '$lib/api.remote.js';
+	import type { PageTreeNode } from '$lib/api.remote.js';
 	import Media from './Media.svelte';
 	import { get_page_browser } from './page_browser_context.svelte.js';
 
-	const app = getContext('app');
+	const app = get_app_context();
 	const page_browser = get_page_browser();
 
 	let browser_data = $state(null);
@@ -123,7 +124,7 @@
 		loaded_version = page_browser?.version ?? 0;
 
 		const current_page_id = query.current
-			? /** @type {string | null} */ (query.current.current_document_id ?? null)
+			? ((query.current.current_document_id ?? null) as string | null)
 			: null;
 
 		if (
@@ -712,7 +713,7 @@ Updated: ${updated_at_label}`;
 			page_browser.handle_page_selected({
 				document_id: selected_result.document_id,
 				page_href: selected_result.page_href
-			});
+			} as PageTreeNode);
 		}
 	}
 

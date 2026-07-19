@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { TextProperty } from 'svedit';
 	let { path, tag = 'h2', placeholder = 'Heading 1', class: css_class = '' } = $props();
 </script>

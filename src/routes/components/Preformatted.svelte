@@ -1,5 +1,6 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import type { Nodes } from '$lib/document_schema.js';
+	import { get_svedit_context } from '../svedit_context.js';
 	import { Node, TextProperty } from 'svedit';
 	import { TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 	import { split_code_comments } from '$lib/code_comments.js';
@@ -8,9 +9,9 @@
 	// Set to false to render all preformatted text uniformly.
 	const dim_code_comments = true;
 
-	const svedit = getContext('svedit');
+	const svedit = get_svedit_context();
 	let { path, mark: section = null } = $props();
-	let node = $derived(svedit.session.get(path));
+	let node: Nodes['preformatted'] = $derived(svedit.session.get(path));
 	let padding_top_wide = $derived(!section || section?.is_start);
 	let padding_bottom_wide = $derived(!section || section?.is_end);
 	let comment_segments = $derived(

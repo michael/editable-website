@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	/**
 	 * Reusable bottom drawer / bottom sheet backed by a dialog element so it
 	 * participates in the browser top layer when open.
@@ -18,8 +18,8 @@
 	const velocity_threshold = 0.5;
 	const auto_close_drag_distance = 96;
 
-	let dialog_ref = $state();
-	let handle_ref = $state();
+	let dialog_ref = $state<HTMLDialogElement>();
+	let handle_ref = $state<HTMLElement>();
 
 	let is_visible = $state(open);
 	let is_mounted = $state(false);

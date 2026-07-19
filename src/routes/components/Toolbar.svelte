@@ -1,5 +1,5 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import { get_app_context } from '../app_context.js';
 	import { resolve } from '$app/paths';
 	import { get_page_browser } from './page_browser_context.svelte.js';
 	import { is_node_subtree_empty } from '../app_utils.js';
@@ -8,7 +8,7 @@
 	let { session, app_commands, editable, focus_canvas } = $props();
 
 	const page_browser = get_page_browser();
-	const app = getContext('app');
+	const app = get_app_context();
 
 	let cancel_command = $derived(app_commands.cancel_editing ?? null);
 	let cancel_button_label = $derived(cancel_command?.label || 'Cancel');

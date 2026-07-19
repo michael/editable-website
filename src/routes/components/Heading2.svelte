@@ -1,11 +1,13 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import type { Nodes } from '$lib/document_schema.js';
+	import type { DocumentPath } from 'svedit';
+	import { get_svedit_context } from '../svedit_context.js';
 	import { Node, TextProperty } from 'svedit';
 	import { reveal } from '../reveal.js';
 
-	const svedit = getContext('svedit');
-	let { path } = $props();
-	let node = $derived(svedit.session.get(path));
+	const svedit = get_svedit_context();
+	let { path }: { path: DocumentPath } = $props();
+	let node: Nodes['heading_2'] = $derived(svedit.session.get(path));
 	let layout = $derived(node.layout || 'default');
 </script>
 

@@ -1,16 +1,19 @@
-<script>
-	/** @type {{
-		onclose?: () => void,
-		onedit_for_fun?: () => void,
-		onlogin_success?: () => Promise<void> | void
-	}} */
-	let { onclose = () => {}, onedit_for_fun = () => {}, onlogin_success = () => {} } = $props();
+<script lang="ts">
+	let {
+		onclose = () => {},
+		onedit_for_fun = () => {},
+		onlogin_success = () => {}
+	}: {
+		onclose?: () => void;
+		onedit_for_fun?: () => void;
+		onlogin_success?: () => Promise<void> | void;
+	} = $props();
 
 	let password = $state('');
 	let error = $state('');
 	let pending = $state(false);
 	let step = $state('choice');
-	let password_input_ref = $state();
+	let password_input_ref = $state<HTMLInputElement>();
 	let should_focus_password_input = $state(false);
 
 	$effect(() => {

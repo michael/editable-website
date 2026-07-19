@@ -107,8 +107,8 @@ Content is defined through schemas that specify:
 ## Schema and Inserter
 
 When adding new properties to a node type:
-1. Add to schema in `create_session.js` (`document_schema`)
-2. Add to inserter in `create_session.js` (`inserters`)
+1. Add to schema in `src/lib/document_schema.ts` (`document_schema`)
+2. Add to inserter in `src/routes/create_session.ts` (`inserters`)
 
 ## Available MCP Tools
 

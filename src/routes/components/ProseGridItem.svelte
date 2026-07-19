@@ -1,13 +1,16 @@
-<script>
-	import { getContext, setContext } from 'svelte';
+<script lang="ts">
+	import { get_svedit_context } from '../svedit_context.js';
+	import type { Nodes } from '$lib/document_schema.js';
+	import type { DocumentPath } from 'svedit';
+	import { setContext } from 'svelte';
 	import { Node, NodeArrayProperty } from 'svedit';
 
-	const svedit = getContext('svedit');
-	let { path } = $props();
-	let node = $derived(svedit.session.get(path));
+	const svedit = get_svedit_context();
+	let { path }: { path: DocumentPath } = $props();
+	let node: Nodes['prose_grid_item'] = $derived(svedit.session.get(path));
 
 	let prose_grid_path = $derived(path.slice(0, -2));
-	let prose_grid_node = $derived(svedit.session.get(prose_grid_path));
+	let prose_grid_node: Nodes['prose_grid'] = $derived(svedit.session.get(prose_grid_path));
 	let layout = $derived(prose_grid_node.layout || 'plain');
 
 	setContext('prose', {

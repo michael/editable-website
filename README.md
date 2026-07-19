@@ -121,13 +121,19 @@ path                           // the hero node
 Pass those paths to primitives and use the same paths to read values when layout depends on content:
 
 ```svelte
-<script>
-	const svedit = getContext('svedit');
-	let { path } = $props();
-	let hero = $derived(svedit.session.get(path));
+<script lang="ts">
+	import { get_svedit_context } from '../svedit_context.js';
+	import type { DocumentPath } from 'svedit';
+	import type { Nodes } from '$lib/document_schema.js';
+
+	const svedit = get_svedit_context();
+	let { path }: { path: DocumentPath } = $props();
+	let hero: Nodes['hero'] = $derived(svedit.session.get(path));
 	let media = $derived(svedit.session.get([...path, 'media']));
 </script>
 ```
+
+The `Nodes['hero']` annotation types the node against the schema, so `hero.` autocompletes its properties and a misspelled property fails `npm run check`.
 
 `session.get` follows node references for you, so the last expression returns the media node rather than its stored id. Components do not need to know whether they are on a page, inside another block, or nested several arrays deep.
 
@@ -298,7 +304,7 @@ The first four come from `svedit`; the last two live in `src/routes/components`.
 
 A small, typed vocabulary for Editable's pages and shared site content.
 
-Editable's content model defines the nodes and properties available to pages and shared site content. Its schema lives in `src/lib/document_schema.js`; this section is the reference.
+Editable's content model defines the nodes and properties available to pages and shared site content. Its schema lives in `src/lib/document_schema.ts`; this section is the reference.
 
 Documents are graphs of nodes stored by id. Each node has an `id`, a `type`, and type-specific properties. A few naming conventions hold throughout: `content` is the string payload of text properties, `body` holds authored nested content, `items` holds repeated structured children, and `label`/`title`/`description`/`meta` are text properties with semantic meaning.
 
@@ -502,7 +508,7 @@ Each dropped video goes through this decision tree:
 2. **Already good** — if the video is already H.264, within the resolution cap and within the size goal (with 25% tolerance, since re-encoding a marginally-over file costs quality and saves little), nothing is re-encoded: an MP4 is uploaded untouched, and other containers (e.g. an H.264 `.mov`) are losslessly repackaged into an MP4 container.
 3. **Everything else** is transcoded to fit the size goal: the bitrate is derived from the video's duration, and the resolution is chosen as the largest that still looks good at that bitrate — starting from the resolution cap (1080 means landscape 1920×1080 *and* portrait 1080×1920; videos are never upscaled) and stepping down (720, 540, …) for long videos where the size budget would otherwise spread too thin. Rotation is preserved.
 
-Two knobs in `src/lib/config.js`:
+Two knobs in `src/lib/config.ts`:
 
 ```js
 export const MAX_VIDEO_RESOLUTION = 1080;            // cap on the short side: 720, 1080, …
@@ -526,7 +532,7 @@ Editable's built-in types are just a starting set. This walkthrough adds a `hero
 
 ### 1. Define the type in the schema
 
-In `src/lib/document_schema.js`, add the node type definition. A hero is a `block` with a `layout` variant, two text properties, and a media reference:
+In `src/lib/document_schema.ts`, add the node type definition. A hero is a `block` with a `layout` variant, two text properties, and a media reference:
 
 ```js
 hero: {
@@ -578,15 +584,17 @@ That's the whole data model. Documents containing heroes now validate, and every
 Create `src/routes/components/Hero.svelte`. It reads the node at `path`, renders each property through an editable primitive (`TextProperty` for text, `MediaProperty` for the image), and picks a snippet per layout:
 
 ```svelte
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
 	import { Node, TextProperty } from 'svedit';
+	import type { DocumentPath } from 'svedit';
+	import type { Nodes } from '$lib/document_schema.js';
+	import { get_svedit_context } from '../svedit_context.js';
 	import MediaProperty from './MediaProperty.svelte';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 
-	const svedit = getContext('svedit');
-	let { path } = $props();
-	let node = $derived(svedit.session.get(path));
+	const svedit = get_svedit_context();
+	let { path }: { path: DocumentPath } = $props();
+	let node: Nodes['hero'] = $derived(svedit.session.get(path));
 	let layout = $derived(node.layout || 'side-by-side');
 </script>
 
@@ -630,7 +638,7 @@ There is no read-only twin to keep in sync: this one component is the live page 
 
 ### 3. Register it in the session
 
-In `src/routes/create_session.js`, import the component and add it to `node_components`, so Svedit knows what to render:
+In `src/routes/create_session.ts`, import the component and add it to `node_components`, so Svedit knows what to render:
 
 ```js
 import Hero from './components/Hero.svelte';
@@ -912,7 +920,7 @@ A deployment can expose selected repository markdown files as read-only pages re
 
 ### Configuration
 
-Any markdown file in the repository can be mapped to a URL in `src/lib/content_config.js` (server/build-only — never import it from client code). Reference the file with a `?raw` import, so Vite inlines exactly the mapped files and a missing file fails the build:
+Any markdown file in the repository can be mapped to a URL in `src/lib/content_config.ts` (server/build-only — never import it from client code). Reference the file with a `?raw` import, so Vite inlines exactly the mapped files and a missing file fails the build:
 
 ```js
 import manual_md from '../../README.md?raw';

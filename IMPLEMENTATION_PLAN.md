@@ -1,5 +1,16 @@
 # Implementation plan
 
+## TypeScript conversion
+
+Convert the whole codebase from JS+JSDoc to TypeScript per the "Language: TypeScript" section in [ARCHITECTURE.md](ARCHITECTURE.md). Non-strict; svelte-check must stay at 0 errors.
+
+1. Replace `jsconfig.json` with `tsconfig.json` (same options, `allowJs`/`checkJs` kept during transition) and point the `check` script at it.
+2. Convert `src/lib/document_schema.js` → `.ts`, export `type Nodes = NodeMap<typeof document_schema>`, and add a typed `get_svedit_context()` in `src/routes/svedit_context.ts` (mirrors the svedit demo app).
+3. Convert `src/lib` modules (root, `client/`, `server/`, `server/markdown/`, `server/migrations/`), translating existing JSDoc annotations to TS syntax.
+4. Convert `src/routes` modules (`hooks.server`, load functions, API endpoints, `app_utils`, `commands.svelte`, `create_session`, helpers).
+5. Convert all Svelte components to `<script lang="ts">`. Node components use the typed-node pattern; internal components get explicit prop types.
+6. Convert tests to `.ts`, update the vitest include glob and `vite.config` filename, then verify `npm run check`, `npm test`, `npm run build`, and `npm run lint` all pass.
+
 ## Node navigator and variant switcher
 
 - While editing at every viewport size, show the closest node with variants inside the main toolbar.

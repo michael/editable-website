@@ -1,16 +1,17 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import type { DocumentPath } from 'svedit';
+	import { get_svedit_context } from '../svedit_context.js';
 	import { serialize_path } from 'svedit';
 
-	const svedit = getContext('svedit');
+	const svedit = get_svedit_context();
 
-	let { path } = $props();
+	let { path }: { path: DocumentPath } = $props();
 
 	let edit_media_command = $derived(svedit.session.commands?.edit_image);
 	let target_node = $derived(svedit.session.get(path));
 	let alt_input_value = $state('');
-	let alt_input_ref = $state();
-	let dialog_ref = $state();
+	let alt_input_ref = $state<HTMLTextAreaElement>();
+	let dialog_ref = $state<HTMLDialogElement>();
 
 	function save() {
 		if (target_node?.type === 'image' || target_node?.type === 'video') {

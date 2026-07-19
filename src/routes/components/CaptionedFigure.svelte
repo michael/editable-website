@@ -1,12 +1,13 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import type { Nodes } from '$lib/document_schema.js';
+	import { get_svedit_context } from '../svedit_context.js';
 	import { Node, TextProperty } from 'svedit';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 	import MediaProperty from './MediaProperty.svelte';
 
-	const svedit = getContext('svedit');
+	const svedit = get_svedit_context();
 	let { path, mark: section = null } = $props();
-	let node = $derived(svedit.session.get(path));
+	let node: Nodes['captioned_figure'] = $derived(svedit.session.get(path));
 	let media_node = $derived(svedit.session.get([...path, 'media']));
 	let render_as_link = $derived(!svedit.editable && node.href);
 	let padding_top_wide = $derived(!section || section?.is_start);

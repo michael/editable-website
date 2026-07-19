@@ -1,20 +1,12 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import type { DocumentPath } from 'svedit';
+	import { get_svedit_context } from '../svedit_context.js';
 	import { CustomProperty, serialize_path } from 'svedit';
 	import Media from './Media.svelte';
 
-	const svedit = getContext('svedit');
+	const svedit = get_svedit_context();
 
-	/**
-	 * @type {{
-	 *   path: any[],
-	 *   class?: string
-	 * }}
-	 */
-	let {
-		path,
-		class: css_class = ''
-	} = $props();
+	let { path, class: css_class = '' }: { path: DocumentPath; class?: string } = $props();
 	let node = $derived(svedit.session.get(path));
 
 	let is_selected = $derived(is_property_selected());
@@ -25,10 +17,10 @@
 	}
 </script>
 
-<CustomProperty class="h-full {css_class}" path={path}>
+<CustomProperty class="h-full {css_class}" {path}>
 	<div
 		contenteditable="false"
-		class="overflow-hidden h-full"
+		class="h-full overflow-hidden"
 		class:ew-bg-checkerboard={is_selected || !node.src}
 	>
 		<Media {node} editable={svedit.editable} />

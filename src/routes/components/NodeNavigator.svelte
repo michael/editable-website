@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { serialize_path } from 'svedit';
 	import { get_selection_node_ancestors, is_node_subtree_empty } from '../app_utils.js';
 

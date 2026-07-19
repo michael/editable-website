@@ -63,6 +63,18 @@ In full runtime mode, Editable also supports a simple owner-only admin authentic
 2. **Edit-for-fun mode** — unauthenticated, can temporarily edit the currently open page in the browser UI, but cannot save changes or access private site-management features
 3. **Public browsing mode** — normal site visitor mode with no editing UI active
 
+## Language: TypeScript
+
+The codebase is written in TypeScript throughout — modules use `.ts` (or `.svelte.ts` when they use runes), and Svelte components use `<script lang="ts">`. This follows the decision in [michael/editable#144](https://github.com/michael/editable/issues/144): Svelte developers are the primary technical extenders, and a schema-driven system gains unusually much from types.
+
+Guidelines:
+
+- **Non-strict for now.** `tsconfig.json` keeps `strict: false`; implicit `any` is allowed. The goal of the conversion is consistency and schema-derived autocomplete, not exhaustive type coverage. Strictness can be ratcheted up later.
+- **Readable surface, ceremonial internals.** Customizable node components (e.g. `Paragraph.svelte`, `Figure.svelte`) must stay light: typed props plus a typed `node`, nothing more. Internal modules (server code, `api.remote.ts`, `PagesDrawer`, overlays, commands) may carry heavier type ceremony where it stabilizes things.
+- **Schema-derived node types.** `src/lib/document_schema.ts` exports `type Nodes = NodeMap<typeof document_schema>` (from svedit). Node components access the session through the typed `get_svedit_context()` helper in `src/routes/svedit_context.ts` and annotate their node as `let node: Nodes['paragraph'] = $derived(svedit.session.get(path));`, which gives property autocomplete and catches misspelled properties in `npm run check`.
+- **Import specifiers keep the `.js` extension** even when the target file is `.ts` (TypeScript's `bundler` resolution and Vite both resolve `./foo.js` → `./foo.ts`). This matches svedit's own convention.
+- **`npm run check` must stay at 0 errors** and is the required validation step after schema or component changes.
+
 ## SvelteKit configuration
 
 The app uses Svelte's experimental async features and SvelteKit's remote functions. Both are enabled in `svelte.config.js`:
@@ -87,9 +99,9 @@ const config = {
 
 **Remote functions** (`$app/server`) allow server-side functions to be called directly from components via `query()` and `action()`. This replaces traditional REST endpoints for document loading and saving:
 
-- **`src/lib/api.remote.js`** — server-side functions for document and asset operations, called directly from components. Uses `query()` for reads and `action()` for writes. Access to `locals` (e.g. for auth checks) via `getRequestEvent()`.
+- **`src/lib/api.remote.ts`** — server-side functions for document and asset operations, called directly from components. Uses `query()` for reads and `action()` for writes. Access to `locals` (e.g. for auth checks) via `getRequestEvent()`.
 
-**Server initialization** — `src/hooks.server.js` exports an `init()` function (SvelteKit's `ServerInit` hook) that runs once on server startup. This is where database migration runs:
+**Server initialization** — `src/hooks.server.ts` exports an `init()` function (SvelteKit's `ServerInit` hook) that runs once on server startup. This is where database migration runs:
 
 ```js
 import migrate from '$lib/server/migrate.js';
@@ -200,7 +212,7 @@ CREATE TABLE sessions (
 
 **`documents`**
 
-- `document_id` — a persistent identifier (nanoid with a custom alphabet — letters only, no numbers, no `_` or `-` — so ids are safe to use as HTML ids; see `src/routes/nanoid.js`)
+- `document_id` — a persistent identifier (nanoid with a custom alphabet — letters only, no numbers, no `_` or `-` — so ids are safe to use as HTML ids; see `src/routes/nanoid.ts`)
 - `type` — categorizes the document, e.g. `page`, `nav`, or `footer`
 - `data` — the full Svedit document serialized as JSON (`{ document_id, nodes }`)
 

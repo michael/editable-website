@@ -1,16 +1,17 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import { get_svedit_context } from '../svedit_context.js';
+	import { get_app_context } from '../app_context.js';
 	import { get_page_browser } from './page_browser_context.svelte.js';
 
-	const svedit = getContext('svedit');
-	const app = getContext('app');
+	const svedit = get_svedit_context();
+	const app = get_app_context();
 	const page_browser = get_page_browser();
 
 	let toggle_link_command = $derived(svedit.session.commands?.toggle_link);
 	let href_input_value = $state('https://');
 	let open_in_new_tab = $state(false);
-	let href_input_ref = $state();
-	let dialog_ref = $state();
+	let href_input_ref = $state<HTMLInputElement>();
+	let dialog_ref = $state<HTMLDialogElement>();
 
 	function create_link() {
 		if (href_input_value) {

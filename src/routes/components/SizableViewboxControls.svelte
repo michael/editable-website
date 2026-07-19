@@ -1,10 +1,11 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import { get_svedit_context } from '../svedit_context.js';
 	import { serialize_path } from 'svedit';
+	import type { DocumentPath } from 'svedit';
 	import { touch_drag, lock_cursor, unlock_cursor } from '$lib/client/touch_drag.js';
 	import { SNAP_ASPECT_RATIOS } from '$lib/config.js';
 
-	const svedit = getContext('svedit');
+	const svedit = get_svedit_context();
 
 	const MIN_WIDTH = 40;
 	const MIN_HEIGHT = 20;
@@ -12,17 +13,14 @@
 	// Snap engages when the raw pixel value is within this many px of a snap target
 	const SNAP_PX = 12;
 
-	/**
-	 * @type {{
-	 *   path: any[],
-	 *   media_property?: string,
-	 *   placeholder_aspect_ratio?: number
-	 * }}
-	 */
 	let {
 		path,
 		media_property = 'media',
 		placeholder_aspect_ratio = 16 / 9
+	}: {
+		path: DocumentPath;
+		media_property?: string;
+		placeholder_aspect_ratio?: number;
 	} = $props();
 
 	// Derive field names from media_property
@@ -41,36 +39,30 @@
 
 	// Resolve aspect ratio: 0 means use natural ratio
 	let resolved_aspect_ratio = $derived(
-		node[aspect_ratio_field] > 0
-			? node[aspect_ratio_field]
-			: natural_aspect_ratio
+		node[aspect_ratio_field] > 0 ? node[aspect_ratio_field] : natural_aspect_ratio
 	);
 
 	// Anchor name must match what SizableViewbox sets
 	let anchor_name = $derived(`--viewbox-${serialize_path(path)}-${media_property}`);
 
 	// --- Snap label shown during drag ---
-	let snap_label = $state(/** @type {string | null} */ (null));
+	let snap_label = $state<string | null>(null);
 
 	// --- Snap candidates (all common ratios + natural) ---
 	function get_snap_candidates() {
-		return [
-			...SNAP_ASPECT_RATIOS,
-			{ ratio: natural_aspect_ratio, label: 'original' },
-		];
+		return [...SNAP_ASPECT_RATIOS, { ratio: natural_aspect_ratio, label: 'original' }];
 	}
 
 	/**
 	 * For width drags: given a fixed height, find the snap width closest to raw_width.
 	 * Returns { width, ratio, label } or null if nothing is close enough.
-	 *
-	 * @param {number} raw_width
-	 * @param {number} fixed_height
-	 * @returns {{ width: number, ratio: number, label: string } | null}
 	 */
-	function snap_width_for_height(raw_width, fixed_height) {
+	function snap_width_for_height(
+		raw_width: number,
+		fixed_height: number
+	): { width: number; ratio: number; label: string } | null {
 		const candidates = get_snap_candidates();
-		let best = null;
+		let best: { width: number; ratio: number; label: string } | null = null;
 		let best_distance = Infinity;
 
 		for (const c of candidates) {
@@ -88,14 +80,13 @@
 	/**
 	 * For height drags: given a fixed width, find the snap height closest to raw_height.
 	 * Returns { height, ratio, label } or null if nothing is close enough.
-	 *
-	 * @param {number} raw_height
-	 * @param {number} fixed_width
-	 * @returns {{ height: number, ratio: number, label: string } | null}
 	 */
-	function snap_height_for_width(raw_height, fixed_width) {
+	function snap_height_for_width(
+		raw_height: number,
+		fixed_width: number
+	): { height: number; ratio: number; label: string } | null {
 		const candidates = get_snap_candidates();
-		let best = null;
+		let best: { height: number; ratio: number; label: string } | null = null;
 		let best_distance = Infinity;
 
 		for (const c of candidates) {
@@ -114,14 +105,13 @@
 	 * For corner drags: find the snap ratio whose diagonal is closest to the raw diagonal.
 	 * The "diagonal" here is the angle (atan2) — we compare the angle of the raw w/h
 	 * to the angle each candidate ratio would produce at the same diagonal distance.
-	 *
-	 * @param {number} raw_width
-	 * @param {number} raw_height
-	 * @returns {{ ratio: number, label: string } | null}
 	 */
-	function snap_corner_ratio(raw_width, raw_height) {
+	function snap_corner_ratio(
+		raw_width: number,
+		raw_height: number
+	): { ratio: number; label: string } | null {
 		const candidates = get_snap_candidates();
-		let best = null;
+		let best: { ratio: number; label: string } | null = null;
 		let best_distance = Infinity;
 
 		// For corner: compute the diagonal length, then for each candidate ratio
@@ -131,7 +121,7 @@
 
 		for (const c of candidates) {
 			// w = diag * cos(atan(1/ratio)) = diag * ratio / sqrt(1 + ratio^2)
-			const snap_w = diag * c.ratio / Math.sqrt(1 + c.ratio * c.ratio);
+			const snap_w = (diag * c.ratio) / Math.sqrt(1 + c.ratio * c.ratio);
 			const snap_h = snap_w / c.ratio;
 			const dx = raw_width - snap_w;
 			const dy = raw_height - snap_h;
@@ -148,19 +138,16 @@
 	/**
 	 * Convert a snap ratio result into the stored aspect_ratio value.
 	 * 'original' maps to 0 (convention); otherwise store the exact ratio.
-	 *
-	 * @param {{ ratio: number, label: string }} snapped
-	 * @returns {number}
 	 */
-	function stored_ratio(snapped) {
+	function stored_ratio(snapped: { ratio: number; label: string }): number {
 		return snapped.label === 'original' ? 0 : snapped.ratio;
 	}
 
 	// --- Cursor lock during drag ---
 	const CURSOR_FOR_TYPE = {
 		'width-right': 'ew-resize',
-		'height': 'ns-resize',
-		'corner': 'nwse-resize',
+		height: 'ns-resize',
+		corner: 'nwse-resize'
 	};
 
 	// --- Drag state (shared across all handles) ---
@@ -184,12 +171,10 @@
 
 		const viewbox_el = get_viewbox_el();
 		const rect = viewbox_el?.getBoundingClientRect();
-		drag_start_max_width = node[max_width_field] > 0
-			? node[max_width_field]
-			: (rect?.width ?? 400);
+		drag_start_max_width = node[max_width_field] > 0 ? node[max_width_field] : (rect?.width ?? 400);
 		drag_start_aspect_ratio = resolved_aspect_ratio;
 		// Capture the current visual height so we can preserve it
-		drag_start_visual_height = rect?.height ?? (drag_start_max_width / resolved_aspect_ratio);
+		drag_start_visual_height = rect?.height ?? drag_start_max_width / resolved_aspect_ratio;
 		const parent_rect = viewbox_el?.parentElement?.getBoundingClientRect();
 		drag_container_width = parent_rect?.width ?? drag_start_max_width;
 
@@ -199,8 +184,8 @@
 			const gap_left = rect.left - parent_rect.left;
 			const gap_right = parent_rect.right - rect.right;
 			const total_gap = gap_left + gap_right;
-			const is_centered = total_gap > 0
-				&& Math.abs(gap_left - gap_right) < Math.max(5, total_gap * 0.1);
+			const is_centered =
+				total_gap > 0 && Math.abs(gap_left - gap_right) < Math.max(5, total_gap * 0.1);
 			drag_width_multiplier = is_centered ? 2 : 1;
 		} else {
 			drag_width_multiplier = 2;
@@ -227,12 +212,10 @@
 
 		const viewbox_el = get_viewbox_el();
 		const rect = viewbox_el?.getBoundingClientRect();
-		drag_start_max_width = node[max_width_field] > 0
-			? node[max_width_field]
-			: (rect?.width ?? 400);
+		drag_start_max_width = node[max_width_field] > 0 ? node[max_width_field] : (rect?.width ?? 400);
 		drag_start_aspect_ratio = resolved_aspect_ratio;
 		drag_start_visual_width = rect?.width ?? drag_start_max_width;
-		drag_start_visual_height = rect?.height ?? (drag_start_max_width / resolved_aspect_ratio);
+		drag_start_visual_height = rect?.height ?? drag_start_max_width / resolved_aspect_ratio;
 		const parent_rect = viewbox_el?.parentElement?.getBoundingClientRect();
 		drag_container_width = parent_rect?.width ?? drag_start_max_width;
 
@@ -241,8 +224,8 @@
 			const gap_left = rect.left - parent_rect.left;
 			const gap_right = parent_rect.right - rect.right;
 			const total_gap = gap_left + gap_right;
-			const is_centered = total_gap > 0
-				&& Math.abs(gap_left - gap_right) < Math.max(5, total_gap * 0.1);
+			const is_centered =
+				total_gap > 0 && Math.abs(gap_left - gap_right) < Math.max(5, total_gap * 0.1);
 			drag_width_multiplier = is_centered ? 2 : 1;
 		} else {
 			drag_width_multiplier = 1;
@@ -258,7 +241,10 @@
 		if (drag_type === 'width-right') {
 			const dx = client_x - drag_start_x;
 			// Clamp to container width — once you hit the edge, everything stops
-			const raw_width = Math.min(drag_container_width, Math.max(MIN_WIDTH, Math.round(drag_start_max_width + dx * drag_width_multiplier)));
+			const raw_width = Math.min(
+				drag_container_width,
+				Math.max(MIN_WIDTH, Math.round(drag_start_max_width + dx * drag_width_multiplier))
+			);
 
 			// Try to snap the width to a value that produces a common aspect ratio
 			// at the fixed visual height
@@ -312,7 +298,10 @@
 			const dy = client_y - drag_start_y;
 
 			// Both axes move freely; horizontal uses multiplier for centered images
-			const raw_width = Math.min(drag_container_width, Math.max(MIN_WIDTH, Math.round(drag_start_visual_width + dx * drag_width_multiplier)));
+			const raw_width = Math.min(
+				drag_container_width,
+				Math.max(MIN_WIDTH, Math.round(drag_start_visual_width + dx * drag_width_multiplier))
+			);
 			const raw_height = Math.max(MIN_HEIGHT, Math.round(drag_start_visual_height + dy));
 
 			// Try to snap to a common aspect ratio
@@ -372,7 +361,7 @@
 			capture_width_state('width-right');
 		},
 		on_move: handle_move,
-		on_up: handle_up,
+		on_up: handle_up
 	});
 
 	const drag_bottom = touch_drag({
@@ -382,7 +371,7 @@
 			capture_height_state();
 		},
 		on_move: handle_move,
-		on_up: handle_up,
+		on_up: handle_up
 	});
 
 	const drag_corner = touch_drag({
@@ -392,7 +381,7 @@
 			capture_corner_state();
 		},
 		on_move: handle_move,
-		on_up: handle_up,
+		on_up: handle_up
 	});
 
 	function handle_width_dblclick(e) {
@@ -422,39 +411,22 @@
 	}
 </script>
 
-<div
-	class="viewbox-handles"
-	style="position-anchor: {anchor_name};"
->
+<div class="viewbox-handles" style="position-anchor: {anchor_name};">
 	<!-- Right width handle -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<div
-		class="handle handle-right"
-		ondblclick={handle_width_dblclick}
-		{@attach drag_right}
-	>
+	<div class="handle handle-right" ondblclick={handle_width_dblclick} {@attach drag_right}>
 		<div class="handle-line"></div>
 	</div>
 
 	<!-- Bottom aspect ratio handle -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<div
-		class="handle handle-bottom"
-		ondblclick={handle_height_dblclick}
-		{@attach drag_bottom}
-	>
+	<div class="handle handle-bottom" ondblclick={handle_height_dblclick} {@attach drag_bottom}>
 		<div class="handle-line"></div>
 	</div>
 
 	<!-- Bottom-right corner handle (both axes) -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<div
-		class="handle handle-corner"
-		ondblclick={handle_corner_dblclick}
-		{@attach drag_corner}
-	>
-		
-	</div>
+	<div class="handle handle-corner" ondblclick={handle_corner_dblclick} {@attach drag_corner}></div>
 
 	<!-- Snap label tooltip -->
 	{#if snap_label}
@@ -540,8 +512,6 @@
 		background: var(--svedit-editing-stroke, oklch(60% 0.22 283));
 		opacity: 0.8;
 	}
-
-	
 
 	/* Snap label */
 	.snap-label {
