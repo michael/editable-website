@@ -1,0 +1,18 @@
+# Run Editable on any docker host — a DigitalOcean droplet, a Hetzner or
+# Nodion VPS, a home server. See README → Deploy to a VPS. Fly.io deployments
+# don't use this file (fly deploy builds the same Dockerfile directly).
+#
+# The app listens on 127.0.0.1:3000 — put a reverse proxy with TLS in front
+# (Caddy makes that two lines, see the README).
+services:
+  editable:
+    build: .
+    container_name: editable
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:3000:3000'
+    env_file: .env
+    environment:
+      BODY_SIZE_LIMIT: '${BODY_SIZE_LIMIT:-30000000}'
+    volumes:
+      - ./data:/data

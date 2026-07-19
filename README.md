@@ -636,7 +636,7 @@ From here it's just iteration: add calls to action, give editors control over th
 
 Deploy your local site to a public URL in a few steps.
 
-Editable runs on any VPS — all you need is Node.js, and the included `Dockerfile` works with any platform that supports Docker. The repository ships ready-made for [Fly.io](https://fly.io): install [flyctl](https://fly.io/docs/flyctl/install/), then sign in (opens your browser; creates a free account if you don't have one):
+Editable runs on any VPS — all you need is Node.js, and the included `Dockerfile` works with any platform that supports Docker (see [Deploy to a VPS](#deploy-to-a-vps-experimental)). The repository ships ready-made for [Fly.io](https://fly.io), which remains the recommended default: machines scale to zero and wake in well under a second, so a personal site costs next to nothing to run. Install [flyctl](https://fly.io/docs/flyctl/install/), then sign in (opens your browser; creates a free account if you don't have one):
 
 ```sh
 fly auth login
@@ -692,11 +692,48 @@ fly open
 
 Because each checkout manages exactly one app (see [Your site is your repo](#your-site-is-your-repo)), the target always comes from `fly.toml` — there's no app name to get wrong. If you ever do need to address a different app (say, a staging copy), every `fly` command and data script accepts `-a <app>` as an explicit override.
 
+### Deploy to a VPS (experimental)
+
+The same image runs on any host with Docker — a DigitalOcean droplet, a Hetzner or Nodion VPS, a home server. The included `docker-compose.yml` is the deployment; the data commands ([Backup, sync & recovery](#backup-sync--recovery)) and [automated backups](#automated-backups-optional) work identically, they just reach the server over plain ssh instead of the fly CLI.
+
+On the server (assuming Docker and ssh key access are set up), clone your site and configure it:
+
+```sh
+git clone <your-repo-url> /srv/my-site && cd /srv/my-site
+cp .env.example .env
+# set in .env: ADMIN_PASSWORD, and ORIGIN="https://my-site.example.com"
+# optional: the BUCKET_* / AWS_* secrets for automated backups
+docker compose up -d --build
+```
+
+The app listens on `127.0.0.1:3000`; put a reverse proxy with TLS in front. With [Caddy](https://caddyserver.com) that's the whole config:
+
+```
+my-site.example.com {
+	reverse_proxy 127.0.0.1:3000
+}
+```
+
+To ship a code update: push to your repo, then `ssh` in and `git pull && docker compose up -d --build`.
+
+On your **local machine**, point the data commands at the server by uncommenting the deployment block in `.env`:
+
+```sh
+DEPLOY_HOST="deploy@my-site.example.com"   # who you ssh in as
+RESTART_CMD="docker restart editable"
+REMOTE_EXEC="docker exec editable"
+HOST_DATA_DIR="/srv/my-site/data"          # the ./data bind mount, as an absolute path
+```
+
+That's the entire switch: with `DEPLOY_HOST` set, every `npm run data:*` command targets the VPS (`fly.toml` is ignored); remove or comment it to target Fly.io again. Pull, push, backups, restores, point-in-time recovery — the whole toolbox behaves the same, including disaster recovery from the backup bucket on a fresh volume.
+
+What Fly.io still does for you that a VPS doesn't: scale-to-zero with sub-second wake-ups (a VPS runs — and bills — around the clock), TLS and anycast routing without a reverse proxy, and volume snapshots. The VPS path trades that for a fixed monthly price and no platform dependency.
+
 ## Backup, sync & recovery
 
 Your whole site lives in one folder — pull it, push it, snapshot it, roll it back.
 
-That folder is `data/`: an SQLite database (`db.sqlite3`) and uploaded assets (`assets/`). Locally it defaults to `./data`; on Fly.io it's a persistent volume at `/data`. The data commands move that folder between your machine, your deployment, and — optionally — a backup bucket. The complete toolbox:
+That folder is `data/`: an SQLite database (`db.sqlite3`) and uploaded assets (`assets/`). Locally it defaults to `./data`; on Fly.io it's a persistent volume at `/data`; on a VPS it's the `./data` bind mount next to the compose file. The data commands move that folder between your machine, your deployment, and — optionally — a backup bucket. The complete toolbox:
 
 - **npm run data:pull** — Copy the live site's data to your machine
 - **npm run data:push [-- --yes]** — Replace the live site's data with your local state — guarded, undoable
