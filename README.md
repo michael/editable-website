@@ -697,18 +697,12 @@ Because each checkout manages exactly one app (see [Your site is your repo](#you
 Editable runs on any amd64 host with Docker — a DigitalOcean droplet, a Hetzner or Nodion VPS. One command takes a fresh Ubuntu server to a running site with TLS. Create the server with your ssh key installed, point your domain's A record at its IP, then:
 
 ```sh
-npm run deploy:vps -- root@203.0.113.10 my-site.example.com
+npm run vps:deploy -- root@203.0.113.10 my-site.example.com
 ```
 
-The first run provisions the server — Docker, [Caddy](https://caddyserver.com) as the TLS-terminating reverse proxy, swap on machines with less than 2 GB RAM — asks you for an admin password, builds the Docker image locally, streams it over ssh, and starts the site. The server never needs access to your git repository or the memory to run a build. Every later run of the same command ships an update: build, stream, replace the container, health-check. Your content lives in `/srv/my-site/data` on the server; deploys replace the container and never touch that folder.
+The first run provisions the server — Docker, [Caddy](https://caddyserver.com) as the TLS-terminating reverse proxy, swap on machines with less than 2 GB RAM — asks you for an admin password, builds the Docker image locally, streams it over ssh, and starts the site. The server never needs access to your git repository or the memory to run a build. Your content lives in `/srv/my-site/data` on the server; deploys replace the container and never touch that folder.
 
-Roll back a bad deploy by starting a previous image (the last three are kept on the server):
-
-```sh
-npm run deploy:vps -- root@203.0.113.10 my-site.example.com --tag <sha>
-```
-
-After the first deploy the script prints the deployment block for your **local** `.env`, which points the data commands ([Backup, sync & recovery](#backup-sync--recovery)) at the server:
+After the first deploy, the script prints the deployment block for your **local** `.env`. Add it — this is your checkout's deployment identity, playing the role `fly.toml` plays for Fly.io:
 
 ```sh
 DEPLOY_HOST="root@203.0.113.10"            # who you ssh in as
@@ -717,7 +711,30 @@ REMOTE_EXEC="docker exec editable-my-site"
 HOST_DATA_DIR="/srv/my-site/data"          # the ./data bind mount, as an absolute path
 ```
 
-That's the entire switch: with `DEPLOY_HOST` set, every `npm run data:*` command targets the VPS (`fly.toml` is ignored); remove or comment it to target Fly.io again. Pull, push, backups, restores, point-in-time recovery — the whole toolbox behaves the same, including disaster recovery from the backup bucket on a fresh volume. For [automated backups](#automated-backups-optional), the `BUCKET_*` / `AWS_*` secrets belong in the server's `.env` — the script copies them from your local `.env` on the first deploy, and `--push-env` re-syncs them later.
+With `DEPLOY_HOST` set, no command needs the server address anymore. Ship an update — build, stream, replace the container, health-check:
+
+```sh
+npm run vps:deploy
+```
+
+Roll back a bad deploy by starting a previous image (the last three are kept on the server — `ssh` in and run `docker images editable` to list them; each tag is a git commit, so `git show -s <sha>` tells you what's inside). A deploy from a working tree with uncommitted changes is tagged `<sha>-dirty` to keep experiments distinguishable from committed states:
+
+```sh
+npm run vps:deploy -- --tag <sha>
+```
+
+And every `npm run data:*` command ([Backup, sync & recovery](#backup-sync--recovery)) targets the VPS too (`fly.toml` is ignored; remove or comment `DEPLOY_HOST` to target Fly.io again). Pull, push, backups, restores, point-in-time recovery — the whole toolbox behaves the same, including disaster recovery from the backup bucket on a fresh volume.
+
+The server keeps its own `.env` (the equivalent of `fly secrets`) — inspect and change it with the `env` command:
+
+```sh
+npm run vps:env                            # show it (secrets masked)
+npm run vps:env -- set BUCKET_NAME=my-backup AWS_REGION=auto
+npm run vps:env -- set ADMIN_PASSWORD      # no value = prompted, kept out of shell history
+npm run vps:env -- unset BUCKET_NAME
+```
+
+`set` and `unset` restart the app so the change takes effect immediately. For [automated backups](#automated-backups-optional), the `BUCKET_*` / `AWS_*` secrets belong in the server's `.env` — the first deploy copies them from your local `.env` if present; after that, changes are explicit via `vps:env`.
 
 **Doing it by hand instead:** the script is optional — `docker-compose.yml` runs on any docker host. Clone your site on the server, `cp .env.example .env` and set `ADMIN_PASSWORD` and `ORIGIN="https://my-site.example.com"`, then `docker compose up -d --build`. The app listens on `127.0.0.1:3000`; put a reverse proxy with TLS in front (with Caddy that's the whole config: `my-site.example.com { reverse_proxy 127.0.0.1:3000 }`). Ship updates with `git pull && docker compose up -d --build`, and use `RESTART_CMD="docker restart editable"` / `REMOTE_EXEC="docker exec editable"` in the deployment block above (without the script, the container keeps the default name `editable`).
 

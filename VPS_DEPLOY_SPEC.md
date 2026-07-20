@@ -38,7 +38,7 @@ This file is the working spec for the feature. Once implemented and stable, fold
 
 `/etc/caddy/Caddyfile` holds the reverse-proxy config.
 
-**Secrets.** On first run the script prompts for `ADMIN_PASSWORD` (offering a generated one), sets `ORIGIN=https://<domain>`, and writes the server's `.env` over sftp. Backup-bucket credentials (`BUCKET_NAME`, `AWS_*`) are copied from the local `.env` if present. On later runs the server `.env` is left alone; a `--push-env` flag re-uploads the bucket/origin values (never silently — it prints what changes). Secrets are never passed as command-line arguments to remote shells.
+**Secrets.** On first run the script prompts for `ADMIN_PASSWORD` (offering a generated one), sets `ORIGIN=https://<domain>`, and writes the server's `.env`. Backup-bucket credentials (`BUCKET_NAME`, `AWS_*`) are copied from the local `.env` if present. That first-run bootstrap is the only implicit sync: afterwards the server's `.env` is authoritative and changes only through the explicit `env` command (`env` show / `env set KEY=VALUE` / `env set KEY` with hidden prompt / `env unset KEY`), which rewrites the file and recreates the container so the change takes effect — fly-secrets style, nothing moves without being named. Secrets are never passed as command-line arguments to remote shells.
 
 **Idempotent provisioning, not a setup mode.** Every run executes the same phases; each phase checks before it acts (Docker installed? Caddy installed? Caddyfile current? `.env` present?). First run does everything; later runs fall through to the deploy phase in seconds.
 
@@ -53,13 +53,19 @@ This file is the working spec for the feature. Once implemented and stable, fold
 ## Script interface
 
 ```
-./scripts/deploy_vps.sh <user@host> <domain> [options]
+./scripts/deploy_vps.sh <user@host> <domain>   first deploy, or explicit target (always works)
+./scripts/deploy_vps.sh                        deploy to DEPLOY_HOST         (npm run vps:deploy)
+./scripts/deploy_vps.sh env                    show the server's env, masked (npm run vps:env)
+./scripts/deploy_vps.sh env set KEY=VALUE …    set env vars and restart the app
+./scripts/deploy_vps.sh env set KEY            prompt for the value (hidden input)
+./scripts/deploy_vps.sh env unset KEY …        remove env vars and restart the app
 
 Options:
   --tag <sha>     deploy an already-uploaded image tag (rollback) instead of building
-  --push-env      re-sync ORIGIN and bucket credentials into the server .env
   --yes           skip confirmation prompts (except the first-run password prompt)
 ```
+
+**Addressing.** The short forms read `DEPLOY_HOST` from the local `.env` — the same key the data toolbox uses, playing the role `fly.toml` plays for Fly.io. The user adds it by hand from the block the first deploy prints (deliberately not auto-written, so it stays transparent where commands are targeted). The site and its domain are then discovered on the server (`/srv/*/.deploy_env`, exactly one per the one-site-per-server rule; the domain comes from `ORIGIN` in the server's `.env`). The explicit `<user@host> <domain>` form is what works before any of that exists, and always overrides.
 
 `<user@host>` is typically `root@<ip>` on a fresh droplet; any sudo-capable user works. ssh key access is assumed (the script never handles passwords).
 
@@ -77,7 +83,7 @@ Options:
 
 1. `docker-compose.yml` — switch the service to `image: 'editable:${IMAGE_TAG:-local}'`; keep everything else (ports, env_file, bind mount) as is
 2. `scripts/deploy_vps.sh` — the script per this spec (`set -euo pipefail`; remote steps as small quoted heredoc scripts, no unvalidated interpolation into remote shells)
-3. `package.json` — `"deploy:vps": "./scripts/deploy_vps.sh"` for discoverability
+3. `package.json` — `"vps:deploy": "./scripts/deploy_vps.sh"` and `"vps:env": "./scripts/deploy_vps.sh env"`
 4. `README.md` — rewrite Deploy to a VPS around the script; keep the manual compose flow as a short "doing it by hand" note
 5. `.env.example` — update the deployment-block example values to the `editable-<site>` container naming
 
@@ -92,7 +98,7 @@ Options:
 
 Each step is independently verifiable; 3–5 need a real amd64 VPS to test against.
 
-Status: implemented (compose switch, script, `deploy:vps` npm script, README, `.env.example`). Not yet tested against a real VPS — first-deploy, update-deploy, and `--tag` rollback runs on a throwaway droplet are the remaining verification.
+Status: implemented (compose switch, script, `vps:deploy` / `vps:env` npm scripts, README, `.env.example`). Verified against a real DigitalOcean droplet: first deploy (provisioning, TLS via Caddy, password prompt), update deploy (cached build, container replacement, health check, report), and short-form `env` show with server-side site discovery. Real-world hardening that came out of that testing: ssh retries on transient connection drops (fresh droplets get hammered by brute-force bots, and sshd's MaxStartups randomly sheds new connections) and ssh connection multiplexing so each run plays that lottery only once. Still untested: `--tag` rollback, `env set`/`unset`, and the disaster-recovery path (fresh droplet restoring from a backup bucket).
 
 ## Open questions
 

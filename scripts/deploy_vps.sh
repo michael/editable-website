@@ -10,18 +10,25 @@
 # container is disposable and replaced on every deploy.
 #
 # Usage
-#   ./scripts/deploy_vps.sh <user@host> <domain> [options]
+#   ./scripts/deploy_vps.sh <user@host> <domain>   first deploy (or explicit target)
+#   ./scripts/deploy_vps.sh                        deploy to DEPLOY_HOST
+#   ./scripts/deploy_vps.sh env                    show the server's env (secrets masked)
+#   ./scripts/deploy_vps.sh env set KEY=VALUE …    set env vars and restart the app
+#   ./scripts/deploy_vps.sh env set KEY            prompt for the value (hidden input)
+#   ./scripts/deploy_vps.sh env unset KEY …        remove env vars and restart the app
 #
-#   ./scripts/deploy_vps.sh root@203.0.113.10 my-site.example.com
+# The short forms read DEPLOY_HOST from your local .env — the deployment
+# block printed after the first deploy, added by hand so it's transparent
+# where the target comes from — and discover the site on the server. The
+# explicit form works before that block exists and always overrides it:
+#   ./scripts/deploy_vps.sh root@203.0.113.10 my-site.example.com [env …]
 #
 # Options
 #   --tag <tag>   deploy an already-uploaded image tag (rollback) instead of
 #                 building — the last 3 tags are kept on the server
-#   --push-env    re-sync ORIGIN and backup-bucket credentials into the
-#                 server's .env (never done silently on normal deploys)
 #   --yes         skip confirmation prompts (except the first-run password)
 #
-# Every run executes the same idempotent phases — preflight, provision,
+# Every deploy runs the same idempotent phases — preflight, provision,
 # configure, build & upload, activate, verify, cleanup. The first run does
 # everything; later runs fall through to the deploy phases in seconds.
 set -euo pipefail
@@ -43,13 +50,17 @@ confirm() {
 
 # ---- arguments ---------------------------------------------------------------
 
-TARGET=""
-DOMAIN=""
 TAG=""
-PUSH_ENV=false
 YES=false
+POSITIONAL=()
 
-usage() { sed -n '3,26p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; }
+usage() { awk 'NR < 3 { next } /^set -euo pipefail/ { exit } { sub(/^# ?/, ""); print }' "${BASH_SOURCE[0]}"; }
+
+# Read a value from the local .env (first uncommented occurrence).
+local_env_val() {
+	[ -f .env ] || return 0
+	sed -n -E "s/^$1=[\"']?([^\"']*)[\"']?[[:space:]]*$/\1/p" .env | sed -n '1p'
+}
 
 while [ $# -gt 0 ]; do
 	case "$1" in
@@ -58,39 +69,59 @@ while [ $# -gt 0 ]; do
 			TAG="$2"
 			shift
 			;;
-		--push-env) PUSH_ENV=true ;;
 		--yes) YES=true ;;
 		-h | --help) usage; exit 0 ;;
 		-*) die "Unknown option '$1' (see --help)" ;;
-		*)
-			if [ -z "$TARGET" ]; then TARGET="$1"
-			elif [ -z "$DOMAIN" ]; then DOMAIN="$1"
-			else die "Unexpected argument '$1' (see --help)"
-			fi
-			;;
+		*) POSITIONAL+=("$1") ;;
 	esac
 	shift
 done
 
-[ -n "$TARGET" ] && [ -n "$DOMAIN" ] || { usage; exit 2; }
-
-case "$TARGET" in
-	*@*) ;;
-	*) die "Target must be user@host, e.g. root@203.0.113.10" ;;
+case "${POSITIONAL[0]:-}" in
+	*@*)
+		# Explicit form: <user@host> <domain> [env …]
+		TARGET="${POSITIONAL[0]}"
+		DOMAIN="${POSITIONAL[1]:-}"
+		[ -n "$DOMAIN" ] || die "the explicit form needs a domain: deploy_vps.sh $TARGET <domain>"
+		ACTION="${POSITIONAL[2]:-deploy}"
+		ENV_ARGS=("${POSITIONAL[@]:3}")
+		case "$ACTION" in
+			deploy | env) ;;
+			*) die "Unknown command '$ACTION' (see --help)" ;;
+		esac
+		;;
+	"" | env)
+		# Short form: the target comes from DEPLOY_HOST (environment wins over
+		# .env), the site and its domain are discovered on the server.
+		ACTION="${POSITIONAL[0]:-deploy}"
+		ENV_ARGS=("${POSITIONAL[@]:1}")
+		TARGET="${DEPLOY_HOST:-$(local_env_val DEPLOY_HOST)}"
+		[ -n "$TARGET" ] || die "DEPLOY_HOST is not set — add the deployment block to .env (printed after the first deploy), or pass an explicit target: deploy_vps.sh user@host domain"
+		case "$TARGET" in
+			*@*) ;;
+			*) die "DEPLOY_HOST must be user@host, e.g. root@203.0.113.10" ;;
+		esac
+		DOMAIN="" # discovered on the server
+		;;
+	*) die "Unknown command '${POSITIONAL[0]}' (see --help)" ;;
 esac
 
 # Values interpolated into remote commands are validated to safe character
 # sets first — everything else reaches the remote side via stdin only.
-DOMAIN="$(echo "$DOMAIN" | tr '[:upper:]' '[:lower:]')"
-echo "$DOMAIN" | grep -Eq '^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$' ||
-	die "'$DOMAIN' does not look like a domain name"
+derive_site() {
+	DOMAIN="$(echo "$DOMAIN" | tr '[:upper:]' '[:lower:]')"
+	echo "$DOMAIN" | grep -Eq '^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$' ||
+		die "'$DOMAIN' does not look like a domain name"
+	SITE="${DOMAIN%%.*}"
+	SRV="/srv/$SITE"
+	CONTAINER="editable-$SITE"
+}
+[ -z "$DOMAIN" ] || derive_site
+
 if [ -n "$TAG" ]; then
 	echo "$TAG" | grep -Eq '^[A-Za-z0-9][A-Za-z0-9._-]*$' || die "'$TAG' is not a valid image tag"
 fi
 
-SITE="${DOMAIN%%.*}"
-SRV="/srv/$SITE"
-CONTAINER="editable-$SITE"
 REMOTE_USER="${TARGET%%@*}"
 HOST_ADDR="${TARGET#*@}"
 
@@ -132,15 +163,93 @@ rssh_retry() {
 
 # ---- phase 1: preflight ------------------------------------------------------
 
-command -v docker >/dev/null || die "docker is not installed locally"
-command -v git >/dev/null || die "git is not installed"
-if [ -z "$TAG" ]; then
-	docker buildx version >/dev/null 2>&1 || die "docker buildx is not available"
-	git rev-parse --short HEAD >/dev/null 2>&1 || die "not inside a git checkout"
+if [ "$ACTION" = "deploy" ]; then
+	command -v docker >/dev/null || die "docker is not installed locally"
+	command -v git >/dev/null || die "git is not installed"
+	if [ -z "$TAG" ]; then
+		docker buildx version >/dev/null 2>&1 || die "docker buildx is not available"
+		git rev-parse --short HEAD >/dev/null 2>&1 || die "not inside a git checkout"
+	fi
 fi
 
 info "Checking ssh connectivity to $TARGET"
 rssh_retry true 2>/dev/null || die "cannot ssh into $TARGET (key-based access required)"
+
+# Short form: discover the (single) site on the server and its domain.
+if [ -z "$DOMAIN" ]; then
+	DEPLOYED="$(rssh_retry 'ls /srv/*/.deploy_env 2>/dev/null' || true)"
+	DEPLOYED_COUNT="$(printf '%s' "$DEPLOYED" | grep -c . || true)"
+	[ "$DEPLOYED_COUNT" -ge 1 ] ||
+		die "no Editable deployment found on $TARGET — run the first deploy explicitly: deploy_vps.sh $TARGET <domain>"
+	[ "$DEPLOYED_COUNT" -eq 1 ] ||
+		die "multiple sites found on $TARGET — address one explicitly: deploy_vps.sh $TARGET <domain>"
+	DISCOVERED_SITE="$(basename "$(dirname "$DEPLOYED")")"
+	echo "$DISCOVERED_SITE" | grep -Eq '^[a-z0-9]([a-z0-9-]*[a-z0-9])?$' ||
+		die "unexpected site directory name '/srv/$DISCOVERED_SITE'"
+	DOMAIN="$(rssh_retry "$SUDO cat /srv/$DISCOVERED_SITE/.env" | sed -n 's|^ORIGIN="https://\([^"]*\)".*|\1|p' | sed -n '1p')"
+	[ -n "$DOMAIN" ] || die "could not read the site's domain (ORIGIN) from /srv/$DISCOVERED_SITE/.env"
+	derive_site
+	[ "$SITE" = "$DISCOVERED_SITE" ] || die "site directory /srv/$DISCOVERED_SITE does not match its ORIGIN domain $DOMAIN"
+	info "Site: $DOMAIN ($TARGET)"
+fi
+
+# ---- env command -------------------------------------------------------------
+# Explicit env var management, fly-secrets style: show / set / unset. Changes
+# take effect by recreating the container (env_file is baked in at creation).
+
+restart_with_env() {
+	rssh "$SUDO tee $SRV/.env >/dev/null && $SUDO chmod 600 $SRV/.env" <"$TMP/env"
+	info "Restarting the app with the new environment"
+	rssh_retry "cd $SRV && $SUDO docker compose --env-file .env --env-file .deploy_env up -d"
+	rssh_retry 'for i in $(seq 30); do curl -fs -o /dev/null http://127.0.0.1:3000 && exit 0; sleep 1; done; exit 1' ||
+		die "the app did not come back healthy — inspect with: ssh $TARGET '$SUDO docker logs $CONTAINER'"
+}
+
+if [ "$ACTION" = "env" ]; then
+	rssh "test -f $SRV/.env && test -f $SRV/.deploy_env" 2>/dev/null ||
+		die "no deployment at $SRV yet — deploy first"
+	rssh "$SUDO cat $SRV/.env" >"$TMP/env"
+	SUB="${ENV_ARGS[0]:-show}"
+	case "$SUB" in
+		show)
+			sed -E 's/^(ADMIN_PASSWORD|AWS_SECRET_ACCESS_KEY)=.*/\1="…"/' "$TMP/env"
+			;;
+		set)
+			[ ${#ENV_ARGS[@]} -ge 2 ] || die "env set needs at least one KEY=VALUE (or KEY to be prompted)"
+			for pair in "${ENV_ARGS[@]:1}"; do
+				key="${pair%%=*}"
+				echo "$key" | grep -Eq '^[A-Z][A-Z0-9_]*$' || die "'$key' is not a valid env var name"
+				if [ "$pair" = "$key" ]; then
+					printf 'Value for %s (input hidden): ' "$key"
+					read -rs value </dev/tty
+					echo
+				else
+					value="${pair#*=}"
+				fi
+				case "$value" in
+					*[\"\\]*) die 'values must not contain " or \' ;;
+				esac
+				grep -v "^$key=" "$TMP/env" >"$TMP/env.new" || true
+				printf '%s="%s"\n' "$key" "$value" >>"$TMP/env.new"
+				mv "$TMP/env.new" "$TMP/env"
+				info "Set $key"
+			done
+			restart_with_env
+			;;
+		unset)
+			[ ${#ENV_ARGS[@]} -ge 2 ] || die "env unset needs at least one KEY"
+			for key in "${ENV_ARGS[@]:1}"; do
+				grep -q "^$key=" "$TMP/env" || die "$key is not set on the server"
+				grep -v "^$key=" "$TMP/env" >"$TMP/env.new" || true
+				mv "$TMP/env.new" "$TMP/env"
+				info "Unset $key"
+			done
+			restart_with_env
+			;;
+		*) die "Unknown env command '$SUB' (expected: show, set, unset)" ;;
+	esac
+	exit 0
+fi
 
 REMOTE_ARCH="$(rssh_retry uname -m)"
 [ "$REMOTE_ARCH" = "x86_64" ] ||
@@ -227,12 +336,6 @@ grep -q 'import sites/\*\.caddy' /etc/caddy/Caddyfile || {
 REMOTE
 } | rssh "$SUDO bash -s"
 
-# Read a value from the local .env (first uncommented occurrence).
-local_env_val() {
-	[ -f .env ] || return 0
-	sed -n -E "s/^$1=[\"']?([^\"']*)[\"']?[[:space:]]*$/\1/p" .env | sed -n '1p'
-}
-
 BUCKET_KEYS="BUCKET_NAME AWS_ENDPOINT_URL_S3 AWS_REGION AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY"
 
 # Append KEY="value" for each bucket key with a local value to the file in $1.
@@ -260,18 +363,6 @@ if [ "$FIRST_RUN" = true ]; then
 	} >"$TMP/env"
 	append_bucket_creds "$TMP/env"
 	rssh "$SUDO tee $SRV/.env >/dev/null && $SUDO chmod 600 $SRV/.env" <"$TMP/env"
-elif [ "$PUSH_ENV" = true ]; then
-	info "Re-syncing ORIGIN and bucket credentials into the server's .env"
-	rssh "$SUDO cat $SRV/.env" >"$TMP/env"
-	{
-		grep -E '^ADMIN_PASSWORD=' "$TMP/env" || die "server .env has no ADMIN_PASSWORD — refusing to rewrite it"
-		printf 'ORIGIN="https://%s"\n' "$DOMAIN"
-	} >"$TMP/env.new"
-	append_bucket_creds "$TMP/env.new"
-	echo "The server's .env will become (ADMIN_PASSWORD kept as is):"
-	sed -E 's/^(AWS_SECRET_ACCESS_KEY|ADMIN_PASSWORD)=.*/\1="…"/' "$TMP/env.new" | sed 's/^/    /'
-	confirm "Overwrite $SRV/.env with this?"
-	rssh "$SUDO tee $SRV/.env >/dev/null && $SUDO chmod 600 $SRV/.env" <"$TMP/env.new"
 fi
 
 # ---- phase 4: build & upload -------------------------------------------------
@@ -328,7 +419,8 @@ info "Deployed editable:$TAG to https://$DOMAIN"
 if [ "$FIRST_RUN" = true ]; then
 	cat <<LOCAL_ENV
 
-To point the npm run data:* commands at this server, add to your local .env:
+Add this block to your local .env — it points the npm run data:* commands at
+this server and enables the short forms (npm run vps:deploy / npm run vps:env):
 
     DEPLOY_HOST="$TARGET"
     RESTART_CMD="docker restart $CONTAINER"
