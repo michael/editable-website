@@ -42,6 +42,8 @@ This file is the working spec for the feature. Once implemented and stable, fold
 
 **Idempotent provisioning, not a setup mode.** Every run executes the same phases; each phase checks before it acts (Docker installed? Caddy installed? Caddyfile current? `.env` present?). First run does everything; later runs fall through to the deploy phase in seconds.
 
+**Dirty builds are labeled, not versioned.** A build from a working tree with uncommitted or untracked changes is tagged `<sha>-dirty`, so the image list and rollbacks can't mistake it for the committed state. Deploying dirty again reuses the tag — commits are the rollback anchors; dirty states are ephemeral by nature.
+
 **Rollback = redeploy an old tag + existing data restore.** The script keeps the last 3 image tags on the server (older ones pruned after a successful deploy). `./scripts/deploy_vps.sh <host> <domain> --tag <sha>` starts that image instead of building. Content rollback is out of scope — that's `npm run data:restore`, which already works against the VPS via `DEPLOY_HOST`.
 
 **Health check gates success.** After `compose up`, the script polls `127.0.0.1:3000` over ssh (curl, ~30 s budget). On failure it prints the container logs and exits non-zero; it does not auto-rollback in v1.

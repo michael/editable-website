@@ -278,8 +278,13 @@ fi
 
 if [ -z "$TAG" ]; then
 	TAG="$(git rev-parse --short HEAD)"
-	git diff-index --quiet HEAD -- 2>/dev/null ||
-		warn "uncommitted changes — the image is built from the working tree but tagged $TAG"
+	# Uncommitted or untracked changes end up in the image — make the tag say
+	# so. Deploying dirty again reuses the tag (dirty states aren't versioned;
+	# commits are the rollback anchors).
+	if [ -n "$(git status --porcelain)" ]; then
+		TAG="$TAG-dirty"
+		warn "uncommitted changes — tagging the image $TAG"
+	fi
 	info "Building editable:$TAG for linux/amd64"
 	docker buildx build --platform linux/amd64 -t "editable:$TAG" --load .
 	info "Streaming image to the server (this can take a few minutes)"
