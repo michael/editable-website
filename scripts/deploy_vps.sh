@@ -12,6 +12,7 @@
 # Usage
 #   ./scripts/deploy_vps.sh <user@host> <domain>   first deploy (or explicit target)
 #   ./scripts/deploy_vps.sh                        deploy to DEPLOY_HOST
+#   ./scripts/deploy_vps.sh status                 show the running tag and rollback candidates
 #   ./scripts/deploy_vps.sh env                    show the server's env (secrets masked)
 #   ./scripts/deploy_vps.sh env set KEY=VALUE …    set env vars and restart the app
 #   ./scripts/deploy_vps.sh env set KEY            prompt for the value (hidden input)
@@ -86,11 +87,11 @@ case "${POSITIONAL[0]:-}" in
 		ACTION="${POSITIONAL[2]:-deploy}"
 		ENV_ARGS=("${POSITIONAL[@]:3}")
 		case "$ACTION" in
-			deploy | env) ;;
+			deploy | env | status) ;;
 			*) die "Unknown command '$ACTION' (see --help)" ;;
 		esac
 		;;
-	"" | env)
+	"" | env | status)
 		# Short form: the target comes from DEPLOY_HOST (environment wins over
 		# .env), the site and its domain are discovered on the server.
 		ACTION="${POSITIONAL[0]:-deploy}"
@@ -191,6 +192,44 @@ if [ -z "$DOMAIN" ]; then
 	derive_site
 	[ "$SITE" = "$DISCOVERED_SITE" ] || die "site directory /srv/$DISCOVERED_SITE does not match its ORIGIN domain $DOMAIN"
 	info "Site: $DOMAIN ($TARGET)"
+fi
+
+# ---- status command ----------------------------------------------------------
+# What's running and what can be rolled back to — the tags live on the server,
+# the commit messages behind them live in this checkout's git history.
+
+if [ "$ACTION" = "status" ]; then
+	{
+		printf 'CONTAINER=%q\n' "$CONTAINER"
+		cat <<'REMOTE'
+docker ps --filter "name=^$CONTAINER$" --format '{{.Image}}|{{.Status}}'
+echo ---
+docker images editable --format '{{.Tag}}|{{.CreatedAt}}'
+REMOTE
+	} | rssh "$SUDO bash -s" >"$TMP/status"
+
+	RUNNING_IMG="$(awk -F'|' '/^---$/ { exit } { print $1; exit }' "$TMP/status")"
+	RUNNING_STATE="$(awk -F'|' '/^---$/ { exit } { print $2; exit }' "$TMP/status")"
+	if [ -n "$RUNNING_IMG" ]; then
+		info "Running: $RUNNING_IMG ($RUNNING_STATE) — https://$DOMAIN"
+	else
+		warn "no running container named $CONTAINER"
+	fi
+
+	echo
+	echo "Images on the server (newest first):"
+	awk 'found { print } /^---$/ { found = 1 }' "$TMP/status" |
+		while IFS='|' read -r tag created; do
+			base_tag="${tag%-dirty}"
+			desc="$(git show -s --format=%s "$base_tag" 2>/dev/null || echo '(not a commit in this checkout)')"
+			[ "$tag" = "$base_tag" ] || desc="$desc + uncommitted changes"
+			marker=""
+			[ "editable:$tag" = "$RUNNING_IMG" ] && marker="  ← running"
+			printf '  %-16s %.16s   %s%s\n' "$tag" "$created" "$desc" "$marker"
+		done
+	echo
+	echo "Roll back with: npm run vps:deploy -- --tag <tag>"
+	exit 0
 fi
 
 # ---- env command -------------------------------------------------------------

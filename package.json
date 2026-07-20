@@ -31,6 +31,7 @@
 		"data:reset": "./scripts/data.sh reset",
 		"vps:deploy": "./scripts/deploy_vps.sh",
 		"vps:env": "./scripts/deploy_vps.sh env",
+		"vps:status": "./scripts/deploy_vps.sh status",
 		"litestream:install": "./scripts/install-litestream.sh"
 	},
 	"devDependencies": {

@@ -55,6 +55,7 @@ This file is the working spec for the feature. Once implemented and stable, fold
 ```
 ./scripts/deploy_vps.sh <user@host> <domain>   first deploy, or explicit target (always works)
 ./scripts/deploy_vps.sh                        deploy to DEPLOY_HOST         (npm run vps:deploy)
+./scripts/deploy_vps.sh status                 running tag + rollback tags   (npm run vps:status)
 ./scripts/deploy_vps.sh env                    show the server's env, masked (npm run vps:env)
 ./scripts/deploy_vps.sh env set KEY=VALUE …    set env vars and restart the app
 ./scripts/deploy_vps.sh env set KEY            prompt for the value (hidden input)
@@ -98,7 +99,7 @@ Options:
 
 Each step is independently verifiable; 3–5 need a real amd64 VPS to test against.
 
-Status: implemented (compose switch, script, `vps:deploy` / `vps:env` npm scripts, README, `.env.example`). Verified against a real DigitalOcean droplet: first deploy (provisioning, TLS via Caddy, password prompt), update deploy (cached build, container replacement, health check, report), and short-form `env` show with server-side site discovery. Real-world hardening that came out of that testing: ssh retries on transient connection drops (fresh droplets get hammered by brute-force bots, and sshd's MaxStartups randomly sheds new connections) and ssh connection multiplexing so each run plays that lottery only once. Still untested: `--tag` rollback, `env set`/`unset`, and the disaster-recovery path (fresh droplet restoring from a backup bucket).
+Status: implemented (compose switch, script, `vps:deploy` / `vps:env` npm scripts, README, `.env.example`). Verified against a real DigitalOcean droplet: first deploy (provisioning, TLS via Caddy, password prompt), update deploy (cached build, container replacement, health check, report), and the short-form `env` show and `status` commands with server-side site discovery. Real-world hardening that came out of that testing: ssh retries on transient connection drops (fresh droplets get hammered by brute-force bots, and sshd's MaxStartups randomly sheds new connections) and ssh connection multiplexing so each run plays that lottery only once. Still untested: `--tag` rollback, `env set`/`unset`, and the disaster-recovery path (fresh droplet restoring from a backup bucket).
 
 ## Open questions
 

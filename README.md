@@ -717,7 +717,19 @@ With `DEPLOY_HOST` set, no command needs the server address anymore. Ship an upd
 npm run vps:deploy
 ```
 
-Roll back a bad deploy by starting a previous image (the last three are kept on the server — `ssh` in and run `docker images editable` to list them; each tag is a git commit, so `git show -s <sha>` tells you what's inside). A deploy from a working tree with uncommitted changes is tagged `<sha>-dirty` to keep experiments distinguishable from committed states:
+See what's running and what you can roll back to — each image tag is a git commit, and the last three are kept on the server (a deploy from a working tree with uncommitted changes is tagged `<sha>-dirty` to keep experiments distinguishable from committed states):
+
+```sh
+npm run vps:status
+
+# → Running: editable:939761c (Up 5 minutes) — https://my-site.example.com
+#
+# Images on the server (newest first):
+#   939761c   2026-07-20 21:35   Add env var management  ← running
+#   502dcdf   2026-07-20 20:43   Harden deploy script
+```
+
+Roll back a bad deploy by starting a previous image:
 
 ```sh
 npm run vps:deploy -- --tag <sha>
