@@ -37,7 +37,7 @@
 # fly CLI. Override with -a <app> or the FLY_APP environment variable (-a wins).
 #
 # Ssh driver: configured via environment variables or .env (environment wins).
-# For a server managed by scripts/deploy_vps.sh, DEPLOY_HOST is the only key
+# For a server managed by scripts/vps-deploy.sh, DEPLOY_HOST is the only key
 # needed — the rest is discovered from the server. The explicit keys are for
 # other setups (bare node, hand-managed compose) and always override:
 #   DEPLOY_HOST      user@host to ssh into (setting this selects the driver)
@@ -110,7 +110,7 @@ DEPLOY_HOST="${DEPLOY_HOST:-}"
 REMOTE_APP_DIR="${REMOTE_APP_DIR:-/app}"
 REMOTE_DATA="${REMOTE_DATA_DIR:-/data}"
 
-# A deploy_vps.sh-managed server needs only DEPLOY_HOST — container name and
+# A vps-deploy.sh-managed server needs only DEPLOY_HOST — container name and
 # data path are discovered from its /srv/<site>/.deploy_env marker, the way
 # fly.toml resolves the rest for the fly driver. Explicit values always win,
 # and without exactly one marker (bare node, hand-managed compose, multiple

@@ -10,19 +10,19 @@
 # container is disposable and replaced on every deploy.
 #
 # Usage
-#   ./scripts/deploy_vps.sh <user@host> <domain>   first deploy (or explicit target)
-#   ./scripts/deploy_vps.sh                        deploy to DEPLOY_HOST
-#   ./scripts/deploy_vps.sh status                 show the running tag and rollback candidates
-#   ./scripts/deploy_vps.sh env                    show the server's env (secrets masked)
-#   ./scripts/deploy_vps.sh env set KEY=VALUE …    set env vars and restart the app
-#   ./scripts/deploy_vps.sh env set KEY            prompt for the value (hidden input)
-#   ./scripts/deploy_vps.sh env unset KEY …        remove env vars and restart the app
+#   ./scripts/vps-deploy.sh <user@host> <domain>   first deploy (or explicit target)
+#   ./scripts/vps-deploy.sh                        deploy to DEPLOY_HOST
+#   ./scripts/vps-deploy.sh status                 show the running tag and rollback candidates
+#   ./scripts/vps-deploy.sh env                    show the server's env (secrets masked)
+#   ./scripts/vps-deploy.sh env set KEY=VALUE …    set env vars and restart the app
+#   ./scripts/vps-deploy.sh env set KEY            prompt for the value (hidden input)
+#   ./scripts/vps-deploy.sh env unset KEY …        remove env vars and restart the app
 #
 # The short forms read DEPLOY_HOST from your local .env — the deployment
 # block printed after the first deploy, added by hand so it's transparent
 # where the target comes from — and discover the site on the server. The
 # explicit form works before that block exists and always overrides it:
-#   ./scripts/deploy_vps.sh root@203.0.113.10 my-site.example.com [env …]
+#   ./scripts/vps-deploy.sh root@203.0.113.10 my-site.example.com [env …]
 #
 # Options
 #   --tag <tag>   deploy an already-uploaded image tag (rollback) instead of
@@ -83,7 +83,7 @@ case "${POSITIONAL[0]:-}" in
 		# Explicit form: <user@host> <domain> [env …]
 		TARGET="${POSITIONAL[0]}"
 		DOMAIN="${POSITIONAL[1]:-}"
-		[ -n "$DOMAIN" ] || die "the explicit form needs a domain: deploy_vps.sh $TARGET <domain>"
+		[ -n "$DOMAIN" ] || die "the explicit form needs a domain: vps-deploy.sh $TARGET <domain>"
 		ACTION="${POSITIONAL[2]:-deploy}"
 		ENV_ARGS=("${POSITIONAL[@]:3}")
 		case "$ACTION" in
@@ -97,7 +97,7 @@ case "${POSITIONAL[0]:-}" in
 		ACTION="${POSITIONAL[0]:-deploy}"
 		ENV_ARGS=("${POSITIONAL[@]:1}")
 		TARGET="${DEPLOY_HOST:-$(local_env_val DEPLOY_HOST)}"
-		[ -n "$TARGET" ] || die "DEPLOY_HOST is not set — add the deployment block to .env (printed after the first deploy), or pass an explicit target: deploy_vps.sh user@host domain"
+		[ -n "$TARGET" ] || die "DEPLOY_HOST is not set — add the deployment block to .env (printed after the first deploy), or pass an explicit target: vps-deploy.sh user@host domain"
 		case "$TARGET" in
 			*@*) ;;
 			*) die "DEPLOY_HOST must be user@host, e.g. root@203.0.113.10" ;;
@@ -181,9 +181,9 @@ if [ -z "$DOMAIN" ]; then
 	DEPLOYED="$(rssh_retry 'ls /srv/*/.deploy_env 2>/dev/null' || true)"
 	DEPLOYED_COUNT="$(printf '%s' "$DEPLOYED" | grep -c . || true)"
 	[ "$DEPLOYED_COUNT" -ge 1 ] ||
-		die "no Editable deployment found on $TARGET — run the first deploy explicitly: deploy_vps.sh $TARGET <domain>"
+		die "no Editable deployment found on $TARGET — run the first deploy explicitly: vps-deploy.sh $TARGET <domain>"
 	[ "$DEPLOYED_COUNT" -eq 1 ] ||
-		die "multiple sites found on $TARGET — address one explicitly: deploy_vps.sh $TARGET <domain>"
+		die "multiple sites found on $TARGET — address one explicitly: vps-deploy.sh $TARGET <domain>"
 	DISCOVERED_SITE="$(basename "$(dirname "$DEPLOYED")")"
 	echo "$DISCOVERED_SITE" | grep -Eq '^[a-z0-9]([a-z0-9-]*[a-z0-9])?$' ||
 		die "unexpected site directory name '/srv/$DISCOVERED_SITE'"

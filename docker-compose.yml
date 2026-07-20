@@ -3,7 +3,7 @@
 # don't use this file (fly deploy builds the same Dockerfile directly).
 #
 # Two ways to use it:
-#   - scripts/deploy_vps.sh uploads this file and starts a locally built image
+#   - scripts/vps-deploy.sh uploads this file and starts a locally built image
 #     (IMAGE_TAG and CONTAINER_NAME come from the .deploy_env file it writes)
 #   - by hand on the server: `docker compose up -d --build` builds from source
 #     and runs under the default name `editable`

@@ -1,12 +1,12 @@
 # VPS deploy script — specification
 
-Spec for `scripts/deploy_vps.sh`: a single local script that takes a fresh Ubuntu VPS (e.g. a DigitalOcean droplet) from zero to a running, TLS-terminated Editable site, and afterwards ships code updates to the same box. Modeled on the Writebook/ONCE installer experience, without Kamal or any registry.
+Spec for `scripts/vps-deploy.sh`: a single local script that takes a fresh Ubuntu VPS (e.g. a DigitalOcean droplet) from zero to a running, TLS-terminated Editable site, and afterwards ships code updates to the same box. Modeled on the Writebook/ONCE installer experience, without Kamal or any registry.
 
 This file is the working spec for the feature. Once implemented and stable, fold the design decisions into `ARCHITECTURE.md` and the user-facing instructions into README → Deploy to a VPS.
 
 ## Goals
 
-- One command against a fresh VPS sets up everything: `./scripts/deploy_vps.sh root@203.0.113.10 my-site.example.com`
+- One command against a fresh VPS sets up everything: `./scripts/vps-deploy.sh root@203.0.113.10 my-site.example.com`
 - The same command run again ships a code update (the script detects what's needed; no separate setup/deploy modes for the user to learn)
 - The image is built locally and streamed over ssh — the server never needs git access, npm, or the memory to run a Vite build
 - The only state on the server that matters is the bind-mounted data directory; the container is disposable and replaced on every deploy
@@ -44,7 +44,7 @@ This file is the working spec for the feature. Once implemented and stable, fold
 
 **Dirty builds are labeled, not versioned.** A build from a working tree with uncommitted or untracked changes is tagged `<sha>-dirty`, so the image list and rollbacks can't mistake it for the committed state. Deploying dirty again reuses the tag — commits are the rollback anchors; dirty states are ephemeral by nature.
 
-**Rollback = redeploy an old tag + existing data restore.** The script keeps the last 3 image tags on the server (older ones pruned after a successful deploy). `./scripts/deploy_vps.sh <host> <domain> --tag <sha>` starts that image instead of building. Content rollback is out of scope — that's `npm run data:restore`, which already works against the VPS via `DEPLOY_HOST`.
+**Rollback = redeploy an old tag + existing data restore.** The script keeps the last 3 image tags on the server (older ones pruned after a successful deploy). `./scripts/vps-deploy.sh <host> <domain> --tag <sha>` starts that image instead of building. Content rollback is out of scope — that's `npm run data:restore`, which already works against the VPS via `DEPLOY_HOST`.
 
 **Health check gates success.** After `compose up`, the script polls `127.0.0.1:3000` over ssh (curl, ~30 s budget). On failure it prints the container logs and exits non-zero; it does not auto-rollback in v1.
 
@@ -53,13 +53,13 @@ This file is the working spec for the feature. Once implemented and stable, fold
 ## Script interface
 
 ```
-./scripts/deploy_vps.sh <user@host> <domain>   first deploy, or explicit target (always works)
-./scripts/deploy_vps.sh                        deploy to DEPLOY_HOST         (npm run vps:deploy)
-./scripts/deploy_vps.sh status                 running tag + rollback tags   (npm run vps:status)
-./scripts/deploy_vps.sh env                    show the server's env, masked (npm run vps:env)
-./scripts/deploy_vps.sh env set KEY=VALUE …    set env vars and restart the app
-./scripts/deploy_vps.sh env set KEY            prompt for the value (hidden input)
-./scripts/deploy_vps.sh env unset KEY …        remove env vars and restart the app
+./scripts/vps-deploy.sh <user@host> <domain>   first deploy, or explicit target (always works)
+./scripts/vps-deploy.sh                        deploy to DEPLOY_HOST         (npm run vps:deploy)
+./scripts/vps-deploy.sh status                 running tag + rollback tags   (npm run vps:status)
+./scripts/vps-deploy.sh env                    show the server's env, masked (npm run vps:env)
+./scripts/vps-deploy.sh env set KEY=VALUE …    set env vars and restart the app
+./scripts/vps-deploy.sh env set KEY            prompt for the value (hidden input)
+./scripts/vps-deploy.sh env unset KEY …        remove env vars and restart the app
 
 Options:
   --tag <sha>     deploy an already-uploaded image tag (rollback) instead of building
@@ -83,8 +83,8 @@ Options:
 ## Repository changes
 
 1. `docker-compose.yml` — switch the service to `image: 'editable:${IMAGE_TAG:-local}'`; keep everything else (ports, env_file, bind mount) as is
-2. `scripts/deploy_vps.sh` — the script per this spec (`set -euo pipefail`; remote steps as small quoted heredoc scripts, no unvalidated interpolation into remote shells)
-3. `package.json` — `"vps:deploy": "./scripts/deploy_vps.sh"` and `"vps:env": "./scripts/deploy_vps.sh env"`
+2. `scripts/vps-deploy.sh` — the script per this spec (`set -euo pipefail`; remote steps as small quoted heredoc scripts, no unvalidated interpolation into remote shells)
+3. `package.json` — `"vps:deploy": "./scripts/vps-deploy.sh"` and `"vps:env": "./scripts/vps-deploy.sh env"`
 4. `README.md` — rewrite Deploy to a VPS around the script; keep the manual compose flow as a short "doing it by hand" note
 5. `.env.example` — update the deployment-block example values to the `editable-<site>` container naming
 
