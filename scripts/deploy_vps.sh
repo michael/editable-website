@@ -97,9 +97,21 @@ HOST_ADDR="${TARGET#*@}"
 SUDO=""
 [ "$REMOTE_USER" = "root" ] || SUDO="sudo"
 
+TMP="$(mktemp -d)"
+# Close the multiplexing master connection, then remove the temp dir.
+trap 'ssh -o ControlPath="$TMP/ssh" -O exit "$TARGET" 2>/dev/null || true; rm -rf "$TMP"' EXIT
+
 # accept-new: trust a fresh server's host key on first contact (a brand-new
 # droplet is never in known_hosts), but still fail hard if a known key changes.
-SSH_OPTS=(-o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new)
+#
+# ControlMaster: multiplex every ssh call over one connection. A fresh VPS is
+# hammered by ssh brute-force bots within minutes, and sshd (MaxStartups)
+# randomly drops new incoming connections while bots fill the pending slots —
+# with multiplexing only the first connection has to get through.
+SSH_OPTS=(
+	-o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new
+	-o ControlMaster=auto -o ControlPath="$TMP/ssh" -o ControlPersist=yes
+)
 rssh() { ssh "${SSH_OPTS[@]}" "$TARGET" "$@"; }
 
 # Like rssh, but retries transient connection failures (ssh exit code 255) —
@@ -117,9 +129,6 @@ rssh_retry() {
 	done
 	return "$rc"
 }
-
-TMP="$(mktemp -d)"
-trap 'rm -rf "$TMP"' EXIT
 
 # ---- phase 1: preflight ------------------------------------------------------
 
@@ -293,7 +302,7 @@ rssh_retry "cd $SRV && $SUDO docker compose --env-file .env --env-file .deploy_e
 # ---- phase 6: verify ---------------------------------------------------------
 
 info "Waiting for the app to respond"
-if ! rssh_retry 'for i in $(seq 30); do curl -fsS -o /dev/null http://127.0.0.1:3000 && exit 0; sleep 1; done; exit 1'; then
+if ! rssh_retry 'for i in $(seq 30); do curl -fs -o /dev/null http://127.0.0.1:3000 && exit 0; sleep 1; done; exit 1'; then
 	echo "--- container logs -----------------------------------------------------" >&2
 	rssh_retry "$SUDO docker logs --tail 50 $CONTAINER" >&2 || true
 	die "the app did not become healthy — the failing container is left running for inspection"
