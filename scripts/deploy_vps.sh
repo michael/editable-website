@@ -102,6 +102,22 @@ SUDO=""
 SSH_OPTS=(-o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new)
 rssh() { ssh "${SSH_OPTS[@]}" "$TARGET" "$@"; }
 
+# Like rssh, but retries transient connection failures (ssh exit code 255) —
+# fresh droplets drop occasional connections while they finish booting. Only
+# for commands that read nothing from stdin (a retry would find it drained).
+rssh_retry() {
+	local attempt rc
+	for attempt in 1 2 3 4 5; do
+		rc=0
+		rssh "$@" </dev/null || rc=$?
+		[ "$rc" -eq 255 ] || return "$rc"
+		[ "$attempt" -lt 5 ] || break
+		warn "ssh connection dropped — retrying in 5s ($attempt/5)"
+		sleep 5
+	done
+	return "$rc"
+}
+
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
@@ -115,9 +131,9 @@ if [ -z "$TAG" ]; then
 fi
 
 info "Checking ssh connectivity to $TARGET"
-rssh true 2>/dev/null || die "cannot ssh into $TARGET (key-based access required)"
+rssh_retry true 2>/dev/null || die "cannot ssh into $TARGET (key-based access required)"
 
-REMOTE_ARCH="$(rssh uname -m)"
+REMOTE_ARCH="$(rssh_retry uname -m)"
 [ "$REMOTE_ARCH" = "x86_64" ] ||
 	die "server is $REMOTE_ARCH — only amd64 servers are supported (the image pins the x86_64 Litestream build)"
 
@@ -132,7 +148,7 @@ if echo "$HOST_ADDR" | grep -Eq '^[0-9.]+$' && command -v dig >/dev/null; then
 fi
 
 FIRST_RUN=false
-rssh "test -f $SRV/.env" 2>/dev/null || FIRST_RUN=true
+rssh_retry "test -f $SRV/.env" 2>/dev/null || FIRST_RUN=true
 
 if [ "$FIRST_RUN" = true ]; then
 	confirm "Set up $TARGET as a new Editable server for https://$DOMAIN?"
@@ -272,14 +288,14 @@ rssh "$SUDO tee $SRV/docker-compose.yml >/dev/null" <docker-compose.yml
 info "Starting the new container"
 printf 'IMAGE_TAG=%s\nCONTAINER_NAME=%s\n' "$TAG" "$CONTAINER" |
 	rssh "$SUDO tee $SRV/.deploy_env >/dev/null"
-rssh "cd $SRV && $SUDO docker compose --env-file .env --env-file .deploy_env up -d --remove-orphans"
+rssh_retry "cd $SRV && $SUDO docker compose --env-file .env --env-file .deploy_env up -d --remove-orphans"
 
 # ---- phase 6: verify ---------------------------------------------------------
 
 info "Waiting for the app to respond"
-if ! rssh 'for i in $(seq 30); do curl -fsS -o /dev/null http://127.0.0.1:3000 && exit 0; sleep 1; done; exit 1'; then
+if ! rssh_retry 'for i in $(seq 30); do curl -fsS -o /dev/null http://127.0.0.1:3000 && exit 0; sleep 1; done; exit 1'; then
 	echo "--- container logs -----------------------------------------------------" >&2
-	rssh "$SUDO docker logs --tail 50 $CONTAINER" >&2 || true
+	rssh_retry "$SUDO docker logs --tail 50 $CONTAINER" >&2 || true
 	die "the app did not become healthy — the failing container is left running for inspection"
 fi
 
@@ -291,7 +307,7 @@ fi
 
 # Keep the newest 3 editable images for --tag rollbacks (rmi of an in-use
 # image fails harmlessly, e.g. right after rolling back to an older tag).
-rssh "$SUDO docker images editable --format '{{.Repository}}:{{.Tag}}' | tail -n +4 | xargs -r $SUDO docker rmi >/dev/null 2>&1 || true"
+rssh_retry "$SUDO docker images editable --format '{{.Repository}}:{{.Tag}}' | tail -n +4 | xargs -r $SUDO docker rmi >/dev/null 2>&1 || true"
 
 echo
 info "Deployed editable:$TAG to https://$DOMAIN"
