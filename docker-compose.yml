@@ -20,6 +20,10 @@ services:
       - '127.0.0.1:3000:3000'
     env_file: .env
     environment:
+      # Point the app at the bind mount — without this it defaults to ./data
+      # inside the container and content silently dies with each deploy
+      # (fly.toml sets the same for Fly deployments).
+      DATA_DIR: /data
       BODY_SIZE_LIMIT: '${BODY_SIZE_LIMIT:-30000000}'
     volumes:
       - ./data:/data

@@ -458,12 +458,10 @@ info "Deployed editable:$TAG to https://$DOMAIN"
 if [ "$FIRST_RUN" = true ]; then
 	cat <<LOCAL_ENV
 
-Add this block to your local .env — it points the npm run data:* commands at
-this server and enables the short forms (npm run vps:deploy / npm run vps:env):
+Add this line to your local .env — it is this checkout's deployment identity
+(like fly.toml's app name). npm run vps:deploy / vps:status / vps:env and all
+npm run data:* commands target it; everything else is read from the server:
 
     DEPLOY_HOST="$TARGET"
-    RESTART_CMD="docker restart $CONTAINER"
-    REMOTE_EXEC="docker exec $CONTAINER"
-    HOST_DATA_DIR="$SRV/data"
 LOCAL_ENV
 fi

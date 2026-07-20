@@ -36,7 +36,10 @@
 # Fly driver: the target app is read from fly.toml (app = '...'), same as the
 # fly CLI. Override with -a <app> or the FLY_APP environment variable (-a wins).
 #
-# Ssh driver: configured via environment variables or .env (environment wins):
+# Ssh driver: configured via environment variables or .env (environment wins).
+# For a server managed by scripts/deploy_vps.sh, DEPLOY_HOST is the only key
+# needed — the rest is discovered from the server. The explicit keys are for
+# other setups (bare node, hand-managed compose) and always override:
 #   DEPLOY_HOST      user@host to ssh into (setting this selects the driver)
 #   RESTART_CMD      how to restart the app, e.g. 'docker restart editable'
 #   REMOTE_EXEC      command prefix to enter the app context, e.g.
@@ -106,6 +109,26 @@ fi
 DEPLOY_HOST="${DEPLOY_HOST:-}"
 REMOTE_APP_DIR="${REMOTE_APP_DIR:-/app}"
 REMOTE_DATA="${REMOTE_DATA_DIR:-/data}"
+
+# A deploy_vps.sh-managed server needs only DEPLOY_HOST — container name and
+# data path are discovered from its /srv/<site>/.deploy_env marker, the way
+# fly.toml resolves the rest for the fly driver. Explicit values always win,
+# and without exactly one marker (bare node, hand-managed compose, multiple
+# sites) nothing changes and the explicit keys below stay required.
+if [ "$DRIVER" = "ssh" ] && [ -n "$DEPLOY_HOST" ] &&
+	[ -z "${REMOTE_EXEC:-}" ] && [ -z "${RESTART_CMD:-}" ] && [ -z "${HOST_DATA_DIR:-}" ]; then
+	FOUND="$(ssh "$DEPLOY_HOST" 'for f in /srv/*/.deploy_env; do [ -f "$f" ] && printf "%s %s\n" "$f" "$(sed -n s/^CONTAINER_NAME=//p "$f")"; done' 2>/dev/null || true)"
+	if [ "$(printf '%s' "$FOUND" | grep -c .)" -eq 1 ]; then
+		MARKER="${FOUND%% *}"
+		CONTAINER="${FOUND#* }"
+		if printf '%s' "$CONTAINER" | grep -Eq '^[A-Za-z0-9][A-Za-z0-9._-]*$'; then
+			REMOTE_EXEC="docker exec $CONTAINER"
+			RESTART_CMD="docker restart $CONTAINER"
+			HOST_DATA_DIR="$(dirname "$MARKER")/data"
+		fi
+	fi
+fi
+
 HOST_DATA_DIR="${HOST_DATA_DIR:-$REMOTE_DATA}"
 REMOTE_EXEC="${REMOTE_EXEC:-}"
 
