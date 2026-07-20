@@ -694,38 +694,32 @@ Because each checkout manages exactly one app (see [Your site is your repo](#you
 
 ### Deploy to a VPS (experimental)
 
-The same image runs on any host with Docker — a DigitalOcean droplet, a Hetzner or Nodion VPS, a home server. The included `docker-compose.yml` is the deployment; the data commands ([Backup, sync & recovery](#backup-sync--recovery)) and [automated backups](#automated-backups-optional) work identically, they just reach the server over plain ssh instead of the fly CLI.
-
-On the server (assuming Docker and ssh key access are set up), clone your site and configure it:
+Editable runs on any amd64 host with Docker — a DigitalOcean droplet, a Hetzner or Nodion VPS. One command takes a fresh Ubuntu server to a running site with TLS. Create the server with your ssh key installed, point your domain's A record at its IP, then:
 
 ```sh
-git clone <your-repo-url> /srv/my-site && cd /srv/my-site
-cp .env.example .env
-# set in .env: ADMIN_PASSWORD, and ORIGIN="https://my-site.example.com"
-# optional: the BUCKET_* / AWS_* secrets for automated backups
-docker compose up -d --build
+npm run deploy:vps -- root@203.0.113.10 my-site.example.com
 ```
 
-The app listens on `127.0.0.1:3000`; put a reverse proxy with TLS in front. With [Caddy](https://caddyserver.com) that's the whole config:
+The first run provisions the server — Docker, [Caddy](https://caddyserver.com) as the TLS-terminating reverse proxy, swap on machines with less than 2 GB RAM — asks you for an admin password, builds the Docker image locally, streams it over ssh, and starts the site. The server never needs access to your git repository or the memory to run a build. Every later run of the same command ships an update: build, stream, replace the container, health-check. Your content lives in `/srv/my-site/data` on the server; deploys replace the container and never touch that folder.
 
-```
-my-site.example.com {
-	reverse_proxy 127.0.0.1:3000
-}
-```
-
-To ship a code update: push to your repo, then `ssh` in and `git pull && docker compose up -d --build`.
-
-On your **local machine**, point the data commands at the server by uncommenting the deployment block in `.env`:
+Roll back a bad deploy by starting a previous image (the last three are kept on the server):
 
 ```sh
-DEPLOY_HOST="deploy@my-site.example.com"   # who you ssh in as
-RESTART_CMD="docker restart editable"
-REMOTE_EXEC="docker exec editable"
+npm run deploy:vps -- root@203.0.113.10 my-site.example.com --tag <sha>
+```
+
+After the first deploy the script prints the deployment block for your **local** `.env`, which points the data commands ([Backup, sync & recovery](#backup-sync--recovery)) at the server:
+
+```sh
+DEPLOY_HOST="root@203.0.113.10"            # who you ssh in as
+RESTART_CMD="docker restart editable-my-site"
+REMOTE_EXEC="docker exec editable-my-site"
 HOST_DATA_DIR="/srv/my-site/data"          # the ./data bind mount, as an absolute path
 ```
 
-That's the entire switch: with `DEPLOY_HOST` set, every `npm run data:*` command targets the VPS (`fly.toml` is ignored); remove or comment it to target Fly.io again. Pull, push, backups, restores, point-in-time recovery — the whole toolbox behaves the same, including disaster recovery from the backup bucket on a fresh volume.
+That's the entire switch: with `DEPLOY_HOST` set, every `npm run data:*` command targets the VPS (`fly.toml` is ignored); remove or comment it to target Fly.io again. Pull, push, backups, restores, point-in-time recovery — the whole toolbox behaves the same, including disaster recovery from the backup bucket on a fresh volume. For [automated backups](#automated-backups-optional), the `BUCKET_*` / `AWS_*` secrets belong in the server's `.env` — the script copies them from your local `.env` on the first deploy, and `--push-env` re-syncs them later.
+
+**Doing it by hand instead:** the script is optional — `docker-compose.yml` runs on any docker host. Clone your site on the server, `cp .env.example .env` and set `ADMIN_PASSWORD` and `ORIGIN="https://my-site.example.com"`, then `docker compose up -d --build`. The app listens on `127.0.0.1:3000`; put a reverse proxy with TLS in front (with Caddy that's the whole config: `my-site.example.com { reverse_proxy 127.0.0.1:3000 }`). Ship updates with `git pull && docker compose up -d --build`, and use `RESTART_CMD="docker restart editable"` / `REMOTE_EXEC="docker exec editable"` in the deployment block above (without the script, the container keeps the default name `editable`).
 
 What Fly.io still does for you that a VPS doesn't: scale-to-zero with sub-second wake-ups (a VPS runs — and bills — around the clock), TLS and anycast routing without a reverse proxy, and volume snapshots. The VPS path trades that for a fixed monthly price and no platform dependency.
 

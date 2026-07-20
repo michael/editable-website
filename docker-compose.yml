@@ -2,12 +2,19 @@
 # Nodion VPS, a home server. See README → Deploy to a VPS. Fly.io deployments
 # don't use this file (fly deploy builds the same Dockerfile directly).
 #
+# Two ways to use it:
+#   - scripts/deploy_vps.sh uploads this file and starts a locally built image
+#     (IMAGE_TAG and CONTAINER_NAME come from the .deploy_env file it writes)
+#   - by hand on the server: `docker compose up -d --build` builds from source
+#     and runs under the default name `editable`
+#
 # The app listens on 127.0.0.1:3000 — put a reverse proxy with TLS in front
 # (Caddy makes that two lines, see the README).
 services:
   editable:
     build: .
-    container_name: editable
+    image: 'editable:${IMAGE_TAG:-local}'
+    container_name: '${CONTAINER_NAME:-editable}'
     restart: unless-stopped
     ports:
       - '127.0.0.1:3000:3000'
