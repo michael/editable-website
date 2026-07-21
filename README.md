@@ -700,7 +700,7 @@ Editable runs on any amd64 host with Docker — a DigitalOcean droplet, a Hetzne
 npm run vps:deploy -- root@203.0.113.10 my-site.example.com
 ```
 
-The first run provisions the server — Docker, [Caddy](https://caddyserver.com) as the TLS-terminating reverse proxy, swap on machines with less than 2 GB RAM — asks you for an admin password, builds the Docker image locally, streams it over ssh, and starts the site. The server never needs access to your git repository or the memory to run a build. Your content lives in `/srv/my-site/data` on the server; deploys replace the container and never touch that folder.
+The first run provisions the server — Docker, [Caddy](https://caddyserver.com) as the TLS-terminating reverse proxy, swap on machines with less than 2 GB RAM — asks you for an admin password, builds the Docker image locally, streams it over ssh, and starts the site. The server never needs access to your git repository or the memory to run a build. Your content lives in `/data` on the server — the same path Fly.io mounts and the same path inside the container; deploys replace the container and never touch that folder.
 
 After the first deploy, add one line to your **local** `.env` — this is your checkout's deployment identity, playing the role `fly.toml` plays for Fly.io. Everything else (container name, data path) is read from the server:
 
@@ -753,7 +753,7 @@ What Fly.io still does for you that a VPS doesn't: scale-to-zero with sub-second
 
 Your whole site lives in one folder — pull it, push it, snapshot it, roll it back.
 
-That folder is `data/`: an SQLite database (`db.sqlite3`) and uploaded assets (`assets/`). Locally it defaults to `./data`; on Fly.io it's a persistent volume at `/data`; on a VPS it's the `./data` bind mount next to the compose file. The data commands move that folder between your machine, your deployment, and — optionally — a backup bucket. The complete toolbox:
+That folder is `data/`: an SQLite database (`db.sqlite3`) and uploaded assets (`assets/`). Locally it defaults to `./data`; on Fly.io it's a persistent volume at `/data`; on a VPS it's `/data` on the host, bind-mounted into the container at the same path. The data commands move that folder between your machine, your deployment, and — optionally — a backup bucket. The complete toolbox:
 
 - **npm run data:pull** — Copy the live site's data to your machine
 - **npm run data:push [-- --yes]** — Replace the live site's data with your local state — guarded, undoable

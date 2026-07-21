@@ -110,21 +110,21 @@ DEPLOY_HOST="${DEPLOY_HOST:-}"
 REMOTE_APP_DIR="${REMOTE_APP_DIR:-/app}"
 REMOTE_DATA="${REMOTE_DATA_DIR:-/data}"
 
-# A vps-deploy.sh-managed server needs only DEPLOY_HOST — container name and
-# data path are discovered from its /srv/<site>/.deploy_env marker, the way
+# A vps-deploy.sh-managed server needs only DEPLOY_HOST — the marker file at
+# /srv/editable/.deploy_env names the container and host data path, the way
 # fly.toml resolves the rest for the fly driver. Explicit values always win,
-# and without exactly one marker (bare node, hand-managed compose, multiple
-# sites) nothing changes and the explicit keys below stay required.
+# and without the marker (bare node, hand-managed compose) nothing changes
+# and the explicit keys below stay required.
 if [ "$DRIVER" = "ssh" ] && [ -n "$DEPLOY_HOST" ] &&
 	[ -z "${REMOTE_EXEC:-}" ] && [ -z "${RESTART_CMD:-}" ] && [ -z "${HOST_DATA_DIR:-}" ]; then
-	FOUND="$(ssh "$DEPLOY_HOST" 'for f in /srv/*/.deploy_env; do [ -f "$f" ] && printf "%s %s\n" "$f" "$(sed -n s/^CONTAINER_NAME=//p "$f")"; done' 2>/dev/null || true)"
-	if [ "$(printf '%s' "$FOUND" | grep -c .)" -eq 1 ]; then
-		MARKER="${FOUND%% *}"
-		CONTAINER="${FOUND#* }"
+	MARKER="$(ssh "$DEPLOY_HOST" 'cat /srv/editable/.deploy_env 2>/dev/null' 2>/dev/null || true)"
+	if [ -n "$MARKER" ]; then
+		CONTAINER="$(printf '%s\n' "$MARKER" | sed -n 's/^CONTAINER_NAME=//p')"
 		if printf '%s' "$CONTAINER" | grep -Eq '^[A-Za-z0-9][A-Za-z0-9._-]*$'; then
 			REMOTE_EXEC="docker exec $CONTAINER"
 			RESTART_CMD="docker restart $CONTAINER"
-			HOST_DATA_DIR="$(dirname "$MARKER")/data"
+			HOST_DATA_DIR="$(printf '%s\n' "$MARKER" | sed -n 's/^HOST_DATA_DIR=//p')"
+			HOST_DATA_DIR="${HOST_DATA_DIR:-/data}"
 		fi
 	fi
 fi

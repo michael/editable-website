@@ -27,16 +27,19 @@ This file is the working spec for the feature. Once implemented and stable, fold
 
 **Compose stays the runtime, switched from `build:` to `image:`.** `docker-compose.yml` gains `image: 'editable:${IMAGE_TAG:-local}'` and drops `build: .` as the on-server path. Local from-source runs use `docker compose up --build` explicitly (compose builds the `image:` tag when `--build` is passed), so the local workflow documented today keeps working. The script deploys with `IMAGE_TAG=<sha> docker compose up -d --remove-orphans`; compose sees the tag change and replaces the container, leaving the `./data` bind mount untouched.
 
-**Server layout.** Everything lives in one directory, `/srv/<site>` (site name = the domain's first label, e.g. `my-site`):
+**Server layout.** One site per server, so nothing needs a per-site name — the layout separates the precious from the disposable:
 
 ```
-/srv/my-site/
+/data                    the persistent site data — the only thing worth backing
+                         up; same path as Fly's volume mount and the in-container
+                         path (bind mount /data → /data)
+/srv/editable/
 ├── docker-compose.yml   uploaded by the script on every deploy
 ├── .env                 created on first run, never overwritten
-└── data/                the persistent site data (bind mount → /data)
+└── .deploy_env          marker: IMAGE_TAG, CONTAINER_NAME, HOST_DATA_DIR
 ```
 
-`/etc/caddy/Caddyfile` holds the reverse-proxy config.
+Everything under `/srv/editable` is recreatable by the next deploy. The container is plain `editable` — identical to a hand-managed compose setup, so both flows converge on one naming scheme. The Caddy vhost lives in `/etc/caddy/sites/editable.caddy`, imported from the main Caddyfile (which stays untouched otherwise). The compose volume line is `'${HOST_DATA_DIR:-./data}:/data'`: local and hand-managed runs keep `./data` next to the compose file, the script pins `/data` via `.deploy_env`.
 
 **Secrets.** On first run the script prompts for `ADMIN_PASSWORD` (offering a generated one), sets `ORIGIN=https://<domain>`, and writes the server's `.env`. Backup-bucket credentials (`BUCKET_NAME`, `AWS_*`) are copied from the local `.env` if present. That first-run bootstrap is the only implicit sync: afterwards the server's `.env` is authoritative and changes only through the explicit `env` command (`env` show / `env set KEY=VALUE` / `env set KEY` with hidden prompt / `env unset KEY`), which rewrites the file and recreates the container so the change takes effect — fly-secrets style, nothing moves without being named. Secrets are never passed as command-line arguments to remote shells.
 
@@ -66,17 +69,17 @@ Options:
   --yes           skip confirmation prompts (except the first-run password prompt)
 ```
 
-**Addressing.** `DEPLOY_HOST` in the local `.env` is the checkout's entire deployment identity — the same key the data toolbox uses, playing the role `fly.toml` plays for Fly.io. The user adds it by hand from the line the first deploy prints (deliberately not auto-written, so it stays transparent where commands are targeted). Everything else is discovered on the server via the `/srv/<site>/.deploy_env` marker (exactly one per the one-site-per-server rule): the deploy script reads the site and its domain (from `ORIGIN` in the server's `.env`), and `data.sh` derives `REMOTE_EXEC`, `RESTART_CMD`, and `HOST_DATA_DIR` from the marker's `CONTAINER_NAME` and path. Explicit values always override, and setups without the marker (bare node, hand-managed compose) keep configuring the data toolbox explicitly. The explicit `<user@host> <domain>` form is what works before any of this exists.
+**Addressing.** `DEPLOY_HOST` in the local `.env` is the checkout's entire deployment identity — the same key the data toolbox uses, playing the role `fly.toml` plays for Fly.io. The user adds it by hand from the line the first deploy prints (deliberately not auto-written, so it stays transparent where commands are targeted). Everything else is read from the server via the `/srv/editable/.deploy_env` marker: the deploy script reads the domain from `ORIGIN` in the server's `.env`, and `data.sh` takes `REMOTE_EXEC`, `RESTART_CMD`, and `HOST_DATA_DIR` from the marker's `CONTAINER_NAME` and `HOST_DATA_DIR`. Explicit values always override, and setups without the marker (bare node, hand-managed compose) keep configuring the data toolbox explicitly. The explicit `<user@host> <domain>` form is what works before any of this exists.
 
 `<user@host>` is typically `root@<ip>` on a fresh droplet; any sudo-capable user works. ssh key access is assumed (the script never handles passwords).
 
 ## Execution phases
 
 1. **Preflight (local).** Verify: git worktree present, `docker buildx` available, ssh connectivity to the host (`BatchMode=yes`), remote architecture is x86_64 (abort otherwise), domain resolves to the host's IP (warn, don't abort — DNS may still be propagating).
-2. **Provision (remote, idempotent).** Install Docker (official convenience script) and Caddy (apt repo) if missing; create 1 GB swap if total RAM < 2 GB and no swap exists; create `/srv/<site>/data`.
+2. **Provision (remote, idempotent).** Install Docker (official convenience script) and Caddy (apt repo) if missing; create 1 GB swap if total RAM < 2 GB and no swap exists; create `/data` and `/srv/editable`.
 3. **Configure (remote, idempotent).** Write `/etc/caddy/Caddyfile` (reverse_proxy block for the domain) and reload Caddy if it changed. First run: prompt for `ADMIN_PASSWORD`, write `.env` with it plus `ORIGIN` and any local bucket credentials.
 4. **Build & upload (local → remote).** Skipped with `--tag`. Build `editable:<sha>` for linux/amd64, stream via `ssh docker load`. Upload `docker-compose.yml`.
-5. **Activate (remote).** `IMAGE_TAG=<sha> docker compose up -d --remove-orphans` in `/srv/<site>` (tag passed via a `.deploy_tag` env file, not shell interpolation).
+5. **Activate (remote).** `IMAGE_TAG=<sha> docker compose up -d --remove-orphans` in `/srv/editable` (tag passed via the `.deploy_env` file, not shell interpolation).
 6. **Verify.** Poll `127.0.0.1:3000` via ssh until healthy or timeout; on success also curl `https://<domain>` from the local machine (warn-only — TLS issuance or DNS may lag). Print logs and fail otherwise.
 7. **Cleanup & report.** Prune `editable:*` images beyond the newest 3. Print the deployed tag, the site URL, and (first run) the local `.env` block for the data commands.
 
@@ -86,7 +89,7 @@ Options:
 2. `scripts/vps-deploy.sh` — the script per this spec (`set -euo pipefail`; remote steps as small quoted heredoc scripts, no unvalidated interpolation into remote shells)
 3. `package.json` — `"vps:deploy": "./scripts/vps-deploy.sh"` and `"vps:env": "./scripts/vps-deploy.sh env"`
 4. `README.md` — rewrite Deploy to a VPS around the script; keep the manual compose flow as a short "doing it by hand" note
-5. `.env.example` — update the deployment-block example values to the `editable-<site>` container naming
+5. `.env.example` — `DEPLOY_HOST` as the only needed key, explicit keys as hand-managed overrides
 
 ## Implementation steps
 
@@ -104,4 +107,4 @@ Status: implemented (compose switch, script, `vps:deploy` / `vps:env` / `vps:sta
 ## Open questions
 
 - Should the script optionally harden the box (ufw allowing 22/80/443, unattended-upgrades)? Writebook's installer does some of this. Leaning yes for ufw, no for anything beyond — but deferred until after v1 works end to end.
-- One site per server is the decided v1 scope. Multi-site later is additive, not a redesign — the collisions are: the fixed host port 3000, the hardcoded `container_name: editable`, the script owning all of `/etc/caddy/Caddyfile`, and the shared `editable:<sha>` image namespace. To keep that door open cheaply, v1 adopts two conventions now: name the container `editable-<site>`, and write the Caddy config as `/etc/caddy/sites/<domain>.caddy` imported from the main Caddyfile. A future multi-site step then only needs a per-site `APP_PORT` and per-site image repos (`editable-<site>:<sha>`).
+- Multi-site per server was considered and decided against: the tool stays committed to one site per server, hardened and simplified, rather than growing toward a mini-PaaS. Consequence: nothing is scoped by a site name — fixed paths (`/data`, `/srv/editable`), fixed container name (`editable`), no name derivation. Anyone wanting many sites runs many cheap servers (or uses Fly.io).

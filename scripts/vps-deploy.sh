@@ -6,8 +6,8 @@
 # TLS-terminated site; the same command run again ships a code update. The
 # image is built locally and streamed over ssh — the server never needs git
 # access, npm, or the memory to run a build. The only state that matters on
-# the server is the bind-mounted data directory (/srv/<site>/data); the
-# container is disposable and replaced on every deploy.
+# the server is the bind-mounted data directory /data (the same path Fly.io
+# mounts); the container is disposable and replaced on every deploy.
 #
 # Usage
 #   ./scripts/vps-deploy.sh <user@host> <domain>   first deploy (or explicit target)
@@ -109,15 +109,19 @@ esac
 
 # Values interpolated into remote commands are validated to safe character
 # sets first — everything else reaches the remote side via stdin only.
-derive_site() {
+validate_domain() {
 	DOMAIN="$(echo "$DOMAIN" | tr '[:upper:]' '[:lower:]')"
 	echo "$DOMAIN" | grep -Eq '^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$' ||
 		die "'$DOMAIN' does not look like a domain name"
-	SITE="${DOMAIN%%.*}"
-	SRV="/srv/$SITE"
-	CONTAINER="editable-$SITE"
 }
-[ -z "$DOMAIN" ] || derive_site
+[ -z "$DOMAIN" ] || validate_domain
+
+# One site per server, so nothing needs a per-site name: runtime files live
+# in /srv/editable, the data in /data (the same path Fly.io mounts and the
+# same path inside the container), and the container is plain 'editable' —
+# identical to a hand-managed compose setup.
+SRV="/srv/editable"
+CONTAINER="editable"
 
 if [ -n "$TAG" ]; then
 	echo "$TAG" | grep -Eq '^[A-Za-z0-9][A-Za-z0-9._-]*$' || die "'$TAG' is not a valid image tag"
@@ -176,21 +180,13 @@ fi
 info "Checking ssh connectivity to $TARGET"
 rssh_retry true 2>/dev/null || die "cannot ssh into $TARGET (key-based access required)"
 
-# Short form: discover the (single) site on the server and its domain.
+# Short form: read the deployed site's domain from the server.
 if [ -z "$DOMAIN" ]; then
-	DEPLOYED="$(rssh_retry 'ls /srv/*/.deploy_env 2>/dev/null' || true)"
-	DEPLOYED_COUNT="$(printf '%s' "$DEPLOYED" | grep -c . || true)"
-	[ "$DEPLOYED_COUNT" -ge 1 ] ||
+	rssh_retry "test -f $SRV/.deploy_env" 2>/dev/null ||
 		die "no Editable deployment found on $TARGET — run the first deploy explicitly: vps-deploy.sh $TARGET <domain>"
-	[ "$DEPLOYED_COUNT" -eq 1 ] ||
-		die "multiple sites found on $TARGET — address one explicitly: vps-deploy.sh $TARGET <domain>"
-	DISCOVERED_SITE="$(basename "$(dirname "$DEPLOYED")")"
-	echo "$DISCOVERED_SITE" | grep -Eq '^[a-z0-9]([a-z0-9-]*[a-z0-9])?$' ||
-		die "unexpected site directory name '/srv/$DISCOVERED_SITE'"
-	DOMAIN="$(rssh_retry "$SUDO cat /srv/$DISCOVERED_SITE/.env" | sed -n 's|^ORIGIN="https://\([^"]*\)".*|\1|p' | sed -n '1p')"
-	[ -n "$DOMAIN" ] || die "could not read the site's domain (ORIGIN) from /srv/$DISCOVERED_SITE/.env"
-	derive_site
-	[ "$SITE" = "$DISCOVERED_SITE" ] || die "site directory /srv/$DISCOVERED_SITE does not match its ORIGIN domain $DOMAIN"
+	DOMAIN="$(rssh_retry "$SUDO cat $SRV/.env" | sed -n 's|^ORIGIN="https://\([^"]*\)".*|\1|p' | sed -n '1p')"
+	[ -n "$DOMAIN" ] || die "could not read the site's domain (ORIGIN) from $SRV/.env"
+	validate_domain
 	info "Site: $DOMAIN ($TARGET)"
 fi
 
@@ -315,7 +311,7 @@ fi
 
 info "Provisioning server (no-op when already set up)"
 {
-	printf 'SITE=%q\nAPP_USER=%q\n' "$SITE" "$REMOTE_USER"
+	printf 'APP_USER=%q\n' "$REMOTE_USER"
 	cat <<'REMOTE'
 set -euo pipefail
 export DEBIAN_FRONTEND=noninteractive
@@ -345,8 +341,8 @@ if [ "$total_kb" -lt 2000000 ] && [ "$(swapon --noheadings | wc -l)" -eq 0 ]; th
 	grep -q '^/swapfile' /etc/fstab || echo '/swapfile none swap sw 0 0' >>/etc/fstab
 fi
 
-mkdir -p "/srv/$SITE/data"
-[ "$APP_USER" = "root" ] || chown "$APP_USER" "/srv/$SITE"
+mkdir -p /data /srv/editable
+[ "$APP_USER" = "root" ] || chown "$APP_USER" /data /srv/editable
 REMOTE
 } | rssh "$SUDO bash -s"
 
@@ -358,7 +354,7 @@ info "Configuring Caddy for $DOMAIN"
 	cat <<'REMOTE'
 set -euo pipefail
 mkdir -p /etc/caddy/sites
-site_file="/etc/caddy/sites/$DOMAIN.caddy"
+site_file="/etc/caddy/sites/editable.caddy"
 desired="$DOMAIN {
 	reverse_proxy 127.0.0.1:3000
 }"
@@ -430,7 +426,7 @@ rssh "$SUDO tee $SRV/docker-compose.yml >/dev/null" <docker-compose.yml
 # ---- phase 5: activate -------------------------------------------------------
 
 info "Starting the new container"
-printf 'IMAGE_TAG=%s\nCONTAINER_NAME=%s\n' "$TAG" "$CONTAINER" |
+printf 'IMAGE_TAG=%s\nCONTAINER_NAME=%s\nHOST_DATA_DIR=/data\n' "$TAG" "$CONTAINER" |
 	rssh "$SUDO tee $SRV/.deploy_env >/dev/null"
 rssh_retry "cd $SRV && $SUDO docker compose --env-file .env --env-file .deploy_env up -d --remove-orphans"
 

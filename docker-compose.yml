@@ -26,4 +26,7 @@ services:
       DATA_DIR: /data
       BODY_SIZE_LIMIT: '${BODY_SIZE_LIMIT:-30000000}'
     volumes:
-      - ./data:/data
+      # Host data location: ./data next to this file by default (local and
+      # hand-managed runs); vps-deploy.sh pins it to /data via .deploy_env so
+      # the host path matches the container path and Fly's volume mount.
+      - '${HOST_DATA_DIR:-./data}:/data'
