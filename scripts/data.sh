@@ -109,28 +109,35 @@ fi
 DEPLOY_HOST="${DEPLOY_HOST:-}"
 REMOTE_APP_DIR="${REMOTE_APP_DIR:-/app}"
 REMOTE_DATA="${REMOTE_DATA_DIR:-/data}"
+HOST_DATA_DIR="${HOST_DATA_DIR:-}"
+REMOTE_EXEC="${REMOTE_EXEC:-}"
 
 # A vps-deploy.sh-managed server needs only DEPLOY_HOST — the marker file at
 # /srv/editable/.deploy_env names the container and host data path, the way
 # fly.toml resolves the rest for the fly driver. Explicit values always win,
 # and without the marker (bare node, hand-managed compose) nothing changes
 # and the explicit keys below stay required.
-if [ "$DRIVER" = "ssh" ] && [ -n "$DEPLOY_HOST" ] &&
-	[ -z "${REMOTE_EXEC:-}" ] && [ -z "${RESTART_CMD:-}" ] && [ -z "${HOST_DATA_DIR:-}" ]; then
-	MARKER="$(ssh "$DEPLOY_HOST" 'cat /srv/editable/.deploy_env 2>/dev/null' 2>/dev/null || true)"
-	if [ -n "$MARKER" ]; then
-		CONTAINER="$(printf '%s\n' "$MARKER" | sed -n 's/^CONTAINER_NAME=//p')"
-		if printf '%s' "$CONTAINER" | grep -Eq '^[A-Za-z0-9][A-Za-z0-9._-]*$'; then
-			REMOTE_EXEC="docker exec $CONTAINER"
-			RESTART_CMD="docker restart $CONTAINER"
-			HOST_DATA_DIR="$(printf '%s\n' "$MARKER" | sed -n 's/^HOST_DATA_DIR=//p')"
-			HOST_DATA_DIR="${HOST_DATA_DIR:-/data}"
+SSH_CONFIG_DISCOVERED=false
+discover_ssh_config() {
+	[ "$SSH_CONFIG_DISCOVERED" = false ] || return
+	SSH_CONFIG_DISCOVERED=true
+
+	if [ "$DRIVER" = "ssh" ] && [ -n "$DEPLOY_HOST" ] &&
+		[ -z "$REMOTE_EXEC" ] && [ -z "${RESTART_CMD:-}" ] && [ -z "$HOST_DATA_DIR" ]; then
+		local marker container
+		marker="$(ssh "$DEPLOY_HOST" 'cat /srv/editable/.deploy_env 2>/dev/null' 2>/dev/null || true)"
+		if [ -n "$marker" ]; then
+			container="$(printf '%s\n' "$marker" | sed -n 's/^CONTAINER_NAME=//p')"
+			if printf '%s' "$container" | grep -Eq '^[A-Za-z0-9][A-Za-z0-9._-]*$'; then
+				REMOTE_EXEC="docker exec $container"
+				RESTART_CMD="docker restart $container"
+				HOST_DATA_DIR="$(printf '%s\n' "$marker" | sed -n 's/^HOST_DATA_DIR=//p')"
+			fi
 		fi
 	fi
-fi
 
-HOST_DATA_DIR="${HOST_DATA_DIR:-$REMOTE_DATA}"
-REMOTE_EXEC="${REMOTE_EXEC:-}"
+	HOST_DATA_DIR="${HOST_DATA_DIR:-$REMOTE_DATA}"
+}
 
 if [ "$DRIVER" = "ssh" ]; then
 	APP="${DEPLOY_NAME:-${DEPLOY_HOST#*@}}"
@@ -146,6 +153,7 @@ info() { echo "→ $*"; }
 plural() { [ "$1" -eq 1 ] && echo "$1 $2" || echo "$1 ${3:-${2}s}"; }
 
 need_app() {
+	discover_ssh_config
 	if [ "$DRIVER" = "ssh" ]; then
 		[ -n "${DEPLOY_HOST:-}" ] || die "No deploy host configured — set DEPLOY_HOST='user@host' in .env or the environment"
 	else
