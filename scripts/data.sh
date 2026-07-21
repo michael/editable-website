@@ -295,7 +295,11 @@ cmd_push() {
 	remote prune-backups "$KEEP_BACKUPS"
 
 	info "Syncing assets (additive)…"
-	list_local_assets >"$TMP/local_assets"
+	# Push only the snapshot's working set (referenced originals and their
+	# variant directories). Unreferenced local history must not be copied to a
+	# deployment merely because it is still inside the local grace period.
+	node --disable-warning=ExperimentalWarning "$SCRIPT_DIR/check-assets.js" \
+		--list-entries "$TMP/push.db" "$DATA_DIR_LOCAL/assets" | sort >"$TMP/local_assets"
 	# The listing must provably succeed — a failed connection must not read
 	# as an empty asset list (pull would silently miss media). list-assets
 	# prints a '#' header, so success is never empty even with zero assets.
@@ -305,9 +309,9 @@ cmd_push() {
 	comm -23 "$TMP/local_assets" "$TMP/remote_assets" >"$TMP/to_push" || true
 	if [ -s "$TMP/to_push" ]; then
 		info "  $(plural "$(wc -l <"$TMP/to_push" | tr -d ' ')" 'new asset entry' 'new asset entries')"
-		# COPYFILE_DISABLE: keep macOS tar from embedding xattr headers that
-		# GNU tar on the server warns about.
-		COPYFILE_DISABLE=1 tar -czf "$TMP/assets.tgz" -C "$DATA_DIR_LOCAL/assets" --exclude '.DS_Store' -T "$TMP/to_push"
+		# Keep macOS tar from embedding xattr headers that GNU tar on the server
+		# warns about. COPYFILE_DISABLE also prevents AppleDouble sidecars.
+		COPYFILE_DISABLE=1 tar --no-xattrs -czf "$TMP/assets.tgz" -C "$DATA_DIR_LOCAL/assets" --exclude '.DS_Store' -T "$TMP/to_push"
 		sftp_put "$TMP/assets.tgz" "$REMOTE_DATA/incoming/assets.tgz"
 		remote extract-assets
 	else

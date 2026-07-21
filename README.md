@@ -669,6 +669,8 @@ fly secrets set \
   ADMIN_PASSWORD='pick-a-strong-password'
 ```
 
+`ORIGIN` must exactly match the URL you use in the browser, including the scheme and subdomain (for example, `https://example.com` and `https://www.example.com` are different origins). An incorrect value causes login and other write requests to fail with `403 Forbidden` before the password is checked. Update this secret whenever you switch to a custom domain, and access the site through that canonical URL.
+
 Optionally set `ASSET_GRACE_PERIOD_DAYS` (default 7): unreferenced asset files are kept on disk this many days after losing their last reference. This is also the safe window for rolling back a database backup against the live assets folder without ending up with dead image references.
 
 Deploy. The first deploy also creates the 1 GB `data` volume declared under `[mounts]` in `fly.toml`:
