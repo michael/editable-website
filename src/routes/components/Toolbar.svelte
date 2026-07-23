@@ -104,34 +104,40 @@
 	>
 		{#if editable && can_show_selection_tool_group}
 			<div class="editor-toolbar selection-toolbar flex shrink items-center {TW_TOOLBAR_SURFACE}">
-				<button
-					class="{TW_TOOLBAR_BTN} {session.commands.select_parent?.disabled
-						? TW_TOOLBAR_BTN_DISABLED
-						: TW_TOOLBAR_BTN_HOVER}"
-					onmousedown={(e) => handle_btn_mousedown(e, session.commands.select_parent)}
-					title="Select parent (Esc)"
-					aria-label="Select parent"
-				>
-					<svg
-						class="size-6"
-						viewBox="0 0 24 24"
-						fill="none"
-						xmlns="http://www.w3.org/2000/svg"
-						aria-hidden="true"
+				<div class="selection-leading flex shrink-0 items-center">
+					<button
+						class="{TW_TOOLBAR_BTN} {session.commands.select_parent?.disabled
+							? TW_TOOLBAR_BTN_DISABLED
+							: TW_TOOLBAR_BTN_HOVER}"
+						onmousedown={(e) => handle_btn_mousedown(e, session.commands.select_parent)}
+						title="Select parent (Esc)"
+						aria-label="Select parent"
 					>
-						<path
-							d="M6.5 12.5C6.5 15.8137 9.18629 18.5 12.5 18.5C15.8137 18.5 18.5 15.8137 18.5 12.5C18.5 9.18629 15.8137 6.5 12.5 6.5"
-							stroke="currentColor"
-							stroke-linecap="round"
-						/>
-						<path
-							d="M4.48278 4.48206L13 12.9993M9.44657 4.48173L4.48278 4.48206V9.44727"
-							stroke="currentColor"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-						/>
-					</svg>
-				</button>
+						<svg
+							class="size-6"
+							viewBox="0 0 24 24"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+							aria-hidden="true"
+						>
+							<path
+								d="M6.5 12.5C6.5 15.8137 9.18629 18.5 12.5 18.5C15.8137 18.5 18.5 15.8137 18.5 12.5C18.5 9.18629 15.8137 6.5 12.5 6.5"
+								stroke="currentColor"
+								stroke-linecap="round"
+							/>
+							<path
+								d="M4.48278 4.48206L13 12.9993M9.44657 4.48173L4.48278 4.48206V9.44727"
+								stroke="currentColor"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+						</svg>
+					</button>
+					<span
+						class="selection-leading-divider mx-1 h-5 w-px shrink-0 bg-(--border)"
+						aria-hidden="true"
+					></span>
+				</div>
 				<div class="selection-scroller min-w-0 [scrollbar-width:none] overflow-x-auto rounded-full">
 					<NodeNavigator {session} {focus_canvas} />
 				</div>
@@ -598,6 +604,10 @@
 		display: none;
 	}
 
+	.selection-leading-divider {
+		display: none;
+	}
+
 	@media (max-width: 639px) {
 		.toolbar-layout {
 			right: auto;
@@ -639,17 +649,28 @@
 			display: contents;
 		}
 
-		.selection-toolbar > button {
+		.selection-leading {
 			position: sticky;
 			left: 0;
 			z-index: 2;
+			align-self: stretch;
+			margin-left: -4px;
+			padding-left: 4px;
 			background: var(--background);
+		}
+
+		.selection-leading-divider {
+			display: block;
+			align-self: center;
 		}
 
 		.save-group {
 			position: sticky;
 			right: 0;
 			z-index: 2;
+			align-self: stretch;
+			margin-right: -4px;
+			padding-right: 4px;
 			background: var(--background);
 		}
 	}
