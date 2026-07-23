@@ -25,7 +25,7 @@ for (let index = 0; index < args.length; index++) {
 	}
 }
 
-if (!name) fail('Usage: npm run migration:create -- <name> [--before <migration-id>]');
+if (!name) fail('Usage: pnpm migration:create <name> [--before <migration-id>]');
 
 const slug = name
 	.trim()

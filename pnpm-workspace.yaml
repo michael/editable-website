@@ -1,0 +1,4 @@
+# Svedit releases are intentional application dependencies even while they are
+# inside pnpm's minimum release age window.
+minimumReleaseAgeExclude:
+  - svedit

@@ -8,7 +8,7 @@ This file is the working spec for the feature. Once implemented and stable, fold
 
 - One command against a fresh VPS sets up everything: `./scripts/vps-deploy.sh root@203.0.113.10 my-site.example.com`
 - The same command run again ships a code update (the script detects what's needed; no separate setup/deploy modes for the user to learn)
-- The image is built locally and streamed over ssh — the server never needs git access, npm, or the memory to run a Vite build
+- The image is built locally and streamed over ssh — the server never needs git access, pnpm, or the memory to run a Vite build
 - The only state on the server that matters is the bind-mounted data directory; the container is disposable and replaced on every deploy
 - A destroyed server is recovered by running the script against a fresh one (boot-time disaster recovery from the backup bucket already exists in `scripts/run-cloud-boot.js`)
 
@@ -47,19 +47,19 @@ Everything under `/srv/editable` is recreatable by the next deploy. The containe
 
 **Dirty builds are labeled, not versioned.** A build from a working tree with uncommitted or untracked changes is tagged `<sha>-dirty`, so the image list and rollbacks can't mistake it for the committed state. Deploying dirty again reuses the tag — commits are the rollback anchors; dirty states are ephemeral by nature.
 
-**Rollback = redeploy an old tag + existing data restore.** The script keeps the last 3 image tags on the server (older ones pruned after a successful deploy). `./scripts/vps-deploy.sh <host> <domain> --tag <sha>` starts that image instead of building. Content rollback is out of scope — that's `npm run data:restore`, which already works against the VPS via `DEPLOY_HOST`.
+**Rollback = redeploy an old tag + existing data restore.** The script keeps the last 3 image tags on the server (older ones pruned after a successful deploy). `./scripts/vps-deploy.sh <host> <domain> --tag <sha>` starts that image instead of building. Content rollback is out of scope — that's `pnpm data:restore`, which already works against the VPS via `DEPLOY_HOST`.
 
 **Health check gates success.** After `compose up`, the script polls `127.0.0.1:3000` over ssh (curl, ~30 s budget). On failure it prints the container logs and exits non-zero; it does not auto-rollback in v1.
 
-**`.env` bridge to the data toolbox.** After a successful first deploy the script prints the exact `DEPLOY_HOST` / `RESTART_CMD` / `REMOTE_EXEC` / `HOST_DATA_DIR` block for the local `.env` (values it already knows), so `npm run data:*` works immediately.
+**`.env` bridge to the data toolbox.** After a successful first deploy the script prints the exact `DEPLOY_HOST` / `RESTART_CMD` / `REMOTE_EXEC` / `HOST_DATA_DIR` block for the local `.env` (values it already knows), so `pnpm data:*` works immediately.
 
 ## Script interface
 
 ```
 ./scripts/vps-deploy.sh <user@host> <domain>   first deploy, or explicit target (always works)
-./scripts/vps-deploy.sh                        deploy to DEPLOY_HOST         (npm run vps:deploy)
-./scripts/vps-deploy.sh status                 running tag + rollback tags   (npm run vps:status)
-./scripts/vps-deploy.sh env                    show the server's env, masked (npm run vps:env)
+./scripts/vps-deploy.sh                        deploy to DEPLOY_HOST         (pnpm vps:deploy)
+./scripts/vps-deploy.sh status                 running tag + rollback tags   (pnpm vps:status)
+./scripts/vps-deploy.sh env                    show the server's env, masked (pnpm vps:env)
 ./scripts/vps-deploy.sh env set KEY=VALUE …    set env vars and restart the app
 ./scripts/vps-deploy.sh env set KEY            prompt for the value (hidden input)
 ./scripts/vps-deploy.sh env unset KEY …        remove env vars and restart the app
@@ -102,7 +102,7 @@ Options:
 
 Each step is independently verifiable; 3–5 need a real amd64 VPS to test against.
 
-Status: implemented (compose switch, script, `vps:deploy` / `vps:env` / `vps:status` npm scripts, `data.sh` auto-discovery, README, `.env.example`). Verified against a real DigitalOcean droplet: first deploy (provisioning, TLS via Caddy, password prompt), update deploy (cached build, container replacement, health check, report), and the short-form `env` show and `status` commands with server-side site discovery. Real-world hardening that came out of that testing: ssh retries on transient connection drops (fresh droplets get hammered by brute-force bots, and sshd's MaxStartups randomly sheds new connections) and ssh connection multiplexing so each run plays that lottery only once. Also verified: `--tag` deploys (used to ship a compose-only fix without rebuilding) and `data.sh` against a script-managed server with only `DEPLOY_HOST` set. That testing surfaced and fixed a pre-existing bug: `docker-compose.yml` never set `DATA_DIR=/data` (fly.toml does for Fly), so compose-run containers wrote content to the ephemeral `/app/data` and every redeploy silently wiped it — now fixed in the compose file. Still untested: `env set`/`unset` and the disaster-recovery path (fresh droplet restoring from a backup bucket).
+Status: implemented (compose switch, script, `vps:deploy` / `vps:env` / `vps:status` pnpm scripts, `data.sh` auto-discovery, README, `.env.example`). Verified against a real DigitalOcean droplet: first deploy (provisioning, TLS via Caddy, password prompt), update deploy (cached build, container replacement, health check, report), and the short-form `env` show and `status` commands with server-side site discovery. Real-world hardening that came out of that testing: ssh retries on transient connection drops (fresh droplets get hammered by brute-force bots, and sshd's MaxStartups randomly sheds new connections) and ssh connection multiplexing so each run plays that lottery only once. Also verified: `--tag` deploys (used to ship a compose-only fix without rebuilding) and `data.sh` against a script-managed server with only `DEPLOY_HOST` set. That testing surfaced and fixed a pre-existing bug: `docker-compose.yml` never set `DATA_DIR=/data` (fly.toml does for Fly), so compose-run containers wrote content to the ephemeral `/app/data` and every redeploy silently wiped it — now fixed in the compose file. Still untested: `env set`/`unset` and the disaster-recovery path (fresh droplet restoring from a backup bucket).
 
 ## Open questions
 

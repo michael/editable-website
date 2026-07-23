@@ -9,26 +9,29 @@ WORKDIR /app
 
 ENV NODE_ENV="production"
 
+# Use the package manager version pinned in package.json.
+RUN corepack enable
+
 # Install dependencies before copying application code so this layer stays
-# reusable until package.json or package-lock.json changes.
+# reusable until package.json or pnpm-lock.yaml changes.
 FROM base AS dependencies
 
-COPY --link .npmrc package-lock.json package.json ./
-RUN npm ci --include=dev
+COPY --link .npmrc pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+RUN pnpm install --frozen-lockfile --prod=false
 
 # Produce a runtime-only dependency tree from the same clean install. This
 # stage deliberately does not depend on application source, so code-only
 # changes cannot invalidate the final image's node_modules layer.
 FROM dependencies AS production-dependencies
 
-RUN npm prune --omit=dev
+RUN pnpm prune --prod
 
 # Build stage
 FROM dependencies AS build
 
 COPY --link . .
 
-RUN mkdir /data && npm run build && \
+RUN mkdir /data && pnpm build && \
     mv /app/node_modules /build-dependencies
 
 # Final stage

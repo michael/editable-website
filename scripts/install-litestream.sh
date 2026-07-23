@@ -2,7 +2,7 @@
 #
 # Install the litestream binary into node_modules/.bin, pinned to the same
 # version the production image runs, so local restores read the exact bucket
-# format the server writes. No sudo, no global install; npm run scripts find
+# format the server writes. No sudo, no global install; pnpm scripts find
 # it automatically. Re-run any time (e.g. after node_modules was recreated).
 set -euo pipefail
 
@@ -27,7 +27,7 @@ case "$(uname -m)" in
 esac
 
 DEST_DIR="$SCRIPT_DIR/../node_modules/.bin"
-[ -d "$DEST_DIR" ] || die "node_modules/.bin not found — run npm install first"
+[ -d "$DEST_DIR" ] || die "node_modules/.bin not found — run pnpm install first"
 
 url="https://github.com/benbjohnson/litestream/releases/download/v${VERSION}/litestream-${VERSION}-${os}-${arch}.tar.gz"
 
