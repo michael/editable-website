@@ -98,45 +98,73 @@
 	}
 </script>
 
+{#snippet selection_leading_contents()}
+	<button
+		class="{TW_TOOLBAR_BTN} {session.commands.select_parent?.disabled
+			? TW_TOOLBAR_BTN_DISABLED
+			: TW_TOOLBAR_BTN_HOVER}"
+		onmousedown={(e) => handle_btn_mousedown(e, session.commands.select_parent)}
+		title="Select parent (Esc)"
+		aria-label="Select parent"
+	>
+		<svg
+			class="size-6"
+			viewBox="0 0 24 24"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+			aria-hidden="true"
+		>
+			<path
+				d="M6.5 12.5C6.5 15.8137 9.18629 18.5 12.5 18.5C15.8137 18.5 18.5 15.8137 18.5 12.5C18.5 9.18629 15.8137 6.5 12.5 6.5"
+				stroke="currentColor"
+				stroke-linecap="round"
+			/>
+			<path
+				d="M4.48278 4.48206L13 12.9993M9.44657 4.48173L4.48278 4.48206V9.44727"
+				stroke="currentColor"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			/>
+		</svg>
+	</button>
+	<span class="selection-leading-divider mx-1 h-5 w-px shrink-0 bg-(--border)" aria-hidden="true"
+	></span>
+{/snippet}
+
+{#snippet save_group_contents()}
+	<span class="mx-1 h-5 w-px shrink-0 bg-(--border)" aria-hidden="true"></span>
+	{#if cancel_command && !cancel_command.disabled}
+		<button
+			class="pointer-events-auto inline-flex h-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent px-4 text-xs font-medium text-(--foreground) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-[0.97] active:bg-(--muted)"
+			onclick={() => cancel_command.execute()}
+			title="Cancel (⌘ ⎋)"
+		>
+			{cancel_button_label}
+		</button>
+	{/if}
+
+	{#if !app_commands.save_document.disabled}
+		<button
+			class="pointer-events-auto inline-flex h-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent px-4 text-xs font-semibold text-(--svedit-editing-stroke) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--svedit-editing-fill) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-[0.97] active:bg-(--svedit-editing-fill)"
+			onclick={() => app_commands.save_document.execute()}
+			title="Save (⌘ S)"
+		>
+			Save
+		</button>
+	{/if}
+{/snippet}
+
 {#if editable || can_show_read_toolbar}
 	<div
 		class="toolbar-layout pointer-events-none fixed {TW_TOOLBAR_POSITION} z-50 flex min-w-0 items-center gap-3"
 	>
 		{#if editable && can_show_selection_tool_group}
+			<div class="mobile-selection-leading shrink-0 items-center">
+				{@render selection_leading_contents()}
+			</div>
 			<div class="editor-toolbar selection-toolbar flex shrink items-center {TW_TOOLBAR_SURFACE}">
-				<div class="selection-leading flex shrink-0 items-center">
-					<button
-						class="{TW_TOOLBAR_BTN} {session.commands.select_parent?.disabled
-							? TW_TOOLBAR_BTN_DISABLED
-							: TW_TOOLBAR_BTN_HOVER}"
-						onmousedown={(e) => handle_btn_mousedown(e, session.commands.select_parent)}
-						title="Select parent (Esc)"
-						aria-label="Select parent"
-					>
-						<svg
-							class="size-6"
-							viewBox="0 0 24 24"
-							fill="none"
-							xmlns="http://www.w3.org/2000/svg"
-							aria-hidden="true"
-						>
-							<path
-								d="M6.5 12.5C6.5 15.8137 9.18629 18.5 12.5 18.5C15.8137 18.5 18.5 15.8137 18.5 12.5C18.5 9.18629 15.8137 6.5 12.5 6.5"
-								stroke="currentColor"
-								stroke-linecap="round"
-							/>
-							<path
-								d="M4.48278 4.48206L13 12.9993M9.44657 4.48173L4.48278 4.48206V9.44727"
-								stroke="currentColor"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							/>
-						</svg>
-					</button>
-					<span
-						class="selection-leading-divider mx-1 h-5 w-px shrink-0 bg-(--border)"
-						aria-hidden="true"
-					></span>
+				<div class="desktop-selection-leading flex shrink-0 items-center">
+					{@render selection_leading_contents()}
 				</div>
 				<div class="selection-scroller min-w-0 [scrollbar-width:none] overflow-x-auto rounded-full">
 					<NodeNavigator {session} {focus_canvas} />
@@ -562,30 +590,17 @@
 			</div>
 
 			{#if editable}
-				<div class="save-group flex shrink-0 items-center">
-					<span class="mx-1 h-5 w-px shrink-0 bg-(--border)" aria-hidden="true"></span>
-					{#if cancel_command && !cancel_command.disabled}
-						<button
-							class="pointer-events-auto inline-flex h-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent px-4 text-xs font-medium text-(--foreground) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-[0.97] active:bg-(--muted)"
-							onclick={() => cancel_command.execute()}
-							title="Cancel (⌘ ⎋)"
-						>
-							{cancel_button_label}
-						</button>
-					{/if}
-
-					{#if !app_commands.save_document.disabled}
-						<button
-							class="pointer-events-auto inline-flex h-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent px-4 text-xs font-semibold text-(--svedit-editing-stroke) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--svedit-editing-fill) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-[0.97] active:bg-(--svedit-editing-fill)"
-							onclick={() => app_commands.save_document.execute()}
-							title="Save (⌘ S)"
-						>
-							Save
-						</button>
-					{/if}
+				<div class="desktop-save-group flex shrink-0 items-center">
+					{@render save_group_contents()}
 				</div>
 			{/if}
 		</div>
+
+		{#if editable}
+			<div class="mobile-save-group shrink-0 items-center">
+				{@render save_group_contents()}
+			</div>
+		{/if}
 	</div>
 {/if}
 
@@ -608,6 +623,11 @@
 		display: none;
 	}
 
+	.mobile-selection-leading,
+	.mobile-save-group {
+		display: none;
+	}
+
 	@media (max-width: 639px) {
 		.toolbar-layout {
 			right: auto;
@@ -618,16 +638,20 @@
 			overflow-x: auto;
 			scrollbar-width: none;
 			gap: 0;
-			padding: 4px;
+			padding: 4px 0;
 			color: var(--foreground);
-			background: color-mix(in oklab, var(--background) 95%, transparent);
+			background: var(--background);
 			border: 1px solid var(--border);
 			border-radius: 9999px;
 			box-shadow:
 				0 1px 2px rgb(0 0 0 / 0.12),
 				0 4px 16px rgb(0 0 0 / 0.08);
-			backdrop-filter: blur(8px);
 			pointer-events: auto;
+		}
+
+		.desktop-selection-leading,
+		.desktop-save-group {
+			display: none;
 		}
 
 		.toolbar-layout > .editor-toolbar {
@@ -649,12 +673,12 @@
 			display: contents;
 		}
 
-		.selection-leading {
+		.mobile-selection-leading {
+			display: flex;
 			position: sticky;
 			left: 0;
-			z-index: 2;
+			z-index: 10;
 			align-self: stretch;
-			margin-left: -4px;
 			padding-left: 4px;
 			background: var(--background);
 		}
@@ -664,12 +688,12 @@
 			align-self: center;
 		}
 
-		.save-group {
+		.mobile-save-group {
+			display: flex;
 			position: sticky;
 			right: 0;
-			z-index: 2;
+			z-index: 10;
 			align-self: stretch;
-			margin-right: -4px;
 			padding-right: 4px;
 			background: var(--background);
 		}
