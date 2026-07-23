@@ -8,7 +8,7 @@ From zero to a live-editable site in four commands.
 
 Install [Node.js 24+](https://nodejs.org/) and [Git](https://git-scm.com/). Editable uses Node's built-in SQLite. If you use [nvm](https://github.com/nvm-sh/nvm), `nvm use` reads the included `.nvmrc`.
 
-Install pnpm with `npm install --global pnpm`. Editable uses pnpm to share package storage across multiple sites and to pass script arguments without npm's extra `--` separator.
+Install pnpm with `npm install --global pnpm`. Editable uses the modern pnpm package manager instead of npm; it saves you time and disk space, especially when developing multiple Editable sites on one machine.
 
 The Quickstart intentionally clones `stable`, which always points at the latest tested release. The repository's default `main` branch contains active development and may include unfinished changes.
 
