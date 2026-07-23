@@ -423,15 +423,17 @@
 							{#if is_media_selected}
 								<div class="flex items-center">
 									<button
-										class="{TW_TOOLBAR_BTN} text-[10px] font-semibold tracking-[0.08em] {session
-											.commands.edit_image?.disabled
+										class="{TW_TOOLBAR_BTN} {session.commands.edit_image?.disabled
 											? TW_TOOLBAR_BTN_DISABLED
 											: TW_TOOLBAR_BTN_HOVER}"
 										onmousedown={handle_edit_image_click}
 										title="Alt text"
 										aria-label="Alt text"
 									>
-										ALT
+										<span
+											class="inline-flex h-4 min-w-5 items-center justify-center rounded-[3px] border border-current px-0.5 text-[8px] leading-none font-medium tracking-[0.04em]"
+											aria-hidden="true">ALT</span
+										>
 									</button>
 
 									<button
