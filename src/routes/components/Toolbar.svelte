@@ -2,6 +2,7 @@
 	import { get_app_context } from '../app_context.js';
 	import { resolve } from '$app/paths';
 	import { get_page_browser } from './page_browser_context.svelte.js';
+	import { get_selection_node_ancestors } from '../app_utils.js';
 	import NodeNavigator from './NodeNavigator.svelte';
 
 	let { session, app_commands, editable, focus_canvas } = $props();
@@ -32,7 +33,11 @@
 			session.selection.anchor_offset === session.selection.focus_offset
 	);
 
-	let can_show_selection_tool_group = $derived(!!session.selection);
+	let can_select_parent = $derived(
+		!!session.commands.select_parent && !session.commands.select_parent.disabled
+	);
+	let can_show_variant_selector = $derived(get_selection_node_ancestors(session).length > 0);
+	let can_show_selection_tool_group = $derived(can_select_parent || can_show_variant_selector);
 
 	let file_input_ref = $state(null);
 
@@ -83,11 +88,11 @@
 	const TW_TOOLBAR_POSITION =
 		'bottom-[max(1rem,env(safe-area-inset-bottom,0px))] left-5 right-5 sm:left-7 sm:right-7 md:left-10 md:right-10 lg:left-14 lg:right-14';
 	const TW_TOOLBAR_SURFACE =
-		'pointer-events-auto min-w-0 rounded-full border border-(--border) bg-(--background)/95 p-1 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)] backdrop-blur-sm';
+		'pointer-events-auto min-w-0 rounded-full border border-(--border) bg-(--background) p-1 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]';
 
 	const TW_TOOLBAR_BTN =
 		'flex size-9 flex-none items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--foreground) shadow-none cursor-pointer pointer-events-auto transition-all duration-150 active:scale-95 active:translate-y-px outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1';
-	const TW_TOOLBAR_BTN_DISABLED = 'text-(--muted-foreground) !cursor-not-allowed';
+	const TW_TOOLBAR_BTN_DISABLED = 'text-(--muted-foreground) opacity-40 !cursor-not-allowed';
 	const TW_TOOLBAR_BTN_HOVER =
 		'hover:bg-(--muted) active:bg-(--muted) active:scale-95 active:translate-y-px';
 
@@ -127,8 +132,10 @@
 			/>
 		</svg>
 	</button>
-	<span class="selection-leading-divider mx-1 h-5 w-px shrink-0 bg-(--border)" aria-hidden="true"
-	></span>
+	{#if can_show_variant_selector}
+		<span class="selection-leading-divider mx-1 h-5 w-px shrink-0 bg-(--border)" aria-hidden="true"
+		></span>
+	{/if}
 {/snippet}
 
 {#snippet save_group_contents()}
@@ -158,7 +165,7 @@
 	<div
 		class="toolbar-layout pointer-events-none fixed {TW_TOOLBAR_POSITION} z-50 flex min-w-0 items-center gap-3"
 	>
-		{#if editable && can_show_selection_tool_group}
+		{#if editable && can_select_parent}
 			<div class="mobile-selection-leading shrink-0 items-center">
 				{@render selection_leading_contents()}
 			</div>
@@ -167,9 +174,11 @@
 		<div class="toolbar-middle min-w-0">
 			{#if editable && can_show_selection_tool_group}
 				<div class="editor-toolbar selection-toolbar flex shrink items-center {TW_TOOLBAR_SURFACE}">
-					<div class="desktop-selection-leading flex shrink-0 items-center">
-						{@render selection_leading_contents()}
-					</div>
+					{#if can_select_parent}
+						<div class="desktop-selection-leading flex shrink-0 items-center">
+							{@render selection_leading_contents()}
+						</div>
+					{/if}
 					<div
 						class="selection-scroller min-w-0 [scrollbar-width:none] overflow-x-auto rounded-full"
 					>

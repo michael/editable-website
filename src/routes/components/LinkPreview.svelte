@@ -66,40 +66,70 @@
 	)}; position-area: block-end span-all; justify-self: anchor-center;"
 >
 	{#if node.href}
-		<div class="border border-(--border) bg-(--background) text-(--foreground) shadow-xl">
-			<div class="flex items-center gap-3 px-3 py-2">
+		<div
+			class="overflow-hidden rounded-full border border-(--border) bg-(--background) text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
+		>
+			<div class="flex items-center gap-1 p-1">
 				<a
 					{...{
 						href: get_preview_href(internal_page_href ?? node.href),
 						target: '_blank',
 						rel: 'noopener noreferrer'
 					}}
-					class="max-w-70 truncate text-sm text-(--foreground) outline-1 outline-transparent hover:underline focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
+					class="max-w-70 min-w-0 flex-1 truncate px-2 text-sm text-(--foreground) outline-1 outline-transparent hover:underline focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 				>
 					{node.href}
 				</a>
 				<button
 					type="button"
-					class="shrink-0 cursor-pointer text-sm text-(--svedit-editing-stroke) outline-1 outline-transparent hover:opacity-80 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
+					class="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--foreground) outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-95 active:bg-(--muted)"
 					onclick={handle_edit}
+					title="Edit link"
+					aria-label="Edit link"
 				>
-					EDIT
+					<svg
+						class="size-6"
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+						fill="none"
+						aria-hidden="true"
+					>
+						<path
+							d="M4.5 19.5L5.25 15.25L15.75 4.75C16.7165 3.7835 18.2835 3.7835 19.25 4.75C20.2165 5.7165 20.2165 7.2835 19.25 8.25L8.75 18.75L4.5 19.5ZM14 6.5L17.5 10"
+							stroke="currentColor"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						/>
+					</svg>
 				</button>
 				<button
 					type="button"
-					class="shrink-0 cursor-pointer text-sm text-(--svedit-editing-stroke) outline-1 outline-transparent hover:opacity-80 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
+					class="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--foreground) outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-95 active:bg-(--muted)"
 					onclick={handle_remove}
+					title="Remove link"
+					aria-label="Remove link"
 				>
-					REMOVE
+					<svg
+						class="size-6"
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+						fill="none"
+						aria-hidden="true"
+					>
+						<path
+							d="M5.5 7.5H18.5M9.5 4.5H14.5L15.5 7.5M7 7.5L7.75 19.5H16.25L17 7.5M10 10.5V16M14 10.5V16"
+							stroke="currentColor"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						/>
+					</svg>
 				</button>
 			</div>
 
 			{#if internal_page_href}
 				<div class="border-t border-(--border) px-3 py-3">
 					{#await page_preview}
-						<div class="text-sm text-[color-mix(in_oklch,var(--foreground)_72%,transparent)]">
-							Loading page preview…
-						</div>
+						<div class="text-sm text-(--muted-foreground)">Loading page preview…</div>
 					{:then resolved_page_preview}
 						{#if resolved_page_preview}
 							<div class="flex items-center gap-3">
@@ -115,12 +145,10 @@
 								</div>
 							</div>
 						{:else}
-							<div class="text-sm text-[color-mix(in_oklch,var(--foreground)_72%,transparent)]">
-								No matching page.
-							</div>
+							<div class="text-sm text-(--muted-foreground)">No matching page.</div>
 						{/if}
 					{:catch err}
-						<div class="text-sm text-[color-mix(in_oklch,var(--foreground)_72%,transparent)]">
+						<div class="text-sm text-(--muted-foreground)">
 							{err instanceof Error ? err.message : 'Failed to load page preview.'}
 						</div>
 					{/await}
@@ -130,7 +158,7 @@
 	{:else}
 		<button
 			type="button"
-			class="cursor-pointer border border-(--border) bg-(--background) px-12 py-2 text-sm text-(--svedit-editing-stroke) shadow-xl hover:bg-(--muted)"
+			class="cursor-pointer rounded-full border border-(--border) bg-(--background) px-12 py-2 text-sm text-(--svedit-editing-stroke) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)] hover:bg-(--muted)"
 			onclick={handle_edit}
 		>
 			CREATE LINK
