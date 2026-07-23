@@ -5,7 +5,7 @@
 # One command takes a fresh Ubuntu server (amd64, ssh key access) to a running,
 # TLS-terminated site; the same command run again ships a code update. The
 # image is built locally and streamed over ssh — the server never needs git
-# access, npm, or the memory to run a build. The only state that matters on
+# access, pnpm, or the memory to run a build. The only state that matters on
 # the server is the bind-mounted data directory /data (the same path Fly.io
 # mounts); the container is disposable and replaced on every deploy.
 #
@@ -224,7 +224,7 @@ REMOTE
 			printf '  %-16s %.16s   %s%s\n' "$tag" "$created" "$desc" "$marker"
 		done
 	echo
-	echo "Roll back with: npm run vps:deploy -- --tag <tag>"
+	echo "Roll back with: pnpm vps:deploy --tag <tag>"
 	exit 0
 fi
 
@@ -455,8 +455,8 @@ if [ "$FIRST_RUN" = true ]; then
 	cat <<LOCAL_ENV
 
 Add this line to your local .env — it is this checkout's deployment identity
-(like fly.toml's app name). npm run vps:deploy / vps:status / vps:env and all
-npm run data:* commands target it; everything else is read from the server:
+(like fly.toml's app name). pnpm vps:deploy / vps:status / vps:env and all
+pnpm data:* commands target it; everything else is read from the server:
 
     DEPLOY_HOST="$TARGET"
 LOCAL_ENV

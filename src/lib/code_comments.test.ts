@@ -69,7 +69,7 @@ describe('split_code_comments', () => {
 	});
 
 	it('handles quoted arguments before shell comments', () => {
-		const code = 'npm run data:pull-cloud -- --at "2026-07-10T15:00:00Z" # a specific moment';
+		const code = 'pnpm data:pull-cloud --at "2026-07-10T15:00:00Z" # a specific moment';
 		expect(comments(split_code_comments(code))).toEqual(['# a specific moment']);
 	});
 

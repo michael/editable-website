@@ -8,12 +8,14 @@ From zero to a live-editable site in four commands.
 
 Install [Node.js 24+](https://nodejs.org/) and [Git](https://git-scm.com/). Editable uses Node's built-in SQLite. If you use [nvm](https://github.com/nvm-sh/nvm), `nvm use` reads the included `.nvmrc`.
 
+Install pnpm with `npm install --global pnpm`. Editable uses the modern pnpm package manager instead of npm; it saves you time and disk space, especially when developing multiple Editable sites on one machine.
+
 The Quickstart intentionally clones `stable`, which always points at the latest tested release. The repository's default `main` branch contains active development and may include unfinished changes.
 
 ```sh
 git clone --branch stable https://github.com/michael/editable-website.git my-site
 cd my-site
-npm install
+pnpm install
 cp .env.example .env
 ```
 
@@ -26,7 +28,7 @@ ADMIN_PASSWORD='change-me'
 And run the development server:
 
 ```sh
-npm run dev
+pnpm dev
 ```
 
 That's it — press `⌘` + `E` (or `Ctrl` + `E`) on the site and log in with your `ADMIN_PASSWORD` to edit it live. On startup you'll see an `ExperimentalWarning` about `node:sqlite` — that's expected and harmless.
@@ -94,7 +96,7 @@ However, likely you'll want to customize more than that. E.g. edit `src/routes/c
 To reset your local database to the initial demo content (asks for confirmation and backs up your current database first; assets stay in place, and the fresh content appears on the next dev server start):
 
 ```sh
-npm run data:reset
+pnpm data:reset
 ```
 
 ## Primitives
@@ -133,7 +135,7 @@ Pass those paths to primitives and use the same paths to read values when layout
 </script>
 ```
 
-The `Nodes['hero']` annotation types the node against the schema, so `hero.` autocompletes its properties and a misspelled property fails `npm run check`.
+The `Nodes['hero']` annotation types the node against the schema, so `hero.` autocompletes its properties and a misspelled property fails `pnpm check`.
 
 `session.get` follows node references for you, so the last expression returns the media node rather than its stored id. Components do not need to know whether they are on a page, inside another block, or nested several arrays deep.
 
@@ -669,7 +671,7 @@ hero: function (tr) {
 
 ### 4. Try it
 
-Run `npm run dev`, press `⌘` + `E` and log in. Select a top-level block on a page and cycle node types with `Ctrl` + `Shift` + `↑` / `↓` until it becomes a hero, or insert one fresh at a node gap. `Ctrl` + `Shift` + `←` / `→` flips between your two layouts, paste an image onto the media slot, and `⌘` + `S` saves — undo, selection, and copy/paste all work without any additional code, because they operate on the schema, not on your component.
+Run `pnpm dev`, press `⌘` + `E` and log in. Select a top-level block on a page and cycle node types with `Ctrl` + `Shift` + `↑` / `↓` until it becomes a hero, or insert one fresh at a node gap. `Ctrl` + `Shift` + `←` / `→` flips between your two layouts, paste an image onto the media slot, and `⌘` + `S` saves — undo, selection, and copy/paste all work without any additional code, because they operate on the schema, not on your component.
 
 From here it's just iteration: add calls to action, give editors control over the image size, add a third layout, or ask your AI assistant to do it — the three-file pattern above is all the context it needs. The next chapter makes those extensions while unpacking the primitives used inside the component.
 
@@ -740,7 +742,7 @@ Because each checkout manages exactly one app (see [Your site is your repo](#you
 Editable runs on any amd64 host with Docker — a DigitalOcean droplet, a Hetzner or Nodion VPS. One command takes a fresh Ubuntu server to a running site with TLS. Create the server with your ssh key installed, point your domain's A record at its IP, then:
 
 ```sh
-npm run vps:deploy -- root@203.0.113.10 my-site.example.com
+pnpm vps:deploy root@203.0.113.10 my-site.example.com
 ```
 
 The first run provisions the server — Docker, [Caddy](https://caddyserver.com) as the TLS-terminating reverse proxy, swap on machines with less than 2 GB RAM — asks you for an admin password, builds the Docker image locally, streams it over ssh, and starts the site. The server never needs access to your git repository or the memory to run a build. Your content lives in `/data` on the server — the same path Fly.io mounts and the same path inside the container; deploys replace the container and never touch that folder.
@@ -754,13 +756,13 @@ DEPLOY_HOST="root@203.0.113.10"            # who you ssh in as
 With `DEPLOY_HOST` set, no command needs the server address anymore. Ship an update — build, stream, replace the container, health-check:
 
 ```sh
-npm run vps:deploy
+pnpm vps:deploy
 ```
 
 See what's running and what you can roll back to — each image tag is a git commit, and the last three are kept on the server (a deploy from a working tree with uncommitted changes is tagged `<sha>-dirty` to keep experiments distinguishable from committed states):
 
 ```sh
-npm run vps:status
+pnpm vps:status
 
 # → Running: editable:939761c (Up 5 minutes) — https://my-site.example.com
 #
@@ -772,18 +774,18 @@ npm run vps:status
 Roll back a bad deploy by starting a previous image:
 
 ```sh
-npm run vps:deploy -- --tag <sha>
+pnpm vps:deploy --tag <sha>
 ```
 
-And every `npm run data:*` command ([Backup, sync & recovery](#backup-sync--recovery)) targets the VPS too (`fly.toml` is ignored; remove or comment `DEPLOY_HOST` to target Fly.io again). Pull, push, backups, restores, point-in-time recovery — the whole toolbox behaves the same, including disaster recovery from the backup bucket on a fresh volume.
+And every `pnpm data:*` command ([Backup, sync & recovery](#backup-sync--recovery)) targets the VPS too (`fly.toml` is ignored; remove or comment `DEPLOY_HOST` to target Fly.io again). Pull, push, backups, restores, point-in-time recovery — the whole toolbox behaves the same, including disaster recovery from the backup bucket on a fresh volume.
 
 The server keeps its own `.env` (the equivalent of `fly secrets`) — inspect and change it with the `env` command:
 
 ```sh
-npm run vps:env                            # show it (secrets masked)
-npm run vps:env -- set BUCKET_NAME=my-backup AWS_REGION=auto
-npm run vps:env -- set ADMIN_PASSWORD      # no value = prompted, kept out of shell history
-npm run vps:env -- unset BUCKET_NAME
+pnpm vps:env                            # show it (secrets masked)
+pnpm vps:env set BUCKET_NAME=my-backup AWS_REGION=auto
+pnpm vps:env set ADMIN_PASSWORD      # no value = prompted, kept out of shell history
+pnpm vps:env unset BUCKET_NAME
 ```
 
 `set` and `unset` restart the app so the change takes effect immediately. For [automated backups](#automated-backups-optional), the `BUCKET_*` / `AWS_*` secrets belong in the server's `.env` — the first deploy copies them from your local `.env` if present; after that, changes are explicit via `vps:env`.
@@ -798,19 +800,19 @@ Your whole site lives in one folder — pull it, push it, snapshot it, roll it b
 
 That folder is `data/`: an SQLite database (`db.sqlite3`) and uploaded assets (`assets/`). Locally it defaults to `./data`; on Fly.io it's a persistent volume at `/data`; on a VPS it's `/data` on the host, bind-mounted into the container at the same path. The data commands move that folder between your machine, your deployment, and — optionally — a backup bucket. The complete toolbox:
 
-- **npm run data:pull** — Copy the live site's data to your machine
-- **npm run data:push [-- --yes]** — Replace the live site's data with your local state — guarded, undoable
-- **npm run data:backup** — Snapshot the live database, kept on the server and mirrored locally
-- **npm run data:backups** — List the live site's snapshots
-- **npm run data:restore &lt;name> [-- --yes]** — Roll the live database back to a snapshot — pass a name from data:backups
-- **npm run data:cloud-snapshots** — List points in time you can restore to — requires automated backups
-- **npm run data:restore-cloud [-- --at &lt;timestamp>] [-- --yes]** — Roll the live site back to a point in time — requires automated backups
-- **npm run data:pull-cloud [-- --at &lt;timestamp>]** — Rebuild your local data folder from the bucket — requires automated backups
-- **npm run data:verify** — Health-check the deployed database and assets
-- **npm run data:reset [-- --yes]** — Reset your local database to fresh demo content, keeping assets
-- **npm run litestream:install** — One-time local setup for data:pull-cloud — requires automated backups
+- **pnpm data:pull** — Copy the live site's data to your machine
+- **pnpm data:push [--yes]** — Replace the live site's data with your local state — guarded, undoable
+- **pnpm data:backup** — Snapshot the live database, kept on the server and mirrored locally
+- **pnpm data:backups** — List the live site's snapshots
+- **pnpm data:restore &lt;name> [--yes]** — Roll the live database back to a snapshot — pass a name from data:backups
+- **pnpm data:cloud-snapshots** — List points in time you can restore to — requires automated backups
+- **pnpm data:restore-cloud [--at &lt;timestamp>] [--yes]** — Roll the live site back to a point in time — requires automated backups
+- **pnpm data:pull-cloud [--at &lt;timestamp>]** — Rebuild your local data folder from the bucket — requires automated backups
+- **pnpm data:verify** — Health-check the deployed database and assets
+- **pnpm data:reset [--yes]** — Reset your local database to fresh demo content, keeping assets
+- **pnpm litestream:install** — One-time local setup for data:pull-cloud — requires automated backups
 
-Arguments in brackets are optional; npm flags need the `--` separator shown above. The cloud commands require [Automated backups](#automated-backups-optional). Every command reads the target app from `fly.toml`; only append `-- -a <app>` if no app name is set there, or to override it. Every restore prints a summary of the restored state (documents, last edited, assets) so you can confirm you got the moment you meant, and backs up the state it replaces first. `npm run data:help` prints this reference, with arguments, in the terminal.
+Arguments in brackets are optional; pnpm forwards them directly to the script, without an extra `--` separator. The cloud commands require [Automated backups](#automated-backups-optional). Every command reads the target app from `fly.toml`; only append `-a <app>` if no app name is set there, or to override it. Every restore prints a summary of the restored state (documents, last edited, assets) so you can confirm you got the moment you meant, and backs up the state it replaces first. `pnpm data:help` prints this reference, with arguments, in the terminal.
 
 Pull the live site down to work on it locally, or push a local state up to production. Both directions sync the database and any missing assets.
 
@@ -832,11 +834,11 @@ Assets are content-addressed and immutable, so they only ever need to be added, 
 Every push prints an undo command. To roll back:
 
 ```
-npm run data:backups          # list the live site's snapshots
-npm run data:restore <name>   # roll the live site back to one (name from the listing; file extension optional)
+pnpm data:backups          # list the live site's snapshots
+pnpm data:restore <name>   # roll the live site back to one (name from the listing; file extension optional)
 ```
 
-Snapshots are taken automatically before every push and restore, and on demand with `npm run data:backup` — each lives on the server (last 10 kept) and is mirrored to `data-backups/` on your machine (kept forever, prune by hand). `restore` finds it in either place.
+Snapshots are taken automatically before every push and restore, and on demand with `pnpm data:backup` — each lives on the server (last 10 kept) and is mirrored to `data-backups/` on your machine (kept forever, prune by hand). `restore` finds it in either place.
 
 A rollback restores only the database; it re-points at the same immutable asset pool, which is why `ASSET_GRACE_PERIOD_DAYS` (see [Deploy](#deploy)) defines how far back you can safely go — restores from the backup bucket don't have this limit.
 
@@ -880,9 +882,9 @@ All automatic uploads run only in the deployed app: local development never writ
 **Point-in-time restore to production.** Roll the live database back to any moment, shipped through the same guarded swap as a push (pre-restore backup, integrity validation, verification). List the available restore points, then pick one:
 
 ```sh
-npm run data:cloud-snapshots                              # what moments can I restore to?
-npm run data:restore-cloud                                # latest bucket state
-npm run data:restore-cloud -- --at "2026-07-10T15:00:00Z" # a specific moment
+pnpm data:cloud-snapshots                              # what moments can I restore to?
+pnpm data:restore-cloud                                # latest bucket state
+pnpm data:restore-cloud --at "2026-07-10T15:00:00Z" # a specific moment
 ```
 
 `--at` takes the UTC timestamps exactly as `data:cloud-snapshots` shows them.
@@ -900,19 +902,19 @@ Rebuild your local `data/` folder from nothing but the bucket — a new laptop, 
 One-time setup — install Litestream into the project (pinned to the same version the server runs, so local restores always read the exact format the server writes) and put the bucket credentials into your `.env` (see `.env.example`; read them from the machine with `fly ssh console -C env`). Local restores only ever read, so consider using read-only credentials here — most providers let you create a second, read-only access key for the bucket; how (and whether) is up to you:
 
 ```sh
-npm run litestream:install
+pnpm litestream:install
 ```
 
 Then:
 
 ```sh
-npm run data:cloud-snapshots                           # list restore points
-npm run data:pull-cloud                                # latest bucket state
-npm run data:pull-cloud -- --at "2026-07-10T15:00:00Z" # a specific moment
-npm run dev                                            # inspect the restored state
+pnpm data:cloud-snapshots                           # list restore points
+pnpm data:pull-cloud                                # latest bucket state
+pnpm data:pull-cloud --at "2026-07-10T15:00:00Z" # a specific moment
+pnpm dev                                            # inspect the restored state
 ```
 
-When you've found the state you want live, restore production to it with `npm run data:restore-cloud -- --at <timestamp>`.
+When you've found the state you want live, restore production to it with `pnpm data:restore-cloud --at <timestamp>`.
 
 ## Upgrading
 
@@ -921,11 +923,11 @@ New Editable releases are one `git pull` away.
 Because your site keeps Editable as the `upstream` remote (see [Your site is your repo](#your-site-is-your-repo)), improvements flow in with ordinary git. The ritual, in order:
 
 ```sh
-npm run data:backup       # snapshot the live database first
+pnpm data:backup       # snapshot the live database first
 git pull upstream stable  # get the latest Editable release
-npm install               # update dependencies (including svedit)
-npm run data:pull         # bring your live content local
-npm run dev               # test the new code against your real content
+pnpm install               # update dependencies (including svedit)
+pnpm data:pull         # bring your live content local
+pnpm dev               # test the new code against your real content
 fly deploy                # ship it
 git push                  # your repo now holds the upgraded state
 ```
@@ -945,7 +947,7 @@ Migration files in `src/lib/server/migrations` are discovered when SvelteKit bui
 Create a project migration with:
 
 ```sh
-npm run migration:create -- add-project-metadata
+pnpm migration:create add-project-metadata
 ```
 
 This creates a timestamped `custom` migration. Its filename is its permanent ID:
@@ -965,7 +967,7 @@ Editable's own migrations use the `editable` source name; `custom` migrations be
 Exceptionally, a project migration may need to prepare customized data before a pending Editable migration. Generate it with an explicit constraint:
 
 ```sh
-npm run migration:create -- reconcile-heading \
+pnpm migration:create reconcile-heading \
 	--before 20260712T125641379Z_editable_add_page_metadata_fields
 ```
 

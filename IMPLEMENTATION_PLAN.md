@@ -9,7 +9,7 @@ Convert the whole codebase from JS+JSDoc to TypeScript per the "Language: TypeSc
 3. Convert `src/lib` modules (root, `client/`, `server/`, `server/markdown/`, `server/migrations/`), translating existing JSDoc annotations to TS syntax.
 4. Convert `src/routes` modules (`hooks.server`, load functions, API endpoints, `app_utils`, `commands.svelte`, `create_session`, helpers).
 5. Convert all Svelte components to `<script lang="ts">`. Node components use the typed-node pattern; internal components get explicit prop types.
-6. Convert tests to `.ts`, update the vitest include glob and `vite.config` filename, then verify `npm run check`, `npm test`, `npm run build`, and `npm run lint` all pass.
+6. Convert tests to `.ts`, update the vitest include glob and `vite.config` filename, then verify `pnpm check`, `pnpm test`, `pnpm build`, and `pnpm lint` all pass.
 
 ## Node navigator and variant switcher
 

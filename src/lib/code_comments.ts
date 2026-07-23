@@ -116,7 +116,7 @@ function looks_like_code(text: string): boolean {
  * Heuristic: does this text read as a shell session or script?
  */
 function looks_like_shell(text: string): boolean {
-	return /(^|\n)\s*(\$ |#!|npm\s|npx\s|node\s|git\s|gh\s|fly\s|cd\s|cp\s|mv\s|rm\s|mkdir\s|echo\s|curl\s|docker\s|brew\s|sh\s|bash\s)/.test(
+	return /(^|\n)\s*(\$ |#!|npm\s|pnpm\s|npx\s|node\s|git\s|gh\s|fly\s|cd\s|cp\s|mv\s|rm\s|mkdir\s|echo\s|curl\s|docker\s|brew\s|sh\s|bash\s)/.test(
 		text
 	);
 }

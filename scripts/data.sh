@@ -204,10 +204,10 @@ remote_retry() {
 verify_remote() {
 	local ctx="$1" out
 	out="$(remote_retry integrity)" ||
-		die "Could not reach '$APP' to verify (the machine may still be coming up) — the data operation itself succeeded; verify later with: npm run data:verify"
+		die "Could not reach '$APP' to verify (the machine may still be coming up) — the data operation itself succeeded; verify later with: pnpm data:verify"
 	printf '%s' "$out" | grep -qx 'ok' || die "Remote integrity_check failed — $ctx"
 	out="$(remote_retry check-assets)" ||
-		die "Could not reach '$APP' to verify assets — the data operation itself succeeded; verify later with: npm run data:verify"
+		die "Could not reach '$APP' to verify assets — the data operation itself succeeded; verify later with: pnpm data:verify"
 	printf '%s' "$out" | grep -q '^OK:' || die "Remote references missing assets — $ctx"
 }
 
@@ -334,14 +334,14 @@ cmd_push() {
 	restart_app
 
 	info "Verifying…"
-	verify_remote "restore with: npm run data:restore $ts"
+	verify_remote "restore with: pnpm data:restore $ts"
 
 	echo
 	echo "✓ Pushed to '$APP'. Undo with:"
 	if [ "$DRIVER" = "fly" ]; then
-		echo "    npm run data:restore $ts -- -a $APP"
+		echo "    pnpm data:restore $ts -a $APP"
 	else
-		echo "    npm run data:restore $ts"
+		echo "    pnpm data:restore $ts"
 	fi
 }
 
@@ -418,7 +418,7 @@ cmd_restore() {
 			*) name="$arg" ;;
 		esac
 	done
-	[ -n "$name" ] || die "Usage: npm run data:restore <name> [-- --yes]   (see: npm run data:backups)"
+	[ -n "$name" ] || die "Usage: pnpm data:restore <name> [--yes]   (see: pnpm data:backups)"
 	name="${name%.sqlite3}"
 
 	ensure_running
@@ -454,7 +454,7 @@ cmd_restore() {
 	info "Verifying…"
 	local out
 	out="$(remote_retry integrity)" ||
-		die "Could not reach '$APP' to verify (the machine may still be coming up) — the restore itself succeeded; verify later with: npm run data:verify"
+		die "Could not reach '$APP' to verify (the machine may still be coming up) — the restore itself succeeded; verify later with: pnpm data:verify"
 	printf '%s' "$out" | grep -qx 'ok' || die "Remote integrity_check failed"
 	out="$(remote_retry check-assets)" || out=""
 	printf '%s' "$out" | grep -q '^OK:' ||
@@ -477,7 +477,7 @@ cmd_restore_cloud() {
 				at="${1:-}"
 				[ -n "$at" ] || die "--at requires an RFC3339 timestamp (e.g. 2026-07-10T15:00:00Z)"
 				;;
-			*) die "Unknown argument: $1   (usage: npm run data:restore-cloud [-- --at <timestamp>] [-- --yes])" ;;
+			*) die "Unknown argument: $1   (usage: pnpm data:restore-cloud [--at <timestamp>] [--yes])" ;;
 		esac
 		shift
 	done
@@ -514,7 +514,7 @@ cmd_restore_cloud() {
 	restart_app
 
 	info "Verifying…"
-	verify_remote "roll back with: npm run data:restore $ts"
+	verify_remote "roll back with: pnpm data:restore $ts"
 
 	echo
 	echo "✓ Restored '$APP' from the bucket${at:+ (as of $at)}: $(remote summary 2>/dev/null | tr '\n' ' ' | sed 's/ $//')."
@@ -531,15 +531,15 @@ cmd_pull_cloud() {
 				at="${1:-}"
 				[ -n "$at" ] || die "--at requires an RFC3339 timestamp (e.g. 2026-07-12T13:00:00Z)"
 				;;
-			*) die "Unknown argument: $1   (usage: npm run data:pull-cloud [-- --at <timestamp>])" ;;
+			*) die "Unknown argument: $1   (usage: pnpm data:pull-cloud [--at <timestamp>])" ;;
 		esac
 		shift
 	done
 
-	# Prefer the project-local, version-pinned binary (npm run litestream:install).
+	# Prefer the project-local, version-pinned binary (pnpm litestream:install).
 	PATH="$SCRIPT_DIR/../node_modules/.bin:$PATH"
 	command -v litestream >/dev/null 2>&1 ||
-		die "litestream is not installed — run: npm run litestream:install"
+		die "litestream is not installed — run: pnpm litestream:install"
 
 	# Bucket credentials from the environment, falling back to .env.
 	if [ -z "${BUCKET_NAME:-}" ] && [ -f .env ]; then
@@ -608,7 +608,7 @@ cmd_reset() {
 	rm -f "$DATA_DIR_LOCAL/db.sqlite3" "$DATA_DIR_LOCAL/db.sqlite3-wal" "$DATA_DIR_LOCAL/db.sqlite3-shm"
 
 	echo
-	echo "✓ Local database cleared. Start the dev server (npm run dev) to get a freshly seeded site."
+	echo "✓ Local database cleared. Start the dev server (pnpm dev) to get a freshly seeded site."
 	if [ -f "$BACKUP_DIR_LOCAL/local-$ts.sqlite3" ]; then
 		echo "  Previous database: $BACKUP_DIR_LOCAL/local-$ts.sqlite3"
 	fi
@@ -638,7 +638,7 @@ cmd_verify() {
 	need_app verify
 	ensure_running
 	info "Verifying '$APP'…"
-	verify_remote "list restore points with: npm run data:backups"
+	verify_remote "list restore points with: pnpm data:backups"
 	echo "✓ '$APP' is healthy: $(remote summary 2>/dev/null | tr '\n' ' ' | sed 's/ $//')."
 }
 
@@ -652,21 +652,21 @@ cmd_cloud_snapshots() {
 
 usage() {
 	cat <<'EOF'
-Data commands (via npm run; positional arguments work directly, flags need a -- separator):
+Data commands (via pnpm; arguments are forwarded directly):
 
-  npm run data:pull                            copy the live site's data to your machine
-  npm run data:push [-- --yes]                 replace the live site's data with your local state
-  npm run data:backup                          snapshot the live database
-  npm run data:backups                         list the live site's snapshots
-  npm run data:restore <name> [-- --yes]       roll the live site back to a snapshot
-  npm run data:cloud-snapshots                 list restore points in the backup bucket
-  npm run data:restore-cloud [-- --at <ts>]    roll the live site back to a point in time
-  npm run data:pull-cloud [-- --at <ts>]       rebuild local data/ from the backup bucket
-  npm run data:verify                          health-check the deployed database + assets
-  npm run data:reset [-- --yes]                reset local database to fresh demo content (assets stay)
-  npm run litestream:install                   one-time local setup for the cloud commands
+  pnpm data:pull                            copy the live site's data to your machine
+  pnpm data:push [--yes]                    replace the live site's data with your local state
+  pnpm data:backup                          snapshot the live database
+  pnpm data:backups                         list the live site's snapshots
+  pnpm data:restore <name> [--yes]          roll the live site back to a snapshot
+  pnpm data:cloud-snapshots                 list restore points in the backup bucket
+  pnpm data:restore-cloud [--at <ts>]       roll the live site back to a point in time
+  pnpm data:pull-cloud [--at <ts>]          rebuild local data/ from the backup bucket
+  pnpm data:verify                          health-check the deployed database + assets
+  pnpm data:reset [--yes]                   reset local database to fresh demo content (assets stay)
+  pnpm litestream:install                   one-time local setup for the cloud commands
 
-The target comes from fly.toml (Fly.io, override with: -- -a <app>) or from
+The target comes from fly.toml (Fly.io, override with: -a <app>) or from
 DEPLOY_HOST in .env (any VPS over plain ssh — see README → Deploy to a VPS).
 Snapshot names (<name>) look like my-site-20260712T143535Z-3f2a (file extension optional) — list them with data:backups.
 Timestamps (<ts>) are RFC3339 UTC, e.g. 2026-07-12T14:35:35Z — list them with data:cloud-snapshots.

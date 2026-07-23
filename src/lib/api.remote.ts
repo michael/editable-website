@@ -208,8 +208,7 @@ function get_optional_doc_from_db(document_id: string): DocumentData | null {
 
 function get_home_page_id_from_db(): string | null {
 	const row = db.prepare('SELECT value FROM site_settings WHERE key = ?').get('home_page_id') as
-		| { value: string }
-		| undefined;
+		{ value: string } | undefined;
 
 	return row?.value ?? null;
 }
