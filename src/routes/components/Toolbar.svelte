@@ -82,6 +82,10 @@
 
 	const TW_TOOLBAR_POSITION =
 		'bottom-[max(1rem,env(safe-area-inset-bottom,0px))] right-5 sm:right-7 md:right-10 lg:right-14';
+	const TW_SELECTION_TOOLBAR_POSITION =
+		'bottom-[max(1rem,env(safe-area-inset-bottom,0px))] left-5 sm:left-7 md:left-10 lg:left-14';
+	const TW_TOOLBAR_SURFACE =
+		'z-50 max-w-[calc(100vw-2.5rem)] rounded-full border border-(--border) bg-(--background)/95 p-1 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)] backdrop-blur-sm';
 
 	const TW_TOOLBAR_BTN =
 		'flex size-9 flex-none items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--foreground) shadow-none cursor-pointer pointer-events-auto transition-all duration-150 active:scale-95 active:translate-y-px outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1';
@@ -96,10 +100,46 @@
 	}
 </script>
 
+{#if editable && can_show_selection_tool_group}
+	<div class="editor-toolbar fixed {TW_SELECTION_TOOLBAR_POSITION} {TW_TOOLBAR_SURFACE}">
+		<div class="[scrollbar-width:none] overflow-x-auto rounded-full">
+			<div class="flex min-w-max items-center gap-0">
+				<button
+					class="{TW_TOOLBAR_BTN} {session.commands.select_parent?.disabled
+						? TW_TOOLBAR_BTN_DISABLED
+						: TW_TOOLBAR_BTN_HOVER}"
+					onmousedown={(e) => handle_btn_mousedown(e, session.commands.select_parent)}
+					title="Select parent (Esc)"
+					aria-label="Select parent"
+				>
+					<svg
+						class="size-6"
+						viewBox="0 0 24 24"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+						aria-hidden="true"
+					>
+						<path
+							d="M6.5 12.5C6.5 15.8137 9.18629 18.5 12.5 18.5C15.8137 18.5 18.5 15.8137 18.5 12.5C18.5 9.18629 15.8137 6.5 12.5 6.5"
+							stroke="currentColor"
+							stroke-linecap="round"
+						/>
+						<path
+							d="M4.48278 4.48206L13 12.9993M9.44657 4.48173L4.48278 4.48206V9.44727"
+							stroke="currentColor"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						/>
+					</svg>
+				</button>
+				<NodeNavigator {session} {focus_canvas} />
+			</div>
+		</div>
+	</div>
+{/if}
+
 {#if editable || can_show_read_toolbar}
-	<div
-		class="editor-toolbar fixed {TW_TOOLBAR_POSITION} z-50 max-w-[calc(100vw-2.5rem)] rounded-full border border-(--border) bg-(--background)/95 p-1 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)] backdrop-blur-sm"
-	>
+	<div class="editor-toolbar fixed {TW_TOOLBAR_POSITION} {TW_TOOLBAR_SURFACE}">
 		<div class="[scrollbar-width:none] overflow-x-auto rounded-full">
 			<div class="flex min-w-max items-center gap-0">
 				{#if !editable}
@@ -191,38 +231,6 @@
 					</div>
 				{:else}
 					<!-- Edit mode -->
-					{#if can_show_selection_tool_group}
-						<button
-							class="{TW_TOOLBAR_BTN} {session.commands.select_parent?.disabled
-								? TW_TOOLBAR_BTN_DISABLED
-								: TW_TOOLBAR_BTN_HOVER}"
-							onmousedown={(e) => handle_btn_mousedown(e, session.commands.select_parent)}
-							title="Select parent (Esc)"
-							aria-label="Select parent"
-						>
-							<svg
-								class="size-6"
-								viewBox="0 0 24 24"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-								aria-hidden="true"
-							>
-								<path
-									d="M6.5 12.5C6.5 15.8137 9.18629 18.5 12.5 18.5C15.8137 18.5 18.5 15.8137 18.5 12.5C18.5 9.18629 15.8137 6.5 12.5 6.5"
-									stroke="currentColor"
-									stroke-linecap="round"
-								/>
-								<path
-									d="M4.48278 4.48206L13 12.9993M9.44657 4.48173L4.48278 4.48206V9.44727"
-									stroke="currentColor"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								/>
-							</svg>
-						</button>
-					{/if}
-					<NodeNavigator {session} {focus_canvas} />
-
 					<!-- Text formatting group (visible during text selection) -->
 					{#if session.selection?.type === 'text'}
 						<div class="flex items-center">
@@ -541,7 +549,8 @@
 						</button>
 					</div>
 
-					<div class="ml-1 flex items-center border-l border-(--border) pl-1">
+					<span class="mx-1 h-5 w-px shrink-0 bg-(--border)" aria-hidden="true"></span>
+					<div class="flex items-center">
 						{#if cancel_command && !cancel_command.disabled}
 							<button
 								class="pointer-events-auto inline-flex h-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent px-4 text-xs font-medium text-(--foreground) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-[0.97] active:bg-(--muted)"
