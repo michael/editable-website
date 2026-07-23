@@ -215,16 +215,16 @@
 										aria-label="Browse"
 									>
 										<svg
-											class="size-4"
+											class="size-6"
 											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 15 15"
+											viewBox="0 0 24 24"
 											fill="none"
 											aria-hidden="true"
 										>
-											<rect x="1.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-											<rect x="8.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-											<rect x="1.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-											<rect x="8.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+											<rect x="4.5" y="4.5" width="6" height="6" rx="1" stroke="currentColor" />
+											<rect x="13.5" y="4.5" width="6" height="6" rx="1" stroke="currentColor" />
+											<rect x="4.5" y="13.5" width="6" height="6" rx="1" stroke="currentColor" />
+											<rect x="13.5" y="13.5" width="6" height="6" rx="1" stroke="currentColor" />
 										</svg>
 									</button>
 								{/if}
@@ -237,15 +237,17 @@
 										aria-label="Edit"
 									>
 										<svg
-											class="size-4"
+											class="size-6"
 											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 15 15"
+											viewBox="0 0 24 24"
 											fill="none"
 											aria-hidden="true"
 										>
 											<path
-												d="M12.6017 4.51322L10.4804 2.3919M12.6017 4.51322L3.76282 13.3521L1.77642 13.5C1.58297 13.5266 1.48259 13.4069 1.5 13.2107L1.6415 11.2308L10.4804 2.3919M12.6017 4.51322C12.9552 4.15965 12.9552 4.15969 12.9552 4.15969L13.3088 3.80612C13.6623 3.45255 13.4942 2.58389 12.9552 2.0384C12.4189 1.50211 11.541 1.33123 11.1875 1.6848L10.8339 2.03837C10.8339 2.03837 10.8339 2.03833 10.4804 2.3919"
+												d="M4.5 19.5L5.25 15.25L15.75 4.75C16.7165 3.7835 18.2835 3.7835 19.25 4.75C20.2165 5.7165 20.2165 7.2835 19.25 8.25L8.75 18.75L4.5 19.5ZM14 6.5L17.5 10"
 												stroke="currentColor"
+												stroke-linecap="round"
+												stroke-linejoin="round"
 											/>
 										</svg>
 									</button>
