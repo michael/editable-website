@@ -633,7 +633,8 @@
 	}
 
 	.selection-leading-divider {
-		display: none;
+		display: block;
+		align-self: center;
 	}
 
 	.mobile-selection-leading,
@@ -704,11 +705,6 @@
 			align-self: stretch;
 			padding-left: 4px;
 			background: var(--background);
-		}
-
-		.selection-leading-divider {
-			display: block;
-			align-self: center;
 		}
 
 		.mobile-save-group {
