@@ -1,11 +1,11 @@
 /// <reference types="vitest/config" />
-import adapter_auto from '@sveltejs/adapter-auto';
 import adapter_node from '@sveltejs/adapter-node';
+import adapter_vercel from '@sveltejs/adapter-vercel';
 import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
-const adapter = process.env.VERCEL ? adapter_auto : adapter_node;
+const adapter = process.env.VERCEL ? adapter_vercel : adapter_node;
 
 export default defineConfig({
 	plugins: [
