@@ -1,14 +1,11 @@
-<script>
+<script lang="ts">
 	import { fade } from 'svelte/transition';
 
-	/**
-	 * @type {{
-	 *   visible: boolean,
-	 *   message: string,
-	 *   done: boolean
-	 * }}
-	 */
-	let { visible = false, message = '', done = false } = $props();
+	let {
+		visible = false,
+		message = '',
+		done = false
+	}: { visible?: boolean; message?: string; done?: boolean } = $props();
 
 	let show_modal = $state(false);
 	let delay_timer;

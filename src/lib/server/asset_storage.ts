@@ -1,0 +1,204 @@
+import crypto from 'node:crypto';
+import { createReadStream, createWriteStream, existsSync } from 'node:fs';
+import type { ReadStream } from 'node:fs';
+import { mkdir, readdir, unlink, rm, stat, utimes } from 'node:fs/promises';
+import { join, extname } from 'node:path';
+import { pipeline } from 'node:stream/promises';
+import { Readable, Transform } from 'node:stream';
+import { mkdirSync } from 'node:fs';
+import { ASSET_ID_REGEX } from '$lib/config.js';
+import { ASSET_GRACE_PERIOD_DAYS, ASSET_PATH } from '$lib/server_config.js';
+import { mirror_file } from './s3.js';
+
+// Ensure the asset directory exists on module load
+mkdirSync(ASSET_PATH, { recursive: true });
+
+/**
+ * Get the full filesystem path for an original asset (asset_id is
+ * e.g. "c4b519da...fabdb.webp").
+ */
+function asset_path(asset_id: string): string {
+	return join(ASSET_PATH, asset_id);
+}
+
+/**
+ * Get the stem (asset id without extension) for building variant paths.
+ */
+function stem(asset_id: string): string {
+	const ext = extname(asset_id);
+	return ext ? asset_id.slice(0, -ext.length) : asset_id;
+}
+
+/**
+ * Get the directory path for an asset's variants.
+ */
+function variant_dir(asset_id: string): string {
+	return join(ASSET_PATH, stem(asset_id));
+}
+
+/**
+ * Get the full filesystem path for a width variant.
+ */
+export function variant_path(asset_id: string, width: number): string {
+	return join(variant_dir(asset_id), `w${width}.webp`);
+}
+
+/**
+ * Stream a ReadableStream (web), Buffer, or Uint8Array to a file on disk,
+ * counting bytes and hashing the content. Size limiting is the deployment's
+ * job (BODY_SIZE_LIMIT), enforced by the adapter while streaming.
+ */
+async function stream_to_file(
+	file_path: string,
+	data: ReadableStream | Buffer | Uint8Array
+): Promise<{ bytes_written: number; sha256: string }> {
+	let source: Readable;
+
+	if (Buffer.isBuffer(data) || data instanceof Uint8Array) {
+		source = Readable.from([data]);
+	} else {
+		source = Readable.fromWeb(data as import('node:stream/web').ReadableStream);
+	}
+
+	let bytes_written = 0;
+	const hash = crypto.createHash('sha256');
+
+	const counter = new Transform({
+		transform(chunk, _encoding, callback) {
+			bytes_written += chunk.length;
+			hash.update(chunk);
+			callback(null, chunk);
+		}
+	});
+
+	const dest = createWriteStream(file_path);
+	await pipeline(source, counter, dest);
+
+	return { bytes_written, sha256: hash.digest('hex') };
+}
+
+/**
+ * Write an original asset to disk, streaming.
+ */
+export async function write_asset(
+	asset_id: string,
+	data: ReadableStream | Buffer | Uint8Array
+): Promise<{ bytes_written: number; sha256: string }> {
+	const result = await stream_to_file(asset_path(asset_id), data);
+	mirror_file(`assets/${asset_id}`, asset_path(asset_id));
+	return result;
+}
+
+/**
+ * Write a width variant to disk, streaming.
+ * Creates the variant directory if needed.
+ */
+export async function write_variant(
+	asset_id: string,
+	width: number,
+	data: ReadableStream | Buffer | Uint8Array
+): Promise<{ bytes_written: number; sha256: string }> {
+	const dir = variant_dir(asset_id);
+	await mkdir(dir, { recursive: true });
+	const result = await stream_to_file(variant_path(asset_id, width), data);
+	mirror_file(`assets/${stem(asset_id)}/w${width}.webp`, variant_path(asset_id, width));
+	return result;
+}
+
+/**
+ * Check if an original asset exists on disk.
+ */
+export function asset_exists(asset_id: string): boolean {
+	return existsSync(asset_path(asset_id));
+}
+
+/**
+ * Delete an asset and all its variants from disk.
+ */
+export async function delete_asset(asset_id: string): Promise<void> {
+	// Delete the original file
+	try {
+		await unlink(asset_path(asset_id));
+	} catch {
+		// File may not exist
+	}
+
+	// Delete the variant directory
+	const dir = variant_dir(asset_id);
+	if (existsSync(dir)) {
+		await rm(dir, { recursive: true });
+	}
+}
+
+/**
+ * Create a Node.js ReadStream for an original asset.
+ */
+export function create_asset_read_stream(
+	asset_id: string,
+	options: { start?: number; end?: number } = {}
+): ReadStream {
+	return createReadStream(asset_path(asset_id), options);
+}
+
+/**
+ * Create a Node.js ReadStream for a width variant.
+ */
+export function create_variant_read_stream(
+	asset_id: string,
+	width: number,
+	options: { start?: number; end?: number } = {}
+): ReadStream {
+	return createReadStream(variant_path(asset_id, width), options);
+}
+
+/**
+ * Get the size of an original asset in bytes.
+ */
+export async function asset_size(asset_id: string): Promise<number> {
+	const s = await stat(asset_path(asset_id));
+	return s.size;
+}
+
+/**
+ * An asset's mtime marks when it was uploaded or last dereferenced —
+ * touch_asset resets it when the last reference disappears. Unreferenced
+ * files are kept for the grace period from that moment, so the period is
+ * also the safe window for rolling back a database backup against the live
+ * assets folder, and it protects uploads that precede their document save.
+ */
+const ORPHAN_GRACE_PERIOD_MS = ASSET_GRACE_PERIOD_DAYS * 24 * 60 * 60 * 1000;
+
+/**
+ * Start the orphan clock for an asset by setting its mtime to now. Called
+ * when an asset loses its last reference. Missing files are ignored.
+ */
+export async function touch_asset(asset_id: string): Promise<void> {
+	const now = new Date();
+	try {
+		await utimes(asset_path(asset_id), now, now);
+	} catch {
+		// File may not exist (already purged or never uploaded)
+	}
+}
+
+/**
+ * Delete asset files (and their variants) that are no longer referenced by
+ * any document. Returns the number of deleted assets.
+ */
+export async function delete_orphaned_assets(referenced_asset_ids: Set<string>): Promise<number> {
+	const entries = await readdir(ASSET_PATH, { withFileTypes: true });
+	let deleted = 0;
+
+	for (const entry of entries) {
+		if (!entry.isFile() || !ASSET_ID_REGEX.test(entry.name)) continue;
+		if (referenced_asset_ids.has(entry.name)) continue;
+
+		const { mtimeMs } = await stat(asset_path(entry.name));
+		if (Date.now() - mtimeMs < ORPHAN_GRACE_PERIOD_MS) continue;
+
+		await delete_asset(entry.name);
+		deleted += 1;
+	}
+
+	return deleted;
+}

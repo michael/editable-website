@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import App from '../components/App.svelte';
 	import { create_empty_doc } from '$lib/new_page.js';
 

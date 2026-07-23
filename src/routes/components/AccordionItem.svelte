@@ -1,9 +1,10 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import type { DocumentPath } from 'svedit';
+	import { get_svedit_context } from '../svedit_context.js';
 	import { Node, NodeArrayProperty, TextProperty } from 'svedit';
 
-	const svedit = getContext('svedit');
-	let { path } = $props();
+	const svedit = get_svedit_context();
+	let { path }: { path: DocumentPath } = $props();
 </script>
 
 <Node class="ew-accordion-item border-b border-(--border)" {path}>

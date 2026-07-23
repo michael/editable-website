@@ -1,11 +1,12 @@
-<script>
+<script lang="ts">
+	import { get_svedit_context } from '../svedit_context.js';
+	import { get_app_context } from '../app_context.js';
 	import { resolve } from '$app/paths';
-	import { getContext } from 'svelte';
 	import { serialize_path } from 'svedit';
 	import Media from './Media.svelte';
 
-	const svedit = getContext('svedit');
-	const app = getContext('app');
+	const svedit = get_svedit_context();
+	const app = get_app_context();
 
 	let { node, path } = $props();
 
@@ -52,11 +53,9 @@
 		return href;
 	}
 
-	function get_preview_href(href) {
+	function get_preview_href(href: unknown) {
 		if (typeof href !== 'string') return '';
-		return href.startsWith('/') && !href.startsWith('//')
-			? resolve(/** @type {any} */ (href))
-			: href;
+		return href.startsWith('/') && !href.startsWith('//') ? resolve(href as any) : href;
 	}
 </script>
 

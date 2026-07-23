@@ -1,13 +1,14 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import type { Nodes } from '$lib/document_schema.js';
+	import { get_svedit_context } from '../svedit_context.js';
 	import { Node, NodeArrayProperty } from 'svedit';
 	import MediaProperty from './MediaProperty.svelte';
 	import { TW_PAGE_PADDING_X, TW_LIMITER } from '../tailwind_theme.js';
 	import { reveal } from '../reveal.js';
 
-	const svedit = getContext('svedit');
+	const svedit = get_svedit_context();
 	let { path, mark: section = null } = $props();
-	let node = $derived(svedit.session.get(path));
+	let node: Nodes['feature'] = $derived(svedit.session.get(path));
 	let media_node = $derived(svedit.session.get([...path, 'media']));
 	let render_as_link = $derived(!svedit.editable && node.href);
 	let media_aspect_ratio = $derived(

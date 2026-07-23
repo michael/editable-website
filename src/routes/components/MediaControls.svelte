@@ -1,8 +1,8 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import { get_svedit_context } from '../svedit_context.js';
 	import { touch_drag } from '$lib/client/touch_drag.js';
 
-	const svedit = getContext('svedit');
+	const svedit = get_svedit_context();
 
 	// Zoom constraints
 	const MIN_SCALE = 0.1;
@@ -104,8 +104,7 @@
 		const current_scale = media_node.scale;
 		const next_scale = current_scale + zoom_delta;
 		const crosses_one =
-			(current_scale < 1.0 && next_scale > 1.0) ||
-			(current_scale > 1.0 && next_scale < 1.0);
+			(current_scale < 1.0 && next_scale > 1.0) || (current_scale > 1.0 && next_scale < 1.0);
 		const is_close_to_one = Math.abs(next_scale - 1.0) <= ZOOM_STEP;
 
 		const snapped_scale = crosses_one || is_close_to_one ? 1.0 : next_scale;
@@ -130,7 +129,6 @@
 
 <!-- Either the pan mode is armed (after a pointer selection) or there's no pointer involved -->
 {#if pan_mode_armed || !is_mouse_down}
-	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
 		bind:this={controls_ref}
 		class="media-controls"
@@ -148,8 +146,6 @@
 			></div>
 		{/if}
 	</div>
-
-
 {/if}
 
 <style>
@@ -209,6 +205,4 @@
 		background: var(--svedit-editing-stroke);
 		transform: translate(-50%, -50%);
 	}
-
-
 </style>

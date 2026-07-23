@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { serialize_path } from 'svedit';
 	import { get_selection_node_ancestors, is_node_subtree_empty } from '../app_utils.js';
 
@@ -176,9 +176,9 @@
 					onblur={restore_canvas_selection}
 					onkeydown={handle_variant_keydown}
 				>
-					{#each variant_item.groups as group}
+					{#each variant_item.groups as group (group.node_type)}
 						<optgroup label={humanize_node_id(group.node_type, true)}>
-							{#each group.options as option}
+							{#each group.options as option (option.value)}
 								<option value={option.value}>
 									{get_variant_label(group.node_type, option.layout)}
 								</option>

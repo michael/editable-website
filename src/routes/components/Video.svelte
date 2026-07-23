@@ -1,19 +1,16 @@
-<script>
+<script lang="ts">
 	import { ASSET_BASE } from '$lib/config.js';
 
-	/** @type {{ node: any, editable?: boolean }} */
-	let { node, editable = false } = $props();
+	import type { PreviewMediaNode } from '$lib/page_metadata.js';
+
+	let { node, editable = false }: { node: PreviewMediaNode; editable?: boolean } = $props();
 
 	// Determine if src is a blob URL (unsaved), a saved asset id, or empty
 	let is_blob = $derived(node.src?.startsWith('blob:'));
 	let is_saved = $derived(node.src && !is_blob);
 
 	// Resolve the display URL
-	let display_src = $derived(
-		is_blob ? node.src :
-		is_saved ? `${ASSET_BASE}/${node.src}` :
-		''
-	);
+	let display_src = $derived(is_blob ? node.src : is_saved ? `${ASSET_BASE}/${node.src}` : '');
 
 	// Apply scale to video (same as Image.svelte)
 	let video_style = $derived(`
@@ -23,8 +20,7 @@
 		object-fit: ${node.object_fit};
 	`);
 
-	/** @type {HTMLVideoElement | null} */
-	let video_el = $state(null);
+	let video_el = $state<HTMLVideoElement | null>(null);
 	let is_fullscreen = $state(false);
 
 	// Autoplay handling — try multiple strategies since the element may be
@@ -59,8 +55,7 @@
 		};
 	});
 
-	/** @param {MouseEvent} e */
-	function enter_fullscreen(e) {
+	function enter_fullscreen(e: MouseEvent) {
 		// Only allow fullscreen in published view (not editable)
 		if (editable) return;
 		e.preventDefault();
@@ -73,10 +68,10 @@
 
 		if (v.requestFullscreen) {
 			v.requestFullscreen();
-		} else if (/** @type {any} */ (v).webkitEnterFullscreen) {
-			/** @type {any} */ (v).webkitEnterFullscreen();
-		} else if (/** @type {any} */ (v).webkitRequestFullscreen) {
-			/** @type {any} */ (v).webkitRequestFullscreen();
+		} else if ((v as any).webkitEnterFullscreen) {
+			(v as any).webkitEnterFullscreen();
+		} else if ((v as any).webkitRequestFullscreen) {
+			(v as any).webkitRequestFullscreen();
 		}
 	}
 
@@ -106,8 +101,7 @@
 		// Standard Fullscreen API (Chrome, Firefox, Safari desktop)
 		function handle_fullscreen_change() {
 			if (!v) return;
-			const fs = document.fullscreenElement
-				|| /** @type {any} */ (document).webkitFullscreenElement;
+			const fs = document.fullscreenElement || (document as any).webkitFullscreenElement;
 			if (fs === v) {
 				is_fullscreen = true;
 			} else if (!fs) {
@@ -140,7 +134,6 @@
 </script>
 
 {#if display_src}
-	<!-- svelte-ignore a11y_media_has_caption -->
 	<video
 		bind:this={video_el}
 		contenteditable="false"

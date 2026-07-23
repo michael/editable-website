@@ -1,16 +1,17 @@
-<script>
-	/** @type {{
-		onclose?: () => void,
-		onedit_for_fun?: () => void,
-		onlogin_success?: () => Promise<void> | void
-	}} */
-	let { onclose = () => {}, onedit_for_fun = () => {}, onlogin_success = () => {} } = $props();
+<script lang="ts">
+	let {
+		onedit_for_fun = () => {},
+		onlogin_success = () => {}
+	}: {
+		onedit_for_fun?: () => void;
+		onlogin_success?: () => Promise<void> | void;
+	} = $props();
 
 	let password = $state('');
 	let error = $state('');
 	let pending = $state(false);
 	let step = $state('choice');
-	let password_input_ref = $state();
+	let password_input_ref = $state<HTMLInputElement>();
 	let should_focus_password_input = $state(false);
 
 	$effect(() => {
@@ -39,11 +40,6 @@
 		pending = false;
 		step = 'choice';
 		should_focus_password_input = false;
-	}
-
-	function close_auth_dialog() {
-		reset_dialog();
-		onclose();
 	}
 
 	function handle_edit_for_fun() {

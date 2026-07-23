@@ -1,15 +1,17 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import type { Nodes } from '$lib/document_schema.js';
+	import type { DocumentPath } from 'svedit';
+	import { get_svedit_context } from '../svedit_context.js';
 	import { NodeArrayProperty, Node } from 'svedit';
 	import { slide } from 'svelte/transition';
 	import { TW_LIMITER } from '../tailwind_theme.js';
 	import NavMedia from './NavMedia.svelte';
 	import NavButton from './NavButton.svelte';
 
-	let { path } = $props();
+	let { path }: { path: DocumentPath } = $props();
 
-	const svedit = getContext('svedit');
-	let node = $derived(svedit.session.get(path));
+	const svedit = get_svedit_context();
+	let node: Nodes['nav'] = $derived(svedit.session.get(path));
 	let middle_item_ids = $derived(node.middle_items.nodes);
 	let mobile_nav_media_path = $derived(find_mobile_nav_media_path());
 	let mobile_nav_cta_path = $derived(find_mobile_nav_cta_path());
