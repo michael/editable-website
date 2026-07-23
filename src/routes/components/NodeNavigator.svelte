@@ -135,20 +135,21 @@
 
 {#if variant_item}
 	<div
-		class="flex shrink-0 items-center rounded-full border border-(--border) bg-(--background)/95 p-1 text-xs leading-5 text-(--foreground) shadow-sm backdrop-blur-sm"
+		class="flex shrink-0 items-center rounded-full border border-(--border) bg-(--background)/95 p-1 text-xs leading-5 whitespace-nowrap text-(--foreground) shadow-sm backdrop-blur-sm"
 		class:variant-pulse={should_pulse_variant}
 		aria-label="Current node variant"
 	>
 		<div
-			class="relative flex items-center rounded-full px-3 py-1 {variant_item.option_count > 1
+			class="relative flex shrink-0 items-center rounded-full px-3 py-1 whitespace-nowrap {variant_item.option_count >
+			1
 				? 'cursor-pointer hover:bg-(--muted)'
 				: ''}"
 			title={variant_item.option_count > 1
 				? 'Choose variant · Type ⌃⇧↑/↓ · Layout ⌃⇧←/→'
 				: undefined}
 		>
-			<span class="flex items-center" aria-hidden="true">
-				<span>
+			<span class="flex shrink-0 items-center whitespace-nowrap" aria-hidden="true">
+				<span class="whitespace-nowrap">
 					<span
 						class={variant_item.option_count > 1
 							? 'font-medium'

@@ -556,8 +556,8 @@
 			</div>
 
 			{#if editable}
-				<span class="mx-1 h-5 w-px shrink-0 bg-(--border)" aria-hidden="true"></span>
 				<div class="save-group flex shrink-0 items-center">
+					<span class="mx-1 h-5 w-px shrink-0 bg-(--border)" aria-hidden="true"></span>
 					{#if cancel_command && !cancel_command.disabled}
 						<button
 							class="pointer-events-auto inline-flex h-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent px-4 text-xs font-medium text-(--foreground) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-[0.97] active:bg-(--muted)"
@@ -600,6 +600,13 @@
 
 	@media (max-width: 639px) {
 		.toolbar-layout {
+			right: auto;
+			left: 50%;
+			width: max-content;
+			max-width: calc(100vw - 2.5rem);
+			transform: translateX(-50%);
+			overflow-x: auto;
+			scrollbar-width: none;
 			gap: 0;
 			padding: 4px;
 			color: var(--foreground);
@@ -614,6 +621,7 @@
 		}
 
 		.toolbar-layout > .editor-toolbar {
+			display: contents;
 			padding: 0;
 			background: transparent;
 			border: 0;
@@ -626,13 +634,23 @@
 			display: none;
 		}
 
-		.selection-toolbar {
-			flex: 0 1 auto;
-			max-width: 45%;
+		.selection-scroller,
+		.tools-scroller {
+			display: contents;
 		}
 
-		.action-toolbar {
-			flex: 1 1 auto;
+		.selection-toolbar > button {
+			position: sticky;
+			left: 0;
+			z-index: 2;
+			background: var(--background);
+		}
+
+		.save-group {
+			position: sticky;
+			right: 0;
+			z-index: 2;
+			background: var(--background);
 		}
 	}
 </style>

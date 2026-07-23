@@ -21,6 +21,9 @@ Convert the whole codebase from JS+JSDoc to TypeScript per the "Language: TypeSc
 - Flatten valid type/layout combinations into a native select for direct choice and keyboard type-ahead; do not add a misleading combined next/previous control when keyboard cycling remains dimension-specific.
 - Keep the ordinary select-parent command in the existing selection tool group; do not duplicate it inside the variant selector.
 - Split the variant selector to the left and the existing toolbar actions to the right when space permits, collapsing the flexible gap before horizontal overflow on narrow screens.
+- On mobile, center the toolbar and let it shrink-wrap its contents until it reaches the viewport-safe maximum width.
+- On mobile overflow, use one horizontal scroll area for the variant selector and ordinary editing actions; keep the select-parent button fixed at the leading edge and the cancel/save actions fixed at the trailing edge.
+- Keep variant labels on one line at their intrinsic width so the scroll area, rather than the selector itself, absorbs narrow-screen overflow.
 - Keep type/layout cycle commands and keyboard shortcuts registered, but hide their redundant toolbar buttons while the variant selector is the primary visible UI.
 - Expose the type up/down and layout left/right keyboard shortcuts in the variant selector's hover tooltip rather than as persistent UI chrome.
 - Pulse the selector when its displayed type-switch target is still empty and every alternative type remains safely available, hinting at type choice immediately after insertion.
