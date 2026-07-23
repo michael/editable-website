@@ -12,12 +12,19 @@ import {
 } from '$lib/server/asset_storage.js';
 import type { RequestHandler } from './$types';
 
-// Served assets are user-uploaded content and must be inert: `sandbox` puts
-// directly-opened files (e.g. SVGs with scripts) in an opaque origin so they
-// can't run code against the site, `nosniff` stops MIME guessing.
+// Served assets are user-uploaded content. `nosniff` prevents a payload from
+// being interpreted as a different, executable type. Directly-opened images
+// additionally get `sandbox` so active formats such as SVG cannot run code
+// against the site. Do not sandbox videos: Chromium's built-in media document
+// becomes an opaque origin and then blocks its own byte-range requests via
+// CORS, making otherwise valid MP4/WebM files unplayable in a new tab.
+const NO_SNIFF_HEADERS = {
+	'X-Content-Type-Options': 'nosniff'
+};
+
 const INERT_CONTENT_HEADERS = {
 	'Content-Security-Policy': 'sandbox',
-	'X-Content-Type-Options': 'nosniff'
+	...NO_SNIFF_HEADERS
 };
 
 /** Extensions a variant's original can have (variants exist only for images). */
@@ -137,7 +144,7 @@ export const GET: RequestHandler = async ({ params, request }) => {
 	const byte_range = is_video ? parse_byte_range(range_header, size) : null;
 
 	const headers: Record<string, string> = {
-		...INERT_CONTENT_HEADERS,
+		...(is_video ? NO_SNIFF_HEADERS : INERT_CONTENT_HEADERS),
 		'Content-Type': mime_type,
 		'Cache-Control': 'public, max-age=31536000, immutable',
 		'Content-Disposition': `inline; filename="${short_filename(asset_id, ext)}"`
