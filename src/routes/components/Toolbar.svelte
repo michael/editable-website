@@ -253,23 +253,61 @@
 
 								{#if can_logout}
 									<button
-										class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
-										onclick={() => app_commands.logout_admin.execute()}
-										title="Logout"
-										aria-label="Logout"
+										class="page-actions-trigger {TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
+										popovertarget="toolbar-page-actions-menu"
+										title="Page actions"
+										aria-label="Page actions"
 									>
 										<svg
-											class="size-4"
+											class="size-6"
 											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 15 15"
-											fill="none"
+											viewBox="0 0 24 24"
+											fill="currentColor"
 											aria-hidden="true"
 										>
-											<path d="M6 2.5H3.5V12.5H6" stroke="currentColor" />
-											<path d="M8.5 4.5L11.5 7.5L8.5 10.5" stroke="currentColor" />
-											<path d="M11 7.5H5" stroke="currentColor" />
+											<circle cx="6" cy="12" r="1" />
+											<circle cx="12" cy="12" r="1" />
+											<circle cx="18" cy="12" r="1" />
 										</svg>
 									</button>
+									<div
+										id="toolbar-page-actions-menu"
+										class="page-actions-menu min-w-44 rounded-2xl border border-(--border) bg-(--background) p-1.5 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
+										popover="auto"
+										role="menu"
+										aria-label="Page actions"
+									>
+										<button
+											type="button"
+											class="page-actions-item"
+											popovertarget="toolbar-page-actions-menu"
+											popovertargetaction="hide"
+											role="menuitem">Duplicate page</button
+										>
+										<button
+											type="button"
+											class="page-actions-item"
+											popovertarget="toolbar-page-actions-menu"
+											popovertargetaction="hide"
+											role="menuitem">Edit URL</button
+										>
+										<button
+											type="button"
+											class="page-actions-item"
+											popovertarget="toolbar-page-actions-menu"
+											popovertargetaction="hide"
+											role="menuitem">Delete page</button
+										>
+										<div class="my-1 h-px bg-(--border)" role="separator"></div>
+										<button
+											type="button"
+											class="page-actions-item"
+											popovertarget="toolbar-page-actions-menu"
+											popovertargetaction="hide"
+											onclick={() => app_commands.logout_admin.execute()}
+											role="menuitem">Logout</button
+										>
+									</div>
 								{/if}
 							</div>
 						{:else}
@@ -634,6 +672,39 @@
 	:global(.editor-toolbar [aria-label='Current node variant']::after) {
 		content: none;
 		display: none;
+	}
+
+	.page-actions-trigger {
+		anchor-name: --toolbar-page-actions;
+	}
+
+	.page-actions-menu {
+		position: fixed;
+		position-anchor: --toolbar-page-actions;
+		position-area: block-start span-inline-end;
+		justify-self: anchor-center;
+		inset: auto;
+		margin: 0 12px 8px;
+	}
+
+	.page-actions-item {
+		display: block;
+		width: 100%;
+		cursor: pointer;
+		border: 0;
+		border-radius: 0.75rem;
+		background: transparent;
+		padding: 0.625rem 0.75rem;
+		color: var(--foreground);
+		font-size: 0.875rem;
+		line-height: 1.25rem;
+		text-align: left;
+	}
+
+	.page-actions-item:hover,
+	.page-actions-item:focus-visible {
+		background: var(--muted);
+		outline: none;
 	}
 
 	.selection-leading-divider {

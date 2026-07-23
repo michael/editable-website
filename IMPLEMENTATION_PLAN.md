@@ -481,7 +481,8 @@ Required UI behavior:
 - drafts and private sitemap UI are hidden unless authenticated as admin
 - link pickers must not expose drafts to unauthenticated users
 - toolbar actions that require admin auth must be hidden or disabled when unauthenticated
-- authenticated admins get an explicit logout button
+- authenticated admins get an ellipsis page-actions menu in the browsing toolbar with Duplicate page, Edit URL, Delete page, and Logout entries
+- keep the initial page-management entries presentational and retain the existing working Logout action; wire Duplicate page, Edit URL, and Delete page in a follow-up task
 
 ### Page browser behavior
 
