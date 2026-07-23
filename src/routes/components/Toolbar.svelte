@@ -442,17 +442,19 @@
 										aria-label="Replace image"
 									>
 										<svg
-											class="size-4"
+											class="size-6"
 											viewBox="0 0 24 24"
 											fill="none"
-											stroke="currentColor"
-											stroke-width="2"
-											stroke-linecap="round"
-											stroke-linejoin="round"
+											xmlns="http://www.w3.org/2000/svg"
+											aria-hidden="true"
 										>
-											<rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-											<circle cx="8.5" cy="8.5" r="1.5" />
-											<polyline points="21 15 16 10 5 21" />
+											<path
+												d="M4.5 17.5L9 13L12 16L14.5 13.5L19.5 18.5M5.5 4.5H18.5C19.0523 4.5 19.5 4.94772 19.5 5.5V18.5C19.5 19.0523 19.0523 19.5 18.5 19.5H5.5C4.94772 19.5 4.5 19.0523 4.5 18.5V5.5C4.5 4.94772 4.94772 4.5 5.5 4.5Z"
+												stroke="currentColor"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+											/>
+											<circle cx="8.5" cy="8.5" r="1.5" stroke="currentColor" />
 										</svg>
 									</button>
 								</div>
