@@ -1,19 +1,11 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import type { DocumentPath } from 'svedit';
+	import type { Snippet } from 'svelte';
+	import { get_svedit_context } from '../svedit_context.js';
 	import { serialize_path } from 'svedit';
 
-	const svedit = getContext('svedit');
+	const svedit = get_svedit_context();
 
-	/**
-	 * @type {{
-	 *   path: any[],
-	 *   media_property?: string,
-	 *   children: import('svelte').Snippet,
-	 *   placeholder_aspect_ratio?: number,
-	 *   class?: string,
-	 *   style?: string
-	 * }}
-	 */
 	let {
 		path,
 		media_property = 'media',
@@ -21,6 +13,13 @@
 		placeholder_aspect_ratio = 16 / 9,
 		class: css_class = '',
 		style: css_style = ''
+	}: {
+		path: DocumentPath;
+		media_property?: string;
+		children: Snippet;
+		placeholder_aspect_ratio?: number;
+		class?: string;
+		style?: string;
 	} = $props();
 
 	// Derive field names from media_property: e.g. 'media' -> 'media_max_width', 'media_aspect_ratio'
@@ -39,17 +38,11 @@
 
 	// Resolve aspect ratio: 0 means use natural ratio
 	let resolved_aspect_ratio = $derived(
-		node[aspect_ratio_field] > 0
-			? node[aspect_ratio_field]
-			: natural_aspect_ratio
+		node[aspect_ratio_field] > 0 ? node[aspect_ratio_field] : natural_aspect_ratio
 	);
 
 	// Resolve max-width style: 0 means full width (no constraint)
-	let max_width_style = $derived(
-		node[max_width_field] > 0
-			? `${node[max_width_field]}px`
-			: '100%'
-	);
+	let max_width_style = $derived(node[max_width_field] > 0 ? `${node[max_width_field]}px` : '100%');
 
 	// Anchor name for overlay handles to position against
 	let anchor_name = $derived(`--viewbox-${serialize_path(path)}-${media_property}`);

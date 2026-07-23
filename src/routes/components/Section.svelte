@@ -1,7 +1,7 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import { get_svedit_context } from '../svedit_context.js';
 
-	const svedit = getContext('svedit');
+	const svedit = get_svedit_context();
 	let { children, ...rest } = $props();
 
 	const bracket_class =
@@ -23,7 +23,11 @@
 	{/if}
 	{#if svedit.editable}
 		<div class="relative">
-			<div class="{bracket_class} bottom-1.5 sm:bottom-4" contenteditable="false" aria-hidden="true">
+			<div
+				class="{bracket_class} bottom-1.5 sm:bottom-4"
+				contenteditable="false"
+				aria-hidden="true"
+			>
 				<div class="{corner_class} bottom-0 left-0 border-b border-l"></div>
 				<div class="{corner_class} right-0 bottom-0 border-r border-b"></div>
 			</div>

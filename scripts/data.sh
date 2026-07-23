@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 #
 # Sync, back up, and recover the editable-website data folder (SQLite DB +
-# content-addressed assets) between your local machine and a Fly.io deployment.
+# content-addressed assets) between your local machine and a deployment.
+#
+# Deployments are reached through a driver: 'fly' (Fly.io, the default) or
+# 'ssh' (any VPS reachable over plain ssh, running the app via docker compose
+# or bare node). All provider-specific behavior funnels through five
+# primitives — ensure_running, remote, sftp_get, sftp_put, restart_app —
+# everything else is identical across providers.
 #
 # Safety model
 #   - The database is copied only as a `VACUUM INTO` snapshot — never a raw file
@@ -27,14 +33,28 @@
 #   ./scripts/data.sh reset                       # reset local database to fresh demo content
 #   ./scripts/data.sh help                        # print the command reference
 #
-# The target app is read from fly.toml (app = '...'), same as the fly CLI.
-# Override with -a <app> or the FLY_APP environment variable (-a wins).
+# Fly driver: the target app is read from fly.toml (app = '...'), same as the
+# fly CLI. Override with -a <app> or the FLY_APP environment variable (-a wins).
+#
+# Ssh driver: configured via environment variables or .env (environment wins).
+# For a server managed by scripts/vps-deploy.sh, DEPLOY_HOST is the only key
+# needed — the rest is discovered from the server. The explicit keys are for
+# other setups (bare node, hand-managed compose) and always override:
+#   DEPLOY_HOST      user@host to ssh into (setting this selects the driver)
+#   RESTART_CMD      how to restart the app, e.g. 'docker restart editable'
+#   REMOTE_EXEC      command prefix to enter the app context, e.g.
+#                    'docker exec editable' (empty = bare node on the host)
+#   REMOTE_APP_DIR   app dir inside the exec context (default /app)
+#   REMOTE_DATA_DIR  data dir inside the exec context (default /data)
+#   HOST_DATA_DIR    data dir as visible to scp on the host — set when it's a
+#                    docker bind mount (default: REMOTE_DATA_DIR)
+#   DEPLOY_NAME      label for backups and messages (default: the host)
+#   DEPLOY_DRIVER    'fly' or 'ssh' — set explicitly to override the inference
 #
 set -euo pipefail
 
 DATA_DIR_LOCAL="${DATA_DIR:-data}"
 BACKUP_DIR_LOCAL="data-backups"
-REMOTE_DATA="/data"
 KEEP_BACKUPS="${KEEP_BACKUPS:-10}"
 APP="${FLY_APP:-}"
 ASSET_RE='^[a-f0-9]{64}(\.|$)'
@@ -61,6 +81,68 @@ if [ -z "$APP" ] && [ -f "$SCRIPT_DIR/../fly.toml" ]; then
 	APP="$(sed -n -E "s/^app[[:space:]]*=[[:space:]]*[\"']?([A-Za-z0-9-]+).*/\1/p" "$SCRIPT_DIR/../fly.toml" | sed -n '1p')"
 fi
 
+# ---- deploy driver -----------------------------------------------------------
+# Ssh-driver configuration may live in .env — the environment wins over .env.
+if [ -f "$SCRIPT_DIR/../.env" ]; then
+	while IFS='=' read -r key value; do
+		case "$key" in
+			DEPLOY_DRIVER | DEPLOY_HOST | DEPLOY_NAME | REMOTE_APP_DIR | REMOTE_DATA_DIR | HOST_DATA_DIR | REMOTE_EXEC | RESTART_CMD)
+				# Strip one layer of surrounding quotes.
+				value="${value%\"}"; value="${value#\"}"
+				value="${value%\'}"; value="${value#\'}"
+				eval "current=\${$key:-}"
+				[ -n "$current" ] || eval "$key=\$value"
+				;;
+		esac
+	done <"$SCRIPT_DIR/../.env"
+fi
+
+DRIVER="${DEPLOY_DRIVER:-}"
+if [ -z "$DRIVER" ]; then
+	if [ -n "${DEPLOY_HOST:-}" ]; then DRIVER=ssh; else DRIVER=fly; fi
+fi
+[ "$DRIVER" = "fly" ] || [ "$DRIVER" = "ssh" ] || {
+	echo "Error: Unknown DEPLOY_DRIVER '$DRIVER' (expected 'fly' or 'ssh')" >&2
+	exit 2
+}
+
+DEPLOY_HOST="${DEPLOY_HOST:-}"
+REMOTE_APP_DIR="${REMOTE_APP_DIR:-/app}"
+REMOTE_DATA="${REMOTE_DATA_DIR:-/data}"
+HOST_DATA_DIR="${HOST_DATA_DIR:-}"
+REMOTE_EXEC="${REMOTE_EXEC:-}"
+
+# A vps-deploy.sh-managed server needs only DEPLOY_HOST — the marker file at
+# /srv/editable/.deploy_env names the container and host data path, the way
+# fly.toml resolves the rest for the fly driver. Explicit values always win,
+# and without the marker (bare node, hand-managed compose) nothing changes
+# and the explicit keys below stay required.
+SSH_CONFIG_DISCOVERED=false
+discover_ssh_config() {
+	[ "$SSH_CONFIG_DISCOVERED" = false ] || return
+	SSH_CONFIG_DISCOVERED=true
+
+	if [ "$DRIVER" = "ssh" ] && [ -n "$DEPLOY_HOST" ] &&
+		[ -z "$REMOTE_EXEC" ] && [ -z "${RESTART_CMD:-}" ] && [ -z "$HOST_DATA_DIR" ]; then
+		local marker container
+		marker="$(ssh "$DEPLOY_HOST" 'cat /srv/editable/.deploy_env 2>/dev/null' 2>/dev/null || true)"
+		if [ -n "$marker" ]; then
+			container="$(printf '%s\n' "$marker" | sed -n 's/^CONTAINER_NAME=//p')"
+			if printf '%s' "$container" | grep -Eq '^[A-Za-z0-9][A-Za-z0-9._-]*$'; then
+				REMOTE_EXEC="docker exec $container"
+				RESTART_CMD="docker restart $container"
+				HOST_DATA_DIR="$(printf '%s\n' "$marker" | sed -n 's/^HOST_DATA_DIR=//p')"
+			fi
+		fi
+	fi
+
+	HOST_DATA_DIR="${HOST_DATA_DIR:-$REMOTE_DATA}"
+}
+
+if [ "$DRIVER" = "ssh" ]; then
+	APP="${DEPLOY_NAME:-${DEPLOY_HOST#*@}}"
+fi
+
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
@@ -71,7 +153,12 @@ info() { echo "→ $*"; }
 plural() { [ "$1" -eq 1 ] && echo "$1 $2" || echo "$1 ${3:-${2}s}"; }
 
 need_app() {
-	[ -n "$APP" ] || die "No app configured — set app = 'my-site' in fly.toml, or pass -a <app>"
+	discover_ssh_config
+	if [ "$DRIVER" = "ssh" ]; then
+		[ -n "${DEPLOY_HOST:-}" ] || die "No deploy host configured — set DEPLOY_HOST='user@host' in .env or the environment"
+	else
+		[ -n "$APP" ] || die "No app configured — set app = 'my-site' in fly.toml, or pass -a <app>"
+	fi
 }
 
 confirm() {
@@ -83,6 +170,12 @@ confirm() {
 
 MID=""
 ensure_running() {
+	if [ "$DRIVER" = "ssh" ]; then
+		# A VPS is always on — just confirm it's reachable before starting work.
+		ssh -o ConnectTimeout=10 "$DEPLOY_HOST" true >/dev/null 2>&1 ||
+			die "Cannot reach '$DEPLOY_HOST' over ssh"
+		return
+	fi
 	# sed (not head) reads all input, avoiding a SIGPIPE that pipefail would trip.
 	# flyctl pads the -q output with whitespace, so strip it.
 	MID="$(fly machine list -a "$APP" -q | sed -n '1p' | tr -d '[:space:]')"
@@ -118,12 +211,53 @@ verify_remote() {
 	printf '%s' "$out" | grep -q '^OK:' || die "Remote references missing assets — $ctx"
 }
 
-# Run the in-container helper over SSH (pty-less, binary-safe).
+# Run the in-app helper over SSH (pty-less, binary-safe). REMOTE_EXEC enters
+# the app context on generic hosts (e.g. 'docker exec editable'); the env
+# prefix runs inside that context, so DATA_DIR always names the in-app path.
 remote() {
-	fly ssh console -a "$APP" --machine "$MID" -C "sh /app/scripts/remote-db.sh $*"
+	if [ "$DRIVER" = "ssh" ]; then
+		# shellcheck disable=SC2029
+		ssh "$DEPLOY_HOST" "${REMOTE_EXEC:+$REMOTE_EXEC }env DATA_DIR='$REMOTE_DATA' sh $REMOTE_APP_DIR/scripts/remote-db.sh $*"
+	else
+		fly ssh console -a "$APP" --machine "$MID" -C "sh $REMOTE_APP_DIR/scripts/remote-db.sh $*"
+	fi
 }
-sftp_get() { fly ssh sftp get -a "$APP" --machine "$MID" "$1" "$2"; }
-sftp_put() { fly ssh sftp put -a "$APP" --machine "$MID" "$1" "$2"; }
+
+# Translate an in-app data path to the path scp sees on the host — they only
+# differ when the data dir is a docker bind mount (HOST_DATA_DIR).
+host_path() {
+	case "$1" in
+		"$REMOTE_DATA"/*) printf '%s%s' "$HOST_DATA_DIR" "${1#"$REMOTE_DATA"}" ;;
+		*) printf '%s' "$1" ;;
+	esac
+}
+
+sftp_get() {
+	if [ "$DRIVER" = "ssh" ]; then
+		scp -q "$DEPLOY_HOST:$(host_path "$1")" "$2"
+	else
+		fly ssh sftp get -a "$APP" --machine "$MID" "$1" "$2"
+	fi
+}
+sftp_put() {
+	if [ "$DRIVER" = "ssh" ]; then
+		scp -q "$1" "$DEPLOY_HOST:$(host_path "$2")"
+	else
+		fly ssh sftp put -a "$APP" --machine "$MID" "$1" "$2"
+	fi
+}
+
+# Restart the app so the boot-time promote swaps in a staged database.
+restart_app() {
+	if [ "$DRIVER" = "ssh" ]; then
+		[ -n "${RESTART_CMD:-}" ] ||
+			die "Set RESTART_CMD (e.g. 'docker restart editable' or 'systemctl restart editable') so the staged database can be swapped in"
+		# shellcheck disable=SC2029
+		ssh "$DEPLOY_HOST" "$RESTART_CMD"
+	else
+		fly machine restart "$MID" -a "$APP"
+	fi
+}
 
 # Backup names double as identifiers, so they must be unique even for two
 # operations in the same second (a random suffix, not just seconds). They
@@ -169,7 +303,11 @@ cmd_push() {
 	remote prune-backups "$KEEP_BACKUPS"
 
 	info "Syncing assets (additive)…"
-	list_local_assets >"$TMP/local_assets"
+	# Push only the snapshot's working set (referenced originals and their
+	# variant directories). Unreferenced local history must not be copied to a
+	# deployment merely because it is still inside the local grace period.
+	node --disable-warning=ExperimentalWarning "$SCRIPT_DIR/check-assets.js" \
+		--list-entries "$TMP/push.db" "$DATA_DIR_LOCAL/assets" | sort >"$TMP/local_assets"
 	# The listing must provably succeed — a failed connection must not read
 	# as an empty asset list (pull would silently miss media). list-assets
 	# prints a '#' header, so success is never empty even with zero assets.
@@ -179,9 +317,9 @@ cmd_push() {
 	comm -23 "$TMP/local_assets" "$TMP/remote_assets" >"$TMP/to_push" || true
 	if [ -s "$TMP/to_push" ]; then
 		info "  $(plural "$(wc -l <"$TMP/to_push" | tr -d ' ')" 'new asset entry' 'new asset entries')"
-		# COPYFILE_DISABLE: keep macOS tar from embedding xattr headers that
-		# GNU tar on the server warns about.
-		COPYFILE_DISABLE=1 tar -czf "$TMP/assets.tgz" -C "$DATA_DIR_LOCAL/assets" --exclude '.DS_Store' -T "$TMP/to_push"
+		# Keep macOS tar from embedding xattr headers that GNU tar on the server
+		# warns about. COPYFILE_DISABLE also prevents AppleDouble sidecars.
+		COPYFILE_DISABLE=1 tar --no-xattrs -czf "$TMP/assets.tgz" -C "$DATA_DIR_LOCAL/assets" --exclude '.DS_Store' -T "$TMP/to_push"
 		sftp_put "$TMP/assets.tgz" "$REMOTE_DATA/incoming/assets.tgz"
 		remote extract-assets
 	else
@@ -193,14 +331,18 @@ cmd_push() {
 	remote promote-stage
 
 	info "Restarting to swap in the new database…"
-	fly machine restart "$MID" -a "$APP"
+	restart_app
 
 	info "Verifying…"
 	verify_remote "restore with: npm run data:restore $ts"
 
 	echo
 	echo "✓ Pushed to '$APP'. Undo with:"
-	echo "    npm run data:restore $ts -- -a $APP"
+	if [ "$DRIVER" = "fly" ]; then
+		echo "    npm run data:restore $ts -- -a $APP"
+	else
+		echo "    npm run data:restore $ts"
+	fi
 }
 
 # ---- pull: remote -> local -------------------------------------------------
@@ -307,7 +449,7 @@ cmd_restore() {
 	fi
 
 	info "Restarting to swap in the restored database…"
-	fly machine restart "$MID" -a "$APP"
+	restart_app
 
 	info "Verifying…"
 	local out
@@ -369,7 +511,7 @@ cmd_restore_cloud() {
 	remote promote-stage
 
 	info "Restarting to swap in the restored database…"
-	fly machine restart "$MID" -a "$APP"
+	restart_app
 
 	info "Verifying…"
 	verify_remote "roll back with: npm run data:restore $ts"
@@ -524,7 +666,8 @@ Data commands (via npm run; positional arguments work directly, flags need a -- 
   npm run data:reset [-- --yes]                reset local database to fresh demo content (assets stay)
   npm run litestream:install                   one-time local setup for the cloud commands
 
-The target app comes from fly.toml; override with:  -- -a <app>
+The target comes from fly.toml (Fly.io, override with: -- -a <app>) or from
+DEPLOY_HOST in .env (any VPS over plain ssh — see README → Deploy to a VPS).
 Snapshot names (<name>) look like my-site-20260712T143535Z-3f2a (file extension optional) — list them with data:backups.
 Timestamps (<ts>) are RFC3339 UTC, e.g. 2026-07-12T14:35:35Z — list them with data:cloud-snapshots.
 See README → Backup, sync & recovery for details.

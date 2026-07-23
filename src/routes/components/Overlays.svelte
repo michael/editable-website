@@ -1,5 +1,6 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import { get_svedit_context } from '../svedit_context.js';
+	import { get_app_context } from '../app_context.js';
 	import { deserialize_path, serialize_path } from 'svedit';
 	import { get_page_browser } from './page_browser_context.svelte.js';
 	import MediaControls from './MediaControls.svelte';
@@ -11,15 +12,15 @@
 	import AuthDialog from './AuthDialog.svelte';
 	import Drawer from './Drawer.svelte';
 
-	const svedit = getContext('svedit');
-	const app = getContext('app');
+	const svedit = get_svedit_context();
+	const app = get_app_context();
 
 	// True for the whole period the mouse button is down
 	let is_mouse_down = $state(false);
 	// Only becomes true when the mouse actually moves (=drag)
 	let is_dragging = $state(false);
 
-	let overlays_ref = $state();
+	let overlays_ref = $state<HTMLElement>();
 	const page_browser = get_page_browser();
 
 	// --- File drag-and-drop onto media properties ---
@@ -126,7 +127,7 @@
 		if (!sel) return null;
 		const media_path = sel.path;
 		const parent_path = media_path.slice(0, -1);
-		const media_property = /** @type {string} */ (media_path.at(-1));
+		const media_property = media_path.at(-1) as string;
 		const anchor_name = `--viewbox-${serialize_path(parent_path)}-${media_property}`;
 		if (document.querySelector(`[data-viewbox-anchor="${anchor_name}"]`)) {
 			return { parent_path, media_property };
@@ -208,7 +209,7 @@
 		{#if viewbox_context}
 			<SizableViewboxControls
 				path={viewbox_context.parent_path}
-				media_property={viewbox_context.media_property}
+				media_property={viewbox_context.media_property as string}
 			/>
 		{/if}
 	{/if}
@@ -231,11 +232,7 @@
 
 	{#if app.auth_dialog_open}
 		<Drawer bind:open={app.auth_dialog_open} label="Edit options" drawer_height_mode="auto">
-			<AuthDialog
-				onclose={app.close_auth_dialog}
-				onedit_for_fun={app.edit_for_fun}
-				onlogin_success={app.handle_auth_success}
-			/>
+			<AuthDialog onedit_for_fun={app.edit_for_fun} onlogin_success={app.handle_auth_success} />
 		</Drawer>
 	{/if}
 

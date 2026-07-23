@@ -1,15 +1,17 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import type { Nodes } from '$lib/document_schema.js';
+	import type { DocumentPath } from 'svedit';
+	import { get_svedit_context } from '../svedit_context.js';
 	import { NodeArrayProperty, Node } from 'svedit';
 	import { slide } from 'svelte/transition';
 	import { TW_LIMITER } from '../tailwind_theme.js';
 	import NavMedia from './NavMedia.svelte';
 	import NavButton from './NavButton.svelte';
 
-	let { path } = $props();
+	let { path }: { path: DocumentPath } = $props();
 
-	const svedit = getContext('svedit');
-	let node = $derived(svedit.session.get(path));
+	const svedit = get_svedit_context();
+	let node: Nodes['nav'] = $derived(svedit.session.get(path));
 	let middle_item_ids = $derived(node.middle_items.nodes);
 	let mobile_nav_media_path = $derived(find_mobile_nav_media_path());
 	let mobile_nav_cta_path = $derived(find_mobile_nav_cta_path());
@@ -56,32 +58,27 @@
 	});
 </script>
 
-<Node {path}>
-	{#snippet menu_icon(open)}
-		<svg
-			class="h-6 w-6 stroke-(--foreground)"
-			fill="none"
-			stroke="currentColor"
-			viewBox="0 0 24 24"
-		>
-			{#if open}
-				<path
-					stroke-linecap="square"
-					stroke-linejoin="miter"
-					stroke-width="1.5"
-					d="M6 18L18 6M6 6l12 12"
-				/>
-			{:else}
-				<path
-					stroke-linecap="square"
-					stroke-linejoin="miter"
-					stroke-width="1.5"
-					d="M4 8h16M4 16h16"
-				/>
-			{/if}
-		</svg>
-	{/snippet}
+{#snippet menu_icon(open)}
+	<svg class="h-6 w-6 stroke-(--foreground)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+		{#if open}
+			<path
+				stroke-linecap="square"
+				stroke-linejoin="miter"
+				stroke-width="1.5"
+				d="M6 18L18 6M6 6l12 12"
+			/>
+		{:else}
+			<path
+				stroke-linecap="square"
+				stroke-linejoin="miter"
+				stroke-width="1.5"
+				d="M4 8h16M4 16h16"
+			/>
+		{/if}
+	</svg>
+{/snippet}
 
+<Node {path}>
 	<!-- Desktop nav (visible also during mobile editing) -->
 	<div
 		class="{TW_LIMITER} relative overflow-x-auto overflow-y-hidden"

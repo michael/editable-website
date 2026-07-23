@@ -1,10 +1,12 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import type { Nodes } from '$lib/document_schema.js';
+	import type { DocumentPath } from 'svedit';
+	import { get_svedit_context } from '../svedit_context.js';
 	import { Node, TextProperty } from 'svedit';
-	const svedit = getContext('svedit');
+	const svedit = get_svedit_context();
 
-	let { path } = $props();
-	let node = $derived(svedit.session.get(path));
+	let { path }: { path: DocumentPath } = $props();
+	let node: Nodes['nav_button'] = $derived(svedit.session.get(path));
 	let render_as_link = $derived(!svedit.editable && node.href);
 	let layout = $derived(node.layout || 'primary');
 </script>

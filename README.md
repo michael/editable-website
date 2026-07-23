@@ -121,13 +121,19 @@ path                           // the hero node
 Pass those paths to primitives and use the same paths to read values when layout depends on content:
 
 ```svelte
-<script>
-	const svedit = getContext('svedit');
-	let { path } = $props();
-	let hero = $derived(svedit.session.get(path));
+<script lang="ts">
+	import { get_svedit_context } from '../svedit_context.js';
+	import type { DocumentPath } from 'svedit';
+	import type { Nodes } from '$lib/document_schema.js';
+
+	const svedit = get_svedit_context();
+	let { path }: { path: DocumentPath } = $props();
+	let hero: Nodes['hero'] = $derived(svedit.session.get(path));
 	let media = $derived(svedit.session.get([...path, 'media']));
 </script>
 ```
+
+The `Nodes['hero']` annotation types the node against the schema, so `hero.` autocompletes its properties and a misspelled property fails `npm run check`.
 
 `session.get` follows node references for you, so the last expression returns the media node rather than its stored id. Components do not need to know whether they are on a page, inside another block, or nested several arrays deep.
 
@@ -298,7 +304,7 @@ The first four come from `svedit`; the last two live in `src/routes/components`.
 
 A small, typed vocabulary for Editable's pages and shared site content.
 
-Editable's content model defines the nodes and properties available to pages and shared site content. Its schema lives in `src/lib/document_schema.js`; this section is the reference.
+Editable's content model defines the nodes and properties available to pages and shared site content. Its schema lives in `src/lib/document_schema.ts`; this section is the reference.
 
 Documents are graphs of nodes stored by id. Each node has an `id`, a `type`, and type-specific properties. A few naming conventions hold throughout: `content` is the string payload of text properties, `body` holds authored nested content, `items` holds repeated structured children, and `label`/`title`/`description`/`meta` are text properties with semantic meaning.
 
@@ -482,6 +488,42 @@ annotation_types: ['comment']
 
 Annotation nodes must not have registered rendering components. For node arrays, child components receive every covering annotation through their `annotations` prop, and `Node` adds classes such as `anno-comment`, `anno-comment-start`, and `anno-comment-end`. Text annotations remain data-only, so comments or other interactive annotations usually need an overlay. The [Svedit API](https://github.com/michael/svedit) documents selection state, annotation commands, transactions, and rendering integration in full.
 
+## Media uploads
+
+When you paste or drop media into the page, it shows up instantly — the file is displayed straight from memory while processing happens in the background. Nothing touches the server until you hit save: only then are the processed files uploaded and the temporary references in the document replaced by content-addressed asset ids (`{sha256}.{ext}`). Identical files are deduplicated automatically.
+
+All processing happens in your browser, in a background worker — there is no server-side encoding pipeline and no external service.
+
+### Images
+
+Static raster images (JPEG, PNG, …) are converted to WebP, capped at 4096px wide, and encoded into a fixed set of responsive size variants so pages never ship more pixels than the layout needs. SVGs and animated GIFs are stored as-is.
+
+### Videos
+
+Videos are transcoded to a single web-optimized MP4 (H.264 + AAC). Drop an iPhone `.mov` fresh off the camera and it comes out as a downscaled, compressed MP4 that plays everywhere. Anything your browser can decode works as input: MOV, MP4, WebM, MKV, with H.264, HEVC, VP8/VP9 or AV1 inside.
+
+Each dropped video goes through this decision tree:
+
+1. **Filename escape hatch** — a file named `*_optimized.mp4` (or `*.optimized.mp4`) is uploaded byte-identical, bypassing all processing and all caps. Use this when you've deliberately prepared a file — say a high-bitrate 4K export — and want it kept exactly as exported.
+2. **Already good** — if the video is already H.264, within the resolution cap and within the size goal (with 25% tolerance, since re-encoding a marginally-over file costs quality and saves little), nothing is re-encoded: an MP4 is uploaded untouched, and other containers (e.g. an H.264 `.mov`) are losslessly repackaged into an MP4 container.
+3. **Everything else** is transcoded to fit the size goal: the bitrate is derived from the video's duration, and the resolution is chosen as the largest that still looks good at that bitrate — starting from the resolution cap (1080 means landscape 1920×1080 _and_ portrait 1080×1920; videos are never upscaled) and stepping down (720, 540, …) for long videos where the size budget would otherwise spread too thin. Rotation is preserved.
+
+Two knobs in `src/lib/config.ts`:
+
+```js
+export const MAX_VIDEO_RESOLUTION = 1080; // cap on the short side: 720, 1080, …
+export const MAX_VIDEO_FILESIZE = 50 * 1024 * 1024; // size goal for transcoded videos
+```
+
+Things worth knowing:
+
+- The size limit is a goal, not a hard guarantee: browser encoders treat bitrate as a target, so the output may overshoot by a few percent. Short clips usually land well under it — bitrate is also capped where extra bits stop visibly improving quality.
+- For very long videos the goal wins over quality: the encoder goes down to the bottom of the resolution ladder and, past that, simply spreads the budget thin. If the result looks too rough, split the video into parts or upload a deliberate export via the escape hatch.
+- Transcoding uses the browser's hardware-accelerated codecs and shows its progress in the save dialog, but a long 4K clip still takes a while — the "already good" path exists precisely so that well-prepared files skip it entirely.
+- Input files are limited to 2 GB (the converted output is assembled in memory).
+- Decoding HEVC (the default iPhone format) requires an HEVC decoder on your platform; most browsers have one, Firefox on some systems doesn't. If the video can't be converted you get a clear error on save — convert the file manually and re-drop it.
+- A video with an audio track that can't be converted fails loudly rather than uploading without sound.
+
 ## Create a custom node type
 
 Define a node schema and wire it up with a custom component.
@@ -490,13 +532,17 @@ Editable's built-in types are just a starting set. This walkthrough adds a `hero
 
 ### 1. Define the type in the schema
 
-In `src/lib/document_schema.js`, add the node type definition. A hero is a `block` with a `layout` variant, two text properties, and a media reference:
+In `src/lib/document_schema.ts`, add the node type definition. A hero is a `block` with a `layout` variant, two text properties, and a media reference:
 
 ```js
 hero: {
 	kind: 'block',
 	properties: {
-		layout: { type: 'string', default: 'side-by-side' },
+		layout: {
+			type: 'string',
+			values: ['side-by-side', 'stacked'],
+			default: 'side-by-side'
+		},
 		title: {
 			type: 'text',
 			mark_types: MINIMAL_MARKS,
@@ -538,15 +584,17 @@ That's the whole data model. Documents containing heroes now validate, and every
 Create `src/routes/components/Hero.svelte`. It reads the node at `path`, renders each property through an editable primitive (`TextProperty` for text, `MediaProperty` for the image), and picks a snippet per layout:
 
 ```svelte
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
 	import { Node, TextProperty } from 'svedit';
+	import type { DocumentPath } from 'svedit';
+	import type { Nodes } from '$lib/document_schema.js';
+	import { get_svedit_context } from '../svedit_context.js';
 	import MediaProperty from './MediaProperty.svelte';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 
-	const svedit = getContext('svedit');
-	let { path } = $props();
-	let node = $derived(svedit.session.get(path));
+	const svedit = get_svedit_context();
+	let { path }: { path: DocumentPath } = $props();
+	let node: Nodes['hero'] = $derived(svedit.session.get(path));
 	let layout = $derived(node.layout || 'side-by-side');
 </script>
 
@@ -590,7 +638,7 @@ There is no read-only twin to keep in sync: this one component is the live page 
 
 ### 3. Register it in the session
 
-In `src/routes/create_session.js`, three small registrations wire the type into the editor. Import the component and add it to `node_components`, so Svedit knows what to render:
+In `src/routes/create_session.ts`, import the component and add it to `node_components`, so Svedit knows what to render:
 
 ```js
 import Hero from './components/Hero.svelte';
@@ -599,14 +647,7 @@ import Hero from './components/Hero.svelte';
 hero: Hero,
 ```
 
-Declare its layout ids in cycling order in `node_layouts`, which powers layout switching (toolbar and `Ctrl` + `Shift` + `←` / `→`):
-
-```js
-// in session_config.node_layouts:
-hero: ['side-by-side', 'stacked'],
-```
-
-And add an inserter — the factory that builds a blank hero when one is inserted on a page:
+The `values` array declares the valid layout ids in cycling order and powers layout switching (toolbar and `Ctrl` + `Shift` + `←` / `→`). Then add an inserter — the factory that builds a blank hero when one is inserted on a page:
 
 ```js
 // in session_config.inserters:
@@ -636,7 +677,7 @@ From here it's just iteration: add calls to action, give editors control over th
 
 Deploy your local site to a public URL in a few steps.
 
-Editable runs on any VPS — all you need is Node.js, and the included `Dockerfile` works with any platform that supports Docker. The repository ships ready-made for [Fly.io](https://fly.io): install [flyctl](https://fly.io/docs/flyctl/install/), then sign in (opens your browser; creates a free account if you don't have one):
+Editable runs on any VPS — all you need is Node.js, and the included `Dockerfile` works with any platform that supports Docker (see [Deploy to a VPS](#deploy-to-a-vps-experimental)). The repository ships ready-made for [Fly.io](https://fly.io), which remains the recommended default: machines scale to zero and wake in well under a second, so a personal site costs next to nothing to run. Install [flyctl](https://fly.io/docs/flyctl/install/), then sign in (opens your browser; creates a free account if you don't have one):
 
 ```sh
 fly auth login
@@ -669,6 +710,8 @@ fly secrets set \
   ADMIN_PASSWORD='pick-a-strong-password'
 ```
 
+`ORIGIN` must exactly match the URL you use in the browser, including the scheme and subdomain (for example, `https://example.com` and `https://www.example.com` are different origins). An incorrect value causes login and other write requests to fail with `403 Forbidden` before the password is checked. Update this secret whenever you switch to a custom domain, and access the site through that canonical URL.
+
 Optionally set `ASSET_GRACE_PERIOD_DAYS` (default 7): unreferenced asset files are kept on disk this many days after losing their last reference. This is also the safe window for rolling back a database backup against the live assets folder without ending up with dead image references.
 
 Deploy. The first deploy also creates the 1 GB `data` volume declared under `[mounts]` in `fly.toml`:
@@ -692,11 +735,68 @@ fly open
 
 Because each checkout manages exactly one app (see [Your site is your repo](#your-site-is-your-repo)), the target always comes from `fly.toml` — there's no app name to get wrong. If you ever do need to address a different app (say, a staging copy), every `fly` command and data script accepts `-a <app>` as an explicit override.
 
+### Deploy to a VPS (experimental)
+
+Editable runs on any amd64 host with Docker — a DigitalOcean droplet, a Hetzner or Nodion VPS. One command takes a fresh Ubuntu server to a running site with TLS. Create the server with your ssh key installed, point your domain's A record at its IP, then:
+
+```sh
+npm run vps:deploy -- root@203.0.113.10 my-site.example.com
+```
+
+The first run provisions the server — Docker, [Caddy](https://caddyserver.com) as the TLS-terminating reverse proxy, swap on machines with less than 2 GB RAM — asks you for an admin password, builds the Docker image locally, streams it over ssh, and starts the site. The server never needs access to your git repository or the memory to run a build. Your content lives in `/data` on the server — the same path Fly.io mounts and the same path inside the container; deploys replace the container and never touch that folder.
+
+After the first deploy, add one line to your **local** `.env` — this is your checkout's deployment identity, playing the role `fly.toml` plays for Fly.io. Everything else (container name, data path) is read from the server:
+
+```sh
+DEPLOY_HOST="root@203.0.113.10"            # who you ssh in as
+```
+
+With `DEPLOY_HOST` set, no command needs the server address anymore. Ship an update — build, stream, replace the container, health-check:
+
+```sh
+npm run vps:deploy
+```
+
+See what's running and what you can roll back to — each image tag is a git commit, and the last three are kept on the server (a deploy from a working tree with uncommitted changes is tagged `<sha>-dirty` to keep experiments distinguishable from committed states):
+
+```sh
+npm run vps:status
+
+# → Running: editable:939761c (Up 5 minutes) — https://my-site.example.com
+#
+# Images on the server (newest first):
+#   939761c   2026-07-20 21:35   Add env var management  ← running
+#   502dcdf   2026-07-20 20:43   Harden deploy script
+```
+
+Roll back a bad deploy by starting a previous image:
+
+```sh
+npm run vps:deploy -- --tag <sha>
+```
+
+And every `npm run data:*` command ([Backup, sync & recovery](#backup-sync--recovery)) targets the VPS too (`fly.toml` is ignored; remove or comment `DEPLOY_HOST` to target Fly.io again). Pull, push, backups, restores, point-in-time recovery — the whole toolbox behaves the same, including disaster recovery from the backup bucket on a fresh volume.
+
+The server keeps its own `.env` (the equivalent of `fly secrets`) — inspect and change it with the `env` command:
+
+```sh
+npm run vps:env                            # show it (secrets masked)
+npm run vps:env -- set BUCKET_NAME=my-backup AWS_REGION=auto
+npm run vps:env -- set ADMIN_PASSWORD      # no value = prompted, kept out of shell history
+npm run vps:env -- unset BUCKET_NAME
+```
+
+`set` and `unset` restart the app so the change takes effect immediately. For [automated backups](#automated-backups-optional), the `BUCKET_*` / `AWS_*` secrets belong in the server's `.env` — the first deploy copies them from your local `.env` if present; after that, changes are explicit via `vps:env`.
+
+**Doing it by hand instead:** the script is optional — `docker-compose.yml` runs on any docker host. Clone your site on the server, `cp .env.example .env` and set `ADMIN_PASSWORD` and `ORIGIN="https://my-site.example.com"`, then `docker compose up -d --build`. The app listens on `127.0.0.1:3000`; put a reverse proxy with TLS in front (with Caddy that's the whole config: `my-site.example.com { reverse_proxy 127.0.0.1:3000 }`). Ship updates with `git pull && docker compose up -d --build`. For the data commands, a hand-managed setup has nothing to auto-discover, so set the explicit keys alongside `DEPLOY_HOST` in your local `.env`: `RESTART_CMD="docker restart editable"`, `REMOTE_EXEC="docker exec editable"`, and `HOST_DATA_DIR` pointing at the `./data` bind mount as an absolute path (without the script, the container keeps the default name `editable`).
+
+What Fly.io still does for you that a VPS doesn't: scale-to-zero with sub-second wake-ups (a VPS runs — and bills — around the clock), TLS and anycast routing without a reverse proxy, and volume snapshots. The VPS path trades that for a fixed monthly price and no platform dependency.
+
 ## Backup, sync & recovery
 
 Your whole site lives in one folder — pull it, push it, snapshot it, roll it back.
 
-That folder is `data/`: an SQLite database (`db.sqlite3`) and uploaded assets (`assets/`). Locally it defaults to `./data`; on Fly.io it's a persistent volume at `/data`. The data commands move that folder between your machine, your deployment, and — optionally — a backup bucket. The complete toolbox:
+That folder is `data/`: an SQLite database (`db.sqlite3`) and uploaded assets (`assets/`). Locally it defaults to `./data`; on Fly.io it's a persistent volume at `/data`; on a VPS it's `/data` on the host, bind-mounted into the container at the same path. The data commands move that folder between your machine, your deployment, and — optionally — a backup bucket. The complete toolbox:
 
 - **npm run data:pull** — Copy the live site's data to your machine
 - **npm run data:push [-- --yes]** — Replace the live site's data with your local state — guarded, undoable
@@ -879,7 +979,7 @@ A deployment can expose selected repository markdown files as read-only pages re
 
 ### Configuration
 
-Any markdown file in the repository can be mapped to a URL in `src/lib/content_config.js` (server/build-only — never import it from client code). Reference the file with a `?raw` import, so Vite inlines exactly the mapped files and a missing file fails the build:
+Any markdown file in the repository can be mapped to a URL in `src/lib/content_config.ts` (server/build-only — never import it from client code). Reference the file with a `?raw` import, so Vite inlines exactly the mapped files and a missing file fails the build:
 
 ```js
 import manual_md from '../../README.md?raw';

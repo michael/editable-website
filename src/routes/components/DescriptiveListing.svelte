@@ -1,11 +1,12 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import type { Nodes } from '$lib/document_schema.js';
+	import { get_svedit_context } from '../svedit_context.js';
 	import { Node, NodeArrayProperty } from 'svedit';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 
-	const svedit = getContext('svedit');
+	const svedit = get_svedit_context();
 	let { path, mark: section = null } = $props();
-	let node = $derived(svedit.session.get(path));
+	let node: Nodes['descriptive_listing'] = $derived(svedit.session.get(path));
 	let listing_layout = $derived(node.layout || 'narrow-left');
 	let padding_top_wide = $derived(!section || section?.is_start);
 	let padding_bottom_wide = $derived(!section || section?.is_end);

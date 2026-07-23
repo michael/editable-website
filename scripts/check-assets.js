@@ -4,17 +4,19 @@
 // and after a push (in-container, against the live volume). Standalone: no
 // $lib imports, so it runs against the built image too.
 //
-// Usage: node --disable-warning=ExperimentalWarning check-assets.js <db_path> <assets_dir>
+// Usage: node --disable-warning=ExperimentalWarning check-assets.js [--list-entries] <db_path> <assets_dir>
 // Exit codes: 0 = all present, 1 = missing references, 2 = bad usage.
 
 import { DatabaseSync } from 'node:sqlite';
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, lstatSync } from 'node:fs';
+import { extname, join } from 'node:path';
 
-const [, , db_path, assets_dir] = process.argv;
+const args = process.argv.slice(2);
+const list_entries = args[0] === '--list-entries';
+const [db_path, assets_dir] = list_entries ? args.slice(1) : args;
 
 if (!db_path || !assets_dir) {
-	console.error('usage: check-assets.js <db_path> <assets_dir>');
+	console.error('usage: check-assets.js [--list-entries] <db_path> <assets_dir>');
 	process.exit(2);
 }
 
@@ -46,6 +48,27 @@ if (missing.length > 0) {
 	console.error(`Missing ${plural(missing.length, 'referenced asset')}:`);
 	for (const asset_id of missing) console.error(`  ${asset_id}`);
 	process.exit(1);
+}
+
+if (list_entries) {
+	// `referenced` comes exclusively from the database above. Responsive
+	// variants are not stored as separate database references: the application
+	// derives their URLs and storage directory from the referenced original's
+	// hash. Include that directory when it exists, following the same storage
+	// convention as asset_storage.js.
+	const entries = new Set(referenced);
+	for (const asset_id of referenced) {
+		const ext = extname(asset_id);
+		if (!ext) continue;
+		const asset_stem = asset_id.slice(0, -ext.length);
+		try {
+			if (lstatSync(join(assets_dir, asset_stem)).isDirectory()) entries.add(asset_stem);
+		} catch {
+			// This referenced original has no responsive variants on disk.
+		}
+	}
+	for (const entry of [...entries].sort()) console.log(entry);
+	process.exit(0);
 }
 
 // Parsed by remote-db.sh (summary) and data.sh (verify) — keep the shape.

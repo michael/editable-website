@@ -1,11 +1,12 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import type { Nodes } from '$lib/document_schema.js';
+	import { get_svedit_context } from '../svedit_context.js';
 	import { Node, NodeArrayProperty } from 'svedit';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 	let { path, mark: section = null } = $props();
 
-	const svedit = getContext('svedit');
-	let node = $derived(svedit.session.get(path));
+	const svedit = get_svedit_context();
+	let node: Nodes['gallery'] = $derived(svedit.session.get(path));
 	let padding_top_wide = $derived(!section || section?.is_start);
 	let padding_bottom_wide = $derived(!section || section?.is_end);
 	let grid_layout = $derived.by(get_grid_layout);
@@ -44,11 +45,6 @@
 
 		return layouts[node.layout ?? 'mixed'];
 	}
-	const heading_spacing = `
-		[&>div:has(h1)~div>h1]:pt-8
-		[&>div:has(h2)~div>h2]:pt-6
-		[&>div:has(h3)~div>h3]:pt-4
-	`;
 </script>
 
 <Node {path}>

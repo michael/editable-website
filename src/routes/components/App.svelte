@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { setContext } from 'svelte';
 	import { goto, invalidate, invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
@@ -6,12 +6,13 @@
 	import Toolbar from './Toolbar.svelte';
 	import SaveProgressModal from './SaveProgressModal.svelte';
 
+	import { EXT_TO_MIME } from '$lib/config.js';
 	import { create_session } from '../create_session.js';
 	import { create_page_browser, set_page_browser } from './page_browser_context.svelte.js';
+	import type { PageBrowser } from './page_browser_context.svelte.js';
 
 	import { demo_doc } from '$lib/demo_doc.js';
 
-	/** @type {{ document?: any, slug?: string | null, has_backend?: boolean, is_new?: boolean, is_admin?: boolean, can_edit?: boolean, origin?: string | null }} */
 	let {
 		document: doc,
 		slug = null,
@@ -20,6 +21,14 @@
 		is_admin: server_is_admin = false,
 		can_edit = true,
 		origin = null
+	}: {
+		document?: any;
+		slug?: string | null;
+		has_backend?: boolean;
+		is_new?: boolean;
+		is_admin?: boolean;
+		can_edit?: boolean;
+		origin?: string | null;
 	} = $props();
 
 	// Backend availability and document editability are independent: read-only
@@ -29,8 +38,8 @@
 
 	let initial_doc_json = $derived(JSON.stringify(initial_doc));
 
-	let app_el = $state();
-	let svedit_ref = $state();
+	let app_el = $state<HTMLElement>();
+	let svedit_ref = $state<{ focus_canvas: () => void }>();
 	let editable = $state(false);
 	let current_is_new = $state(false);
 	let is_admin = $derived(server_is_admin);
@@ -80,7 +89,7 @@
 
 	setContext('app', app);
 
-	const page_browser = create_page_browser({
+	const page_browser: PageBrowser = create_page_browser({
 		goto,
 		is_admin: () => app.is_admin
 	});
@@ -172,7 +181,14 @@
 	}
 
 	function handle_mobile_overscroll_check() {
-		if (!can_edit || !is_mobile_touch_device() || editable || is_admin || auth_dialog_open || !mobile_touch_active) {
+		if (
+			!can_edit ||
+			!is_mobile_touch_device() ||
+			editable ||
+			is_admin ||
+			auth_dialog_open ||
+			!mobile_touch_active
+		) {
 			clear_mobile_overscroll_timeout();
 			return;
 		}
@@ -185,7 +201,11 @@
 			return;
 		}
 
-		if (!mobile_touch_started_at_page_end || mobile_overscroll_triggered || mobile_overscroll_timeout_id) {
+		if (
+			!mobile_touch_started_at_page_end ||
+			mobile_overscroll_triggered ||
+			mobile_overscroll_timeout_id
+		) {
 			return;
 		}
 
@@ -301,16 +321,12 @@
 
 			const save_start = Date.now();
 
-			const [
-				api_module,
-				asset_upload_module
-			] = await Promise.all([
+			const [api_module, asset_upload_module] = await Promise.all([
 				import('$lib/api.remote.js'),
 				import('$lib/client/asset_upload.js')
 			]);
 
-			/** @type {any} */
-			const save_document = api_module.save_document;
+			const save_document: any = api_module.save_document;
 
 			const {
 				collect_blob_urls,
@@ -338,18 +354,20 @@
 
 					if (has_pending_processing()) {
 						save_progress_message =
-							total === 1 ? 'Processing image…' : `Processing ${total} images…`;
+							total === 1 ? 'Processing media…' : `Processing ${total} media files…`;
 
-						await wait_for_processing(({ done, total: processing_total }) => {
-							if (processing_total > 1) {
-								save_progress_message = `Processing image ${done + 1}/${processing_total}…`;
-							}
+						await wait_for_processing(({ done, total: processing_total, progress }) => {
+							const percent = Math.round(progress * 100);
+							save_progress_message =
+								processing_total > 1
+									? `Processing media ${done + 1}/${processing_total}… ${percent}%`
+									: `Processing media… ${percent}%`;
 						});
 					}
 
 					mapping = await upload_pending(blob_urls, ({ phase, index, total: upload_total }) => {
 						if (phase === 'uploading') {
-							save_progress_message = `Uploading image ${index}/${upload_total}…`;
+							save_progress_message = `Uploading media ${index}/${upload_total}…`;
 						}
 					});
 				}
@@ -361,20 +379,24 @@
 					replace_blob_urls(doc_json.nodes, mapping);
 				}
 
-				/** @type {{ ok: boolean, document_id?: string, slug?: string, created?: boolean }} */
-				const result = await save_document({
-					...doc_json,
-					create: current_is_new
-				});
+				const result: { ok: boolean; document_id?: string; slug?: string; created?: boolean } =
+					await save_document({
+						...doc_json,
+						create: current_is_new
+					});
 
 				if (mapping) {
 					const tr = session.tr;
 					for (const [blob_url, entry] of mapping.entries()) {
 						for (const node of Object.values(pre_check.nodes)) {
 							if ((node.type === 'image' || node.type === 'video') && node.src === blob_url) {
+								const ext = entry.asset_id.slice(entry.asset_id.lastIndexOf('.') + 1);
 								tr.set([node.id, 'src'], entry.asset_id);
 								tr.set([node.id, 'width'], entry.width);
 								tr.set([node.id, 'height'], entry.height);
+								if (EXT_TO_MIME[ext]) {
+									tr.set([node.id, 'mime_type'], EXT_TO_MIME[ext]);
+								}
 							}
 						}
 					}
@@ -499,12 +521,7 @@
 />
 
 <div class="antialiased" bind:this={app_el}>
-	<Toolbar
-		{session}
-		{app_commands}
-		{editable}
-		{focus_canvas}
-	/>
+	<Toolbar {session} {app_commands} {editable} {focus_canvas} />
 	<Svedit {session} bind:editable bind:this={svedit_ref} path={[session.doc.document_id]} />
 
 	{#if has_backend}

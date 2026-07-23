@@ -1,11 +1,13 @@
-<script>
-	import { getContext } from 'svelte';
+<script lang="ts">
+	import type { Nodes } from '$lib/document_schema.js';
+	import type { DocumentPath } from 'svedit';
+	import { get_svedit_context } from '../svedit_context.js';
 	import { NodeArrayProperty, Node } from 'svedit';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 
-	const svedit = getContext('svedit');
-	let { path } = $props();
-	let node = $derived(svedit.session.get(path));
+	const svedit = get_svedit_context();
+	let { path }: { path: DocumentPath } = $props();
+	let node: Nodes['footer'] = $derived(svedit.session.get(path));
 	let column_count = $derived(node.footer_link_columns.nodes.length);
 	let grid_cols_class = $derived(
 		column_count <= 1

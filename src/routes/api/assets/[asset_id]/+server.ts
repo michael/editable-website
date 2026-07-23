@@ -1,0 +1,22 @@
+import { json, error } from '@sveltejs/kit';
+import { ASSET_ID_REGEX } from '$lib/config.js';
+import { delete_asset, asset_exists } from '$lib/server/asset_storage.js';
+import { require_admin_session } from '$lib/server/auth.js';
+import type { RequestHandler } from './$types';
+
+export const DELETE: RequestHandler = async ({ params, locals }) => {
+	require_admin_session(locals);
+
+	const { asset_id } = params;
+
+	if (!ASSET_ID_REGEX.test(asset_id)) {
+		error(400, 'Invalid asset id');
+	}
+
+	if (!asset_exists(asset_id)) {
+		error(404, 'Asset not found');
+	}
+
+	await delete_asset(asset_id);
+	return json({ ok: true });
+};

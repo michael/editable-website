@@ -37,7 +37,7 @@ if (!slug) fail('Migration name must contain a letter or number.');
 const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
 const id = `${timestamp}_${namespace}_${slug}`;
 const migration_dir = join(process.cwd(), 'src/lib/server/migrations');
-const path = join(migration_dir, `${id}.js`);
+const path = join(migration_dir, `${id}.ts`);
 const before_property =
 	before.length > 0 ? `\n\tbefore: [${before.map((target) => `'${target}'`).join(', ')}],` : '';
 const source = `export default {${before_property}\n\tup({ db }) {\n\t\t// Transform the database here.\n\t}\n};\n`;

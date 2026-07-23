@@ -1,11 +1,17 @@
-<script>
-	import { getContext, setContext } from 'svelte';
+<script lang="ts">
+	import { get_svedit_context } from '../svedit_context.js';
+	import type { Nodes } from '$lib/document_schema.js';
+	import { setContext } from 'svelte';
 	import { Node, NodeArrayProperty } from 'svedit';
+	import type { DocumentPath, NodeArrayAttachmentContext } from 'svedit';
 	import { TW_PAGE_PADDING_X, TW_LIMITER } from '../tailwind_theme.js';
 
-	const svedit = getContext('svedit');
-	let { path, mark: section = null } = $props();
-	let node = $derived(svedit.session.get(path));
+	const svedit = get_svedit_context();
+	let {
+		path,
+		mark: section = null
+	}: { path: DocumentPath; mark?: NodeArrayAttachmentContext | null } = $props();
+	let node: Nodes['prose'] = $derived(svedit.session.get(path));
 	let layout = $derived(node.layout || 'narrow-left');
 	let padding_top_wide = $derived(!section || section?.is_start);
 	let padding_bottom_wide = $derived(!section || section?.is_end);
