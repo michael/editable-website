@@ -29,6 +29,9 @@
 		"data:cloud-snapshots": "./scripts/data.sh cloud-snapshots",
 		"data:verify": "./scripts/data.sh verify",
 		"data:reset": "./scripts/data.sh reset",
+		"vps:deploy": "./scripts/vps-deploy.sh",
+		"vps:env": "./scripts/vps-deploy.sh env",
+		"vps:status": "./scripts/vps-deploy.sh status",
 		"litestream:install": "./scripts/install-litestream.sh"
 	},
 	"devDependencies": {

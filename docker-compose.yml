@@ -1,0 +1,32 @@
+# Run Editable on any docker host — a DigitalOcean droplet, a Hetzner or
+# Nodion VPS, a home server. See README → Deploy to a VPS. Fly.io deployments
+# don't use this file (fly deploy builds the same Dockerfile directly).
+#
+# Two ways to use it:
+#   - scripts/vps-deploy.sh uploads this file and starts a locally built image
+#     (IMAGE_TAG and CONTAINER_NAME come from the .deploy_env file it writes)
+#   - by hand on the server: `docker compose up -d --build` builds from source
+#     and runs under the default name `editable`
+#
+# The app listens on 127.0.0.1:3000 — put a reverse proxy with TLS in front
+# (Caddy makes that two lines, see the README).
+services:
+  editable:
+    build: .
+    image: 'editable:${IMAGE_TAG:-local}'
+    container_name: '${CONTAINER_NAME:-editable}'
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:3000:3000'
+    env_file: .env
+    environment:
+      # Point the app at the bind mount — without this it defaults to ./data
+      # inside the container and content silently dies with each deploy
+      # (fly.toml sets the same for Fly deployments).
+      DATA_DIR: /data
+      BODY_SIZE_LIMIT: '${BODY_SIZE_LIMIT:-30000000}'
+    volumes:
+      # Host data location: ./data next to this file by default (local and
+      # hand-managed runs); vps-deploy.sh pins it to /data via .deploy_env so
+      # the host path matches the container path and Fly's volume mount.
+      - '${HOST_DATA_DIR:-./data}:/data'

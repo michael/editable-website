@@ -677,7 +677,7 @@ From here it's just iteration: add calls to action, give editors control over th
 
 Deploy your local site to a public URL in a few steps.
 
-Editable runs on any VPS — all you need is Node.js, and the included `Dockerfile` works with any platform that supports Docker. The repository ships ready-made for [Fly.io](https://fly.io): install [flyctl](https://fly.io/docs/flyctl/install/), then sign in (opens your browser; creates a free account if you don't have one):
+Editable runs on any VPS — all you need is Node.js, and the included `Dockerfile` works with any platform that supports Docker (see [Deploy to a VPS](#deploy-to-a-vps-experimental)). The repository ships ready-made for [Fly.io](https://fly.io), which remains the recommended default: machines scale to zero and wake in well under a second, so a personal site costs next to nothing to run. Install [flyctl](https://fly.io/docs/flyctl/install/), then sign in (opens your browser; creates a free account if you don't have one):
 
 ```sh
 fly auth login
@@ -710,6 +710,8 @@ fly secrets set \
   ADMIN_PASSWORD='pick-a-strong-password'
 ```
 
+`ORIGIN` must exactly match the URL you use in the browser, including the scheme and subdomain (for example, `https://example.com` and `https://www.example.com` are different origins). An incorrect value causes login and other write requests to fail with `403 Forbidden` before the password is checked. Update this secret whenever you switch to a custom domain, and access the site through that canonical URL.
+
 Optionally set `ASSET_GRACE_PERIOD_DAYS` (default 7): unreferenced asset files are kept on disk this many days after losing their last reference. This is also the safe window for rolling back a database backup against the live assets folder without ending up with dead image references.
 
 Deploy. The first deploy also creates the 1 GB `data` volume declared under `[mounts]` in `fly.toml`:
@@ -733,11 +735,68 @@ fly open
 
 Because each checkout manages exactly one app (see [Your site is your repo](#your-site-is-your-repo)), the target always comes from `fly.toml` — there's no app name to get wrong. If you ever do need to address a different app (say, a staging copy), every `fly` command and data script accepts `-a <app>` as an explicit override.
 
+### Deploy to a VPS (experimental)
+
+Editable runs on any amd64 host with Docker — a DigitalOcean droplet, a Hetzner or Nodion VPS. One command takes a fresh Ubuntu server to a running site with TLS. Create the server with your ssh key installed, point your domain's A record at its IP, then:
+
+```sh
+npm run vps:deploy -- root@203.0.113.10 my-site.example.com
+```
+
+The first run provisions the server — Docker, [Caddy](https://caddyserver.com) as the TLS-terminating reverse proxy, swap on machines with less than 2 GB RAM — asks you for an admin password, builds the Docker image locally, streams it over ssh, and starts the site. The server never needs access to your git repository or the memory to run a build. Your content lives in `/data` on the server — the same path Fly.io mounts and the same path inside the container; deploys replace the container and never touch that folder.
+
+After the first deploy, add one line to your **local** `.env` — this is your checkout's deployment identity, playing the role `fly.toml` plays for Fly.io. Everything else (container name, data path) is read from the server:
+
+```sh
+DEPLOY_HOST="root@203.0.113.10"            # who you ssh in as
+```
+
+With `DEPLOY_HOST` set, no command needs the server address anymore. Ship an update — build, stream, replace the container, health-check:
+
+```sh
+npm run vps:deploy
+```
+
+See what's running and what you can roll back to — each image tag is a git commit, and the last three are kept on the server (a deploy from a working tree with uncommitted changes is tagged `<sha>-dirty` to keep experiments distinguishable from committed states):
+
+```sh
+npm run vps:status
+
+# → Running: editable:939761c (Up 5 minutes) — https://my-site.example.com
+#
+# Images on the server (newest first):
+#   939761c   2026-07-20 21:35   Add env var management  ← running
+#   502dcdf   2026-07-20 20:43   Harden deploy script
+```
+
+Roll back a bad deploy by starting a previous image:
+
+```sh
+npm run vps:deploy -- --tag <sha>
+```
+
+And every `npm run data:*` command ([Backup, sync & recovery](#backup-sync--recovery)) targets the VPS too (`fly.toml` is ignored; remove or comment `DEPLOY_HOST` to target Fly.io again). Pull, push, backups, restores, point-in-time recovery — the whole toolbox behaves the same, including disaster recovery from the backup bucket on a fresh volume.
+
+The server keeps its own `.env` (the equivalent of `fly secrets`) — inspect and change it with the `env` command:
+
+```sh
+npm run vps:env                            # show it (secrets masked)
+npm run vps:env -- set BUCKET_NAME=my-backup AWS_REGION=auto
+npm run vps:env -- set ADMIN_PASSWORD      # no value = prompted, kept out of shell history
+npm run vps:env -- unset BUCKET_NAME
+```
+
+`set` and `unset` restart the app so the change takes effect immediately. For [automated backups](#automated-backups-optional), the `BUCKET_*` / `AWS_*` secrets belong in the server's `.env` — the first deploy copies them from your local `.env` if present; after that, changes are explicit via `vps:env`.
+
+**Doing it by hand instead:** the script is optional — `docker-compose.yml` runs on any docker host. Clone your site on the server, `cp .env.example .env` and set `ADMIN_PASSWORD` and `ORIGIN="https://my-site.example.com"`, then `docker compose up -d --build`. The app listens on `127.0.0.1:3000`; put a reverse proxy with TLS in front (with Caddy that's the whole config: `my-site.example.com { reverse_proxy 127.0.0.1:3000 }`). Ship updates with `git pull && docker compose up -d --build`. For the data commands, a hand-managed setup has nothing to auto-discover, so set the explicit keys alongside `DEPLOY_HOST` in your local `.env`: `RESTART_CMD="docker restart editable"`, `REMOTE_EXEC="docker exec editable"`, and `HOST_DATA_DIR` pointing at the `./data` bind mount as an absolute path (without the script, the container keeps the default name `editable`).
+
+What Fly.io still does for you that a VPS doesn't: scale-to-zero with sub-second wake-ups (a VPS runs — and bills — around the clock), TLS and anycast routing without a reverse proxy, and volume snapshots. The VPS path trades that for a fixed monthly price and no platform dependency.
+
 ## Backup, sync & recovery
 
 Your whole site lives in one folder — pull it, push it, snapshot it, roll it back.
 
-That folder is `data/`: an SQLite database (`db.sqlite3`) and uploaded assets (`assets/`). Locally it defaults to `./data`; on Fly.io it's a persistent volume at `/data`. The data commands move that folder between your machine, your deployment, and — optionally — a backup bucket. The complete toolbox:
+That folder is `data/`: an SQLite database (`db.sqlite3`) and uploaded assets (`assets/`). Locally it defaults to `./data`; on Fly.io it's a persistent volume at `/data`; on a VPS it's `/data` on the host, bind-mounted into the container at the same path. The data commands move that folder between your machine, your deployment, and — optionally — a backup bucket. The complete toolbox:
 
 - **npm run data:pull** — Copy the live site's data to your machine
 - **npm run data:push [-- --yes]** — Replace the live site's data with your local state — guarded, undoable
