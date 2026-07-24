@@ -124,7 +124,7 @@
 				{#if app.has_backend}
 					<button
 						type="button"
-						class="mr-0.5 flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--foreground) outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-[-1px] focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-95 active:bg-(--muted)"
+						class="mr-0.5 flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--foreground) outline-none transition-all duration-150 hover:bg-(--muted) focus-visible:shadow-[inset_0_0_0_1px_var(--svedit-editing-stroke)] active:translate-y-px active:scale-95 active:bg-(--muted)"
 						title="Select page"
 						aria-label="Select page"
 						onclick={() => {
@@ -156,13 +156,13 @@
 				<input
 					type="checkbox"
 					bind:checked={open_in_new_tab}
-					class="h-4 w-4 cursor-pointer text-(--svedit-editing-stroke) ring-0 focus:ring-0 focus-visible:ring-0 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
+					class="h-4 w-4 cursor-pointer rounded-full text-(--svedit-editing-stroke) ring-0 focus:ring-0 focus:ring-offset-0 focus:shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 				/>
 				<span class="text-sm text-(--foreground)">Open in new tab</span>
 			</label>
 			<button
 				type="button"
-				class="shrink-0 cursor-pointer rounded-full border-0 bg-transparent px-3 py-1.5 text-sm font-medium text-(--svedit-editing-stroke) outline-1 outline-transparent hover:bg-(--svedit-editing-fill) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
+				class="inline-flex h-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent px-3 text-sm font-medium text-(--svedit-editing-stroke) outline-1 outline-transparent hover:bg-(--svedit-editing-fill) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 				onclick={save}
 			>
 				{is_new_link ? 'Create' : 'Update'}
