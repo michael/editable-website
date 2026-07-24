@@ -160,12 +160,16 @@
 			{/if}
 		</div>
 	{:else}
-		<button
-			type="button"
-			class="cursor-pointer rounded-full border border-(--border) bg-(--background) px-12 py-2 text-sm text-(--svedit-editing-stroke) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)] hover:bg-(--muted)"
-			onclick={handle_edit}
+		<div
+			class="rounded-full border border-(--border) bg-(--background) p-1 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
 		>
-			CREATE LINK
-		</button>
+			<button
+				type="button"
+				class="flex h-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent px-12 text-sm font-medium text-(--svedit-editing-stroke) outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-[0.97] active:bg-(--muted)"
+				onclick={handle_edit}
+			>
+				Create Link
+			</button>
+		</div>
 	{/if}
 </div>
