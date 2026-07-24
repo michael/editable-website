@@ -844,7 +844,7 @@ Updated: ${updated_at_label}`;
 													title: node.title
 												})}
 										>
-											unlisted
+											UNLISTED
 										</button>
 									{/if}
 								</div>
@@ -1495,8 +1495,7 @@ Updated: ${updated_at_label}`;
 
 	.unlisted-badge {
 		display: inline-flex;
-		height: 1rem;
-		min-width: 1.25rem;
+		height: 1.125rem;
 		flex: 0 0 auto;
 		align-items: center;
 		justify-content: center;
@@ -1504,18 +1503,18 @@ Updated: ${updated_at_label}`;
 		border-radius: 3px;
 		background: transparent;
 		color: var(--foreground);
-		padding: 0 0.125rem;
-		font-size: 8px;
+		padding: 0 0.25rem;
+		font-size: 10px;
 		font-weight: 500;
 		line-height: 1;
 		letter-spacing: 0.04em;
-		text-transform: uppercase;
 		cursor: pointer;
+		outline: 1px solid transparent;
+		outline-offset: 1px;
 	}
 
 	.unlisted-badge:focus-visible {
-		outline: 1px solid var(--svedit-editing-stroke);
-		outline-offset: 1px;
+		outline-color: var(--svedit-editing-stroke);
 	}
 
 	@media (hover: hover) and (pointer: fine) {
