@@ -31,6 +31,16 @@ Convert the whole codebase from JS+JSDoc to TypeScript per the "Language: TypeSc
 - Pulse the selector when its displayed type-switch target is still empty and every alternative type remains safely available, hinting at type choice immediately after insertion.
 - Do not require a parallel variant-label registry; new schema types and layouts should appear automatically.
 
+## Page browser visual alignment
+
+- Style the page browser search field like the EditLink URL input: a pill-shaped `--border` outline that switches directly to `--svedit-editing-stroke` on focus, without a focus shadow.
+- Render hovered and keyboard-selected page rows as pill-shaped surfaces using the shared `--muted`, `--svedit-editing-fill`, and `--svedit-editing-stroke` colors.
+- Render each page ellipsis trigger as the same round tool button used in the editing toolbar, inset from its row pill by the toolbar surface spacing.
+- On hover-capable devices, use `--background` behind the ellipsis trigger and unlisted marker so they remain distinct from row hover and selection fills.
+- On mobile, disable hover-only treatments and give the ellipsis trigger and unlisted marker `--muted` backgrounds on ordinary rows and `--background` backgrounds on the selected row.
+- Style the page action menu like the top-level toolbar page-actions menu, including its border, rounded menu surface, shadow, item spacing, and hover treatment.
+- Style the unlisted marker like the toolbar ALT control, while preserving its explanatory button behavior.
+
 ## Human-readable layout ids
 
 - Replace numeric `layout` values in the schema, renderers, inserters, seed content, Markdown conversion, tests, and documentation with descriptive string ids.
