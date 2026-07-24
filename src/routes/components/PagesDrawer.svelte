@@ -1325,7 +1325,7 @@ Updated: ${updated_at_label}`;
 		flex: 0 0 auto;
 		margin: 0.3rem 0.35rem 0.3rem 0;
 		background: var(--muted);
-		border-radius: 0.5rem;
+		border-radius: 9999px;
 		overflow: hidden;
 	}
 
