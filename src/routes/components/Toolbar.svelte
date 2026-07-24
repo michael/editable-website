@@ -142,21 +142,35 @@
 	<span class="mx-1 h-5 w-px shrink-0 bg-(--border)" aria-hidden="true"></span>
 	{#if cancel_command && !cancel_command.disabled}
 		<button
-			class="pointer-events-auto inline-flex h-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent px-4 text-xs font-medium text-(--foreground) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-[0.97] active:bg-(--muted)"
+			class="pointer-events-auto inline-flex size-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-sm font-medium text-(--foreground) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-[0.97] active:bg-(--muted) sm:w-auto sm:px-4"
 			onclick={() => cancel_command.execute()}
 			title="Cancel (⌘ ⎋)"
+			aria-label={cancel_button_label}
 		>
-			{cancel_button_label}
+			<svg class="size-6 sm:hidden" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+				<circle cx="12" cy="12" r="9.5" stroke="currentColor" />
+				<path
+					d="M5.25 18.75L18.75 5.25"
+					stroke="currentColor"
+					stroke-linecap="round"
+				/>
+			</svg>
+			<span class="hidden sm:inline">{cancel_button_label}</span>
 		</button>
 	{/if}
 
 	{#if !app_commands.save_document.disabled}
 		<button
-			class="pointer-events-auto inline-flex h-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent px-4 text-xs font-semibold text-(--svedit-editing-stroke) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--svedit-editing-fill) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-[0.97] active:bg-(--svedit-editing-fill)"
+			class="pointer-events-auto inline-flex size-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-sm font-semibold text-(--svedit-editing-stroke) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--svedit-editing-fill) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-[0.97] active:bg-(--svedit-editing-fill) sm:w-auto sm:px-4"
 			onclick={() => app_commands.save_document.execute()}
 			title="Save (⌘ S)"
+			aria-label="Save"
 		>
-			Save
+			<svg class="size-6 sm:hidden" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+				<path d="M4 3.5H16.5L20 7V20.5H4V3.5Z" stroke="currentColor" />
+				<path d="M7.5 3.5V9.5H16.5V3.5M7.5 20.5V13.5H16.5V20.5" stroke="currentColor" />
+			</svg>
+			<span class="hidden sm:inline">Save</span>
 		</button>
 	{/if}
 {/snippet}

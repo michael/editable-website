@@ -24,6 +24,7 @@ Convert the whole codebase from JS+JSDoc to TypeScript per the "Language: TypeSc
 - Split the variant selector to the left and the existing toolbar actions to the right when space permits, collapsing the flexible gap before horizontal overflow on narrow screens.
 - On mobile, center the toolbar and let it shrink-wrap its contents until it reaches the viewport-safe maximum width.
 - On mobile overflow, use one horizontal scroll area for the variant selector and ordinary editing actions; keep the select-parent button fixed at the leading edge and the cancel/save actions fixed at the trailing edge, with separators and opaque edge surfaces visually containing the scrolling region.
+- On mobile, render the trailing cancel and save actions as accessible icons instead of their text labels to preserve toolbar space; keep the text labels on larger screens.
 - Keep variant labels on one line at their intrinsic width so the scroll area, rather than the selector itself, absorbs narrow-screen overflow.
 - Keep type/layout cycle commands and keyboard shortcuts registered, but hide their redundant toolbar buttons while the variant selector is the primary visible UI.
 - Expose the type up/down and layout left/right keyboard shortcuts in the variant selector's hover tooltip rather than as persistent UI chrome.
