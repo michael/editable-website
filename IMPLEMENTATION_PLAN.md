@@ -41,6 +41,13 @@ Convert the whole codebase from JS+JSDoc to TypeScript per the "Language: TypeSc
 - Style the page action menu like the top-level toolbar page-actions menu, including its border, rounded menu surface, shadow, item spacing, and hover treatment.
 - Style the unlisted marker like the toolbar ALT control, while preserving its explanatory button behavior.
 
+## Internal link preview simplification
+
+- Keep external link previews unchanged as a single href row with edit and remove actions.
+- Render internal link previews as one pill row containing an optional circular preview image, the resolved page title, and the existing edit and remove actions.
+- Make the preview image and title one link target, and omit the raw href from the preview because the link editor exposes it.
+- Keep loading, missing-page, and error states inside the same compact row rather than adding a second row.
+
 ## Human-readable layout ids
 
 - Replace numeric `layout` values in the schema, renderers, inserters, seed content, Markdown conversion, tests, and documentation with descriptive string ids.

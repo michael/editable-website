@@ -67,21 +67,53 @@
 >
 	{#if node.href}
 		<div
-			class="overflow-hidden border border-(--border) bg-(--background) text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)] {internal_page_href
-				? 'rounded-[23px]'
-				: 'rounded-full'}"
+			class="overflow-hidden rounded-full border border-(--border) bg-(--background) text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
 		>
 			<div class="flex items-center gap-1 p-1">
-				<a
-					{...{
-						href: get_preview_href(internal_page_href ?? node.href),
-						target: '_blank',
-						rel: 'noopener noreferrer'
-					}}
-					class="max-w-70 min-w-0 flex-1 truncate px-2 text-sm text-(--foreground) outline-1 outline-transparent hover:underline focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
-				>
-					{node.href}
-				</a>
+				{#if internal_page_href}
+					{#await page_preview}
+						<div class="flex h-9 max-w-70 min-w-0 flex-1 items-center px-2 text-sm text-(--muted-foreground)">
+							Loading page preview…
+						</div>
+					{:then resolved_page_preview}
+						{#if resolved_page_preview}
+							<a
+								href={get_preview_href(internal_page_href)}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="group flex h-9 max-w-70 min-w-0 flex-1 items-center rounded-full text-(--foreground) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
+							>
+								{#if resolved_page_preview.preview_media_node?.src}
+									<div class="size-9 shrink-0 overflow-hidden rounded-full">
+										<Media
+											node={{ ...resolved_page_preview.preview_media_node, object_fit: 'cover' }}
+										/>
+									</div>
+								{/if}
+								<span class="min-w-0 truncate px-2 text-sm font-semibold group-hover:underline">
+									{resolved_page_preview.title}
+								</span>
+							</a>
+						{:else}
+							<div class="flex h-9 max-w-70 min-w-0 flex-1 items-center px-2 text-sm text-(--muted-foreground)">
+								No matching page.
+							</div>
+						{/if}
+					{:catch err}
+						<div class="flex h-9 max-w-70 min-w-0 flex-1 items-center px-2 text-sm text-(--muted-foreground)">
+							{err instanceof Error ? err.message : 'Failed to load page preview.'}
+						</div>
+					{/await}
+				{:else}
+					<a
+						href={get_preview_href(node.href)}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="max-w-70 min-w-0 flex-1 truncate px-2 text-sm text-(--foreground) outline-1 outline-transparent hover:underline focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
+					>
+						{node.href}
+					</a>
+				{/if}
 				<button
 					type="button"
 					class="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--foreground) outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-95 active:bg-(--muted)"
@@ -127,37 +159,6 @@
 					</svg>
 				</button>
 			</div>
-
-			{#if internal_page_href}
-				<div class="px-3 py-3">
-					{#await page_preview}
-						<div class="text-sm text-(--muted-foreground)">Loading page preview…</div>
-					{:then resolved_page_preview}
-						{#if resolved_page_preview}
-							<div class="flex items-center gap-3">
-								{#if resolved_page_preview.preview_media_node}
-									<div class="size-12 shrink-0 overflow-hidden rounded-lg">
-										<Media
-											node={{ ...resolved_page_preview.preview_media_node, object_fit: 'cover' }}
-										/>
-									</div>
-								{/if}
-								<div class="min-w-0 flex-1">
-									<div class="truncate text-left text-sm font-semibold text-(--foreground)">
-										{resolved_page_preview.title}
-									</div>
-								</div>
-							</div>
-						{:else}
-							<div class="text-sm text-(--muted-foreground)">No matching page.</div>
-						{/if}
-					{:catch err}
-						<div class="text-sm text-(--muted-foreground)">
-							{err instanceof Error ? err.message : 'Failed to load page preview.'}
-						</div>
-					{/await}
-				</div>
-			{/if}
 		</div>
 	{:else}
 		<div
