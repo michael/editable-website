@@ -110,7 +110,7 @@
 	<div class="flex flex-col">
 		<div class="px-1 pt-1">
 			<div
-				class="flex items-stretch overflow-hidden rounded-full border border-(--border) focus-within:border-(--svedit-editing-stroke)"
+				class="flex items-center overflow-hidden rounded-full border border-(--border) focus-within:border-(--svedit-editing-stroke)"
 			>
 				<input
 					id="edit-link-url-input"
@@ -124,7 +124,7 @@
 				{#if app.has_backend}
 					<button
 						type="button"
-						class="flex w-10 shrink-0 cursor-pointer items-center justify-center border-0 border-l border-(--border) bg-transparent p-0 text-(--foreground) outline-1 outline-transparent hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-[-1px] focus-visible:outline-(--svedit-editing-stroke)"
+						class="mr-1 flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--foreground) outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-[-1px] focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-95 active:bg-(--muted)"
 						title="Select page"
 						aria-label="Select page"
 						onclick={() => {
