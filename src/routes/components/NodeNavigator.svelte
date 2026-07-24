@@ -135,7 +135,7 @@
 
 {#if variant_item}
 	<div
-		class="flex shrink-0 items-center rounded-full border border-(--border) bg-(--background) text-xs leading-5 whitespace-nowrap text-(--foreground) shadow-sm"
+		class="flex shrink-0 items-center rounded-full border border-(--border) bg-(--background) text-xs sm:text-sm leading-5 whitespace-nowrap text-(--foreground) shadow-sm"
 		class:variant-pulse={should_pulse_variant}
 		aria-label="Current node variant"
 	>
