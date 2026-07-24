@@ -67,7 +67,9 @@
 >
 	{#if node.href}
 		<div
-			class="overflow-hidden rounded-full border border-(--border) bg-(--background) text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
+			class="overflow-hidden border border-(--border) bg-(--background) text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)] {internal_page_href
+				? 'rounded-[23px]'
+				: 'rounded-full'}"
 		>
 			<div class="flex items-center gap-1 p-1">
 				<a
@@ -127,19 +129,21 @@
 			</div>
 
 			{#if internal_page_href}
-				<div class="border-t border-(--border) px-3 py-3">
+				<div class="px-3 py-3">
 					{#await page_preview}
 						<div class="text-sm text-(--muted-foreground)">Loading page preview…</div>
 					{:then resolved_page_preview}
 						{#if resolved_page_preview}
 							<div class="flex items-center gap-3">
 								{#if resolved_page_preview.preview_media_node}
-									<div class="h-12 w-12 shrink-0 overflow-hidden border border-(--border)">
-										<Media node={resolved_page_preview.preview_media_node} />
+									<div class="size-12 shrink-0 overflow-hidden rounded-lg">
+										<Media
+											node={{ ...resolved_page_preview.preview_media_node, object_fit: 'cover' }}
+										/>
 									</div>
 								{/if}
-								<div class="min-w-0">
-									<div class="truncate text-sm font-semibold text-(--foreground)">
+								<div class="min-w-0 flex-1">
+									<div class="truncate text-left text-sm font-semibold text-(--foreground)">
 										{resolved_page_preview.title}
 									</div>
 								</div>

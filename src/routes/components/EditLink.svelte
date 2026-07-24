@@ -81,7 +81,7 @@
 
 <dialog
 	bind:this={dialog_ref}
-	class="edit-link-dialog absolute z-40 m-0 mt-1 max-h-90 overflow-visible border border-(--border) bg-(--background) p-0 text-(--foreground) shadow-xl"
+	class="edit-link-dialog absolute z-40 m-0 mt-1 max-h-90 overflow-hidden rounded-[23px] border border-(--border) bg-(--background) p-0 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
 	style="position-anchor: --{serialize_path(
 		path
 	)}; position-area: block-end span-all; justify-self: anchor-center;"
@@ -89,20 +89,22 @@
 >
 	<div class="flex flex-col">
 		<div class="px-1 pt-1">
-			<div class="flex items-stretch">
+			<div
+				class="flex items-stretch overflow-hidden rounded-full border border-(--border) focus-within:border-(--svedit-editing-stroke)"
+			>
 				<input
 					id="edit-link-url-input"
 					bind:this={href_input_ref}
 					type="url"
 					bind:value={href_input_value}
 					placeholder="https://example.com"
-					class="edit-link-input w-72 min-w-0 flex-1 border border-(--border) bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:border-(--svedit-editing-stroke) focus:shadow-none focus:ring-0 focus:outline-none"
+					class="edit-link-input w-72 min-w-0 flex-1 border-0 bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:shadow-none focus:ring-0 focus:outline-none"
 					onkeydown={handle_keydown}
 				/>
 				{#if app.has_backend}
 					<button
 						type="button"
-						class="shrink-0 cursor-pointer border border-(--border) border-l-transparent px-3 text-(--svedit-editing-stroke) hover:bg-(--muted) focus:border-(--svedit-editing-stroke) focus:shadow-none focus:ring-0 focus:outline-none"
+						class="flex w-10 shrink-0 cursor-pointer items-center justify-center border-0 border-l border-(--border) bg-transparent p-0 text-(--foreground) outline-1 outline-transparent hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-[-1px] focus-visible:outline-(--svedit-editing-stroke)"
 						title="Select page"
 						aria-label="Select page"
 						onclick={() => {
@@ -114,22 +116,22 @@
 						}}
 					>
 						<svg
-							class="size-4"
+							class="size-6"
 							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 15 15"
+							viewBox="0 0 24 24"
 							fill="none"
 							aria-hidden="true"
 						>
-							<rect x="1.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-							<rect x="8.5" y="1.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-							<rect x="1.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
-							<rect x="8.5" y="8.5" width="5" height="5" rx="0.5" stroke="currentColor" />
+							<rect x="4.5" y="4.5" width="6" height="6" rx="1" stroke="currentColor" />
+							<rect x="13.5" y="4.5" width="6" height="6" rx="1" stroke="currentColor" />
+							<rect x="4.5" y="13.5" width="6" height="6" rx="1" stroke="currentColor" />
+							<rect x="13.5" y="13.5" width="6" height="6" rx="1" stroke="currentColor" />
 						</svg>
 					</button>
 				{/if}
 			</div>
 		</div>
-		<div class="flex items-center justify-between px-3 py-2">
+		<div class="flex items-center justify-between p-1 pl-4">
 			<label class="flex cursor-pointer items-center gap-2">
 				<input
 					type="checkbox"
@@ -140,10 +142,10 @@
 			</label>
 			<button
 				type="button"
-				class="shrink-0 cursor-pointer text-sm text-(--svedit-editing-stroke) outline-1 outline-transparent hover:opacity-80 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
+				class="shrink-0 cursor-pointer rounded-full border-0 bg-transparent px-3 py-1.5 text-sm font-medium text-(--svedit-editing-stroke) outline-1 outline-transparent hover:bg-(--svedit-editing-fill) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 				onclick={save}
 			>
-				UPDATE
+				Update
 			</button>
 		</div>
 	</div>
