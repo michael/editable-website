@@ -7,7 +7,7 @@
 	import Footer from './Footer.svelte';
 	import MediaProperty from './MediaProperty.svelte';
 	import { extract_page_metadata, get_social_image } from '$lib/page_metadata.js';
-	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
+	import { TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 
 	const svedit = get_svedit_context();
 	const app = get_app_context();
@@ -62,8 +62,8 @@
 		</div>
 		{#if svedit.editable}
 			<div class="border-t border-(--border) bg-(--muted) text-(--foreground)">
-				<div class={TW_LIMITER}>
-					<div class="{TW_PAGE_PADDING_X} py-16 lg:py-10">
+				<div class="mx-auto max-w-xl">
+					<div class="{TW_PAGE_PADDING_X} py-24">
 						<div class="grid w-full max-w-xl grid-cols-[6rem_minmax(0,1fr)] items-center gap-4">
 							<div class="aspect-square w-24">
 								<MediaProperty path={[...path, 'image']} />
@@ -76,9 +76,7 @@
 								/>
 								<TextProperty
 									path={[...path, 'description']}
-									placeholder="Write a clear summary of this page for search results.
-Explain what people will find here in 1–2 concise sentences.
-Aim for specific, human-readable copy rather than keywords."
+									placeholder="Write a clear summary of this page for search results. Explain what people will find here in 1–2 sentences. Aim for specific, human-readable copy rather than keywords."
 									class="block body-sm text-(--muted-foreground)"
 								/>
 							</div>
