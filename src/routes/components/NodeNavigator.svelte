@@ -135,12 +135,12 @@
 
 {#if variant_item}
 	<div
-		class="flex shrink-0 items-center rounded-full border border-(--border) bg-(--background) p-1 text-xs leading-5 whitespace-nowrap text-(--foreground) shadow-sm"
+		class="flex shrink-0 items-center rounded-full border border-(--border) bg-(--background) text-xs leading-5 whitespace-nowrap text-(--foreground) shadow-sm"
 		class:variant-pulse={should_pulse_variant}
 		aria-label="Current node variant"
 	>
 		<div
-			class="relative flex shrink-0 items-center rounded-full px-3 py-1 whitespace-nowrap {variant_item.option_count >
+			class="relative flex h-9 shrink-0 items-center rounded-full px-3 whitespace-nowrap {variant_item.option_count >
 			1
 				? 'cursor-pointer hover:bg-(--muted)'
 				: ''}"
