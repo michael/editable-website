@@ -19,6 +19,7 @@
 	);
 	let anchor_name = $derived(path ? `--${serialize_path(path)}` : '--selection-highlight');
 	let target_node = $derived(get_target_node());
+	let is_new_link = $derived(is_creating || !target_node?.href);
 
 	function get_target_node() {
 		const selected_node = svedit.session.selected_node;
@@ -164,7 +165,7 @@
 				class="shrink-0 cursor-pointer rounded-full border-0 bg-transparent px-3 py-1.5 text-sm font-medium text-(--svedit-editing-stroke) outline-1 outline-transparent hover:bg-(--svedit-editing-fill) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 				onclick={save}
 			>
-				{is_creating ? 'Create' : 'Update'}
+				{is_new_link ? 'Create' : 'Update'}
 			</button>
 		</div>
 	</div>
