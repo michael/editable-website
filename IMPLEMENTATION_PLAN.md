@@ -20,11 +20,33 @@ Convert the whole codebase from JS+JSDoc to TypeScript per the "Language: TypeSc
 - When no ancestor has multiple variants, fall back to the closest selected node and render its `Type (layout)` identity without dropdown behavior or a chevron.
 - Flatten valid type/layout combinations into a native select for direct choice and keyboard type-ahead; do not add a misleading combined next/previous control when keyboard cycling remains dimension-specific.
 - Keep the ordinary select-parent command in the existing selection tool group; do not duplicate it inside the variant selector.
+- Hide the select-parent tool when it is disabled, and draw its trailing separator only when a variant selector is visible beside it.
 - Split the variant selector to the left and the existing toolbar actions to the right when space permits, collapsing the flexible gap before horizontal overflow on narrow screens.
+- On mobile, center the toolbar and let it shrink-wrap its contents until it reaches the viewport-safe maximum width.
+- On mobile overflow, use one horizontal scroll area for the variant selector and ordinary editing actions; keep the select-parent button fixed at the leading edge and the cancel/save actions fixed at the trailing edge, with separators and opaque edge surfaces visually containing the scrolling region.
+- On mobile, render the trailing cancel and save actions as accessible icons instead of their text labels to preserve toolbar space; keep the text labels on larger screens.
+- Keep variant labels on one line at their intrinsic width so the scroll area, rather than the selector itself, absorbs narrow-screen overflow.
 - Keep type/layout cycle commands and keyboard shortcuts registered, but hide their redundant toolbar buttons while the variant selector is the primary visible UI.
 - Expose the type up/down and layout left/right keyboard shortcuts in the variant selector's hover tooltip rather than as persistent UI chrome.
 - Pulse the selector when its displayed type-switch target is still empty and every alternative type remains safely available, hinting at type choice immediately after insertion.
 - Do not require a parallel variant-label registry; new schema types and layouts should appear automatically.
+
+## Page browser visual alignment
+
+- Style the page browser search field like the EditLink URL input: a toolbar-height pill-shaped `--border` outline that switches directly to `--svedit-editing-stroke` on focus, without a focus shadow.
+- Render hovered and keyboard-selected page rows as compact, toolbar-height pill surfaces using the shared `--muted`, `--svedit-editing-fill`, and `--svedit-editing-stroke` colors, with circular preview images sized to fit the row shape and only the shared checkerboard background when no preview is available.
+- Render each page ellipsis trigger as the same round tool button used in the editing toolbar, inset from its row pill by the toolbar surface spacing.
+- On hover-capable devices, use `--background` behind the ellipsis trigger and unlisted marker so they remain distinct from row hover and selection fills.
+- On mobile, disable hover-only treatments and give the ellipsis trigger and unlisted marker `--muted` backgrounds on ordinary rows and `--background` backgrounds on the selected row.
+- Style the page action menu like the top-level toolbar page-actions menu, including its border, rounded menu surface, shadow, item spacing, and hover treatment.
+- Style the unlisted marker like the toolbar ALT control, while preserving its explanatory button behavior.
+
+## Internal link preview simplification
+
+- Keep external link previews unchanged as a single href row with edit and remove actions.
+- Render internal link previews as one pill row containing an optional circular preview image, the resolved page title, and the existing edit and remove actions.
+- Make the preview image and title one link target, and omit the raw href from the preview because the link editor exposes it.
+- Keep loading, missing-page, and error states inside the same compact row rather than adding a second row.
 
 ## Human-readable layout ids
 
@@ -478,7 +500,8 @@ Required UI behavior:
 - drafts and private sitemap UI are hidden unless authenticated as admin
 - link pickers must not expose drafts to unauthenticated users
 - toolbar actions that require admin auth must be hidden or disabled when unauthenticated
-- authenticated admins get an explicit logout button
+- authenticated admins get an ellipsis page-actions menu in the browsing toolbar with Duplicate page, Edit URL, Delete page, and Logout entries
+- keep the initial page-management entries presentational and retain the existing working Logout action; wire Duplicate page, Edit URL, and Delete page in a follow-up task
 
 ### Page browser behavior
 

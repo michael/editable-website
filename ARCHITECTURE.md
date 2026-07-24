@@ -1098,6 +1098,10 @@ This means the page browser is not a full graph visualization. It is a stable, e
 
 If a page is linked from multiple places, later occurrences are ignored for placement. This keeps the page browser compact and avoids crowded duplicates. If needed in the future, secondary references can be surfaced separately (for example as “also linked from…” metadata), but they are not duplicated in the primary forest.
 
+### Internal link previews
+
+When an internal link is selected in the editor, its preview uses a single compact row rather than separate URL and metadata rows. The optional page preview image and resolved page title form the link target; edit and remove remain separate trailing actions. The raw internal href is intentionally omitted from the preview and remains available through the link editor. External links continue to show their href because they do not have page metadata to summarize them.
+
 ### Contextual search in the page browser
 
 The page browser supports a client-side contextual search over the already loaded drawer data. No dedicated server-side search endpoint is required for the initial implementation.
