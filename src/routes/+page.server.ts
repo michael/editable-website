@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/private';
+import { VERCEL } from '$app/env/private';
 import type { PageServerLoad } from './$types';
 
 // Deliberately no `await parent()` here: depending on layout data would rerun
@@ -6,7 +6,7 @@ import type { PageServerLoad } from './$types';
 // invalidated, e.g. for the favicon refresh after a save. has_backend and
 // is_admin reach the page via the layout data merge.
 export const load: PageServerLoad = async () => {
-	if (env.VERCEL) {
+	if (VERCEL) {
 		return {
 			document: null,
 			slug: null

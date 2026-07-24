@@ -1,10 +1,10 @@
 import { redirect } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
+import { VERCEL } from '$app/env/private';
 import type { PageServerLoad } from './$types';
 
 // Deliberately no `await parent()` here — see routes/+page.server.ts.
 export const load: PageServerLoad = async ({ locals }) => {
-	if (env.VERCEL) {
+	if (VERCEL) {
 		return {
 			shared_documents: null
 		};

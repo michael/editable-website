@@ -13,7 +13,8 @@ export default defineConfig({
 		sveltekit({
 			adapter: adapter(),
 			experimental: {
-				remoteFunctions: true
+				remoteFunctions: true,
+				explicitEnvironmentVariables: true
 			},
 			// alias: {
 			// 	svedit: '../svedit/src/lib/index.ts'
