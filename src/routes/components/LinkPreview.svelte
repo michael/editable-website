@@ -90,7 +90,7 @@
 										/>
 									</div>
 								{/if}
-								<span class="min-w-0 truncate px-2 text-sm font-semibold group-hover:underline">
+								<span class="min-w-0 truncate px-2 text-sm group-hover:underline">
 									{resolved_page_preview.title}
 								</span>
 							</a>
