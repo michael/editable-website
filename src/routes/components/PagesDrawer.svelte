@@ -814,18 +814,12 @@ Updated: ${updated_at_label}`;
 									})}
 							>
 								<div class="page-illustration tree-illustration" aria-hidden="true">
-									{#if node.preview_media_node}
+									{#if node.preview_media_node?.src}
 										<div class="media-preview">
 											<Media node={{ ...node.preview_media_node, object_fit: 'cover' }} />
 										</div>
 									{:else}
-										<div class="page-illustration-fallback">
-											<div class="page-symbol">
-												<div class="page-symbol-line page-symbol-line-short"></div>
-												<div class="page-symbol-line"></div>
-												<div class="page-symbol-line"></div>
-											</div>
-										</div>
+										<div class="page-illustration-fallback ew-bg-checkerboard"></div>
 									{/if}
 								</div>
 
@@ -1095,7 +1089,8 @@ Updated: ${updated_at_label}`;
 		align-items: center;
 		gap: 0.55rem;
 		width: 100%;
-		padding: 0.48rem 0.78rem;
+		height: 2.75rem;
+		padding: 0 0.78rem;
 		border: 1px solid var(--border);
 		border-radius: 9999px;
 		background: var(--background);
@@ -1189,7 +1184,7 @@ Updated: ${updated_at_label}`;
 		gap: 0;
 		width: 100%;
 		min-width: 0;
-		min-height: 3.35rem;
+		min-height: 2.75rem;
 		padding: 0 2.5rem 0 0;
 		z-index: 1;
 	}
@@ -1320,10 +1315,10 @@ Updated: ${updated_at_label}`;
 	}
 
 	.tree-illustration {
-		width: 2.6rem;
+		width: 2.25rem;
 		aspect-ratio: 1;
 		flex: 0 0 auto;
-		margin: 0.3rem 0.35rem 0.3rem 0;
+		margin: 0.25rem 0.35rem 0.25rem -0.15rem;
 		background: var(--muted);
 		border-radius: 9999px;
 		overflow: hidden;
@@ -1344,25 +1339,10 @@ Updated: ${updated_at_label}`;
 		height: 100%;
 		display: grid;
 		place-items: center;
-		background: var(--muted);
 		border-radius: inherit;
 	}
 
-	.page-symbol {
-		width: 1rem;
-		display: flex;
-		flex-direction: column;
-		gap: 0.12rem;
-	}
 
-	.page-symbol-line {
-		height: 1px;
-		background: var(--muted-foreground);
-	}
-
-	.page-symbol-line-short {
-		width: 62%;
-	}
 
 	.plus-glyph {
 		font-size: 2rem;
@@ -1735,7 +1715,7 @@ Updated: ${updated_at_label}`;
 
 		.search-input-shell {
 			gap: 0.5rem;
-			padding: 0.52rem 0.72rem;
+			padding: 0 0.72rem;
 		}
 
 		.search-input-icon {
