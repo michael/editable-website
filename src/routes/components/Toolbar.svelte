@@ -231,8 +231,11 @@
 							{@render selection_leading_contents()}
 						</div>
 					{/if}
+					<!-- p-0.5/-m-0.5: overflow clips at the padding box, so the padding is
+					what keeps button focus rings (1px outline at 1px offset) from being
+					cut off; the negative margin keeps the layout unchanged. -->
 					<div
-						class="selection-scroller min-w-0 [scrollbar-width:none] overflow-x-auto rounded-full"
+						class="selection-scroller -m-0.5 min-w-0 scrollbar-none overflow-x-auto rounded-full p-0.5"
 					>
 						<NodeNavigator {session} {focus_canvas} />
 					</div>
@@ -242,8 +245,10 @@
 			<div class="toolbar-spacer min-w-0 flex-1"></div>
 
 			<div class="editor-toolbar action-toolbar flex shrink items-center {TW_TOOLBAR_SURFACE}">
+				<!-- p-0.5/-m-0.5: see selection-scroller above — the padding is what gives
+				focus rings room inside the scroll container. -->
 				<div
-					class="tools-scroller min-w-0 flex-1 [scrollbar-width:none] overflow-x-auto rounded-full"
+					class="tools-scroller -m-0.5 min-w-0 flex-1 scrollbar-none overflow-x-auto rounded-full p-0.5"
 				>
 					<div class="flex min-w-max items-center gap-0">
 						{#if !editable}
