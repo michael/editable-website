@@ -5,7 +5,6 @@
 	import { get_page_browser } from './page_browser_context.svelte.js';
 	import MediaControls from './MediaControls.svelte';
 	import SizableViewboxControls from './SizableViewboxControls.svelte';
-	import CreateLink from './CreateLink.svelte';
 	import EditLink from './EditLink.svelte';
 	import EditMedia from './EditMedia.svelte';
 	import LinkPreview from './LinkPreview.svelte';
@@ -218,12 +217,10 @@
 		<LinkPreview node={link_preview.node} path={link_preview.path} />
 	{/if}
 
-	{#if link_preview && svedit.session.commands?.edit_link?.show_prompt}
-		<EditLink path={link_preview.path} />
-	{/if}
-
 	{#if svedit.session.commands?.toggle_link?.show_prompt}
-		<CreateLink />
+		<EditLink />
+	{:else if link_preview && svedit.session.commands?.edit_link?.show_prompt}
+		<EditLink path={link_preview.path} />
 	{/if}
 
 	{#if svedit.session.commands?.edit_image?.show_prompt && is_media_selected}

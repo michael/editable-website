@@ -9,9 +9,15 @@
 	const app = get_app_context();
 	const page_browser = get_page_browser();
 
-	let { path }: { path: DocumentPath } = $props();
+	let { path }: { path?: DocumentPath } = $props();
 
 	let edit_link_command = $derived(svedit.session.commands?.edit_link);
+	let toggle_link_command = $derived(svedit.session.commands?.toggle_link);
+	let is_creating = $derived(toggle_link_command?.show_prompt === true);
+	let is_open = $derived(
+		edit_link_command?.show_prompt === true || toggle_link_command?.show_prompt === true
+	);
+	let anchor_name = $derived(path ? `--${serialize_path(path)}` : '--selection-highlight');
 	let target_node = $derived(get_target_node());
 
 	function get_target_node() {
@@ -29,7 +35,16 @@
 	let dialog_ref = $state<HTMLDialogElement>();
 
 	function save() {
-		if (target_node && 'href' in target_node) {
+		if (is_creating) {
+			if (href_input_value) {
+				svedit.session.apply(
+					svedit.session.tr.toggle_mark('link', {
+						href: href_input_value,
+						target: open_in_new_tab ? '_blank' : '_self'
+					})
+				);
+			}
+		} else if (target_node && 'href' in target_node) {
 			const tr = svedit.session.tr;
 			tr.set([target_node.id, 'href'], href_input_value);
 			tr.set([target_node.id, 'target'], open_in_new_tab ? '_blank' : '_self');
@@ -41,6 +56,9 @@
 	function close() {
 		if (edit_link_command) {
 			edit_link_command.show_prompt = false;
+		}
+		if (toggle_link_command) {
+			toggle_link_command.show_prompt = false;
 		}
 		svedit.focus_canvas();
 	}
@@ -64,10 +82,13 @@
 	}
 
 	$effect(() => {
-		if (edit_link_command?.show_prompt && dialog_ref) {
-			href_input_value = target_node?.href || '';
-			open_in_new_tab = target_node?.target === '_blank';
-			dialog_ref.showModal();
+		if (is_open && dialog_ref) {
+			href_input_value = is_creating ? 'https://' : target_node?.href || '';
+			open_in_new_tab = is_creating ? false : target_node?.target === '_blank';
+
+			if (!dialog_ref.open) {
+				dialog_ref.showModal();
+			}
 
 			if (href_input_ref) {
 				href_input_ref.focus();
@@ -82,9 +103,7 @@
 <dialog
 	bind:this={dialog_ref}
 	class="edit-link-dialog absolute z-40 m-0 mt-1 max-h-90 overflow-hidden rounded-[23px] border border-(--border) bg-(--background) p-0 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
-	style="position-anchor: --{serialize_path(
-		path
-	)}; position-area: block-end span-all; justify-self: anchor-center;"
+	style="position-anchor: {anchor_name}; position-area: block-end span-all; justify-self: anchor-center;"
 	onclick={handle_backdrop_click}
 >
 	<div class="flex flex-col">
@@ -145,7 +164,7 @@
 				class="shrink-0 cursor-pointer rounded-full border-0 bg-transparent px-3 py-1.5 text-sm font-medium text-(--svedit-editing-stroke) outline-1 outline-transparent hover:bg-(--svedit-editing-fill) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 				onclick={save}
 			>
-				Update
+				{is_creating ? 'Create' : 'Update'}
 			</button>
 		</div>
 	</div>
