@@ -7,6 +7,7 @@
 	const page_delete_dialog = get_page_delete_dialog();
 
 	let dialog_ref = $state(null);
+	let confirm_button_ref = $state(null);
 	let delete_error = $state('');
 	let deleting = $state(false);
 
@@ -21,6 +22,12 @@
 	$effect(() => {
 		if (target && dialog_ref && !dialog_ref.open) {
 			dialog_ref.showModal();
+			// showModal() lands on the first focusable element, which is Cancel. Move
+			// focus to Delete so Enter confirms; Escape still closes via oncancel, and
+			// tabbing to Cancel keeps its own Enter behavior.
+			requestAnimationFrame(() => {
+				confirm_button_ref?.focus();
+			});
 		} else if (!target && dialog_ref?.open) {
 			dialog_ref.close();
 		}
@@ -99,7 +106,12 @@
 				<button type="button" class="confirm-btn" onclick={close} disabled={deleting}>
 					Cancel
 				</button>
-				<button type="submit" class="confirm-btn confirm-btn-danger" disabled={deleting}>
+				<button
+					bind:this={confirm_button_ref}
+					type="submit"
+					class="confirm-btn confirm-btn-danger"
+					disabled={deleting}
+				>
 					{deleting ? 'Deleting…' : 'Delete'}
 				</button>
 			</div>

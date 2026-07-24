@@ -3,10 +3,11 @@ import { VERCEL } from '$app/env/private';
 import type { PageServerLoad } from './$types';
 
 // Deliberately no `await parent()` here — see routes/+page.server.ts.
-export const load: PageServerLoad = async ({ locals }) => {
+export const load: PageServerLoad = async ({ locals, url }) => {
 	if (VERCEL) {
 		return {
-			shared_documents: null
+			shared_documents: null,
+			source_document: null
 		};
 	}
 
@@ -14,10 +15,17 @@ export const load: PageServerLoad = async ({ locals }) => {
 		throw redirect(303, '/');
 	}
 
-	const { get_shared_documents } = await import('$lib/api.remote.js');
-	const shared_documents = await get_shared_documents();
+	const api_module = await import('$lib/api.remote.js');
+	const shared_documents = await api_module.get_shared_documents();
+
+	// `?from=<slug>` starts the new page as a copy of an existing one.
+	const from_slug = url.searchParams.get('from');
+	const source_document = from_slug
+		? (await api_module.get_page_document_for_duplicate(from_slug)).document
+		: null;
 
 	return {
-		shared_documents
+		shared_documents,
+		source_document
 	};
 };

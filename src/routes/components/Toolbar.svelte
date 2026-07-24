@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { get_app_context } from '../app_context.js';
+	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { get_page_browser } from './page_browser_context.svelte.js';
@@ -38,6 +39,17 @@
 			document_id: session.doc.document_id,
 			page_href: app.slug ? `/${app.slug}` : null
 		});
+	}
+
+	// The home page has no slug row by invariant, so it is addressed as `/`, the
+	// same way the page browser refers to it. Keyed on the route rather than on a
+	// null slug, so a non-home page with a missing slug never resolves to home.
+	let duplicate_source = $derived(is_home_page ? '/' : app.slug);
+	let can_duplicate_page = $derived(!!duplicate_source);
+
+	function duplicate_page() {
+		if (!duplicate_source) return;
+		void goto(`${resolve('/new')}?from=${encodeURIComponent(duplicate_source)}`);
 	}
 
 	function open_page_delete_dialog() {
@@ -333,6 +345,8 @@
 											class="page-actions-item"
 											popovertarget="toolbar-page-actions-menu"
 											popovertargetaction="hide"
+											onclick={duplicate_page}
+											disabled={!can_duplicate_page}
 											role="menuitem">Duplicate page</button
 										>
 										<button

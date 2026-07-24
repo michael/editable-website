@@ -502,7 +502,7 @@ Required UI behavior:
 - toolbar actions that require admin auth must be hidden or disabled when unauthenticated
 - authenticated admins get an ellipsis page-actions menu in the browsing toolbar with Duplicate page, Edit URL, Delete page, and Logout entries
 - Edit URL and Delete page open the same dialogs as the page browser ellipsis menu, and are disabled on the home page
-- Duplicate page stays presentational for now; wire it in a follow-up task
+- Duplicate page navigates to `/new?from=<slug>`, which starts the new page as a copy of that page; the home page has no slug and is addressed as `?from=/`
 
 ### Page browser behavior
 

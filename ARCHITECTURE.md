@@ -547,6 +547,28 @@ context. Callers pass `is_current_page`, since deleting the page you are looking
 at has to navigate home afterwards rather than just refetching. The home page
 cannot be deleted, so that entry is disabled in both menus too.
 
+#### Duplicating a page
+
+Duplicate page navigates to `/new?from=<slug>`. The `/new` load resolves that
+slug to the page's own document — `get_page_document_for_duplicate`, admin-only,
+deliberately without the shared nav and footer stitched in — and the client builds
+the unsaved copy with `create_duplicate_doc`.
+
+Every node in the source page gets a fresh id via `clone_subtree_with_new_ids`,
+which walks the same node/node_array/text references as the graph collector and
+rewrites them to the copies, so a saved duplicate shares no node ids with its
+original. Ids outside the copied set pass through untouched, which is what keeps
+the shared `nav` and `footer` as references rather than copies; those roots are
+excluded from the walk explicitly, since the stored page document does not
+contain their nodes and they would otherwise be remapped to ids that do not
+exist. The copy is then re-pointed at the current shared documents.
+
+The home page has no slug row by invariant, so it is addressed as `?from=/` — the
+same way the page browser and `page_href` refer to it — and the query resolves
+that to the configured home page id. Duplicating the home page produces an
+ordinary new page; `home_page_id` is a site setting, so the copy does not become
+a second home.
+
 When a user changes a page's slug:
 
 - that slug becomes the page's active slug
