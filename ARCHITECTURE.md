@@ -370,16 +370,15 @@ This keeps the owner anchored to the exact page where they noticed something to 
 
 ### Environment requirements
 
-`ADMIN_PASSWORD` and `ORIGIN` are required in every mode.
+`ADMIN_PASSWORD` and `ORIGIN` are required whenever the backend is enabled.
 
 Behavior rules:
 
-- the app must fail to start if `ADMIN_PASSWORD` or `ORIGIN` is missing
+- in full runtime mode, the app must fail to start if `ADMIN_PASSWORD` or
+  `ORIGIN` is missing
 - the app must never silently grant access when `ADMIN_PASSWORD` is missing
-- in static / `VERCEL=1` mode, authentication is disabled and `ADMIN_PASSWORD` is
-  unused, but it must still be set — Vercel deployments configure both variables
-  in the project settings. Requiring them unconditionally keeps one rule instead
-  of two, and `VERCEL=1` mode is intended to be removed
+- in static / `VERCEL=1` mode there is no database, no login and no writing, so
+  neither variable is needed and neither is checked
 
 Variables consumed through SvelteKit are declared explicitly in `src/env.ts` via
 `defineEnvVars`, enabled by `experimental.explicitEnvironmentVariables` in
@@ -395,9 +394,15 @@ backend mode.
 Values are validated both when the app is built and when it starts. Deploys build
 without secrets — the Dockerfile runs `pnpm build` long before the server's `.env`
 exists — so the validators for required variables consult `building` from
-`$app/env` and enforce only at startup. Enforcing `ORIGIN` this way turns what was
-a silent `?? ''` fallback, surfacing later as a confusing `403` on write requests,
-into a named startup failure.
+`$app/env` and enforce only at startup. They also read `process.env.VERCEL`
+directly, which is what makes the requirement conditional: a validator is handed
+only its own value, but this file is evaluated when the server starts and can
+inspect the environment. Enforcing `ORIGIN` this way turns what was a silent
+`?? ''` fallback, surfacing later as a confusing `403` on write requests, into a
+named startup failure.
+
+When `VERCEL=1` mode is eventually removed, `has_backend()` in `src/env.ts` goes
+away and both variables become unconditionally required.
 
 `DATA_DIR` and the deployment/backup variables are read from `process.env` in
 plain modules and scripts, outside the SvelteKit env system, so they are not
