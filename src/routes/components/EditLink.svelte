@@ -124,7 +124,7 @@
 				{#if app.has_backend}
 					<button
 						type="button"
-						class="mr-1 flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--foreground) outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-[-1px] focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-95 active:bg-(--muted)"
+						class="mr-0.5 flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--foreground) outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-[-1px] focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-95 active:bg-(--muted)"
 						title="Select page"
 						aria-label="Select page"
 						onclick={() => {
