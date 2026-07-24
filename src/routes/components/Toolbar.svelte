@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { get_app_context } from '../app_context.js';
 	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	import { get_page_browser } from './page_browser_context.svelte.js';
+	import { get_page_url_dialog } from './page_url_dialog_context.svelte.js';
 	import { get_selection_node_ancestors } from '../app_utils.js';
 	import NodeNavigator from './NodeNavigator.svelte';
 
@@ -9,6 +11,7 @@
 
 	const page_browser = get_page_browser();
 	const app = get_app_context();
+	const page_url_dialog = get_page_url_dialog();
 
 	let cancel_command = $derived(app_commands.cancel_editing ?? null);
 	let cancel_button_label = $derived(cancel_command?.label || 'Cancel');
@@ -21,6 +24,18 @@
 	let can_show_read_toolbar = $derived(
 		can_create_pages || can_browse_pages || can_edit_document || can_logout
 	);
+
+	// The home page is served from `/` and has no editable slug, matching how the
+	// page browser disables the same entry.
+	let is_home_page = $derived(page.url.pathname === '/');
+
+	function open_page_url_dialog() {
+		if (is_home_page) return;
+		page_url_dialog.open({
+			document_id: session.doc.document_id,
+			page_href: app.slug ? `/${app.slug}` : null
+		});
+	}
 
 	let selected_property = $derived(
 		session.selection?.type === 'property' ? session.get(session.selection.path) : null
@@ -149,11 +164,7 @@
 		>
 			<svg class="size-6 sm:hidden" viewBox="0 0 24 24" fill="none" aria-hidden="true">
 				<circle cx="12" cy="12" r="9.5" stroke="currentColor" />
-				<path
-					d="M5.25 18.75L18.75 5.25"
-					stroke="currentColor"
-					stroke-linecap="round"
-				/>
+				<path d="M5.25 18.75L18.75 5.25" stroke="currentColor" stroke-linecap="round" />
 			</svg>
 			<span class="hidden sm:inline">{cancel_button_label}</span>
 		</button>
@@ -314,6 +325,8 @@
 											class="page-actions-item"
 											popovertarget="toolbar-page-actions-menu"
 											popovertargetaction="hide"
+											onclick={open_page_url_dialog}
+											disabled={is_home_page}
 											role="menuitem">Edit URL</button
 										>
 										<button
@@ -730,6 +743,15 @@
 	.page-actions-item:focus-visible {
 		background: var(--muted);
 		outline: none;
+	}
+
+	.page-actions-item:disabled {
+		color: var(--muted-foreground);
+		cursor: not-allowed;
+	}
+
+	.page-actions-item:disabled:hover {
+		background: transparent;
 	}
 
 	.selection-leading-divider {

@@ -531,7 +531,15 @@ The home page is excluded from this mapping:
 
 #### Custom slugs
 
-Admins can change a page's Page URL from the page browser ellipsis menu.
+Admins can change a page's Page URL from the page browser ellipsis menu, and from
+the page-actions ellipsis menu in the browsing toolbar for the page they are on.
+
+Both entry points share one implementation: `PageUrlDialog.svelte` owns the dialog
+and the `update_page_slug` call, and is rendered once by `Overlays.svelte`. Callers
+open it through the `page_url_dialog` context with the target page's
+`document_id` and current `page_href`, plus an optional `on_saved` hook for
+caller-specific cleanup. The home page has no editable slug, so the entry is
+disabled in both menus.
 
 When a user changes a page's slug:
 

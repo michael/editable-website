@@ -10,6 +10,7 @@
 	import { create_session } from '../create_session.js';
 	import { create_page_browser, set_page_browser } from './page_browser_context.svelte.js';
 	import type { PageBrowser } from './page_browser_context.svelte.js';
+	import { create_page_url_dialog, set_page_url_dialog } from './page_url_dialog_context.svelte.js';
 
 	import { demo_doc } from '$lib/demo_doc.js';
 
@@ -103,6 +104,8 @@
 	page_browser.invalidate = invalidate_page_browser_data;
 
 	set_page_browser(page_browser);
+
+	set_page_url_dialog(create_page_url_dialog());
 
 	$effect(() => {
 		document.documentElement.style.scrollBehavior = editable ? 'auto' : 'smooth';

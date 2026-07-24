@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { get_app_context } from '../app_context.js';
 	import { invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
 
@@ -7,9 +6,10 @@
 	import type { PageTreeNode } from '$lib/api.remote.js';
 	import Media from './Media.svelte';
 	import { get_page_browser } from './page_browser_context.svelte.js';
+	import { get_page_url_dialog } from './page_url_dialog_context.svelte.js';
 
-	const app = get_app_context();
 	const page_browser = get_page_browser();
+	const page_url_dialog = get_page_url_dialog();
 
 	let browser_data = $state(null);
 	let loading = $state(false);
@@ -25,12 +25,6 @@
 	let confirm_ref = $state(null);
 	let deleting = $state(false);
 	let delete_error = $state('');
-
-	let page_url_dialog_item = $state(null);
-	let page_url_dialog_ref = $state(null);
-	let page_url_value = $state('');
-	let page_url_error = $state('');
-	let saving_page_url = $state(false);
 
 	let unlisted_info_item = $state(null);
 	let unlisted_info_ref = $state(null);
@@ -194,14 +188,6 @@
 	});
 
 	$effect(() => {
-		if (page_url_dialog_item && page_url_dialog_ref && !page_url_dialog_ref.open) {
-			page_url_dialog_ref.showModal();
-		} else if (!page_url_dialog_item && page_url_dialog_ref?.open) {
-			page_url_dialog_ref.close();
-		}
-	});
-
-	$effect(() => {
 		if (unlisted_info_item && unlisted_info_ref && !unlisted_info_ref.open) {
 			unlisted_info_ref.showModal();
 		} else if (!unlisted_info_item && unlisted_info_ref?.open) {
@@ -340,7 +326,6 @@ Updated: ${updated_at_label}`;
 		menu_anchor_name = get_menu_anchor_name(item.document_id);
 		menu_item = item;
 		delete_error = '';
-		page_url_error = '';
 	}
 
 	function close_menu() {
@@ -362,16 +347,16 @@ Updated: ${updated_at_label}`;
 
 	function open_page_url_dialog() {
 		if (!menu_item || menu_item.is_home_page) return;
-		page_url_dialog_item = menu_item;
-		page_url_value = menu_item.page_href ? menu_item.page_href.replace(/^\//, '') : '';
-		page_url_error = '';
+		page_url_dialog.open({
+			document_id: menu_item.document_id,
+			page_href: menu_item.page_href,
+			// Clear the cached rows eagerly so the drawer doesn't show the old URL
+			// while the refetch is in flight.
+			on_saved: () => {
+				browser_data = null;
+			}
+		});
 		close_menu();
-	}
-
-	function close_page_url_dialog() {
-		page_url_dialog_item = null;
-		page_url_value = '';
-		page_url_error = '';
 	}
 
 	function handle_menu_click(event) {
@@ -435,12 +420,6 @@ Updated: ${updated_at_label}`;
 		}
 	}
 
-	function handle_page_url_dialog_click(event) {
-		if (event.target === page_url_dialog_ref) {
-			close_page_url_dialog();
-		}
-	}
-
 	function handle_menu_cancel(event) {
 		event.preventDefault();
 		close_menu();
@@ -451,44 +430,10 @@ Updated: ${updated_at_label}`;
 		close_confirm();
 	}
 
-	function handle_page_url_dialog_cancel(event) {
-		event.preventDefault();
-		close_page_url_dialog();
-	}
-
 	async function open_in_new_tab() {
 		if (!menu_item?.page_href) return;
 		window.open(get_resolved_page_href(menu_item.page_href), '_blank', 'noopener,noreferrer');
 		close_menu();
-	}
-
-	async function save_page_url() {
-		if (!page_url_dialog_item) return;
-
-		saving_page_url = true;
-		page_url_error = '';
-
-		try {
-			const api_module = await import('$lib/api.remote.js');
-			const result = await api_module.update_page_slug({
-				document_id: page_url_dialog_item.document_id,
-				slug: page_url_value
-			});
-
-			if (result && result.ok === false && 'code' in result && 'message' in result) {
-				page_url_error = result.message || 'Failed to update Page URL.';
-				return;
-			}
-
-			close_page_url_dialog();
-			browser_data = null;
-			page_browser.invalidate?.();
-			await invalidateAll();
-		} catch (err) {
-			page_url_error = err instanceof Error ? err.message : 'Failed to update Page URL.';
-		} finally {
-			saving_page_url = false;
-		}
 	}
 
 	function get_delete_confirmation_message() {
@@ -993,50 +938,6 @@ Updated: ${updated_at_label}`;
 </dialog>
 
 <dialog
-	bind:this={page_url_dialog_ref}
-	class="confirm-dialog"
-	oncancel={handle_page_url_dialog_cancel}
-	onclick={handle_page_url_dialog_click}
->
-	{#if page_url_dialog_item}
-		<form
-			class="confirm-panel"
-			onsubmit={(event) => {
-				event.preventDefault();
-				void save_page_url();
-			}}
-		>
-			<h3 class="confirm-title">Edit URL</h3>
-			<div class="page-url-field">
-				<span class="page-url-prefix">{app.origin || 'example.com'}/</span>
-				<input
-					type="text"
-					bind:value={page_url_value}
-					class="page-url-input"
-					placeholder="your-page-url"
-				/>
-			</div>
-			{#if page_url_error}
-				<p class="confirm-error" role="alert">{page_url_error}</p>
-			{/if}
-			<div class="confirm-actions">
-				<button
-					type="button"
-					class="confirm-btn"
-					onclick={close_page_url_dialog}
-					disabled={saving_page_url}
-				>
-					Cancel
-				</button>
-				<button type="submit" class="confirm-btn" disabled={saving_page_url}>
-					{saving_page_url ? 'Saving…' : 'Save'}
-				</button>
-			</div>
-		</form>
-	{/if}
-</dialog>
-
-<dialog
 	bind:this={unlisted_info_ref}
 	class="confirm-dialog"
 	oncancel={handle_unlisted_info_cancel}
@@ -1342,8 +1243,6 @@ Updated: ${updated_at_label}`;
 		border-radius: inherit;
 	}
 
-
-
 	.plus-glyph {
 		font-size: 2rem;
 		line-height: 1;
@@ -1642,37 +1541,6 @@ Updated: ${updated_at_label}`;
 		display: flex;
 		justify-content: flex-end;
 		gap: 0.75rem;
-	}
-
-	.page-url-field {
-		display: flex;
-		align-items: center;
-		gap: 0.25rem;
-		padding: 0.75rem 0;
-	}
-
-	.page-url-prefix {
-		font-size: 0.95rem;
-		color: var(--muted-foreground);
-		white-space: nowrap;
-	}
-
-	.page-url-input {
-		flex: 1;
-		min-width: 0;
-		border: 1px solid var(--border);
-		border-radius: 9999px;
-		background: var(--background);
-		color: var(--foreground);
-		padding: 0.5rem 0.65rem;
-		font-size: 0.95rem;
-		outline: none;
-		box-shadow: none;
-	}
-
-	.page-url-input:focus {
-		border-color: var(--svedit-editing-stroke);
-		box-shadow: none;
 	}
 
 	.confirm-btn {
