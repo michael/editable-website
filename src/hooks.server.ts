@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/private';
+import { VERCEL } from '$app/env/private';
 import type { Handle, ServerInit } from '@sveltejs/kit';
 import {
 	admin_session_cookie_name,
@@ -10,11 +10,7 @@ import {
 } from '$lib/server/auth.js';
 
 export const init: ServerInit = async () => {
-	if (!env.VERCEL && !env.ADMIN_PASSWORD) {
-		throw new Error('ADMIN_PASSWORD must be set');
-	}
-
-	if (!env.VERCEL) {
+	if (!VERCEL) {
 		const { default: migrate } = await import('$lib/server/migrate.js');
 		migrate();
 	}
@@ -23,7 +19,7 @@ export const init: ServerInit = async () => {
 export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.is_admin = false;
 
-	if (!env.VERCEL) {
+	if (!VERCEL) {
 		const session_id = event.cookies.get(admin_session_cookie_name);
 
 		if (session_id) {

@@ -2,7 +2,7 @@ import crypto from 'node:crypto';
 import type { DatabaseSync } from 'node:sqlite';
 import type { Cookies } from '@sveltejs/kit';
 import { error } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
+import { ADMIN_PASSWORD, NODE_ENV } from '$app/env/private';
 
 export const admin_session_cookie_name = 'ew_admin_session';
 export const session_duration_seconds = 14 * 24 * 60 * 60;
@@ -82,7 +82,7 @@ export function reset_login_throttle(db: DatabaseSync) {
 }
 
 export function get_required_admin_password(): string {
-	const admin_password = env.ADMIN_PASSWORD;
+	const admin_password = ADMIN_PASSWORD;
 	if (!admin_password) {
 		throw new Error('ADMIN_PASSWORD must be set');
 	}
@@ -99,7 +99,7 @@ export function clear_admin_session_cookie(cookies: Cookies) {
 		path: '/',
 		httpOnly: true,
 		sameSite: 'lax',
-		secure: env.NODE_ENV === 'production',
+		secure: NODE_ENV === 'production',
 		maxAge: 0
 	});
 }
@@ -109,7 +109,7 @@ export function set_admin_session_cookie(cookies: Cookies, session_id: string) {
 		path: '/',
 		httpOnly: true,
 		sameSite: 'lax',
-		secure: env.NODE_ENV === 'production',
+		secure: NODE_ENV === 'production',
 		maxAge: session_duration_seconds
 	});
 }

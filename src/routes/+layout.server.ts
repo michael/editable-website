@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/private';
+import { ORIGIN, VERCEL } from '$app/env/private';
 import { demo_doc } from '$lib/demo_doc.js';
 import { extract_site_metadata } from '$lib/page_metadata.js';
 import type { LayoutServerLoad } from './$types';
@@ -7,7 +7,7 @@ export const load: LayoutServerLoad = async ({ locals, depends }) => {
 	// Re-derived after saving a page, so favicon and site name update live.
 	depends('app:site_metadata');
 
-	const has_backend = !env.VERCEL;
+	const has_backend = !VERCEL;
 
 	let site_metadata;
 	if (has_backend) {
@@ -20,7 +20,7 @@ export const load: LayoutServerLoad = async ({ locals, depends }) => {
 	return {
 		has_backend,
 		is_admin: !!locals.is_admin,
-		origin: env.ORIGIN ?? '',
+		origin: ORIGIN,
 		favicon: site_metadata.favicon
 	};
 };
