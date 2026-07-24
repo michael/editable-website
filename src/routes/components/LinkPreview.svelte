@@ -60,7 +60,7 @@
 </script>
 
 <div
-	class="link-preview pointer-events-auto absolute z-30 mt-1"
+	class="link-preview pointer-events-auto absolute z-30 mt-3"
 	style="position-anchor: --{serialize_path(
 		path
 	)}; position-area: block-end span-all; justify-self: anchor-center;"

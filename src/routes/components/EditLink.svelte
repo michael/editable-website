@@ -103,7 +103,7 @@
 
 <dialog
 	bind:this={dialog_ref}
-	class="edit-link-dialog absolute z-40 m-0 mt-1 max-h-90 overflow-hidden rounded-[23px] border border-(--border) bg-(--background) p-0 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
+	class="edit-link-dialog absolute z-40 m-0 mt-3 max-h-90 overflow-hidden rounded-[23px] border border-(--border) bg-(--background) p-0 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
 	style="position-anchor: {anchor_name}; position-area: block-end span-all; justify-self: anchor-center;"
 	onclick={handle_backdrop_click}
 >
