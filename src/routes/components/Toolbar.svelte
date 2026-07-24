@@ -4,6 +4,8 @@
 	import { page } from '$app/state';
 	import { get_page_browser } from './page_browser_context.svelte.js';
 	import { get_page_url_dialog } from './page_url_dialog_context.svelte.js';
+	import { get_page_delete_dialog } from './page_delete_dialog_context.svelte.js';
+	import { extract_page_metadata } from '$lib/page_metadata.js';
 	import { get_selection_node_ancestors } from '../app_utils.js';
 	import NodeNavigator from './NodeNavigator.svelte';
 
@@ -12,6 +14,7 @@
 	const page_browser = get_page_browser();
 	const app = get_app_context();
 	const page_url_dialog = get_page_url_dialog();
+	const page_delete_dialog = get_page_delete_dialog();
 
 	let cancel_command = $derived(app_commands.cancel_editing ?? null);
 	let cancel_button_label = $derived(cancel_command?.label || 'Cancel');
@@ -34,6 +37,18 @@
 		page_url_dialog.open({
 			document_id: session.doc.document_id,
 			page_href: app.slug ? `/${app.slug}` : null
+		});
+	}
+
+	function open_page_delete_dialog() {
+		if (is_home_page) return;
+		// Derived on demand rather than reactively — to_json() serializes the whole
+		// document, and the title is only needed for the confirmation copy.
+		const metadata = extract_page_metadata(session.to_json());
+		page_delete_dialog.open({
+			document_id: session.doc.document_id,
+			title: metadata.title || 'Untitled page',
+			is_current_page: true
 		});
 	}
 
@@ -334,6 +349,8 @@
 											class="page-actions-item"
 											popovertarget="toolbar-page-actions-menu"
 											popovertargetaction="hide"
+											onclick={open_page_delete_dialog}
+											disabled={is_home_page}
 											role="menuitem">Delete page</button
 										>
 										<div class="my-1 h-px bg-(--border)" role="separator"></div>

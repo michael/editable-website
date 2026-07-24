@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
 
 	import { get_page_browser_data } from '$lib/api.remote.js';
@@ -7,9 +6,11 @@
 	import Media from './Media.svelte';
 	import { get_page_browser } from './page_browser_context.svelte.js';
 	import { get_page_url_dialog } from './page_url_dialog_context.svelte.js';
+	import { get_page_delete_dialog } from './page_delete_dialog_context.svelte.js';
 
 	const page_browser = get_page_browser();
 	const page_url_dialog = get_page_url_dialog();
+	const page_delete_dialog = get_page_delete_dialog();
 
 	let browser_data = $state(null);
 	let loading = $state(false);
@@ -20,11 +21,6 @@
 	let menu_ref = $state(null);
 	let menu_item_refs = $state([]);
 	let menu_selected_index = $state(0);
-
-	let confirm_item = $state(null);
-	let confirm_ref = $state(null);
-	let deleting = $state(false);
-	let delete_error = $state('');
 
 	let unlisted_info_item = $state(null);
 	let unlisted_info_ref = $state(null);
@@ -180,14 +176,6 @@
 	});
 
 	$effect(() => {
-		if (confirm_item && confirm_ref && !confirm_ref.open) {
-			confirm_ref.showModal();
-		} else if (!confirm_item && confirm_ref?.open) {
-			confirm_ref.close();
-		}
-	});
-
-	$effect(() => {
 		if (unlisted_info_item && unlisted_info_ref && !unlisted_info_ref.open) {
 			unlisted_info_ref.showModal();
 		} else if (!unlisted_info_item && unlisted_info_ref?.open) {
@@ -325,7 +313,6 @@ Updated: ${updated_at_label}`;
 		event.stopPropagation();
 		menu_anchor_name = get_menu_anchor_name(item.document_id);
 		menu_item = item;
-		delete_error = '';
 	}
 
 	function close_menu() {
@@ -335,14 +322,17 @@ Updated: ${updated_at_label}`;
 
 	function open_confirm() {
 		if (!menu_item || menu_item.is_home_page) return;
-		confirm_item = menu_item;
-		delete_error = '';
+		page_delete_dialog.open({
+			document_id: menu_item.document_id,
+			title: menu_item.title,
+			is_current_page: browser_data?.current_document_id === menu_item.document_id,
+			// Clear the cached rows eagerly so the drawer doesn't show the deleted
+			// page while the refetch is in flight.
+			on_deleted: () => {
+				browser_data = null;
+			}
+		});
 		close_menu();
-	}
-
-	function close_confirm() {
-		confirm_item = null;
-		delete_error = '';
 	}
 
 	function open_page_url_dialog() {
@@ -414,66 +404,15 @@ Updated: ${updated_at_label}`;
 		}
 	}
 
-	function handle_confirm_click(event) {
-		if (event.target === confirm_ref) {
-			close_confirm();
-		}
-	}
-
 	function handle_menu_cancel(event) {
 		event.preventDefault();
 		close_menu();
-	}
-
-	function handle_confirm_cancel(event) {
-		event.preventDefault();
-		close_confirm();
 	}
 
 	async function open_in_new_tab() {
 		if (!menu_item?.page_href) return;
 		window.open(get_resolved_page_href(menu_item.page_href), '_blank', 'noopener,noreferrer');
 		close_menu();
-	}
-
-	function get_delete_confirmation_message() {
-		if (!confirm_item) return '';
-		return `Delete “${confirm_item.title}”? This cannot be undone.`;
-	}
-
-	async function confirm_delete() {
-		if (!confirm_item) return;
-
-		deleting = true;
-		delete_error = '';
-
-		try {
-			const api_module = await import('$lib/api.remote.js');
-			await api_module.delete_page({ document_id: confirm_item.document_id });
-
-			const deleted_document_id = confirm_item.document_id;
-			const home_page_id = browser_data?.home_page_id ?? null;
-			const current_document_id = browser_data?.current_document_id ?? null;
-			const deleted_current_page = current_document_id === deleted_document_id;
-
-			close_confirm();
-			browser_data = null;
-
-			if (deleted_current_page) {
-				await page_browser.handle_page_deleted?.(
-					deleted_document_id,
-					home_page_id,
-					current_document_id
-				);
-			} else {
-				page_browser.invalidate?.();
-				await invalidateAll();
-			}
-		} catch (err) {
-			delete_error = err instanceof Error ? err.message : 'Failed to delete page.';
-		} finally {
-			deleting = false;
-		}
 	}
 
 	function normalize_search_text(value) {
@@ -903,37 +842,6 @@ Updated: ${updated_at_label}`;
 				Delete
 			</button>
 		</div>
-	{/if}
-</dialog>
-
-<dialog
-	bind:this={confirm_ref}
-	class="confirm-dialog"
-	oncancel={handle_confirm_cancel}
-	onclick={handle_confirm_click}
->
-	{#if confirm_item}
-		<form
-			class="confirm-panel"
-			onsubmit={(event) => {
-				event.preventDefault();
-				void confirm_delete();
-			}}
-		>
-			<h3 class="confirm-title">Delete page</h3>
-			<p class="confirm-message">{get_delete_confirmation_message()}</p>
-			{#if delete_error}
-				<p class="confirm-error" role="alert">{delete_error}</p>
-			{/if}
-			<div class="confirm-actions">
-				<button type="button" class="confirm-btn" onclick={close_confirm} disabled={deleting}>
-					Cancel
-				</button>
-				<button type="submit" class="confirm-btn confirm-btn-danger" disabled={deleting}>
-					{deleting ? 'Deleting…' : 'Delete'}
-				</button>
-			</div>
-		</form>
 	{/if}
 </dialog>
 
@@ -1531,12 +1439,6 @@ Updated: ${updated_at_label}`;
 		color: var(--muted-foreground);
 	}
 
-	.confirm-error {
-		margin: 0;
-		font-size: 0.88rem;
-		color: color-mix(in oklch, red 65%, var(--foreground));
-	}
-
 	.confirm-actions {
 		display: flex;
 		justify-content: flex-end;
@@ -1563,11 +1465,6 @@ Updated: ${updated_at_label}`;
 	.confirm-btn:focus-visible {
 		background: var(--muted);
 		outline-color: var(--svedit-editing-stroke);
-	}
-
-	.confirm-btn-danger {
-		color: color-mix(in oklch, red 65%, var(--foreground));
-		border-color: color-mix(in oklch, red 35%, var(--foreground) 12%, transparent);
 	}
 
 	.confirm-btn:disabled {

@@ -59,19 +59,6 @@ export function create_page_browser(options: {
 		}
 	}
 
-	async function handle_page_deleted(
-		document_id: string,
-		home_page_id: string | null,
-		current_document_id: string | null
-	) {
-		if (current_document_id !== document_id) return;
-
-		reset();
-		if (home_page_id) {
-			await goto('/');
-		}
-	}
-
 	return {
 		get state() {
 			return state;
@@ -79,7 +66,6 @@ export function create_page_browser(options: {
 		open_navigate,
 		open_select,
 		close,
-		handle_page_selected,
-		handle_page_deleted
+		handle_page_selected
 	};
 }

@@ -541,6 +541,12 @@ open it through the `page_url_dialog` context with the target page's
 caller-specific cleanup. The home page has no editable slug, so the entry is
 disabled in both menus.
 
+Deleting a page follows the same shape: `PageDeleteDialog.svelte` owns the
+confirmation and the `delete_page` call, opened through the `page_delete_dialog`
+context. Callers pass `is_current_page`, since deleting the page you are looking
+at has to navigate home afterwards rather than just refetching. The home page
+cannot be deleted, so that entry is disabled in both menus too.
+
 When a user changes a page's slug:
 
 - that slug becomes the page's active slug
