@@ -50,7 +50,9 @@
 	$effect(() => {
 		if (edit_media_command?.show_prompt && dialog_ref) {
 			alt_input_value = target_node?.alt || '';
-			dialog_ref.showModal();
+			if (!dialog_ref.open) {
+				dialog_ref.showModal();
+			}
 
 			if (alt_input_ref) {
 				alt_input_ref.focus();
@@ -64,34 +66,33 @@
 
 <dialog
 	bind:this={dialog_ref}
-	class="edit-media-dialog absolute z-40 m-0 mt-1 max-h-90 overflow-visible border border-(--border) bg-(--background) p-0 text-(--foreground) shadow-xl"
+	class="edit-media-dialog absolute z-40 m-0 mt-1 max-h-90 overflow-hidden rounded-[23px] border border-(--border) bg-(--background) p-0 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
 	style="position-anchor: --{serialize_path(
 		path
 	)}; position-area: block-end span-all; justify-self: anchor-center;"
 	onclick={handle_backdrop_click}
 >
 	<div class="flex flex-col">
-		<div class="border-b border-(--border) px-3 py-2">
-			<div class="text-xs tracking-widest uppercase opacity-60">Alt text</div>
+		<div class="px-4 pt-3 pb-1">
+			<div class="text-sm font-medium">Alt text</div>
 		</div>
-		<div class="px-1 pt-1">
+		<div class="px-1">
 			<textarea
 				bind:this={alt_input_ref}
 				bind:value={alt_input_value}
 				rows="3"
 				placeholder="Describe the media for people using screen readers."
-				class="edit-media-textarea w-72 min-w-0 resize-none border border-(--border) bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:border-(--svedit-editing-stroke) focus:shadow-none focus:ring-0 focus:outline-none"
+				class="edit-media-textarea w-72 min-w-0 resize-none rounded-[18px] border border-(--border) bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:border-(--svedit-editing-stroke) focus:shadow-none focus:ring-0 focus:outline-none"
 				onkeydown={handle_keydown}
 			></textarea>
 		</div>
-		<div class="flex items-center justify-between border-t border-(--border) px-3 py-2">
-			<div></div>
+		<div class="flex items-center justify-end p-1">
 			<button
 				type="button"
-				class="shrink-0 cursor-pointer text-sm text-(--svedit-editing-stroke) outline-1 outline-transparent hover:opacity-80 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
+				class="shrink-0 cursor-pointer rounded-full border-0 bg-transparent px-3 py-1.5 text-sm font-medium text-(--svedit-editing-stroke) outline-1 outline-transparent hover:bg-(--svedit-editing-fill) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 				onclick={save}
 			>
-				UPDATE
+				Update
 			</button>
 		</div>
 	</div>
