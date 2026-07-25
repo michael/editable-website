@@ -135,7 +135,7 @@
 
 {#if variant_item}
 	<div
-		class="flex h-9 shrink-0 items-center rounded-full border border-(--border) bg-(--background) text-sm leading-5 whitespace-nowrap text-(--foreground) shadow-sm"
+		class="variant-pill flex h-9 shrink-0 items-center rounded-full border border-(--border) bg-(--background) text-sm leading-5 whitespace-nowrap text-(--foreground) shadow-sm"
 		class:variant-pulse={should_pulse_variant}
 		aria-label="Current node variant"
 	>
@@ -231,6 +231,14 @@
 		outline: 0;
 		box-shadow: none;
 		background-image: none;
+	}
+
+	/* The real control is a transparent <select> overlaying the pill, so its own
+	   focus ring would be invisible. The pill renders one on its behalf, matching
+	   the toolbar buttons. */
+	.variant-pill:has(.variant-select:focus-visible) {
+		outline: 1px solid var(--svedit-editing-stroke);
+		outline-offset: 1px;
 	}
 
 	@media (prefers-reduced-motion: reduce) {
