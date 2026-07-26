@@ -924,7 +924,10 @@
 			transform: translateX(-50%) translateY(calc(-1 * var(--keyboard-inset, 0px)));
 			overflow: hidden;
 			gap: 0;
-			padding: 4px 0;
+			/* Symmetric so a single-button toolbar (read mode, no backend) is a circle
+			   rather than a vertical oval. The horizontal inset lives here rather than
+			   on the leading/save groups, so it applies even when those are absent. */
+			padding: 4px;
 			color: var(--foreground);
 			background: var(--background);
 			border: 1px solid var(--border);
@@ -952,11 +955,12 @@
 			   flush against a clipping edge. Same trick as those scrollers use on
 			   desktop: overflow clips at the padding box, so 2px of padding gives the
 			   focus rings (1px outline at 1px offset) room to render.
-			   The negative margin is vertical only. Pulling it back horizontally would
-			   tuck the first and last tool's ring under .mobile-selection-leading and
-			   .mobile-save-group, which are opaque and paint over this box; 4px of
-			   extra width on a max-content pill is the cheaper trade. */
-			padding: 2px;
+			   Vertical only, and with a matching negative margin, so this adds no width:
+			   horizontal room comes from the pill's own padding instead. Padding here
+			   horizontally would either widen the pill (breaking the circle above) or,
+			   if negated, tuck the end tools' rings under the opaque leading/save
+			   groups. */
+			padding: 2px 0;
 			margin: -2px 0;
 		}
 
@@ -990,7 +994,6 @@
 			display: flex;
 			flex: none;
 			align-self: stretch;
-			padding-left: 4px;
 			background: var(--background);
 		}
 
@@ -998,7 +1001,6 @@
 			display: flex;
 			flex: none;
 			align-self: stretch;
-			padding-right: 4px;
 			background: var(--background);
 		}
 	}
