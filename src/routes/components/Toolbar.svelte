@@ -83,29 +83,27 @@
 
 	let file_input_ref = $state(null);
 
-	function handle_insert_default_node_click(e) {
-		handle_btn_mousedown(e, session.commands.insert_default_node);
+	function handle_insert_default_node_click(event) {
+		handle_btn_click(event, session.commands.insert_default_node);
 	}
 
 	function handle_delete_selection_click(event) {
-		event.preventDefault();
 		session.apply(session.tr.delete_selection('backward'));
+		restore_canvas_focus(event);
 	}
 
 	function cache_replace_media_path(path) {
 		document.documentElement.dataset.replaceMediaPath = JSON.stringify(path);
 	}
 
-	function handle_edit_image_click(e) {
-		e.preventDefault();
-		if (session.commands.edit_image?.disabled) return;
-		session.commands.edit_image?.execute();
+	function handle_edit_image_click(event) {
+		handle_btn_click(event, session.commands.edit_image);
 	}
 
-	function handle_replace_image_click(e) {
-		e.preventDefault();
+	function handle_replace_image_click() {
 		if (session.selection?.type !== 'property') return;
 		cache_replace_media_path(session.selection.path);
+		// Opens a file dialog, so focus intentionally leaves the canvas here.
 		file_input_ref?.click();
 	}
 
@@ -138,10 +136,40 @@
 	const TW_TOOLBAR_BTN_HOVER =
 		'hover:bg-(--muted) active:bg-(--muted) active:scale-95 active:translate-y-px';
 
-	function handle_btn_mousedown(event, command) {
+	// Toolbar buttons preventDefault on mousedown so pressing them never moves
+	// focus out of the canvas or collapses its selection, and run the command on
+	// click — which fires for both mouse and keyboard. A prevented mousedown still
+	// produces a click, so mouse behavior is unchanged.
+	function handle_btn_mousedown(event) {
 		event.preventDefault();
+	}
+
+	// Keyboard-activated clicks report no button presses.
+	function is_keyboard_activation(event) {
+		return event.detail === 0;
+	}
+
+	// Keyboard activation leaves focus on the toolbar, where the canvas no longer
+	// re-renders its selection or scrolls it into view. Hand focus back so every
+	// press behaves like the mouse path.
+	function restore_canvas_focus(event) {
+		if (is_keyboard_activation(event)) focus_canvas();
+	}
+
+	// Link and media commands open a popover anchored to the selection highlight
+	// span. focus_canvas() removes that span, so refocusing here would leave the
+	// popover with nothing to anchor to and strand it at the top of the page.
+	// These popovers focus their own input, so the canvas is not needed.
+	// Detected structurally: EditLinkCommand only sets show_prompt on a timeout,
+	// so its value is still false right after execute().
+	function opens_anchored_prompt(command) {
+		return !!command && 'show_prompt' in command;
+	}
+
+	function handle_btn_click(event, command) {
 		if (command?.disabled) return;
 		command.execute();
+		if (!opens_anchored_prompt(command)) restore_canvas_focus(event);
 	}
 </script>
 
@@ -150,7 +178,8 @@
 		class="{TW_TOOLBAR_BTN} {session.commands.select_parent?.disabled
 			? TW_TOOLBAR_BTN_DISABLED
 			: TW_TOOLBAR_BTN_HOVER}"
-		onmousedown={(e) => handle_btn_mousedown(e, session.commands.select_parent)}
+		onmousedown={handle_btn_mousedown}
+		onclick={(e) => handle_btn_click(e, session.commands.select_parent)}
 		title="Select parent (Esc)"
 		aria-label="Select parent"
 	>
@@ -396,7 +425,8 @@
 											: TW_TOOLBAR_BTN_HOVER}"
 										class:!text-(--svedit-editing-stroke)={session.commands.toggle_strong?.active}
 										class:!bg-(--svedit-editing-fill)={session.commands.toggle_strong?.active}
-										onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_strong)}
+										onmousedown={handle_btn_mousedown}
+										onclick={(e) => handle_btn_click(e, session.commands.toggle_strong)}
 										title="Bold (⌘ B)"
 									>
 										<svg
@@ -421,7 +451,8 @@
 											: TW_TOOLBAR_BTN_HOVER}"
 										class:!text-(--svedit-editing-stroke)={session.commands.toggle_emphasis?.active}
 										class:!bg-(--svedit-editing-fill)={session.commands.toggle_emphasis?.active}
-										onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_emphasis)}
+										onmousedown={handle_btn_mousedown}
+										onclick={(e) => handle_btn_click(e, session.commands.toggle_emphasis)}
 										title="Italic (⌘ I)"
 									>
 										<svg
@@ -445,7 +476,8 @@
 											: TW_TOOLBAR_BTN_HOVER}"
 										class:!text-(--svedit-editing-stroke)={session.commands.toggle_code?.active}
 										class:!bg-(--svedit-editing-fill)={session.commands.toggle_code?.active}
-										onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_code)}
+										onmousedown={handle_btn_mousedown}
+										onclick={(e) => handle_btn_click(e, session.commands.toggle_code)}
 										title="Code (⌘ ⇧ C)"
 										aria-label="Code"
 									>
@@ -479,7 +511,8 @@
 										class:!text-(--svedit-editing-stroke)={session.commands.toggle_highlight
 											?.active}
 										class:!bg-(--svedit-editing-fill)={session.commands.toggle_highlight?.active}
-										onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_highlight)}
+										onmousedown={handle_btn_mousedown}
+										onclick={(e) => handle_btn_click(e, session.commands.toggle_highlight)}
 										title="Highlight (⌘ U)"
 									>
 										<svg
@@ -507,7 +540,8 @@
 											: TW_TOOLBAR_BTN_HOVER}"
 										class:!text-(--svedit-editing-stroke)={session.commands.toggle_link?.active}
 										class:!bg-(--svedit-editing-fill)={session.commands.toggle_link?.active}
-										onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_link)}
+										onmousedown={handle_btn_mousedown}
+										onclick={(e) => handle_btn_click(e, session.commands.toggle_link)}
 										title="Link (⌘ K)"
 									>
 										<svg
@@ -538,7 +572,8 @@
 										class="{TW_TOOLBAR_BTN} {session.commands.edit_image?.disabled
 											? TW_TOOLBAR_BTN_DISABLED
 											: TW_TOOLBAR_BTN_HOVER}"
-										onmousedown={handle_edit_image_click}
+										onmousedown={handle_btn_mousedown}
+										onclick={handle_edit_image_click}
 										title="Alt text"
 										aria-label="Alt text"
 									>
@@ -551,7 +586,8 @@
 									<button
 										id="replace-media-btn"
 										class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
-										onmousedown={handle_replace_image_click}
+										onmousedown={handle_btn_mousedown}
+										onclick={handle_replace_image_click}
 										title="Replace image (⏎)"
 										aria-label="Replace image"
 									>
@@ -579,7 +615,8 @@
 									{#if is_node_caret && !session.commands.insert_default_node?.disabled}
 										<button
 											class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
-											onmousedown={handle_insert_default_node_click}
+											onmousedown={handle_btn_mousedown}
+											onclick={handle_insert_default_node_click}
 											title="Insert (↵)"
 											aria-label="Insert"
 										>
@@ -604,7 +641,8 @@
 											class:!text-(--svedit-editing-stroke)={session.commands.toggle_section
 												?.active}
 											class:!bg-(--svedit-editing-fill)={session.commands.toggle_section?.active}
-											onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_section)}
+											onmousedown={handle_btn_mousedown}
+											onclick={(e) => handle_btn_click(e, session.commands.toggle_section)}
 											title="Toggle section (⌘ ⇧ S)"
 											aria-label="Toggle section"
 										>
@@ -632,7 +670,8 @@
 									{/if}
 									<button
 										class="{TW_TOOLBAR_BTN} aspect-square {TW_TOOLBAR_BTN_HOVER}"
-										onmousedown={handle_delete_selection_click}
+										onmousedown={handle_btn_mousedown}
+										onclick={handle_delete_selection_click}
 										title="Delete backwards (⌫)"
 										aria-label="Delete backwards"
 									>
@@ -674,7 +713,8 @@
 									class="{TW_TOOLBAR_BTN} {session.commands.undo?.disabled
 										? TW_TOOLBAR_BTN_DISABLED
 										: TW_TOOLBAR_BTN_HOVER}"
-									onmousedown={(e) => handle_btn_mousedown(e, session.commands.undo)}
+									onmousedown={handle_btn_mousedown}
+									onclick={(e) => handle_btn_click(e, session.commands.undo)}
 									title="Undo (⌘ Z)"
 								>
 									<svg
@@ -695,7 +735,8 @@
 									class="{TW_TOOLBAR_BTN} {session.commands.redo?.disabled
 										? TW_TOOLBAR_BTN_DISABLED
 										: TW_TOOLBAR_BTN_HOVER}"
-									onmousedown={(e) => handle_btn_mousedown(e, session.commands.redo)}
+									onmousedown={handle_btn_mousedown}
+									onclick={(e) => handle_btn_click(e, session.commands.redo)}
 									title="Redo (⌘ ⇧ Z)"
 								>
 									<svg
