@@ -27,7 +27,8 @@ import {
 	EditLinkCommand,
 	ReplaceMediaCommand,
 	EditImageCommand,
-	ToggleAccordionCommand
+	ToggleAccordionCommand,
+	DuplicateNodesCommand
 } from './commands.svelte.js';
 
 // System components
@@ -376,7 +377,8 @@ const session_config = {
 			toggle_link: new ToggleLinkCommand(context),
 			edit_link: new EditLinkCommand(context),
 			edit_image: new EditImageCommand(context),
-			replace_media: new ReplaceMediaCommand(context)
+			replace_media: new ReplaceMediaCommand(context),
+			duplicate_nodes: new DuplicateNodesCommand(context)
 		};
 
 		// Define keymap binding keys to commands
@@ -397,6 +399,7 @@ const session_config = {
 			'meta+shift+c,ctrl+shift+c': [commands.toggle_code],
 			'meta+u,ctrl+u': [commands.toggle_highlight],
 			'meta+shift+s,ctrl+shift+s': [commands.toggle_section],
+			'meta+d,ctrl+d': [commands.duplicate_nodes],
 			'meta+z,ctrl+z': [commands.undo],
 			'meta+shift+z,ctrl+shift+z': [commands.redo],
 			escape: [commands.select_parent],

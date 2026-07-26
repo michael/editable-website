@@ -677,6 +677,28 @@ export const get_document = query(v.string(), async (slug) => {
 });
 
 /**
+ * Get a page's own document for duplication, without the shared nav and footer
+ * stitched in. The caller rebuilds those references against the current shared
+ * documents, so returning them here would only invite copying them by mistake.
+ */
+export const get_page_document_for_duplicate = query(v.string(), async (slug) => {
+	require_admin_session(getRequestEvent().locals);
+
+	// The home page has no slug row by invariant, so it is addressed as `/` —
+	// the same way the page browser and `page_href` refer to it.
+	const document_id =
+		slug === '/' ? get_home_page_id_from_db() : (resolve_slug(slug)?.document_id ?? null);
+
+	if (!document_id) {
+		error(404, `Page not found for slug: ${slug}`);
+	}
+
+	return {
+		document: get_doc_from_db(document_id)
+	};
+});
+
+/**
  * Resolve the configured home page and return its stitched document.
  */
 export const get_home_document = query(v.void(), async () => {

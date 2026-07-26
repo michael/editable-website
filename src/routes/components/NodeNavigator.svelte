@@ -135,12 +135,12 @@
 
 {#if variant_item}
 	<div
-		class="flex h-9 shrink-0 items-center rounded-full border border-(--border) bg-(--background) text-sm leading-5 whitespace-nowrap text-(--foreground) shadow-sm"
+		class="variant-pill flex h-9 min-w-0 items-center rounded-full border border-(--border) bg-(--background) text-sm leading-5 whitespace-nowrap text-(--foreground) shadow-sm"
 		class:variant-pulse={should_pulse_variant}
 		aria-label="Current node variant"
 	>
 		<div
-			class="relative flex h-full shrink-0 items-center rounded-full px-3 whitespace-nowrap {variant_item.option_count >
+			class="relative flex h-full min-w-0 items-center rounded-full px-3 whitespace-nowrap {variant_item.option_count >
 			1
 				? 'cursor-pointer hover:bg-(--muted)'
 				: ''}"
@@ -148,8 +148,8 @@
 				? 'Choose variant · Type ⌃⇧↑/↓ · Layout ⌃⇧←/→'
 				: undefined}
 		>
-			<span class="flex shrink-0 items-center whitespace-nowrap" aria-hidden="true">
-				<span class="whitespace-nowrap">
+			<span class="flex min-w-0 items-center whitespace-nowrap" aria-hidden="true">
+				<span class="truncate whitespace-nowrap">
 					<span
 						class={variant_item.option_count > 1
 							? 'font-medium'
@@ -162,7 +162,11 @@
 					{/if}
 				</span>
 				{#if variant_item.option_count > 1}
-					<svg class="ml-2 size-3 stroke-(--muted-foreground)" viewBox="0 0 12 12" fill="none">
+					<svg
+						class="ml-2 size-3 shrink-0 stroke-(--muted-foreground)"
+						viewBox="0 0 12 12"
+						fill="none"
+					>
 						<path d="M3 4.5L6 7.5L9 4.5" stroke-width="1.25" />
 					</svg>
 				{/if}
@@ -231,6 +235,14 @@
 		outline: 0;
 		box-shadow: none;
 		background-image: none;
+	}
+
+	/* The real control is a transparent <select> overlaying the pill, so its own
+	   focus ring would be invisible. The pill renders one on its behalf, matching
+	   the toolbar buttons. */
+	.variant-pill:has(.variant-select:focus-visible) {
+		outline: 1px solid var(--svedit-editing-stroke);
+		outline-offset: 1px;
 	}
 
 	@media (prefers-reduced-motion: reduce) {

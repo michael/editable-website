@@ -8,6 +8,70 @@ function get_attached_ranges(
 }
 
 /**
+ * Deep-copy the subtree rooted at `root_id`, giving every copied node a fresh id
+ * and rewriting the references between them.
+ *
+ * Ids outside the copied set are left untouched, so references that point at
+ * other documents — a page's shared `nav` and `footer` — keep pointing there.
+ * Pass those roots in `exclude_roots` so they are not treated as part of the
+ * subtree; they live in their own documents and must not be duplicated.
+ */
+export function clone_subtree_with_new_ids(
+	root_id: string,
+	nodes: Record<string, DocumentNode>,
+	generate_id: () => string,
+	exclude_roots?: Set<string>
+): { root_id: string; nodes: Record<string, DocumentNode> } {
+	const source_ids = collect_node_ids_in_order(root_id, nodes, exclude_roots);
+
+	const id_map = new Map<string, string>();
+	for (const id of source_ids) {
+		if (nodes[id]) id_map.set(id, generate_id());
+	}
+
+	const map_id = (id: string) => id_map.get(id) ?? id;
+	const cloned_nodes: Record<string, DocumentNode> = {};
+
+	for (const [source_id, new_id] of id_map) {
+		const node = structuredClone(nodes[source_id]);
+		node.id = new_id;
+
+		const type_schema: NodeSchema | undefined = document_schema[node.type];
+
+		for (const [prop_name, prop_def] of Object.entries<PropertyDefinition>(
+			type_schema?.properties ?? {}
+		)) {
+			const value = node[prop_name];
+			if (value == null) continue;
+
+			if (prop_def.type === 'node' && typeof value === 'string') {
+				node[prop_name] = map_id(value);
+			} else if (prop_def.type === 'node_array') {
+				value.nodes = value.nodes.map(map_id);
+				remap_attached_ranges(value, map_id);
+			} else if (prop_def.type === 'text') {
+				remap_attached_ranges(value, map_id);
+			}
+		}
+
+		cloned_nodes[new_id] = node;
+	}
+
+	return { root_id: map_id(root_id), nodes: cloned_nodes };
+}
+
+function remap_attached_ranges(
+	value: { marks?: Attachment[]; annotations?: Attachment[] },
+	map_id: (id: string) => string
+) {
+	for (const range of get_attached_ranges(value)) {
+		if (range.node_id) {
+			range.node_id = map_id(range.node_id);
+		}
+	}
+}
+
+/**
  * Collect all node ids reachable from a root node by walking node/node_array
  * properties and mark/annotation references, preserving first-seen traversal order.
  */

@@ -10,6 +10,8 @@
 	import LinkPreview from './LinkPreview.svelte';
 	import AuthDialog from './AuthDialog.svelte';
 	import Drawer from './Drawer.svelte';
+	import PageUrlDialog from './PageUrlDialog.svelte';
+	import PageDeleteDialog from './PageDeleteDialog.svelte';
 
 	const svedit = get_svedit_context();
 	const app = get_app_context();
@@ -238,6 +240,8 @@
 		<Drawer bind:open={page_browser.state.open} label="Pages">
 			<PagesDrawer />
 		</Drawer>
+		<PageUrlDialog />
+		<PageDeleteDialog />
 	{/if}
 </div>
 

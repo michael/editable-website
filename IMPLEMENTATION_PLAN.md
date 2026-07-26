@@ -501,7 +501,8 @@ Required UI behavior:
 - link pickers must not expose drafts to unauthenticated users
 - toolbar actions that require admin auth must be hidden or disabled when unauthenticated
 - authenticated admins get an ellipsis page-actions menu in the browsing toolbar with Duplicate page, Edit URL, Delete page, and Logout entries
-- keep the initial page-management entries presentational and retain the existing working Logout action; wire Duplicate page, Edit URL, and Delete page in a follow-up task
+- Edit URL and Delete page open the same dialogs as the page browser ellipsis menu, and are disabled on the home page
+- Duplicate page navigates to `/new?from=<slug>`, which starts the new page as a copy of that page; the home page has no slug and is addressed as `?from=/`
 
 ### Page browser behavior
 

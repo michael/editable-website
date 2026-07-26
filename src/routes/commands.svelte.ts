@@ -344,3 +344,62 @@ export class EditLinkCommand extends Command {
 		}
 	}
 }
+
+/**
+ * Duplicate the selected nodes, following the same steps as copy → collapse the
+ * cursor at the end of the selection → paste, so the copies land directly after
+ * the originals.
+ *
+ * Text and property selections duplicate their closest parent node instead, so
+ * the command works from inside a node without selecting it first.
+ */
+export class DuplicateNodesCommand extends Command {
+	is_enabled() {
+		const selection = this.context.session.selection;
+		if (!selection) return false;
+
+		// A collapsed node cursor sits between nodes — there is nothing to copy.
+		if (selection.type === 'node') return !is_selection_collapsed(selection);
+
+		// Same condition select_parent() uses to decide whether a parent exists.
+		return selection.path.length > 3;
+	}
+
+	execute() {
+		const { session } = this.context;
+
+		// Anything that is not already a node selection duplicates its closest
+		// parent node, which select_parent() selects as a single-node range.
+		if (session.selection && session.selection.type !== 'node') {
+			session.select_parent();
+		}
+
+		const selection = session.selection;
+		if (selection?.type !== 'node' || is_selection_collapsed(selection)) return;
+
+		// Read the payload before touching the selection — this is the same data
+		// the clipboard would carry for a node copy.
+		const payload = session.get_selected_annotated_nodes();
+		if (!payload) return;
+
+		const { nodes, main_nodes, marks, annotations } = payload;
+		const selection_end = Math.max(selection.anchor_offset, selection.focus_offset);
+
+		const tr = session.tr;
+		// Collapsing is what makes this a duplicate rather than a replace:
+		// insert_nodes deletes a non-collapsed selection before inserting.
+		tr.set_selection({
+			type: 'node',
+			path: selection.path,
+			anchor_offset: selection_end,
+			focus_offset: selection_end
+		});
+		tr.insert_nodes(
+			main_nodes.map((node_id) => tr.build(node_id, nodes)),
+			marks,
+			annotations,
+			nodes
+		);
+		session.apply(tr);
+	}
+}

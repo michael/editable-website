@@ -1,7 +1,13 @@
 <script lang="ts">
 	import { get_app_context } from '../app_context.js';
+	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	import { get_page_browser } from './page_browser_context.svelte.js';
+	import { get_page_url_dialog } from './page_url_dialog_context.svelte.js';
+	import { get_page_delete_dialog } from './page_delete_dialog_context.svelte.js';
+	import { extract_page_metadata } from '$lib/page_metadata.js';
+	import { untrack } from 'svelte';
 	import { get_selection_node_ancestors } from '../app_utils.js';
 	import NodeNavigator from './NodeNavigator.svelte';
 
@@ -9,6 +15,8 @@
 
 	const page_browser = get_page_browser();
 	const app = get_app_context();
+	const page_url_dialog = get_page_url_dialog();
+	const page_delete_dialog = get_page_delete_dialog();
 
 	let cancel_command = $derived(app_commands.cancel_editing ?? null);
 	let cancel_button_label = $derived(cancel_command?.label || 'Cancel');
@@ -21,6 +29,41 @@
 	let can_show_read_toolbar = $derived(
 		can_create_pages || can_browse_pages || can_edit_document || can_logout
 	);
+
+	// The home page is served from `/` and has no editable slug, matching how the
+	// page browser disables the same entry.
+	let is_home_page = $derived(page.url.pathname === '/');
+
+	function open_page_url_dialog() {
+		if (is_home_page) return;
+		page_url_dialog.open({
+			document_id: session.doc.document_id,
+			page_href: app.slug ? `/${app.slug}` : null
+		});
+	}
+
+	// The home page has no slug row by invariant, so it is addressed as `/`, the
+	// same way the page browser refers to it. Keyed on the route rather than on a
+	// null slug, so a non-home page with a missing slug never resolves to home.
+	let duplicate_source = $derived(is_home_page ? '/' : app.slug);
+	let can_duplicate_page = $derived(!!duplicate_source);
+
+	function duplicate_page() {
+		if (!duplicate_source) return;
+		void goto(`${resolve('/new')}?from=${encodeURIComponent(duplicate_source)}`);
+	}
+
+	function open_page_delete_dialog() {
+		if (is_home_page) return;
+		// Derived on demand rather than reactively — to_json() serializes the whole
+		// document, and the title is only needed for the confirmation copy.
+		const metadata = extract_page_metadata(session.to_json());
+		page_delete_dialog.open({
+			document_id: session.doc.document_id,
+			title: metadata.title || 'Untitled page',
+			is_current_page: true
+		});
+	}
 
 	let selected_property = $derived(
 		session.selection?.type === 'property' ? session.get(session.selection.path) : null
@@ -39,31 +82,88 @@
 	let can_show_variant_selector = $derived(get_selection_node_ancestors(session).length > 0);
 	let can_show_selection_tool_group = $derived(can_select_parent || can_show_variant_selector);
 
+	// The variant switcher targets the closest switchable ancestor, which aids
+	// discoverability on desktop but crowds the single merged pill on mobile — it is
+	// roughly half a phone's width, which pushes the mark tools out of reach. On
+	// narrow screens it is shown only when a node is actually selected; the rule
+	// itself is unchanged, only the width at which it is worth the space.
+	// Derived here and hidden in CSS so the breakpoint stays in one place.
+	let is_single_node_selected = $derived(
+		session.selection?.type === 'node' &&
+			Math.abs(session.selection.anchor_offset - session.selection.focus_offset) === 1
+	);
+
 	let file_input_ref = $state(null);
 
-	function handle_insert_default_node_click(e) {
-		handle_btn_mousedown(e, session.commands.insert_default_node);
+	// iOS Safari keeps the layout viewport at full height when the virtual keyboard
+	// opens, so a fixed bottom toolbar ends up behind it. Measure how far the
+	// keyboard overlaps and lift the toolbar by that much. Chromium and Firefox
+	// resize the layout viewport instead (interactive-widget in app.html), where
+	// this measures 0 and the transform is a no-op.
+	let keyboard_inset = $state(0);
+
+	$effect(() => {
+		const visual_viewport = window.visualViewport;
+		if (!visual_viewport) return;
+
+		let current = untrack(() => keyboard_inset);
+		let target = current;
+		let raf = 0;
+
+		function measure() {
+			target = Math.max(
+				0,
+				Math.round(window.innerHeight - visual_viewport.height - visual_viewport.offsetTop)
+			);
+			if (!raf) raf = requestAnimationFrame(follow);
+		}
+
+		// Exponential follower: smooths the large jump when the keyboard opens while
+		// damping the small offsetTop corrections a touch pan produces.
+		function follow() {
+			raf = 0;
+			const delta = target - current;
+			if (Math.abs(delta) <= 1) {
+				current = target;
+			} else {
+				current += delta * 0.35;
+				raf = requestAnimationFrame(follow);
+			}
+			keyboard_inset = current;
+		}
+
+		measure();
+		visual_viewport.addEventListener('resize', measure);
+		visual_viewport.addEventListener('scroll', measure);
+
+		return () => {
+			cancelAnimationFrame(raf);
+			visual_viewport.removeEventListener('resize', measure);
+			visual_viewport.removeEventListener('scroll', measure);
+		};
+	});
+
+	function handle_insert_default_node_click(event) {
+		handle_btn_click(event, session.commands.insert_default_node);
 	}
 
 	function handle_delete_selection_click(event) {
-		event.preventDefault();
 		session.apply(session.tr.delete_selection('backward'));
+		restore_canvas_focus(event);
 	}
 
 	function cache_replace_media_path(path) {
 		document.documentElement.dataset.replaceMediaPath = JSON.stringify(path);
 	}
 
-	function handle_edit_image_click(e) {
-		e.preventDefault();
-		if (session.commands.edit_image?.disabled) return;
-		session.commands.edit_image?.execute();
+	function handle_edit_image_click(event) {
+		handle_btn_click(event, session.commands.edit_image);
 	}
 
-	function handle_replace_image_click(e) {
-		e.preventDefault();
+	function handle_replace_image_click() {
 		if (session.selection?.type !== 'property') return;
 		cache_replace_media_path(session.selection.path);
+		// Opens a file dialog, so focus intentionally leaves the canvas here.
 		file_input_ref?.click();
 	}
 
@@ -96,10 +196,40 @@
 	const TW_TOOLBAR_BTN_HOVER =
 		'hover:bg-(--muted) active:bg-(--muted) active:scale-95 active:translate-y-px';
 
-	function handle_btn_mousedown(event, command) {
+	// Toolbar buttons preventDefault on mousedown so pressing them never moves
+	// focus out of the canvas or collapses its selection, and run the command on
+	// click — which fires for both mouse and keyboard. A prevented mousedown still
+	// produces a click, so mouse behavior is unchanged.
+	function handle_btn_mousedown(event) {
 		event.preventDefault();
+	}
+
+	// Keyboard-activated clicks report no button presses.
+	function is_keyboard_activation(event) {
+		return event.detail === 0;
+	}
+
+	// Keyboard activation leaves focus on the toolbar, where the canvas no longer
+	// re-renders its selection or scrolls it into view. Hand focus back so every
+	// press behaves like the mouse path.
+	function restore_canvas_focus(event) {
+		if (is_keyboard_activation(event)) focus_canvas();
+	}
+
+	// Link and media commands open a popover anchored to the selection highlight
+	// span. focus_canvas() removes that span, so refocusing here would leave the
+	// popover with nothing to anchor to and strand it at the top of the page.
+	// These popovers focus their own input, so the canvas is not needed.
+	// Detected structurally: EditLinkCommand only sets show_prompt on a timeout,
+	// so its value is still false right after execute().
+	function opens_anchored_prompt(command) {
+		return !!command && 'show_prompt' in command;
+	}
+
+	function handle_btn_click(event, command) {
 		if (command?.disabled) return;
 		command.execute();
+		if (!opens_anchored_prompt(command)) restore_canvas_focus(event);
 	}
 </script>
 
@@ -108,7 +238,8 @@
 		class="{TW_TOOLBAR_BTN} {session.commands.select_parent?.disabled
 			? TW_TOOLBAR_BTN_DISABLED
 			: TW_TOOLBAR_BTN_HOVER}"
-		onmousedown={(e) => handle_btn_mousedown(e, session.commands.select_parent)}
+		onmousedown={handle_btn_mousedown}
+		onclick={(e) => handle_btn_click(e, session.commands.select_parent)}
 		title="Select parent (Esc)"
 		aria-label="Select parent"
 	>
@@ -149,11 +280,7 @@
 		>
 			<svg class="size-6 sm:hidden" viewBox="0 0 24 24" fill="none" aria-hidden="true">
 				<circle cx="12" cy="12" r="9.5" stroke="currentColor" />
-				<path
-					d="M5.25 18.75L18.75 5.25"
-					stroke="currentColor"
-					stroke-linecap="round"
-				/>
+				<path d="M5.25 18.75L18.75 5.25" stroke="currentColor" stroke-linecap="round" />
 			</svg>
 			<span class="hidden sm:inline">{cancel_button_label}</span>
 		</button>
@@ -178,6 +305,7 @@
 {#if editable || can_show_read_toolbar}
 	<div
 		class="toolbar-layout pointer-events-none fixed {TW_TOOLBAR_POSITION} z-50 flex min-w-0 items-center gap-3"
+		style:--keyboard-inset="{keyboard_inset}px"
 	>
 		{#if editable && can_select_parent}
 			<div class="mobile-selection-leading shrink-0 items-center">
@@ -193,9 +321,10 @@
 							{@render selection_leading_contents()}
 						</div>
 					{/if}
-					<div
-						class="selection-scroller min-w-0 [scrollbar-width:none] overflow-x-auto rounded-full"
-					>
+					<!-- Not a scroll container: a long variant label truncates with an
+					ellipsis instead, which reads better than an invisible scrollport on a
+					single pill. min-w-0 is what lets it shrink far enough to truncate. -->
+					<div class="variant-slot min-w-0" class:mobile-hidden={!is_single_node_selected}>
 						<NodeNavigator {session} {focus_canvas} />
 					</div>
 				</div>
@@ -204,8 +333,11 @@
 			<div class="toolbar-spacer min-w-0 flex-1"></div>
 
 			<div class="editor-toolbar action-toolbar flex shrink items-center {TW_TOOLBAR_SURFACE}">
+				<!-- p-0.5/-m-0.5: overflow clips at the padding box, so the padding is what
+				keeps button focus rings (1px outline at 1px offset) from being cut off;
+				the negative margin keeps the layout unchanged. -->
 				<div
-					class="tools-scroller min-w-0 flex-1 [scrollbar-width:none] overflow-x-auto rounded-full"
+					class="tools-scroller -m-0.5 min-w-0 flex-1 scrollbar-none overflow-x-auto rounded-full p-0.5"
 				>
 					<div class="flex min-w-max items-center gap-0">
 						{#if !editable}
@@ -307,6 +439,8 @@
 											class="page-actions-item"
 											popovertarget="toolbar-page-actions-menu"
 											popovertargetaction="hide"
+											onclick={duplicate_page}
+											disabled={!can_duplicate_page}
 											role="menuitem">Duplicate page</button
 										>
 										<button
@@ -314,6 +448,8 @@
 											class="page-actions-item"
 											popovertarget="toolbar-page-actions-menu"
 											popovertargetaction="hide"
+											onclick={open_page_url_dialog}
+											disabled={is_home_page}
 											role="menuitem">Edit URL</button
 										>
 										<button
@@ -321,6 +457,8 @@
 											class="page-actions-item"
 											popovertarget="toolbar-page-actions-menu"
 											popovertargetaction="hide"
+											onclick={open_page_delete_dialog}
+											disabled={is_home_page}
 											role="menuitem">Delete page</button
 										>
 										<div class="my-1 h-px bg-(--border)" role="separator"></div>
@@ -347,7 +485,8 @@
 											: TW_TOOLBAR_BTN_HOVER}"
 										class:!text-(--svedit-editing-stroke)={session.commands.toggle_strong?.active}
 										class:!bg-(--svedit-editing-fill)={session.commands.toggle_strong?.active}
-										onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_strong)}
+										onmousedown={handle_btn_mousedown}
+										onclick={(e) => handle_btn_click(e, session.commands.toggle_strong)}
 										title="Bold (⌘ B)"
 									>
 										<svg
@@ -372,7 +511,8 @@
 											: TW_TOOLBAR_BTN_HOVER}"
 										class:!text-(--svedit-editing-stroke)={session.commands.toggle_emphasis?.active}
 										class:!bg-(--svedit-editing-fill)={session.commands.toggle_emphasis?.active}
-										onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_emphasis)}
+										onmousedown={handle_btn_mousedown}
+										onclick={(e) => handle_btn_click(e, session.commands.toggle_emphasis)}
 										title="Italic (⌘ I)"
 									>
 										<svg
@@ -396,7 +536,8 @@
 											: TW_TOOLBAR_BTN_HOVER}"
 										class:!text-(--svedit-editing-stroke)={session.commands.toggle_code?.active}
 										class:!bg-(--svedit-editing-fill)={session.commands.toggle_code?.active}
-										onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_code)}
+										onmousedown={handle_btn_mousedown}
+										onclick={(e) => handle_btn_click(e, session.commands.toggle_code)}
 										title="Code (⌘ ⇧ C)"
 										aria-label="Code"
 									>
@@ -430,7 +571,8 @@
 										class:!text-(--svedit-editing-stroke)={session.commands.toggle_highlight
 											?.active}
 										class:!bg-(--svedit-editing-fill)={session.commands.toggle_highlight?.active}
-										onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_highlight)}
+										onmousedown={handle_btn_mousedown}
+										onclick={(e) => handle_btn_click(e, session.commands.toggle_highlight)}
 										title="Highlight (⌘ U)"
 									>
 										<svg
@@ -458,7 +600,8 @@
 											: TW_TOOLBAR_BTN_HOVER}"
 										class:!text-(--svedit-editing-stroke)={session.commands.toggle_link?.active}
 										class:!bg-(--svedit-editing-fill)={session.commands.toggle_link?.active}
-										onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_link)}
+										onmousedown={handle_btn_mousedown}
+										onclick={(e) => handle_btn_click(e, session.commands.toggle_link)}
 										title="Link (⌘ K)"
 									>
 										<svg
@@ -489,7 +632,8 @@
 										class="{TW_TOOLBAR_BTN} {session.commands.edit_image?.disabled
 											? TW_TOOLBAR_BTN_DISABLED
 											: TW_TOOLBAR_BTN_HOVER}"
-										onmousedown={handle_edit_image_click}
+										onmousedown={handle_btn_mousedown}
+										onclick={handle_edit_image_click}
 										title="Alt text"
 										aria-label="Alt text"
 									>
@@ -502,7 +646,8 @@
 									<button
 										id="replace-media-btn"
 										class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
-										onmousedown={handle_replace_image_click}
+										onmousedown={handle_btn_mousedown}
+										onclick={handle_replace_image_click}
 										title="Replace image (⏎)"
 										aria-label="Replace image"
 									>
@@ -530,7 +675,8 @@
 									{#if is_node_caret && !session.commands.insert_default_node?.disabled}
 										<button
 											class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
-											onmousedown={handle_insert_default_node_click}
+											onmousedown={handle_btn_mousedown}
+											onclick={handle_insert_default_node_click}
 											title="Insert (↵)"
 											aria-label="Insert"
 										>
@@ -555,7 +701,8 @@
 											class:!text-(--svedit-editing-stroke)={session.commands.toggle_section
 												?.active}
 											class:!bg-(--svedit-editing-fill)={session.commands.toggle_section?.active}
-											onmousedown={(e) => handle_btn_mousedown(e, session.commands.toggle_section)}
+											onmousedown={handle_btn_mousedown}
+											onclick={(e) => handle_btn_click(e, session.commands.toggle_section)}
 											title="Toggle section (⌘ ⇧ S)"
 											aria-label="Toggle section"
 										>
@@ -583,7 +730,8 @@
 									{/if}
 									<button
 										class="{TW_TOOLBAR_BTN} aspect-square {TW_TOOLBAR_BTN_HOVER}"
-										onmousedown={handle_delete_selection_click}
+										onmousedown={handle_btn_mousedown}
+										onclick={handle_delete_selection_click}
 										title="Delete backwards (⌫)"
 										aria-label="Delete backwards"
 									>
@@ -625,7 +773,8 @@
 									class="{TW_TOOLBAR_BTN} {session.commands.undo?.disabled
 										? TW_TOOLBAR_BTN_DISABLED
 										: TW_TOOLBAR_BTN_HOVER}"
-									onmousedown={(e) => handle_btn_mousedown(e, session.commands.undo)}
+									onmousedown={handle_btn_mousedown}
+									onclick={(e) => handle_btn_click(e, session.commands.undo)}
 									title="Undo (⌘ Z)"
 								>
 									<svg
@@ -646,7 +795,8 @@
 									class="{TW_TOOLBAR_BTN} {session.commands.redo?.disabled
 										? TW_TOOLBAR_BTN_DISABLED
 										: TW_TOOLBAR_BTN_HOVER}"
-									onmousedown={(e) => handle_btn_mousedown(e, session.commands.redo)}
+									onmousedown={handle_btn_mousedown}
+									onclick={(e) => handle_btn_click(e, session.commands.redo)}
 									title="Redo (⌘ ⇧ Z)"
 								>
 									<svg
@@ -732,6 +882,15 @@
 		outline: none;
 	}
 
+	.page-actions-item:disabled {
+		color: var(--muted-foreground);
+		cursor: not-allowed;
+	}
+
+	.page-actions-item:disabled:hover {
+		background: transparent;
+	}
+
 	.selection-leading-divider {
 		display: block;
 		align-self: center;
@@ -746,16 +905,29 @@
 		display: contents;
 	}
 
+	/* Lift the toolbar clear of the virtual keyboard. Scoped to touch devices so
+	   desktop gets no transform at all — a transform here would make this fixed
+	   element a containing block. The wider mobile rule below re-declares this
+	   because it also needs translateX for centering. */
+	@media (hover: none), (pointer: coarse) {
+		.toolbar-layout {
+			transform: translateY(calc(-1 * var(--keyboard-inset, 0px)));
+		}
+	}
+
 	@media (max-width: 639px) {
 		.toolbar-layout {
 			right: auto;
 			left: 50%;
 			width: max-content;
 			max-width: calc(100vw - 2.5rem);
-			transform: translateX(-50%);
+			transform: translateX(-50%) translateY(calc(-1 * var(--keyboard-inset, 0px)));
 			overflow: hidden;
 			gap: 0;
-			padding: 4px 0;
+			/* Symmetric so a single-button toolbar (read mode, no backend) is a circle
+			   rather than a vertical oval. The horizontal inset lives here rather than
+			   on the leading/save groups, so it applies even when those are absent. */
+			padding: 4px;
 			color: var(--foreground);
 			background: var(--background);
 			border: 1px solid var(--border);
@@ -778,6 +950,18 @@
 			overflow-x: auto;
 			overscroll-behavior-x: contain;
 			scrollbar-width: none;
+			/* This is the scrollport on mobile — the inner scrollers are display:
+			   contents here, so their own padding generates no box and the tools sit
+			   flush against a clipping edge. Same trick as those scrollers use on
+			   desktop: overflow clips at the padding box, so 2px of padding gives the
+			   focus rings (1px outline at 1px offset) room to render.
+			   Vertical only, and with a matching negative margin, so this adds no width:
+			   horizontal room comes from the pill's own padding instead. Padding here
+			   horizontally would either widen the pill (breaking the circle above) or,
+			   if negated, tuck the end tools' rings under the opaque leading/save
+			   groups. */
+			padding: 2px 0;
+			margin: -2px 0;
 		}
 
 		.toolbar-middle > .editor-toolbar {
@@ -794,16 +978,22 @@
 			display: none;
 		}
 
-		.selection-scroller,
+		.variant-slot,
 		.tools-scroller {
 			display: contents;
+		}
+
+		/* Two classes so this wins over the display: contents above regardless of
+		   source order. Only narrow screens hide the variant switcher — desktop keeps
+		   showing it for text selections and node cursors. */
+		.variant-slot.mobile-hidden {
+			display: none;
 		}
 
 		.mobile-selection-leading {
 			display: flex;
 			flex: none;
 			align-self: stretch;
-			padding-left: 4px;
 			background: var(--background);
 		}
 
@@ -811,7 +1001,6 @@
 			display: flex;
 			flex: none;
 			align-self: stretch;
-			padding-right: 4px;
 			background: var(--background);
 		}
 	}
