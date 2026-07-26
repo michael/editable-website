@@ -4,8 +4,8 @@
 // sync.
 //
 // Runs at every boot (spawned by run-cloud-boot.js, non-blocking alongside
-// the server) as the self-healing pass for upload-time mirrors that failed.
-// Standalone: no $lib imports.
+// server) as the self-healing pass for upload-time mirrors that failed.
+// Standalone: no #lib imports.
 
 import { readdirSync, statSync } from 'node:fs';
 import { join, sep } from 'node:path';

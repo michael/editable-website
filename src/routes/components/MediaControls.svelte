@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { get_svedit_context } from '../svedit_context.js';
-	import { touch_drag } from '$lib/client/touch_drag.js';
+	import { touch_drag } from '#lib/client/touch_drag.js';
 
 	const svedit = get_svedit_context();
 

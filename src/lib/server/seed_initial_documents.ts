@@ -1,5 +1,5 @@
-import { NAV_1, FOOTER_1, PAGE_1 } from '$lib/demo_doc.js';
-import { MEDIA_DEFAULTS } from '$lib/config.js';
+import { NAV_1, FOOTER_1, PAGE_1 } from '#lib/demo_doc.js';
+import { MEDIA_DEFAULTS } from '#lib/config.js';
 import type { DatabaseSync } from 'node:sqlite';
 import type { Document } from 'svedit';
 

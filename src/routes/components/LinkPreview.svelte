@@ -2,6 +2,7 @@
 	import { get_svedit_context } from '../svedit_context.js';
 	import { get_app_context } from '../app_context.js';
 	import { resolve } from '$app/paths';
+	import type { PathnameWithSearchOrHash } from '$app/types';
 	import { serialize_path } from 'svedit';
 	import Media from './Media.svelte';
 
@@ -18,7 +19,7 @@
 		if (!app.has_backend) return null;
 		if (!href) return null;
 
-		const api_module = await import('$lib/api.remote.js');
+		const api_module = await import('#lib/api.remote.js');
 		return await api_module.get_internal_link_preview(href);
 	});
 
@@ -55,7 +56,9 @@
 
 	function get_preview_href(href: unknown) {
 		if (typeof href !== 'string') return '';
-		return href.startsWith('/') && !href.startsWith('//') ? resolve(href as any) : href;
+		if (!href.startsWith('/') || href.startsWith('//')) return href;
+		if (href === '/') return resolve('/');
+		return resolve(href.slice(1) as PathnameWithSearchOrHash);
 	}
 </script>
 

@@ -4,17 +4,17 @@ import * as v from 'valibot';
 import slugify from 'slugify';
 import crypto from 'node:crypto';
 import { validate_document } from 'svedit';
-import db, { with_transaction } from '$lib/server/db.js';
-import { delete_orphaned_assets, touch_asset } from '$lib/server/asset_storage.js';
-import { snapshot_if_stale } from '$lib/server/db_snapshot.js';
-import { document_schema } from '$lib/document_schema.js';
-import { collect_node_ids_in_order } from '$lib/document_graph.js';
+import db, { with_transaction } from '#lib/server/db.js';
+import { delete_orphaned_assets, touch_asset } from '#lib/server/asset_storage.js';
+import { snapshot_if_stale } from '#lib/server/db_snapshot.js';
+import { document_schema } from '#lib/document_schema.js';
+import { collect_node_ids_in_order } from '#lib/document_graph.js';
 import {
 	extract_page_metadata,
 	extract_site_metadata,
 	collect_page_body_node_ids
-} from '$lib/page_metadata.js';
-import type { PreviewMediaNode } from '$lib/page_metadata.js';
+} from '#lib/page_metadata.js';
+import type { PreviewMediaNode } from '#lib/page_metadata.js';
 import type { Attachment, DocumentNode, NodeSchema, PropertyDefinition } from 'svedit';
 import type { StatementSync } from 'node:sqlite';
 import {
@@ -29,7 +29,7 @@ import {
 	get_login_lockout_seconds,
 	register_failed_login,
 	reset_login_throttle
-} from '$lib/server/auth.js';
+} from '#lib/server/auth.js';
 
 const admin_login_input_schema = v.object({
 	password: v.string()
@@ -537,13 +537,11 @@ function build_page_tree_node(
 	};
 }
 
-function build_page_browser_data(): {
+function build_page_browser_data(pathname: string): {
 	home_page_id: string | null;
 	current_document_id: string | null;
 	page_forest: PageTreeNode[];
 } {
-	const request_event = getRequestEvent();
-	const pathname = request_event.url.pathname;
 	const home_page_id = get_home_page_id_from_db();
 	const current_document_id =
 		pathname === '/' ? home_page_id : (resolve_slug(pathname.slice(1))?.document_id ?? null);
@@ -815,9 +813,9 @@ export const logout_admin = command(v.void(), async () => {
 /**
  * Return page browser data for the pages drawer.
  */
-export const get_page_browser_data = query(v.void(), async () => {
+export const get_page_browser_data = query(v.string(), async (pathname) => {
 	require_admin_session(getRequestEvent().locals);
-	return build_page_browser_data();
+	return build_page_browser_data(pathname);
 });
 
 /**

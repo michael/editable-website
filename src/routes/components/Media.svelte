@@ -2,7 +2,7 @@
 	import Image from './Image.svelte';
 	import Video from './Video.svelte';
 
-	import type { PreviewMediaNode } from '$lib/page_metadata.js';
+	import type { PreviewMediaNode } from '#lib/page_metadata.js';
 
 	// Accepts both document media nodes (Nodes['image'] / Nodes['video']) and
 	// derived preview nodes — anything with the media display shape.

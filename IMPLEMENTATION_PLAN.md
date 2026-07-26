@@ -1,5 +1,16 @@
 # Implementation plan
 
+## SvelteKit 3 prerelease migration
+
+- Upgrade to `@sveltejs/kit@3.0.0-next.12`, TypeScript 6, and SvelteKit-3-compatible prerelease versions of the Node and Vercel adapters while retaining compatible Svelte, Vite, and Vite plugin ranges.
+- Delete `svelte.config.js`; keep all framework and compiler configuration in the `sveltekit()` Vite plugin.
+- Replace generated `$lib` imports with a package `#lib` subpath alias declared in `package.json`.
+- Replace deprecated `invalidateAll()` calls with `refreshAll()`.
+- Pass the current pathname explicitly to the page-browser remote query because SvelteKit 3 forbids reading `event.url` inside queries.
+- Update dynamic `$app/paths.resolve` calls to use SvelteKit 3 pathname inputs without a leading slash, while retaining route ids for known routes.
+- Preserve canonical metadata through Editable's explicit `ORIGIN` variable, and configure Node deployments to trust `x-forwarded-proto` and `x-forwarded-host` now that adapter-node no longer reads `ORIGIN`.
+- Validate with `pnpm check`, `pnpm build`, and a Vercel-mode build; do not run the test suite automatically.
+
 ## TypeScript conversion
 
 Convert the whole codebase from JS+JSDoc to TypeScript per the "Language: TypeScript" section in [ARCHITECTURE.md](ARCHITECTURE.md). Non-strict; svelte-check must stay at 0 errors.

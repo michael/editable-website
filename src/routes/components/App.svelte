@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { setContext } from 'svelte';
-	import { goto, invalidate, invalidateAll } from '$app/navigation';
+	import { goto, invalidate, refreshAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { Svedit, KeyMapper, Command, define_keymap } from 'svedit';
 	import Toolbar from './Toolbar.svelte';
 	import SaveProgressModal from './SaveProgressModal.svelte';
 
-	import { EXT_TO_MIME } from '$lib/config.js';
+	import { EXT_TO_MIME } from '#lib/config.js';
 	import { create_session } from '../create_session.js';
 	import { create_page_browser, set_page_browser } from './page_browser_context.svelte.js';
 	import type { PageBrowser } from './page_browser_context.svelte.js';
@@ -16,7 +16,7 @@
 		set_page_delete_dialog
 	} from './page_delete_dialog_context.svelte.js';
 
-	import { demo_doc } from '$lib/demo_doc.js';
+	import { demo_doc } from '#lib/demo_doc.js';
 
 	let {
 		document: doc,
@@ -261,7 +261,7 @@
 
 	async function handle_auth_success() {
 		clear_mobile_overscroll_timeout();
-		await invalidateAll();
+		await refreshAll();
 		close_auth_dialog();
 	}
 
@@ -331,8 +331,8 @@
 			const save_start = Date.now();
 
 			const [api_module, asset_upload_module] = await Promise.all([
-				import('$lib/api.remote.js'),
-				import('$lib/client/asset_upload.js')
+				import('#lib/api.remote.js'),
+				import('#lib/client/asset_upload.js')
 			]);
 
 			const save_document: any = api_module.save_document;
@@ -422,7 +422,7 @@
 				// When a new document has been created, return and redirect to the new url
 				if (result?.created && result.document_id && result.slug) {
 					current_is_new = false;
-					await goto(resolve(`/${result.slug}`), { replaceState: true });
+					await goto(resolve('/[page_id]', { page_id: result.slug }), { replaceState: true });
 					return;
 				}
 
@@ -449,11 +449,11 @@
 
 		async execute() {
 			try {
-				const api_module = await import('$lib/api.remote.js');
+				const api_module = await import('#lib/api.remote.js');
 				await api_module.logout_admin();
 				editable = false;
 				page_browser.close?.();
-				await invalidateAll();
+				await refreshAll();
 			} catch (err) {
 				alert(err instanceof Error ? err.message : 'Logout failed.');
 			}

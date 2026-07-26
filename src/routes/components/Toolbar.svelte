@@ -6,7 +6,7 @@
 	import { get_page_browser } from './page_browser_context.svelte.js';
 	import { get_page_url_dialog } from './page_url_dialog_context.svelte.js';
 	import { get_page_delete_dialog } from './page_delete_dialog_context.svelte.js';
-	import { extract_page_metadata } from '$lib/page_metadata.js';
+	import { extract_page_metadata } from '#lib/page_metadata.js';
 	import { untrack } from 'svelte';
 	import { get_selection_node_ancestors } from '../app_utils.js';
 	import NodeNavigator from './NodeNavigator.svelte';

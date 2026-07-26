@@ -2,14 +2,14 @@ import { error } from '@sveltejs/kit';
 import { Readable } from 'node:stream';
 import { existsSync } from 'node:fs';
 import { extname } from 'node:path';
-import { EXT_TO_MIME } from '$lib/config.js';
+import { EXT_TO_MIME } from '#lib/config.js';
 import {
 	asset_exists,
 	asset_size,
 	create_asset_read_stream,
 	create_variant_read_stream,
 	variant_path
-} from '$lib/server/asset_storage.js';
+} from '#lib/server/asset_storage.js';
 import type { RequestHandler } from './$types';
 
 // Served assets are user-uploaded content. `nosniff` prevents a payload from

@@ -5,7 +5,7 @@
 // the server bundle, rebuilds on edits in development, and fails the build
 // when a referenced file is missing.
 
-import { MARKDOWN_SOURCES } from '$lib/content_config.js';
+import { MARKDOWN_SOURCES } from '#lib/content_config.js';
 import { validate_markdown_sources } from './config.js';
 import type { MarkdownSource } from './config.js';
 

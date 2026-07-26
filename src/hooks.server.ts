@@ -7,11 +7,11 @@ import {
 	session_duration_seconds,
 	session_renewal_interval_seconds,
 	set_admin_session_cookie
-} from '$lib/server/auth.js';
+} from '#lib/server/auth.js';
 
 export const init: ServerInit = async () => {
 	if (!VERCEL) {
-		const { default: migrate } = await import('$lib/server/migrate.js');
+		const { default: migrate } = await import('#lib/server/migrate.js');
 		migrate();
 	}
 };
@@ -23,7 +23,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		const session_id = event.cookies.get(admin_session_cookie_name);
 
 		if (session_id) {
-			const { default: db } = await import('$lib/server/db.js');
+			const { default: db } = await import('#lib/server/db.js');
 			const row = db
 				.prepare('SELECT expires FROM sessions WHERE session_id = ?')
 				.get(session_id) as unknown as { expires: number } | undefined;

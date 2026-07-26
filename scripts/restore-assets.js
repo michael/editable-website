@@ -8,7 +8,7 @@
 //
 // Used by disaster recovery at boot (run-cloud-boot.js), by
 // `data.sh pull-cloud`, and by `data.sh restore-cloud` against the staged
-// database. Standalone: no $lib imports.
+// database. Standalone: no #lib imports.
 //
 // Usage: node --disable-warning=ExperimentalWarning restore-assets.js [db_path]
 // db_path defaults to $DATA_DIR/db.sqlite3; assets always go to $DATA_DIR/assets.

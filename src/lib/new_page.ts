@@ -1,6 +1,6 @@
 import nanoid from '../routes/nanoid.js';
-import { MEDIA_DEFAULTS } from '$lib/config.js';
-import { clone_subtree_with_new_ids } from '$lib/document_graph.js';
+import { MEDIA_DEFAULTS } from '#lib/config.js';
+import { clone_subtree_with_new_ids } from '#lib/document_graph.js';
 import type { Document } from 'svedit';
 
 function get_shared_roots(shared_documents: { nav_document: Document; footer_document: Document }) {

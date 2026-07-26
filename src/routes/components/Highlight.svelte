@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Nodes } from '$lib/document_schema.js';
+	import type { Nodes } from '#lib/document_schema.js';
 	import type { DocumentPath } from 'svedit';
 	import { get_svedit_context } from '../svedit_context.js';
 	import { serialize_path } from 'svedit';

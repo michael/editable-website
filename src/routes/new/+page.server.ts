@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		throw redirect(303, '/');
 	}
 
-	const api_module = await import('$lib/api.remote.js');
+	const api_module = await import('#lib/api.remote.js');
 	const shared_documents = await api_module.get_shared_documents();
 
 	// `?from=<slug>` starts the new page as a copy of an existing one.

@@ -2,7 +2,7 @@
 //
 // Used as a data-integrity gate before a push (locally, against the snapshot)
 // and after a push (in-container, against the live volume). Standalone: no
-// $lib imports, so it runs against the built image too.
+// #lib imports, so it runs against the built image too.
 //
 // Usage: node --disable-warning=ExperimentalWarning check-assets.js [--list-entries] <db_path> <assets_dir>
 // Exit codes: 0 = all present, 1 = missing references, 2 = bad usage.

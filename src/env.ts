@@ -53,7 +53,7 @@ export const variables = defineEnvVars({
 	},
 	ORIGIN: {
 		description:
-			'Public origin of the deployment, e.g. https://my-site.example.com. Must match the URL used in the browser exactly, or write requests fail with 403. Required whenever the backend is enabled.',
+			'Public origin of the deployment, e.g. https://my-site.example.com. Used for canonical and social metadata. Required whenever the backend is enabled.',
 		schema: required_with_backend(where)
 	},
 	VERCEL: {

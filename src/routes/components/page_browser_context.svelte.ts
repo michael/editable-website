@@ -1,5 +1,5 @@
 import { createContext } from 'svelte';
-import type { PageTreeNode } from '$lib/api.remote.js';
+import type { PageTreeNode } from '#lib/api.remote.js';
 
 export type PageBrowser = ReturnType<typeof create_page_browser> & {
 	/** Reactive data version, installed by App.svelte (bumped on invalidation). */

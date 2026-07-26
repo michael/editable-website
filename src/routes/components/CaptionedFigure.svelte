@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Nodes } from '$lib/document_schema.js';
+	import type { Nodes } from '#lib/document_schema.js';
 	import { get_svedit_context } from '../svedit_context.js';
 	import { Node, TextProperty } from 'svedit';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';

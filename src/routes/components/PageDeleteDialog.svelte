@@ -61,7 +61,7 @@
 		delete_error = '';
 
 		try {
-			const api_module = await import('$lib/api.remote.js');
+			const api_module = await import('#lib/api.remote.js');
 			await api_module.delete_page({ document_id: current.document_id });
 
 			current.on_deleted?.();

@@ -1,5 +1,5 @@
 import { define_document_schema, type NodeMap } from 'svedit';
-import { MEDIA_DEFAULTS } from '$lib/config.js';
+import { MEDIA_DEFAULTS } from '#lib/config.js';
 
 const ALL_MARKS = ['strong', 'emphasis', 'code', 'highlight', 'link'];
 const MINIMAL_MARKS = ['emphasis', 'highlight'];

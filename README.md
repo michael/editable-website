@@ -126,7 +126,7 @@ Pass those paths to primitives and use the same paths to read values when layout
 <script lang="ts">
 	import { get_svedit_context } from '../svedit_context.js';
 	import type { DocumentPath } from 'svedit';
-	import type { Nodes } from '$lib/document_schema.js';
+	import type { Nodes } from '#lib/document_schema.js';
 
 	const svedit = get_svedit_context();
 	let { path }: { path: DocumentPath } = $props();
@@ -589,7 +589,7 @@ Create `src/routes/components/Hero.svelte`. It reads the node at `path`, renders
 <script lang="ts">
 	import { Node, TextProperty } from 'svedit';
 	import type { DocumentPath } from 'svedit';
-	import type { Nodes } from '$lib/document_schema.js';
+	import type { Nodes } from '#lib/document_schema.js';
 	import { get_svedit_context } from '../svedit_context.js';
 	import MediaProperty from './MediaProperty.svelte';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
@@ -712,7 +712,7 @@ fly secrets set \
   ADMIN_PASSWORD='pick-a-strong-password'
 ```
 
-`ORIGIN` must exactly match the URL you use in the browser, including the scheme and subdomain (for example, `https://example.com` and `https://www.example.com` are different origins). An incorrect value causes login and other write requests to fail with `403 Forbidden` before the password is checked. Update this secret whenever you switch to a custom domain, and access the site through that canonical URL.
+`ORIGIN` should exactly match the canonical URL you use in the browser, including the scheme and subdomain (for example, `https://example.com` and `https://www.example.com` are different origins), so generated canonical and social metadata stays correct. Update this secret whenever you switch to a custom domain.
 
 Optionally set `ASSET_GRACE_PERIOD_DAYS` (default 7): unreferenced asset files are kept on disk this many days after losing their last reference. This is also the safe window for rolling back a database backup against the live assets folder without ending up with dead image references.
 

@@ -1,4 +1,4 @@
-import { MAX_VIDEO_RESOLUTION, MAX_VIDEO_FILESIZE } from '$lib/config.js';
+import { MAX_VIDEO_RESOLUTION, MAX_VIDEO_FILESIZE } from '#lib/config.js';
 
 export type ProcessedVideo = {
 	blob: Blob;

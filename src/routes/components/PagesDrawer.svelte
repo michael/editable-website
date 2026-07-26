@@ -1,8 +1,10 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
 
-	import { get_page_browser_data } from '$lib/api.remote.js';
-	import type { PageTreeNode } from '$lib/api.remote.js';
+	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
+
+	import { get_page_browser_data } from '#lib/api.remote.js';
+	import type { PageTreeNode } from '#lib/api.remote.js';
 	import Media from './Media.svelte';
 	import { get_page_browser } from './page_browser_context.svelte.js';
 	import { get_page_url_dialog } from './page_url_dialog_context.svelte.js';
@@ -99,7 +101,7 @@
 	const browser_data_query = $derived.by(() => {
 		page_browser?.version ?? 0;
 		if (!page_browser.state.open) return null;
-		return get_page_browser_data();
+		return get_page_browser_data(page.url.pathname);
 	});
 
 	$effect(() => {
@@ -225,7 +227,7 @@
 	}
 
 	function get_resolved_page_href(page_href) {
-		return page_href || '/';
+		return page_href ? resolve('/[page_id]', { page_id: page_href.slice(1) }) : resolve('/');
 	}
 
 	function get_page_slug_label(page_href) {
@@ -414,6 +416,7 @@ Updated: ${updated_at_label}`;
 		window.open(get_resolved_page_href(menu_item.page_href), '_blank', 'noopener,noreferrer');
 		close_menu();
 	}
+
 
 	function normalize_search_text(value) {
 		return (value ?? '').trim().toLowerCase();
@@ -690,7 +693,7 @@ Updated: ${updated_at_label}`;
 									?.document_id === node.document_id}
 								data-page-browser-row={node.document_id}
 								title={get_page_title_tooltip(node)}
-								href={resolve(get_resolved_page_href(node.page_href))}
+								href={get_resolved_page_href(node.page_href)}
 								onclick={(event) =>
 									handle_page_click(event, {
 										document_id: node.document_id,

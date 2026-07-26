@@ -3,7 +3,7 @@
 // NAV_1, FOOTER_1, PAGE_1 are extracted automatically using svedit's traverse utility.
 
 import { fill_document_defaults, traverse } from 'svedit';
-import { document_schema } from '$lib/document_schema.js';
+import { document_schema } from '#lib/document_schema.js';
 
 const FULL_DOC = {
 	document_id: 'page_1',
