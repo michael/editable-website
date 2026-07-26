@@ -7,6 +7,7 @@
 	import { get_page_url_dialog } from './page_url_dialog_context.svelte.js';
 	import { get_page_delete_dialog } from './page_delete_dialog_context.svelte.js';
 	import { extract_page_metadata } from '$lib/page_metadata.js';
+	import { untrack } from 'svelte';
 	import { get_selection_node_ancestors } from '../app_utils.js';
 	import NodeNavigator from './NodeNavigator.svelte';
 
@@ -82,6 +83,54 @@
 	let can_show_selection_tool_group = $derived(can_select_parent || can_show_variant_selector);
 
 	let file_input_ref = $state(null);
+
+	// iOS Safari keeps the layout viewport at full height when the virtual keyboard
+	// opens, so a fixed bottom toolbar ends up behind it. Measure how far the
+	// keyboard overlaps and lift the toolbar by that much. Chromium and Firefox
+	// resize the layout viewport instead (interactive-widget in app.html), where
+	// this measures 0 and the transform is a no-op.
+	let keyboard_inset = $state(0);
+
+	$effect(() => {
+		const visual_viewport = window.visualViewport;
+		if (!visual_viewport) return;
+
+		let current = untrack(() => keyboard_inset);
+		let target = current;
+		let raf = 0;
+
+		function measure() {
+			target = Math.max(
+				0,
+				Math.round(window.innerHeight - visual_viewport.height - visual_viewport.offsetTop)
+			);
+			if (!raf) raf = requestAnimationFrame(follow);
+		}
+
+		// Exponential follower: smooths the large jump when the keyboard opens while
+		// damping the small offsetTop corrections a touch pan produces.
+		function follow() {
+			raf = 0;
+			const delta = target - current;
+			if (Math.abs(delta) <= 1) {
+				current = target;
+			} else {
+				current += delta * 0.35;
+				raf = requestAnimationFrame(follow);
+			}
+			keyboard_inset = current;
+		}
+
+		measure();
+		visual_viewport.addEventListener('resize', measure);
+		visual_viewport.addEventListener('scroll', measure);
+
+		return () => {
+			cancelAnimationFrame(raf);
+			visual_viewport.removeEventListener('resize', measure);
+			visual_viewport.removeEventListener('scroll', measure);
+		};
+	});
 
 	function handle_insert_default_node_click(event) {
 		handle_btn_click(event, session.commands.insert_default_node);
@@ -245,6 +294,7 @@
 {#if editable || can_show_read_toolbar}
 	<div
 		class="toolbar-layout pointer-events-none fixed {TW_TOOLBAR_POSITION} z-50 flex min-w-0 items-center gap-3"
+		style:--keyboard-inset="{keyboard_inset}px"
 	>
 		{#if editable && can_select_parent}
 			<div class="mobile-selection-leading shrink-0 items-center">
@@ -845,13 +895,23 @@
 		display: contents;
 	}
 
+	/* Lift the toolbar clear of the virtual keyboard. Scoped to touch devices so
+	   desktop gets no transform at all — a transform here would make this fixed
+	   element a containing block. The wider mobile rule below re-declares this
+	   because it also needs translateX for centering. */
+	@media (hover: none), (pointer: coarse) {
+		.toolbar-layout {
+			transform: translateY(calc(-1 * var(--keyboard-inset, 0px)));
+		}
+	}
+
 	@media (max-width: 639px) {
 		.toolbar-layout {
 			right: auto;
 			left: 50%;
 			width: max-content;
 			max-width: calc(100vw - 2.5rem);
-			transform: translateX(-50%);
+			transform: translateX(-50%) translateY(calc(-1 * var(--keyboard-inset, 0px)));
 			overflow: hidden;
 			gap: 0;
 			padding: 4px 0;
