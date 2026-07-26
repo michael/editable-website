@@ -321,13 +321,10 @@
 							{@render selection_leading_contents()}
 						</div>
 					{/if}
-					<!-- p-0.5/-m-0.5: overflow clips at the padding box, so the padding is
-					what keeps button focus rings (1px outline at 1px offset) from being
-					cut off; the negative margin keeps the layout unchanged. -->
-					<div
-						class="selection-scroller -m-0.5 min-w-0 scrollbar-none overflow-x-auto rounded-full p-0.5"
-						class:mobile-hidden={!is_single_node_selected}
-					>
+					<!-- Not a scroll container: a long variant label truncates with an
+					ellipsis instead, which reads better than an invisible scrollport on a
+					single pill. min-w-0 is what lets it shrink far enough to truncate. -->
+					<div class="variant-slot min-w-0" class:mobile-hidden={!is_single_node_selected}>
 						<NodeNavigator {session} {focus_canvas} />
 					</div>
 				</div>
@@ -336,8 +333,9 @@
 			<div class="toolbar-spacer min-w-0 flex-1"></div>
 
 			<div class="editor-toolbar action-toolbar flex shrink items-center {TW_TOOLBAR_SURFACE}">
-				<!-- p-0.5/-m-0.5: see selection-scroller above — the padding is what gives
-				focus rings room inside the scroll container. -->
+				<!-- p-0.5/-m-0.5: overflow clips at the padding box, so the padding is what
+				keeps button focus rings (1px outline at 1px offset) from being cut off;
+				the negative margin keeps the layout unchanged. -->
 				<div
 					class="tools-scroller -m-0.5 min-w-0 flex-1 scrollbar-none overflow-x-auto rounded-full p-0.5"
 				>
@@ -949,6 +947,17 @@
 			overflow-x: auto;
 			overscroll-behavior-x: contain;
 			scrollbar-width: none;
+			/* This is the scrollport on mobile — the inner scrollers are display:
+			   contents here, so their own padding generates no box and the tools sit
+			   flush against a clipping edge. Same trick as those scrollers use on
+			   desktop: overflow clips at the padding box, so 2px of padding gives the
+			   focus rings (1px outline at 1px offset) room to render.
+			   The negative margin is vertical only. Pulling it back horizontally would
+			   tuck the first and last tool's ring under .mobile-selection-leading and
+			   .mobile-save-group, which are opaque and paint over this box; 4px of
+			   extra width on a max-content pill is the cheaper trade. */
+			padding: 2px;
+			margin: -2px 0;
 		}
 
 		.toolbar-middle > .editor-toolbar {
@@ -965,7 +974,7 @@
 			display: none;
 		}
 
-		.selection-scroller,
+		.variant-slot,
 		.tools-scroller {
 			display: contents;
 		}
@@ -973,7 +982,7 @@
 		/* Two classes so this wins over the display: contents above regardless of
 		   source order. Only narrow screens hide the variant switcher — desktop keeps
 		   showing it for text selections and node cursors. */
-		.selection-scroller.mobile-hidden {
+		.variant-slot.mobile-hidden {
 			display: none;
 		}
 
