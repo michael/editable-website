@@ -82,6 +82,17 @@
 	let can_show_variant_selector = $derived(get_selection_node_ancestors(session).length > 0);
 	let can_show_selection_tool_group = $derived(can_select_parent || can_show_variant_selector);
 
+	// The variant switcher targets the closest switchable ancestor, which aids
+	// discoverability on desktop but crowds the single merged pill on mobile — it is
+	// roughly half a phone's width, which pushes the mark tools out of reach. On
+	// narrow screens it is shown only when a node is actually selected; the rule
+	// itself is unchanged, only the width at which it is worth the space.
+	// Derived here and hidden in CSS so the breakpoint stays in one place.
+	let is_single_node_selected = $derived(
+		session.selection?.type === 'node' &&
+			Math.abs(session.selection.anchor_offset - session.selection.focus_offset) === 1
+	);
+
 	let file_input_ref = $state(null);
 
 	// iOS Safari keeps the layout viewport at full height when the virtual keyboard
@@ -315,6 +326,7 @@
 					cut off; the negative margin keeps the layout unchanged. -->
 					<div
 						class="selection-scroller -m-0.5 min-w-0 scrollbar-none overflow-x-auto rounded-full p-0.5"
+						class:mobile-hidden={!is_single_node_selected}
 					>
 						<NodeNavigator {session} {focus_canvas} />
 					</div>
@@ -956,6 +968,13 @@
 		.selection-scroller,
 		.tools-scroller {
 			display: contents;
+		}
+
+		/* Two classes so this wins over the display: contents above regardless of
+		   source order. Only narrow screens hide the variant switcher — desktop keeps
+		   showing it for text selections and node cursors. */
+		.selection-scroller.mobile-hidden {
+			display: none;
 		}
 
 		.mobile-selection-leading {
