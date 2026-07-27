@@ -156,7 +156,7 @@
 				<input
 					type="checkbox"
 					bind:checked={open_in_new_tab}
-					class="h-4 w-4 cursor-pointer rounded-full border-(--border)! bg-(--muted)! text-(--svedit-editing-stroke) ring-0 checked:!border-transparent checked:!bg-(--svedit-editing-stroke) focus:ring-0 focus:ring-offset-0 focus:shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
+					class="h-4 w-4 cursor-pointer rounded-full border-(--border)! bg-(--muted)! text-(--svedit-editing-stroke) ring-0 checked:border-transparent! checked:bg-(--svedit-editing-stroke)! focus:ring-0 focus:ring-offset-0 focus:shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 				/>
 				<span class="text-sm text-(--foreground)">Open in new tab</span>
 			</label>
