@@ -708,7 +708,7 @@ Set the secrets. `ORIGIN` must be your app's public URL, so canonical links and 
 ```sh
 fly secrets set \
   ORIGIN="https://my-site.fly.dev" \
-  BODY_SIZE_LIMIT='30000000' \
+  BODY_SIZE_LIMIT='100M' \
   ADMIN_PASSWORD='pick-a-strong-password'
 ```
 
