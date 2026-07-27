@@ -288,7 +288,7 @@
 
 	{#if !app_commands.save_document.disabled}
 		<button
-			class="pointer-events-auto inline-flex size-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-sm font-semibold text-(--svedit-editing-stroke) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--svedit-editing-fill) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-[0.97] active:bg-(--svedit-editing-fill) sm:w-auto sm:px-4"
+			class="pointer-events-auto inline-flex size-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-sm font-medium text-(--svedit-editing-stroke) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--svedit-editing-fill) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-[0.97] active:bg-(--svedit-editing-fill) sm:w-auto sm:px-4"
 			onclick={() => app_commands.save_document.execute()}
 			title="Save (⌘ S)"
 			aria-label="Save"
