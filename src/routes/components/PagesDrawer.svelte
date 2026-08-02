@@ -226,9 +226,7 @@
 	}
 
 	function get_resolved_page_href(page_href) {
-		// Branch on the slug, not on page_href: the home page's page_href is '/', which
-		// is truthy but strips to an empty slug — that is the home route, not a missing
-		// route parameter.
+		// Branch on the slug: home's page_href is '/', truthy but strips to empty.
 		const page_id = page_href?.slice(1);
 		return page_id ? resolve('/[page_id]', { page_id }) : resolve('/');
 	}
@@ -620,11 +618,8 @@ Updated: ${updated_at_label}`;
 </script>
 
 <div class="pages-drawer">
-	<!-- Parks focus inside the drawer without opening the mobile keyboard. No
-	autofocus needed: showModal() focuses the first focusable element in tree
-	order, and nothing above this is focusable (the drag handle is presentational).
-	Desktop moves focus on to the search input in the effect above. Keep this first
-	in the drawer — anything focusable placed before it would steal the focus. -->
+	<!-- Parks focus inside the drawer without opening the mobile keyboard. showModal()
+	focuses the first focusable element, so keep this first in the drawer. -->
 	<button type="button" class="drawer-initial-focus-target" aria-label="Pages drawer"></button>
 
 	<div class="search-shell">

@@ -237,9 +237,7 @@
 		background-image: none;
 	}
 
-	/* The real control is a transparent <select> overlaying the pill, so its own
-	   focus ring would be invisible. The pill renders one on its behalf, matching
-	   the toolbar buttons. */
+	/* The real control is a transparent <select>, so the pill renders its ring. */
 	.variant-pill:has(.variant-select:focus-visible) {
 		outline: 1px solid var(--svedit-editing-stroke);
 		outline-offset: 1px;
