@@ -16,7 +16,7 @@ importers:
         version: 1.50.9(mediabunny@1.50.9)
       '@sveltejs/adapter-node':
         specifier: 6.0.0-next.6
-        version: 6.0.0-next.6(@sveltejs/kit@3.0.0-next.12(@sveltejs/vite-plugin-svelte@7.2.0(svelte@5.56.7(@typescript-eslint/types@8.65.0))(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))(svelte@5.56.7(@typescript-eslint/types@8.65.0))(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))
+        version: 6.0.0-next.6(@sveltejs/kit@3.0.0-next.13(@sveltejs/vite-plugin-svelte@7.2.0(svelte@5.56.7(@typescript-eslint/types@8.65.0))(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))(svelte@5.56.7(@typescript-eslint/types@8.65.0))(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))
       aws4fetch:
         specifier: ^1.0.20
         version: 1.0.20
@@ -47,10 +47,10 @@ importers:
         version: 10.0.1(eslint@10.7.0(jiti@2.7.0))
       '@sveltejs/adapter-vercel':
         specifier: 7.0.0-next.3
-        version: 7.0.0-next.3(@sveltejs/kit@3.0.0-next.12(@sveltejs/vite-plugin-svelte@7.2.0(svelte@5.56.7(@typescript-eslint/types@8.65.0))(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))(svelte@5.56.7(@typescript-eslint/types@8.65.0))(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))(rollup@4.62.2)
+        version: 7.0.0-next.3(@sveltejs/kit@3.0.0-next.13(@sveltejs/vite-plugin-svelte@7.2.0(svelte@5.56.7(@typescript-eslint/types@8.65.0))(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))(svelte@5.56.7(@typescript-eslint/types@8.65.0))(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))(rollup@4.62.2)
       '@sveltejs/kit':
-        specifier: 3.0.0-next.12
-        version: 3.0.0-next.12(@sveltejs/vite-plugin-svelte@7.2.0(svelte@5.56.7(@typescript-eslint/types@8.65.0))(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))(svelte@5.56.7(@typescript-eslint/types@8.65.0))(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0))
+        specifier: 3.0.0-next.13
+        version: 3.0.0-next.13(@sveltejs/vite-plugin-svelte@7.2.0(svelte@5.56.7(@typescript-eslint/types@8.65.0))(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))(svelte@5.56.7(@typescript-eslint/types@8.65.0))(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0))
       '@sveltejs/vite-plugin-svelte':
         specifier: ^7.2.0
         version: 7.2.0(svelte@5.56.7(@typescript-eslint/types@8.65.0))(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0))
@@ -756,8 +756,8 @@ packages:
     peerDependencies:
       '@sveltejs/kit': ^3.0.0-next.0
 
-  '@sveltejs/kit@3.0.0-next.12':
-    resolution: {integrity: sha512-/RV/FJZjI+yS9fCapqySCNl/dsdr9ubjAHHAl/z3B5R0Fpczw4U+yxkmFw8142xOMBnouf65W2kUa6m1osbMeQ==}
+  '@sveltejs/kit@3.0.0-next.13':
+    resolution: {integrity: sha512-t3GeqIfpYDUGVTJ7MYf+gn+cbWi5nwS4x9kczL9lDHY7b0trYsWGk+6lfga9ipaSlWk3/E79yZJjh2biCbm7Lg==}
     engines: {node: '>=22'}
     hasBin: true
     peerDependencies:
@@ -2508,14 +2508,14 @@ snapshots:
     dependencies:
       acorn: 8.17.0
 
-  '@sveltejs/adapter-node@6.0.0-next.6(@sveltejs/kit@3.0.0-next.12(@sveltejs/vite-plugin-svelte@7.2.0(svelte@5.56.7(@typescript-eslint/types@8.65.0))(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))(svelte@5.56.7(@typescript-eslint/types@8.65.0))(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))':
+  '@sveltejs/adapter-node@6.0.0-next.6(@sveltejs/kit@3.0.0-next.13(@sveltejs/vite-plugin-svelte@7.2.0(svelte@5.56.7(@typescript-eslint/types@8.65.0))(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))(svelte@5.56.7(@typescript-eslint/types@8.65.0))(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))':
     dependencies:
-      '@sveltejs/kit': 3.0.0-next.12(@sveltejs/vite-plugin-svelte@7.2.0(svelte@5.56.7(@typescript-eslint/types@8.65.0))(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))(svelte@5.56.7(@typescript-eslint/types@8.65.0))(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0))
+      '@sveltejs/kit': 3.0.0-next.13(@sveltejs/vite-plugin-svelte@7.2.0(svelte@5.56.7(@typescript-eslint/types@8.65.0))(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))(svelte@5.56.7(@typescript-eslint/types@8.65.0))(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0))
       rolldown: 1.2.0
 
-  '@sveltejs/adapter-vercel@7.0.0-next.3(@sveltejs/kit@3.0.0-next.12(@sveltejs/vite-plugin-svelte@7.2.0(svelte@5.56.7(@typescript-eslint/types@8.65.0))(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))(svelte@5.56.7(@typescript-eslint/types@8.65.0))(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))(rollup@4.62.2)':
+  '@sveltejs/adapter-vercel@7.0.0-next.3(@sveltejs/kit@3.0.0-next.13(@sveltejs/vite-plugin-svelte@7.2.0(svelte@5.56.7(@typescript-eslint/types@8.65.0))(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))(svelte@5.56.7(@typescript-eslint/types@8.65.0))(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))(rollup@4.62.2)':
     dependencies:
-      '@sveltejs/kit': 3.0.0-next.12(@sveltejs/vite-plugin-svelte@7.2.0(svelte@5.56.7(@typescript-eslint/types@8.65.0))(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))(svelte@5.56.7(@typescript-eslint/types@8.65.0))(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0))
+      '@sveltejs/kit': 3.0.0-next.13(@sveltejs/vite-plugin-svelte@7.2.0(svelte@5.56.7(@typescript-eslint/types@8.65.0))(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))(svelte@5.56.7(@typescript-eslint/types@8.65.0))(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0))
       '@vercel/nft': 1.10.2(rollup@4.62.2)
       rolldown: 1.2.0
     transitivePeerDependencies:
@@ -2523,7 +2523,7 @@ snapshots:
       - rollup
       - supports-color
 
-  '@sveltejs/kit@3.0.0-next.12(@sveltejs/vite-plugin-svelte@7.2.0(svelte@5.56.7(@typescript-eslint/types@8.65.0))(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))(svelte@5.56.7(@typescript-eslint/types@8.65.0))(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0))':
+  '@sveltejs/kit@3.0.0-next.13(@sveltejs/vite-plugin-svelte@7.2.0(svelte@5.56.7(@typescript-eslint/types@8.65.0))(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)))(svelte@5.56.7(@typescript-eslint/types@8.65.0))(typescript@6.0.3)(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0))':
     dependencies:
       '@standard-schema/spec': 1.1.0
       '@sveltejs/acorn-typescript': 1.0.11(acorn@8.17.0)
