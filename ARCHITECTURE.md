@@ -97,6 +97,16 @@ sveltekit({
 
 SvelteKit 3 removes adapter-node's runtime `ORIGIN` handling. Editable continues to use its declared `ORIGIN` variable for canonical metadata, while deployed Node servers derive request origins from trusted reverse-proxy headers by setting `PROTOCOL_HEADER=x-forwarded-proto` and `HOST_HEADER=x-forwarded-host`. Production Node deployments assume HTTPS. A direct plain-HTTP adapter-node smoke test must provide an `x-forwarded-proto: http` header when that protocol header is configured.
 
+#### Canonical host
+
+A site is reachable at exactly one origin: `hooks.server.ts` redirects any other domain pointing at the server to `ORIGIN` with a `301`.
+
+Only `GET` and `HEAD` are redirected. No UI is ever served from another domain, so a mutating request cannot usefully arrive at one — and redirecting it across origins would strip or change its `Origin` header, so CSRF would reject it on arrival anyway. Left alone such a request fails cleanly instead: the session cookie is host-only, so it never reaches another domain and the request is simply unauthenticated.
+
+This is deliberately not a CSRF measure — because the request origin is now derived per request from the forwarded headers, another domain would authenticate perfectly well on its own. It exists because everything else is keyed to the host: the admin session cookie is host-only (no `domain` attribute), so each domain would otherwise carry a separate login, and canonical links and social preview images are built from `ORIGIN` and would disagree with the domain being browsed.
+
+Requests whose host addresses the server itself (`localhost`, `127.0.0.1`, `::1`) are exempt — health checks and internal calls arrive without a forwarded host, and bouncing them to the public domain would break them. The redirect is disabled in dev, and in no-backend mode, where `ORIGIN` is unset.
+
 **Remote functions** (`$app/server`) allow server-side functions to be called directly from components via `query()` and `action()`. This replaces traditional REST endpoints for document loading and saving:
 
 - **`src/lib/api.remote.ts`** — server-side functions for document and asset operations, called directly from components. Uses `query()` for reads and `action()` for writes. Access to `locals` (e.g. for auth checks) via `getRequestEvent()`.
