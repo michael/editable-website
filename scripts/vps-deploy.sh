@@ -169,7 +169,7 @@ rssh_retry() {
 # ---- phase 1: preflight ------------------------------------------------------
 
 if [ "$ACTION" = "deploy" ]; then
-	command -v docker >/dev/null || die "docker is not installed locally"
+	docker info >/dev/null 2>&1 || die "cannot talk to Docker — is it installed and running?"
 	command -v git >/dev/null || die "git is not installed"
 	if [ -z "$TAG" ]; then
 		docker buildx version >/dev/null 2>&1 || die "docker buildx is not available"

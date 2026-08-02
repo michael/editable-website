@@ -739,7 +739,11 @@ Because each checkout manages exactly one app (see [Your site is your repo](#you
 
 ### Deploy to a VPS (experimental)
 
-Editable runs on any amd64 host with Docker — a DigitalOcean droplet, a Hetzner or Nodion VPS. One command takes a fresh Ubuntu server to a running site with TLS. Create the server with your ssh key installed, point your domain's A record at its IP, then:
+Editable runs on any amd64 host with Docker — a DigitalOcean droplet, a Hetzner or Nodion VPS. One command takes a fresh Ubuntu server to a running site with TLS.
+
+**Docker has to be installed and running on your own machine**, because the image is built locally and streamed over ssh — check with `docker info` before you deploy. Docker on the _server_ is installed for you on the first run.
+
+Create the server with your ssh key installed, point your domain's A record at its IP, then:
 
 ```sh
 pnpm vps:deploy root@203.0.113.10 my-site.example.com
