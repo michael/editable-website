@@ -47,10 +47,11 @@ export const init: ServerInit = async () => {
 };
 
 export const handle: Handle = async ({ event, resolve }) => {
-	// Navigations only.
-	if (event.request.method === 'GET' || event.request.method === 'HEAD') {
+	// Navigations only. The target counts as external, so ORIGIN is allowlisted —
+	// not `external: true`, which would permit redirecting anywhere.
+	if (canonical_origin && (event.request.method === 'GET' || event.request.method === 'HEAD')) {
 		const canonical_url = get_canonical_redirect(event.url);
-		if (canonical_url) redirect(301, canonical_url);
+		if (canonical_url) redirect(301, canonical_url, { external: [canonical_origin.origin] });
 	}
 
 	event.locals.is_admin = false;

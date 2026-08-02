@@ -351,11 +351,28 @@ REMOTE
 info "Configuring Caddy for $DOMAIN"
 {
 	printf 'DOMAIN=%q\n' "$DOMAIN"
+	printf 'SRV=%q\n' "$SRV"
 	cat <<'REMOTE'
 set -euo pipefail
 mkdir -p /etc/caddy/sites
 site_file="/etc/caddy/sites/editable.caddy"
-desired="$DOMAIN {
+
+# ALIAS_DOMAINS are aliases Caddy also terminates TLS for; the app redirects
+# them to ORIGIN. Each needs DNS pointing here or its certificate will fail.
+extra="$(sed -n 's|^ALIAS_DOMAINS="\(.*\)"$|\1|p' "$SRV/.env" | sed -n '1p')"
+site_address="$DOMAIN"
+for d in $(printf '%s' "$extra" | tr ',' ' '); do
+	d="$(printf '%s' "$d" | tr '[:upper:]' '[:lower:]')"
+	if [ -z "$d" ] || [ "$d" = "$DOMAIN" ]; then
+		continue
+	fi
+	printf '%s' "$d" |
+		grep -Eq '^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$' ||
+		{ echo "Error: ALIAS_DOMAINS contains an invalid domain: $d" >&2; exit 1; }
+	site_address="$site_address, $d"
+done
+
+desired="$site_address {
 	reverse_proxy 127.0.0.1:3000
 }"
 changed=""

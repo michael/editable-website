@@ -77,11 +77,13 @@ Options:
 
 1. **Preflight (local).** Verify: git worktree present, `docker buildx` available, ssh connectivity to the host (`BatchMode=yes`), remote architecture is x86_64 (abort otherwise), domain resolves to the host's IP (warn, don't abort — DNS may still be propagating).
 2. **Provision (remote, idempotent).** Install Docker (official convenience script) and Caddy (apt repo) if missing; create 1 GB swap if total RAM < 2 GB and no swap exists; create `/data` and `/srv/editable`.
-3. **Configure (remote, idempotent).** Write `/etc/caddy/Caddyfile` (reverse_proxy block for the domain) and reload Caddy if it changed. First run: prompt for `ADMIN_PASSWORD`, write `.env` with it plus `ORIGIN` and any local bucket credentials.
+3. **Configure (remote, idempotent).** Write `/etc/caddy/Caddyfile` (reverse_proxy block for the domain, plus any `ALIAS_DOMAINS` from the server's `.env` as additional site addresses) and reload Caddy if it changed. First run: prompt for `ADMIN_PASSWORD`, write `.env` with it plus `ORIGIN` and any local bucket credentials.
 4. **Build & upload (local → remote).** Skipped with `--tag`. Build `editable:<sha>` for linux/amd64, stream via `ssh docker load`. Upload `docker-compose.yml`.
 5. **Activate (remote).** `IMAGE_TAG=<sha> docker compose up -d --remove-orphans` in `/srv/editable` (tag passed via the `.deploy_env` file, not shell interpolation).
 6. **Verify.** Poll `127.0.0.1:3000` via ssh until healthy or timeout; on success also curl `https://<domain>` from the local machine (warn-only — TLS issuance or DNS may lag). Print logs and fail otherwise.
 7. **Cleanup & report.** Prune `editable:*` images beyond the newest 3. Print the deployed tag, the site URL, and (first run) the local `.env` block for the data commands.
+
+**Alias domains.** `ORIGIN` stays the single canonical address; `ALIAS_DOMAINS` is a comma-separated list of alternative names (`www.`, second hostnames) that Caddy should also terminate TLS for — the same relationship Apache expresses as `ServerName` plus `ServerAlias`. They are appended to the site address so Caddy requests a certificate per name, and the app's canonical-host redirect sends each to `ORIGIN` — one login and one canonical URL regardless of which domain was used. Kept separate from `ORIGIN` so each variable means one thing: the app reads `ORIGIN` for redirects and metadata and never needs to parse a list. Invalid entries fail the deploy before Caddy is reloaded; DNS must already point at the server, since Caddy verifies every name when requesting the certificate.
 
 ## Repository changes
 
