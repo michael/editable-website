@@ -13,6 +13,7 @@
 #   ./scripts/vps-deploy.sh <user@host> <domain>   first deploy (or explicit target)
 #   ./scripts/vps-deploy.sh                        deploy to DEPLOY_HOST
 #   ./scripts/vps-deploy.sh status                 show the running tag and rollback candidates
+#   ./scripts/vps-deploy.sh logs                   follow the app's container logs
 #   ./scripts/vps-deploy.sh env                    show the server's env (secrets masked)
 #   ./scripts/vps-deploy.sh env set KEY=VALUE …    set env vars and restart the app
 #   ./scripts/vps-deploy.sh env set KEY            prompt for the value (hidden input)
@@ -28,6 +29,8 @@
 #   --tag <tag>   deploy an already-uploaded image tag (rollback) instead of
 #                 building — the last 3 tags are kept on the server
 #   --yes         skip confirmation prompts (except the first-run password)
+#   --tail <n>    logs: lines of history to show first (default 100)
+#   --no-follow   logs: print and exit instead of following
 #
 # Every deploy runs the same idempotent phases — preflight, provision,
 # configure, build & upload, activate, verify, cleanup. The first run does
@@ -53,6 +56,8 @@ confirm() {
 
 TAG=""
 YES=false
+FOLLOW=true
+LOG_TAIL=100
 POSITIONAL=()
 
 usage() { awk 'NR < 3 { next } /^set -euo pipefail/ { exit } { sub(/^# ?/, ""); print }' "${BASH_SOURCE[0]}"; }
@@ -71,6 +76,13 @@ while [ $# -gt 0 ]; do
 			shift
 			;;
 		--yes) YES=true ;;
+		--no-follow) FOLLOW=false ;;
+		--tail)
+			[ $# -ge 2 ] || die "--tail requires a value"
+			echo "$2" | grep -Eq '^[0-9]+$' || die "--tail needs a number of lines"
+			LOG_TAIL="$2"
+			shift
+			;;
 		-h | --help) usage; exit 0 ;;
 		-*) die "Unknown option '$1' (see --help)" ;;
 		*) POSITIONAL+=("$1") ;;
@@ -87,11 +99,11 @@ case "${POSITIONAL[0]:-}" in
 		ACTION="${POSITIONAL[2]:-deploy}"
 		ENV_ARGS=("${POSITIONAL[@]:3}")
 		case "$ACTION" in
-			deploy | env | status) ;;
+			deploy | env | status | logs) ;;
 			*) die "Unknown command '$ACTION' (see --help)" ;;
 		esac
 		;;
-	"" | env | status)
+	"" | env | status | logs)
 		# Short form: the target comes from DEPLOY_HOST (environment wins over
 		# .env), the site and its domain are discovered on the server.
 		ACTION="${POSITIONAL[0]:-deploy}"
@@ -188,6 +200,18 @@ if [ -z "$DOMAIN" ]; then
 	[ -n "$DOMAIN" ] || die "could not read the site's domain (ORIGIN) from $SRV/.env"
 	validate_domain
 	info "Site: $DOMAIN ($TARGET)"
+fi
+
+# ---- logs command ------------------------------------------------------------
+# Follows by default, like `fly logs`; Ctrl-C exits. rssh rather than
+# rssh_retry: a dropped follow should end, not silently restart mid-stream.
+
+if [ "$ACTION" = "logs" ]; then
+	LOGS_ARGS=(--tail "$LOG_TAIL")
+	[ "$FOLLOW" = true ] && LOGS_ARGS+=(--follow)
+	info "Logs for $CONTAINER on $TARGET (Ctrl-C to stop)"
+	rssh -t "$SUDO docker logs ${LOGS_ARGS[*]} $CONTAINER"
+	exit 0
 fi
 
 # ---- status command ----------------------------------------------------------

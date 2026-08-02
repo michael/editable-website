@@ -59,6 +59,7 @@ Everything under `/srv/editable` is recreatable by the next deploy. The containe
 ./scripts/vps-deploy.sh <user@host> <domain>   first deploy, or explicit target (always works)
 ./scripts/vps-deploy.sh                        deploy to DEPLOY_HOST         (pnpm vps:deploy)
 ./scripts/vps-deploy.sh status                 running tag + rollback tags   (pnpm vps:status)
+./scripts/vps-deploy.sh logs                   follow container logs         (pnpm vps:logs)
 ./scripts/vps-deploy.sh env                    show the server's env, masked (pnpm vps:env)
 ./scripts/vps-deploy.sh env set KEY=VALUE …    set env vars and restart the app
 ./scripts/vps-deploy.sh env set KEY            prompt for the value (hidden input)

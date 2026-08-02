@@ -37,6 +37,7 @@
 		"vps:deploy": "./scripts/vps-deploy.sh",
 		"vps:env": "./scripts/vps-deploy.sh env",
 		"vps:status": "./scripts/vps-deploy.sh status",
+		"vps:logs": "./scripts/vps-deploy.sh logs",
 		"litestream:install": "./scripts/install-litestream.sh"
 	},
 	"devDependencies": {

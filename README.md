@@ -775,6 +775,14 @@ pnpm vps:status
 #   502dcdf   2026-07-20 20:43   Harden deploy script
 ```
 
+Follow the app's logs, the way `fly logs` does (Ctrl-C to stop):
+
+```sh
+pnpm vps:logs
+pnpm vps:logs --tail 500        # more history before following
+pnpm vps:logs --no-follow       # print and exit
+```
+
 Roll back a bad deploy by starting a previous image:
 
 ```sh
