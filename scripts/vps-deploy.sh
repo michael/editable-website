@@ -383,7 +383,11 @@ site_file="/etc/caddy/sites/editable.caddy"
 
 # ALIAS_DOMAINS are aliases Caddy also terminates TLS for; the app redirects
 # them to ORIGIN. Each needs DNS pointing here or its certificate will fail.
-extra="$(sed -n 's|^ALIAS_DOMAINS="\(.*\)"$|\1|p' "$SRV/.env" | sed -n '1p')"
+# Absent on a first deploy — .env is written after this phase.
+extra=""
+if [ -f "$SRV/.env" ]; then
+	extra="$(sed -n 's|^ALIAS_DOMAINS="\(.*\)"$|\1|p' "$SRV/.env" | sed -n '1p')"
+fi
 site_address="$DOMAIN"
 for d in $(printf '%s' "$extra" | tr ',' ' '); do
 	d="$(printf '%s' "$d" | tr '[:upper:]' '[:lower:]')"
