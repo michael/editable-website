@@ -7,9 +7,16 @@
 	 * - Provide content via the `children` snippet
 	 * - Bind `open` from the parent
 	 * - Optional `label` customizes the panel label
+	 * - Optional `center_content` centers short content in the drawer's min height
 	 */
 
-	let { open = $bindable(), label = 'Pages', drawer_height_mode = 'manual', children } = $props();
+	let {
+		open = $bindable(),
+		label = 'Pages',
+		drawer_height_mode = 'manual',
+		center_content = false,
+		children
+	} = $props();
 
 	const min_drawer_height_ratio = 0;
 	const max_drawer_height_ratio = 0.95;
@@ -260,7 +267,7 @@
 			</div>
 
 			<div class:drawer-panel-auto={drawer_height_mode === 'auto'} class="drawer-panel">
-				<div class="drawer-content">
+				<div class="drawer-content" class:drawer-content-centered={center_content}>
 					{@render children?.({ close })}
 				</div>
 			</div>
@@ -406,6 +413,15 @@
 		margin: 0 auto;
 		padding: 0 1.25rem 1.25rem;
 		min-height: 12rem;
+	}
+
+	/* Content shorter than the min height sits in the middle instead of the top.
+	   Symmetric padding so the centering is not pulled up by the bottom inset. */
+	.drawer-content-centered {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		padding-top: 1.25rem;
 	}
 
 	@media (min-width: 640px) {

@@ -443,17 +443,17 @@ When the user triggers editing on a page:
 
 #### If not authenticated
 
-Open a first dialog with two large visual choice cards:
+Open a first dialog with two choices side by side:
 
 1. `Edit for fun`
 2. `Login`
 
 Behavior of the first dialog:
 
-- the `Edit for fun` card uses a large primary label with supporting copy such as `Changes can't be saved`
-- the `Login` card uses a large primary label with supporting copy such as `For admins`
-- each choice is presented as a large square or near-square button-like card rather than a small inline action row
-- the first-step dialog may include simple illustrative treatment inside each card to make the two paths feel visually distinct
+- the `Edit for fun` choice is labelled `Try out editing`
+- the `Login` choice is labelled `Login as admin`
+- each choice is presented as a pill button labelled well enough that it needs no supporting copy: `Try out editing` as a filled primary pill in the editing color, `Login as admin` in the toolbar cancel button's outlined secondary styling
+- the password step uses the same pill vocabulary for its input and its submit button
 - `Edit for fun` enters temporary local editing mode without authentication
 - `Login` advances to a second dialog that prompts for the admin password
 - there is no dedicated cancel button on the first-step dialog; dismissing it is done by clicking outside the dialog or pressing escape
@@ -463,7 +463,7 @@ Behavior of the second dialog:
 - submitting the password calls `login_admin(...)`
 - on success, authenticate as admin, refresh admin-only UI state, and close the dialog without entering page editing mode automatically
 - on failure, keep the password dialog open and show an error
-- cancel closes the password dialog and returns to normal browsing mode
+- a back control returns to the first dialog; dismissing the drawer returns to normal browsing mode
 
 Behavior of the mobile overscroll trigger:
 

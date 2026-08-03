@@ -367,16 +367,18 @@ The main authentication entry is contextual:
 1. the site owner browses to the page they want to edit
 2. they trigger editing either with the editing shortcut (for example `Cmd+E`) or, on mobile, by pulling past the end of the page and holding that overscroll for about one second
 3. if they are not authenticated, the app opens an auth dialog in place
-4. the first dialog presents two large visual choice cards:
+4. the first dialog presents two choices side by side:
    - `Edit for fun`
    - `Login`
-5. the `Edit for fun` card should emphasize immediate playful editing with supporting copy that makes clear changes cannot be saved
-6. the `Login` card should emphasize that it is intended for admins, with supporting copy such as `For admins`
+5. the `Edit for fun` choice should emphasize immediate playful editing, with copy such as `Try out editing`
+6. the `Login` choice should emphasize that it is intended for admins, with copy such as `Login as admin`, and is styled as the secondary action because most visitors want the try-out path and admins know where to click
 7. the first-step dialog should not include a dedicated cancel button; dismissing the dialog is done by clicking outside it or pressing escape
-8. if the user chooses `Login`, the app opens a second dialog that prompts for the admin password
+8. if the user chooses `Login`, the app opens a second dialog that prompts for the admin password, with a back control that returns to the first dialog
 9. after a successful login, the app should refresh admin-only UI state but should not enter page editing mode automatically; the user can then choose to edit, open the page browser, create a page, or use other admin actions explicitly
 
 The mobile overscroll gesture is only a discovery path for opening the same auth dialog. It is mobile-only and should only be armed on touch-capable / coarse-pointer devices. It should only trigger while not already editing, only while the user is actively holding a touch through the overscroll hold period, should not fire from inertial or momentum scrolling after the finger has lifted, should not fire repeatedly during the same continuous gesture, and should reset once the user scrolls back into the normal page range or ends the touch.
+
+The auth dialog reuses existing visual language instead of a dialog-specific one: the primary action is a filled `--svedit-editing-stroke` pill with `--background` text like the canvas `Button` node, the secondary action is the toolbar cancel button's outlined treatment, and the headings use the `display-5` type scale. Because the dialog is shorter than the drawer's minimum height, the drawer centers it vertically rather than pinning it to the top. That way the first thing a visitor sees already looks like the editor they are about to enter.
 
 This keeps the owner anchored to the exact page where they noticed something to fix, keeps the casual edit-for-fun path lightweight, makes the initial choice feel more visual and inviting, and avoids assuming that logging in always means “start editing this page right now.”
 

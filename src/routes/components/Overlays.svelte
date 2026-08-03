@@ -230,7 +230,12 @@
 	{/if}
 
 	{#if app.auth_dialog_open}
-		<Drawer bind:open={app.auth_dialog_open} label="Edit options" drawer_height_mode="auto">
+		<Drawer
+			bind:open={app.auth_dialog_open}
+			label="Edit options"
+			drawer_height_mode="auto"
+			center_content
+		>
 			<AuthDialog onedit_for_fun={app.edit_for_fun} onlogin_success={app.handle_auth_success} />
 		</Drawer>
 	{/if}
