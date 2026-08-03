@@ -36,9 +36,23 @@
 	</svelte:element>
 {/snippet}
 
+{#snippet link()}
+	<svelte:element
+		this={render_as_link ? 'a' : 'div'}
+		href={render_as_link ? node.href : undefined}
+		target={render_as_link ? node.target : undefined}
+		class="ew-button flex items-center justify-center border-b border-(--foreground) py-3 text-sm text-(--foreground) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
+		class:hover:opacity-70={render_as_link}
+	>
+		<TextProperty path={[...path, 'label']} placeholder="Button" />
+	</svelte:element>
+{/snippet}
+
 <Node {path}>
 	{#if layout === 'secondary'}
 		{@render secondary()}
+	{:else if layout === 'link'}
+		{@render link()}
 	{:else}
 		{@render primary()}
 	{/if}
