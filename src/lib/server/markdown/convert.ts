@@ -8,8 +8,8 @@
 // being silently dropped or degraded.
 
 import { fromMarkdown } from 'mdast-util-from-markdown';
-import { MEDIA_DEFAULTS } from '$lib/config.js';
-import { document_schema } from '$lib/document_schema.js';
+import { MEDIA_DEFAULTS } from '#lib/config.js';
+import { document_schema } from '#lib/document_schema.js';
 import { select_toc_headings } from './toc.js';
 import type { TocHeading } from './toc.js';
 import type { Document, DocumentNode } from 'svedit';

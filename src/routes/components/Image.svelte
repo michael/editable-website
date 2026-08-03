@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { ASSET_BASE, VARIANT_WIDTHS } from '$lib/config.js';
+	import { ASSET_BASE, VARIANT_WIDTHS } from '#lib/config.js';
 
-	import type { PreviewMediaNode } from '$lib/page_metadata.js';
+	import type { PreviewMediaNode } from '#lib/page_metadata.js';
 
 	let { node }: { node: PreviewMediaNode } = $props();
 

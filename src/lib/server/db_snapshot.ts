@@ -7,7 +7,7 @@
 // Triggered by writes (debounced, from the document save path) and at boot
 // (from the reconciliation sweep). Also imported by plain-node scripts,
 // which don't remap .js specifiers to .ts files — so the s3 import uses an
-// explicit .ts extension, and this file must stay free of $lib imports.
+// explicit .ts extension, and this file must stay free of #lib imports.
 
 import { DatabaseSync } from 'node:sqlite';
 import { readFile, unlink } from 'node:fs/promises';

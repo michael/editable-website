@@ -13,6 +13,6 @@ export const load: PageServerLoad = async () => {
 		};
 	}
 
-	const { get_home_document } = await import('$lib/api.remote.js');
+	const { get_home_document } = await import('#lib/api.remote.js');
 	return await get_home_document();
 };

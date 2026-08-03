@@ -1,8 +1,9 @@
 <script lang="ts">
-	import type { Nodes } from '$lib/document_schema.js';
+	import type { Nodes } from '#lib/document_schema.js';
 	import type { DocumentPath } from 'svedit';
 	import { get_svedit_context } from '../svedit_context.js';
 	import { resolve } from '$app/paths';
+	import type { PathnameWithSearchOrHash } from '$app/types';
 	import { serialize_path } from 'svedit';
 	const svedit = get_svedit_context();
 	let { path, content }: { path: DocumentPath; content: string } = $props();
@@ -10,7 +11,9 @@
 
 	function get_link_href(href) {
 		if (!href) return undefined;
-		return href.startsWith('/') ? resolve(href) : href;
+		if (!href.startsWith('/')) return href;
+		if (href === '/') return resolve('/');
+		return resolve(href.slice(1) as PathnameWithSearchOrHash);
 	}
 </script>
 

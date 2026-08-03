@@ -1,9 +1,9 @@
 import { error, redirect } from '@sveltejs/kit';
-import { dev } from '$app/environment';
+import { dev } from '$app/env';
 import { VERCEL } from '$app/env/private';
-import { get_markdown_page } from '$lib/server/markdown/registry.js';
-import { convert_markdown } from '$lib/server/markdown/convert.js';
-import { compose_markdown_document } from '$lib/server/markdown/compose.js';
+import { get_markdown_page } from '#lib/server/markdown/registry.js';
+import { convert_markdown } from '#lib/server/markdown/convert.js';
+import { compose_markdown_document } from '#lib/server/markdown/compose.js';
 import type { PageServerLoad } from './$types';
 import type { Document } from 'svedit';
 
@@ -33,7 +33,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	}
 
 	try {
-		const { get_document } = await import('$lib/api.remote.js');
+		const { get_document } = await import('#lib/api.remote.js');
 		const result = await get_document(params.page_id);
 
 		if (result.redirect_to_slug) {
@@ -59,9 +59,9 @@ export const load: PageServerLoad = async ({ params }) => {
  */
 async function get_shared_site_documents() {
 	if (VERCEL) {
-		const { NAV_1, FOOTER_1 } = await import('$lib/demo_doc.js');
+		const { NAV_1, FOOTER_1 } = await import('#lib/demo_doc.js');
 		return { nav_document: NAV_1, footer_document: FOOTER_1 };
 	}
-	const { get_shared_documents } = await import('$lib/api.remote.js');
+	const { get_shared_documents } = await import('#lib/api.remote.js');
 	return await get_shared_documents();
 }

@@ -1,6 +1,6 @@
 import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync } from 'node:fs';
-import { DATA_DIR, DB_PATH } from '$lib/server_config.js';
+import { DATA_DIR, DB_PATH } from '#lib/server_config.js';
 
 // Ensure the data directory exists
 mkdirSync(DATA_DIR, { recursive: true });

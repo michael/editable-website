@@ -126,7 +126,7 @@ Pass those paths to primitives and use the same paths to read values when layout
 <script lang="ts">
 	import { get_svedit_context } from '../svedit_context.js';
 	import type { DocumentPath } from 'svedit';
-	import type { Nodes } from '$lib/document_schema.js';
+	import type { Nodes } from '#lib/document_schema.js';
 
 	const svedit = get_svedit_context();
 	let { path }: { path: DocumentPath } = $props();
@@ -589,7 +589,7 @@ Create `src/routes/components/Hero.svelte`. It reads the node at `path`, renders
 <script lang="ts">
 	import { Node, TextProperty } from 'svedit';
 	import type { DocumentPath } from 'svedit';
-	import type { Nodes } from '$lib/document_schema.js';
+	import type { Nodes } from '#lib/document_schema.js';
 	import { get_svedit_context } from '../svedit_context.js';
 	import MediaProperty from './MediaProperty.svelte';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
@@ -708,11 +708,11 @@ Set the secrets. `ORIGIN` must be your app's public URL, so canonical links and 
 ```sh
 fly secrets set \
   ORIGIN="https://my-site.fly.dev" \
-  BODY_SIZE_LIMIT='30000000' \
+  BODY_SIZE_LIMIT='100M' \
   ADMIN_PASSWORD='pick-a-strong-password'
 ```
 
-`ORIGIN` must exactly match the URL you use in the browser, including the scheme and subdomain (for example, `https://example.com` and `https://www.example.com` are different origins). An incorrect value causes login and other write requests to fail with `403 Forbidden` before the password is checked. Update this secret whenever you switch to a custom domain, and access the site through that canonical URL.
+`ORIGIN` should exactly match the canonical URL you use in the browser, including the scheme and subdomain (for example, `https://example.com` and `https://www.example.com` are different origins), so generated canonical and social metadata stays correct. Update this secret whenever you switch to a custom domain.
 
 Optionally set `ASSET_GRACE_PERIOD_DAYS` (default 7): unreferenced asset files are kept on disk this many days after losing their last reference. This is also the safe window for rolling back a database backup against the live assets folder without ending up with dead image references.
 
@@ -739,7 +739,11 @@ Because each checkout manages exactly one app (see [Your site is your repo](#you
 
 ### Deploy to a VPS (experimental)
 
-Editable runs on any amd64 host with Docker — a DigitalOcean droplet, a Hetzner or Nodion VPS. One command takes a fresh Ubuntu server to a running site with TLS. Create the server with your ssh key installed, point your domain's A record at its IP, then:
+Editable runs on any amd64 host with Docker — a DigitalOcean droplet, a Hetzner or Nodion VPS. One command takes a fresh Ubuntu server to a running site with TLS.
+
+**Docker has to be installed and running on your own machine**, because the image is built locally and streamed over ssh — check with `docker info` before you deploy. Docker on the _server_ is installed for you on the first run.
+
+Create the server with your ssh key installed, point your domain's A record at its IP, then:
 
 ```sh
 pnpm vps:deploy root@203.0.113.10 my-site.example.com
@@ -771,6 +775,14 @@ pnpm vps:status
 #   502dcdf   2026-07-20 20:43   Harden deploy script
 ```
 
+Follow the app's logs, the way `fly logs` does (Ctrl-C to stop):
+
+```sh
+pnpm vps:logs
+pnpm vps:logs --tail 500        # more history before following
+pnpm vps:logs --no-follow       # print and exit
+```
+
 Roll back a bad deploy by starting a previous image:
 
 ```sh
@@ -788,7 +800,17 @@ pnpm vps:env set ADMIN_PASSWORD      # no value = prompted, kept out of shell hi
 pnpm vps:env unset BUCKET_NAME
 ```
 
-`set` and `unset` restart the app so the change takes effect immediately. For [automated backups](#automated-backups-optional), the `BUCKET_*` / `AWS_*` secrets belong in the server's `.env` — the first deploy copies them from your local `.env` if present; after that, changes are explicit via `vps:env`.
+`set` and `unset` restart the app and refresh the Caddy config, so the change takes effect immediately — no deploy needed, including for `ORIGIN` and `ALIAS_DOMAINS`. For [automated backups](#automated-backups-optional), the `BUCKET_*` / `AWS_*` secrets belong in the server's `.env` — the first deploy copies them from your local `.env` if present; after that, changes are explicit via `vps:env`.
+
+#### Extra domains (www, aliases)
+
+`ORIGIN` is the one canonical address of your site. Any other domain pointing at the server — `www.`, a second hostname — needs to be named so Caddy can get a certificate for it:
+
+```sh
+pnpm vps:env set ALIAS_DOMAINS="www.my-site.example.com,alias.example.com"
+```
+
+Caddy then terminates TLS for all of them and the app redirects each to `ORIGIN`, so visitors and search engines end up on one address and you don't get a separate login per domain. Point each name's DNS at the server **before** setting it — Caddy verifies every name when it requests the certificate.
 
 **Doing it by hand instead:** the script is optional — `docker-compose.yml` runs on any docker host. Clone your site on the server, `cp .env.example .env` and set `ADMIN_PASSWORD` and `ORIGIN="https://my-site.example.com"`, then `docker compose up -d --build`. The app listens on `127.0.0.1:3000`; put a reverse proxy with TLS in front (with Caddy that's the whole config: `my-site.example.com { reverse_proxy 127.0.0.1:3000 }`). Ship updates with `git pull && docker compose up -d --build`. For the data commands, a hand-managed setup has nothing to auto-discover, so set the explicit keys alongside `DEPLOY_HOST` in your local `.env`: `RESTART_CMD="docker restart editable"`, `REMOTE_EXEC="docker exec editable"`, and `HOST_DATA_DIR` pointing at the `./data` bind mount as an absolute path (without the script, the container keeps the default name `editable`).
 

@@ -24,7 +24,11 @@ services:
       # inside the container and content silently dies with each deploy
       # (fly.toml sets the same for Fly deployments).
       DATA_DIR: /data
-      BODY_SIZE_LIMIT: '${BODY_SIZE_LIMIT:-30000000}'
+      # Must stay above MAX_VIDEO_FILESIZE (50 MiB); pre-optimized videos skip
+      # the transcode and upload at their original size.
+      BODY_SIZE_LIMIT: '${BODY_SIZE_LIMIT:-100M}'
+      PROTOCOL_HEADER: x-forwarded-proto
+      HOST_HEADER: x-forwarded-host
     volumes:
       # Host data location: ./data next to this file by default (local and
       # hand-managed runs); vps-deploy.sh pins it to /data via .deploy_env so

@@ -3,7 +3,7 @@
 // no-op or error.
 //
 // Also imported by the plain-node boot/restore scripts in scripts/ via
-// relative paths — keep this file free of $lib imports (the alias only
+// relative paths — keep this file free of #lib imports (the alias only
 // resolves inside the bundled app).
 
 import { readFile } from 'node:fs/promises';

@@ -77,7 +77,7 @@ Guidelines:
 
 ## SvelteKit configuration
 
-The app uses Svelte's experimental async features and SvelteKit's remote functions. All SvelteKit configuration is passed to the `sveltekit()` plugin in `vite.config.ts` (the newer configuration style, expected to become the default in SvelteKit 3); `svelte.config.js` stays an empty stub so tools that require its presence keep working. The "svelte.config.js is ignored" warning printed by dev/build/check commands is expected with this setup.
+The app targets the SvelteKit 3 prerelease line, beginning with `@sveltejs/kit@3.0.0-next.12`. All SvelteKit configuration is passed to the `sveltekit()` plugin in `vite.config.ts`; SvelteKit 3 no longer supports `svelte.config.js`. Internal library imports use the package-level `#lib` subpath alias declared in `package.json`, replacing SvelteKit 2's generated `$lib` alias. The app uses Svelte's experimental async features, SvelteKit remote functions, and explicit environment variables.
 
 ```ts
 sveltekit({
@@ -95,6 +95,18 @@ sveltekit({
 
 **Experimental async** allows `await` in Svelte markup and top-level `await` in `<script>` tags, enabling components to load data inline without separate `+page.server.js` load functions.
 
+SvelteKit 3 removes adapter-node's runtime `ORIGIN` handling. Editable continues to use its declared `ORIGIN` variable for canonical metadata, while deployed Node servers derive request origins from trusted reverse-proxy headers by setting `PROTOCOL_HEADER=x-forwarded-proto` and `HOST_HEADER=x-forwarded-host`. Production Node deployments assume HTTPS. A direct plain-HTTP adapter-node smoke test must provide an `x-forwarded-proto: http` header when that protocol header is configured.
+
+#### Canonical host
+
+A site is reachable at exactly one origin: `hooks.server.ts` redirects any other domain pointing at the server to `ORIGIN` with a `301`.
+
+Only `GET` and `HEAD` are redirected. No UI is ever served from another domain, so a mutating request cannot usefully arrive at one — and redirecting it across origins would strip or change its `Origin` header, so CSRF would reject it on arrival anyway. Left alone such a request fails cleanly instead: the session cookie is host-only, so it never reaches another domain and the request is simply unauthenticated.
+
+This is deliberately not a CSRF measure — because the request origin is now derived per request from the forwarded headers, another domain would authenticate perfectly well on its own. It exists because everything else is keyed to the host: the admin session cookie is host-only (no `domain` attribute), so each domain would otherwise carry a separate login, and canonical links and social preview images are built from `ORIGIN` and would disagree with the domain being browsed.
+
+Requests whose host addresses the server itself (`localhost`, `127.0.0.1`, `::1`) are exempt — health checks and internal calls arrive without a forwarded host, and bouncing them to the public domain would break them. The redirect is disabled in dev, and in no-backend mode, where `ORIGIN` is unset.
+
 **Remote functions** (`$app/server`) allow server-side functions to be called directly from components via `query()` and `action()`. This replaces traditional REST endpoints for document loading and saving:
 
 - **`src/lib/api.remote.ts`** — server-side functions for document and asset operations, called directly from components. Uses `query()` for reads and `action()` for writes. Access to `locals` (e.g. for auth checks) via `getRequestEvent()`.
@@ -102,7 +114,7 @@ sveltekit({
 **Server initialization** — `src/hooks.server.ts` exports an `init()` function (SvelteKit's `ServerInit` hook) that runs once on server startup. This is where database migration runs:
 
 ```js
-import migrate from '$lib/server/migrate.js';
+import migrate from '#lib/server/migrate.js';
 
 export async function init() {
 	migrate();
@@ -381,10 +393,9 @@ Behavior rules:
   neither variable is needed and neither is checked
 
 Variables consumed through SvelteKit are declared explicitly in `src/env.ts` via
-`defineEnvVars`, enabled by `experimental.explicitEnvironmentVariables` in
-`vite.config.ts`. This is the SvelteKit 3 model, opted into early. Server code
-imports named bindings from `$app/env/private` instead of `$env/dynamic/private`,
-and the latter now throws when imported.
+`defineEnvVars`; SvelteKit 3 detects this declaration file automatically. Server
+code imports named bindings from `$app/env/private` instead of
+`$env/dynamic/private`, and the latter throws when imported.
 
 A declared variable is required and non-empty unless its `schema` says otherwise.
 `VERCEL` and `NODE_ENV` are declared optional because each may legitimately be

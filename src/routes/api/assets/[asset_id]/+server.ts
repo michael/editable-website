@@ -1,7 +1,7 @@
 import { json, error } from '@sveltejs/kit';
-import { ASSET_ID_REGEX } from '$lib/config.js';
-import { delete_asset, asset_exists } from '$lib/server/asset_storage.js';
-import { require_admin_session } from '$lib/server/auth.js';
+import { ASSET_ID_REGEX } from '#lib/config.js';
+import { delete_asset, asset_exists } from '#lib/server/asset_storage.js';
+import { require_admin_session } from '#lib/server/auth.js';
 import type { RequestHandler } from './$types';
 
 export const DELETE: RequestHandler = async ({ params, locals }) => {

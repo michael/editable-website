@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { Nodes } from '$lib/document_schema.js';
+	import type { Nodes } from '#lib/document_schema.js';
 	import { get_svedit_context } from '../svedit_context.js';
 	import { Node, TextProperty } from 'svedit';
 	import { TW_PAGE_PADDING_X } from '../tailwind_theme.js';
-	import { split_code_comments } from '$lib/code_comments.js';
+	import { split_code_comments } from '#lib/code_comments.js';
 
 	// De-emphasize // and /* */ comments in code blocks (view mode only).
 	// Set to false to render all preformatted text uniformly.

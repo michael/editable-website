@@ -6,7 +6,7 @@
 	import { get_page_browser } from './page_browser_context.svelte.js';
 	import { get_page_url_dialog } from './page_url_dialog_context.svelte.js';
 	import { get_page_delete_dialog } from './page_delete_dialog_context.svelte.js';
-	import { extract_page_metadata } from '$lib/page_metadata.js';
+	import { extract_page_metadata } from '#lib/page_metadata.js';
 	import { untrack } from 'svelte';
 	import { get_selection_node_ancestors } from '../app_utils.js';
 	import NodeNavigator from './NodeNavigator.svelte';
@@ -30,8 +30,7 @@
 		can_create_pages || can_browse_pages || can_edit_document || can_logout
 	);
 
-	// The home page is served from `/` and has no editable slug, matching how the
-	// page browser disables the same entry.
+	// Home is served from `/` and has no editable slug.
 	let is_home_page = $derived(page.url.pathname === '/');
 
 	function open_page_url_dialog() {
@@ -42,9 +41,8 @@
 		});
 	}
 
-	// The home page has no slug row by invariant, so it is addressed as `/`, the
-	// same way the page browser refers to it. Keyed on the route rather than on a
-	// null slug, so a non-home page with a missing slug never resolves to home.
+	// Home has no slug row, so it is addressed as `/`. Keyed on the route, not on a
+	// null slug, so a non-home page never resolves to home.
 	let duplicate_source = $derived(is_home_page ? '/' : app.slug);
 	let can_duplicate_page = $derived(!!duplicate_source);
 
@@ -55,8 +53,7 @@
 
 	function open_page_delete_dialog() {
 		if (is_home_page) return;
-		// Derived on demand rather than reactively — to_json() serializes the whole
-		// document, and the title is only needed for the confirmation copy.
+		// On demand, not reactive: to_json() serializes the whole document.
 		const metadata = extract_page_metadata(session.to_json());
 		page_delete_dialog.open({
 			document_id: session.doc.document_id,
@@ -82,12 +79,7 @@
 	let can_show_variant_selector = $derived(get_selection_node_ancestors(session).length > 0);
 	let can_show_selection_tool_group = $derived(can_select_parent || can_show_variant_selector);
 
-	// The variant switcher targets the closest switchable ancestor, which aids
-	// discoverability on desktop but crowds the single merged pill on mobile — it is
-	// roughly half a phone's width, which pushes the mark tools out of reach. On
-	// narrow screens it is shown only when a node is actually selected; the rule
-	// itself is unchanged, only the width at which it is worth the space.
-	// Derived here and hidden in CSS so the breakpoint stays in one place.
+	// Hidden in CSS on narrow screens; derived here so the breakpoint stays in one place.
 	let is_single_node_selected = $derived(
 		session.selection?.type === 'node' &&
 			Math.abs(session.selection.anchor_offset - session.selection.focus_offset) === 1
@@ -95,11 +87,8 @@
 
 	let file_input_ref = $state(null);
 
-	// iOS Safari keeps the layout viewport at full height when the virtual keyboard
-	// opens, so a fixed bottom toolbar ends up behind it. Measure how far the
-	// keyboard overlaps and lift the toolbar by that much. Chromium and Firefox
-	// resize the layout viewport instead (interactive-widget in app.html), where
-	// this measures 0 and the transform is a no-op.
+	// How far the virtual keyboard overlaps the layout viewport. 0 on browsers that
+	// resize it themselves (interactive-widget in app.html).
 	let keyboard_inset = $state(0);
 
 	$effect(() => {
@@ -118,8 +107,7 @@
 			if (!raf) raf = requestAnimationFrame(follow);
 		}
 
-		// Exponential follower: smooths the large jump when the keyboard opens while
-		// damping the small offsetTop corrections a touch pan produces.
+		// Exponential follower: smooths the keyboard jump, damps touch-pan noise.
 		function follow() {
 			raf = 0;
 			const delta = target - current;
@@ -196,10 +184,8 @@
 	const TW_TOOLBAR_BTN_HOVER =
 		'hover:bg-(--muted) active:bg-(--muted) active:scale-95 active:translate-y-px';
 
-	// Toolbar buttons preventDefault on mousedown so pressing them never moves
-	// focus out of the canvas or collapses its selection, and run the command on
-	// click — which fires for both mouse and keyboard. A prevented mousedown still
-	// produces a click, so mouse behavior is unchanged.
+	// preventDefault keeps focus and selection in the canvas; the command runs on
+	// click, which fires for both mouse and keyboard.
 	function handle_btn_mousedown(event) {
 		event.preventDefault();
 	}
@@ -209,19 +195,15 @@
 		return event.detail === 0;
 	}
 
-	// Keyboard activation leaves focus on the toolbar, where the canvas no longer
-	// re-renders its selection or scrolls it into view. Hand focus back so every
-	// press behaves like the mouse path.
+	// Keyboard activation leaves focus on the toolbar, where the canvas stops
+	// re-rendering and scrolling its selection.
 	function restore_canvas_focus(event) {
 		if (is_keyboard_activation(event)) focus_canvas();
 	}
 
-	// Link and media commands open a popover anchored to the selection highlight
-	// span. focus_canvas() removes that span, so refocusing here would leave the
-	// popover with nothing to anchor to and strand it at the top of the page.
-	// These popovers focus their own input, so the canvas is not needed.
-	// Detected structurally: EditLinkCommand only sets show_prompt on a timeout,
-	// so its value is still false right after execute().
+	// These open a popover anchored to the selection highlight, which focus_canvas()
+	// removes. Checked structurally: EditLinkCommand sets show_prompt on a timeout,
+	// so it is still false right after execute().
 	function opens_anchored_prompt(command) {
 		return !!command && 'show_prompt' in command;
 	}
@@ -288,7 +270,7 @@
 
 	{#if !app_commands.save_document.disabled}
 		<button
-			class="pointer-events-auto inline-flex size-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-sm font-semibold text-(--svedit-editing-stroke) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--svedit-editing-fill) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-[0.97] active:bg-(--svedit-editing-fill) sm:w-auto sm:px-4"
+			class="pointer-events-auto inline-flex size-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-sm font-medium text-(--svedit-editing-stroke) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--svedit-editing-fill) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-[0.97] active:bg-(--svedit-editing-fill) sm:w-auto sm:px-4"
 			onclick={() => app_commands.save_document.execute()}
 			title="Save (⌘ S)"
 			aria-label="Save"
@@ -321,9 +303,7 @@
 							{@render selection_leading_contents()}
 						</div>
 					{/if}
-					<!-- Not a scroll container: a long variant label truncates with an
-					ellipsis instead, which reads better than an invisible scrollport on a
-					single pill. min-w-0 is what lets it shrink far enough to truncate. -->
+					<!-- Not a scroll container: long labels truncate. min-w-0 lets it shrink. -->
 					<div class="variant-slot min-w-0" class:mobile-hidden={!is_single_node_selected}>
 						<NodeNavigator {session} {focus_canvas} />
 					</div>
@@ -333,9 +313,8 @@
 			<div class="toolbar-spacer min-w-0 flex-1"></div>
 
 			<div class="editor-toolbar action-toolbar flex shrink items-center {TW_TOOLBAR_SURFACE}">
-				<!-- p-0.5/-m-0.5: overflow clips at the padding box, so the padding is what
-				keeps button focus rings (1px outline at 1px offset) from being cut off;
-				the negative margin keeps the layout unchanged. -->
+				<!-- p-0.5/-m-0.5: overflow clips at the padding box, so the padding keeps
+				focus rings from being cut off; the margin keeps the layout unchanged. -->
 				<div
 					class="tools-scroller -m-0.5 min-w-0 flex-1 scrollbar-none overflow-x-auto rounded-full p-0.5"
 				>
@@ -905,10 +884,8 @@
 		display: contents;
 	}
 
-	/* Lift the toolbar clear of the virtual keyboard. Scoped to touch devices so
-	   desktop gets no transform at all — a transform here would make this fixed
-	   element a containing block. The wider mobile rule below re-declares this
-	   because it also needs translateX for centering. */
+	/* Touch only: a transform here would make this fixed element a containing
+	   block. The mobile rule below re-declares it alongside translateX. */
 	@media (hover: none), (pointer: coarse) {
 		.toolbar-layout {
 			transform: translateY(calc(-1 * var(--keyboard-inset, 0px)));
@@ -924,9 +901,8 @@
 			transform: translateX(-50%) translateY(calc(-1 * var(--keyboard-inset, 0px)));
 			overflow: hidden;
 			gap: 0;
-			/* Symmetric so a single-button toolbar (read mode, no backend) is a circle
-			   rather than a vertical oval. The horizontal inset lives here rather than
-			   on the leading/save groups, so it applies even when those are absent. */
+			/* Symmetric so a single-button toolbar is a circle. The horizontal inset
+			   lives here so it applies when the leading/save groups are absent. */
 			padding: 4px;
 			color: var(--foreground);
 			background: var(--background);
@@ -950,16 +926,9 @@
 			overflow-x: auto;
 			overscroll-behavior-x: contain;
 			scrollbar-width: none;
-			/* This is the scrollport on mobile — the inner scrollers are display:
-			   contents here, so their own padding generates no box and the tools sit
-			   flush against a clipping edge. Same trick as those scrollers use on
-			   desktop: overflow clips at the padding box, so 2px of padding gives the
-			   focus rings (1px outline at 1px offset) room to render.
-			   Vertical only, and with a matching negative margin, so this adds no width:
-			   horizontal room comes from the pill's own padding instead. Padding here
-			   horizontally would either widen the pill (breaking the circle above) or,
-			   if negated, tuck the end tools' rings under the opaque leading/save
-			   groups. */
+			/* The scrollport on mobile. Overflow clips at the padding box, so this
+			   gives focus rings room. Vertical only — horizontal room comes from the
+			   pill's padding, so the circle above is not widened. */
 			padding: 2px 0;
 			margin: -2px 0;
 		}
@@ -983,9 +952,7 @@
 			display: contents;
 		}
 
-		/* Two classes so this wins over the display: contents above regardless of
-		   source order. Only narrow screens hide the variant switcher — desktop keeps
-		   showing it for text selections and node cursors. */
+		/* Two classes so this wins over the display: contents above. */
 		.variant-slot.mobile-hidden {
 			display: none;
 		}

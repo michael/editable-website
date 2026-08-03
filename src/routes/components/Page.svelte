@@ -6,7 +6,7 @@
 	import Nav from './Nav.svelte';
 	import Footer from './Footer.svelte';
 	import MediaProperty from './MediaProperty.svelte';
-	import { extract_page_metadata, get_social_image } from '$lib/page_metadata.js';
+	import { extract_page_metadata, get_social_image } from '#lib/page_metadata.js';
 	import { TW_PAGE_PADDING_X } from '../tailwind_theme.js';
 
 	const svedit = get_svedit_context();

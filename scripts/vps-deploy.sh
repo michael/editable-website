@@ -13,6 +13,7 @@
 #   ./scripts/vps-deploy.sh <user@host> <domain>   first deploy (or explicit target)
 #   ./scripts/vps-deploy.sh                        deploy to DEPLOY_HOST
 #   ./scripts/vps-deploy.sh status                 show the running tag and rollback candidates
+#   ./scripts/vps-deploy.sh logs                   follow the app's container logs
 #   ./scripts/vps-deploy.sh env                    show the server's env (secrets masked)
 #   ./scripts/vps-deploy.sh env set KEY=VALUE …    set env vars and restart the app
 #   ./scripts/vps-deploy.sh env set KEY            prompt for the value (hidden input)
@@ -28,6 +29,8 @@
 #   --tag <tag>   deploy an already-uploaded image tag (rollback) instead of
 #                 building — the last 3 tags are kept on the server
 #   --yes         skip confirmation prompts (except the first-run password)
+#   --tail <n>    logs: lines of history to show first (default 100)
+#   --no-follow   logs: print and exit instead of following
 #
 # Every deploy runs the same idempotent phases — preflight, provision,
 # configure, build & upload, activate, verify, cleanup. The first run does
@@ -53,6 +56,8 @@ confirm() {
 
 TAG=""
 YES=false
+FOLLOW=true
+LOG_TAIL=100
 POSITIONAL=()
 
 usage() { awk 'NR < 3 { next } /^set -euo pipefail/ { exit } { sub(/^# ?/, ""); print }' "${BASH_SOURCE[0]}"; }
@@ -71,6 +76,13 @@ while [ $# -gt 0 ]; do
 			shift
 			;;
 		--yes) YES=true ;;
+		--no-follow) FOLLOW=false ;;
+		--tail)
+			[ $# -ge 2 ] || die "--tail requires a value"
+			echo "$2" | grep -Eq '^[0-9]+$' || die "--tail needs a number of lines"
+			LOG_TAIL="$2"
+			shift
+			;;
 		-h | --help) usage; exit 0 ;;
 		-*) die "Unknown option '$1' (see --help)" ;;
 		*) POSITIONAL+=("$1") ;;
@@ -87,11 +99,11 @@ case "${POSITIONAL[0]:-}" in
 		ACTION="${POSITIONAL[2]:-deploy}"
 		ENV_ARGS=("${POSITIONAL[@]:3}")
 		case "$ACTION" in
-			deploy | env | status) ;;
+			deploy | env | status | logs) ;;
 			*) die "Unknown command '$ACTION' (see --help)" ;;
 		esac
 		;;
-	"" | env | status)
+	"" | env | status | logs)
 		# Short form: the target comes from DEPLOY_HOST (environment wins over
 		# .env), the site and its domain are discovered on the server.
 		ACTION="${POSITIONAL[0]:-deploy}"
@@ -169,7 +181,7 @@ rssh_retry() {
 # ---- phase 1: preflight ------------------------------------------------------
 
 if [ "$ACTION" = "deploy" ]; then
-	command -v docker >/dev/null || die "docker is not installed locally"
+	docker info >/dev/null 2>&1 || die "cannot talk to Docker — is it installed and running?"
 	command -v git >/dev/null || die "git is not installed"
 	if [ -z "$TAG" ]; then
 		docker buildx version >/dev/null 2>&1 || die "docker buildx is not available"
@@ -188,6 +200,18 @@ if [ -z "$DOMAIN" ]; then
 	[ -n "$DOMAIN" ] || die "could not read the site's domain (ORIGIN) from $SRV/.env"
 	validate_domain
 	info "Site: $DOMAIN ($TARGET)"
+fi
+
+# ---- logs command ------------------------------------------------------------
+# Follows by default, like `fly logs`; Ctrl-C exits. rssh rather than
+# rssh_retry: a dropped follow should end, not silently restart mid-stream.
+
+if [ "$ACTION" = "logs" ]; then
+	LOGS_ARGS=(--tail "$LOG_TAIL")
+	[ "$FOLLOW" = true ] && LOGS_ARGS+=(--follow)
+	info "Logs for $CONTAINER on $TARGET (Ctrl-C to stop)"
+	rssh -t "$SUDO docker logs ${LOGS_ARGS[*]} $CONTAINER"
+	exit 0
 fi
 
 # ---- status command ----------------------------------------------------------
@@ -232,6 +256,60 @@ fi
 # Explicit env var management, fly-secrets style: show / set / unset. Changes
 # take effect by recreating the container (env_file is baked in at creation).
 
+# Write the Caddy vhost and reload if it changed. Idempotent, so it is safe to
+# run after any env change.
+configure_caddy() {
+	info "Configuring Caddy for $DOMAIN"
+	{
+		printf 'DOMAIN=%q\n' "$DOMAIN"
+		printf 'SRV=%q\n' "$SRV"
+		cat <<'REMOTE'
+set -euo pipefail
+mkdir -p /etc/caddy/sites
+site_file="/etc/caddy/sites/editable.caddy"
+
+# Both follow the server's .env once it exists, so `env set` takes effect. On a
+# first deploy it is not written yet, hence the passed-in domain.
+domain="$DOMAIN"
+extra=""
+if [ -f "$SRV/.env" ]; then
+	from_env="$(sed -n 's|^ORIGIN="https://\([^"]*\)".*|\1|p' "$SRV/.env" | sed -n '1p')"
+	[ -z "$from_env" ] || domain="$from_env"
+	extra="$(sed -n 's|^ALIAS_DOMAINS="\(.*\)"$|\1|p' "$SRV/.env" | sed -n '1p')"
+fi
+domain="$(printf '%s' "$domain" | tr '[:upper:]' '[:lower:]')"
+printf '%s' "$domain" |
+	grep -Eq '^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$' ||
+	{ echo "Error: ORIGIN does not contain a valid domain: $domain" >&2; exit 1; }
+site_address="$domain"
+for d in $(printf '%s' "$extra" | tr ',' ' '); do
+	d="$(printf '%s' "$d" | tr '[:upper:]' '[:lower:]')"
+	if [ -z "$d" ] || [ "$d" = "$domain" ]; then
+		continue
+	fi
+	printf '%s' "$d" |
+		grep -Eq '^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$' ||
+		{ echo "Error: ALIAS_DOMAINS contains an invalid domain: $d" >&2; exit 1; }
+	site_address="$site_address, $d"
+done
+
+desired="$site_address {
+	reverse_proxy 127.0.0.1:3000
+}"
+changed=""
+if [ ! -f "$site_file" ] || [ "$(cat "$site_file")" != "$desired" ]; then
+	printf '%s\n' "$desired" >"$site_file"
+	changed=1
+fi
+grep -q 'import sites/\*\.caddy' /etc/caddy/Caddyfile || {
+	printf '\nimport sites/*.caddy\n' >>/etc/caddy/Caddyfile
+	changed=1
+}
+[ -z "$changed" ] || systemctl reload caddy
+REMOTE
+	} | rssh "$SUDO bash -s"
+}
+
 restart_with_env() {
 	rssh "$SUDO tee $SRV/.env >/dev/null && $SUDO chmod 600 $SRV/.env" <"$TMP/env"
 	info "Restarting the app with the new environment"
@@ -270,6 +348,7 @@ if [ "$ACTION" = "env" ]; then
 				info "Set $key"
 			done
 			restart_with_env
+			configure_caddy
 			;;
 		unset)
 			[ ${#ENV_ARGS[@]} -ge 2 ] || die "env unset needs at least one KEY"
@@ -280,6 +359,7 @@ if [ "$ACTION" = "env" ]; then
 				info "Unset $key"
 			done
 			restart_with_env
+			configure_caddy
 			;;
 		*) die "Unknown env command '$SUB' (expected: show, set, unset)" ;;
 	esac
@@ -348,28 +428,7 @@ REMOTE
 
 # ---- phase 3: configure (remote, idempotent) ---------------------------------
 
-info "Configuring Caddy for $DOMAIN"
-{
-	printf 'DOMAIN=%q\n' "$DOMAIN"
-	cat <<'REMOTE'
-set -euo pipefail
-mkdir -p /etc/caddy/sites
-site_file="/etc/caddy/sites/editable.caddy"
-desired="$DOMAIN {
-	reverse_proxy 127.0.0.1:3000
-}"
-changed=""
-if [ ! -f "$site_file" ] || [ "$(cat "$site_file")" != "$desired" ]; then
-	printf '%s\n' "$desired" >"$site_file"
-	changed=1
-fi
-grep -q 'import sites/\*\.caddy' /etc/caddy/Caddyfile || {
-	printf '\nimport sites/*.caddy\n' >>/etc/caddy/Caddyfile
-	changed=1
-}
-[ -z "$changed" ] || systemctl reload caddy
-REMOTE
-} | rssh "$SUDO bash -s"
+configure_caddy
 
 BUCKET_KEYS="BUCKET_NAME AWS_ENDPOINT_URL_S3 AWS_REGION AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY"
 

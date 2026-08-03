@@ -281,17 +281,24 @@
 		overflow: visible;
 	}
 
-	:global(html.drawer-open),
-	:global(body.drawer-open) {
-		scrollbar-width: none;
-		-ms-overflow-style: none;
-	}
+	/* Hide the page scrollbar so it does not sit next to the drawer's own one.
+	   Pointer-scoped on purpose: on touch WebKit, hiding the root scrollbar
+	   permanently suppresses the scroll indicator — it does not come back when the
+	   class is removed. Those platforms draw scrollbars as overlays anyway, so
+	   there is no second scrollbar to hide. */
+	@media (hover: hover) and (pointer: fine) {
+		:global(html.drawer-open),
+		:global(body.drawer-open) {
+			scrollbar-width: none;
+			-ms-overflow-style: none;
+		}
 
-	:global(html.drawer-open::-webkit-scrollbar),
-	:global(body.drawer-open::-webkit-scrollbar) {
-		display: none;
-		width: 0;
-		height: 0;
+		:global(html.drawer-open::-webkit-scrollbar),
+		:global(body.drawer-open::-webkit-scrollbar) {
+			display: none;
+			width: 0;
+			height: 0;
+		}
 	}
 
 	.drawer-dialog::backdrop {

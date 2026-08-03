@@ -41,7 +41,7 @@ This file is the working spec for the feature. Once implemented and stable, fold
 
 Everything under `/srv/editable` is recreatable by the next deploy. The container is plain `editable` — identical to a hand-managed compose setup, so both flows converge on one naming scheme. The Caddy vhost lives in `/etc/caddy/sites/editable.caddy`, imported from the main Caddyfile (which stays untouched otherwise). The compose volume line is `'${HOST_DATA_DIR:-./data}:/data'`: local and hand-managed runs keep `./data` next to the compose file, the script pins `/data` via `.deploy_env`.
 
-**Secrets.** On first run the script prompts for `ADMIN_PASSWORD` (offering a generated one), sets `ORIGIN=https://<domain>`, and writes the server's `.env`. Backup-bucket credentials (`BUCKET_NAME`, `AWS_*`) are copied from the local `.env` if present. That first-run bootstrap is the only implicit sync: afterwards the server's `.env` is authoritative and changes only through the explicit `env` command (`env` show / `env set KEY=VALUE` / `env set KEY` with hidden prompt / `env unset KEY`), which rewrites the file and recreates the container so the change takes effect — fly-secrets style, nothing moves without being named. Secrets are never passed as command-line arguments to remote shells.
+**Secrets.** On first run the script prompts for `ADMIN_PASSWORD` (offering a generated one), sets `ORIGIN=https://<domain>`, and writes the server's `.env`. Backup-bucket credentials (`BUCKET_NAME`, `AWS_*`) are copied from the local `.env` if present. That first-run bootstrap is the only implicit sync: afterwards the server's `.env` is authoritative and changes only through the explicit `env` command (`env` show / `env set KEY=VALUE` / `env set KEY` with hidden prompt / `env unset KEY`), which rewrites the file, recreates the container, and refreshes the Caddy vhost (so `ORIGIN` and `ALIAS_DOMAINS` take effect without a deploy) — fly-secrets style, nothing moves without being named. Secrets are never passed as command-line arguments to remote shells.
 
 **Idempotent provisioning, not a setup mode.** Every run executes the same phases; each phase checks before it acts (Docker installed? Caddy installed? Caddyfile current? `.env` present?). First run does everything; later runs fall through to the deploy phase in seconds.
 
@@ -59,6 +59,7 @@ Everything under `/srv/editable` is recreatable by the next deploy. The containe
 ./scripts/vps-deploy.sh <user@host> <domain>   first deploy, or explicit target (always works)
 ./scripts/vps-deploy.sh                        deploy to DEPLOY_HOST         (pnpm vps:deploy)
 ./scripts/vps-deploy.sh status                 running tag + rollback tags   (pnpm vps:status)
+./scripts/vps-deploy.sh logs                   follow container logs         (pnpm vps:logs)
 ./scripts/vps-deploy.sh env                    show the server's env, masked (pnpm vps:env)
 ./scripts/vps-deploy.sh env set KEY=VALUE …    set env vars and restart the app
 ./scripts/vps-deploy.sh env set KEY            prompt for the value (hidden input)
@@ -77,11 +78,13 @@ Options:
 
 1. **Preflight (local).** Verify: git worktree present, `docker buildx` available, ssh connectivity to the host (`BatchMode=yes`), remote architecture is x86_64 (abort otherwise), domain resolves to the host's IP (warn, don't abort — DNS may still be propagating).
 2. **Provision (remote, idempotent).** Install Docker (official convenience script) and Caddy (apt repo) if missing; create 1 GB swap if total RAM < 2 GB and no swap exists; create `/data` and `/srv/editable`.
-3. **Configure (remote, idempotent).** Write `/etc/caddy/Caddyfile` (reverse_proxy block for the domain) and reload Caddy if it changed. First run: prompt for `ADMIN_PASSWORD`, write `.env` with it plus `ORIGIN` and any local bucket credentials.
+3. **Configure (remote, idempotent).** Write `/etc/caddy/Caddyfile` (reverse_proxy block for the domain, plus any `ALIAS_DOMAINS` from the server's `.env` as additional site addresses) and reload Caddy if it changed. First run: prompt for `ADMIN_PASSWORD`, write `.env` with it plus `ORIGIN` and any local bucket credentials.
 4. **Build & upload (local → remote).** Skipped with `--tag`. Build `editable:<sha>` for linux/amd64, stream via `ssh docker load`. Upload `docker-compose.yml`.
 5. **Activate (remote).** `IMAGE_TAG=<sha> docker compose up -d --remove-orphans` in `/srv/editable` (tag passed via the `.deploy_env` file, not shell interpolation).
 6. **Verify.** Poll `127.0.0.1:3000` via ssh until healthy or timeout; on success also curl `https://<domain>` from the local machine (warn-only — TLS issuance or DNS may lag). Print logs and fail otherwise.
 7. **Cleanup & report.** Prune `editable:*` images beyond the newest 3. Print the deployed tag, the site URL, and (first run) the local `.env` block for the data commands.
+
+**Alias domains.** `ORIGIN` stays the single canonical address; `ALIAS_DOMAINS` is a comma-separated list of alternative names (`www.`, second hostnames) that Caddy should also terminate TLS for — the same relationship Apache expresses as `ServerName` plus `ServerAlias`. They are appended to the site address so Caddy requests a certificate per name, and the app's canonical-host redirect sends each to `ORIGIN` — one login and one canonical URL regardless of which domain was used. Kept separate from `ORIGIN` so each variable means one thing: the app reads `ORIGIN` for redirects and metadata and never needs to parse a list. Invalid entries fail the deploy before Caddy is reloaded; DNS must already point at the server, since Caddy verifies every name when requesting the certificate.
 
 ## Repository changes
 

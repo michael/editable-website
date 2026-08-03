@@ -1,8 +1,8 @@
 import { unlink } from 'node:fs/promises';
 import { error, json } from '@sveltejs/kit';
-import { ASSET_ID_REGEX, VARIANT_WIDTHS_SET } from '$lib/config.js';
-import { asset_exists, write_variant, variant_path } from '$lib/server/asset_storage.js';
-import { require_admin_session } from '$lib/server/auth.js';
+import { ASSET_ID_REGEX, VARIANT_WIDTHS_SET } from '#lib/config.js';
+import { asset_exists, write_variant, variant_path } from '#lib/server/asset_storage.js';
+import { require_admin_session } from '#lib/server/auth.js';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ params, request, locals }) => {

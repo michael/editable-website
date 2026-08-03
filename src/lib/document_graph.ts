@@ -1,4 +1,4 @@
-import { document_schema } from '$lib/document_schema.js';
+import { document_schema } from '#lib/document_schema.js';
 import type { Attachment, DocumentNode, NodeSchema, PropertyDefinition } from 'svedit';
 
 function get_attached_ranges(

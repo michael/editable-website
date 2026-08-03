@@ -10,6 +10,7 @@ primary_region = "fra"
 
 [env]
   DATA_DIR = "/data"
+  PROTOCOL_HEADER = "fly-forwarded-proto"
 
 [deploy]
   strategy = "immediate"

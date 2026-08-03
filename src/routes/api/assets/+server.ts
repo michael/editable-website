@@ -1,7 +1,7 @@
 import { json, error } from '@sveltejs/kit';
-import { UPLOAD_MIME_TO_EXT } from '$lib/config.js';
-import { asset_exists, write_asset, delete_asset } from '$lib/server/asset_storage.js';
-import { require_admin_session } from '$lib/server/auth.js';
+import { UPLOAD_MIME_TO_EXT } from '#lib/config.js';
+import { asset_exists, write_asset, delete_asset } from '#lib/server/asset_storage.js';
+import { require_admin_session } from '#lib/server/auth.js';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request, locals }) => {

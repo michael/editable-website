@@ -85,11 +85,11 @@ import Highlight from './components/Highlight.svelte';
 import Link from './components/Link.svelte';
 import Section from './components/Section.svelte';
 
-import { document_schema } from '$lib/document_schema.js';
-import { start_processing } from '$lib/client/asset_upload.js';
-import { MEDIA_DEFAULTS } from '$lib/config.js';
+import { document_schema } from '#lib/document_schema.js';
+import { start_processing } from '#lib/client/asset_upload.js';
+import { MEDIA_DEFAULTS } from '#lib/config.js';
 import { set_properties } from 'svedit';
-import { get_media_dimensions } from '$lib/client/media_dimensions.js';
+import { get_media_dimensions } from '#lib/client/media_dimensions.js';
 
 function get_media_type(file: File): 'image' | 'video' {
 	if (file.type.startsWith('video/')) return 'video';
