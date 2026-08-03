@@ -800,18 +800,17 @@ pnpm vps:env set ADMIN_PASSWORD      # no value = prompted, kept out of shell hi
 pnpm vps:env unset BUCKET_NAME
 ```
 
-`set` and `unset` restart the app so the change takes effect immediately. For [automated backups](#automated-backups-optional), the `BUCKET_*` / `AWS_*` secrets belong in the server's `.env` — the first deploy copies them from your local `.env` if present; after that, changes are explicit via `vps:env`.
+`set` and `unset` restart the app and refresh the Caddy config, so the change takes effect immediately — no deploy needed, including for `ORIGIN` and `ALIAS_DOMAINS`. For [automated backups](#automated-backups-optional), the `BUCKET_*` / `AWS_*` secrets belong in the server's `.env` — the first deploy copies them from your local `.env` if present; after that, changes are explicit via `vps:env`.
 
 #### Extra domains (www, aliases)
 
-`ORIGIN` is the one canonical address of your site. Any other domain pointing at the server — `www.`, a second hostname — needs to be named so Caddy can get a certificate for it. List them in `ALIAS_DOMAINS`, then deploy:
+`ORIGIN` is the one canonical address of your site. Any other domain pointing at the server — `www.`, a second hostname — needs to be named so Caddy can get a certificate for it:
 
 ```sh
 pnpm vps:env set ALIAS_DOMAINS="www.my-site.example.com,alias.example.com"
-pnpm vps:deploy
 ```
 
-Caddy then terminates TLS for all of them and the app redirects each to `ORIGIN`, so visitors and search engines end up on one address and you don't get a separate login per domain. Point each name's DNS at the server **before** deploying — Caddy verifies every name when it requests the certificate, and a name that doesn't resolve yet will fail.
+Caddy then terminates TLS for all of them and the app redirects each to `ORIGIN`, so visitors and search engines end up on one address and you don't get a separate login per domain. Point each name's DNS at the server **before** setting it — Caddy verifies every name when it requests the certificate.
 
 **Doing it by hand instead:** the script is optional — `docker-compose.yml` runs on any docker host. Clone your site on the server, `cp .env.example .env` and set `ADMIN_PASSWORD` and `ORIGIN="https://my-site.example.com"`, then `docker compose up -d --build`. The app listens on `127.0.0.1:3000`; put a reverse proxy with TLS in front (with Caddy that's the whole config: `my-site.example.com { reverse_proxy 127.0.0.1:3000 }`). Ship updates with `git pull && docker compose up -d --build`. For the data commands, a hand-managed setup has nothing to auto-discover, so set the explicit keys alongside `DEPLOY_HOST` in your local `.env`: `RESTART_CMD="docker restart editable"`, `REMOTE_EXEC="docker exec editable"`, and `HOST_DATA_DIR` pointing at the `./data` bind mount as an absolute path (without the script, the container keeps the default name `editable`).
 

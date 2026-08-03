@@ -256,6 +256,60 @@ fi
 # Explicit env var management, fly-secrets style: show / set / unset. Changes
 # take effect by recreating the container (env_file is baked in at creation).
 
+# Write the Caddy vhost and reload if it changed. Idempotent, so it is safe to
+# run after any env change.
+configure_caddy() {
+	info "Configuring Caddy for $DOMAIN"
+	{
+		printf 'DOMAIN=%q\n' "$DOMAIN"
+		printf 'SRV=%q\n' "$SRV"
+		cat <<'REMOTE'
+set -euo pipefail
+mkdir -p /etc/caddy/sites
+site_file="/etc/caddy/sites/editable.caddy"
+
+# Both follow the server's .env once it exists, so `env set` takes effect. On a
+# first deploy it is not written yet, hence the passed-in domain.
+domain="$DOMAIN"
+extra=""
+if [ -f "$SRV/.env" ]; then
+	from_env="$(sed -n 's|^ORIGIN="https://\([^"]*\)".*|\1|p' "$SRV/.env" | sed -n '1p')"
+	[ -z "$from_env" ] || domain="$from_env"
+	extra="$(sed -n 's|^ALIAS_DOMAINS="\(.*\)"$|\1|p' "$SRV/.env" | sed -n '1p')"
+fi
+domain="$(printf '%s' "$domain" | tr '[:upper:]' '[:lower:]')"
+printf '%s' "$domain" |
+	grep -Eq '^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$' ||
+	{ echo "Error: ORIGIN does not contain a valid domain: $domain" >&2; exit 1; }
+site_address="$domain"
+for d in $(printf '%s' "$extra" | tr ',' ' '); do
+	d="$(printf '%s' "$d" | tr '[:upper:]' '[:lower:]')"
+	if [ -z "$d" ] || [ "$d" = "$domain" ]; then
+		continue
+	fi
+	printf '%s' "$d" |
+		grep -Eq '^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$' ||
+		{ echo "Error: ALIAS_DOMAINS contains an invalid domain: $d" >&2; exit 1; }
+	site_address="$site_address, $d"
+done
+
+desired="$site_address {
+	reverse_proxy 127.0.0.1:3000
+}"
+changed=""
+if [ ! -f "$site_file" ] || [ "$(cat "$site_file")" != "$desired" ]; then
+	printf '%s\n' "$desired" >"$site_file"
+	changed=1
+fi
+grep -q 'import sites/\*\.caddy' /etc/caddy/Caddyfile || {
+	printf '\nimport sites/*.caddy\n' >>/etc/caddy/Caddyfile
+	changed=1
+}
+[ -z "$changed" ] || systemctl reload caddy
+REMOTE
+	} | rssh "$SUDO bash -s"
+}
+
 restart_with_env() {
 	rssh "$SUDO tee $SRV/.env >/dev/null && $SUDO chmod 600 $SRV/.env" <"$TMP/env"
 	info "Restarting the app with the new environment"
@@ -294,6 +348,7 @@ if [ "$ACTION" = "env" ]; then
 				info "Set $key"
 			done
 			restart_with_env
+			configure_caddy
 			;;
 		unset)
 			[ ${#ENV_ARGS[@]} -ge 2 ] || die "env unset needs at least one KEY"
@@ -304,6 +359,7 @@ if [ "$ACTION" = "env" ]; then
 				info "Unset $key"
 			done
 			restart_with_env
+			configure_caddy
 			;;
 		*) die "Unknown env command '$SUB' (expected: show, set, unset)" ;;
 	esac
@@ -372,49 +428,7 @@ REMOTE
 
 # ---- phase 3: configure (remote, idempotent) ---------------------------------
 
-info "Configuring Caddy for $DOMAIN"
-{
-	printf 'DOMAIN=%q\n' "$DOMAIN"
-	printf 'SRV=%q\n' "$SRV"
-	cat <<'REMOTE'
-set -euo pipefail
-mkdir -p /etc/caddy/sites
-site_file="/etc/caddy/sites/editable.caddy"
-
-# ALIAS_DOMAINS are aliases Caddy also terminates TLS for; the app redirects
-# them to ORIGIN. Each needs DNS pointing here or its certificate will fail.
-# Absent on a first deploy — .env is written after this phase.
-extra=""
-if [ -f "$SRV/.env" ]; then
-	extra="$(sed -n 's|^ALIAS_DOMAINS="\(.*\)"$|\1|p' "$SRV/.env" | sed -n '1p')"
-fi
-site_address="$DOMAIN"
-for d in $(printf '%s' "$extra" | tr ',' ' '); do
-	d="$(printf '%s' "$d" | tr '[:upper:]' '[:lower:]')"
-	if [ -z "$d" ] || [ "$d" = "$DOMAIN" ]; then
-		continue
-	fi
-	printf '%s' "$d" |
-		grep -Eq '^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$' ||
-		{ echo "Error: ALIAS_DOMAINS contains an invalid domain: $d" >&2; exit 1; }
-	site_address="$site_address, $d"
-done
-
-desired="$site_address {
-	reverse_proxy 127.0.0.1:3000
-}"
-changed=""
-if [ ! -f "$site_file" ] || [ "$(cat "$site_file")" != "$desired" ]; then
-	printf '%s\n' "$desired" >"$site_file"
-	changed=1
-fi
-grep -q 'import sites/\*\.caddy' /etc/caddy/Caddyfile || {
-	printf '\nimport sites/*.caddy\n' >>/etc/caddy/Caddyfile
-	changed=1
-}
-[ -z "$changed" ] || systemctl reload caddy
-REMOTE
-} | rssh "$SUDO bash -s"
+configure_caddy
 
 BUCKET_KEYS="BUCKET_NAME AWS_ENDPOINT_URL_S3 AWS_REGION AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY"
 
