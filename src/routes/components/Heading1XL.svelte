@@ -8,7 +8,7 @@
 	const svedit = get_svedit_context();
 	let { path }: { path: DocumentPath } = $props();
 	let node: Nodes['heading_1_xl'] = $derived(svedit.session.get(path));
-	let layout = $derived(node.layout || 'default');
+	let layout = $derived(node.layout || 'regular');
 </script>
 
 <Node class="ew-heading-1-xl" {path}>

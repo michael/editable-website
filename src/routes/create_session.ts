@@ -115,7 +115,7 @@ function insert_text_node(
 	tr: Transaction,
 	node_type: string,
 	content: Text = { content: '', marks: [], annotations: [] },
-	layout = 'default'
+	layout = 'regular'
 ) {
 	const new_text = {
 		id: nanoid(),
@@ -522,31 +522,31 @@ const session_config = {
 			tr.insert_nodes([new_prose_grid_id]);
 		},
 		paragraph: function (tr, content = { content: '', marks: [], annotations: [] }) {
-			insert_text_node(tr, 'paragraph', content, 'default');
+			insert_text_node(tr, 'paragraph', content, 'regular');
 		},
 		paragraph_sm: function (tr, content = { content: '', marks: [], annotations: [] }) {
-			insert_text_node(tr, 'paragraph_sm', content, 'default');
+			insert_text_node(tr, 'paragraph_sm', content, 'regular');
 		},
 		paragraph_lg: function (tr, content = { content: '', marks: [], annotations: [] }) {
-			insert_text_node(tr, 'paragraph_lg', content, 'default');
+			insert_text_node(tr, 'paragraph_lg', content, 'regular');
 		},
 		paragraph_xl: function (tr, content = { content: '', marks: [], annotations: [] }) {
-			insert_text_node(tr, 'paragraph_xl', content, 'default');
+			insert_text_node(tr, 'paragraph_xl', content, 'regular');
 		},
 		heading_1_xl: function (tr, content = { content: '', marks: [], annotations: [] }) {
-			insert_text_node(tr, 'heading_1_xl', content, 'default');
+			insert_text_node(tr, 'heading_1_xl', content, 'regular');
 		},
 		heading_1: function (tr, content = { content: '', marks: [], annotations: [] }) {
-			insert_text_node(tr, 'heading_1', content, 'default');
+			insert_text_node(tr, 'heading_1', content, 'regular');
 		},
 		heading_2: function (tr, content = { content: '', marks: [], annotations: [] }) {
-			insert_text_node(tr, 'heading_2', content, 'default');
+			insert_text_node(tr, 'heading_2', content, 'regular');
 		},
 		heading_3: function (tr, content = { content: '', marks: [], annotations: [] }) {
-			insert_text_node(tr, 'heading_3', content, 'default');
+			insert_text_node(tr, 'heading_3', content, 'regular');
 		},
 		heading_4: function (tr, content = { content: '', marks: [], annotations: [] }) {
-			insert_text_node(tr, 'heading_4', content, 'default');
+			insert_text_node(tr, 'heading_4', content, 'regular');
 		},
 		preformatted: function (tr, content = { content: '', marks: [], annotations: [] }) {
 			const new_preformatted = {

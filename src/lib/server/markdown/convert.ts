@@ -114,7 +114,7 @@ export function convert_markdown(
 				ctx.nodes[id] = {
 					id,
 					type: 'paragraph',
-					layout: 'default',
+					layout: 'regular',
 					content: convert_inline(ctx, block.children, {
 						allow_newlines: content_allows_newlines('paragraph')
 					})
@@ -138,7 +138,7 @@ export function convert_markdown(
 				ctx.nodes[id] = {
 					id,
 					type: heading_type,
-					layout: 'default',
+					layout: 'regular',
 					content: convert_inline(ctx, block.children, {
 						allow_newlines: content_allows_newlines(heading_type)
 					})

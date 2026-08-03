@@ -116,7 +116,7 @@ Add a second `paragraph` layout that renders muted secondary body copy.
 
 ### Scope
 
-- Add a `layout` property to `paragraph` with `default` and `muted` values.
+- Add a `layout` property to `paragraph` with `regular` and `muted` values.
 - Make the `muted` layout render with muted foreground styling.
 - Register `paragraph` as a two-layout node in the session config so the layout cycling command can switch between the two styles.
 
