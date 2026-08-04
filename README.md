@@ -1015,7 +1015,7 @@ They are deliberately tolerant: a node that never had the property is left alone
 
 `delete_property` exists because stored content does not clean itself up. Saving a page drops nodes that are no longer reachable, but properties are written back exactly as they were loaded — so a property you removed from the schema stays in every document, and in every backup, until a migration removes it.
 
-`db` remains available for everything else — schema changes, `site_settings`, or content queries the helpers don't cover. It is the [`node:sqlite`](https://nodejs.org/api/sqlite.html) database handle, so `exec` runs statements and `prepare` gives you one to run with parameters. Adding a column and backfilling the rows that need it is the typical case:
+`db` remains available for everything else — schema changes, `site_settings`, or content queries the helpers don't cover. It is the [node:sqlite](https://nodejs.org/api/sqlite.html) database handle, so `exec` runs statements and `prepare` gives you one to run with parameters. Adding a column and backfilling the rows that need it is the typical case:
 
 ```js
 export default {
