@@ -11,9 +11,9 @@ const FULL_DOC = {
 		TmDfRnszftVyCJHtzUmqAUB: {
 			id: 'TmDfRnszftVyCJHtzUmqAUB',
 			type: 'image',
-			src: 'logo.svg',
+			src: 'logo-square.svg',
 			mime_type: 'image/svg+xml',
-			width: 210,
+			width: 50,
 			height: 50,
 			alt: 'Logo',
 			scale: 1,
