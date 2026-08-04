@@ -8,7 +8,7 @@
 	const svedit = get_svedit_context();
 	let { path }: { path: DocumentPath } = $props();
 	let node: Nodes['paragraph'] = $derived(svedit.session.get(path));
-	let layout = $derived(node.layout || 'default');
+	let layout = $derived(node.layout || 'regular');
 </script>
 
 <Node {path}>

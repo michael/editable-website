@@ -4,7 +4,9 @@ export default {
 			CREATE TABLE documents (
 				document_id TEXT NOT NULL PRIMARY KEY,
 				type TEXT NOT NULL,
-				data TEXT
+				data TEXT,
+				created_at TEXT,
+				updated_at TEXT
 			);
 
 			CREATE TABLE site_settings (

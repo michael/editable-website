@@ -182,7 +182,7 @@ export const document_schema = define_document_schema({
 	button: {
 		kind: 'block',
 		properties: {
-			layout: { type: 'string', values: ['primary', 'secondary'], default: 'primary' },
+			layout: { type: 'string', values: ['primary', 'secondary', 'link'], default: 'primary' },
 			href: { type: 'string' },
 			target: { type: 'string', default: '_self' },
 			label: {
@@ -258,7 +258,7 @@ export const document_schema = define_document_schema({
 	paragraph: {
 		kind: 'text',
 		properties: {
-			layout: { type: 'string', values: ['default', 'muted'], default: 'default' },
+			layout: { type: 'string', values: ['regular', 'muted'], default: 'regular' },
 			content: {
 				type: 'text',
 				mark_types: ALL_MARKS,
@@ -269,7 +269,7 @@ export const document_schema = define_document_schema({
 	paragraph_sm: {
 		kind: 'text',
 		properties: {
-			layout: { type: 'string', values: ['default', 'muted'], default: 'default' },
+			layout: { type: 'string', values: ['regular', 'muted'], default: 'regular' },
 			content: {
 				type: 'text',
 				mark_types: ALL_MARKS,
@@ -280,7 +280,7 @@ export const document_schema = define_document_schema({
 	paragraph_lg: {
 		kind: 'text',
 		properties: {
-			layout: { type: 'string', values: ['default', 'muted'], default: 'default' },
+			layout: { type: 'string', values: ['regular', 'muted'], default: 'regular' },
 			content: {
 				type: 'text',
 				mark_types: ALL_MARKS,
@@ -291,7 +291,7 @@ export const document_schema = define_document_schema({
 	paragraph_xl: {
 		kind: 'text',
 		properties: {
-			layout: { type: 'string', values: ['default', 'muted'], default: 'default' },
+			layout: { type: 'string', values: ['regular', 'muted'], default: 'regular' },
 			content: {
 				type: 'text',
 				mark_types: ALL_MARKS,
@@ -303,7 +303,7 @@ export const document_schema = define_document_schema({
 	heading_1_xl: {
 		kind: 'text',
 		properties: {
-			layout: { type: 'string', values: ['default', 'muted'], default: 'default' },
+			layout: { type: 'string', values: ['regular', 'muted'], default: 'regular' },
 			content: {
 				type: 'text',
 				mark_types: ALL_MARKS,
@@ -314,7 +314,7 @@ export const document_schema = define_document_schema({
 	heading_1: {
 		kind: 'text',
 		properties: {
-			layout: { type: 'string', values: ['default', 'muted'], default: 'default' },
+			layout: { type: 'string', values: ['regular', 'muted'], default: 'regular' },
 			content: {
 				type: 'text',
 				mark_types: ALL_MARKS,
@@ -326,7 +326,7 @@ export const document_schema = define_document_schema({
 	heading_2: {
 		kind: 'text',
 		properties: {
-			layout: { type: 'string', values: ['default', 'muted'], default: 'default' },
+			layout: { type: 'string', values: ['regular', 'muted'], default: 'regular' },
 			content: {
 				type: 'text',
 				mark_types: ALL_MARKS,
@@ -337,7 +337,7 @@ export const document_schema = define_document_schema({
 	heading_3: {
 		kind: 'text',
 		properties: {
-			layout: { type: 'string', values: ['default', 'muted'], default: 'default' },
+			layout: { type: 'string', values: ['regular', 'muted'], default: 'regular' },
 			content: {
 				type: 'text',
 				mark_types: ALL_MARKS,
@@ -348,7 +348,7 @@ export const document_schema = define_document_schema({
 	heading_4: {
 		kind: 'text',
 		properties: {
-			layout: { type: 'string', values: ['default', 'muted'], default: 'default' },
+			layout: { type: 'string', values: ['regular', 'muted'], default: 'regular' },
 			content: {
 				type: 'text',
 				mark_types: ALL_MARKS,
