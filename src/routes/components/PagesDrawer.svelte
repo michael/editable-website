@@ -755,7 +755,7 @@ Updated: ${updated_at_label}`;
 									{#if node.shadowed_by_markdown}
 										<button
 											type="button"
-											class="unlisted-badge"
+											class="unlisted-badge shadowed-badge"
 											title="Explain why this page is unreachable"
 											aria-label={`Explain why ${node.title} is unreachable`}
 											onclick={(event) =>
@@ -1078,6 +1078,7 @@ Updated: ${updated_at_label}`;
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
+		gap: 0.375rem;
 		padding-left: 0.75rem;
 		padding-right: 1rem;
 	}
@@ -1392,6 +1393,11 @@ Updated: ${updated_at_label}`;
 		cursor: pointer;
 		outline: 1px solid transparent;
 		outline-offset: 1px;
+	}
+
+	/* Red because a shadowed page is broken, not merely undiscoverable. */
+	.shadowed-badge {
+		color: color-mix(in oklch, red 65%, var(--foreground));
 	}
 
 	.unlisted-badge:focus-visible {
