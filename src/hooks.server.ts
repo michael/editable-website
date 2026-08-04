@@ -43,6 +43,9 @@ export const init: ServerInit = async () => {
 	if (!VERCEL) {
 		const { default: migrate } = await import('#lib/server/migrate.js');
 		migrate();
+
+		const { warn_about_shadowed_pages } = await import('#lib/server/markdown/shadowed.js');
+		warn_about_shadowed_pages();
 	}
 };
 

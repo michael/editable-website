@@ -600,7 +600,7 @@ This keeps the mental model simple for users while preserving deterministic beha
 
 #### Slug collisions and reassignment
 
-If a user tries to assign a slug that is already used elsewhere, there are two collision cases:
+If a user tries to assign a slug that is already used elsewhere, there are three collision cases:
 
 **Case A — the slug is the active slug of another page**
 
@@ -626,6 +626,10 @@ When this happens:
 4. do not change the other page's active slug, because it did not lose its current slug
 
 Historical alias ownership is therefore an internal implementation detail, not a user-facing confirmation flow.
+
+**Case C — the slug is the pathname of a markdown page**
+
+Rejected, like Case A. Markdown pathnames win at routing time, so they are reserved against both custom slugs and auto-generated ones, which suffix past them. See Markdown pages in README.md.
 
 #### Link rewriting rule
 

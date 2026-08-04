@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { build_registry, get_markdown_page } from './registry.js';
+import { MARKDOWN_SOURCES } from '#lib/content_config.js';
+import { build_registry, get_markdown_page, is_reserved_markdown_slug } from './registry.js';
 
 describe('build_registry', () => {
 	it('builds an empty registry from an empty mapping', () => {
@@ -30,5 +31,17 @@ describe('build_registry', () => {
 describe('get_markdown_page', () => {
 	it('returns null for unmapped pathnames', () => {
 		expect(get_markdown_page('/not-mapped-anywhere')).toBe(null);
+	});
+});
+
+describe('is_reserved_markdown_slug', () => {
+	it('reserves every configured pathname', () => {
+		for (const { pathname } of MARKDOWN_SOURCES) {
+			expect(is_reserved_markdown_slug(pathname.slice(1))).toBe(true);
+		}
+	});
+
+	it('does not reserve unmapped slugs', () => {
+		expect(is_reserved_markdown_slug('not-mapped-anywhere')).toBe(false);
 	});
 });

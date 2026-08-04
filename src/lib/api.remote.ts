@@ -9,6 +9,7 @@ import { delete_orphaned_assets, touch_asset } from '#lib/server/asset_storage.j
 import { snapshot_if_stale } from '#lib/server/db_snapshot.js';
 import { document_schema } from '#lib/document_schema.js';
 import { collect_node_ids_in_order } from '#lib/document_graph.js';
+import { is_reserved_markdown_slug } from '#lib/server/markdown/registry.js';
 import {
 	extract_page_metadata,
 	extract_site_metadata,
@@ -84,6 +85,7 @@ export type PageSummary = {
 	preview_media_node: PreviewMediaNode | null;
 	page_href: string;
 	slug: string;
+	shadowed_by_markdown: boolean;
 	created_at: string | null;
 	updated_at: string | null;
 };
@@ -101,6 +103,7 @@ export type PageTreeNode = {
 	preview_media_node: PreviewMediaNode | null;
 	page_href: string;
 	slug: string;
+	shadowed_by_markdown: boolean;
 	created_at: string | null;
 	updated_at: string | null;
 	children: PageTreeNode[];
@@ -275,7 +278,7 @@ function create_unique_slug(base_slug: string): string {
 
 	while (true) {
 		const row = slug_exists_stmt.get(slug) as unknown as { document_id: string } | undefined;
-		if (!row) return slug;
+		if (!row && !is_reserved_markdown_slug(slug)) return slug;
 		slug = `${base_slug}-${suffix}`;
 		suffix += 1;
 	}
@@ -456,6 +459,7 @@ function summarize_page_document(page_doc: PageDocumentRecord): PageSummary {
 		preview_media_node: metadata.preview_media_node,
 		page_href: active_slug ? `/${active_slug}` : '/',
 		slug: active_slug ?? '',
+		shadowed_by_markdown: active_slug ? is_reserved_markdown_slug(active_slug) : false,
 		created_at: page_doc.created_at ?? null,
 		updated_at: page_doc.updated_at ?? null
 	};
@@ -493,6 +497,7 @@ function build_tree_children(
 			preview_media_node: summary.preview_media_node,
 			page_href: summary.page_href,
 			slug: summary.slug,
+			shadowed_by_markdown: summary.shadowed_by_markdown,
 			created_at: summary.created_at,
 			updated_at: summary.updated_at,
 			children: build_tree_children(
@@ -526,6 +531,7 @@ function build_page_tree_node(
 		preview_media_node: summary.preview_media_node,
 		page_href: summary.page_href,
 		slug: summary.slug,
+		shadowed_by_markdown: summary.shadowed_by_markdown,
 		created_at: summary.created_at,
 		updated_at: summary.updated_at,
 		children: build_tree_children(
@@ -1157,6 +1163,13 @@ export const update_page_slug = command(update_page_slug_input_schema, async (in
 
 	if (!normalized_slug) {
 		return create_page_url_error_result('page_url_empty', 'Page URL cannot be empty');
+	}
+
+	if (is_reserved_markdown_slug(normalized_slug)) {
+		return create_page_url_error_result(
+			'page_url_reserved',
+			'That Page URL is reserved by a markdown page and cannot be used.'
+		);
 	}
 
 	const existing_doc = get_optional_doc_from_db(input.document_id);
