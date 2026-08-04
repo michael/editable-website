@@ -57,10 +57,10 @@ const FULL_DOC = {
 			id: 'XmMkSnbXSwSwVnMJgzkPmer',
 			type: 'button',
 			layout: 'secondary',
-			href: '',
+			href: '/manual#quickstart',
 			target: '_self',
 			label: {
-				content: 'Download ⤓',
+				content: 'Install ⤓',
 				marks: [],
 				annotations: []
 			}
@@ -1443,10 +1443,10 @@ const FULL_DOC = {
 			id: 'prose_grid_free_button',
 			type: 'button',
 			layout: 'primary',
-			href: 'https://github.com/michael/editable-website#getting-started',
-			target: '_blank',
+			href: '/manual#quickstart',
+			target: '_self',
 			label: {
-				content: 'Download and Install ⤓',
+				content: 'Install ⤓',
 				marks: [],
 				annotations: []
 			}
@@ -1519,7 +1519,7 @@ const FULL_DOC = {
 			id: 'prose_grid_supergrok_button',
 			type: 'button',
 			layout: 'secondary',
-			href: '#zBXuGXXYWMGbSdteMyNFhja',
+			href: '',
 			target: '_self',
 			label: {
 				content: 'Purchase →',
@@ -1606,7 +1606,7 @@ const FULL_DOC = {
 			id: 'prose_grid_expert_button',
 			type: 'button',
 			layout: 'secondary',
-			href: '#zBXuGXXYWMGbSdteMyNFhja',
+			href: '',
 			target: '_self',
 			label: {
 				content: 'Purchase →',
@@ -2089,7 +2089,7 @@ const FULL_DOC = {
 			href: '',
 			target: '_self',
 			label: {
-				content: 'Download ⤓',
+				content: 'Install ⤓',
 				marks: [],
 				annotations: []
 			}
@@ -2301,10 +2301,10 @@ const FULL_DOC = {
 			id: 'FKgjxHCeSbVZrdnPuxYkMYp',
 			type: 'nav_button',
 			layout: 'secondary',
-			href: '',
+			href: '/manual#quickstart',
 			target: '_blank',
 			label: {
-				content: 'Download ⤓',
+				content: 'Install ⤓',
 				marks: [],
 				annotations: []
 			}
