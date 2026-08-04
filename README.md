@@ -4,7 +4,7 @@ Editable lets you build and edit a Svelte website without adding a separate CMS.
 
 ## Quickstart
 
-From zero to a live-editable site in four commands.
+From zero to a live-editable site in less than five minutes.
 
 You need [Node.js 24+](https://nodejs.org/en/download) (for its built-in SQLite), [Git](https://git-scm.com/downloads), and [pnpm](https://pnpm.io/installation).
 
@@ -46,13 +46,12 @@ git remote rename origin upstream
 git branch -m main
 ```
 
-Then create a private repository of your own and make it `origin` — your content is backed up by the [data scripts](#backup-sync--recovery), this backs up your code:
+Then create an empty private repository with your git host of choice and make it `origin` — your content is backed up by the [data scripts](#backup-sync--recovery), this backs up your code:
 
 ```sh
-gh repo create my-site --private --source=. --push
+git remote add origin <url>
+git push -u origin main
 ```
-
-(Without the [GitHub CLI](https://cli.github.com): create an empty private repository on GitHub, then `git remote add origin <url>` and `git push -u origin main`.)
 
 From here on, `git push` saves your work to your own repo, and `git pull upstream stable` fetches Editable updates. The upstream `stable` branch always points at the latest release; active development happens on `upstream/main`, which your site does not need to follow.
 
