@@ -1,6 +1,7 @@
 import migrations from './migrations.js';
 import db, { with_transaction } from './db.js';
 import { plan_pending_migrations } from './migration_plan.js';
+import { create_migration_helpers } from './migration_helpers.js';
 import seed_initial_documents from './seed_initial_documents.js';
 
 export default function migrate() {
@@ -42,6 +43,7 @@ export default function migrate() {
 			);
 		}
 
+		const helpers = create_migration_helpers(db);
 		const remaining_migrations = plan_pending_migrations(migrations, applied);
 		const is_fresh_database = applied.size === 0;
 		console.log(
@@ -51,7 +53,7 @@ export default function migrate() {
 		for (const migration of remaining_migrations) {
 			console.log('Running migration... ', migration.id);
 			try {
-				const result = migration.up({ db });
+				const result = migration.up({ db, ...helpers });
 				if (
 					result !== null &&
 					(typeof result === 'object' || typeof result === 'function') &&

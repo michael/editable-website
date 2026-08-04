@@ -259,6 +259,18 @@ Expired sessions are deleted on lookup. No background cleanup job needed.
 
 There is no user id column because there is only one logical admin identity: “whoever knows `ADMIN_PASSWORD`”.
 
+### Migration content helpers
+
+Content is JSON inside `documents`, so content migrations are document rewrites rather than schema changes. Migrations therefore receive content helpers on the `up` context alongside `db` (see Database migrations in README.md).
+
+`update(type, transform)` is the primitive: scan all documents, hand every node of that type to the transform, write back only the documents that changed. `rename_property`, `rename_type`, `replace_value`, and `delete_property` are built on it. Design constraints:
+
+- helpers are tolerant — a node without the source property is skipped, so a migration is a no-op on sites that never used the shape it targets
+- renaming onto an existing property throws, because that is data loss rather than a missing shape
+- `updated_at` is never written: a migration is not a content edit
+- `rename_type` also rewrites the `documents.type` column, which mirrors the root node's type, so the two cannot drift apart
+- `delete_property` is the only way stale properties leave the database: `Session.to_json()` drops unreachable nodes but preserves every property it loaded, so saving never normalizes a node to the schema
+
 ### Assets
 
 Assets (images, videos) are stored as files in `ASSET_PATH`. Assets are referenced from image nodes via their `src` property. The `asset_refs` table tracks which documents reference which assets.

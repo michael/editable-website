@@ -973,13 +973,63 @@ This creates a timestamped `custom` migration. Its filename is its permanent ID:
 
 ```js
 export default {
-	up({ db }) {
-		// Transform the database here.
+	up({ db, rename_property, rename_type, replace_value, delete_property, update }) {
+		// Transform content with the helpers, or the database with `db`.
+		// rename_property('hero', 'image', 'media');
 	}
 };
 ```
 
-Adding a custom content type usually needs no migration because documents are stored as JSON. Write one when existing documents or database structure must be transformed. Migrations are synchronous and may only change SQLite; filesystem, network, and other external side effects cannot be rolled back. Migrations are forward-only: never rename, delete, or edit one that has been applied. Roll back an upgrade by restoring the database snapshot made before deployment.
+Adding a custom content type usually needs no migration because documents are stored as JSON. Write one when existing documents or database structure must be transformed.
+
+### Content helpers
+
+Content lives as JSON inside the `documents` table, so changing a node type's shape means rewriting that JSON rather than altering a column. The helpers on the `up` context do that for you — each one scans every document (pages, nav, and footer), applies the change to nodes of the given type, and returns how many nodes it changed. Every helper takes the node type first, and where a before and after are involved, the old value comes before the new one:
+
+```js
+export default {
+	up({ rename_property, rename_type, replace_value, delete_property, update }) {
+		// Rename a property, keeping its value
+		rename_property('hero', 'image', 'media');
+
+		// Rename a node type
+		rename_type('teaser', 'card');
+
+		// Replace one value with another
+		replace_value('feature', 'layout', 'left_right_split', 'two_columns');
+
+		// Drop a property you removed from the schema
+		delete_property('hero', 'subtitle');
+
+		// Anything else: mutate each matching node directly
+		update('hero', (node) => {
+			node.title = { ...node.title, content: node.title.content.trim() };
+		});
+	}
+};
+```
+
+They are deliberately tolerant: a node that never had the property is left alone, so a migration written for one node type does nothing on sites that never used it. The exception is a rename onto a property that already exists — that is a real conflict and aborts the upgrade. Documents that end up unchanged are not rewritten, and `updated_at` is never touched, because a migration is not a content edit.
+
+`rename_type` also updates the `documents.type` column, which mirrors the type of each document's root node. For block types nothing matches there and only the nodes change.
+
+`delete_property` exists because stored content does not clean itself up. Saving a page drops nodes that are no longer reachable, but properties are written back exactly as they were loaded — so a property you removed from the schema stays in every document, and in every backup, until a migration removes it.
+
+`db` remains available for everything else — schema changes, `site_settings`, or content queries the helpers don't cover. It is the [`node:sqlite`](https://nodejs.org/api/sqlite.html) database handle, so `exec` runs statements and `prepare` gives you one to run with parameters. Adding a column and backfilling the rows that need it is the typical case:
+
+```js
+export default {
+	up({ db }) {
+		db.exec('ALTER TABLE documents ADD COLUMN locale TEXT');
+
+		const result = db.prepare('UPDATE documents SET locale = ? WHERE locale IS NULL').run('en');
+
+		console.log(`Backfilled locale on ${result.changes} documents`);
+	}
+};
+```
+
+`run()` reports how many rows a statement touched, which is worth logging — a migration that reports `0` is usually a migration that matched nothing. Migrations are synchronous and may only change SQLite; filesystem, network, and other external side effects cannot be rolled back. Migrations are forward-only: never rename, delete, or edit one that has been applied. Roll back an upgrade by restoring the database snapshot made before deployment.
 
 Editable's own migrations use the `editable` source name; `custom` migrations belong to your project. The timestamp-first filenames keep both sources in one chronological list without a central registry or sequence-number conflicts.
 
