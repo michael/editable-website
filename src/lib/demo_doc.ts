@@ -13,8 +13,8 @@ const FULL_DOC = {
 			type: 'image',
 			src: 'logo.svg',
 			mime_type: 'image/svg+xml',
-			width: 100,
-			height: 100,
+			width: 210,
+			height: 50,
 			alt: 'Logo',
 			scale: 1,
 			focal_point_x: 0.5,
@@ -887,7 +887,9 @@ const FULL_DOC = {
 			type: 'supporting_media',
 			media: 'BnRyDkxJpWyxgsmdAaqBZpc',
 			media_max_width: 392,
-			media_aspect_ratio: 2.469
+			media_aspect_ratio: 2.469,
+			href: '',
+			target: '_self'
 		},
 		kWHMWHbzvQqqPpbhPVGepXA: {
 			id: 'kWHMWHbzvQqqPpbhPVGepXA',
@@ -2224,8 +2226,8 @@ const FULL_DOC = {
 			type: 'image',
 			src: 'logo.svg',
 			mime_type: 'image/svg+xml',
-			width: 100,
-			height: 100,
+			width: 210,
+			height: 50,
 			alt: 'Logo',
 			scale: 1,
 			focal_point_x: 0.5,
@@ -2242,7 +2244,7 @@ const FULL_DOC = {
 		DDmmrQzcAxWJfdhatTbkRTh: {
 			id: 'DDmmrQzcAxWJfdhatTbkRTh',
 			type: 'nav_link',
-			href: '/#RtYpQwXsZvNmKjHgFdSaLe',
+			href: '/manual#quickstart',
 			target: '_self',
 			label: {
 				content: 'Quickstart',
@@ -2253,7 +2255,7 @@ const FULL_DOC = {
 		BESRZnRsUbbWapdUTzGNxFH: {
 			id: 'BESRZnRsUbbWapdUTzGNxFH',
 			type: 'nav_link',
-			href: '#',
+			href: '/manual',
 			target: '_self',
 			label: {
 				content: 'Manual',
@@ -2336,8 +2338,8 @@ const FULL_DOC = {
 			type: 'image',
 			src: 'logo.svg',
 			mime_type: 'image/svg+xml',
-			width: 100,
-			height: 100,
+			width: 210,
+			height: 50,
 			alt: 'Logo',
 			scale: 1,
 			focal_point_x: 0.5,
@@ -2348,18 +2350,10 @@ const FULL_DOC = {
 			id: 'WkrTBHKFKjjCphujhzqZrup',
 			type: 'supporting_media',
 			media: 'ncqBPBKuDzbdCKqPdAUwszK',
-			media_max_width: 64,
-			media_aspect_ratio: 1
-		},
-		ZRYVZgNjcBnCFVRXhJHJxtV: {
-			id: 'ZRYVZgNjcBnCFVRXhJHJxtV',
-			type: 'heading_4',
-			layout: 'regular',
-			content: {
-				content: 'Editable',
-				marks: [],
-				annotations: []
-			}
+			media_max_width: 176,
+			media_aspect_ratio: 0,
+			href: '',
+			target: '_self'
 		},
 		fWFgvucsMbVzrEDZSSXxhWA: {
 			id: 'fWFgvucsMbVzrEDZSSXxhWA',
@@ -2635,7 +2629,7 @@ const FULL_DOC = {
 			id: 'footer_1',
 			type: 'footer',
 			body: {
-				nodes: ['WkrTBHKFKjjCphujhzqZrup', 'ZRYVZgNjcBnCFVRXhJHJxtV', 'fWFgvucsMbVzrEDZSSXxhWA'],
+				nodes: ['WkrTBHKFKjjCphujhzqZrup', 'fWFgvucsMbVzrEDZSSXxhWA'],
 				marks: [],
 				annotations: []
 			},
