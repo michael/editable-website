@@ -627,6 +627,30 @@ When this happens:
 
 Historical alias ownership is therefore an internal implementation detail, not a user-facing confirmation flow.
 
+#### Reserved markdown pathnames
+
+Configured markdown pages (`MARKDOWN_SOURCES`) win over database slugs at routing time, so their pathnames are reserved for slug assignment as well. A database page must never be given a slug that a markdown page already occupies — it would be silently unreachable.
+
+This applies to both ways a slug is assigned:
+
+- auto-generated slugs skip reserved pathnames while suffixing, so a page titled "Manual" gets `manual-2` when `/manual` is a markdown page
+- custom slugs entered by the user are rejected, like Case A above: the address is in use and the user picks another
+
+Markdown pathnames are code, not content, so this is a one-way reservation — the database never takes a pathname away from a markdown page.
+
+#### Shadowed pages
+
+The reservation cannot be enforced in the other direction: a `MARKDOWN_SOURCES` entry may be added for a pathname that an existing database page already occupies. That page is then **shadowed** — the markdown page serves the URL and the database page is unreachable.
+
+Shadowing is not an error and never fails a build or a boot. The database page keeps its slug untouched, so removing the markdown entry makes it reachable again without any repair step.
+
+It is surfaced in two places instead:
+
+- a warning logged once at startup, listing each shadowed page's slug and `document_id` (backend runtime only — static/Vercel mode has no database to check)
+- a badge in the page browser on each shadowed page, explaining that a markdown page owns the URL and that giving the page a different Page URL restores it
+
+Sitemap membership is deliberately unchanged: a shadowed page is still listed if it is home-reachable.
+
 #### Link rewriting rule
 
 Internal page links are slug-based, so whenever a page's active slug changes, all internal links that target that page must be updated to the new slug.

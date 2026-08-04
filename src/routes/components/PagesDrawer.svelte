@@ -26,6 +26,9 @@
 	let unlisted_info_item = $state(null);
 	let unlisted_info_ref = $state(null);
 
+	let shadowed_info_item = $state(null);
+	let shadowed_info_ref = $state(null);
+
 	let search_query = $state('');
 	let search_input_ref = $state(null);
 	// selected_result_index is genuinely hybrid state: reset by search changes,
@@ -185,6 +188,14 @@
 	});
 
 	$effect(() => {
+		if (shadowed_info_item && shadowed_info_ref && !shadowed_info_ref.open) {
+			shadowed_info_ref.showModal();
+		} else if (!shadowed_info_item && shadowed_info_ref?.open) {
+			shadowed_info_ref.close();
+		}
+	});
+
+	$effect(() => {
 		if (!page_browser.state.open) {
 			initialized_selection_version = -1;
 			clear_initial_scroll_frame();
@@ -300,6 +311,27 @@ Updated: ${updated_at_label}`;
 	function handle_unlisted_info_cancel(event) {
 		event.preventDefault();
 		close_unlisted_info();
+	}
+
+	function open_shadowed_info(event, item) {
+		event.preventDefault();
+		event.stopPropagation();
+		shadowed_info_item = item;
+	}
+
+	function close_shadowed_info() {
+		shadowed_info_item = null;
+	}
+
+	function handle_shadowed_info_click(event) {
+		if (event.target === shadowed_info_ref) {
+			close_shadowed_info();
+		}
+	}
+
+	function handle_shadowed_info_cancel(event) {
+		event.preventDefault();
+		close_shadowed_info();
 	}
 
 	function handle_page_click(event, item) {
@@ -720,6 +752,23 @@ Updated: ${updated_at_label}`;
 								</div>
 
 								<div class="tree-row-meta">
+									{#if node.shadowed_by_markdown}
+										<button
+											type="button"
+											class="unlisted-badge"
+											title="Explain why this page is unreachable"
+											aria-label={`Explain why ${node.title} is unreachable`}
+											onclick={(event) =>
+												open_shadowed_info(event, {
+													document_id: node.document_id,
+													title: node.title,
+													slug: node.slug
+												})}
+										>
+											URL TAKEN
+										</button>
+									{/if}
+
 									{#if node_is_unlisted}
 										<button
 											type="button"
@@ -864,6 +913,27 @@ Updated: ${updated_at_label}`;
 			</p>
 			<div class="confirm-actions">
 				<button type="button" class="confirm-btn" onclick={close_unlisted_info}> Got it </button>
+			</div>
+		</div>
+	{/if}
+</dialog>
+
+<dialog
+	bind:this={shadowed_info_ref}
+	class="confirm-dialog"
+	oncancel={handle_shadowed_info_cancel}
+	onclick={handle_shadowed_info_click}
+>
+	{#if shadowed_info_item}
+		<div class="confirm-panel unlisted-info-panel">
+			<h3 class="confirm-title">URL taken by a markdown page</h3>
+			<p class="confirm-message">
+				A markdown page from the repository is served at <code>/{shadowed_info_item.slug}</code>, so
+				this page cannot be reached. Give it a different Page URL to make it visible again — or ask
+				a developer to remove that markdown page.
+			</p>
+			<div class="confirm-actions">
+				<button type="button" class="confirm-btn" onclick={close_shadowed_info}> Got it </button>
 			</div>
 		</div>
 	{/if}
