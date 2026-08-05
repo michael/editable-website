@@ -942,11 +942,11 @@ New Editable releases are one `git pull` away.
 Because your site keeps Editable as the `upstream` remote (see [Your site is your repo](#your-site-is-your-repo)), improvements flow in with ordinary git. The ritual, in order:
 
 ```sh
-pnpm data:backup       # snapshot the live database first
+pnpm data:backup          # snapshot the live database first
 git pull upstream stable  # get the latest Editable release
-pnpm install               # update dependencies (including svedit)
-pnpm data:pull         # bring your live content local
-pnpm dev               # test the new code against your real content
+pnpm install              # update dependencies (including svedit)
+pnpm data:pull            # bring your live content local
+pnpm dev                  # test the new code against your real content
 fly deploy                # ship it
 git push                  # your repo now holds the upgraded state
 ```
