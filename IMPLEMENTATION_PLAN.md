@@ -1,5 +1,11 @@
 # Implementation plan
 
+## Android end-of-page hold gesture
+
+- Schedule the end-of-page hold check immediately when a qualifying touch starts at the page end, rather than relying only on a scroll event.
+- Recheck during touch movement as a fallback for browsers that do not emit the same overscroll scroll events as iOS.
+- Preserve the existing one-second hold, eligibility checks, and iOS behavior.
+
 ## Save progress indicator
 
 - Keep the save phase text stable while saving and encode the current media progress in a compact circular loading indicator.

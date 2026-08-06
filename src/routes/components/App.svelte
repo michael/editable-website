@@ -245,6 +245,7 @@
 			mobile_overscroll_triggered = false;
 		}
 		clear_mobile_overscroll_timeout();
+		handle_mobile_overscroll_check();
 	}
 
 	function handle_mobile_touchend() {
@@ -520,6 +521,7 @@
 	onkeydown={key_mapper.handle_keydown.bind(key_mapper)}
 	onscroll={handle_mobile_overscroll_check}
 	ontouchstart={handle_mobile_touchstart}
+	ontouchmove={handle_mobile_overscroll_check}
 	ontouchend={handle_mobile_touchend}
 	ontouchcancel={handle_mobile_touchend}
 />
