@@ -179,7 +179,9 @@ data/
     │   ├── w640.webp
     │   ├── w1024.webp
     │   └── w1536.webp
-    ├── e7a3f1bc...abcd.mp4                   # video passthrough
+    ├── e7a3f1bc...abcd.mp4                   # converted video
+    ├── e7a3f1bc...abcd/
+    │   └── poster.webp                        # first decoded video frame
     ├── f9c2d4ae...cdef.gif                   # animated gif passthrough
     └── ...
 ```
@@ -839,7 +841,7 @@ Both media types fill their container the same way visually. Images and videos u
 - `object-fit`, `object-position`, and `transform: scale(...)` applied identically to how `Image.svelte` does it.
 - `width` and `height` attributes set from node properties.
 - `contenteditable="false"` to prevent the browser from trying to edit the video element.
-- No `srcset` or variants — videos are served as-is.
+- No `srcset` or video variants — videos are served as-is. Every saved video has one derived `poster.webp`, stored in the video's companion asset directory and assigned to the native `poster` attribute while the video loads. The poster is not stored in the document node.
 - The `alt` property is rendered as `aria-label` on the `<video>` element.
 - **Autoplay handling:** uses `$effect` with multiple retry strategies — checks `readyState >= 2`, listens for `canplay`/`loadeddata`, and falls back to `setTimeout`. This handles late hydration where readiness events may have already fired.
 - **Click-to-fullscreen (published view only):** clicking the video enters native fullscreen with controls enabled and audio unmuted. On fullscreen exit (including iOS Safari's `webkitendfullscreen`), the video restores to muted inline autoplay. iOS sometimes re-pauses ~400ms after play succeeds, so a `setTimeout(500)` retry is needed. Inline-playing videos show `cursor: zoom-in`.

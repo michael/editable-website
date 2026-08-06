@@ -44,6 +44,13 @@ export function variant_path(asset_id: string, width: number): string {
 }
 
 /**
+ * Get the full filesystem path for a video's derived WebP poster.
+ */
+export function poster_path(asset_id: string): string {
+	return join(variant_dir(asset_id), 'poster.webp');
+}
+
+/**
  * Stream a ReadableStream (web), Buffer, or Uint8Array to a file on disk,
  * counting bytes and hashing the content. Size limiting is the deployment's
  * job (BODY_SIZE_LIMIT), enforced by the adapter while streaming.
@@ -106,6 +113,20 @@ export async function write_variant(
 }
 
 /**
+ * Write a video's derived WebP poster to disk.
+ */
+export async function write_poster(
+	asset_id: string,
+	data: ReadableStream | Buffer | Uint8Array
+): Promise<{ bytes_written: number; sha256: string }> {
+	const dir = variant_dir(asset_id);
+	await mkdir(dir, { recursive: true });
+	const result = await stream_to_file(poster_path(asset_id), data);
+	mirror_file(`assets/${stem(asset_id)}/poster.webp`, poster_path(asset_id));
+	return result;
+}
+
+/**
  * Check if an original asset exists on disk.
  */
 export function asset_exists(asset_id: string): boolean {
@@ -149,6 +170,13 @@ export function create_variant_read_stream(
 	options: { start?: number; end?: number } = {}
 ): ReadStream {
 	return createReadStream(variant_path(asset_id, width), options);
+}
+
+/**
+ * Create a Node.js ReadStream for a video's poster.
+ */
+export function create_poster_read_stream(asset_id: string): ReadStream {
+	return createReadStream(poster_path(asset_id));
 }
 
 /**

@@ -7,7 +7,9 @@ import {
 	asset_exists,
 	asset_size,
 	create_asset_read_stream,
+	create_poster_read_stream,
 	create_variant_read_stream,
+	poster_path,
 	variant_path
 } from '#lib/server/asset_storage.js';
 import type { RequestHandler } from './$types';
@@ -29,6 +31,7 @@ const INERT_CONTENT_HEADERS = {
 
 /** Extensions a variant's original can have (variants exist only for images). */
 const IMAGE_EXTS = Object.keys(EXT_TO_MIME).filter((ext) => EXT_TO_MIME[ext].startsWith('image/'));
+const VIDEO_EXTS = Object.keys(EXT_TO_MIME).filter((ext) => EXT_TO_MIME[ext].startsWith('video/'));
 
 /**
  * Convert a Node.js Readable stream to a Web ReadableStream.
@@ -87,6 +90,31 @@ export const GET: RequestHandler = async ({ params, request }) => {
 
 	if (!path) {
 		error(400, 'Missing asset path');
+	}
+
+	// Video poster request: {stem}/poster.webp
+	const poster_match = path.match(/^([a-f0-9]{64})\/poster\.webp$/);
+	if (poster_match) {
+		const asset_stem = poster_match[1];
+		let video_id: string | null = null;
+		for (const ext of VIDEO_EXTS) {
+			if (asset_exists(`${asset_stem}.${ext}`)) {
+				video_id = `${asset_stem}.${ext}`;
+				break;
+			}
+		}
+		if (!video_id || !existsSync(poster_path(video_id))) {
+			error(404, 'Video poster not found');
+		}
+
+		return new Response(to_web_stream(create_poster_read_stream(video_id)), {
+			headers: {
+				...INERT_CONTENT_HEADERS,
+				'Content-Type': 'image/webp',
+				'Cache-Control': 'public, max-age=31536000, immutable',
+				'Content-Disposition': `inline; filename="${short_filename(asset_stem, '.webp')}"`
+			}
+		});
 	}
 
 	// Variant request: {stem}/w{width}.webp
