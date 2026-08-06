@@ -1,5 +1,12 @@
 # Implementation plan
 
+## Save progress indicator
+
+- Keep the save phase text stable while saving and render the current media progress percentage inside the loading spinner.
+- Label the stable media phases as processing and uploading so the user can distinguish them from document saving.
+- Pass progress separately from the status message so percentage updates do not cause text layout shifts.
+- Use a larger circular spinner with centered text and preserve the existing text-only completion pill.
+
 ## SvelteKit 3 prerelease migration
 
 - Upgrade to `@sveltejs/kit@3.0.0-next.12`, TypeScript 6, and SvelteKit-3-compatible prerelease versions of the Node and Vercel adapters while retaining compatible Svelte, Vite, and Vite plugin ranges.

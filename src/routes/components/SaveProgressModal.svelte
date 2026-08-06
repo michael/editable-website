@@ -4,8 +4,9 @@
 	let {
 		visible = false,
 		message = '',
-		done = false
-	}: { visible?: boolean; message?: string; done?: boolean } = $props();
+		done = false,
+		progress = null
+	}: { visible?: boolean; message?: string; done?: boolean; progress?: number | null } = $props();
 
 	let show_modal = $state(false);
 	let delay_timer;
@@ -36,40 +37,27 @@
 		transition:fade={{ duration: 150 }}
 	>
 		<div
-			class="max-w-md min-w-72 border border-(--foreground)/20 bg-(--background) px-10 py-8 text-center shadow-xl"
+			class="max-w-md min-w-72 border border-(--border) bg-(--background) px-8 py-6 text-center shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
+			class:rounded-full={done}
+			class:rounded-2xl={!done}
 		>
 			{#if done}
-				<div class="flex items-center justify-center gap-3">
-					<svg
-						class="h-6 w-6 shrink-0 text-green-600"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M5 13l4 4L19 7"
-						/>
-					</svg>
-					<p class="text-lg font-medium text-(--foreground)">{message}</p>
-				</div>
+				<p class="text-sm font-medium text-(--foreground)">{message}</p>
 			{:else}
 				<div class="flex flex-col items-center gap-4">
-					<!-- Spinner -->
-					<div
-						class="save-spinner h-8 w-8 animate-spin border-2 border-(--foreground)/20 border-t-(--foreground)"
-					></div>
+					<div class="relative h-12 w-12" aria-hidden="true">
+						<div
+							class="absolute inset-0 animate-spin rounded-full border-2 border-(--border) border-t-(--foreground)"
+						></div>
+						{#if progress !== null}
+							<span class="absolute inset-0 z-10 grid place-items-center text-xs leading-none font-medium tabular-nums text-(--foreground)">
+								{Math.round(progress)}
+							</span>
+						{/if}
+					</div>
 					<p class="text-lg text-(--foreground)">{message}</p>
 				</div>
 			{/if}
 		</div>
 	</div>
 {/if}
-
-<style>
-	.save-spinner {
-		border-radius: 50%;
-	}
-</style>

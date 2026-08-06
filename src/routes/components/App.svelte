@@ -53,6 +53,7 @@
 	let save_progress_visible = $state(false);
 	let save_progress_message = $state('');
 	let save_progress_done = $state(false);
+	let save_progress_percent = $state<number | null>(null);
 
 	let browser_data_version = $state(0);
 
@@ -349,6 +350,7 @@
 
 			save_progress_visible = true;
 			save_progress_done = false;
+			save_progress_percent = 0;
 			save_progress_message = 'Saving…';
 
 			try {
@@ -357,26 +359,19 @@
 				const blob_urls = collect_blob_urls(pre_check.nodes);
 
 				if (blob_urls.length > 0) {
-					const total = blob_urls.length;
-
 					await ensure_processing(blob_urls);
 
 					if (has_pending_processing()) {
-						save_progress_message =
-							total === 1 ? 'Processing media…' : `Processing ${total} media files…`;
-
-						await wait_for_processing(({ done, total: processing_total, progress }) => {
-							const percent = Math.round(progress * 100);
-							save_progress_message =
-								processing_total > 1
-									? `Processing media ${done + 1}/${processing_total}… ${percent}%`
-									: `Processing media… ${percent}%`;
+						save_progress_message = 'Processing media…';
+						await wait_for_processing(({ progress }) => {
+							save_progress_percent = Math.round(progress * 100);
 						});
 					}
 
+					save_progress_message = 'Uploading media…';
 					mapping = await upload_pending(blob_urls, ({ phase, index, total: upload_total }) => {
 						if (phase === 'uploading') {
-							save_progress_message = `Uploading media ${index}/${upload_total}…`;
+							save_progress_percent = Math.round((index / upload_total) * 100);
 						}
 					});
 				}
@@ -538,6 +533,7 @@
 			visible={save_progress_visible}
 			message={save_progress_message}
 			done={save_progress_done}
+			progress={save_progress_percent}
 		/>
 	{/if}
 </div>
