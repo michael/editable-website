@@ -3,7 +3,7 @@
 // mirroring what `get_combined_document` produces for database pages.
 
 import { fill_document_defaults, validate_document } from 'svedit';
-import { document_schema } from '#app/editable_schema.js';
+import { document_schema } from '#app/document_schema.js';
 import type { Document } from 'svedit';
 
 /**

@@ -2,7 +2,7 @@
 	import { get_svedit_context } from '#app/svedit_context.js';
 	import { get_app_context } from '#app/app_context.js';
 	import { deserialize_path, serialize_path } from 'svedit';
-	import { get_page_browser } from './page_browser_context.svelte.js';
+	import { get_page_browser } from '#app/page_browser_context.svelte.js';
 	import MediaControls from './MediaControls.svelte';
 	import SizableViewboxControls from './SizableViewboxControls.svelte';
 	import EditLink from './EditLink.svelte';

@@ -1,5 +1,21 @@
+/**
+ * The application's document model: node types, properties, marks, and defaults.
+ * Keep content-shape decisions here so the session and components share one schema.
+ */
 import { define_document_schema, type NodeMap } from 'svedit';
-import { MEDIA_DEFAULTS } from '#app/editable_config.js';
+
+/** Default values for media node properties (image and video). */
+export const MEDIA_DEFAULTS = {
+	src: '',
+	mime_type: '',
+	width: 0,
+	height: 0,
+	alt: '',
+	scale: 1.0,
+	focal_point_x: 0.5,
+	focal_point_y: 0.5,
+	object_fit: 'contain'
+};
 
 const ALL_MARKS = ['strong', 'emphasis', 'code', 'highlight', 'link'];
 const MINIMAL_MARKS = ['emphasis', 'highlight'];

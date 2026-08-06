@@ -120,8 +120,8 @@ Content is defined through schemas that specify:
 
 When adding new properties to a node type:
 
-1. Add to schema in `src/app/editable_schema.ts` (`document_schema`)
-2. Add to inserter in `src/app/editable_session.ts` (`inserters`)
+1. Add to schema in `src/app/document_schema.ts` (`document_schema`)
+2. Add to inserter in `src/app/session.ts` (`inserters`)
 
 ## Available MCP Tools
 

@@ -1,9 +1,9 @@
-// Seed data for the demo website
+// Default content for a new site.
 // Stored as a single merged document so you can paste console.logged JSON directly.
-// NAV_1, FOOTER_1, PAGE_1 are extracted automatically using svedit's traverse utility.
+// The default nav, footer, and page documents are extracted automatically using svedit's traverse utility.
 
 import { fill_document_defaults, traverse } from 'svedit';
-import { document_schema } from '#app/editable_schema.js';
+import { document_schema } from '#app/document_schema.js';
 
 const FULL_DOC = {
 	document_id: 'page_1',
@@ -2737,12 +2737,12 @@ const page_node = FILLED_DOC.nodes['page_1'];
 const nav_root_id = page_node.nav; // "nav_1"
 const footer_root_id = page_node.footer; // "footer_1"
 
-export const NAV_1 = extract_document(FILLED_DOC.nodes, nav_root_id);
-export const FOOTER_1 = extract_document(FILLED_DOC.nodes, footer_root_id);
+export const default_nav_document = extract_document(FILLED_DOC.nodes, nav_root_id);
+export const default_footer_document = extract_document(FILLED_DOC.nodes, footer_root_id);
 
-// PAGE_1 gets everything reachable from page_1, minus nav/footer subtrees
-const nav_ids = new Set(Object.keys(NAV_1.nodes));
-const footer_ids = new Set(Object.keys(FOOTER_1.nodes));
+// The default page document gets everything reachable from page_1, minus nav/footer subtrees
+const nav_ids = new Set(Object.keys(default_nav_document.nodes));
+const footer_ids = new Set(Object.keys(default_footer_document.nodes));
 const exclude = new Set([...nav_ids, ...footer_ids]);
 const page_nodes_list = traverse('page_1', document_schema, FILLED_DOC.nodes);
 const page_nodes = {};
@@ -2751,10 +2751,14 @@ for (const node of page_nodes_list) {
 		page_nodes[node.id] = node;
 	}
 }
-export const PAGE_1 = { document_id: 'page_1', nodes: page_nodes };
+export const default_page_document = { document_id: 'page_1', nodes: page_nodes };
 
-// Merged document for static deployment (Vercel demo)
-export const demo_doc = {
-	document_id: PAGE_1.document_id,
-	nodes: { ...PAGE_1.nodes, ...NAV_1.nodes, ...FOOTER_1.nodes }
+// Merged default site document for static deployment (VERCEL=1)
+export const default_site_document = {
+	document_id: default_page_document.document_id,
+	nodes: {
+		...default_page_document.nodes,
+		...default_nav_document.nodes,
+		...default_footer_document.nodes
+	}
 };

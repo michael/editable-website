@@ -6,17 +6,20 @@
 	import Toolbar from './Toolbar.svelte';
 	import SaveProgressModal from './SaveProgressModal.svelte';
 
-	import { EXT_TO_MIME } from '#app/editable_config.js';
-	import { create_session } from '#app/editable_session.js';
-	import { create_page_browser, set_page_browser } from './page_browser_context.svelte.js';
-	import type { PageBrowser } from './page_browser_context.svelte.js';
-	import { create_page_url_dialog, set_page_url_dialog } from './page_url_dialog_context.svelte.js';
+	import { EXT_TO_MIME } from '#app/config.js';
+	import { create_session } from '#app/session.js';
+	import { create_page_browser, set_page_browser } from '#app/page_browser_context.svelte.js';
+	import type { PageBrowser } from '#app/page_browser_context.svelte.js';
+	import {
+		create_page_url_dialog,
+		set_page_url_dialog
+	} from '#app/page_url_dialog_context.svelte.js';
 	import {
 		create_page_delete_dialog,
 		set_page_delete_dialog
-	} from './page_delete_dialog_context.svelte.js';
+	} from '#app/page_delete_dialog_context.svelte.js';
 
-	import { demo_doc } from '#app/editable_doc.js';
+	import { default_site_document } from '#app/default_site.js';
 
 	let {
 		document: doc,
@@ -39,7 +42,7 @@
 	// Backend availability and document editability are independent: read-only
 	// documents (e.g. markdown pages) arrive with can_edit false but must still
 	// render their own content, even without a backend.
-	let initial_doc = $derived(doc ?? demo_doc);
+	let initial_doc = $derived(doc ?? default_site_document);
 
 	let initial_doc_json = $derived(JSON.stringify(initial_doc));
 

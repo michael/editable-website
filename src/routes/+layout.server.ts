@@ -1,5 +1,5 @@
 import { ORIGIN, VERCEL } from '$app/env/private';
-import { demo_doc } from '#app/editable_doc.js';
+import { default_site_document } from '#app/default_site.js';
 import { extract_site_metadata } from '#lib/page_metadata.js';
 import type { LayoutServerLoad } from './$types';
 
@@ -14,7 +14,7 @@ export const load: LayoutServerLoad = async ({ locals, depends }) => {
 		const { get_site_metadata } = await import('#lib/api.remote.js');
 		site_metadata = await get_site_metadata();
 	} else {
-		site_metadata = extract_site_metadata(demo_doc);
+		site_metadata = extract_site_metadata(default_site_document);
 	}
 
 	return {

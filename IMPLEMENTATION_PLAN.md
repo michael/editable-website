@@ -48,7 +48,7 @@
 Convert the whole codebase from JS+JSDoc to TypeScript per the "Language: TypeScript" section in [ARCHITECTURE.md](ARCHITECTURE.md). Non-strict; svelte-check must stay at 0 errors.
 
 1. Replace `jsconfig.json` with `tsconfig.json` (same options, `allowJs`/`checkJs` kept during transition) and point the `check` script at it.
-2. Convert the document schema to `src/app/editable_schema.ts`, export `type Nodes = NodeMap<typeof document_schema>`, and add a typed `get_svedit_context()` in `src/app/svedit_context.ts` (mirrors the svedit demo app).
+2. Convert the document schema to `src/app/document_schema.ts`, export `type Nodes = NodeMap<typeof document_schema>`, and add a typed `get_svedit_context()` in `src/app/svedit_context.ts` (mirrors the svedit demo app).
 3. Convert `src/lib` modules (root, `client/`, `server/`, `server/markdown/`, `server/migrations/`), translating existing JSDoc annotations to TS syntax.
 4. Convert `src/routes` modules (`hooks.server`, load functions, API endpoints, `app_utils`, `commands.svelte`, `create_session`, helpers).
 5. Convert all Svelte components to `<script lang="ts">`. Node components use the typed-node pattern; internal components get explicit prop types.
@@ -1060,12 +1060,12 @@ This step must preserve the current strengths of the app:
 - existing save flow including asset processing/upload/replacement
 - current document splitting and asset reference tracking
 - editable-in-place page editing with the same session and toolbar behavior
-- static/Vercel compatibility for the `/` route using the demo document fallback
+- static/Vercel compatibility for the `/` route using the default site document fallback
 
 In addition, the multi-page work must preserve the current static preview / local single-page mode:
 
 - when running in static/Vercel-style mode (for example `VERCEL=1`), only `/` needs to work
-- `/` should continue to render from the demo document in that mode
+- `/` should continue to render from the default site document in that mode
 - multi-page features are disabled in that mode from the `/` route's point of view:
   - no pages drawer
   - no linking into `/new`
@@ -1199,7 +1199,7 @@ This is a good use for Svelte async patterns and keeps the main editor lightweig
 
 - `/` continues to resolve `home_page_id` from site settings in the full runtime
 - it loads that page using the same dynamic page loader used by `/:page_id`
-- however, `/` must also retain a static/Vercel fallback mode that renders the demo document without requiring the database or multi-page runtime
+- however, `/` must also retain a static/Vercel fallback mode that renders the default site document without requiring the database or multi-page runtime
 
 This avoids duplicating page rendering logic while preserving a clean homepage URL and keeping preview/static deployments viable.
 
@@ -1556,7 +1556,7 @@ Implemented:
 Current behavior:
 
 - in full runtime mode, `/` loads the configured home page and renders it through the shared editor shell
-- in static/Vercel mode, `/` still falls back to `demo_doc`
+- in static/Vercel mode, `/` still falls back to `default_site_document`
 
 ### 2.4 Add `/new`
 
@@ -1740,7 +1740,7 @@ These constraints must be respected during implementation:
 - the drawer/page-browser UI should not appear in static/Vercel mode
 - authentication should remain effectively off in static/Vercel mode
 - route/component structure should avoid forcing server-only imports for `/`
-- if needed, keep the current pattern where `/` conditionally loads the demo document in static mode and only uses the runtime database path in full mode
+- if needed, keep the current pattern where `/` conditionally loads the default site document in static mode and only uses the runtime database path in full mode
 
 ## Suggested file changes summary
 

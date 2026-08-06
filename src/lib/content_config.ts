@@ -15,7 +15,7 @@
 //
 // With no entries, the site behaves exactly as if this feature did not exist.
 // Do not import this module (or anything under `src/lib/server/`) from client
-// code — use `#app/editable_config.js` for universal constants instead.
+// code — use `#app/config.js` for universal constants instead.
 import readme_md from '../../README.md?raw';
 import target_groups_md from '../../TARGET_GROUPS.md?raw';
 

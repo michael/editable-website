@@ -49,7 +49,7 @@ This step does not include:
 
 Editable is a SvelteKit application that lets site owners edit content directly in the browser. The editor (Svedit) works with a graph-based document model — a flat map of nodes with references between them. The backend stores these documents in SQLite and serves them to the frontend, stitching together shared content (nav, footer) with page-specific content into a single document that Svedit can edit locally.
 
-The production architecture is database-backed and supports multiple pages, but the project must also continue to support static preview/local development mode (for example `VERCEL=1`) where the app falls back to the demo document. In that mode, only the `/` route needs to work, multi-page features are disabled, authentication is disabled, and code paths must avoid hard dependencies on server-only runtime features that would break static deployments.
+The production architecture is database-backed and supports multiple pages, but the project must also continue to support static preview/local development mode (for example `VERCEL=1`) where the app falls back to the default site document. In that mode, only the `/` route needs to work, multi-page features are disabled, authentication is disabled, and code paths must avoid hard dependencies on server-only runtime features that would break static deployments.
 
 The content model includes reusable `list` and `button_group` blocks for richer text flows. `prose.content`, `accordion_item.body`, and `feature.body` may contain `text`, `list`, `supporting_media`, and `button_group` nodes. Each `list` owns a `list_items` node array of `list_item` nodes, and each `list_item` owns a single-line annotated text `content` property. Each `button_group` owns a `buttons` node array of `button` nodes and is styled like the existing button rows. A `button` has `primary`, `secondary`, and `link` layouts; `link` keeps the same height as the other layouts but drops the fill, the border, and the horizontal padding in favour of an underline that spans exactly the label width. The paragraph and heading text scale includes `paragraph`, `paragraph_sm`, `paragraph_lg`, `paragraph_xl`, `heading_1_xl`, `heading_1`, `heading_2`, `heading_3`, and `heading_4` nodes with `regular` and `muted` layouts. The `list.layout` string id controls marker style so the existing layout-cycling flow can switch between unordered and ordered variants without changing node type.
 
@@ -71,7 +71,7 @@ Guidelines:
 
 - **Non-strict for now.** `tsconfig.json` keeps `strict: false`; implicit `any` is allowed. The goal of the conversion is consistency and schema-derived autocomplete, not exhaustive type coverage. Strictness can be ratcheted up later.
 - **Readable surface, ceremonial internals.** Customizable node components (e.g. `Paragraph.svelte`, `Figure.svelte`) must stay light: typed props plus a typed `node`, nothing more. Internal modules (server code, `api.remote.ts`, `PagesDrawer`, overlays, commands) may carry heavier type ceremony where it stabilizes things.
-- **Schema-derived node types.** `src/app/editable_schema.ts` exports `type Nodes = NodeMap<typeof document_schema>` (from svedit). Node components access the session through the typed `get_svedit_context()` helper in `src/app/svedit_context.ts` and annotate their node as `let node: Nodes['paragraph'] = $derived(svedit.session.get(path));`, which gives property autocomplete and catches misspelled properties in `pnpm check`.
+- **Schema-derived node types.** `src/app/document_schema.ts` exports `type Nodes = NodeMap<typeof document_schema>` (from svedit). Node components access the session through the typed `get_svedit_context()` helper in `src/app/svedit_context.ts` and annotate their node as `let node: Nodes['paragraph'] = $derived(svedit.session.get(path));`, which gives property autocomplete and catches misspelled properties in `pnpm check`.
 - **Import specifiers keep the `.js` extension** even when the target file is `.ts` (TypeScript's `bundler` resolution and Vite both resolve `./foo.js` → `./foo.ts`). This matches svedit's own convention.
 - **`pnpm check` must stay at 0 errors** and is the required validation step after schema or component changes.
 
@@ -139,7 +139,7 @@ Editable must preserve a lightweight static-compatible mode for preview deployme
 **Requirements:**
 
 - Only the `/` route must support static/Vercel mode.
-- In static/Vercel mode, `/` renders from the existing demo document instead of the database.
+- In static/Vercel mode, `/` renders from the default site document instead of the database.
 - multi-page features are disabled in this mode at the **UI / integration** level:
   - no pages drawer
   - no links or flows that send the user to `/new`
@@ -153,7 +153,7 @@ Editable must preserve a lightweight static-compatible mode for preview deployme
 This means the app effectively has two operating modes:
 
 1. **Full runtime mode** — database-backed, multi-page, shared nav/footer, admin-authenticated editing
-2. **Static/Vercel mode** — single-page demo-doc fallback on `/`, while multi-page routes may still exist but are not surfaced or used
+2. **Static/Vercel mode** — single-page default-site fallback on `/`, while multi-page routes may still exist but are not surfaced or used
 
 The static/Vercel mode is a compatibility constraint on all future multi-page work.
 
@@ -743,7 +743,7 @@ The `/new` route uses an **ephemeral client-created document**. When the user op
 
 This id is stable from the beginning, even before the document is persisted. The page remains ephemeral only in the sense that it is not stored in the database until the first save.
 
-The transient `/new` document must be composed from the **current shared nav and footer documents in the database**, not from the static demo document. This ensures that if shared nav or footer content has been edited elsewhere, the new page starts from that latest shared state.
+The transient `/new` document must be composed from the **current shared nav and footer documents in the database**, not from the static default site document. This ensures that if shared nav or footer content has been edited elsewhere, the new page starts from that latest shared state.
 
 On first save:
 
@@ -1135,7 +1135,7 @@ The page browser uses a bottom drawer. Its resize handle is rendered outside the
 
 A page is **home-reachable** (and appears in `sitemap.xml`) if it can be reached by following links starting from the home page, nav, or footer. This is a transitive check. A page may still exist publicly by URL even if it is not home-reachable.
 
-This reachability logic only applies in the full database-backed multi-page runtime. In static/Vercel compatibility mode there is no live multi-page graph, no sitemap drawer, and no home-reachable vs unlisted distinction — the app simply serves the demo document at `/`.
+This reachability logic only applies in the full database-backed multi-page runtime. In static/Vercel compatibility mode there is no live multi-page graph, no sitemap drawer, and no home-reachable vs unlisted distinction — the app simply serves the default site document at `/`.
 
 The traversal starts from three roots:
 

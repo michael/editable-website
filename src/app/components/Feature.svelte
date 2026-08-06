@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Nodes } from '#app/editable_schema.js';
+	import type { Nodes } from '#app/document_schema.js';
 	import { get_svedit_context } from '#app/svedit_context.js';
 	import { Node, NodeArrayProperty } from 'svedit';
 	import MediaProperty from './MediaProperty.svelte';

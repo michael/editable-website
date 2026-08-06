@@ -90,7 +90,7 @@ However, likely you'll want to customize more than that. E.g. edit `src/app/comp
 
 ### Demo content
 
-To reset your local database to the initial demo content (asks for confirmation and backs up your current database first; assets stay in place, and the fresh content appears on the next dev server start):
+To reset your local database to the initial default site content (asks for confirmation and backs up your current database first; assets stay in place, and the fresh content appears on the next dev server start):
 
 ```sh
 pnpm data:reset
@@ -123,7 +123,7 @@ Pass those paths to primitives and use the same paths to read values when layout
 <script lang="ts">
 	import { get_svedit_context } from '#app/svedit_context.js';
 	import type { DocumentPath } from 'svedit';
-	import type { Nodes } from '#app/editable_schema.js';
+	import type { Nodes } from '#app/document_schema.js';
 
 	const svedit = get_svedit_context();
 	let { path }: { path: DocumentPath } = $props();
@@ -237,7 +237,7 @@ Import `NodeArrayProperty` from `svedit` and place the array wherever the layout
 <NodeArrayProperty class="flex flex-wrap gap-4" path={[...path, 'actions']} />
 ```
 
-That one primitive renders each referenced node through `session_config.node_components`. The existing `Button.svelte` component still owns how a button looks; the Hero owns where the group sits. In edit mode the array also gets insertion points, selection, reordering, copy and paste, and an empty-state insertion point. The schema limits what may be inserted and identifies the default type.
+That one primitive renders each referenced node through `document_config.node_components`. The existing `Button.svelte` component still owns how a button looks; the Hero owns where the group sits. In edit mode the array also gets insertion points, selection, reordering, copy and paste, and an empty-state insertion point. The schema limits what may be inserted and identifies the default type.
 
 `path` is required. `tag` defaults to `div`; `class`, `style`, and other element attributes pass through to the array container. Arrays may also carry marks and annotations, which `NodeArrayProperty` resolves and passes to their registered components.
 
@@ -303,7 +303,7 @@ The first four come from `svedit`; the last two live in `src/app/components`. Co
 
 A small, typed vocabulary for Editable's pages and shared site content.
 
-Editable's content model defines the nodes and properties available to pages and shared site content. Its schema lives in `src/app/editable_schema.ts`; this section is the reference.
+Editable's content model defines the nodes and properties available to pages and shared site content. Its schema lives in `src/app/document_schema.ts`; this section is the reference.
 
 Documents are graphs of nodes stored by id. Each node has an `id`, a `type`, and type-specific properties. A few naming conventions hold throughout: `content` is the string payload of text properties, `body` holds authored nested content, `items` holds repeated structured children, and `label`/`title`/`description`/`meta` are text properties with semantic meaning.
 
@@ -507,7 +507,7 @@ Each dropped video goes through this decision tree:
 2. **Already good** — if the video is already H.264, within the resolution cap and within the size goal (with 25% tolerance, since re-encoding a marginally-over file costs quality and saves little), nothing is re-encoded: an MP4 is uploaded untouched, and other containers (e.g. an H.264 `.mov`) are losslessly repackaged into an MP4 container.
 3. **Everything else** is transcoded to fit the size goal: the bitrate is derived from the video's duration, and the resolution is chosen as the largest that still looks good at that bitrate — starting from the resolution cap (1080 means landscape 1920×1080 _and_ portrait 1080×1920; videos are never upscaled) and stepping down (720, 540, …) for long videos where the size budget would otherwise spread too thin. Rotation is preserved.
 
-Two knobs in `src/app/editable_config.ts`:
+Two knobs in `src/app/config.ts`:
 
 ```js
 export const MAX_VIDEO_RESOLUTION = 1080; // cap on the short side: 720, 1080, …
@@ -531,7 +531,7 @@ Editable's built-in types are just a starting set. This walkthrough adds a `hero
 
 ### 1. Define the type in the schema
 
-In `src/app/editable_schema.ts`, add the node type definition. A hero is a `block` with a `layout` variant, two text properties, and a media reference:
+In `src/app/document_schema.ts`, add the node type definition. A hero is a `block` with a `layout` variant, two text properties, and a media reference:
 
 ```js
 hero: {
@@ -586,7 +586,7 @@ Create `src/app/components/Hero.svelte`. It reads the node at `path`, renders ea
 <script lang="ts">
 	import { Node, TextProperty } from 'svedit';
 	import type { DocumentPath } from 'svedit';
-	import type { Nodes } from '#app/editable_schema.js';
+	import type { Nodes } from '#app/document_schema.js';
 	import { get_svedit_context } from '#app/svedit_context.js';
 	import MediaProperty from './MediaProperty.svelte';
 	import { TW_LIMITER, TW_PAGE_PADDING_X } from '#app/tailwind_theme.js';
@@ -637,19 +637,19 @@ There is no read-only twin to keep in sync: this one component is the live page 
 
 ### 3. Register it in the session
 
-In `src/app/editable_session.ts`, import the component and add it to `node_components`, so Svedit knows what to render:
+In `src/app/document_config.ts`, import the component and add it to `node_components`, so Svedit knows what to render:
 
 ```js
 import Hero from './components/Hero.svelte';
 
-// in session_config.node_components:
+// in document_config.node_components:
 hero: Hero,
 ```
 
 The `values` array declares the valid layout ids in cycling order and powers layout switching (toolbar and `Ctrl` + `Shift` + `←` / `→`). Then add an inserter — the factory that builds a blank hero when one is inserted on a page:
 
 ```js
-// in session_config.inserters:
+// in document_config.inserters:
 hero: function (tr) {
 	const new_hero_id = tr.build('new_hero', {
 		hero_media: { id: 'hero_media', type: 'image', ...MEDIA_DEFAULTS },
@@ -828,7 +828,7 @@ That folder is `data/`: an SQLite database (`db.sqlite3`) and uploaded assets (`
 - **pnpm data:restore-cloud [--at &lt;timestamp>] [--yes]** — Roll the live site back to a point in time — requires automated backups
 - **pnpm data:pull-cloud [--at &lt;timestamp>]** — Rebuild your local data folder from the bucket — requires automated backups
 - **pnpm data:verify** — Health-check the deployed database and assets
-- **pnpm data:reset [--yes]** — Reset your local database to fresh demo content, keeping assets
+- **pnpm data:reset [--yes]** — Reset your local database to fresh default site content, keeping assets
 - **pnpm litestream:install** — One-time local setup for data:pull-cloud — requires automated backups
 
 Arguments in brackets are optional; pnpm forwards them directly to the script, without an extra `--` separator. The cloud commands require [Automated backups](#automated-backups-optional). Every command reads the target app from `fly.toml`; only append `-a <app>` if no app name is set there, or to override it. Every restore prints a summary of the restored state (documents, last edited, assets) so you can confirm you got the moment you meant, and backs up the state it replaces first. `pnpm data:help` prints this reference, with arguments, in the terminal.
@@ -957,7 +957,7 @@ Releases are also tagged: to upgrade to a specific version instead of the latest
 
 Merge conflicts can only occur in files you changed. If your customizations live in the files meant for you — `src/custom.css`, the `app` line in `fly.toml`, and your own code in `src/app` and `src/routes` — pulls are typically conflict-free, since upstream never touches `custom.css` and rarely touches the rest. The more you've rewritten, the more the pull becomes a starting point for a manual merge — at that point, review what changed upstream and adopt what applies.
 
-The app-specific Editable surface lives in `src/app` and `src/routes`: the `editable_*` modules, helpers, and components are in `src/app`, while `src/routes` contains the SvelteKit route files. Customize those files rather than the implementation modules in `src/lib` whenever possible. Keeping your schema, seed document, config, and session setup in `src/app`, with components in `src/app`, makes the intended extension points clear and reduces upgrade conflicts.
+The app-specific Editable surface lives in `src/app`, while `src/routes` contains the SvelteKit route files. Customize the modules and components in `src/app` rather than the implementation modules in `src/lib` whenever possible. Keeping your schema, default site content, config, session setup, and components in `src/app` makes the intended extension points clear and reduces upgrade conflicts.
 
 ## Database migrations
 

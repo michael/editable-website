@@ -3,7 +3,7 @@
 	import { get_app_context } from '#app/app_context.js';
 	import type { DocumentPath } from 'svedit';
 	import { serialize_path } from 'svedit';
-	import { get_page_browser } from './page_browser_context.svelte.js';
+	import { get_page_browser } from '#app/page_browser_context.svelte.js';
 
 	const svedit = get_svedit_context();
 	const app = get_app_context();

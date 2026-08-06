@@ -55,12 +55,12 @@ export const load: PageServerLoad = async ({ params }) => {
 
 /**
  * Shared nav/footer documents for composing markdown pages: the live database
- * documents when a backend exists, the demo seed documents on static builds.
+ * documents when a backend exists, the default site documents on static builds.
  */
 async function get_shared_site_documents() {
 	if (VERCEL) {
-		const { NAV_1, FOOTER_1 } = await import('#app/editable_doc.js');
-		return { nav_document: NAV_1, footer_document: FOOTER_1 };
+		const { default_nav_document, default_footer_document } = await import('#app/default_site.js');
+		return { nav_document: default_nav_document, footer_document: default_footer_document };
 	}
 	const { get_shared_documents } = await import('#lib/api.remote.js');
 	return await get_shared_documents();
