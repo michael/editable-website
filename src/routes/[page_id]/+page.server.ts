@@ -59,7 +59,7 @@ export const load: PageServerLoad = async ({ params }) => {
  */
 async function get_shared_site_documents() {
 	if (VERCEL) {
-		const { NAV_1, FOOTER_1 } = await import('#lib/demo_doc.js');
+		const { NAV_1, FOOTER_1 } = await import('#app/editable_doc.js');
 		return { nav_document: NAV_1, footer_document: FOOTER_1 };
 	}
 	const { get_shared_documents } = await import('#lib/api.remote.js');

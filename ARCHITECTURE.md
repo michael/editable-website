@@ -71,7 +71,7 @@ Guidelines:
 
 - **Non-strict for now.** `tsconfig.json` keeps `strict: false`; implicit `any` is allowed. The goal of the conversion is consistency and schema-derived autocomplete, not exhaustive type coverage. Strictness can be ratcheted up later.
 - **Readable surface, ceremonial internals.** Customizable node components (e.g. `Paragraph.svelte`, `Figure.svelte`) must stay light: typed props plus a typed `node`, nothing more. Internal modules (server code, `api.remote.ts`, `PagesDrawer`, overlays, commands) may carry heavier type ceremony where it stabilizes things.
-- **Schema-derived node types.** `src/lib/document_schema.ts` exports `type Nodes = NodeMap<typeof document_schema>` (from svedit). Node components access the session through the typed `get_svedit_context()` helper in `src/routes/svedit_context.ts` and annotate their node as `let node: Nodes['paragraph'] = $derived(svedit.session.get(path));`, which gives property autocomplete and catches misspelled properties in `pnpm check`.
+- **Schema-derived node types.** `src/app/editable_schema.ts` exports `type Nodes = NodeMap<typeof document_schema>` (from svedit). Node components access the session through the typed `get_svedit_context()` helper in `src/app/svedit_context.ts` and annotate their node as `let node: Nodes['paragraph'] = $derived(svedit.session.get(path));`, which gives property autocomplete and catches misspelled properties in `pnpm check`.
 - **Import specifiers keep the `.js` extension** even when the target file is `.ts` (TypeScript's `bundler` resolution and Vite both resolve `./foo.js` → `./foo.ts`). This matches svedit's own convention.
 - **`pnpm check` must stay at 0 errors** and is the required validation step after schema or component changes.
 
@@ -224,7 +224,7 @@ CREATE TABLE sessions (
 
 **`documents`**
 
-- `document_id` — a persistent identifier (nanoid with a custom alphabet — letters only, no numbers, no `_` or `-` — so ids are safe to use as HTML ids; see `src/routes/nanoid.ts`)
+- `document_id` — a persistent identifier (nanoid with a custom alphabet — letters only, no numbers, no `_` or `-` — so ids are safe to use as HTML ids; see `src/app/nanoid.ts`)
 - `type` — categorizes the document, e.g. `page`, `nav`, or `footer`
 - `data` — the full Svedit document serialized as JSON (`{ document_id, nodes }`)
 

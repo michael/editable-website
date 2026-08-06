@@ -1,4 +1,4 @@
-import { ASSET_BASE, ASSET_ID_REGEX, VARIANT_WIDTHS_SET } from '#lib/config.js';
+import { ASSET_BASE, ASSET_ID_REGEX, VARIANT_WIDTHS_SET } from '#app/editable_config.js';
 import { collect_node_ids_in_order } from '#lib/document_graph.js';
 import type { Document } from 'svedit';
 

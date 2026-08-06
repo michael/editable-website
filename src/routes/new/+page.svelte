@@ -1,5 +1,5 @@
 <script lang="ts">
-	import App from '../components/App.svelte';
+	import App from '#app/components/App.svelte';
 	import { create_duplicate_doc, create_empty_doc } from '#lib/new_page.js';
 
 	const props = $props();

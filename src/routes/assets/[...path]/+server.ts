@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 import { Readable } from 'node:stream';
 import { existsSync } from 'node:fs';
 import { extname } from 'node:path';
-import { EXT_TO_MIME } from '#lib/config.js';
+import { EXT_TO_MIME } from '#app/editable_config.js';
 import {
 	asset_exists,
 	asset_size,

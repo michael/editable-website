@@ -1,7 +1,7 @@
 import { process_asset } from './process_asset.js';
 import { create_video_poster, process_video } from './process_video.js';
 import type { ProcessVideoOptions, ProcessedVideo } from './process_video.js';
-import { EXT_TO_MIME, MAX_VIDEO_INPUT_BYTES, OPTIMIZED_VIDEO_REGEX } from '#lib/config.js';
+import { EXT_TO_MIME, MAX_VIDEO_INPUT_BYTES, OPTIMIZED_VIDEO_REGEX } from '#app/editable_config.js';
 import { get_video_dimensions, get_media_dimensions } from './media_dimensions.js';
 import type { DocumentNode } from 'svedit';
 
