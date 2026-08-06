@@ -1,5 +1,5 @@
-import nanoid from '../routes/nanoid.js';
-import { MEDIA_DEFAULTS } from '#lib/config.js';
+import nanoid from '#app/nanoid.js';
+import { MEDIA_DEFAULTS } from '#app/editable_config.js';
 import { clone_subtree_with_new_ids } from '#lib/document_graph.js';
 import type { Document } from 'svedit';
 

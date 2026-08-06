@@ -1,5 +1,5 @@
 import { ORIGIN, VERCEL } from '$app/env/private';
-import { demo_doc } from '#lib/demo_doc.js';
+import { demo_doc } from '#app/editable_doc.js';
 import { extract_site_metadata } from '#lib/page_metadata.js';
 import type { LayoutServerLoad } from './$types';
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import App from './components/App.svelte';
+	import App from '#app/components/App.svelte';
 
 	const props: {
 		data: {

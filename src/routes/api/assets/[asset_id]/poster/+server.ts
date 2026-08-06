@@ -1,6 +1,6 @@
 import { unlink } from 'node:fs/promises';
 import { error, json } from '@sveltejs/kit';
-import { ASSET_ID_REGEX } from '#lib/config.js';
+import { ASSET_ID_REGEX } from '#app/editable_config.js';
 import { asset_exists, poster_path, write_poster } from '#lib/server/asset_storage.js';
 import { require_admin_session } from '#lib/server/auth.js';
 import type { RequestHandler } from './$types';

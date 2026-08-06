@@ -48,7 +48,7 @@
 Convert the whole codebase from JS+JSDoc to TypeScript per the "Language: TypeScript" section in [ARCHITECTURE.md](ARCHITECTURE.md). Non-strict; svelte-check must stay at 0 errors.
 
 1. Replace `jsconfig.json` with `tsconfig.json` (same options, `allowJs`/`checkJs` kept during transition) and point the `check` script at it.
-2. Convert `src/lib/document_schema.js` → `.ts`, export `type Nodes = NodeMap<typeof document_schema>`, and add a typed `get_svedit_context()` in `src/routes/svedit_context.ts` (mirrors the svedit demo app).
+2. Convert the document schema to `src/app/editable_schema.ts`, export `type Nodes = NodeMap<typeof document_schema>`, and add a typed `get_svedit_context()` in `src/app/svedit_context.ts` (mirrors the svedit demo app).
 3. Convert `src/lib` modules (root, `client/`, `server/`, `server/markdown/`, `server/migrations/`), translating existing JSDoc annotations to TS syntax.
 4. Convert `src/routes` modules (`hooks.server`, load functions, API endpoints, `app_utils`, `commands.svelte`, `create_session`, helpers).
 5. Convert all Svelte components to `<script lang="ts">`. Node components use the typed-node pattern; internal components get explicit prop types.
@@ -109,7 +109,7 @@ Limit `CycleNodeTypeCommand` so it only offers destructive type switches while t
 ### Scope
 
 - Implement this only in `editable-website`.
-- Add `get_cycle_node_state(session)` in `src/routes/app_utils.js`, returning `{ node, node_array_path, node_index, available_types }` or `null`.
+- Add `get_cycle_node_state(session)` in `src/app/app_utils.ts`, returning `{ node, node_array_path, node_index, available_types }` or `null`.
 - Keep the existing closest-switchable-node search behavior, but compute `available_types` from the containing `node_array` schema.
 - Treat a node subtree as empty only when every property is empty or equal to its schema/default value, including all child nodes reached through `node` and `node_array` properties, except `layout`, which is ignored for the emptiness check.
 - For empty nodes, allow cycling to all other types in the containing `node_array`.
@@ -1516,7 +1516,7 @@ Current `src/routes/+page.svelte` mixes:
 
 Extract the reusable editor page shell into something like:
 
-- `src/routes/components/PageEditor.svelte`
+- `src/app/components/PageEditor.svelte`
 
 Inputs:
 
@@ -1748,7 +1748,7 @@ These constraints must be respected during implementation:
 
 - `src/routes/[page_id]/+page.svelte`
 - `src/routes/new/+page.svelte`
-- `src/routes/components/PageEditor.svelte`
+- `src/app/components/PageEditor.svelte`
 - maybe `src/lib/new_page.js`
 - maybe `src/lib/server/page_browser.js`
 - maybe `src/lib/server/page_summary.js`
@@ -1757,8 +1757,8 @@ These constraints must be respected during implementation:
 
 - `src/routes/+page.svelte`
 - `src/lib/api.remote.js`
-- `src/routes/components/PagesDrawer.svelte`
-- `src/routes/components/Overlays.svelte`
+- `src/app/components/PagesDrawer.svelte`
+- `src/app/components/Overlays.svelte`
 - possibly `src/lib/server/migrations.js` if additional seed/settings support is needed
 
 ## Recommended implementation order

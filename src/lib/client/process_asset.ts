@@ -1,4 +1,4 @@
-import { MAX_IMAGE_WIDTH, VARIANT_WIDTHS } from '#lib/config.js';
+import { MAX_IMAGE_WIDTH, VARIANT_WIDTHS } from '#app/editable_config.js';
 
 export type ProcessedAsset = {
 	original: { blob: Blob; width: number; height: number };

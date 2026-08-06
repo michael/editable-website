@@ -86,7 +86,7 @@ Adjust the colors and fonts to match your style. Put your overrides in `src/cust
 }
 ```
 
-However, likely you'll want to customize more than that. E.g. edit `src/routes/components/Button.svelte` to create your very own distinct button style. Anything in `src/routes` is meant to be customized by you for your project. And if you're redesigning heavily anyway, feel free to edit `app.css` itself — it just means upstream updates to it may need a manual merge, same as your changes in `src/routes`. `custom.css` is the conflict-free lane for light-touch styling, not a fence.
+However, likely you'll want to customize more than that. E.g. edit `src/app/components/Button.svelte` to create your very own distinct button style. The files in `src/app` and `src/routes` are meant to be customized by you for your project. And if you're redesigning heavily anyway, feel free to edit `app.css` itself — it just means upstream updates to it may need a manual merge, same as your changes in `src/app` and `src/routes`. `custom.css` is the conflict-free lane for light-touch styling, not a fence.
 
 ### Demo content
 
@@ -121,9 +121,9 @@ Pass those paths to primitives and use the same paths to read values when layout
 
 ```svelte
 <script lang="ts">
-	import { get_svedit_context } from '../svedit_context.js';
+	import { get_svedit_context } from '#app/svedit_context.js';
 	import type { DocumentPath } from 'svedit';
-	import type { Nodes } from '#lib/document_schema.js';
+	import type { Nodes } from '#app/editable_schema.js';
 
 	const svedit = get_svedit_context();
 	let { path }: { path: DocumentPath } = $props();
@@ -297,13 +297,13 @@ For ordinary content components, the vocabulary is small:
 - `MediaProperty` is Editable's ready-made `CustomProperty` for images and videos.
 - `SizableViewbox` optionally adds editor-controlled sizing around media.
 
-The first four come from `svedit`; the last two live in `src/routes/components`. Components such as `Display`, `ButtonGroup`, and `SupportingMedia` are useful compositions of these pieces, not additional editing primitives. System components such as node gaps, carets, and selection markers are wired into the editor shell and normally do not appear in your content components.
+The first four come from `svedit`; the last two live in `src/app/components`. Components such as `Display`, `ButtonGroup`, and `SupportingMedia` are useful compositions of these pieces, not additional editing primitives. System components such as node gaps, carets, and selection markers are wired into the editor shell and normally do not appear in your content components.
 
 ## Content model
 
 A small, typed vocabulary for Editable's pages and shared site content.
 
-Editable's content model defines the nodes and properties available to pages and shared site content. Its schema lives in `src/lib/document_schema.ts`; this section is the reference.
+Editable's content model defines the nodes and properties available to pages and shared site content. Its schema lives in `src/app/editable_schema.ts`; this section is the reference.
 
 Documents are graphs of nodes stored by id. Each node has an `id`, a `type`, and type-specific properties. A few naming conventions hold throughout: `content` is the string payload of text properties, `body` holds authored nested content, `items` holds repeated structured children, and `label`/`title`/`description`/`meta` are text properties with semantic meaning.
 
@@ -507,7 +507,7 @@ Each dropped video goes through this decision tree:
 2. **Already good** — if the video is already H.264, within the resolution cap and within the size goal (with 25% tolerance, since re-encoding a marginally-over file costs quality and saves little), nothing is re-encoded: an MP4 is uploaded untouched, and other containers (e.g. an H.264 `.mov`) are losslessly repackaged into an MP4 container.
 3. **Everything else** is transcoded to fit the size goal: the bitrate is derived from the video's duration, and the resolution is chosen as the largest that still looks good at that bitrate — starting from the resolution cap (1080 means landscape 1920×1080 _and_ portrait 1080×1920; videos are never upscaled) and stepping down (720, 540, …) for long videos where the size budget would otherwise spread too thin. Rotation is preserved.
 
-Two knobs in `src/lib/config.ts`:
+Two knobs in `src/app/editable_config.ts`:
 
 ```js
 export const MAX_VIDEO_RESOLUTION = 1080; // cap on the short side: 720, 1080, …
@@ -531,7 +531,7 @@ Editable's built-in types are just a starting set. This walkthrough adds a `hero
 
 ### 1. Define the type in the schema
 
-In `src/lib/document_schema.ts`, add the node type definition. A hero is a `block` with a `layout` variant, two text properties, and a media reference:
+In `src/app/editable_schema.ts`, add the node type definition. A hero is a `block` with a `layout` variant, two text properties, and a media reference:
 
 ```js
 hero: {
@@ -580,16 +580,16 @@ That's the whole data model. Documents containing heroes now validate, and every
 
 ### 2. Write the component
 
-Create `src/routes/components/Hero.svelte`. It reads the node at `path`, renders each property through an editable primitive (`TextProperty` for text, `MediaProperty` for the image), and picks a snippet per layout:
+Create `src/app/components/Hero.svelte`. It reads the node at `path`, renders each property through an editable primitive (`TextProperty` for text, `MediaProperty` for the image), and picks a snippet per layout:
 
 ```svelte
 <script lang="ts">
 	import { Node, TextProperty } from 'svedit';
 	import type { DocumentPath } from 'svedit';
-	import type { Nodes } from '#lib/document_schema.js';
-	import { get_svedit_context } from '../svedit_context.js';
+	import type { Nodes } from '#app/editable_schema.js';
+	import { get_svedit_context } from '#app/svedit_context.js';
 	import MediaProperty from './MediaProperty.svelte';
-	import { TW_LIMITER, TW_PAGE_PADDING_X } from '../tailwind_theme.js';
+	import { TW_LIMITER, TW_PAGE_PADDING_X } from '#app/tailwind_theme.js';
 
 	const svedit = get_svedit_context();
 	let { path }: { path: DocumentPath } = $props();
@@ -633,11 +633,11 @@ Create `src/routes/components/Hero.svelte`. It reads the node at `path`, renders
 </Node>
 ```
 
-There is no read-only twin to keep in sync: this one component is the live page **and** the editor. For fancier variants, `src/routes/components/Feature.svelte` shows the same pattern with a rich `body` node array, reveal animations, and section-aware padding.
+There is no read-only twin to keep in sync: this one component is the live page **and** the editor. For fancier variants, `src/app/components/Feature.svelte` shows the same pattern with a rich `body` node array, reveal animations, and section-aware padding.
 
 ### 3. Register it in the session
 
-In `src/routes/create_session.ts`, import the component and add it to `node_components`, so Svedit knows what to render:
+In `src/app/editable_session.ts`, import the component and add it to `node_components`, so Svedit knows what to render:
 
 ```js
 import Hero from './components/Hero.svelte';
@@ -955,7 +955,9 @@ The order is the safety net: back up before touching anything, and test the new 
 
 Releases are also tagged: to upgrade to a specific version instead of the latest, use `git fetch upstream` followed by `git merge v2.1.0`.
 
-Merge conflicts can only occur in files you changed. If your customizations live in the files meant for you — `src/custom.css`, the `app` line in `fly.toml`, and your own code in `src/routes` — pulls are typically conflict-free, since upstream never touches `custom.css` and rarely touches the rest. The more you've rewritten, the more the pull becomes a starting point for a manual merge — at that point, review what changed upstream and adopt what applies.
+Merge conflicts can only occur in files you changed. If your customizations live in the files meant for you — `src/custom.css`, the `app` line in `fly.toml`, and your own code in `src/app` and `src/routes` — pulls are typically conflict-free, since upstream never touches `custom.css` and rarely touches the rest. The more you've rewritten, the more the pull becomes a starting point for a manual merge — at that point, review what changed upstream and adopt what applies.
+
+The app-specific Editable surface lives in `src/app` and `src/routes`: the `editable_*` modules, helpers, and components are in `src/app`, while `src/routes` contains the SvelteKit route files. Customize those files rather than the implementation modules in `src/lib` whenever possible. Keeping your schema, seed document, config, and session setup in `src/app`, with components in `src/app`, makes the intended extension points clear and reduces upgrade conflicts.
 
 ## Database migrations
 
