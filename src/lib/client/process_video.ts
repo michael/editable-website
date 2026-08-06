@@ -2,6 +2,7 @@ import { MAX_VIDEO_RESOLUTION, MAX_VIDEO_FILESIZE } from '#lib/config.js';
 
 export type ProcessedVideo = {
 	blob: Blob;
+	poster: Blob;
 	width: number;
 	height: number;
 	passthrough: boolean;
@@ -53,6 +54,7 @@ export function process_video(
 					// Passthrough: the file is already a web-optimized MP4 —
 					// upload the original bytes untouched.
 					blob: msg.passthrough ? file : new Blob([msg.buffer], { type: 'video/mp4' }),
+					poster: new Blob([msg.poster_buffer], { type: 'image/webp' }),
 					width: msg.width,
 					height: msg.height,
 					passthrough: Boolean(msg.passthrough)
@@ -71,5 +73,33 @@ export function process_video(
 			max_resolution: MAX_VIDEO_RESOLUTION,
 			max_filesize: MAX_VIDEO_FILESIZE
 		});
+	});
+}
+
+/**
+ * Generate a WebP poster from the first decoded frame of an explicitly
+ * pre-optimized video without changing its bytes.
+ */
+export function create_video_poster(file: File): Promise<Blob> {
+	return new Promise((resolve, reject) => {
+		const worker = new Worker(new URL('./video_processor.ts', import.meta.url), { type: 'module' });
+
+		worker.addEventListener('message', (e) => {
+			const msg = e.data;
+			if (msg.type === 'error') {
+				worker.terminate();
+				reject(new Error(msg.error));
+			} else if (msg.type === 'poster') {
+				worker.terminate();
+				resolve(new Blob([msg.poster_buffer], { type: 'image/webp' }));
+			}
+		});
+
+		worker.addEventListener('error', (e) => {
+			worker.terminate();
+			reject(new Error(e.message || 'Worker error'));
+		});
+
+		worker.postMessage({ type: 'poster', file });
 	});
 }

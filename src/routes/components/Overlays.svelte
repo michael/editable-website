@@ -86,7 +86,6 @@
 	}
 
 	async function on_drop(e) {
-		console.log('YOYOY');
 		const path = drop_target_path ? [...drop_target_path] : null;
 		drop_target_path = null;
 		file_drag_active = false;

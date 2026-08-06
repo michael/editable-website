@@ -1,5 +1,5 @@
 import { process_asset } from './process_asset.js';
-import { process_video } from './process_video.js';
+import { create_video_poster, process_video } from './process_video.js';
 import type { ProcessVideoOptions, ProcessedVideo } from './process_video.js';
 import { EXT_TO_MIME, MAX_VIDEO_INPUT_BYTES, OPTIMIZED_VIDEO_REGEX } from '#lib/config.js';
 import { get_video_dimensions, get_media_dimensions } from './media_dimensions.js';
@@ -9,6 +9,7 @@ export type PendingAsset = {
 	hash: string;
 	asset_id: string;
 	original: { blob: Blob; width: number; height: number };
+	poster: Blob | null;
 	variants: Array<{ width: number; blob: Blob }>;
 	status: 'processing' | 'ready' | 'error';
 	progress: number;
@@ -103,6 +104,7 @@ export async function start_processing(blob_url: string, file: File) {
 		hash: '',
 		asset_id: '',
 		original: { blob: file, width: 0, height: 0 },
+		poster: null,
 		variants: [],
 		status: 'processing',
 		progress: 0,
@@ -119,6 +121,7 @@ export async function start_processing(blob_url: string, file: File) {
 				entry.hash = hash;
 				entry.asset_id = `${hash}.mp4`;
 				entry.original = { blob: file, width: dims.width, height: dims.height };
+				entry.poster = await create_video_poster(file);
 			} else {
 				if (file.size > MAX_VIDEO_INPUT_BYTES) {
 					const max_gb = MAX_VIDEO_INPUT_BYTES / (1024 * 1024 * 1024);
@@ -136,6 +139,7 @@ export async function start_processing(blob_url: string, file: File) {
 				entry.hash = await hash_blob(result.blob);
 				entry.asset_id = `${entry.hash}.mp4`;
 				entry.original = { blob: result.blob, width: result.width, height: result.height };
+				entry.poster = result.poster;
 			}
 			entry.variants = [];
 			entry.progress = 1;
@@ -279,7 +283,24 @@ async function upload_asset(entry: PendingAsset): Promise<UploadedAsset> {
 		'X-Asset-Height': String(entry.original.height)
 	});
 
-	// If deduplicated, skip variant uploads
+	// Videos have one derived poster. Upload it even for a deduplicated video
+	// so older content-addressed assets can gain a poster on their next save.
+	if (entry.poster) {
+		try {
+			await upload_blob(`/api/assets/${result.asset_id}/poster`, entry.poster, {
+				'Content-Type': 'image/webp'
+			});
+		} catch (err) {
+			if (!result.deduplicated) {
+				await fetch(`/api/assets/${result.asset_id}`, { method: 'DELETE' }).catch(() => {});
+			}
+			throw new Error(`Poster upload failed: ${err instanceof Error ? err.message : err}`, {
+				cause: err
+			});
+		}
+	}
+
+	// If deduplicated, image variants were already uploaded with the original.
 	if (result.deduplicated) {
 		return {
 			asset_id: result.asset_id,
@@ -288,7 +309,7 @@ async function upload_asset(entry: PendingAsset): Promise<UploadedAsset> {
 		};
 	}
 
-	// Upload variants sequentially
+	// Upload image variants sequentially
 	for (let i = 0; i < entry.variants.length; i++) {
 		const variant = entry.variants[i];
 		try {
@@ -410,6 +431,7 @@ export async function ensure_processing(blob_urls: string[]): Promise<void> {
 				hash: '',
 				asset_id: '',
 				original: { blob: new Blob(), width: 0, height: 0 },
+				poster: null,
 				variants: [],
 				status: 'error',
 				progress: 0,

@@ -1,5 +1,13 @@
 # Implementation plan
 
+## Video posters
+
+- Generate one `poster.webp` from the first decoded frame of every processed or explicitly pre-optimized video.
+- Generate the poster from the final stored MP4 after conversion/remuxing; pre-optimized MP4 uploads generate it from their original bytes.
+- Store each poster as `assets/<video-hash>/poster.webp`, derived from its content-addressed video asset id; do not add a poster property to video document nodes.
+- Upload, serve, mirror, and delete the poster with its associated video asset.
+- Render the derived URL through the native `<video poster>` attribute for saved videos. Do not create responsive poster variants because that attribute has no native `srcset` support.
+
 ## External link preview labels
 
 - Remove the `https://` scheme from external link preview labels for readability while preserving the complete URL in the link target.

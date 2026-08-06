@@ -8,8 +8,10 @@ import {
 	BufferTarget,
 	Mp4InputFormat,
 	Mp4OutputFormat,
+	VideoSampleSink,
 	canEncodeAudio
 } from 'mediabunny';
+import { encode as encode_webp } from '@jsquash/webp';
 import { registerAacEncoder } from '@mediabunny/aac-encoder';
 import type { ConversionVideoOptions } from 'mediabunny';
 
@@ -48,6 +50,7 @@ const RESOLUTION_LADDER = [2160, 1440, 1080, 720, 540, 360, 240];
  * exceed the size goal.
  */
 const MIN_VIDEO_BITRATE = 100_000;
+const POSTER_WEBP_QUALITY = 80;
 
 function post_status(status: string) {
 	self.postMessage({ type: 'status', status });
@@ -132,6 +135,36 @@ async function read_output_dimensions(
 }
 
 /**
+ * Decode the first available video frame and encode it as the video's poster.
+ */
+async function create_poster(source: Blob): Promise<ArrayBuffer> {
+	const input = new Input({ source: new BlobSource(source), formats: ALL_FORMATS });
+	const video_track = await input.getPrimaryVideoTrack();
+	if (!video_track || !(await video_track.canDecode())) {
+		throw new Error('Could not decode a video frame for the poster.');
+	}
+
+	const sink = new VideoSampleSink(video_track);
+	const first_frame = await sink.samples().next();
+	const sample = first_frame.value;
+	if (first_frame.done || !sample) {
+		throw new Error('Could not decode a video frame for the poster.');
+	}
+
+	const canvas = new OffscreenCanvas(sample.displayWidth, sample.displayHeight);
+	const context = canvas.getContext('2d');
+	if (!context) throw new Error('Could not create a canvas for the video poster.');
+	try {
+		context.drawImage(sample.toCanvasImageSource(), 0, 0);
+		return await encode_webp(context.getImageData(0, 0, canvas.width, canvas.height), {
+			quality: POSTER_WEBP_QUALITY
+		});
+	} finally {
+		sample.close();
+	}
+}
+
+/**
  * Handle a transcode request from the main thread.
  */
 async function handle_process(data: { file: File; max_resolution: number; max_filesize: number }) {
@@ -173,13 +206,18 @@ async function handle_process(data: { file: File; max_resolution: number; max_fi
 			const format = await input.getFormat();
 			if (format instanceof Mp4InputFormat) {
 				// Already a good MP4 — upload the original bytes untouched.
-				post_status('Video already optimized');
-				self.postMessage({
-					type: 'result',
-					passthrough: true,
-					width: display_width,
-					height: display_height
-				});
+				post_status('Generating video poster…');
+				const poster_buffer = await create_poster(file);
+				self.postMessage(
+					{
+						type: 'result',
+						passthrough: true,
+						width: display_width,
+						height: display_height,
+						poster_buffer
+					},
+					{ transfer: [poster_buffer] }
+				);
 				return;
 			}
 		}
@@ -256,8 +294,14 @@ async function handle_process(data: { file: File; max_resolution: number; max_fi
 		const width = dims?.width ?? display_width;
 		const height = dims?.height ?? display_height;
 
+		post_status('Generating video poster…');
+		const poster_buffer = await create_poster(new Blob([buffer], { type: 'video/mp4' }));
+
 		post_status('Done');
-		self.postMessage({ type: 'result', buffer, width, height }, { transfer: [buffer] });
+		self.postMessage(
+			{ type: 'result', buffer, width, height, poster_buffer },
+			{ transfer: [buffer, poster_buffer] }
+		);
 	} catch (err) {
 		self.postMessage({
 			type: 'error',
@@ -266,8 +310,23 @@ async function handle_process(data: { file: File; max_resolution: number; max_fi
 	}
 }
 
+async function handle_poster(data: { file: File }) {
+	try {
+		post_status('Generating video poster…');
+		const poster_buffer = await create_poster(data.file);
+		self.postMessage({ type: 'poster', poster_buffer }, { transfer: [poster_buffer] });
+	} catch (err) {
+		self.postMessage({
+			type: 'error',
+			error: err instanceof Error ? err.message : 'Video poster generation failed'
+		});
+	}
+}
+
 self.addEventListener('message', (e) => {
 	if (e.data?.type === 'process') {
 		handle_process(e.data);
+	} else if (e.data?.type === 'poster') {
+		handle_poster(e.data);
 	}
 });
