@@ -1,5 +1,10 @@
 # Implementation plan
 
+## External link preview labels
+
+- Remove the `https://` scheme from external link preview labels for readability while preserving the complete URL in the link target.
+- Leave other URL schemes and link behavior unchanged.
+
 ## Android end-of-page hold gesture
 
 - Schedule the end-of-page hold check immediately when a qualifying touch starts at the page end, rather than relying only on a scroll event.

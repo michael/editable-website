@@ -60,6 +60,11 @@
 		if (href === '/') return resolve('/');
 		return resolve(href.slice(1) as PathnameWithSearchOrHash);
 	}
+
+	function get_preview_label(href: unknown) {
+		if (typeof href !== 'string') return '';
+		return href.replace(/^https?:\/\//, '');
+	}
 </script>
 
 {#snippet render_link_preview(resolved_page_preview = null, error_message = '')}
@@ -96,7 +101,7 @@
 					rel="noopener noreferrer"
 					class="max-w-70 min-w-0 flex-1 truncate px-2 text-sm text-(--foreground) outline-1 outline-transparent hover:underline focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
 				>
-					{node.href}
+					{get_preview_label(node.href)}
 				</a>
 			{/if}
 			<button
