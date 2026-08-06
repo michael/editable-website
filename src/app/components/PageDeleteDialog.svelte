@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto, invalidateAll } from '$app/navigation';
-	import { get_page_browser } from './page_browser_context.svelte.js';
-	import { get_page_delete_dialog } from './page_delete_dialog_context.svelte.js';
+	import { get_page_browser } from '#app/page_browser_context.svelte.js';
+	import { get_page_delete_dialog } from '#app/page_delete_dialog_context.svelte.js';
 
 	const page_browser = get_page_browser();
 	const page_delete_dialog = get_page_delete_dialog();

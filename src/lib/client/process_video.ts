@@ -1,4 +1,4 @@
-import { MAX_VIDEO_RESOLUTION, MAX_VIDEO_FILESIZE } from '#app/editable_config.js';
+import { MAX_VIDEO_RESOLUTION, MAX_VIDEO_FILESIZE } from '#app/config.js';
 
 export type ProcessedVideo = {
 	blob: Blob;

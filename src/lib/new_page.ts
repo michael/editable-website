@@ -1,5 +1,5 @@
 import nanoid from '#app/nanoid.js';
-import { MEDIA_DEFAULTS } from '#app/editable_config.js';
+import { MEDIA_DEFAULTS } from '#app/document_schema.js';
 import { clone_subtree_with_new_ids } from '#lib/document_graph.js';
 import type { Document } from 'svedit';
 
@@ -74,7 +74,7 @@ export function create_duplicate_doc(
  *
  * The shared nav/footer nodes are provided by the server so the new page is
  * composed from the current database-backed shared documents rather than the
- * demo seed data.
+ * default site data.
  */
 export function create_empty_doc(shared_documents: {
 	nav_document: Document;

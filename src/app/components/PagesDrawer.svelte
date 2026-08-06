@@ -5,9 +5,9 @@
 	import { get_page_browser_data } from '#lib/api.remote.js';
 	import type { PageTreeNode } from '#lib/api.remote.js';
 	import Media from './Media.svelte';
-	import { get_page_browser } from './page_browser_context.svelte.js';
-	import { get_page_url_dialog } from './page_url_dialog_context.svelte.js';
-	import { get_page_delete_dialog } from './page_delete_dialog_context.svelte.js';
+	import { get_page_browser } from '#app/page_browser_context.svelte.js';
+	import { get_page_url_dialog } from '#app/page_url_dialog_context.svelte.js';
+	import { get_page_delete_dialog } from '#app/page_delete_dialog_context.svelte.js';
 
 	const page_browser = get_page_browser();
 	const page_url_dialog = get_page_url_dialog();

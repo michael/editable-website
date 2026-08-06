@@ -1,3 +1,7 @@
+/**
+ * The application's Svedit configuration: components, commands, inserters, and exporters.
+ * `session.ts` composes this configuration with the schema and default site document.
+ */
 import {
 	Session,
 	define_keymap,
@@ -8,17 +12,9 @@ import {
 	ToggleMarkCommand,
 	UndoCommand,
 	RedoCommand,
-	SelectParentCommand,
-	fill_document_defaults
+	SelectParentCommand
 } from 'svedit';
-import type {
-	Document,
-	DocumentNode,
-	DocumentPath,
-	NodeSelection,
-	Text,
-	Transaction
-} from 'svedit';
+import type { DocumentNode, DocumentPath, NodeSelection, Text, Transaction } from 'svedit';
 import nanoid from './nanoid.js';
 import {
 	CycleLayoutCommand,
@@ -31,21 +27,16 @@ import {
 	DuplicateNodesCommand
 } from './commands.svelte.js';
 
-// System components
 import Overlays from './components/Overlays.svelte';
-
-// Node components
 import Page from './components/Page.svelte';
 import Nav from './components/Nav.svelte';
 import NavLink from './components/NavLink.svelte';
 import NavButton from './components/NavButton.svelte';
 import NavMedia from './components/NavMedia.svelte';
-
 import Footer from './components/Footer.svelte';
 import FooterLinkColumn from './components/FooterLinkColumn.svelte';
 import FooterLinkCategory from './components/FooterLinkCategory.svelte';
 import FooterLink from './components/FooterLink.svelte';
-
 import Prose from './components/Prose.svelte';
 import ProseGrid from './components/ProseGrid.svelte';
 import ProseGridItem from './components/ProseGridItem.svelte';
@@ -77,7 +68,6 @@ import Button from './components/Button.svelte';
 import ButtonGroup from './components/ButtonGroup.svelte';
 import Image from './components/Image.svelte';
 import Video from './components/Video.svelte';
-
 import Strong from './components/Strong.svelte';
 import Emphasis from './components/Emphasis.svelte';
 import Code from './components/Code.svelte';
@@ -85,11 +75,12 @@ import Highlight from './components/Highlight.svelte';
 import Link from './components/Link.svelte';
 import Section from './components/Section.svelte';
 
-import { document_schema } from '#app/editable_schema.js';
+import { document_schema, MEDIA_DEFAULTS } from '#app/document_schema.js';
 import { start_processing } from '#lib/client/asset_upload.js';
-import { MEDIA_DEFAULTS } from '#app/editable_config.js';
 import { set_properties } from 'svedit';
 import { get_media_dimensions } from '#lib/client/media_dimensions.js';
+
+type AppSession = Session<typeof document_schema>;
 
 function get_media_type(file: File): 'image' | 'video' {
 	if (file.type.startsWith('video/')) return 'video';
@@ -190,7 +181,7 @@ async function replace_media(
 }
 
 // App-specific config object, always available via session.config for introspection
-const session_config = {
+export const document_config = {
 	// Custom ID generator function
 	generate_id: nanoid,
 	// Provide definitions/overrides for system native components,
@@ -1064,12 +1055,3 @@ const session_config = {
 		}
 	}
 };
-
-/** The app's concrete schema-typed session type. */
-export type AppSession = Session<typeof document_schema>;
-
-export function create_session(doc: Document): AppSession {
-	const migrated_doc = fill_document_defaults(doc, document_schema);
-	const session = new Session(document_schema, migrated_doc, session_config);
-	return session;
-}

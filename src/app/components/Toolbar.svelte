@@ -3,9 +3,9 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { get_page_browser } from './page_browser_context.svelte.js';
-	import { get_page_url_dialog } from './page_url_dialog_context.svelte.js';
-	import { get_page_delete_dialog } from './page_delete_dialog_context.svelte.js';
+	import { get_page_browser } from '#app/page_browser_context.svelte.js';
+	import { get_page_url_dialog } from '#app/page_url_dialog_context.svelte.js';
+	import { get_page_delete_dialog } from '#app/page_delete_dialog_context.svelte.js';
 	import { extract_page_metadata } from '#lib/page_metadata.js';
 	import { untrack } from 'svelte';
 	import { get_selection_node_ancestors } from '#app/app_utils.js';

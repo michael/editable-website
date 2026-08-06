@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import { get_app_context } from '#app/app_context.js';
-	import { get_page_browser } from './page_browser_context.svelte.js';
-	import { get_page_url_dialog } from './page_url_dialog_context.svelte.js';
+	import { get_page_browser } from '#app/page_browser_context.svelte.js';
+	import { get_page_url_dialog } from '#app/page_url_dialog_context.svelte.js';
 
 	const app = get_app_context();
 	const page_browser = get_page_browser();

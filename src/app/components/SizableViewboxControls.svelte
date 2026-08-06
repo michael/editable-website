@@ -3,7 +3,7 @@
 	import { serialize_path } from 'svedit';
 	import type { DocumentPath } from 'svedit';
 	import { touch_drag, lock_cursor, unlock_cursor } from '#lib/client/touch_drag.js';
-	import { SNAP_ASPECT_RATIOS } from '#app/editable_config.js';
+	import { SNAP_ASPECT_RATIOS } from '#app/config.js';
 
 	const svedit = get_svedit_context();
 

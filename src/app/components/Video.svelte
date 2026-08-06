@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ASSET_BASE } from '#app/editable_config.js';
+	import { ASSET_BASE } from '#app/config.js';
 
 	import type { PreviewMediaNode } from '#lib/page_metadata.js';
 

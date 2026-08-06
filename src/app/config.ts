@@ -75,19 +75,6 @@ export const EXT_TO_MIME = {
 	webm: 'video/webm'
 };
 
-/** Default values for media node properties (image and video). */
-export const MEDIA_DEFAULTS = {
-	src: '',
-	mime_type: '',
-	width: 0,
-	height: 0,
-	alt: '',
-	scale: 1.0,
-	focal_point_x: 0.5,
-	focal_point_y: 0.5,
-	object_fit: 'contain'
-};
-
 /**
  * Common aspect ratios to snap to when dragging resize handles.
  * Landscape ratios are listed first; portrait inversions are auto-generated.

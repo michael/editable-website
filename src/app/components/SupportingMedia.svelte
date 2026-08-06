@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { get_svedit_context } from '#app/svedit_context.js';
-	import type { Nodes } from '#app/editable_schema.js';
+	import type { Nodes } from '#app/document_schema.js';
 	import type { DocumentPath } from 'svedit';
 	import { getContext } from 'svelte';
 	import { Node } from 'svedit';
