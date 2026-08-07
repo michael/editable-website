@@ -1,5 +1,13 @@
 # Implementation plan
 
+## Product page
+
+- Keep the compact product and audience story as the repository-managed `PRODUCT.md` Markdown document, served read-only at `/product`.
+- Lead with `Why Editable?`: a direct explanation that Editable is a Svelte website with on-page editing, without a separate CMS.
+- Address each audience in a distinct section: For developers, For designers, For creators, For agencies, and For artists.
+- End with one clear prompt to install Editable through the existing `/manual` quickstart.
+- Keep this text-first page in code until the same content is represented in the page builder.
+
 ## Video posters
 
 - Generate one `poster.webp` from the first decoded frame of every processed or explicitly pre-optimized video.

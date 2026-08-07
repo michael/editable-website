@@ -1,12 +1,14 @@
-# Who is Editable for?
+# Product
 
-Editable is not for everyone who needs a website. If you want to pick a template, install twenty plugins, and never wonder what is happening underneath, there are already plenty of good tools for that.
+## Why Editable?
 
-Editable is for people who care about the thing they are making and would like to own the machinery behind it. The site is a Svelte project. The content is yours. Editing happens on the actual page. You can begin with what is already there, change only the colors and type, or keep going until the result no longer resembles the starting point at all.
+Editable is a Svelte website template with an editor built into its pages. Site owners edit the actual layout in the browser, while the content model, components, and styling stay in the codebase they own. There is no separate CMS to model, connect, preview, or keep in sync.
 
-That makes Editable interesting to a few groups for different reasons.
+Start with the included site, change its colors and type, or build custom components and content types. Editable is for people who want a website they can operate themselves and extend with ordinary Svelte code when it needs to grow.
 
-## For developers: the website and the editor are finally the same thing
+The same idea matters to different people for different reasons.
+
+## For developers
 
 You know the usual arrangement. First you model the content in a CMS. Then you build the real website somewhere else. Then you connect the two, add a preview mode, explain to the client why the preview is slightly different, and spend an afternoon discovering that someone entered a headline long enough to become a paragraph.
 
@@ -18,7 +20,7 @@ The independence matters too. A site is a repository you can understand, version
 
 If you enjoy building websites in Svelte and have ever thought, “I could make a better editing experience if the CMS would just get out of the way,” you are the obvious target group. You were probably going to open the source before finishing this paragraph anyway.
 
-## For designers: yes, there is a terminal involved
+## For designers
 
 Let us address the alarming part first: getting started requires a few commands. If you can copy four lines into a terminal without immediately closing the lid of your laptop, you are technical enough to try. Consider it a very small entrance exam, with unusually generous marking.
 
@@ -30,7 +32,7 @@ For a portfolio, a small studio site, an exhibition page, or a visual archive, c
 
 Editable can be a playground: constrained enough that the page keeps working, open enough that it still feels like yours.
 
-## For creators: DIY does not have to mean doing everything yourself
+## For creators
 
 Creators are used to assembling their own tools. You learn the camera, the microphone, the newsletter software, the shop, the strange export setting that only matters once every six months. Running a few commands to start a website is not fundamentally different. It is another small piece of equipment.
 
@@ -40,7 +42,7 @@ More importantly, the site can grow without being replaced. Begin with the exist
 
 That is the useful version of DIY: you can operate the site yourself, understand where your content lives, and ask for specialist help exactly when it becomes worthwhile. Independence does not mean refusing help. It means the help leaves you with something you can continue to use.
 
-## For agencies: when the concept is heavy and the implementation is light
+## For agencies
 
 Some websites need a novel interaction model, a WebGL landscape, and three months of prototyping. Editable is not trying to make those projects disappear.
 
@@ -54,7 +56,7 @@ Clients edit in place, so the relationship between an image, a headline, and the
 
 Editable is especially compelling when the assets provide the wow and the website's job is to give them a very good stage.
 
-## For artists: the archive you meant to make years ago
+## For artists
 
 Posting work to Instagram is easy. Finding a specific project from four years ago is less easy. Explaining how it relates to the work before it, adding a proper video, linking to an exhibition, or correcting the crop without negotiating with an algorithm is where the arrangement starts to wobble.
 
@@ -66,10 +68,8 @@ You can begin with a restrained site and let the art carry it. Customize the typ
 
 It is the little archive you always wished you had, except this time adding the next project does not require a redesign.
 
-## The common thread
+## Try Editable
 
-These groups do not have the same skills, and they do not need the same website. What they share is a tolerance for a small amount of machinery in exchange for a great deal of ownership.
-
-Developers can reshape the system. Designers and creators can start with its constraints and invite a developer in when they want to go further. Agencies can reuse the foundation without repeating the appearance. Artists can keep an archive alive without turning website maintenance into a second practice.
+The best way to decide whether Editable fits your work is to try it on a real site idea. [Follow the quickstart in the manual](/manual#quickstart), run it locally, and start changing the page in front of you.
 
 Editable works best for people who do not merely want access to a website. They want the website to remain theirs.
