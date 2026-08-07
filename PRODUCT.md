@@ -1,6 +1,4 @@
-# Product
-
-## Why Editable?
+# Why Editable?
 
 Editable is a Svelte website template with an editor built into its pages. Site owners edit the actual layout in the browser, while the content model, components, and styling stay in the codebase they own. There is no separate CMS to model, connect, preview, or keep in sync.
 
