@@ -48,10 +48,6 @@
 - Render the existing preview only after resolution succeeds, or render the existing no-match/error state once resolution settles.
 - Keep external link previews and the create-link state unchanged.
 
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 ## SvelteKit 3 prerelease migration
 
 - Upgrade to `@sveltejs/kit@3.0.0-next.12`, TypeScript 6, and SvelteKit-3-compatible prerelease versions of the Node and Vercel adapters while retaining compatible Svelte, Vite, and Vite plugin ranges.
