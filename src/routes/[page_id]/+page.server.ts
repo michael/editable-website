@@ -1,11 +1,23 @@
 import { error, redirect } from '@sveltejs/kit';
 import { dev } from '$app/env';
 import { VERCEL } from '$app/env/private';
-import { get_markdown_page } from '#lib/server/markdown/registry.js';
+import {
+	get_markdown_page,
+	get_markdown_page_pathnames
+} from '#lib/server/markdown/registry.js';
 import { convert_markdown } from '#lib/server/markdown/convert.js';
 import { compose_markdown_document } from '#lib/server/markdown/compose.js';
 import type { PageServerLoad } from './$types';
 import type { Document } from 'svedit';
+
+// Render configured repository pages at build time for the static Vercel
+// deployment. Node deployments must keep this route database-backed.
+export const prerender = !!VERCEL;
+
+export function entries() {
+	if (!VERCEL) return [];
+	return get_markdown_page_pathnames().map((pathname) => ({ page_id: pathname.slice(1) }));
+}
 
 // Deliberately no `await parent()` here — see routes/+page.server.ts.
 export const load: PageServerLoad = async ({ params }) => {

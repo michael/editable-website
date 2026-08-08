@@ -3,6 +3,10 @@ import { default_site_document } from '#app/default_site.js';
 import { extract_site_metadata } from '#lib/page_metadata.js';
 import type { LayoutServerLoad } from './$types';
 
+// Static hosts resolve directory indexes reliably, while Node deployments keep
+// the existing no-trailing-slash URLs for database-backed routes.
+export const trailingSlash = VERCEL ? 'always' : 'never';
+
 export const load: LayoutServerLoad = async ({ locals, depends }) => {
 	// Re-derived after saving a page, so favicon and site name update live.
 	depends('app:site_metadata');

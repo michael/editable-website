@@ -32,6 +32,11 @@ export function get_markdown_page(pathname: string): MarkdownSource | null {
 	return registry.get(pathname) ?? null;
 }
 
+/** Configured Markdown paths for static builds. */
+export function get_markdown_page_pathnames(): string[] {
+	return [...registry.keys()];
+}
+
 /**
  * Whether a single-segment slug (no leading slash) is claimed by a markdown
  * page. Markdown pages win at routing time, so these slugs are reserved and

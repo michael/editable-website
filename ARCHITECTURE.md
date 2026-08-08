@@ -136,6 +136,8 @@ There is no `user` object in this model. The only server-side auth state needed 
 
 Editable must preserve a lightweight static-compatible mode for preview deployments and single-page local development. This mode is currently used when the app runs in a Vercel-style environment (`VERCEL=1`) and should keep working even as the full multi-page setup is introduced.
 
+Vercel builds use `@sveltejs/adapter-static`, not Vercel Functions, so serving the default site and repository-managed Markdown pages has no Fluid compute cost. The static adapter uses `strict: false` because Node-only routes and API endpoints deliberately remain in the repository but are omitted from this build. Its prerenderer does not crawl links in the default site, which may point to those omitted routes. During a `VERCEL=1` build, `/` and configured Markdown page paths are prerendered explicitly. Their `prerender` options must remain conditional on `VERCEL`; Node deployments use `adapter-node` and keep database-backed routes dynamic.
+
 **Requirements:**
 
 - Only the `/` route must support static/Vercel mode.

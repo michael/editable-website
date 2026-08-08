@@ -1,5 +1,13 @@
 # Implementation plan
 
+## Static Vercel build
+
+- Use `@sveltejs/adapter-static` when `VERCEL=1`; retain `@sveltejs/adapter-node` otherwise.
+- Prerender `/` and every configured repository-managed Markdown page only in `VERCEL=1` mode, so they are served without Vercel Fluid compute.
+- Keep the prerender options conditional on `VERCEL`; normal Node deployments must retain dynamic database-backed routes.
+- Configure the static adapter with `strict: false` because Node-only routes and API endpoints are intentionally absent from the static output; do not crawl links from the default site, which may point to those routes.
+- Set Vercel's output directory to `build`, where the static adapter writes the deployment files.
+
 ## Product page
 
 - Keep the compact product and audience story as the repository-managed `PRODUCT.md` Markdown document, served read-only at `/product`.
