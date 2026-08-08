@@ -6,6 +6,7 @@
 - Prerender `/` and every configured repository-managed Markdown page only in `VERCEL=1` mode, so they are served without Vercel Fluid compute.
 - Keep the prerender options conditional on `VERCEL`; normal Node deployments must retain dynamic database-backed routes.
 - Configure the static adapter with `strict: false` because Node-only routes and API endpoints are intentionally absent from the static output; do not crawl links from the default site, which may point to those routes.
+- Set Vercel's output directory to `build`, where the static adapter writes the deployment files.
 
 ## Product page
 
