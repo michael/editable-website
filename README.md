@@ -53,7 +53,7 @@ git remote add origin <url>
 git push -u origin main
 ```
 
-From here on, `git push` saves your work to your own repo, and `git pull upstream stable` fetches Editable updates. The upstream `stable` branch always points at the latest release; active development happens on `upstream/main`, which your site does not need to follow.
+From here on, `git push` saves your work to your own repo. To bring in Editable updates, fetch and merge the latest release: `git fetch upstream && git merge upstream/stable`. The upstream `stable` branch always points at the latest release; active development happens on `upstream/main`, which your site does not need to follow.
 
 ### Styling
 
@@ -942,18 +942,19 @@ New Editable releases are one `git pull` away.
 Because your site keeps Editable as the `upstream` remote (see [Your site is your repo](#your-site-is-your-repo)), improvements flow in with ordinary git. The ritual, in order:
 
 ```sh
-pnpm data:backup          # snapshot the live database first
-git pull upstream stable  # get the latest Editable release
-pnpm install              # update dependencies (including svedit)
-pnpm data:pull            # bring your live content local
-pnpm dev                  # test the new code against your real content
-fly deploy                # ship it
-git push                  # your repo now holds the upgraded state
+pnpm data:backup            # snapshot the live database first
+git fetch upstream          # download available Editable releases
+git merge upstream/stable   # merge the latest Editable release
+pnpm install                # update dependencies (including svedit)
+pnpm data:pull              # bring your live content local
+pnpm dev                    # test the new code against your real content
+fly deploy                  # ship it
+git push                    # your repo now holds the upgraded state
 ```
 
-The order is the safety net: back up before touching anything, and test the new code against your real content locally before deploying it. Database schema migrations run automatically when the new code boots, locally and on the server.
+The order is the safety net: back up before touching anything, and test the new code against your real content locally before deploying it. `git merge` is deliberate: your site and Editable will normally have different commits, and merging incorporates the upstream release without rewriting your site's history. Database schema migrations run automatically when the new code boots, locally and on the server.
 
-Releases are also tagged: to upgrade to a specific version instead of the latest, use `git fetch upstream` followed by `git merge v2.1.0`.
+If Git reports conflicts, run `git status`, resolve the marked files, then finish with `git add <resolved-files>` and `git commit`. If you want to abandon the upgrade before committing, run `git merge --abort`. Releases are also tagged: to upgrade to a specific version instead of the latest, use `git fetch upstream` followed by `git merge v2.1.0`.
 
 Merge conflicts can only occur in files you changed. If your customizations live in the files meant for you — `src/custom.css`, the `app` line in `fly.toml`, and your own code in `src/app` and `src/routes` — pulls are typically conflict-free, since upstream never touches `custom.css` and rarely touches the rest. The more you've rewritten, the more the pull becomes a starting point for a manual merge — at that point, review what changed upstream and adopt what applies.
 
