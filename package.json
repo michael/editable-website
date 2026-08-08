@@ -44,7 +44,7 @@
 	"devDependencies": {
 		"@eslint/compat": "^2.0.3",
 		"@eslint/js": "^10.0.1",
-		"@sveltejs/adapter-vercel": "7.0.0-next.3",
+		"@sveltejs/adapter-static": "4.0.0-next.3",
 		"@sveltejs/kit": "3.0.0-next.13",
 		"@sveltejs/vite-plugin-svelte": "^7.2.0",
 		"@tailwindcss/forms": "^0.5.11",

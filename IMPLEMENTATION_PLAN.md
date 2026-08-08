@@ -1,5 +1,12 @@
 # Implementation plan
 
+## Static Vercel build
+
+- Use `@sveltejs/adapter-static` when `VERCEL=1`; retain `@sveltejs/adapter-node` otherwise.
+- Prerender `/` and every configured repository-managed Markdown page only in `VERCEL=1` mode, so they are served without Vercel Fluid compute.
+- Keep the prerender options conditional on `VERCEL`; normal Node deployments must retain dynamic database-backed routes.
+- Configure the static adapter with `strict: false` because Node-only routes and API endpoints are intentionally absent from the static output; do not crawl links from the default site, which may point to those routes.
+
 ## Product page
 
 - Keep the compact product and audience story as the repository-managed `PRODUCT.md` Markdown document, served read-only at `/product`.
@@ -40,6 +47,10 @@
 - Render the existing preview only after resolution succeeds, or render the existing no-match/error state once resolution settles.
 - Keep external link previews and the create-link state unchanged.
 
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 ## SvelteKit 3 prerelease migration
 
 - Upgrade to `@sveltejs/kit@3.0.0-next.12`, TypeScript 6, and SvelteKit-3-compatible prerelease versions of the Node and Vercel adapters while retaining compatible Svelte, Vite, and Vite plugin ranges.
