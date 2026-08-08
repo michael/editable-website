@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto, invalidateAll } from '$app/navigation';
+	import { goto, refreshAll } from '$app/navigation';
 	import { get_page_browser } from '#app/page_browser_context.svelte.js';
 	import { get_page_delete_dialog } from '#app/page_delete_dialog_context.svelte.js';
 
@@ -73,7 +73,7 @@
 				await goto('/');
 			} else {
 				page_browser.invalidate?.();
-				await invalidateAll();
+				await refreshAll();
 			}
 		} catch (err) {
 			delete_error = err instanceof Error ? err.message : 'Failed to delete page.';

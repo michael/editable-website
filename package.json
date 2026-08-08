@@ -44,8 +44,8 @@
 	"devDependencies": {
 		"@eslint/compat": "^2.0.3",
 		"@eslint/js": "^10.0.1",
-		"@sveltejs/adapter-static": "4.0.0-next.3",
-		"@sveltejs/kit": "3.0.0-next.13",
+		"@sveltejs/adapter-static": "4.0.0-next.4",
+		"@sveltejs/kit": "3.0.0-next.16",
 		"@sveltejs/vite-plugin-svelte": "^7.2.0",
 		"@tailwindcss/forms": "^0.5.11",
 		"@tailwindcss/vite": "^4.2.2",
@@ -69,7 +69,7 @@
 	"dependencies": {
 		"@jsquash/webp": "^1.5.0",
 		"@mediabunny/aac-encoder": "^1.50.9",
-		"@sveltejs/adapter-node": "6.0.0-next.6",
+		"@sveltejs/adapter-node": "6.0.0-next.8",
 		"aws4fetch": "^1.0.20",
 		"mdast-util-from-markdown": "^2.0.3",
 		"mediabunny": "^1.50.9",

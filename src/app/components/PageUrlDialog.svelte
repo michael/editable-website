@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { invalidateAll } from '$app/navigation';
+	import { refreshAll } from '$app/navigation';
 	import { get_app_context } from '#app/app_context.js';
 	import { get_page_browser } from '#app/page_browser_context.svelte.js';
 	import { get_page_url_dialog } from '#app/page_url_dialog_context.svelte.js';
@@ -68,7 +68,7 @@
 			current.on_saved?.();
 			close();
 			page_browser.invalidate?.();
-			await invalidateAll();
+			await refreshAll();
 		} catch (err) {
 			page_url_error = err instanceof Error ? err.message : 'Failed to update Page URL.';
 		} finally {
