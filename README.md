@@ -11,7 +11,7 @@ You need [Node.js 24+](https://nodejs.org/en/download) (for its built-in SQLite)
 The clone below uses `stable`, which always points at the latest tested release. The default `main` branch contains active development and may include unfinished changes.
 
 ```sh
-git clone --branch stable https://github.com/michael/editable-website.git my-site
+git clone --branch stable https://github.com/michael/editable.git my-site
 cd my-site
 pnpm install
 cp .env.example .env
