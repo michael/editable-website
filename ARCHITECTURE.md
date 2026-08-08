@@ -77,11 +77,12 @@ Guidelines:
 
 ## SvelteKit configuration
 
-The app targets the SvelteKit 3 prerelease line, beginning with `@sveltejs/kit@3.0.0-next.12`. All SvelteKit configuration is passed to the `sveltekit()` plugin in `vite.config.ts`; SvelteKit 3 no longer supports `svelte.config.js`. Internal library imports use the package-level `#lib` subpath alias declared in `package.json`, replacing SvelteKit 2's generated `$lib` alias. The app uses Svelte's experimental async features, SvelteKit remote functions, and explicit environment variables.
+The app targets the SvelteKit 3 prerelease line, currently `@sveltejs/kit@3.0.0-next.16`. All SvelteKit configuration is passed to the `sveltekit()` plugin in `vite.config.ts`; SvelteKit 3 no longer supports `svelte.config.js`. Internal library imports use the package-level `#lib` subpath alias declared in `package.json`, replacing SvelteKit 2's generated `$lib` alias. The app uses Svelte's experimental async features, SvelteKit remote functions, and explicit environment variables.
 
 ```ts
 sveltekit({
-	adapter: adapter(),
+	adapter,
+	prerender,
 	experimental: {
 		remoteFunctions: true
 	},

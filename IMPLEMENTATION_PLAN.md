@@ -50,7 +50,7 @@
 
 ## SvelteKit 3 prerelease migration
 
-- Upgrade to `@sveltejs/kit@3.0.0-next.12`, TypeScript 6, and SvelteKit-3-compatible prerelease versions of the Node and Vercel adapters while retaining compatible Svelte, Vite, and Vite plugin ranges.
+- Upgrade to `@sveltejs/kit@3.0.0-next.16`, TypeScript 6, and SvelteKit-3-compatible prerelease versions of the Node and static adapters while retaining compatible Svelte, Vite, and Vite plugin ranges.
 - Delete `svelte.config.js`; keep all framework and compiler configuration in the `sveltekit()` Vite plugin.
 - Replace generated `$lib` imports with a package `#lib` subpath alias declared in `package.json`.
 - Replace deprecated `invalidateAll()` calls with `refreshAll()`.
