@@ -4,7 +4,7 @@
 
 - In edit-for-fun mode, Save must exit editing and keep the current local session rendered so visitors can preview their changes without editor controls or node gaps.
 - This action must not call document-save, asset-processing, or asset-upload APIs, and must never persist any data.
-- Cancel must keep its existing behavior of restoring the original document.
+- For edit-for-fun sessions, Save must retain the latest document snapshot only in memory for the current page; a later Cancel restores that snapshot. Admin and static/no-backend Cancel behavior must continue to restore the original document.
 
 ## Static Vercel build
 
