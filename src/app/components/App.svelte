@@ -322,14 +322,9 @@
 		}
 
 		async execute() {
-			if (!has_backend) {
-				console.log('Document saved', session.to_json());
+			if (!has_backend || !is_admin_mode) {
 				session.selection = null;
 				this.context.editable = false;
-				return;
-			}
-
-			if (!is_admin_mode) {
 				return;
 			}
 
@@ -496,7 +491,9 @@
 	};
 
 	const app_key_map = define_keymap({
-		'meta+escape,ctrl+escape': [app_commands.cancel_editing],
+		'meta+escape,ctrl+escape': [
+			app_commands.cancel_editing
+		],
 		'meta+e,ctrl+e': [app_commands.edit_document],
 		'meta+p,ctrl+p': [app_commands.browse_pages],
 		'meta+s,ctrl+s': [app_commands.save_document]
