@@ -27,15 +27,14 @@
 	let pending = $state(false);
 	let step = $state('choice');
 	let password_input_ref = $state<HTMLInputElement>();
+	let edit_for_fun_button_ref = $state<HTMLButtonElement>();
 	let should_focus_password_input = $state(false);
 
 	$effect(() => {
-		if (step !== 'choice') return;
+		if (step !== 'choice' || !edit_for_fun_button_ref) return;
 
 		requestAnimationFrame(() => {
-			if (document.activeElement instanceof HTMLElement) {
-				document.activeElement.blur();
-			}
+			edit_for_fun_button_ref?.focus();
 		});
 	});
 
@@ -113,7 +112,12 @@
 			</div>
 
 			<div class="flex min-w-0 flex-wrap items-center justify-center gap-3">
-				<button type="button" class={TW_PRIMARY_BTN} onclick={handle_edit_for_fun}>
+				<button
+					bind:this={edit_for_fun_button_ref}
+					type="button"
+					class={`${TW_PRIMARY_BTN} focus:outline-1 focus:outline-offset-1 focus:outline-(--svedit-editing-stroke)`}
+					onclick={handle_edit_for_fun}
+				>
 					Try out editing
 				</button>
 

@@ -1,5 +1,11 @@
 # Implementation plan
 
+## Edit-for-fun save preview
+
+- In edit-for-fun mode, Save must exit editing and keep the current local session rendered so visitors can preview their changes without editor controls or node gaps.
+- This action must not call document-save, asset-processing, or asset-upload APIs, and must never persist any data.
+- Cancel must keep its existing behavior of restoring the original document.
+
 ## Static Vercel build
 
 - Use `@sveltejs/adapter-static` when `VERCEL=1`; retain `@sveltejs/adapter-node` otherwise.
