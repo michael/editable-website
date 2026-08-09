@@ -17,7 +17,7 @@ Implement a single-password admin authentication flow with these rules:
 - whoever knows that password can authenticate as admin
 - authenticated admins can edit and save content, browse drafts, and use the full page browser
 - unauthenticated visitors can still choose “Edit for fun” on the current page
-- edit-for-fun mode never persists changes; its Save action only exits edit mode so the locally edited page can be previewed
+- edit-for-fun mode never persists changes; its Save action stores an in-memory snapshot and exits edit mode so the locally edited page can be previewed
 - there is no dedicated remembered login route as the primary UX
 - the main login entry point is the edit shortcut flow on the current page
 - static / `VERCEL=1` mode keeps authentication disabled
@@ -60,7 +60,7 @@ Layout values are stable, human-readable string ids rather than ordinal numbers.
 In full runtime mode, Editable also supports a simple owner-only admin authentication model. Whoever knows the admin password can unlock editing and private page-management features. This is intentionally not a multi-user system — there is no user database, no roles, and no per-user ownership model. Authentication exists only to distinguish between:
 
 1. **Admin mode** — authenticated with the configured admin password, can edit and save, browse drafts, create pages, delete pages, and use the full page browser
-2. **Edit-for-fun mode** — unauthenticated, can edit the currently open page and use Save to preview those local changes without editor controls, but cannot persist changes or access private site-management features
+2. **Edit-for-fun mode** — unauthenticated, can edit the currently open page and use Save to preview those local changes without editor controls. Its latest locally saved snapshot is restored by later Cancel actions during the same page lifetime, but it cannot persist changes or access private site-management features
 3. **Public browsing mode** — normal site visitor mode with no editing UI active
 
 ## Language: TypeScript

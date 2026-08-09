@@ -50,6 +50,7 @@
 	let svedit_ref = $state<{ focus_canvas: () => void }>();
 	let editable = $state(false);
 	let current_is_new = $state(false);
+	let edit_for_fun_saved_doc = $state<{ document_id: string; doc_json: string } | null>(null);
 	let is_admin = $derived(server_is_admin);
 	let is_admin_mode = $derived(editable && is_admin);
 
@@ -311,7 +312,13 @@
 				return;
 			}
 
-			session = create_session(JSON.parse(initial_doc_json));
+			const saved_doc_json =
+				has_backend &&
+				!is_admin &&
+				edit_for_fun_saved_doc?.document_id === loaded_document_id
+					? edit_for_fun_saved_doc.doc_json
+					: initial_doc_json;
+			session = create_session(JSON.parse(saved_doc_json));
 			this.context.editable = false;
 		}
 	}
@@ -323,6 +330,12 @@
 
 		async execute() {
 			if (!has_backend || !is_admin_mode) {
+				if (has_backend && !is_admin) {
+					edit_for_fun_saved_doc = {
+						document_id: loaded_document_id,
+						doc_json: JSON.stringify(session.to_json())
+					};
+				}
 				session.selection = null;
 				this.context.editable = false;
 				return;
