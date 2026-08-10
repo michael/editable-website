@@ -778,7 +778,7 @@ export const login_admin = command(admin_login_input_schema, async ({ password }
 	if (lockout_seconds > 0) {
 		return create_auth_error_result(
 			'too_many_attempts',
-			`Too many failed attempts. Try again in ${format_lockout_duration(lockout_seconds)}.`
+			`Too many attempts. Try again in ${format_lockout_duration(lockout_seconds)}.`
 		);
 	}
 
