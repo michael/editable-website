@@ -504,9 +504,7 @@
 	};
 
 	const app_key_map = define_keymap({
-		'meta+escape,ctrl+escape': [
-			app_commands.cancel_editing
-		],
+		'ctrl+escape': [app_commands.cancel_editing],
 		'meta+e,ctrl+e': [app_commands.edit_document],
 		'meta+p,ctrl+p': [app_commands.browse_pages],
 		'meta+s,ctrl+s': [app_commands.save_document]

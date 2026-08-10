@@ -257,7 +257,7 @@
 		<button
 			class="pointer-events-auto inline-flex size-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-sm font-medium text-(--foreground) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-[0.97] active:bg-(--muted) sm:w-auto sm:px-4"
 			onclick={() => cancel_command.execute()}
-			title="Cancel (⌘ ⎋)"
+			title="Cancel (⌃ ⎋)"
 			aria-label={cancel_button_label}
 		>
 			<svg class="size-6 sm:hidden" viewBox="0 0 24 24" fill="none" aria-hidden="true">
