@@ -27,6 +27,9 @@ export default defineConfig({
 			}
 		})
 	],
+	server: {
+		allowedHosts: ['mqlrecords.test']
+	},
 	optimizeDeps: {
 		exclude: ['@jsquash/webp']
 	},
