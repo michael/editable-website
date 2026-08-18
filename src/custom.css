@@ -19,15 +19,17 @@
  * defined in this file would silently emit nothing — utilities are only
  * generated from app.css.
  */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
 @reference './app.css';
 
 
 :root {
-	--background: oklch(0.97 0 0);
-	--foreground: oklch(0 0 0);
-	--muted: oklch(1 0 0);
-	--border: oklch(0.92 0 0);
-	--muted-foreground: oklch(0.55 0 0);
-	--accent: oklch(0 0 0);
-	--accent-foreground: oklch(0.976 0 0);
+	--background: oklch(0.855 0.055 34);
+	--foreground: oklch(0.317 0.151 270);
+	--muted: oklch(0.915 0.035 34);
+	--border: oklch(0.755 0.06 34);
+	--muted-foreground: oklch(0.317 0.151 270);
+	--accent: oklch(0.317 0.151 270);
+	--accent-foreground: oklch(0.855 0.055 34);
+	--font-sans: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
 }

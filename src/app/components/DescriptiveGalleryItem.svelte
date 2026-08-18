@@ -24,7 +24,7 @@
 	>
 		<div
 			class="overflow-hidden"
-			style:aspect-ratio="4/3"
+			style:aspect-ratio="1/1"
 			style:border-radius="var(--image-border-radius)"
 		>
 			<MediaProperty path={[...path, 'media']} />
