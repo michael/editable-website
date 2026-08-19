@@ -22,6 +22,12 @@
 - End with one clear prompt to install Editable through the existing `/manual` quickstart.
 - Keep this text-first page in code until the same content is represented in the page builder.
 
+## Retina video resolution
+
+- Cap processed video at a 1440px short side, producing up to 2560×1440 for 16:9 landscape video.
+- Keep the existing adaptive bitrate and resolution selection logic, targeting a maximum output size of 50 MB.
+- Do not upscale smaller source videos or change passthrough behavior for already optimized files.
+
 ## Video posters
 
 - Generate one `poster.webp` from the first decoded frame of every processed or explicitly pre-optimized video.

@@ -505,13 +505,13 @@ Each dropped video goes through this decision tree:
 
 1. **Filename escape hatch** — a file named `*_optimized.mp4` (or `*.optimized.mp4`) is uploaded byte-identical, bypassing all processing and all caps. Use this when you've deliberately prepared a file — say a high-bitrate 4K export — and want it kept exactly as exported.
 2. **Already good** — if the video is already H.264, within the resolution cap and within the size goal (with 25% tolerance, since re-encoding a marginally-over file costs quality and saves little), nothing is re-encoded: an MP4 is uploaded untouched, and other containers (e.g. an H.264 `.mov`) are losslessly repackaged into an MP4 container.
-3. **Everything else** is transcoded to fit the size goal: the bitrate is derived from the video's duration, and the resolution is chosen as the largest that still looks good at that bitrate — starting from the resolution cap (1080 means landscape 1920×1080 _and_ portrait 1080×1920; videos are never upscaled) and stepping down (720, 540, …) for long videos where the size budget would otherwise spread too thin. Rotation is preserved.
+3. **Everything else** is transcoded to fit the size goal: the bitrate is derived from the video's duration, and the resolution is chosen as the largest that still looks good at that bitrate — starting from the resolution cap (1440 means landscape 2560×1440 _and_ portrait 1440×2560; videos are never upscaled) and stepping down (1080, 720, 540, …) for long videos where the size budget would otherwise spread too thin. Rotation is preserved.
 
 Two knobs in `src/app/config.ts`:
 
 ```js
-export const MAX_VIDEO_RESOLUTION = 1080; // cap on the short side: 720, 1080, …
-export const MAX_VIDEO_FILESIZE = 50 * 1024 * 1024; // size goal for transcoded videos
+export const MAX_VIDEO_RESOLUTION = 1440; // cap on the short side: 1080, 1440, …
+export const MAX_VIDEO_FILESIZE = 100 * 1024 * 1024; // size goal for transcoded videos
 ```
 
 Things worth knowing:

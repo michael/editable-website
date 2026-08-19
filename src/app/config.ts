@@ -14,11 +14,11 @@ export const MAX_IMAGE_WIDTH = VARIANT_WIDTHS[VARIANT_WIDTHS.length - 1];
 
 /**
  * Maximum video resolution for transcoded videos, as a cap on the short side
- * (e.g. 1080 means landscape 1920×1080 and portrait 1080×1920). Videos are
+ * (e.g. 1440 means landscape 2560×1440 and portrait 1440×2560). Videos are
  * never upscaled, and long videos may be stored below this cap when needed
  * to stay within MAX_VIDEO_FILESIZE.
  */
-export const MAX_VIDEO_RESOLUTION = 1080;
+export const MAX_VIDEO_RESOLUTION = 1440;
 
 /**
  * Target maximum file size for transcoded videos. The video bitrate (and,
