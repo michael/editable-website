@@ -24,12 +24,13 @@
 
 
 :root {
-	--background: oklch(0.855 0.055 34);
-	--foreground: oklch(0.317 0.151 270);
-	--muted: oklch(0.915 0.035 34);
-	--border: oklch(0.755 0.06 34);
-	--muted-foreground: oklch(0.317 0.151 270);
-	--accent: oklch(0.317 0.151 270);
-	--accent-foreground: oklch(0.855 0.055 34);
+	--background: oklch(0.866 0.15 157);
+	--foreground: oklch(0 0 0);
+	--muted: oklch(0.925 0.09 157);
+	--border: oklch(0 0 0);
+	--muted-foreground: oklch(0.18 0 0);
+	--accent: oklch(0 0 0);
+	--accent-foreground: oklch(0.866 0.15 157);
+	--svedit-brand: oklch(0 0 0);
 	--font-sans: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
 }
