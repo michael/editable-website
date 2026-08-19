@@ -60,7 +60,7 @@
 
 	/* Rounded corners */
 	--button-border-radius: 3rem; /* rounded corners for buttons, nav items */
-	--image-border-radius: 0rem; /* rounded corners for images */
+	--image-border-radius: 2.2rem; /* rounded corners for images */
 }
 
 /* Website fonts */
