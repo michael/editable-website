@@ -4,7 +4,7 @@ Permission is hereby granted to any person obtaining a copy of Editable and its 
 
 **Keep the notice.** The above copyright notice and this license shall be retained in all copies or substantial portions of the Software’s source code.
 
-**One website, one license.** Each production website requires its own license. A license covers one registered domain, including its subdomains, redirects, and staging environments. Registration at [editable.website/register](https://editable.website/register) records the license owner and domain. Ownership may be transferred, but the domain assignment may not be changed or reused for another website, even after the original site is discontinued, without prior written consent from [hello@editable.website](mailto:hello@editable.website).
+**One website, one license.** Each production website requires its own license. A license covers one registered domain, including its subdomains, redirects, and staging environments. Registration at [editable.website/buy](https://editable.website/buy) records the license owner and domain. Ownership may be transferred, but the domain assignment may not be changed or reused for another website, even after the original site is discontinued, without prior written consent from [hello@editable.website](mailto:hello@editable.website).
 
 **Make it yours.** Subject to this license, a licensed website may be modified and operated without additional usage limits. The Software may be provided only to the website owner, contractors, and hosting providers as necessary to develop or operate the licensed website. It may not otherwise be sold, sublicensed, published, or redistributed as a standalone product. The license owner is responsible for those recipients’ compliance with this license.
 
