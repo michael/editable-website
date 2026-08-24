@@ -79,19 +79,32 @@ Adjust the colors and fonts directly in `src/app.css`:
 /* src/app.css */
 
 :root {
-	/* Colors (these are the defaults from app.css; a dark theme
-	   example is commented out there too) */
+	/* Main page background color. */
 	--background: oklch(1 0 0);
+	/* Main text and foreground color. */
 	--foreground: oklch(0 0 0);
+	/* Subtle background for secondary surfaces and hover states. */
 	--muted: oklch(0.98 0 0);
+	/* Color for borders, dividers, and other visual lines. */
 	--stroke: oklch(0.92 0 0);
+	/* Text color for secondary or de-emphasized content. */
 	--muted-foreground: oklch(0.55 0 0);
+	/* Strong accent color for primary actions and highlights. */
 	--accent: oklch(0 0 0);
+	/* Text color used on the accent color. */
 	--accent-foreground: oklch(1 0 0);
 
-	/* Typefaces — add your own with @font-face rules right here */
-	--font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-	--font-serif: 'Libertinos Serif Display', ui-serif, Georgia, serif;
+	/* Primary accent for active editing controls, carets, and selections. */
+	--editing: oklch(60% 0.22 283);
+	/* Low-opacity version of the editing accent for passive highlights. */
+	--editing-muted: oklch(from var(--editing) l c h / 0.1);
+	/* Foreground color for content displayed on the editing accent. */
+	--editing-foreground: var(--background);
+
+	/* Rounded corners for buttons and navigation items. */
+	--button-border-radius: 3rem;
+	/* Rounded corners for images. */
+	--image-border-radius: 2.2rem;
 }
 
 /* Type scale — adjust any of these classes to match your style. */
@@ -1119,31 +1132,3 @@ The converter accepts the subset of CommonMark that maps onto the built-in conte
 - link targets: `http(s):`, `mailto:`, site-absolute paths, and `#fragments`; other protocols and links to `.md` files are rejected
 
 Not supported (rejected with an error): images, tables, blockquotes, raw HTML, thematic breaks, footnotes, YAML frontmatter, and GFM extensions. Page metadata (title, description) is derived from the first heading and paragraph, as for regular pages. Soft line wraps render as spaces and hard breaks render as line breaks (trailing backslash or two trailing spaces), matching how CommonMark renderers like GitHub's display the same file.
-
-<!--
-## FAQs
-
-### How is this different to using a CMS?
-
-The editing infrastructure (Svedit) becomes an integral part of your website (at runtime). As a developer, all you do is define content types (e.g. Figure) and implement components (e.g. Figure.svelte) — they are editable by default.
-
-### Is mobile editing supported?
-
-There is experimental support for mobile editing — it works in principle. The current focus is on desktop UX, but mobile editing will improve over time.
-
-### How about AI?
-
-Editable is a foundational, AI-agnostic tool. That said, it makes perfect sense to utilize AI workflows to help building your custom site. Think prompts like "Create a hero block type with title + description and optional CTA buttons" and "Implement Hero.svelte with 5 distinct layout variations".
-
-### Plugins?
-
-Editable is modular and you can and should reuse code across projects. However, I purposely don't want to establish a community maintained plugin repository. I want to encourage you to own all your code, for the benefit of simplicity, safety, and control. Share code snippets, not plugins.
-
-### Static builds?
-
-There's no point for static builds with Editable. The whole idea is that users edit content live, without having to wait for a rebuild to finish. SQLite is fast. Very fast. Web-optimized images are generated client-side before upload: resizing happens in the browser via canvas and toBlob(), and WebP encoding is done with @jsquash/webp. It still makes sense to enable a proxy for images, so they can be delivered from a CDN.
-
-### License?
-
-Editable will at least be source-available. There will likely be an affordable one-time registration fee (per domain) for personal use, and a fair fee for commercial projects. I'm still working on the details. If you're open to discussion, join the technical preview: https://docs.google.com/forms/d/e/1FAIpQLSfkL9e9X3Lcn6oBDIG-gU4yrfSenh8fndupbIX7zkyxX3X9ZQ/viewform
--->
