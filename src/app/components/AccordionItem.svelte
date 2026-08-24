@@ -7,7 +7,7 @@
 	let { path }: { path: DocumentPath } = $props();
 </script>
 
-<Node class="ew-accordion-item border-b border-(--stroke)" {path}>
+<Node class="ew-accordion-item border-b border-(--stroke) [--row:0]" {path}>
 	<details class="py-2 md:py-3">
 		<summary
 			class="list-none outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
