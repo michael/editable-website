@@ -6,13 +6,25 @@ Editable lets you build and edit a Svelte website without adding a separate CMS.
 
 From zero to a live-editable site in less than five minutes.
 
-You need [Git](https://git-scm.com/downloads) and [pnpm](https://pnpm.io/installation). If you do not have Node.js yet, install pnpm with its standalone installer; this project will provide Node.js 26 automatically:
+### Prerequisites
+
+You need [Git](https://git-scm.com/downloads), [pnpm](https://pnpm.io/installation), and Node.js 26. Already have them? Skip to **Install**.
+
+Starting from scratch? Install pnpm:
 
 ```sh
 curl -fsSL https://get.pnpm.io/install.sh | sh -
 ```
 
-If `pnpm` is not found afterwards, open a new terminal. The clone below uses `stable`, which always points at the latest tested release. The default `main` branch contains active development and may include unfinished changes.
+If `pnpm` is not found, open a new terminal first. Then install Node.js 26:
+
+```sh
+pnpm runtime set node 26 -g
+```
+
+### Install
+
+The `stable` branch is the latest tested release. `main` may contain unfinished changes.
 
 ```sh
 git clone --branch stable https://github.com/michael/editable.git my-site
@@ -33,7 +45,7 @@ And run the development server:
 pnpm dev
 ```
 
-That's it — open [http://localhost:5173](http://localhost:5173), press `⌘` or `Ctrl` + `E`, and log in with your `ADMIN_PASSWORD` to edit the site live.
+Open [http://localhost:5173](http://localhost:5173), press `⌘` or `Ctrl` + `E`, and log in with your `ADMIN_PASSWORD` to edit the site live.
 
 ## Make it yours
 
