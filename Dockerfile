@@ -9,14 +9,16 @@ WORKDIR /app
 
 ENV NODE_ENV="production"
 
-# Use the package manager version pinned in package.json.
-RUN corepack enable
+# Copy package manifests before installing the package manager and dependencies.
+COPY --link .npmrc pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+
+# Install the package manager version pinned in package.json.
+RUN npm install --global pnpm@$(node -p "require('./package.json').packageManager.split('@')[1]")
 
 # Install dependencies before copying application code so this layer stays
 # reusable until package.json or pnpm-lock.yaml changes.
 FROM base AS dependencies
 
-COPY --link .npmrc pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 RUN pnpm install --frozen-lockfile --prod=false
 
 # Produce a runtime-only dependency tree from the same clean install. This
