@@ -73,10 +73,10 @@ From here on, `git push` saves your work to your own repo. To bring in Editable 
 
 ### Styling
 
-Adjust the colors and fonts to match your style. Put your overrides in `src/custom.css` — that file is yours, upstream Editable updates never touch it, which keeps future upgrades conflict-free. It loads after `src/app.css`, so anything defined there can be overridden. For example:
+Adjust the colors and fonts directly in `src/app.css`:
 
 ```css
-/* src/custom.css */
+/* src/app.css */
 
 :root {
 	/* Colors (these are the defaults from app.css; a dark theme
@@ -84,7 +84,7 @@ Adjust the colors and fonts to match your style. Put your overrides in `src/cust
 	--background: oklch(1 0 0);
 	--foreground: oklch(0 0 0);
 	--muted: oklch(0.98 0 0);
-	--border: oklch(0.92 0 0);
+	--stroke: oklch(0.92 0 0);
 	--muted-foreground: oklch(0.55 0 0);
 	--accent: oklch(0 0 0);
 	--accent-foreground: oklch(1 0 0);
@@ -94,15 +94,13 @@ Adjust the colors and fonts to match your style. Put your overrides in `src/cust
 	--font-serif: 'Libertinos Serif Display', ui-serif, Georgia, serif;
 }
 
-/* Type scale — copy any of app.css's classes (display-1 … display-5,
-   body-sm … body-xl) and adjust. @apply works here via the @reference
-   line that custom.css ships with. */
+/* Type scale — adjust any of these classes to match your style. */
 .display-1 {
 	@apply font-serif text-6xl leading-tight tracking-tight text-balance lg:text-7xl;
 }
 ```
 
-However, likely you'll want to customize more than that. E.g. edit `src/app/components/Button.svelte` to create your very own distinct button style. The files in `src/app` and `src/routes` are meant to be customized by you for your project. And if you're redesigning heavily anyway, feel free to edit `app.css` itself — it just means upstream updates to it may need a manual merge, same as your changes in `src/app` and `src/routes`. `custom.css` is the conflict-free lane for light-touch styling, not a fence.
+You will likely want to customize more than that. For example, edit `src/app/components/Button.svelte` to create your own distinct button style. The files in `src/app` and `src/routes` are meant to be customized for your project. Changes to `src/app.css` may need a manual merge when you pull upstream updates, just like changes to those files.
 
 ### Demo content
 
@@ -972,7 +970,7 @@ The order is the safety net: back up before touching anything, and test the new 
 
 If Git reports conflicts, run `git status`, resolve the marked files, then finish with `git add <resolved-files>` and `git commit`. If you want to abandon the upgrade before committing, run `git merge --abort`. Releases are also tagged: to upgrade to a specific version instead of the latest, use `git fetch upstream` followed by `git merge v2.1.0`.
 
-Merge conflicts can only occur in files you changed. If your customizations live in the files meant for you — `src/custom.css`, the `app` line in `fly.toml`, and your own code in `src/app` and `src/routes` — pulls are typically conflict-free, since upstream never touches `custom.css` and rarely touches the rest. The more you've rewritten, the more the pull becomes a starting point for a manual merge — at that point, review what changed upstream and adopt what applies.
+Merge conflicts can only occur in files you changed. If your customizations are limited to `src/app.css`, the `app` line in `fly.toml`, and your own code in `src/app` and `src/routes`, pulls are usually straightforward. If a conflict occurs, review the upstream changes and keep the parts that apply to your site.
 
 The app-specific Editable surface lives in `src/app`, while `src/routes` contains the SvelteKit route files. Customize the modules and components in `src/app` rather than the implementation modules in `src/lib` whenever possible. Keeping your schema, default site content, config, session setup, and components in `src/app` makes the intended extension points clear and reduces upgrade conflicts.
 
