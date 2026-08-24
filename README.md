@@ -761,6 +761,43 @@ fly open
 
 Because each checkout manages exactly one app (see [Your site is your repo](#your-site-is-your-repo)), the target always comes from `fly.toml` — there's no app name to get wrong. If you ever do need to address a different app (say, a staging copy), every `fly` command and data script accepts `-a <app>` as an explicit override.
 
+### Add a custom domain
+
+First find the app's IP addresses:
+
+```sh
+fly ips list
+```
+
+Create an `A` record for the IPv4 address and an `AAAA` record for the IPv6 address at the DNS provider that is authoritative for your domain.
+
+Then create a certificate, starting with the domain without `www`:
+
+```sh
+fly certs add example.com
+fly certs show example.com
+```
+
+If you also want `www`, add a certificate for that hostname too:
+
+```sh
+fly certs add www.example.com
+fly certs show www.example.com
+```
+
+For domains containing non-ASCII characters, such as `ä`, `ö`, `ü`, `ê`, or `è`, use the Punycode-encoded domain in these commands. Otherwise, `fly certs show` may not find the certificate. A search for “Punycode converter” will find tools that can convert the domain.
+
+If Fly does not see your DNS changes, check which nameservers are authoritative for the domain. Add the records there, or change the domain's nameservers to the provider where you added them.
+
+Finally, set `ORIGIN` to the custom domain and deploy again. It must exactly match the URL you use in the browser, including the scheme and `www`:
+
+```sh
+fly secrets set ORIGIN="https://example.com"
+fly deploy
+```
+
+Without this step, the site may redirect to its `fly.dev` address and generate the wrong canonical and social metadata.
+
 ### Deploy to a VPS (experimental)
 
 Editable runs on any amd64 host with Docker — a DigitalOcean droplet, a Hetzner or Nodion VPS. One command takes a fresh Ubuntu server to a running site with TLS.
