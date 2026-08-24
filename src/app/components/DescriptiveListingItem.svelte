@@ -12,12 +12,12 @@
 	let display_meta = $derived(svedit.editable || !!node.meta?.content?.trim());
 </script>
 
-<Node class="descriptive-listing-item group border-b border-(--border)" {path}>
+<Node class="descriptive-listing-item group border-b border-(--stroke)" {path}>
 	<svelte:element
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="block py-4 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) sm:py-2 md:py-3"
+		class="block py-4 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing) sm:py-2 md:py-3"
 		use:reveal
 	>
 		<div class="flex items-center justify-between gap-6">

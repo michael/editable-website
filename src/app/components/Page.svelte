@@ -61,7 +61,7 @@
 			<Footer path={[...path, 'footer']} />
 		</div>
 		{#if svedit.editable}
-			<div class="border-t border-(--border) bg-(--muted) text-(--foreground)">
+			<div class="border-t border-(--stroke) bg-(--muted) text-(--foreground)">
 				<div class="mx-auto max-w-xl">
 					<div class="{TW_PAGE_PADDING_X} py-24">
 						<div class="grid w-full max-w-xl grid-cols-[6rem_minmax(0,1fr)] items-center gap-4">

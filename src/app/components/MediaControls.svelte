@@ -166,7 +166,7 @@
 	}
 
 	.media-controls:global(.touch-locked) {
-		outline: 2px solid var(--svedit-editing-stroke, oklch(60% 0.22 283));
+		outline: 2px solid var(--editing, oklch(60% 0.22 283));
 		outline-offset: -2px;
 	}
 
@@ -178,7 +178,7 @@
 		transform: translate(-50%, -50%);
 		pointer-events: none;
 		mix-blend-mode: difference;
-		border: 1px solid var(--svedit-editing-stroke);
+		border: 1px solid var(--editing);
 		border-radius: 50%;
 	}
 
@@ -190,7 +190,7 @@
 		top: 50%;
 		width: 150%;
 		height: 1px;
-		background: var(--svedit-editing-stroke);
+		background: var(--editing);
 		transform: translate(-50%, -50%);
 	}
 
@@ -202,7 +202,7 @@
 		top: 50%;
 		width: 1px;
 		height: 150%;
-		background: var(--svedit-editing-stroke);
+		background: var(--editing);
 		transform: translate(-50%, -50%);
 	}
 </style>

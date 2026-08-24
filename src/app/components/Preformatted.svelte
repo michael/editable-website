@@ -29,7 +29,7 @@
 			]}
 		>
 			<div
-				class="border border-(--border) bg-(--muted) p-3 font-mono text-sm subpixel-antialiased lg:p-6"
+				class="border border-(--stroke) bg-(--muted) p-3 font-mono text-sm subpixel-antialiased lg:p-6"
 				style:border-radius="var(--image-border-radius)"
 			>
 				{#if comment_segments}

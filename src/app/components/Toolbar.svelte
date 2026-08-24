@@ -176,10 +176,10 @@
 	const TW_TOOLBAR_POSITION =
 		'bottom-[max(1rem,env(safe-area-inset-bottom,0px))] left-5 right-5 sm:left-7 sm:right-7 md:left-10 md:right-10 lg:left-14 lg:right-14';
 	const TW_TOOLBAR_SURFACE =
-		'pointer-events-auto min-w-0 rounded-full border border-(--border) bg-(--background) p-1 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]';
+		'pointer-events-auto min-w-0 rounded-full border border-(--stroke) bg-(--background) p-1 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]';
 
 	const TW_TOOLBAR_BTN =
-		'flex size-9 flex-none items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--foreground) shadow-none cursor-pointer pointer-events-auto transition-all duration-150 active:scale-95 active:translate-y-px outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--svedit-editing-stroke) focus-visible:outline-offset-1';
+		'flex size-9 flex-none items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--foreground) shadow-none cursor-pointer pointer-events-auto transition-all duration-150 active:scale-95 active:translate-y-px outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--editing) focus-visible:outline-offset-1';
 	const TW_TOOLBAR_BTN_DISABLED = 'text-(--muted-foreground) opacity-40 !cursor-not-allowed';
 	const TW_TOOLBAR_BTN_HOVER =
 		'hover:bg-(--muted) active:bg-(--muted) active:scale-95 active:translate-y-px';
@@ -246,16 +246,16 @@
 		</svg>
 	</button>
 	{#if can_show_variant_selector}
-		<span class="selection-leading-divider mx-1 h-5 w-px shrink-0 bg-(--border)" aria-hidden="true"
+		<span class="selection-leading-divider mx-1 h-5 w-px shrink-0 bg-(--stroke)" aria-hidden="true"
 		></span>
 	{/if}
 {/snippet}
 
 {#snippet save_group_contents()}
-	<span class="mx-1 h-5 w-px shrink-0 bg-(--border)" aria-hidden="true"></span>
+	<span class="mx-1 h-5 w-px shrink-0 bg-(--stroke)" aria-hidden="true"></span>
 	{#if cancel_command && !cancel_command.disabled}
 		<button
-			class="pointer-events-auto inline-flex size-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-sm font-medium text-(--foreground) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-[0.97] active:bg-(--muted) sm:w-auto sm:px-4"
+			class="pointer-events-auto inline-flex size-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-sm font-medium text-(--foreground) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing) active:translate-y-px active:scale-[0.97] active:bg-(--muted) sm:w-auto sm:px-4"
 			onclick={() => cancel_command.execute()}
 			title="Cancel (⌃ ⎋)"
 			aria-label={cancel_button_label}
@@ -270,7 +270,7 @@
 
 	{#if !app_commands.save_document.disabled}
 		<button
-			class="pointer-events-auto inline-flex size-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-sm font-medium text-(--svedit-editing-stroke) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--svedit-editing-fill) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-[0.97] active:bg-(--svedit-editing-fill) sm:w-auto sm:px-4"
+			class="pointer-events-auto inline-flex size-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-sm font-medium text-(--editing) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--editing-muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing) active:translate-y-px active:scale-[0.97] active:bg-(--editing-muted) sm:w-auto sm:px-4"
 			onclick={() => app_commands.save_document.execute()}
 			title="Save (⌘ S)"
 			aria-label="Save"
@@ -408,7 +408,7 @@
 									</button>
 									<div
 										id="toolbar-page-actions-menu"
-										class="page-actions-menu min-w-44 rounded-2xl border border-(--border) bg-(--background) p-1.5 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
+										class="page-actions-menu min-w-44 rounded-2xl border border-(--stroke) bg-(--background) p-1.5 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
 										popover="auto"
 										role="menu"
 										aria-label="Page actions"
@@ -440,7 +440,7 @@
 											disabled={is_home_page}
 											role="menuitem">Delete page</button
 										>
-										<div class="my-1 h-px bg-(--border)" role="separator"></div>
+										<div class="my-1 h-px bg-(--stroke)" role="separator"></div>
 										<button
 											type="button"
 											class="page-actions-item"
@@ -462,8 +462,8 @@
 										class="{TW_TOOLBAR_BTN} {session.commands.toggle_strong?.disabled
 											? TW_TOOLBAR_BTN_DISABLED
 											: TW_TOOLBAR_BTN_HOVER}"
-										class:!text-(--svedit-editing-stroke)={session.commands.toggle_strong?.active}
-										class:!bg-(--svedit-editing-fill)={session.commands.toggle_strong?.active}
+										class:!text-(--editing)={session.commands.toggle_strong?.active}
+										class:!bg-(--editing-muted)={session.commands.toggle_strong?.active}
 										onmousedown={handle_btn_mousedown}
 										onclick={(e) => handle_btn_click(e, session.commands.toggle_strong)}
 										title="Bold (⌘ B)"
@@ -488,8 +488,8 @@
 										class="{TW_TOOLBAR_BTN} {session.commands.toggle_emphasis?.disabled
 											? TW_TOOLBAR_BTN_DISABLED
 											: TW_TOOLBAR_BTN_HOVER}"
-										class:!text-(--svedit-editing-stroke)={session.commands.toggle_emphasis?.active}
-										class:!bg-(--svedit-editing-fill)={session.commands.toggle_emphasis?.active}
+										class:!text-(--editing)={session.commands.toggle_emphasis?.active}
+										class:!bg-(--editing-muted)={session.commands.toggle_emphasis?.active}
 										onmousedown={handle_btn_mousedown}
 										onclick={(e) => handle_btn_click(e, session.commands.toggle_emphasis)}
 										title="Italic (⌘ I)"
@@ -513,8 +513,8 @@
 										class="{TW_TOOLBAR_BTN} {session.commands.toggle_code?.disabled
 											? TW_TOOLBAR_BTN_DISABLED
 											: TW_TOOLBAR_BTN_HOVER}"
-										class:!text-(--svedit-editing-stroke)={session.commands.toggle_code?.active}
-										class:!bg-(--svedit-editing-fill)={session.commands.toggle_code?.active}
+										class:!text-(--editing)={session.commands.toggle_code?.active}
+										class:!bg-(--editing-muted)={session.commands.toggle_code?.active}
 										onmousedown={handle_btn_mousedown}
 										onclick={(e) => handle_btn_click(e, session.commands.toggle_code)}
 										title="Code (⌘ ⇧ C)"
@@ -547,9 +547,9 @@
 										class="{TW_TOOLBAR_BTN} {session.commands.toggle_highlight?.disabled
 											? TW_TOOLBAR_BTN_DISABLED
 											: TW_TOOLBAR_BTN_HOVER}"
-										class:!text-(--svedit-editing-stroke)={session.commands.toggle_highlight
+										class:!text-(--editing)={session.commands.toggle_highlight
 											?.active}
-										class:!bg-(--svedit-editing-fill)={session.commands.toggle_highlight?.active}
+										class:!bg-(--editing-muted)={session.commands.toggle_highlight?.active}
 										onmousedown={handle_btn_mousedown}
 										onclick={(e) => handle_btn_click(e, session.commands.toggle_highlight)}
 										title="Highlight (⌘ U)"
@@ -577,8 +577,8 @@
 										class="{TW_TOOLBAR_BTN} {session.commands.toggle_link?.disabled
 											? TW_TOOLBAR_BTN_DISABLED
 											: TW_TOOLBAR_BTN_HOVER}"
-										class:!text-(--svedit-editing-stroke)={session.commands.toggle_link?.active}
-										class:!bg-(--svedit-editing-fill)={session.commands.toggle_link?.active}
+										class:!text-(--editing)={session.commands.toggle_link?.active}
+										class:!bg-(--editing-muted)={session.commands.toggle_link?.active}
 										onmousedown={handle_btn_mousedown}
 										onclick={(e) => handle_btn_click(e, session.commands.toggle_link)}
 										title="Link (⌘ K)"
@@ -677,9 +677,9 @@
 									{#if session.selection?.type === 'node' && !is_node_caret && !session.commands.toggle_section?.disabled}
 										<button
 											class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
-											class:!text-(--svedit-editing-stroke)={session.commands.toggle_section
+											class:!text-(--editing)={session.commands.toggle_section
 												?.active}
-											class:!bg-(--svedit-editing-fill)={session.commands.toggle_section?.active}
+											class:!bg-(--editing-muted)={session.commands.toggle_section?.active}
 											onmousedown={handle_btn_mousedown}
 											onclick={(e) => handle_btn_click(e, session.commands.toggle_section)}
 											title="Toggle section (⌘ ⇧ S)"
@@ -906,7 +906,7 @@
 			padding: 4px;
 			color: var(--foreground);
 			background: var(--background);
-			border: 1px solid var(--border);
+			border: 1px solid var(--stroke);
 			border-radius: 9999px;
 			box-shadow:
 				0 1px 2px rgb(0 0 0 / 0.12),

@@ -34,33 +34,32 @@
 }
 
 :root {
-	/* Website colors */
+	/* Main page background color. */
 	--background: oklch(1 0 0);
+	/* Main text and foreground color. */
 	--foreground: oklch(0 0 0);
+	/* Subtle background for secondary surfaces and hover states. */
 	--muted: oklch(0.98 0 0);
-	--border: oklch(0.92 0 0);
+	/* Color for borders, dividers, and other visual lines. */
+	--stroke: oklch(0.92 0 0);
+	/* Text color for secondary or de-emphasized content. */
 	--muted-foreground: oklch(0.55 0 0);
+	/* Strong accent color for primary actions and highlights. */
 	--accent: oklch(0 0 0);
+	/* Text color used on the accent color. */
 	--accent-foreground: oklch(1 0 0);
 
-	/* Dark theme example */
-	/*--background: oklch(0.13 0 0);
-	--foreground: oklch(0.96 0 0);
-	--muted: oklch(0.18 0 0);
-	--border: oklch(0.29 0 0);
-	--muted-foreground: oklch(0.72 0 0);
-	--accent: oklch(0.96 0 0);
-	--accent-foreground: oklch(0.13 0 0);*/
+	/* Primary accent for active editing controls, carets, and selections. */
+	--editing: oklch(60% 0.22 283);
+	/* Low-opacity version of the editing accent for passive highlights. */
+	--editing-muted: oklch(from var(--editing) l c h / 0.1);
+	/* Foreground color for content displayed on the editing accent. */
+	--editing-foreground: var(--background);
 
-	/* Editor colors */
-	--svedit-brand: oklch(60% 0.22 283);
-	--svedit-editing-stroke: var(--svedit-brand);
-	--svedit-editing-fill: oklch(from var(--svedit-brand) l c h / 0.1);
-	--svedit-canvas-stroke: color-mix(in oklch, currentColor 25%, transparent);
-
-	/* Rounded corners */
-	--button-border-radius: 3rem; /* rounded corners for buttons, nav items */
-	--image-border-radius: 2.2rem; /* rounded corners for images */
+	/* Rounded corners for buttons and navigation items. */
+	--button-border-radius: 3rem;
+	/* Rounded corners for images. */
+	--image-border-radius: 2.2rem;
 }
 
 /* Website fonts */

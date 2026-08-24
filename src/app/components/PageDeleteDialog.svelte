@@ -145,7 +145,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.9rem;
-		border: 1px solid var(--border);
+		border: 1px solid var(--stroke);
 		border-radius: 23px;
 		background: var(--background);
 		color: var(--foreground);
@@ -198,7 +198,7 @@
 
 	.confirm-btn:focus-visible {
 		background: var(--muted);
-		outline-color: var(--svedit-editing-stroke);
+		outline-color: var(--editing);
 	}
 
 	.confirm-btn-danger {

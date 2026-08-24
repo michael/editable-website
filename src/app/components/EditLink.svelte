@@ -103,14 +103,14 @@
 
 <dialog
 	bind:this={dialog_ref}
-	class="edit-link-dialog absolute z-40 m-0 mt-3 max-h-90 overflow-hidden rounded-[23px] border border-(--border) bg-(--background) p-0 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
+	class="edit-link-dialog absolute z-40 m-0 mt-3 max-h-90 overflow-hidden rounded-[23px] border border-(--stroke) bg-(--background) p-0 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
 	style="position-anchor: {anchor_name}; position-area: block-end span-all; justify-self: anchor-center;"
 	onclick={handle_backdrop_click}
 >
 	<div class="flex flex-col">
 		<div class="px-1 pt-1">
 			<div
-				class="flex items-center overflow-hidden rounded-full border border-(--border) focus-within:border-(--svedit-editing-stroke)"
+				class="flex items-center overflow-hidden rounded-full border border-(--stroke) focus-within:border-(--editing)"
 			>
 				<input
 					id="edit-link-url-input"
@@ -124,7 +124,7 @@
 				{#if app.has_backend}
 					<button
 						type="button"
-						class="mr-0.5 flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--foreground) outline-none transition-all duration-150 hover:bg-(--muted) focus-visible:shadow-[inset_0_0_0_1px_var(--svedit-editing-stroke)] active:translate-y-px active:scale-95 active:bg-(--muted)"
+						class="mr-0.5 flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--foreground) outline-none transition-all duration-150 hover:bg-(--muted) focus-visible:shadow-[inset_0_0_0_1px_var(--editing)] active:translate-y-px active:scale-95 active:bg-(--muted)"
 						title="Select page"
 						aria-label="Select page"
 						onclick={() => {
@@ -156,13 +156,13 @@
 				<input
 					type="checkbox"
 					bind:checked={open_in_new_tab}
-					class="h-4 w-4 cursor-pointer rounded-full border-(--border)! bg-(--muted)! text-(--svedit-editing-stroke) ring-0 checked:border-transparent! checked:bg-(--svedit-editing-stroke)! focus:ring-0 focus:ring-offset-0 focus:shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
+					class="h-4 w-4 cursor-pointer rounded-full border-(--stroke)! bg-(--muted)! text-(--editing) ring-0 checked:border-transparent! checked:bg-(--editing)! focus:ring-0 focus:ring-offset-0 focus:shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
 				/>
 				<span class="text-sm text-(--foreground)">Open in new tab</span>
 			</label>
 			<button
 				type="button"
-				class="inline-flex h-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent px-3 text-sm font-medium text-(--svedit-editing-stroke) outline-1 outline-transparent hover:bg-(--svedit-editing-fill) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
+				class="inline-flex h-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent px-3 text-sm font-medium text-(--editing) outline-1 outline-transparent hover:bg-(--editing-muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
 				onclick={save}
 			>
 				{is_new_link ? 'Create' : 'Update'}

@@ -23,7 +23,7 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="block overflow-hidden outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
+		class="block overflow-hidden outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
 		style:border-radius={border_radius ? 'var(--image-border-radius)' : undefined}
 		style:aspect-ratio={media_aspect_ratio}
 	>

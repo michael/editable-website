@@ -974,7 +974,7 @@ Updated: ${updated_at_label}`;
 		width: 100%;
 		height: 2.75rem;
 		padding: 0 0.78rem;
-		border: 1px solid var(--border);
+		border: 1px solid var(--stroke);
 		border-radius: 9999px;
 		background: var(--background);
 		box-shadow: none;
@@ -983,7 +983,7 @@ Updated: ${updated_at_label}`;
 	}
 
 	.search-input-shell:focus-within {
-		border-color: var(--svedit-editing-stroke);
+		border-color: var(--editing);
 		box-shadow: none;
 	}
 
@@ -1104,16 +1104,16 @@ Updated: ${updated_at_label}`;
 	}
 
 	.tree-row-shell:hover .tree-row-keyboard-selected::before {
-		background: var(--svedit-editing-fill);
+		background: var(--editing-muted);
 	}
 
 	.tree-row-shell:hover .tree-row-keyboard-selected::after {
-		outline-color: var(--svedit-editing-stroke);
+		outline-color: var(--editing);
 	}
 
 	.tree-row:focus-visible::after,
 	.tree-row-shell:focus-within .tree-row:focus-visible::after {
-		outline-color: var(--svedit-editing-stroke);
+		outline-color: var(--editing);
 	}
 
 	.draft-card-keyboard-selected,
@@ -1128,14 +1128,14 @@ Updated: ${updated_at_label}`;
 		inset: 0 -0.4rem;
 		border-radius: 9999px;
 		pointer-events: none;
-		background: var(--svedit-editing-fill);
+		background: var(--editing-muted);
 		z-index: -1;
 	}
 
 	.tree-row-keyboard-selected::after,
 	.tree-row-keyboard-selected:focus-visible::after,
 	.tree-row-shell:focus-within .tree-row-keyboard-selected:focus-visible::after {
-		outline-color: var(--svedit-editing-stroke);
+		outline-color: var(--editing);
 	}
 
 	.item-actions-btn {
@@ -1170,7 +1170,7 @@ Updated: ${updated_at_label}`;
 	}
 
 	.item-actions-btn:focus-visible {
-		outline-color: var(--svedit-editing-stroke);
+		outline-color: var(--editing);
 		box-shadow: none;
 	}
 
@@ -1188,13 +1188,13 @@ Updated: ${updated_at_label}`;
 	.draft-illustration {
 		width: 100%;
 		aspect-ratio: 1;
-		background: oklch(from var(--svedit-brand, oklch(60% 0.22 283)) 0.985 0.012 h);
+		background: oklch(from var(--editing, oklch(60% 0.22 283)) 0.985 0.012 h);
 		box-shadow: none;
 	}
 
 	.create-illustration {
-		background: oklch(from var(--svedit-brand, oklch(60% 0.22 283)) 0.985 0.012 h);
-		border: 1px dashed oklch(from var(--svedit-brand, oklch(60% 0.22 283)) 0.8 0.08 h / 0.45);
+		background: oklch(from var(--editing, oklch(60% 0.22 283)) 0.985 0.012 h);
+		border: 1px dashed oklch(from var(--editing, oklch(60% 0.22 283)) 0.8 0.08 h / 0.45);
 		box-shadow: none;
 	}
 
@@ -1230,7 +1230,7 @@ Updated: ${updated_at_label}`;
 		font-size: 2rem;
 		line-height: 1;
 		font-weight: 300;
-		color: var(--svedit-brand, oklch(60% 0.22 283));
+		color: var(--editing, oklch(60% 0.22 283));
 	}
 
 	.draft-title {
@@ -1242,7 +1242,7 @@ Updated: ${updated_at_label}`;
 	}
 
 	.match-highlight {
-		background: var(--svedit-editing-fill);
+		background: var(--editing-muted);
 		color: inherit;
 	}
 
@@ -1302,7 +1302,7 @@ Updated: ${updated_at_label}`;
 		position: absolute;
 		left: calc(50% - 0.5px);
 		width: 1px;
-		background: var(--border);
+		background: var(--stroke);
 	}
 
 	.tree-guide-rail {
@@ -1336,7 +1336,7 @@ Updated: ${updated_at_label}`;
 		top: 50%;
 		width: calc(var(--tree-indent-width, 1.3rem) / 2);
 		height: 1px;
-		background: var(--border);
+		background: var(--stroke);
 	}
 
 	.tree-leaf-dot {
@@ -1401,7 +1401,7 @@ Updated: ${updated_at_label}`;
 	}
 
 	.unlisted-badge:focus-visible {
-		outline-color: var(--svedit-editing-stroke);
+		outline-color: var(--editing);
 	}
 
 	@media (hover: hover) and (pointer: fine) {
@@ -1448,7 +1448,7 @@ Updated: ${updated_at_label}`;
 		min-width: 11rem;
 		margin: 0.5rem 0 0;
 		padding: 0.375rem;
-		border: 1px solid var(--border);
+		border: 1px solid var(--stroke);
 		border-radius: 1rem;
 		background: var(--background);
 		color: var(--foreground);
@@ -1493,7 +1493,7 @@ Updated: ${updated_at_label}`;
 		display: flex;
 		flex-direction: column;
 		gap: 0.9rem;
-		border: 1px solid var(--border);
+		border: 1px solid var(--stroke);
 		border-radius: 23px;
 		background: var(--background);
 		color: var(--foreground);
@@ -1544,7 +1544,7 @@ Updated: ${updated_at_label}`;
 
 	.confirm-btn:focus-visible {
 		background: var(--muted);
-		outline-color: var(--svedit-editing-stroke);
+		outline-color: var(--editing);
 	}
 
 	.confirm-btn:disabled {
@@ -1576,11 +1576,11 @@ Updated: ${updated_at_label}`;
 		}
 
 		.tree-row-shell:hover .tree-row-keyboard-selected::before {
-			background: var(--svedit-editing-fill);
+			background: var(--editing-muted);
 		}
 
 		.tree-row-shell:hover .tree-row-keyboard-selected::after {
-			outline-color: var(--svedit-editing-stroke);
+			outline-color: var(--editing);
 		}
 
 		.tree-row-meta {

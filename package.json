@@ -2,7 +2,7 @@
 	"name": "editable-website",
 	"private": true,
 	"version": "2.0.0",
-	"packageManager": "pnpm@11.20.0",
+	"packageManager": "pnpm@11.23.0",
 	"type": "module",
 	"imports": {
 		"#lib": "./src/lib/index.js",
@@ -11,6 +11,13 @@
 	},
 	"engines": {
 		"node": ">=24"
+	},
+	"devEngines": {
+		"runtime": {
+			"name": "node",
+			"version": "^26.0.0",
+			"onFail": "download"
+		}
 	},
 	"scripts": {
 		"dev": "vite dev",
@@ -75,7 +82,7 @@
 		"mediabunny": "^1.50.9",
 		"nanoid": "^5.1.6",
 		"slugify": "^1.6.6",
-		"svedit": "^0.13.0",
+		"svedit": "^0.14.0",
 		"valibot": "^1.4.1"
 	}
 }
