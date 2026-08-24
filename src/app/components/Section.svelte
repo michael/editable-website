@@ -6,7 +6,7 @@
 
 	const bracket_class =
 		'pointer-events-none absolute left-1 right-1 z-1 h-2 select-none sm:left-2 sm:right-2 sm:h-4';
-	const corner_class = 'absolute size-2 border-(--svedit-canvas-stroke) sm:size-3.5';
+	const corner_class = 'absolute size-2 border-(--border) sm:size-3.5';
 </script>
 
 <section {...rest}>

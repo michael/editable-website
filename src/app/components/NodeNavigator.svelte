@@ -203,7 +203,7 @@
 
 	.variant-pulse::after {
 		animation: variant-pulse 2.4s ease-out infinite;
-		border: 2px solid var(--svedit-editing-stroke);
+		border: 2px solid var(--editing);
 		border-radius: 9999px;
 		content: '';
 		filter: blur(1px);
@@ -239,7 +239,7 @@
 
 	/* The real control is a transparent <select>, so the pill renders its ring. */
 	.variant-pill:has(.variant-select:focus-visible) {
-		outline: 1px solid var(--svedit-editing-stroke);
+		outline: 1px solid var(--editing);
 		outline-offset: 1px;
 	}
 

@@ -198,7 +198,7 @@
 
 	.confirm-btn:focus-visible {
 		background: var(--muted);
-		outline-color: var(--svedit-editing-stroke);
+		outline-color: var(--editing);
 	}
 
 	.confirm-btn-danger {

@@ -21,7 +21,7 @@
 	<SizableViewbox
 		{path}
 		class="{is_centered ? 'mx-auto ' : ''}outline-1 outline-transparent {linked
-			? 'group-focus-visible:outline-offset-1 group-focus-visible:outline-(--svedit-editing-stroke)'
+			? 'group-focus-visible:outline-offset-1 group-focus-visible:outline-(--editing)'
 			: ''}"
 		style="border-radius: var(--image-border-radius)"
 	>

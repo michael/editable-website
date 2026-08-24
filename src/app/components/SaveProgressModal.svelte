@@ -62,7 +62,7 @@
 							/>
 							{#if progress !== null}
 								<circle
-									class="text-(--svedit-editing-stroke) transition-[stroke-dashoffset] duration-200"
+									class="text-(--editing) transition-[stroke-dashoffset] duration-200"
 									cx="18"
 									cy="18"
 									r="15"
@@ -75,7 +75,7 @@
 								/>
 							{:else}
 								<circle
-									class="text-(--svedit-editing-stroke)"
+									class="text-(--editing)"
 									cx="18"
 									cy="18"
 									r="15"

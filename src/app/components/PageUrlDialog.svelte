@@ -196,7 +196,7 @@
 	}
 
 	.page-url-input:focus {
-		border-color: var(--svedit-editing-stroke);
+		border-color: var(--editing);
 		box-shadow: none;
 	}
 
@@ -219,7 +219,7 @@
 
 	.confirm-btn:focus-visible {
 		background: var(--muted);
-		outline-color: var(--svedit-editing-stroke);
+		outline-color: var(--editing);
 	}
 
 	.confirm-btn:disabled {

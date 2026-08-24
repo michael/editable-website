@@ -10,10 +10,10 @@
 	// Toolbar height on small screens, roomier once there is space for it.
 	const TW_PILL_HEIGHT = 'h-9 sm:h-[46px]';
 
-	const TW_BTN_BASE = `inline-flex ${TW_PILL_HEIGHT} shrink-0 cursor-pointer items-center justify-center rounded-(--button-border-radius) text-sm leading-5 whitespace-nowrap outline-1 outline-transparent transition-[opacity,background-color,transform] duration-150 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke) active:translate-y-px active:scale-95 disabled:cursor-not-allowed disabled:opacity-60`;
+	const TW_BTN_BASE = `inline-flex ${TW_PILL_HEIGHT} shrink-0 cursor-pointer items-center justify-center rounded-(--button-border-radius) text-sm leading-5 whitespace-nowrap outline-1 outline-transparent transition-[opacity,background-color,transform] duration-150 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing) active:translate-y-px active:scale-95 disabled:cursor-not-allowed disabled:opacity-60`;
 
 	// Filled primary like the canvas Button, in the editing color.
-	const TW_PRIMARY_BTN = `${TW_BTN_BASE} border border-(--svedit-editing-stroke) bg-(--svedit-editing-stroke) px-5 text-(--background) hover:opacity-80 active:opacity-80`;
+	const TW_PRIMARY_BTN = `${TW_BTN_BASE} border border-(--editing) bg-(--editing) px-5 text-(--editing-foreground) hover:opacity-80 active:opacity-80`;
 
 	// Secondary action styling from the toolbar's cancel button.
 	const TW_SECONDARY_SURFACE =
@@ -144,7 +144,7 @@
 				<button
 					bind:this={edit_for_fun_button_ref}
 					type="button"
-					class={`${TW_PRIMARY_BTN} focus:outline-1 focus:outline-offset-1 focus:outline-(--svedit-editing-stroke)`}
+					class={`${TW_PRIMARY_BTN} focus:outline-1 focus:outline-offset-1 focus:outline-(--editing)`}
 					onclick={handle_edit_for_fun}
 				>
 					Try out editing
@@ -195,7 +195,7 @@
 					bind:this={password_input_ref}
 					bind:value={password}
 					placeholder={error || 'Enter password'}
-					class={`${TW_PILL_HEIGHT} min-w-0 flex-1 appearance-none rounded-(--button-border-radius) border border-(--border) bg-(--background) px-4 text-base leading-5 text-(--foreground) transition-[border-color] duration-150 outline-none ${error ? 'placeholder:text-[color-mix(in_oklch,red_65%,var(--foreground))]' : 'placeholder:text-(--muted-foreground)'} focus:ring-0 focus:outline-none focus-visible:border-(--svedit-editing-stroke)`}
+					class={`${TW_PILL_HEIGHT} min-w-0 flex-1 appearance-none rounded-(--button-border-radius) border border-(--border) bg-(--background) px-4 text-base leading-5 text-(--foreground) transition-[border-color] duration-150 outline-none ${error ? 'placeholder:text-[color-mix(in_oklch,red_65%,var(--foreground))]' : 'placeholder:text-(--muted-foreground)'} focus:ring-0 focus:outline-none focus-visible:border-(--editing)`}
 					oninput={handle_password_input}
 				/>
 

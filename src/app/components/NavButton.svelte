@@ -16,7 +16,7 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="block rounded-(--button-border-radius) bg-(--accent) py-1 text-(--accent-foreground) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
+		class="block rounded-(--button-border-radius) bg-(--accent) py-1 text-(--accent-foreground) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
 		class:hover:opacity-80={render_as_link}
 	>
 		<TextProperty class="px-2.5" path={[...path, 'label']} placeholder="Button" />
@@ -28,7 +28,7 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="block rounded-(--button-border-radius) py-1 text-(--foreground) outline-1 outline-(--foreground)/15 focus-visible:outline-(--svedit-editing-stroke) {render_as_link
+		class="block rounded-(--button-border-radius) py-1 text-(--foreground) outline-1 outline-(--foreground)/15 focus-visible:outline-(--editing) {render_as_link
 			? 'hover:bg-(--foreground)/5'
 			: ''}"
 	>

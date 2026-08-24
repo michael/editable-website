@@ -82,14 +82,14 @@
 				bind:value={alt_input_value}
 				rows="3"
 				placeholder="Describe the media for people using screen readers."
-				class="edit-media-textarea w-72 min-w-0 resize-none rounded-[18px] border border-(--border) bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:border-(--svedit-editing-stroke) focus:shadow-none focus:ring-0 focus:outline-none"
+				class="edit-media-textarea w-72 min-w-0 resize-none rounded-[18px] border border-(--border) bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:border-(--editing) focus:shadow-none focus:ring-0 focus:outline-none"
 				onkeydown={handle_keydown}
 			></textarea>
 		</div>
 		<div class="flex items-center justify-end p-1">
 			<button
 				type="button"
-				class="inline-flex h-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent px-3 text-sm font-medium text-(--svedit-editing-stroke) outline-1 outline-transparent hover:bg-(--svedit-editing-fill) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--svedit-editing-stroke)"
+				class="inline-flex h-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent px-3 text-sm font-medium text-(--editing) outline-1 outline-transparent hover:bg-(--editing-muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
 				onclick={save}
 			>
 				Update
