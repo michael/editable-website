@@ -798,6 +798,21 @@ fly deploy
 
 Without this step, the site may redirect to its `fly.dev` address and generate the wrong canonical and social metadata.
 
+### Cache assets with Cloudflare
+
+Caching assets with Cloudflare gives your site a CDN at no extra cost and takes bandwidth and file-serving work off your Fly.io machine. Your domain must use Cloudflare's DNS — that is, its nameservers must be delegated to Cloudflare — for the proxy to work.
+
+Cloudflare proxies an entire hostname, not individual paths. You can still cache only Editable's assets while leaving pages and API requests uncached. Add your domain to Cloudflare, point its DNS record at your Fly.io app, and enable the proxy (orange cloud) for the record. Then create a **Cache Rule** with:
+
+- **Match:** `URI Full` starts with `/assets/`
+- **Action:** `Eligible for cache`
+- **Browser TTL:** `Respect origin TTL`
+- **Edge TTL:** `Use cache-control header if present, cache request with Cloudflare's default TTL for the response status if not`
+
+Editable's asset responses already use content-addressed URLs and send `Cache-Control: public, max-age=31536000, immutable`, so long-lived caching is safe. Do not add a rule that caches all pages or API routes.
+
+You can check the result in the response headers. The first request may show `CF-Cache-Status: MISS`; later requests should show `HIT` when served from the Cloudflare cache.
+
 ### Deploy to a VPS (experimental)
 
 Editable runs on any amd64 host with Docker — a DigitalOcean droplet, a Hetzner or Nodion VPS. One command takes a fresh Ubuntu server to a running site with TLS.
