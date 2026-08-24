@@ -43,16 +43,7 @@
 	--accent: oklch(0 0 0);
 	--accent-foreground: oklch(1 0 0);
 
-	/* Dark theme example */
-	/*--background: oklch(0.13 0 0);
-	--foreground: oklch(0.96 0 0);
-	--muted: oklch(0.18 0 0);
-	--border: oklch(0.29 0 0);
-	--muted-foreground: oklch(0.72 0 0);
-	--accent: oklch(0.96 0 0);
-	--accent-foreground: oklch(0.13 0 0);*/
-
-	/* Editor colors */
+	/* Editing colors */
 	--editing: oklch(60% 0.22 283);
 	--editing-muted: oklch(from var(--editing) l c h / 0.1);
 	--editing-foreground: var(--background);
