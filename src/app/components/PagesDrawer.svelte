@@ -974,7 +974,7 @@ Updated: ${updated_at_label}`;
 		width: 100%;
 		height: 2.75rem;
 		padding: 0 0.78rem;
-		border: 1px solid var(--border);
+		border: 1px solid var(--stroke);
 		border-radius: 9999px;
 		background: var(--background);
 		box-shadow: none;
@@ -1302,7 +1302,7 @@ Updated: ${updated_at_label}`;
 		position: absolute;
 		left: calc(50% - 0.5px);
 		width: 1px;
-		background: var(--border);
+		background: var(--stroke);
 	}
 
 	.tree-guide-rail {
@@ -1336,7 +1336,7 @@ Updated: ${updated_at_label}`;
 		top: 50%;
 		width: calc(var(--tree-indent-width, 1.3rem) / 2);
 		height: 1px;
-		background: var(--border);
+		background: var(--stroke);
 	}
 
 	.tree-leaf-dot {
@@ -1448,7 +1448,7 @@ Updated: ${updated_at_label}`;
 		min-width: 11rem;
 		margin: 0.5rem 0 0;
 		padding: 0.375rem;
-		border: 1px solid var(--border);
+		border: 1px solid var(--stroke);
 		border-radius: 1rem;
 		background: var(--background);
 		color: var(--foreground);
@@ -1493,7 +1493,7 @@ Updated: ${updated_at_label}`;
 		display: flex;
 		flex-direction: column;
 		gap: 0.9rem;
-		border: 1px solid var(--border);
+		border: 1px solid var(--stroke);
 		border-radius: 23px;
 		background: var(--background);
 		color: var(--foreground);

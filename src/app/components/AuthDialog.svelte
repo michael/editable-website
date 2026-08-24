@@ -17,7 +17,7 @@
 
 	// Secondary action styling from the toolbar's cancel button.
 	const TW_SECONDARY_SURFACE =
-		'border border-(--border) bg-(--background) text-(--foreground) hover:bg-(--muted) active:bg-(--muted)';
+		'border border-(--stroke) bg-(--background) text-(--foreground) hover:bg-(--muted) active:bg-(--muted)';
 	const TW_SECONDARY_BTN = `${TW_BTN_BASE} ${TW_SECONDARY_SURFACE} px-5`;
 
 	const TW_ICON_BTN = `${TW_BTN_BASE} ${TW_SECONDARY_SURFACE} aspect-square`;
@@ -195,7 +195,7 @@
 					bind:this={password_input_ref}
 					bind:value={password}
 					placeholder={error || 'Enter password'}
-					class={`${TW_PILL_HEIGHT} min-w-0 flex-1 appearance-none rounded-(--button-border-radius) border border-(--border) bg-(--background) px-4 text-base leading-5 text-(--foreground) transition-[border-color] duration-150 outline-none ${error ? 'placeholder:text-[color-mix(in_oklch,red_65%,var(--foreground))]' : 'placeholder:text-(--muted-foreground)'} focus:ring-0 focus:outline-none focus-visible:border-(--editing)`}
+					class={`${TW_PILL_HEIGHT} min-w-0 flex-1 appearance-none rounded-(--button-border-radius) border border-(--stroke) bg-(--background) px-4 text-base leading-5 text-(--foreground) transition-[border-color] duration-150 outline-none ${error ? 'placeholder:text-[color-mix(in_oklch,red_65%,var(--foreground))]' : 'placeholder:text-(--muted-foreground)'} focus:ring-0 focus:outline-none focus-visible:border-(--editing)`}
 					oninput={handle_password_input}
 				/>
 

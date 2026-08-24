@@ -66,7 +66,7 @@
 
 <dialog
 	bind:this={dialog_ref}
-	class="edit-media-dialog absolute z-40 m-0 mt-1 max-h-90 overflow-hidden rounded-[23px] border border-(--border) bg-(--background) p-0 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
+	class="edit-media-dialog absolute z-40 m-0 mt-1 max-h-90 overflow-hidden rounded-[23px] border border-(--stroke) bg-(--background) p-0 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
 	style="position-anchor: --{serialize_path(
 		path
 	)}; position-area: block-end span-all; justify-self: anchor-center;"
@@ -82,7 +82,7 @@
 				bind:value={alt_input_value}
 				rows="3"
 				placeholder="Describe the media for people using screen readers."
-				class="edit-media-textarea w-72 min-w-0 resize-none rounded-[18px] border border-(--border) bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:border-(--editing) focus:shadow-none focus:ring-0 focus:outline-none"
+				class="edit-media-textarea w-72 min-w-0 resize-none rounded-[18px] border border-(--stroke) bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:border-(--editing) focus:shadow-none focus:ring-0 focus:outline-none"
 				onkeydown={handle_keydown}
 			></textarea>
 		</div>

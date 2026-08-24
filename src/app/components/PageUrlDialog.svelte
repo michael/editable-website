@@ -142,7 +142,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.9rem;
-		border: 1px solid var(--border);
+		border: 1px solid var(--stroke);
 		border-radius: 23px;
 		background: var(--background);
 		color: var(--foreground);
@@ -185,7 +185,7 @@
 	.page-url-input {
 		flex: 1;
 		min-width: 0;
-		border: 1px solid var(--border);
+		border: 1px solid var(--stroke);
 		border-radius: 9999px;
 		background: var(--background);
 		color: var(--foreground);

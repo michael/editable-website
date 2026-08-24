@@ -37,7 +37,7 @@
 		transition:fade={{ duration: 150 }}
 	>
 		<div
-			class="max-w-md min-w-72 border border-(--border) bg-(--background) px-8 py-6 text-center shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
+			class="max-w-md min-w-72 border border-(--stroke) bg-(--background) px-8 py-6 text-center shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
 			class:rounded-full={done}
 			class:rounded-2xl={!done}
 		>
@@ -53,7 +53,7 @@
 							fill="none"
 						>
 							<circle
-								class="text-(--border)"
+								class="text-(--stroke)"
 								cx="18"
 								cy="18"
 							r="15"

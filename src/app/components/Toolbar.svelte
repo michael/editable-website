@@ -176,7 +176,7 @@
 	const TW_TOOLBAR_POSITION =
 		'bottom-[max(1rem,env(safe-area-inset-bottom,0px))] left-5 right-5 sm:left-7 sm:right-7 md:left-10 md:right-10 lg:left-14 lg:right-14';
 	const TW_TOOLBAR_SURFACE =
-		'pointer-events-auto min-w-0 rounded-full border border-(--border) bg-(--background) p-1 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]';
+		'pointer-events-auto min-w-0 rounded-full border border-(--stroke) bg-(--background) p-1 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]';
 
 	const TW_TOOLBAR_BTN =
 		'flex size-9 flex-none items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--foreground) shadow-none cursor-pointer pointer-events-auto transition-all duration-150 active:scale-95 active:translate-y-px outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--editing) focus-visible:outline-offset-1';
@@ -246,13 +246,13 @@
 		</svg>
 	</button>
 	{#if can_show_variant_selector}
-		<span class="selection-leading-divider mx-1 h-5 w-px shrink-0 bg-(--border)" aria-hidden="true"
+		<span class="selection-leading-divider mx-1 h-5 w-px shrink-0 bg-(--stroke)" aria-hidden="true"
 		></span>
 	{/if}
 {/snippet}
 
 {#snippet save_group_contents()}
-	<span class="mx-1 h-5 w-px shrink-0 bg-(--border)" aria-hidden="true"></span>
+	<span class="mx-1 h-5 w-px shrink-0 bg-(--stroke)" aria-hidden="true"></span>
 	{#if cancel_command && !cancel_command.disabled}
 		<button
 			class="pointer-events-auto inline-flex size-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-sm font-medium text-(--foreground) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing) active:translate-y-px active:scale-[0.97] active:bg-(--muted) sm:w-auto sm:px-4"
@@ -408,7 +408,7 @@
 									</button>
 									<div
 										id="toolbar-page-actions-menu"
-										class="page-actions-menu min-w-44 rounded-2xl border border-(--border) bg-(--background) p-1.5 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
+										class="page-actions-menu min-w-44 rounded-2xl border border-(--stroke) bg-(--background) p-1.5 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
 										popover="auto"
 										role="menu"
 										aria-label="Page actions"
@@ -440,7 +440,7 @@
 											disabled={is_home_page}
 											role="menuitem">Delete page</button
 										>
-										<div class="my-1 h-px bg-(--border)" role="separator"></div>
+										<div class="my-1 h-px bg-(--stroke)" role="separator"></div>
 										<button
 											type="button"
 											class="page-actions-item"
@@ -906,7 +906,7 @@
 			padding: 4px;
 			color: var(--foreground);
 			background: var(--background);
-			border: 1px solid var(--border);
+			border: 1px solid var(--stroke);
 			border-radius: 9999px;
 			box-shadow:
 				0 1px 2px rgb(0 0 0 / 0.12),

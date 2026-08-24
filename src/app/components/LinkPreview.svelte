@@ -69,7 +69,7 @@
 
 {#snippet render_link_preview(resolved_page_preview = null, error_message = '')}
 	<div
-		class="overflow-hidden rounded-full border border-(--border) bg-(--background) text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
+		class="overflow-hidden rounded-full border border-(--stroke) bg-(--background) text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
 	>
 		<div class="flex items-center gap-1 p-1">
 			{#if internal_page_href}
@@ -175,7 +175,7 @@
 		{/if}
 	{:else}
 		<div
-			class="rounded-full border border-(--border) bg-(--background) p-1 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
+			class="rounded-full border border-(--stroke) bg-(--background) p-1 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
 		>
 			<button
 				type="button"
