@@ -27,7 +27,7 @@ function parse_canonical_origin(): URL | null {
 	}
 }
 
-/** Redirect target when the request host is not ORIGIN. See ARCHITECTURE.md → Canonical host. */
+/** Redirect target when the request host is not ORIGIN. */
 function get_canonical_redirect(url: URL): string | null {
 	if (VERCEL || dev || !canonical_origin) return null;
 	if (internal_hostnames.has(url.hostname)) return null;

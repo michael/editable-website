@@ -12,9 +12,9 @@ This file provides guidance to coding agents when working with code in this repo
 
 **Implementation Guidelines:**
 
-- Before implementing any feature, read `ARCHITECTURE.md` for design decisions and `IMPLEMENTATION_PLAN.md` for the step-by-step implementation spec
-- Design decisions go in `ARCHITECTURE.md`, implementation steps go in `IMPLEMENTATION_PLAN.md`
-- New features must be specified before implementation begins — the spec should be concise but sufficient to derive the implementation from
+- The code is the source of truth for application behavior and architecture.
+- Keep user-facing customization conventions clear in the relevant source files and README documentation.
+- Do exactly what the user asks for — one step at a time.
 - If a gap in either doc is discovered during implementation, update it with a minimal but concise change before proceeding with the code
 - Do exactly what the user asks for — one step at a time
 - Do NOT think 4 steps ahead or add extra features/improvements
