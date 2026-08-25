@@ -9,7 +9,7 @@ import nanoid from '#app/nanoid.js';
 const home_page_id = nanoid();
 
 const FULL_DOC = {
-	document_id: 'ThaBxDvTwBnbbaRukwqcepW',
+	document_id: 'rsbYSFDDKECGfkngAZEWGmF',
 	nodes: {
 		uqHVWPtxuErWwxjaCgJMwZs: {
 			id: 'uqHVWPtxuErWwxjaCgJMwZs',
@@ -300,7 +300,7 @@ const FULL_DOC = {
 		kwdRhJNahFccHcARVdCZcQR: {
 			id: 'kwdRhJNahFccHcARVdCZcQR',
 			type: 'footer_link',
-			href: '/privacy',
+			href: '',
 			label: {
 				content: '',
 				marks: [],
@@ -311,7 +311,7 @@ const FULL_DOC = {
 		gHeVqdqKQrhyPMjkThksXMZ: {
 			id: 'gHeVqdqKQrhyPMjkThksXMZ',
 			type: 'footer_link',
-			href: '/imprint',
+			href: '',
 			label: {
 				content: '',
 				marks: [],
@@ -400,8 +400,8 @@ const FULL_DOC = {
 				annotations: []
 			}
 		},
-		ThaBxDvTwBnbbaRukwqcepW: {
-			id: 'ThaBxDvTwBnbbaRukwqcepW',
+		rsbYSFDDKECGfkngAZEWGmF: {
+			id: 'rsbYSFDDKECGfkngAZEWGmF',
 			type: 'page',
 			title: {
 				content: '',
