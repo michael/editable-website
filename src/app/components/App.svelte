@@ -395,6 +395,9 @@
 					replace_blob_urls(doc_json.nodes, mapping);
 				}
 
+				// Keep this log so the saved document can be copied into default_site.js.
+				console.log(doc_json);
+
 				const result: { ok: boolean; document_id?: string; slug?: string; created?: boolean } =
 					await save_document({
 						...doc_json,
