@@ -367,7 +367,7 @@ const FULL_DOC = {
 			id: 'XRmDpRxqYhHZdpzBhAkyEGD',
 			type: 'link',
 			href: 'https://editable.website',
-			target: '_self'
+			target: '_blank'
 		},
 		ZRHWwtvVUPXrhmXHRqdtpDS: {
 			id: 'ZRHWwtvVUPXrhmXHRqdtpDS',
