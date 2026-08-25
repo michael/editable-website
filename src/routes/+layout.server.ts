@@ -1,6 +1,6 @@
 import { ORIGIN, VERCEL } from '$app/env/private';
 import { default_site_document } from '#app/default_site.js';
-import { extract_site_metadata } from '#lib/page_metadata.js';
+import { extract_site_metadata } from '#app/page_metadata.js';
 import type { LayoutServerLoad } from './$types';
 
 // Static hosts resolve directory indexes reliably, while Node deployments keep
@@ -15,7 +15,7 @@ export const load: LayoutServerLoad = async ({ locals, depends }) => {
 
 	let site_metadata;
 	if (has_backend) {
-		const { get_site_metadata } = await import('#lib/api.remote.js');
+		const { get_site_metadata } = await import('#app/api.remote.js');
 		site_metadata = await get_site_metadata();
 	} else {
 		site_metadata = extract_site_metadata(default_site_document);

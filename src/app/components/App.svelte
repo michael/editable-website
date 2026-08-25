@@ -344,7 +344,7 @@
 			const save_start = Date.now();
 
 			const [api_module, asset_upload_module] = await Promise.all([
-				import('#lib/api.remote.js'),
+				import('#app/api.remote.js'),
 				import('#lib/client/asset_upload.js')
 			]);
 
@@ -456,7 +456,7 @@
 
 		async execute() {
 			try {
-				const api_module = await import('#lib/api.remote.js');
+				const api_module = await import('#app/api.remote.js');
 				await api_module.logout_admin();
 				editable = false;
 				page_browser.close?.();

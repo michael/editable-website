@@ -54,7 +54,7 @@
 		page_url_error = '';
 
 		try {
-			const api_module = await import('#lib/api.remote.js');
+			const api_module = await import('#app/api.remote.js');
 			const result = await api_module.update_page_slug({
 				document_id: current.document_id,
 				slug: page_url_value

@@ -7,7 +7,7 @@ import { pipeline } from 'node:stream/promises';
 import { Readable, Transform } from 'node:stream';
 import { mkdirSync } from 'node:fs';
 import { ASSET_ID_REGEX } from '#app/config.js';
-import { ASSET_GRACE_PERIOD_DAYS, ASSET_PATH } from '#lib/server_config.js';
+import { ASSET_GRACE_PERIOD_DAYS, ASSET_PATH } from '#app/server_config.js';
 import { mirror_file } from './s3.js';
 
 // Ensure the asset directory exists on module load

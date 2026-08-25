@@ -1,11 +1,11 @@
 // Pathname lookup for configured markdown pages.
 //
 // Files are referenced through explicit `?raw` imports in
-// `src/lib/content_config.js`, so Vite inlines exactly the mapped files into
+// `src/app/content_config.js`, so Vite inlines exactly the mapped files into
 // the server bundle, rebuilds on edits in development, and fails the build
 // when a referenced file is missing.
 
-import { MARKDOWN_SOURCES } from '#lib/content_config.js';
+import { MARKDOWN_SOURCES } from '#app/content_config.js';
 import { validate_markdown_sources } from './config.js';
 import type { MarkdownSource } from './config.js';
 

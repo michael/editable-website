@@ -1080,7 +1080,7 @@ A deployment can expose selected repository markdown files as read-only pages re
 
 ### Configuration
 
-Any markdown file in the repository can be mapped to a URL in `src/lib/content_config.ts` (server/build-only — never import it from client code). Reference the file with a `?raw` import, so Vite inlines exactly the mapped files and a missing file fails the build:
+Any markdown file in the repository can be mapped to a URL in `src/app/content_config.ts` (server/build-only — never import it from client code). Reference the file with a `?raw` import, so Vite inlines exactly the mapped files and a missing file fails the build:
 
 ```js
 import manual_md from '../../README.md?raw';

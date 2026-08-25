@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { MARKDOWN_SOURCES } from '#lib/content_config.js';
+import { MARKDOWN_SOURCES } from '#app/content_config.js';
 import { build_registry, get_markdown_page, is_reserved_markdown_slug } from './registry.js';
 
 describe('build_registry', () => {

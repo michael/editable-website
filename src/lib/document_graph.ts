@@ -1,4 +1,3 @@
-import { document_schema } from '#app/document_schema.js';
 import type { Attachment, DocumentNode, NodeSchema, PropertyDefinition } from 'svedit';
 
 function get_attached_ranges(
@@ -20,9 +19,10 @@ export function clone_subtree_with_new_ids(
 	root_id: string,
 	nodes: Record<string, DocumentNode>,
 	generate_id: () => string,
+	schema: Record<string, NodeSchema>,
 	exclude_roots?: Set<string>
 ): { root_id: string; nodes: Record<string, DocumentNode> } {
-	const source_ids = collect_node_ids_in_order(root_id, nodes, exclude_roots);
+	const source_ids = collect_node_ids_in_order(root_id, nodes, schema, exclude_roots);
 
 	const id_map = new Map<string, string>();
 	for (const id of source_ids) {
@@ -36,7 +36,7 @@ export function clone_subtree_with_new_ids(
 		const node = structuredClone(nodes[source_id]);
 		node.id = new_id;
 
-		const type_schema: NodeSchema | undefined = document_schema[node.type];
+		const type_schema: NodeSchema | undefined = schema[node.type];
 
 		for (const [prop_name, prop_def] of Object.entries<PropertyDefinition>(
 			type_schema?.properties ?? {}
@@ -78,6 +78,7 @@ function remap_attached_ranges(
 export function collect_node_ids_in_order(
 	root_id: string,
 	nodes: Record<string, DocumentNode>,
+	schema: Record<string, NodeSchema>,
 	exclude_roots?: Set<string>
 ): string[] {
 	const collected: string[] = [];
@@ -95,7 +96,7 @@ export function collect_node_ids_in_order(
 		const node = nodes[id];
 		if (!node) continue;
 
-		const type_schema: NodeSchema | undefined = document_schema[node.type];
+		const type_schema: NodeSchema | undefined = schema[node.type];
 		if (!type_schema) continue;
 
 		const next_ids: string[] = [];

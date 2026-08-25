@@ -45,7 +45,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	}
 
 	try {
-		const { get_document } = await import('#lib/api.remote.js');
+		const { get_document } = await import('#app/api.remote.js');
 		const result = await get_document(params.page_id);
 
 		if (result.redirect_to_slug) {
@@ -74,6 +74,6 @@ async function get_shared_site_documents() {
 		const { default_nav_document, default_footer_document } = await import('#app/default_site.js');
 		return { nav_document: default_nav_document, footer_document: default_footer_document };
 	}
-	const { get_shared_documents } = await import('#lib/api.remote.js');
+	const { get_shared_documents } = await import('#app/api.remote.js');
 	return await get_shared_documents();
 }

@@ -1,4 +1,5 @@
 import { ASSET_BASE, ASSET_ID_REGEX, VARIANT_WIDTHS_SET } from '#app/config.js';
+import { document_schema } from '#app/document_schema.js';
 import { collect_node_ids_in_order } from '#lib/document_graph.js';
 import type { Document } from 'svedit';
 
@@ -143,7 +144,7 @@ export function collect_page_body_node_ids(page_doc: Document | null | undefined
 	const seen_ids = new Set(body_node_ids);
 
 	for (const child_id of page_root.body.nodes) {
-		const subtree_ids = collect_node_ids_in_order(child_id, page_doc.nodes);
+		const subtree_ids = collect_node_ids_in_order(child_id, page_doc.nodes, document_schema);
 		for (const subtree_id of subtree_ids) {
 			if (seen_ids.has(subtree_id)) continue;
 			seen_ids.add(subtree_id);

@@ -22,6 +22,12 @@
 - End with one clear prompt to install Editable through the existing `/manual` quickstart.
 - Keep this text-first page in code until the same content is represented in the page builder.
 
+## App/lib boundary refactor
+
+- Move `api.remote.ts` into `src/app` because it contains Editable-specific remote functions and is part of the application customization surface.
+- Keep generic document-graph operations in `src/lib/document_graph.ts` and pass the document schema from callers instead of importing the app schema there.
+- Preserve existing behavior and keep the refactor limited to imports and schema parameter plumbing.
+
 ## Retina video resolution
 
 - Cap processed video at a 1440px short side, producing up to 2560×1440 for 16:9 landscape video.
@@ -1516,7 +1522,7 @@ Behavior:
 
 Create a page factory for `/new`, likely in:
 
-- `src/lib/new_page.js`
+- `src/app/new_page.js`
   or nearby route helper
 
 It should expose a `create_empty_doc()` helper (or equivalent) that:
@@ -1591,7 +1597,7 @@ Current behavior:
 Implemented:
 
 - `src/routes/new/+page.svelte`
-- `src/lib/new_page.js`
+- `src/app/new_page.js`
 
 Current behavior:
 
@@ -1777,7 +1783,7 @@ These constraints must be respected during implementation:
 - `src/routes/[page_id]/+page.svelte`
 - `src/routes/new/+page.svelte`
 - `src/app/components/PageEditor.svelte`
-- maybe `src/lib/new_page.js`
+- maybe `src/app/new_page.js`
 - maybe `src/lib/server/page_browser.js`
 - maybe `src/lib/server/page_summary.js`
 

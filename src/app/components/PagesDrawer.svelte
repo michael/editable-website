@@ -2,8 +2,8 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 
-	import { get_page_browser_data } from '#lib/api.remote.js';
-	import type { PageTreeNode } from '#lib/api.remote.js';
+	import { get_page_browser_data } from '#app/api.remote.js';
+	import type { PageTreeNode } from '#app/api.remote.js';
 	import Media from './Media.svelte';
 	import { get_page_browser } from '#app/page_browser_context.svelte.js';
 	import { get_page_url_dialog } from '#app/page_url_dialog_context.svelte.js';

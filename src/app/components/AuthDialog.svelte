@@ -105,7 +105,7 @@
 		error = '';
 
 		try {
-			const api_module = await import('#lib/api.remote.js');
+			const api_module = await import('#app/api.remote.js');
 			const result = await api_module.login_admin({ password });
 
 			if (result && result.ok === false && 'message' in result) {
