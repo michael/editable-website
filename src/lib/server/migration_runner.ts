@@ -1,5 +1,5 @@
 import type { Migration } from './migration_registry.js';
-import db, { with_transaction } from './db.js';
+import type { DatabaseSync } from 'node:sqlite';
 import { plan_pending_migrations } from './migration_plan.js';
 import { create_migration_helpers } from './migration_helpers.js';
 
@@ -7,7 +7,9 @@ type SeedInitialDocuments = (context: { db: any }) => unknown;
 
 export default function migrate(
 	migrations: Migration[],
-	seed_initial_documents: SeedInitialDocuments
+	seed_initial_documents: SeedInitialDocuments,
+	db: DatabaseSync,
+	with_transaction: <T>(fn: () => T) => T
 ) {
 	// Invariants — fail before running.
 	const migration_ids = migrations.map((migration) => migration.id);

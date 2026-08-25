@@ -114,8 +114,7 @@ export function set_admin_session_cookie(cookies: Cookies, session_id: string) {
 	});
 }
 
-export async function delete_session(session_id: string) {
-	const { default: db } = await import('#lib/server/db.js');
+export async function delete_session(session_id: string, db: DatabaseSync) {
 	db.prepare('DELETE FROM sessions WHERE session_id = ?').run(session_id);
 }
 

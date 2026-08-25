@@ -4,9 +4,9 @@ import { VERCEL } from '$app/env/private';
 import {
 	get_markdown_page,
 	get_markdown_page_pathnames
-} from '#lib/server/markdown/registry.js';
-import { convert_markdown } from '#lib/server/markdown/convert.js';
-import { compose_markdown_document } from '#lib/server/markdown/compose.js';
+} from '#app/markdown/registry.js';
+import { convert_markdown } from '#app/markdown/convert.js';
+import { compose_markdown_document } from '#app/markdown/compose.js';
 import type { PageServerLoad } from './$types';
 import type { Document } from 'svedit';
 

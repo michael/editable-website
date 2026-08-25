@@ -1,8 +1,8 @@
-import { process_asset } from './process_asset.js';
-import { create_video_poster, process_video } from './process_video.js';
-import type { ProcessVideoOptions, ProcessedVideo } from './process_video.js';
-import { EXT_TO_MIME, MAX_VIDEO_INPUT_BYTES, OPTIMIZED_VIDEO_REGEX } from '#app/config.js';
-import { get_video_dimensions, get_media_dimensions } from './media_dimensions.js';
+import { process_asset } from '#lib/client/process_asset.js';
+import { create_video_poster, process_video } from '#lib/client/process_video.js';
+import type { ProcessVideoOptions, ProcessedVideo } from '#lib/client/process_video.js';
+import { EXT_TO_MIME, MAX_IMAGE_WIDTH, MAX_VIDEO_INPUT_BYTES, MAX_VIDEO_FILESIZE, MAX_VIDEO_RESOLUTION, OPTIMIZED_VIDEO_REGEX, VARIANT_WIDTHS } from '#app/config.js';
+import { get_video_dimensions, get_media_dimensions } from '#lib/client/media_dimensions.js';
 import type { DocumentNode } from 'svedit';
 
 export type PendingAsset = {
@@ -85,9 +85,15 @@ let video_queue: Promise<unknown> = Promise.resolve();
 
 function enqueue_video_processing(
 	file: File,
-	options: ProcessVideoOptions
+	options: Omit<ProcessVideoOptions, 'max_resolution' | 'max_filesize'>
 ): Promise<ProcessedVideo> {
-	const job = video_queue.then(() => process_video(file, options));
+	const job = video_queue.then(() =>
+		process_video(file, {
+			max_resolution: MAX_VIDEO_RESOLUTION,
+			max_filesize: MAX_VIDEO_FILESIZE,
+			...options
+		})
+	);
 	// Keep the queue chain alive even if this job fails
 	video_queue = job.catch(() => {});
 	return job;
@@ -167,7 +173,10 @@ export async function start_processing(blob_url: string, file: File) {
 			// Static raster image — process via WASM worker. The hash is computed
 			// over the re-encoded blob: the asset id must always be the SHA-256 of
 			// the stored bytes (the server verifies this on upload).
-			const result = await process_asset(file);
+			const result = await process_asset(file, {
+								max_width: MAX_IMAGE_WIDTH,
+								variant_widths: VARIANT_WIDTHS
+							});
 			entry.hash = await hash_blob(result.original.blob);
 			entry.original = result.original;
 			entry.variants = result.variants;

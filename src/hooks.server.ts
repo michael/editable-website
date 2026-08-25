@@ -44,7 +44,7 @@ export const init: ServerInit = async () => {
 		const { run_migrations } = await import('#app/migrations.js');
 		run_migrations();
 
-		const { warn_about_shadowed_pages } = await import('#lib/server/markdown/shadowed.js');
+		const { warn_about_shadowed_pages } = await import('#app/markdown/shadowed.js');
 		warn_about_shadowed_pages();
 	}
 };
@@ -63,7 +63,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		const session_id = event.cookies.get(admin_session_cookie_name);
 
 		if (session_id) {
-			const { default: db } = await import('#lib/server/db.js');
+			const { db } = await import('#app/server.js');
 			const row = db
 				.prepare('SELECT expires FROM sessions WHERE session_id = ?')
 				.get(session_id) as unknown as { expires: number } | undefined;

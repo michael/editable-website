@@ -345,7 +345,7 @@
 
 			const [api_module, asset_upload_module] = await Promise.all([
 				import('#app/api.remote.js'),
-				import('#lib/client/asset_upload.js')
+				import('#app/asset_upload.js')
 			]);
 
 			const save_document: any = api_module.save_document;

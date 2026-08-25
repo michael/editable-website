@@ -6,8 +6,8 @@
 // when a referenced file is missing.
 
 import { MARKDOWN_SOURCES } from '#app/content_config.js';
-import { validate_markdown_sources } from './config.js';
-import type { MarkdownSource } from './config.js';
+import { validate_markdown_sources } from '#lib/server/markdown/config.js';
+import type { MarkdownSource } from '#lib/server/markdown/config.js';
 
 /**
  * Build a pathname index from validated mappings.

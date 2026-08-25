@@ -4,12 +4,12 @@ import * as v from 'valibot';
 import slugify from 'slugify';
 import crypto from 'node:crypto';
 import { validate_document } from 'svedit';
-import db, { with_transaction } from '#lib/server/db.js';
-import { delete_orphaned_assets, touch_asset } from '#lib/server/asset_storage.js';
+import { db, with_transaction, delete_orphaned_assets, touch_asset } from '#app/server.js';
+
 import { snapshot_if_stale } from '#lib/server/db_snapshot.js';
 import { document_schema } from '#app/document_schema.js';
 import { collect_node_ids_in_order } from '#lib/document_graph.js';
-import { is_reserved_markdown_slug } from '#lib/server/markdown/registry.js';
+import { is_reserved_markdown_slug } from '#app/markdown/registry.js';
 import {
 	extract_page_metadata,
 	extract_site_metadata,
@@ -806,7 +806,7 @@ export const logout_admin = command(v.void(), async () => {
 	const session_id = cookies.get(admin_session_cookie_name);
 
 	if (session_id) {
-		await delete_session(session_id);
+		await delete_session(session_id, db);
 	}
 
 	clear_admin_session_cookie(cookies);

@@ -76,7 +76,7 @@ import Link from './components/Link.svelte';
 import Section from './components/Section.svelte';
 
 import { document_schema, MEDIA_DEFAULTS } from '#app/document_schema.js';
-import { start_processing } from '#lib/client/asset_upload.js';
+import { start_processing } from '#app/asset_upload.js';
 import { set_properties } from 'svedit';
 import { get_media_dimensions } from '#lib/client/media_dimensions.js';
 

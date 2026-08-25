@@ -1,4 +1,3 @@
-import { MAX_VIDEO_RESOLUTION, MAX_VIDEO_FILESIZE } from '#app/config.js';
 
 export type ProcessedVideo = {
 	blob: Blob;
@@ -9,6 +8,8 @@ export type ProcessedVideo = {
 };
 
 export type ProcessVideoOptions = {
+	max_resolution: number;
+	max_filesize: number;
 	onStatus?: (status: string) => void;
 	onProgress?: (progress: number) => void;
 };
@@ -22,9 +23,9 @@ export type ProcessVideoOptions = {
  */
 export function process_video(
 	file: File,
-	options: ProcessVideoOptions = {}
+	options: ProcessVideoOptions
 ): Promise<ProcessedVideo> {
-	const { onStatus, onProgress } = options;
+	const { max_resolution, max_filesize, onStatus, onProgress } = options;
 
 	return new Promise((resolve, reject) => {
 		const worker = new Worker(new URL('./video_processor.ts', import.meta.url), { type: 'module' });
@@ -70,8 +71,8 @@ export function process_video(
 		worker.postMessage({
 			type: 'process',
 			file,
-			max_resolution: MAX_VIDEO_RESOLUTION,
-			max_filesize: MAX_VIDEO_FILESIZE
+			max_resolution,
+			max_filesize
 		});
 	});
 }
