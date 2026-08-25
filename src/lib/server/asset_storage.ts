@@ -16,6 +16,7 @@ export type AssetStorageConfig = {
 
 export function create_asset_storage(config: AssetStorageConfig) {
 	const { asset_path: root_path, asset_grace_period_days, asset_id_regex } = config;
+	const orphan_grace_period_ms = asset_grace_period_days * 24 * 60 * 60 * 1000;
 	mkdirSync(root_path, { recursive: true });
 
 	function asset_path(asset_id: string): string { return join(root_path, asset_id); }
@@ -84,13 +85,12 @@ export function create_asset_storage(config: AssetStorageConfig) {
 	}
 	async function delete_orphaned_assets(referenced_asset_ids: Set<string>): Promise<number> {
 		const entries = await readdir(root_path, { withFileTypes: true });
-		const grace_period_ms = asset_grace_period_days * 24 * 60 * 60 * 1000;
 		let deleted = 0;
 		for (const entry of entries) {
 			if (!entry.isFile() || !asset_id_regex.test(entry.name)) continue;
 			if (referenced_asset_ids.has(entry.name)) continue;
 			const { mtimeMs } = await stat(asset_path(entry.name));
-			if (Date.now() - mtimeMs < grace_period_ms) continue;
+			if (Date.now() - mtimeMs < orphan_grace_period_ms) continue;
 			await delete_asset(entry.name);
 			deleted++;
 		}
