@@ -4,7 +4,7 @@ import * as v from 'valibot';
 import slugify from 'slugify';
 import crypto from 'node:crypto';
 import { validate_document } from 'svedit';
-import { db, with_transaction, delete_orphaned_assets, touch_asset } from '#app/server.js';
+import { db, with_transaction, delete_orphaned_assets, touch_asset } from '#app/services.js';
 
 import { snapshot_if_stale } from '#lib/server/db_snapshot.js';
 import { document_schema } from '#app/document_schema.js';

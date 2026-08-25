@@ -63,7 +63,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		const session_id = event.cookies.get(admin_session_cookie_name);
 
 		if (session_id) {
-			const { db } = await import('#app/server.js');
+			const { db } = await import('#app/services.js');
 			const row = db
 				.prepare('SELECT expires FROM sessions WHERE session_id = ?')
 				.get(session_id) as unknown as { expires: number } | undefined;

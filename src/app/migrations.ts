@@ -2,7 +2,7 @@ import { build_migrations } from '#lib/server/migration_registry.js';
 import type { Migration, MigrationModule } from '#lib/server/migration_registry.js';
 import run_migration_runner from '#lib/server/migration_runner.js';
 import seed_initial_documents from './seed_initial_documents.js';
-import { db, with_transaction } from './server.js';
+import { db, with_transaction } from './services.js';
 
 const migration_modules = import.meta.glob('./migrations/*.ts', {
 	eager: true,

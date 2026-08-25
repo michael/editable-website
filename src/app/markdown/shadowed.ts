@@ -3,7 +3,7 @@
 // Kept out of registry.js so that module stays database-free — the markdown
 // route imports it at module load, including in static/Vercel mode.
 
-import { db } from '#app/server.js';
+import { db } from '#app/services.js';
 import { is_reserved_markdown_slug } from './registry.js';
 
 export type ShadowedPage = {

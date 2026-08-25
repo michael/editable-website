@@ -11,7 +11,7 @@ import {
 	create_variant_read_stream,
 	poster_path,
 	variant_path
-} from '#app/server.js';
+} from '#app/services.js';
 import type { RequestHandler } from './$types';
 
 // Served assets are user-uploaded content. `nosniff` prevents a payload from
