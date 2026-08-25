@@ -1043,7 +1043,7 @@ The app-specific Editable surface lives in `src/app`, while `src/routes` contain
 
 Keep stored content and database structure in step with changes to your site.
 
-Migration files in `src/lib/server/migrations` are discovered when SvelteKit builds the server and run automatically when it boots. Their UTC timestamp determines the normal order, and all pending migrations plus their tracking records run in one transaction: either the complete upgrade succeeds or nothing changes.
+Migration files in `src/app/migrations` are discovered when SvelteKit builds the server and run automatically when it boots. Framework migrations use the `editable` namespace and project migrations use the `custom` namespace; their UTC timestamps determine the normal order. All pending migrations plus their tracking records run in one transaction: either the complete upgrade succeeds or nothing changes.
 
 Create a project migration with:
 
@@ -1132,7 +1132,7 @@ A deployment can expose selected repository markdown files as read-only pages re
 
 ### Configuration
 
-Any markdown file in the repository can be mapped to a URL in `src/lib/content_config.ts` (server/build-only — never import it from client code). Reference the file with a `?raw` import, so Vite inlines exactly the mapped files and a missing file fails the build:
+Any markdown file in the repository can be mapped to a URL in `src/app/content_config.ts` (server/build-only — never import it from client code). Reference the file with a `?raw` import, so Vite inlines exactly the mapped files and a missing file fails the build:
 
 ```js
 import manual_md from '../../README.md?raw';

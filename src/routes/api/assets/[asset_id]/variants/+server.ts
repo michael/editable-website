@@ -1,7 +1,7 @@
 import { unlink } from 'node:fs/promises';
 import { error, json } from '@sveltejs/kit';
 import { ASSET_ID_REGEX, VARIANT_WIDTHS_SET } from '#app/config.js';
-import { asset_exists, write_variant, variant_path } from '#lib/server/asset_storage.js';
+import { asset_exists, write_variant, variant_path } from '#app/services.js';
 import { require_admin_session } from '#lib/server/auth.js';
 import type { RequestHandler } from './$types';
 

@@ -27,7 +27,7 @@ function parse_canonical_origin(): URL | null {
 	}
 }
 
-/** Redirect target when the request host is not ORIGIN. See ARCHITECTURE.md → Canonical host. */
+/** Redirect target when the request host is not ORIGIN. */
 function get_canonical_redirect(url: URL): string | null {
 	if (VERCEL || dev || !canonical_origin) return null;
 	if (internal_hostnames.has(url.hostname)) return null;
@@ -41,10 +41,10 @@ function get_canonical_redirect(url: URL): string | null {
 
 export const init: ServerInit = async () => {
 	if (!VERCEL) {
-		const { default: migrate } = await import('#lib/server/migrate.js');
-		migrate();
+		const { run_migrations } = await import('#app/migrations.js');
+		run_migrations();
 
-		const { warn_about_shadowed_pages } = await import('#lib/server/markdown/shadowed.js');
+		const { warn_about_shadowed_pages } = await import('#app/markdown/shadowed.js');
 		warn_about_shadowed_pages();
 	}
 };
@@ -63,7 +63,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		const session_id = event.cookies.get(admin_session_cookie_name);
 
 		if (session_id) {
-			const { default: db } = await import('#lib/server/db.js');
+			const { db } = await import('#app/services.js');
 			const row = db
 				.prepare('SELECT expires FROM sessions WHERE session_id = ?')
 				.get(session_id) as unknown as { expires: number } | undefined;

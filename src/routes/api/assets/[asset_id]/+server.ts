@@ -1,6 +1,6 @@
 import { json, error } from '@sveltejs/kit';
 import { ASSET_ID_REGEX } from '#app/config.js';
-import { delete_asset, asset_exists } from '#lib/server/asset_storage.js';
+import { delete_asset, asset_exists } from '#app/services.js';
 import { require_admin_session } from '#lib/server/auth.js';
 import type { RequestHandler } from './$types';
 

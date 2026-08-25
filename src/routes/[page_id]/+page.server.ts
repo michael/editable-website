@@ -4,9 +4,9 @@ import { VERCEL } from '$app/env/private';
 import {
 	get_markdown_page,
 	get_markdown_page_pathnames
-} from '#lib/server/markdown/registry.js';
-import { convert_markdown } from '#lib/server/markdown/convert.js';
-import { compose_markdown_document } from '#lib/server/markdown/compose.js';
+} from '#app/markdown/registry.js';
+import { convert_markdown } from '#app/markdown/convert.js';
+import { compose_markdown_document } from '#app/markdown/compose.js';
 import type { PageServerLoad } from './$types';
 import type { Document } from 'svedit';
 
@@ -45,7 +45,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	}
 
 	try {
-		const { get_document } = await import('#lib/api.remote.js');
+		const { get_document } = await import('#app/api.remote.js');
 		const result = await get_document(params.page_id);
 
 		if (result.redirect_to_slug) {
@@ -74,6 +74,6 @@ async function get_shared_site_documents() {
 		const { default_nav_document, default_footer_document } = await import('#app/default_site.js');
 		return { nav_document: default_nav_document, footer_document: default_footer_document };
 	}
-	const { get_shared_documents } = await import('#lib/api.remote.js');
+	const { get_shared_documents } = await import('#app/api.remote.js');
 	return await get_shared_documents();
 }

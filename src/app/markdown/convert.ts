@@ -10,8 +10,8 @@
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { MEDIA_DEFAULTS } from '#app/document_schema.js';
 import { document_schema } from '#app/document_schema.js';
-import { select_toc_headings } from './toc.js';
-import type { TocHeading } from './toc.js';
+import { select_toc_headings } from '#lib/server/markdown/toc.js';
+import type { TocHeading } from '#lib/server/markdown/toc.js';
 import type { Document, DocumentNode } from 'svedit';
 
 const SAFE_LINK_SCHEMES = new Set(['http', 'https', 'mailto']);

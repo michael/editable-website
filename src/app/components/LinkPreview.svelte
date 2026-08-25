@@ -19,7 +19,7 @@
 		if (!app.has_backend) return null;
 		if (!href) return null;
 
-		const api_module = await import('#lib/api.remote.js');
+		const api_module = await import('#app/api.remote.js');
 		return await api_module.get_internal_link_preview(href);
 	});
 

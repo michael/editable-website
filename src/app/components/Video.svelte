@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { ASSET_BASE } from '#app/config.js';
 
-	import type { PreviewMediaNode } from '#lib/page_metadata.js';
+	import type { PreviewMediaNode } from '#app/page_metadata.js';
 
 	let { node, editable = false }: { node: PreviewMediaNode; editable?: boolean } = $props();
 

@@ -1,29 +1,35 @@
 import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync } from 'node:fs';
-import { DATA_DIR, DB_PATH } from '#lib/server_config.js';
+import { dirname } from 'node:path';
 
-// Ensure the data directory exists
-mkdirSync(DATA_DIR, { recursive: true });
+export type DatabaseConfig = {
+	data_dir: string;
+	db_path: string;
+};
 
-const db = new DatabaseSync(DB_PATH);
+export type DatabaseConnection = {
+	db: DatabaseSync;
+	with_transaction: <T>(fn: () => T) => T;
+};
 
-// Enable WAL mode for better concurrent read performance
-db.exec('PRAGMA journal_mode=WAL');
+export function create_database({ data_dir, db_path }: DatabaseConfig): DatabaseConnection {
+	mkdirSync(data_dir, { recursive: true });
+	mkdirSync(dirname(db_path), { recursive: true });
 
-/**
- * Run fn inside an immediate transaction, committing on return and
- * rolling back on error.
- */
-export function with_transaction<T>(fn: () => T): T {
-	db.exec('BEGIN IMMEDIATE');
-	try {
-		const result = fn();
-		db.exec('COMMIT');
-		return result;
-	} catch (err) {
-		db.exec('ROLLBACK');
-		throw err;
+	const db = new DatabaseSync(db_path);
+	db.exec('PRAGMA journal_mode=WAL');
+
+	function with_transaction<T>(fn: () => T): T {
+		db.exec('BEGIN IMMEDIATE');
+		try {
+			const result = fn();
+			db.exec('COMMIT');
+			return result;
+		} catch (err) {
+			db.exec('ROLLBACK');
+			throw err;
+		}
 	}
-}
 
-export default db;
+	return { db, with_transaction };
+}

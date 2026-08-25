@@ -1,4 +1,3 @@
-import { MAX_IMAGE_WIDTH, VARIANT_WIDTHS } from '#app/config.js';
 
 export type ProcessedAsset = {
 	original: { blob: Blob; width: number; height: number };
@@ -6,6 +5,8 @@ export type ProcessedAsset = {
 };
 
 export type ProcessOptions = {
+	max_width: number;
+	variant_widths: number[];
 	onStatus?: (status: string) => void;
 };
 
@@ -13,8 +14,8 @@ export type ProcessOptions = {
  * Process an image file off the main thread using a Web Worker.
  * Decodes, resizes, encodes to WebP, and generates all configured size variants.
  */
-export function process_asset(file: File, options: ProcessOptions = {}): Promise<ProcessedAsset> {
-	const { onStatus } = options;
+export function process_asset(file: File, options: ProcessOptions): Promise<ProcessedAsset> {
+	const { max_width, variant_widths, onStatus } = options;
 
 	return new Promise((resolve, reject) => {
 		const worker = new Worker(new URL('./asset_processor.ts', import.meta.url), {
@@ -63,8 +64,8 @@ export function process_asset(file: File, options: ProcessOptions = {}): Promise
 		worker.postMessage({
 			type: 'process',
 			file,
-			max_width: MAX_IMAGE_WIDTH,
-			variant_widths: VARIANT_WIDTHS
+			max_width,
+			variant_widths
 		});
 	});
 }

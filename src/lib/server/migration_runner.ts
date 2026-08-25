@@ -1,11 +1,17 @@
-import migrations from './migrations.js';
-import db, { with_transaction } from './db.js';
+import type { Migration } from './migration_registry.js';
+import type { DatabaseSync } from 'node:sqlite';
 import { plan_pending_migrations } from './migration_plan.js';
 import { create_migration_helpers } from './migration_helpers.js';
-import seed_initial_documents from './seed_initial_documents.js';
 
-export default function migrate() {
-	// Invariants — fail before running anything.
+type SeedInitialDocuments = (context: { db: any }) => unknown;
+
+export default function migrate(
+	migrations: Migration[],
+	seed_initial_documents: SeedInitialDocuments,
+	db: DatabaseSync,
+	with_transaction: <T>(fn: () => T) => T
+) {
+	// Invariants — fail before running.
 	const migration_ids = migrations.map((migration) => migration.id);
 	if (migration_ids.some((id) => typeof id !== 'string' || id.length === 0)) {
 		throw new Error('Every migration must have a non-empty string id.');

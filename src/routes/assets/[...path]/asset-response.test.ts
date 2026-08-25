@@ -9,7 +9,7 @@ const asset_storage = vi.hoisted(() => ({
 	variant_path: vi.fn()
 }));
 
-vi.mock('#lib/server/asset_storage.js', () => asset_storage);
+vi.mock('#app/services.js', () => asset_storage);
 
 import { GET } from './+server.js';
 

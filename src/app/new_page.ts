@@ -1,5 +1,5 @@
 import nanoid from '#app/nanoid.js';
-import { MEDIA_DEFAULTS } from '#app/document_schema.js';
+import { MEDIA_DEFAULTS, document_schema } from '#app/document_schema.js';
 import { clone_subtree_with_new_ids } from '#lib/document_graph.js';
 import type { Document } from 'svedit';
 
@@ -49,6 +49,7 @@ export function create_duplicate_doc(
 		source_document.document_id,
 		source_document.nodes,
 		nanoid,
+		document_schema,
 		shared_roots
 	);
 

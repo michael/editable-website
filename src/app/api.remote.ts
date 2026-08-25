@@ -4,18 +4,18 @@ import * as v from 'valibot';
 import slugify from 'slugify';
 import crypto from 'node:crypto';
 import { validate_document } from 'svedit';
-import db, { with_transaction } from '#lib/server/db.js';
-import { delete_orphaned_assets, touch_asset } from '#lib/server/asset_storage.js';
+import { db, with_transaction, delete_orphaned_assets, touch_asset } from '#app/services.js';
+
 import { snapshot_if_stale } from '#lib/server/db_snapshot.js';
 import { document_schema } from '#app/document_schema.js';
 import { collect_node_ids_in_order } from '#lib/document_graph.js';
-import { is_reserved_markdown_slug } from '#lib/server/markdown/registry.js';
+import { is_reserved_markdown_slug } from '#app/markdown/registry.js';
 import {
 	extract_page_metadata,
 	extract_site_metadata,
 	collect_page_body_node_ids
-} from '#lib/page_metadata.js';
-import type { PreviewMediaNode } from '#lib/page_metadata.js';
+} from '#app/page_metadata.js';
+import type { PreviewMediaNode } from '#app/page_metadata.js';
 import type { Attachment, DocumentNode, NodeSchema, PropertyDefinition } from 'svedit';
 import type { StatementSync } from 'node:sqlite';
 import {
@@ -139,7 +139,7 @@ function collect_node_ids(
 	nodes: Record<string, DocumentNode>,
 	exclude_roots?: Set<string>
 ): Set<string> {
-	return new Set(collect_node_ids_in_order(root_id, nodes, exclude_roots));
+	return new Set(collect_node_ids_in_order(root_id, nodes, document_schema, exclude_roots));
 }
 
 function get_referenced_asset_ids(): Set<string> {
@@ -806,7 +806,7 @@ export const logout_admin = command(v.void(), async () => {
 	const session_id = cookies.get(admin_session_cookie_name);
 
 	if (session_id) {
-		await delete_session(session_id);
+		await delete_session(session_id, db);
 	}
 
 	clear_admin_session_cookie(cookies);
@@ -1017,10 +1017,10 @@ export const save_document = command(save_document_input_schema, async (combined
 	const footer_root_id = page_node.footer;
 
 	const nav_node_ids = nav_root_id
-		? new Set(collect_node_ids_in_order(nav_root_id, all_nodes))
+		? new Set(collect_node_ids_in_order(nav_root_id, all_nodes, document_schema))
 		: new Set<string>();
 	const footer_node_ids = footer_root_id
-		? new Set(collect_node_ids_in_order(footer_root_id, all_nodes))
+		? new Set(collect_node_ids_in_order(footer_root_id, all_nodes, document_schema))
 		: new Set<string>();
 
 	const exclude_roots = new Set<string>();
