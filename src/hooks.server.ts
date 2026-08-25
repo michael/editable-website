@@ -41,8 +41,8 @@ function get_canonical_redirect(url: URL): string | null {
 
 export const init: ServerInit = async () => {
 	if (!VERCEL) {
-		const { default: migrate } = await import('#lib/server/migrate.js');
-		migrate();
+		const { run_migrations } = await import('#app/migrations.js');
+		run_migrations();
 
 		const { warn_about_shadowed_pages } = await import('#lib/server/markdown/shadowed.js');
 		warn_about_shadowed_pages();

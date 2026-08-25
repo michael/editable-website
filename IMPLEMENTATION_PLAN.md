@@ -83,7 +83,7 @@ Convert the whole codebase from JS+JSDoc to TypeScript per the "Language: TypeSc
 
 1. Replace `jsconfig.json` with `tsconfig.json` (same options, `allowJs`/`checkJs` kept during transition) and point the `check` script at it.
 2. Convert the document schema to `src/app/document_schema.ts`, export `type Nodes = NodeMap<typeof document_schema>`, and add a typed `get_svedit_context()` in `src/app/svedit_context.ts` (mirrors the svedit demo app).
-3. Convert `src/lib` modules (root, `client/`, `server/`, `server/markdown/`, `server/migrations/`), translating existing JSDoc annotations to TS syntax.
+3. Convert `src/lib` modules (root, `client/`, `server/`, `server/markdown/`, and framework migrations), translating existing JSDoc annotations to TS syntax.
 4. Convert `src/routes` modules (`hooks.server`, load functions, API endpoints, `app_utils`, `commands.svelte`, `create_session`, helpers).
 5. Convert all Svelte components to `<script lang="ts">`. Node components use the typed-node pattern; internal components get explicit prop types.
 6. Convert tests to `.ts`, update the vitest include glob and `vite.config` filename, then verify `pnpm check`, `pnpm test`, `pnpm build`, and `pnpm lint` all pass.
@@ -1132,7 +1132,7 @@ Current `site_settings` table:
 
 ### 2. `get_document(document_id)` and `save_document(combined_doc)` are already page-id driven
 
-In `src/lib/api.remote.js`, `get_document` already accepts a `document_id`.  
+In `src/app/api.remote.ts`, `get_document` already accepts a `document_id`.
 This is a strong foundation for `/:page_id`.
 
 Current limitations:
@@ -1491,7 +1491,7 @@ This produces a deterministic, editor-friendly page browser:
 
 ### 1.1 Add helper functions in server/data layer
 
-Introduce helpers in `src/lib/api.remote.js` or extracted server modules for:
+Introduce helpers in `src/app/api.remote.ts` or extracted server modules for:
 
 - `get_home_page_id()`
 - `list_page_documents()`
@@ -1790,10 +1790,10 @@ These constraints must be respected during implementation:
 ### Updated files
 
 - `src/routes/+page.svelte`
-- `src/lib/api.remote.js`
+- `src/app/api.remote.ts`
 - `src/app/components/PagesDrawer.svelte`
 - `src/app/components/Overlays.svelte`
-- possibly `src/lib/server/migrations.js` if additional seed/settings support is needed
+- `src/app/migrations.ts` as the application migration entry point, if additional seed/settings support is needed
 
 ## Recommended implementation order
 

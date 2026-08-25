@@ -1,4 +1,4 @@
-import type { Migration } from './migrations.js';
+import type { Migration } from './migration_registry.js';
 
 /**
  * Order pending migrations by timestamp, with narrowly scoped `before`

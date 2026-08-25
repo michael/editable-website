@@ -110,16 +110,13 @@ Requests whose host addresses the server itself (`localhost`, `127.0.0.1`, `::1`
 
 **Remote functions** (`$app/server`) allow server-side functions to be called directly from components via `query()` and `action()`. This replaces traditional REST endpoints for document loading and saving:
 
-- **`src/lib/api.remote.ts`** — server-side functions for document and asset operations, called directly from components. Uses `query()` for reads and `action()` for writes. Access to `locals` (e.g. for auth checks) via `getRequestEvent()`.
+- **`src/app/api.remote.ts`** — application-specific server-side functions for document and asset operations, called directly from components. Uses `query()` for reads and `action()` for writes. Access to `locals` (e.g. for auth checks) via `getRequestEvent()`.
 
-**Server initialization** — `src/hooks.server.ts` exports an `init()` function (SvelteKit's `ServerInit` hook) that runs once on server startup. This is where database migration runs:
+**Server initialization** — `src/hooks.server.ts` exports an `init()` function (SvelteKit's `ServerInit` hook) that runs once on server startup. In full runtime mode it lazily imports the app migration entry point, which combines framework migrations with the project's migrations:
 
-```js
-import migrate from '#lib/server/migrate.js';
-
-export async function init() {
-	migrate();
-}
+```ts
+const { run_migrations } = await import('#app/migrations.js');
+run_migrations();
 ```
 
 The `handle` hook runs on every request and is where session validation and `event.locals` assignment happens.

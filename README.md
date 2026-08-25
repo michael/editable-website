@@ -991,7 +991,7 @@ The app-specific Editable surface lives in `src/app`, while `src/routes` contain
 
 Keep stored content and database structure in step with changes to your site.
 
-Migration files in `src/lib/server/migrations` are discovered when SvelteKit builds the server and run automatically when it boots. Their UTC timestamp determines the normal order, and all pending migrations plus their tracking records run in one transaction: either the complete upgrade succeeds or nothing changes.
+Migration files in `src/app/migrations` are discovered when SvelteKit builds the server and run automatically when it boots. Framework migrations use the `editable` namespace and project migrations use the `custom` namespace; their UTC timestamps determine the normal order. All pending migrations plus their tracking records run in one transaction: either the complete upgrade succeeds or nothing changes.
 
 Create a project migration with:
 
