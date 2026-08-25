@@ -34,12 +34,15 @@ export default function seed_initial_documents({ db }: { db: DatabaseSync }) {
 		now
 	);
 	insert_doc.run(
-		'page_1',
+		default_page_document.document_id,
 		'page',
 		JSON.stringify(reset_media_nodes(default_page_document)),
 		now,
 		now
 	);
 
-	db.prepare('INSERT INTO site_settings (key, value) VALUES (?, ?)').run('home_page_id', 'page_1');
+	db.prepare('INSERT INTO site_settings (key, value) VALUES (?, ?)').run(
+			'home_page_id',
+			default_page_document.document_id
+		);
 }

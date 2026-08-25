@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { setContext } from 'svelte';
+	import { dev } from '$app/env';
 	import { goto, invalidate, refreshAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { Svedit, KeyMapper, Command, define_keymap } from 'svedit';
@@ -329,11 +330,15 @@
 		}
 
 		async execute() {
+			// Keep this log so the saved document can be copied into default_site.js.
+			const doc_json = session.to_json();
+			if (dev) console.log('Saved', doc_json);
+
 			if (!has_backend || !is_admin_mode) {
 				if (has_backend && !is_admin) {
 					edit_for_fun_saved_doc = {
 						document_id: loaded_document_id,
-						doc_json: JSON.stringify(session.to_json())
+						doc_json: JSON.stringify(doc_json)
 					};
 				}
 				session.selection = null;
@@ -395,8 +400,6 @@
 					replace_blob_urls(doc_json.nodes, mapping);
 				}
 
-				// Keep this log so the saved document can be copied into default_site.js.
-				console.log(doc_json);
 
 				const result: { ok: boolean; document_id?: string; slug?: string; created?: boolean } =
 					await save_document({

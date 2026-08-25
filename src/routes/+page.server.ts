@@ -1,4 +1,5 @@
 import { VERCEL } from '$app/env/private';
+import { default_site_document } from '#app/default_site.js';
 import type { PageServerLoad } from './$types';
 
 // The Vercel static build renders the default site once. Node deployments stay
@@ -12,7 +13,7 @@ export const prerender = !!VERCEL;
 export const load: PageServerLoad = async () => {
 	if (VERCEL) {
 		return {
-			document: null,
+			document: default_site_document,
 			slug: null
 		};
 	}
