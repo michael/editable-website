@@ -22,12 +22,13 @@
 	let cancel_button_label = $derived(cancel_command?.label || 'Cancel');
 	let can_browse_pages = $derived(app.has_backend && app.is_admin && !editable);
 	let can_create_pages = $derived(app.has_backend && app.is_admin);
+	let can_manage_current_page = $derived(app.has_backend && app.is_admin && app.can_edit);
 	let can_logout = $derived(app.has_backend && app.is_admin && !editable);
 	let can_edit_document = $derived(
 		(!app.has_backend || app.is_admin) && !app_commands.edit_document.disabled
 	);
 	let can_show_read_toolbar = $derived(
-		can_create_pages || can_browse_pages || can_edit_document || can_logout
+		can_create_pages || can_browse_pages || can_edit_document || can_manage_current_page || can_logout
 	);
 
 	// Home is served from `/` and has no editable slug.
@@ -413,34 +414,36 @@
 										role="menu"
 										aria-label="Page actions"
 									>
-										<button
-											type="button"
-											class="page-actions-item"
-											popovertarget="toolbar-page-actions-menu"
-											popovertargetaction="hide"
-											onclick={duplicate_page}
-											disabled={!can_duplicate_page}
-											role="menuitem">Duplicate page</button
-										>
-										<button
-											type="button"
-											class="page-actions-item"
-											popovertarget="toolbar-page-actions-menu"
-											popovertargetaction="hide"
-											onclick={open_page_url_dialog}
-											disabled={is_home_page}
-											role="menuitem">Edit URL</button
-										>
-										<button
-											type="button"
-											class="page-actions-item"
-											popovertarget="toolbar-page-actions-menu"
-											popovertargetaction="hide"
-											onclick={open_page_delete_dialog}
-											disabled={is_home_page}
-											role="menuitem">Delete page</button
-										>
-										<div class="my-1 h-px bg-(--stroke)" role="separator"></div>
+										{#if can_manage_current_page}
+											<button
+												type="button"
+												class="page-actions-item"
+												popovertarget="toolbar-page-actions-menu"
+												popovertargetaction="hide"
+												onclick={duplicate_page}
+												disabled={!can_duplicate_page}
+												role="menuitem">Duplicate page</button
+											>
+											<button
+												type="button"
+												class="page-actions-item"
+												popovertarget="toolbar-page-actions-menu"
+												popovertargetaction="hide"
+												onclick={open_page_url_dialog}
+												disabled={is_home_page}
+												role="menuitem">Edit URL</button
+											>
+											<button
+												type="button"
+												class="page-actions-item"
+												popovertarget="toolbar-page-actions-menu"
+												popovertargetaction="hide"
+												onclick={open_page_delete_dialog}
+												disabled={is_home_page}
+												role="menuitem">Delete page</button
+											>
+											<div class="my-1 h-px bg-(--stroke)" role="separator"></div>
+										{/if}
 										<button
 											type="button"
 											class="page-actions-item"
