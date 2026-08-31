@@ -11,13 +11,7 @@
 	let padding_top_wide = $derived(!section || section?.is_start);
 	let padding_bottom_wide = $derived(!section || section?.is_end);
 	let grid_cols_class = $derived(
-		item_count <= 1
-			? 'lg:grid-cols-1'
-			: item_count === 2
-				? 'lg:grid-cols-2'
-				: item_count === 3
-					? 'lg:grid-cols-3'
-					: 'lg:grid-cols-3'
+		item_count <= 1 ? 'lg:grid-cols-1' : item_count === 2 ? 'lg:grid-cols-2' : 'lg:grid-cols-3'
 	);
 </script>
 
