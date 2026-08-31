@@ -221,7 +221,11 @@ export const document_schema = define_document_schema({
 	prose_grid: {
 		kind: 'block',
 		properties: {
-			layout: { type: 'string', values: ['plain', 'cards'], default: 'plain' },
+			layout: {
+				type: 'string',
+				values: ['plain', 'plain-centered-text', 'boxed', 'boxed-centered-text'],
+				default: 'plain'
+			},
 			items: {
 				type: 'node_array',
 				node_types: ['prose_grid_item'],
