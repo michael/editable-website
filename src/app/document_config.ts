@@ -56,6 +56,8 @@ import Gallery from './components/Gallery.svelte';
 import GalleryItem from './components/GalleryItem.svelte';
 import DescriptiveGallery from './components/DescriptiveGallery.svelte';
 import DescriptiveGalleryItem from './components/DescriptiveGalleryItem.svelte';
+import Listing from './components/Listing.svelte';
+import ListingItem from './components/ListingItem.svelte';
 import DescriptiveListing from './components/DescriptiveListing.svelte';
 import DescriptiveListingItem from './components/DescriptiveListingItem.svelte';
 import Accordion from './components/Accordion.svelte';
@@ -227,6 +229,8 @@ export const document_config = {
 		gallery_item: GalleryItem,
 		descriptive_gallery: DescriptiveGallery,
 		descriptive_gallery_item: DescriptiveGalleryItem,
+		listing: Listing,
+		listing_item: ListingItem,
 		descriptive_listing: DescriptiveListing,
 		descriptive_listing_item: DescriptiveListingItem,
 		accordion: Accordion,
@@ -955,6 +959,50 @@ export const document_config = {
 			};
 			tr.create(descriptive_gallery_item);
 			tr.insert_nodes([descriptive_gallery_item.id]);
+			tr.set_selection({
+				type: 'node',
+				path: [...tr.selection.path],
+				anchor_offset: tr.selection.focus_offset,
+				focus_offset: tr.selection.focus_offset
+			});
+		},
+
+		listing: function (tr) {
+			const items = [];
+			for (let i = 0; i < 4; i++) {
+				const listing_item = {
+					id: nanoid(),
+					type: 'listing_item',
+					href: '',
+					target: '_self',
+					title: { content: '', marks: [], annotations: [] },
+					meta: { content: '', marks: [], annotations: [] }
+				};
+				tr.create(listing_item);
+				items.push(listing_item.id);
+			}
+
+			const listing = {
+				id: nanoid(),
+				type: 'listing',
+				layout: 'narrow-left',
+				items: { nodes: items, marks: [], annotations: [] }
+			};
+			tr.create(listing);
+			tr.insert_nodes([listing.id]);
+		},
+
+		listing_item: function (tr) {
+			const listing_item = {
+				id: nanoid(),
+				type: 'listing_item',
+				href: '',
+				target: '_self',
+				title: { content: '', marks: [], annotations: [] },
+				meta: { content: '', marks: [], annotations: [] }
+			};
+			tr.create(listing_item);
+			tr.insert_nodes([listing_item.id]);
 			tr.set_selection({
 				type: 'node',
 				path: [...tr.selection.path],
