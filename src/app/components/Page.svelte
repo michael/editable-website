@@ -51,7 +51,12 @@
 
 <Node {path}>
 	<div class="page flex min-h-screen flex-col [--row:0]">
-		<div class="bg-(--background) text-(--foreground)">
+		<div
+			class="bg-(--background) text-(--foreground)"
+			class:sticky={!svedit.editable}
+			class:top-0={!svedit.editable}
+			class:z-40={!svedit.editable}
+		>
 			<Nav path={[...path, 'nav']} />
 		</div>
 		<div class="grow" style="anchor-name: --page-body; --node-caret-boundary: --page-body;">
