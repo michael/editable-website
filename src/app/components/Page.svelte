@@ -12,6 +12,7 @@
 	const svedit = get_svedit_context();
 	const app = get_app_context();
 	let { path }: { path: DocumentPath } = $props();
+	let nav_wrapper_ref: HTMLDivElement | undefined = $state();
 	let head_metadata = $derived(extract_page_metadata(svedit.session.doc));
 	let page_title = $derived(head_metadata.title || 'Untitled page');
 	let canonical_url = $derived(
@@ -19,6 +20,23 @@
 	);
 	let social_image = $derived(get_social_image(head_metadata.preview_media_node));
 	let social_image_url = $derived(social_image ? `${app.origin || ''}${social_image.url}` : null);
+
+	// In view mode the nav is sticky, so offset anchor scrolls (e.g. /manual#quickstart)
+	// by the nav height to prevent content from being covered.
+	$effect(() => {
+		const el = nav_wrapper_ref;
+		if (svedit.editable || !el) return;
+
+		const observer = new ResizeObserver(() => {
+			document.documentElement.style.scrollPaddingTop = `${el.offsetHeight}px`;
+		});
+		observer.observe(el);
+
+		return () => {
+			observer.disconnect();
+			document.documentElement.style.scrollPaddingTop = '';
+		};
+	});
 </script>
 
 <svelte:head>
@@ -52,6 +70,7 @@
 <Node {path}>
 	<div class="page flex min-h-screen flex-col [--row:0]">
 		<div
+			bind:this={nav_wrapper_ref}
 			class="bg-(--background) text-(--foreground)"
 			class:sticky={!svedit.editable}
 			class:top-0={!svedit.editable}
