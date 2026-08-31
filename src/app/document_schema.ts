@@ -71,6 +71,7 @@ export const document_schema = define_document_schema({
 					'gallery',
 					'feature',
 					'descriptive_gallery',
+					'listing',
 					'descriptive_listing',
 					'accordion',
 					'preformatted'
@@ -532,6 +533,37 @@ export const document_schema = define_document_schema({
 				type: 'text',
 				mark_types: MINIMAL_MARKS,
 				allow_newlines: true
+			}
+		}
+	},
+	listing: {
+		kind: 'block',
+		properties: {
+			layout: {
+				type: 'string',
+				values: ['narrow-left', 'narrow-center', 'narrow-right', 'full-width', 'two-columns'],
+				default: 'narrow-left'
+			},
+			items: {
+				type: 'node_array',
+				node_types: ['listing_item']
+			}
+		}
+	},
+	listing_item: {
+		kind: 'block',
+		properties: {
+			href: { type: 'string' },
+			target: { type: 'string', default: '_self' },
+			title: {
+				type: 'text',
+				mark_types: MINIMAL_MARKS,
+				allow_newlines: false
+			},
+			meta: {
+				type: 'text',
+				mark_types: MINIMAL_MARKS,
+				allow_newlines: false
 			}
 		}
 	},

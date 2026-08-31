@@ -366,7 +366,7 @@ page {
 	description: text    // no marks
 	image: image         // preview image for page metadata
 	body: [prose | prose_grid | figure | captioned_figure | gallery | feature |
-	       descriptive_gallery | descriptive_listing | accordion | preformatted]
+	       descriptive_gallery | listing | descriptive_listing | accordion | preformatted]
 	                     // supports section marks for visual grouping
 	nav: nav
 	footer: footer
@@ -454,6 +454,14 @@ descriptive_gallery_item {
 	media: image | video
 	title: text          // single line; marks: emphasis, highlight
 	description: text    // marks: emphasis, highlight
+}
+
+listing { layout: narrow-left | narrow-center | narrow-right | full-width | two-columns,
+          items: [listing_item] }
+listing_item {
+	href, target
+	title: text          // single line; marks: emphasis, highlight
+	meta: text           // single line, optional; marks: emphasis, highlight
 }
 
 descriptive_listing { layout: narrow-left | narrow-center | narrow-right | full-width | two-columns,
