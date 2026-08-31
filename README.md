@@ -800,20 +800,16 @@ Without this step, the site may redirect to its `fly.dev` address and generate t
 
 ### Cache assets with Cloudflare
 
-Caching assets with Cloudflare gives your site a CDN at no extra cost and takes bandwidth and file-serving work off your web server. Your domain must use Cloudflare's DNS — that is, its nameservers must be delegated to Cloudflare — for the proxy to work.
-
-Cloudflare proxies an entire hostname, not individual paths. You can still cache only Editable's assets while leaving pages and API requests uncached. Add your domain to Cloudflare, point its DNS record at your Fly.io app, and enable the proxy (orange cloud) for the record. Then create a **Cache Rule** with:
+Cloudflare provides a free CDN and reduces bandwidth and file-serving work on your web server. Delegate your domain's nameservers to Cloudflare, and enable the proxy (orange cloud) for the DNS records that point to your site. Then add a **Cache Rule** for `/assets/`:
 
 - **Match:** `URI` starts with `/assets/`
 - **Action:** `Eligible for cache`
 - **Browser TTL:** `Respect origin TTL`
 - **Edge TTL:** `Use cache-control header if present, cache request with Cloudflare's default TTL for the response status if not`
 
-Editable's asset responses already use content-addressed URLs and send `Cache-Control: public, max-age=31536000, immutable`, so long-lived caching is safe. Do not add a rule that caches all pages or API routes.
+Editable's content-addressed assets send `Cache-Control: public, max-age=31536000, immutable`, so long-lived caching is safe. Do not cache pages or API routes. Turn off **Email Address Obfuscation** under **Security > Settings**, and be wary of any optimization that rewrites HTML or JavaScript, since changing SvelteKit's server-rendered output can break [hydration](https://svelte.dev/docs/kit/glossary#Hydration).
 
-Turn off Cloudflare's **Email Address Obfuscation** under **Security > Settings**. For the same reason, be wary of any other Cloudflare optimization that rewrites HTML or JavaScript: changing the server-rendered output can break SvelteKit hydration.
-
-You can check the result in the response headers. The first request may show `CF-Cache-Status: MISS`; later requests should show `HIT` when served from the Cloudflare cache.
+Check response headers: the first asset request may show `CF-Cache-Status: MISS`; later requests should show `HIT`.
 
 ### Deploy to a VPS (experimental)
 
