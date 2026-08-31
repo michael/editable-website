@@ -399,7 +399,8 @@ footer_link { href, target, label: text }
 
 prose { layout: narrow-left | narrow-center | narrow-right | narrow-centered-text |
                 wide-left | wide-centered-text, body: [rich content] }
-prose_grid { layout: plain | cards, items: [prose_grid_item] }
+prose_grid { layout: plain | plain-centered-text | boxed | boxed-centered-text,
+             items: [prose_grid_item] }
 prose_grid_item { body: [rich content] }
 
 // the paragraph and heading family share one shape:
