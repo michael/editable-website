@@ -70,6 +70,7 @@ export const document_schema = define_document_schema({
 					'captioned_figure',
 					'gallery',
 					'feature',
+					'titled_gallery',
 					'descriptive_gallery',
 					'listing',
 					'descriptive_listing',
@@ -501,6 +502,33 @@ export const document_schema = define_document_schema({
 				type: 'node',
 				node_types: ['image', 'video'],
 				default_node_type: 'image'
+			}
+		}
+	},
+	titled_gallery: {
+		kind: 'block',
+		properties: {
+			layout: { type: 'string', values: ['cards', 'compact'], default: 'cards' },
+			items: {
+				type: 'node_array',
+				node_types: ['titled_gallery_item']
+			}
+		}
+	},
+	titled_gallery_item: {
+		kind: 'block',
+		properties: {
+			href: { type: 'string' },
+			target: { type: 'string', default: '_self' },
+			media: {
+				type: 'node',
+				node_types: ['image', 'video'],
+				default_node_type: 'image'
+			},
+			title: {
+				type: 'text',
+				mark_types: MINIMAL_MARKS,
+				allow_newlines: false
 			}
 		}
 	},

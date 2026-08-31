@@ -366,7 +366,8 @@ page {
 	description: text    // no marks
 	image: image         // preview image for page metadata
 	body: [prose | prose_grid | figure | captioned_figure | gallery | feature |
-	       descriptive_gallery | listing | descriptive_listing | accordion | preformatted]
+	       titled_gallery | descriptive_gallery | listing | descriptive_listing |
+	       accordion | preformatted]
 	                     // supports section marks for visual grouping
 	nav: nav
 	footer: footer
@@ -447,6 +448,13 @@ supporting_media {
 gallery { layout: mixed | portraits | squares | landscapes | compact-landscapes,
           gallery_items: [gallery_item] }
 gallery_item { href, target, media: image | video }
+
+titled_gallery { layout: cards | compact, items: [titled_gallery_item] }
+titled_gallery_item {
+	href, target
+	media: image | video
+	title: text          // single line; marks: emphasis, highlight
+}
 
 descriptive_gallery { layout: cards | compact, items: [descriptive_gallery_item] }
 descriptive_gallery_item {

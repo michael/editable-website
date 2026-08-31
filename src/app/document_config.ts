@@ -56,6 +56,8 @@ import Gallery from './components/Gallery.svelte';
 import GalleryItem from './components/GalleryItem.svelte';
 import DescriptiveGallery from './components/DescriptiveGallery.svelte';
 import DescriptiveGalleryItem from './components/DescriptiveGalleryItem.svelte';
+import TitledGallery from './components/TitledGallery.svelte';
+import TitledGalleryItem from './components/TitledGalleryItem.svelte';
 import Listing from './components/Listing.svelte';
 import ListingItem from './components/ListingItem.svelte';
 import DescriptiveListing from './components/DescriptiveListing.svelte';
@@ -227,6 +229,8 @@ export const document_config = {
 		feature: Feature,
 		gallery: Gallery,
 		gallery_item: GalleryItem,
+		titled_gallery: TitledGallery,
+		titled_gallery_item: TitledGalleryItem,
 		descriptive_gallery: DescriptiveGallery,
 		descriptive_gallery_item: DescriptiveGalleryItem,
 		listing: Listing,
@@ -899,6 +903,64 @@ export const document_config = {
 			};
 			tr.create(new_gallery_item);
 			tr.insert_nodes([new_gallery_item.id]);
+			tr.set_selection({
+				type: 'node',
+				path: [...tr.selection.path],
+				anchor_offset: tr.selection.focus_offset,
+				focus_offset: tr.selection.focus_offset
+			});
+		},
+
+		titled_gallery: function (tr) {
+			const items = [];
+			for (let i = 0; i < 3; i++) {
+				const image_id = nanoid();
+				const image = {
+					id: image_id,
+					type: 'image',
+					...MEDIA_DEFAULTS
+				};
+				tr.create(image);
+				const titled_gallery_item = {
+					id: nanoid(),
+					type: 'titled_gallery_item',
+					href: '',
+					target: '_self',
+					media: image_id,
+					title: { content: '', marks: [], annotations: [] }
+				};
+				tr.create(titled_gallery_item);
+				items.push(titled_gallery_item.id);
+			}
+
+			const titled_gallery = {
+				id: nanoid(),
+				type: 'titled_gallery',
+				layout: 'cards',
+				items: { nodes: items, marks: [], annotations: [] }
+			};
+			tr.create(titled_gallery);
+			tr.insert_nodes([titled_gallery.id]);
+		},
+
+		titled_gallery_item: function (tr) {
+			const image_id = nanoid();
+			const image = {
+				id: image_id,
+				type: 'image',
+				...MEDIA_DEFAULTS
+			};
+			tr.create(image);
+			const titled_gallery_item = {
+				id: nanoid(),
+				type: 'titled_gallery_item',
+				href: '',
+				target: '_self',
+				media: image_id,
+				title: { content: '', marks: [], annotations: [] }
+			};
+			tr.create(titled_gallery_item);
+			tr.insert_nodes([titled_gallery_item.id]);
 			tr.set_selection({
 				type: 'node',
 				path: [...tr.selection.path],
