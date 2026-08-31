@@ -83,8 +83,8 @@ Svedit is a rich content editor template built with Svelte 5 that uses a graph-b
 
 **Document Model:**
 
-- `Document` - Central document class with state management, transactions, and history
-- `Tras` - Handles atomic operations on the document
+- `Session` - Central class with document state management, transactions, and history
+- `Transaction` - Handles atomic operations on the document
 - Documents are represented as graphs of nodes with properties and references
 
 **Selection:**
@@ -97,15 +97,15 @@ Svedit is a rich content editor template built with Svelte 5 that uses a graph-b
 
 - `Svedit.svelte` - Main editor component with event handling and selection management
 - `NodeArrayProperty.svelte` - Renders containers that hold sequences of nodes
-- `AnnotatedTextProperty.svelte` - Handles annotated text rendering and editing
-- Node components (`Story`, `List`, etc.) - Render specific content types
+- `TextProperty.svelte` - Handles text rendering and editing with inline marks and annotations
+- Node components (`Prose`, `Feature`, etc.) - Render specific content types
 
 ### Schema
 
 Content is defined through schemas that specify:
 
 - Node types and their properties
-- Property types: `string`, `integer`, `boolean`, `string_array`, `annotated_text`, `node`, `node_array`
+- Property types: `string`, `integer`, `number`, `boolean`, `string_array`, `text`, `node`, `node_array`
 - Reference relationships between nodes
 - Default types for node arrays
 
@@ -121,7 +121,7 @@ Content is defined through schemas that specify:
 When adding new properties to a node type:
 
 1. Add to schema in `src/app/document_schema.ts` (`document_schema`)
-2. Add to inserter in `src/app/session.ts` (`inserters`)
+2. Add to inserter in `src/app/document_config.ts` (`inserters`)
 
 ## Available MCP Tools
 

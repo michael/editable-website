@@ -107,8 +107,8 @@ Adjust the colors and fonts directly in `src/app.css`:
 	--image-border-radius: 2.2rem;
 }
 
-/* Type scale — adjust any of these classes to match your style. */
-.display-1 {
+/* Type scale — adjust any of these utilities to match your style. */
+@utility display-1 {
 	@apply font-serif text-6xl leading-tight tracking-tight text-balance lg:text-7xl;
 }
 ```
@@ -129,7 +129,7 @@ Make Svelte components editable by composing a small set of primitives.
 
 The schema defines what the content may contain; the primitives connect that content to the editor; your HTML and CSS decide how it looks.
 
-The Hero above already uses three of them. We'll take it apart, then extend it with composable buttons and editor-controlled media sizing.
+The Hero from [Create a custom node type](#create-a-custom-node-type) already uses three of them. We'll take it apart, then extend it with composable buttons and editor-controlled media sizing.
 
 Editable uses [Svedit](https://github.com/michael/svedit) as its editing engine. This chapter covers the Svedit primitives used to render content, but Svedit's separate API documentation is the reference for schemas, sessions, transactions, transforms, commands, marks, and annotations. Study that API to move beyond adapting Editable's existing patterns and build new editing behavior of your own.
 
@@ -407,7 +407,7 @@ prose_grid_item { body: [rich content] }
 // the paragraph and heading family share one shape:
 paragraph, paragraph_sm, paragraph_lg, paragraph_xl,
 heading_1_xl, heading_1 … heading_4 {
-	layout: default | muted
+	layout: regular | muted
 	content: text      // marks: strong, emphasis, code, highlight, link
 }
 
@@ -436,6 +436,7 @@ figure { layout: wide | narrow-left | narrow-center | narrow-right | flush | ful
          href, target, media: image | video }
 captioned_figure { href, target, media: image | video, caption: text }   // caption marks: strong, emphasis, code, highlight, link
 supporting_media {
+	href, target
 	media_max_width: integer      // 0 = no maximum
 	media_aspect_ratio: number    // 0 = natural ratio
 	media: image | video
@@ -491,7 +492,7 @@ accordion_item {
 feature { layout: image-right | image-left, href, target, media: image | video, body: [rich content] }
 
 button_group { buttons: [button] }
-button { layout: primary | secondary, href, target, label: text }
+button { layout: primary | secondary | link, href, target, label: text }
 ```
 
 **Marks and annotations** — both attach a separate node to a half-open range using the same shape. For text, offsets address character positions; for node arrays, they address child-node positions. `start_offset` is included and `end_offset` is excluded:
@@ -555,7 +556,7 @@ Two knobs in `src/app/config.ts`:
 
 ```js
 export const MAX_VIDEO_RESOLUTION = 1440; // cap on the short side: 1080, 1440, …
-export const MAX_VIDEO_FILESIZE = 100 * 1024 * 1024; // size goal for transcoded videos
+export const MAX_VIDEO_FILESIZE = 50 * 1024 * 1024; // size goal for transcoded videos
 ```
 
 Things worth knowing:
@@ -714,7 +715,7 @@ hero: function (tr) {
 
 Run `pnpm dev`, press `⌘` + `E` and log in. Select a top-level block on a page and cycle node types with `Ctrl` + `Shift` + `↑` / `↓` until it becomes a hero, or insert one fresh at a node gap. `Ctrl` + `Shift` + `←` / `→` flips between your two layouts, paste an image onto the media slot, and `⌘` + `S` saves — undo, selection, and copy/paste all work without any additional code, because they operate on the schema, not on your component.
 
-From here it's just iteration: add calls to action, give editors control over the image size, add a third layout, or ask your AI assistant to do it — the three-file pattern above is all the context it needs. The next chapter makes those extensions while unpacking the primitives used inside the component.
+From here it's just iteration: add calls to action, give editors control over the image size, add a third layout, or ask your AI assistant to do it — the three-file pattern above is all the context it needs. The [Primitives](#primitives) chapter makes those extensions while unpacking the primitives used inside the component.
 
 ## Deploy
 
