@@ -2,6 +2,7 @@
 	import { get_svedit_context } from '#app/svedit_context.js';
 	import { get_app_context } from '#app/app_context.js';
 	import type { DocumentPath } from 'svedit';
+	import type { Nodes } from '#app/document_schema.js';
 	import { TextProperty, Node, NodeArrayProperty } from 'svedit';
 	import Nav from './Nav.svelte';
 	import Footer from './Footer.svelte';
@@ -15,6 +16,12 @@
 	let nav_wrapper_ref: HTMLDivElement | undefined = $state();
 	let head_metadata = $derived(extract_page_metadata(svedit.session.doc));
 	let page_title = $derived(head_metadata.title || 'Untitled page');
+	let page_image: Nodes['image'] = $derived(svedit.session.get([...path, 'image']));
+	let page_image_is_svg = $derived(
+		page_image?.mime_type
+			? page_image.mime_type === 'image/svg+xml'
+			: page_image?.src?.toLowerCase().endsWith('.svg')
+	);
 	let canonical_url = $derived(
 		app.origin && !app.is_new ? `${app.origin}${app.slug ? `/${app.slug}` : '/'}` : null
 	);
@@ -104,6 +111,15 @@
 									class="block body-sm text-(--muted-foreground)"
 								/>
 							</div>
+							{#if page_image_is_svg}
+								<p
+									contenteditable="false"
+									role="alert"
+									class="col-span-2 self-start body-sm text-(--editing)"
+								>
+									This SVG won’t work as a page preview on Google, WhatsApp, and other services. Use a PNG, JPEG, or WebP instead.
+								</p>
+							{/if}
 						</div>
 					</div>
 				</div>
