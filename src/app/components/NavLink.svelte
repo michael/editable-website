@@ -14,7 +14,7 @@
 	<svelte:element
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
-		target={render_as_link ? node.target : undefined}
+		target={render_as_link && node.target !== '_self' ? node.target : undefined}
 		class="nav-link block min-w-max py-2 decoration-transparent underline-offset-2 outline-1 outline-transparent hover:text-(--foreground) hover:underline hover:decoration-(--foreground) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
 	>
 		<TextProperty path={[...path, 'label']} placeholder="Link" />
