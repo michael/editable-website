@@ -91,7 +91,7 @@
 					</a>
 				{:else}
 					<div class="flex h-9 max-w-70 min-w-0 flex-1 items-center px-2 text-sm text-(--muted-foreground)">
-						{error_message || 'No matching page.'}
+						{error_message || internal_page_href}
 					</div>
 				{/if}
 			{:else}
