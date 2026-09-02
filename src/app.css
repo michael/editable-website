@@ -55,6 +55,10 @@
 	--editing-muted: oklch(from var(--editing) l c h / 0.1);
 	/* Foreground color for content displayed on the editing accent. */
 	--editing-foreground: var(--background);
+	/* Shadow for the page body edge above the footer reveal. */
+	--page-reveal-shadow:
+		0 6px 18px -4px color-mix(in oklch, var(--foreground) 18%, transparent),
+		0 2px 5px -1px color-mix(in oklch, var(--foreground) 12%, transparent);
 
 	/* Rounded corners for buttons and navigation items. */
 	--button-border-radius: 3rem;
