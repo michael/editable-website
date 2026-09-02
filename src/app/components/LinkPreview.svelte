@@ -90,9 +90,14 @@
 						</span>
 					</a>
 				{:else}
-					<div class="flex h-9 max-w-70 min-w-0 flex-1 items-center px-2 text-sm text-(--muted-foreground)">
+					<a
+						href={get_preview_href(internal_page_href)}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="flex h-9 max-w-70 min-w-0 flex-1 items-center px-2 text-sm text-(--foreground) outline-1 outline-transparent hover:underline focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
+					>
 						{error_message || internal_page_href}
-					</div>
+					</a>
 				{/if}
 			{:else}
 				<a
