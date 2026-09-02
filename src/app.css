@@ -188,3 +188,48 @@
 		opacity 0.8s cubic-bezier(0, 0, 0.2, 1),
 		transform 0.8s cubic-bezier(0, 0, 0.2, 1);
 }*/
+
+@supports (view-transition-name: root) {
+	@keyframes page_transition_out {
+		from {
+			opacity: 1;
+		}
+
+		to {
+			opacity: 0;
+		}
+	}
+
+	@keyframes page_transition_in {
+		from {
+			opacity: 0;
+		}
+
+		to {
+			opacity: 1;
+		}
+	}
+
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation-duration: 280ms;
+		animation-timing-function: ease-in-out;
+		animation-fill-mode: both;
+	}
+
+	::view-transition-old(root) {
+		animation-name: page_transition_out;
+	}
+
+	::view-transition-new(root) {
+		animation-name: page_transition_in;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		::view-transition-old(root),
+		::view-transition-new(root) {
+			animation-duration: 1ms;
+			animation-delay: 0ms;
+		}
+	}
+}

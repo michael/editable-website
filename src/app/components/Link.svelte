@@ -20,7 +20,7 @@
 <a
 	id={node.id}
 	data-node-id={node.id}
-	{...{ href: get_link_href(node?.href), target: node?.target || '_self' }}
+	{...{ href: get_link_href(node?.href), target: node?.target !== '_self' ? node?.target : undefined }}
 	class="underline underline-offset-2 outline-1 outline-transparent transition-all duration-500 ease-in-out hover:text-(--foreground) hover:decoration-(--foreground) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
 	style="anchor-name: --{serialize_path(path)};">{content}</a
 >
