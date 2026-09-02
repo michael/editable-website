@@ -1,0 +1,115 @@
+<script lang="ts">
+	export type TocEntry = {
+		href: string;
+		title: string;
+	};
+
+	let {
+		source_node_id,
+		entries,
+		nav_height
+	}: { source_node_id: string; entries: TocEntry[]; nav_height: number } = $props();
+
+	let toc_visible = $state(false);
+	let active_entry_index = $state(0);
+	let toc_menu_ref: HTMLDetailsElement | undefined = $state();
+
+	function get_target_element(href: string) {
+		const target_url = new URL(href, window.location.href);
+		if (
+			target_url.origin !== window.location.origin ||
+			target_url.pathname !== window.location.pathname ||
+			!target_url.hash
+		) {
+			return null;
+		}
+
+		return document.getElementById(decodeURIComponent(target_url.hash.slice(1)));
+	}
+
+	function update_toc() {
+		const source_element = document.getElementById(source_node_id);
+		if (!source_element) return;
+
+		toc_visible = source_element.getBoundingClientRect().bottom <= nav_height;
+
+		const page_height = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+		if (window.scrollY + window.innerHeight >= page_height - 5) {
+			active_entry_index = entries.length - 1;
+			return;
+		}
+
+		const scroll_target_offset = 2 * nav_height + 5;
+		let next_active_entry_index = 0;
+		for (let index = 0; index < entries.length; index++) {
+			const target_element = get_target_element(entries[index].href);
+			if (target_element && target_element.getBoundingClientRect().top <= scroll_target_offset) {
+				next_active_entry_index = index;
+			}
+		}
+		active_entry_index = next_active_entry_index;
+	}
+
+	function close_toc_menu() {
+		if (toc_menu_ref) toc_menu_ref.open = false;
+	}
+
+	$effect(() => {
+		source_node_id;
+		entries;
+		nav_height;
+
+		const frame_id = requestAnimationFrame(update_toc);
+		const observer = new ResizeObserver(update_toc);
+		observer.observe(document.body);
+
+		return () => {
+			cancelAnimationFrame(frame_id);
+			observer.disconnect();
+		};
+	});
+</script>
+
+<svelte:window onscroll={update_toc} onresize={update_toc} />
+
+{#if toc_visible}
+	<div
+		class="fixed left-1/2 z-30 -translate-x-1/2 pt-4"
+		style={`top: ${nav_height}px;`}
+		aria-label="Table of contents"
+	>
+		<details
+			bind:this={toc_menu_ref}
+			class="group relative flex h-11.5 max-w-[calc(100vw-2.5rem)] min-w-0 rounded-full border border-(--stroke) bg-(--background) p-1 text-sm leading-5 whitespace-nowrap text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
+		>
+			<summary
+				class="relative flex h-9 min-w-0 cursor-pointer list-none items-center gap-3 rounded-full px-5 whitespace-nowrap hover:bg-(--muted) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
+			>
+				<span class="truncate">{entries[active_entry_index]?.title}</span>
+				<svg
+					class="size-3 shrink-0 text-(--muted-foreground) transition-transform group-open:rotate-180"
+					viewBox="0 0 12 12"
+					fill="none"
+					aria-hidden="true"
+				>
+					<path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.25" />
+				</svg>
+			</summary>
+			<nav
+				class="absolute top-full left-1/2 mt-2 flex max-h-[min(24rem,calc(100vh-6rem))] w-[min(24rem,calc(100vw-2.5rem))] -translate-x-1/2 flex-col overflow-y-auto rounded-2xl border border-(--stroke) bg-(--background) p-1.5 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
+				aria-label="Table of contents"
+			>
+				{#each entries as entry, index (entry.href)}
+					<a
+						href={entry.href}
+						class="block w-full cursor-pointer rounded-xl bg-transparent px-3 py-2.5 text-left text-sm text-(--foreground) outline-none hover:bg-(--muted) focus-visible:bg-(--muted)"
+						aria-current={index === active_entry_index ? 'location' : undefined}
+						onclick={close_toc_menu}
+					>
+						{entry.title}
+					</a>
+				{/each}
+			</nav>
+		</details>
+	</div>
+{/if}

@@ -8,11 +8,13 @@
 	import Footer from './Footer.svelte';
 	import MediaProperty from './MediaProperty.svelte';
 	import { extract_page_metadata, get_social_image } from '#app/page_metadata.js';
+	import TableOfContents, { type TocEntry } from './TableOfContents.svelte';
 
 	const svedit = get_svedit_context();
 	const app = get_app_context();
 	let { path }: { path: DocumentPath } = $props();
 	let nav_wrapper_ref: HTMLDivElement | undefined = $state();
+	let nav_height = $state(0);
 	let scroll_y = $state(0);
 	let head_metadata = $derived(extract_page_metadata(svedit.session.doc));
 	let page_title = $derived(head_metadata.title || 'Untitled page');
@@ -27,6 +29,28 @@
 	);
 	let social_image = $derived(get_social_image(head_metadata.preview_media_node));
 	let social_image_url = $derived(social_image ? `${app.origin || ''}${social_image.url}` : null);
+	let toc_source = $derived.by(() => {
+		const body_node_ids = svedit.session.get([...path, 'body'])?.nodes || [];
+
+		for (let body_index = 0; body_index < Math.min(body_node_ids.length, 3); body_index++) {
+			const body_node = svedit.session.get([...path, 'body', body_index]);
+			if (body_node?.type !== 'listing' && body_node?.type !== 'descriptive_listing') continue;
+
+			const entries: TocEntry[] = [];
+			for (let item_index = 0; item_index < body_node.items.nodes.length; item_index++) {
+				const item = svedit.session.get([...path, 'body', body_index, 'items', item_index]);
+				if (!item?.href) continue;
+				entries.push({
+					href: item.href,
+					title: item.title?.content?.trim() || item.href
+				});
+			}
+
+			if (entries.length > 3) return { source_node_id: body_node.id, entries };
+		}
+
+		return null;
+	});
 
 	// In view mode the nav is sticky, so offset anchor scrolls (e.g. /manual#quickstart)
 	// by twice the nav height to prevent content from being covered and leave some space.
@@ -35,7 +59,9 @@
 		if (svedit.editable || !el) return;
 
 		const update_scroll_padding_top = () => {
-			document.documentElement.style.scrollPaddingTop = `${2 * el.offsetHeight}px`;
+			const next_nav_height = el.offsetHeight;
+			nav_height = next_nav_height;
+			document.documentElement.style.scrollPaddingTop = `${2 * next_nav_height}px`;
 		};
 		const align_hash_target = () => {
 			const target_id = window.location.hash.slice(1);
@@ -60,6 +86,7 @@
 		return () => {
 			cancelAnimationFrame(frame_id);
 			observer.disconnect();
+			nav_height = 0;
 			document.documentElement.style.scrollPaddingTop = '';
 		};
 	});
@@ -107,6 +134,13 @@
 		>
 			<Nav path={[...path, 'nav']} />
 		</div>
+		{#if !svedit.editable && toc_source}
+			<TableOfContents
+				source_node_id={toc_source.source_node_id}
+				entries={toc_source.entries}
+				{nav_height}
+			/>
+		{/if}
 		<div
 			class={[
 				'relative z-10 grow bg-(--background)',
