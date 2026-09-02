@@ -146,7 +146,7 @@
 					{#if item.type === 'nav_link'}
 						<a
 							href={item.href || '#'}
-							target={item.target}
+							target={item.target !== '_self' ? item.target : undefined}
 							class="px-3 py-2 text-3xl text-(--foreground) sm:px-5"
 							onclick={() => (mobile_nav_open = false)}
 						>

@@ -21,7 +21,7 @@
 			? `${media_node.width} / ${media_node.height}`
 			: '1 / 1'}
 		href={render_as_link ? node.href : undefined}
-		target={render_as_link ? node.target : undefined}
+		target={render_as_link && node.target !== '_self' ? node.target : undefined}
 	>
 		<MediaProperty path={[...path, 'media']} />
 	</svelte:element>
