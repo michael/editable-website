@@ -3,7 +3,6 @@
 	import type { DocumentPath } from 'svedit';
 	import { get_svedit_context } from '#app/svedit_context.js';
 	import { NodeArrayProperty, Node } from 'svedit';
-	import { TW_LIMITER, TW_PAGE_PADDING_X } from '#app/tailwind_theme.js';
 
 	const svedit = get_svedit_context();
 	let { path }: { path: DocumentPath } = $props();
@@ -21,9 +20,9 @@
 </script>
 
 <Node {path} class="text-sm text-(--foreground)">
-	<div class={TW_LIMITER}>
+	<div class="mx-auto max-w-7xl">
 		<div
-			class="flex flex-col items-stretch gap-x-10 gap-y-10 pt-48 pb-10 sm:gap-y-14 sm:pt-32 lg:flex-row lg:py-32 {TW_PAGE_PADDING_X}"
+			class="flex flex-col items-stretch gap-x-10 gap-y-10 pt-48 pb-10 sm:gap-y-14 sm:pt-32 lg:flex-row lg:py-32 px-5 sm:px-7"
 		>
 			<NodeArrayProperty
 				class="flex flex-col gap-5 [--row:0] sm:gap-7 lg:w-1/3"

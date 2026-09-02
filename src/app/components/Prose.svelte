@@ -4,7 +4,6 @@
 	import { setContext } from 'svelte';
 	import { Node, NodeArrayProperty } from 'svedit';
 	import type { DocumentPath, NodeArrayAttachmentContext } from 'svedit';
-	import { TW_PAGE_PADDING_X, TW_LIMITER } from '#app/tailwind_theme.js';
 
 	const svedit = get_svedit_context();
 	let {
@@ -38,14 +37,14 @@
 {/snippet}
 
 {#snippet narrow_left()}
-	<div class={TW_LIMITER}>
+	<div class="mx-auto max-w-7xl">
 		<div
 			class={[
 				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
 				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
 			]}
 		>
-			<div class="{TW_PAGE_PADDING_X} max-w-4xl">
+			<div class="px-5 sm:px-7 max-w-4xl">
 				{@render body()}
 			</div>
 		</div>
@@ -53,14 +52,14 @@
 {/snippet}
 
 {#snippet narrow_center()}
-	<div class={TW_LIMITER}>
+	<div class="mx-auto max-w-7xl">
 		<div
 			class={[
 				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
 				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
 			]}
 		>
-			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-4xl">
+			<div class="px-5 sm:px-7 mx-auto max-w-4xl">
 				{@render body()}
 			</div>
 		</div>
@@ -68,14 +67,14 @@
 {/snippet}
 
 {#snippet narrow_right()}
-	<div class={TW_LIMITER}>
+	<div class="mx-auto max-w-7xl">
 		<div
 			class={[
 				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
 				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
 			]}
 		>
-			<div class="{TW_PAGE_PADDING_X} ml-auto max-w-4xl">
+			<div class="px-5 sm:px-7 ml-auto max-w-4xl">
 				{@render body()}
 			</div>
 		</div>
@@ -83,14 +82,14 @@
 {/snippet}
 
 {#snippet narrow_centered_text()}
-	<div class={TW_LIMITER}>
+	<div class="mx-auto max-w-7xl">
 		<div
 			class={[
 				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
 				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
 			]}
 		>
-			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-4xl text-center text-balance">
+			<div class="px-5 sm:px-7 mx-auto max-w-4xl text-center text-balance">
 				{@render body()}
 			</div>
 		</div>
@@ -98,14 +97,14 @@
 {/snippet}
 
 {#snippet wide_left()}
-	<div class={TW_LIMITER}>
+	<div class="mx-auto max-w-7xl">
 		<div
 			class={[
 				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
 				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
 			]}
 		>
-			<div class={TW_PAGE_PADDING_X}>
+			<div class="px-5 sm:px-7">
 				{@render body()}
 			</div>
 		</div>
@@ -113,14 +112,14 @@
 {/snippet}
 
 {#snippet wide_centered_text()}
-	<div class={TW_LIMITER}>
+	<div class="mx-auto max-w-7xl">
 		<div
 			class={[
 				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
 				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
 			]}
 		>
-			<div class="{TW_PAGE_PADDING_X} text-center text-balance">
+			<div class="px-5 sm:px-7 text-center text-balance">
 				{@render body()}
 			</div>
 		</div>
