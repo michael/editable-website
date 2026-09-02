@@ -144,16 +144,17 @@
 		<div
 			class={[
 				'relative z-10 grow bg-(--background)',
-				!svedit.editable && 'shadow-(--page-reveal-shadow)'
+				!svedit.editable && 'lg:shadow-(--page-reveal-shadow)'
 			]}
 			style="anchor-name: --page-body; --node-caret-boundary: --page-body;"
 		>
 			<NodeArrayProperty class="body-node-array" path={[...path, 'body']} />
 		</div>
 		<div
-			class="relative z-0 bg-(--background) text-(--foreground)"
-			class:sticky={!svedit.editable}
-			class:bottom-0={!svedit.editable}
+			class={[
+				'relative z-0 bg-(--background) text-(--foreground)',
+				!svedit.editable && 'lg:sticky lg:bottom-0'
+			]}
 		>
 			<Footer path={[...path, 'footer']} />
 		</div>
