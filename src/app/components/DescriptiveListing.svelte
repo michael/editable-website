@@ -2,7 +2,6 @@
 	import type { Nodes } from '#app/document_schema.js';
 	import { get_svedit_context } from '#app/svedit_context.js';
 	import { Node, NodeArrayProperty } from 'svedit';
-	import { TW_LIMITER, TW_PAGE_PADDING_X } from '#app/tailwind_theme.js';
 
 	const svedit = get_svedit_context();
 	let { path, mark: section = null } = $props();
@@ -14,14 +13,14 @@
 
 {#snippet narrow_left()}
 	<Node class="ew-descriptive-listing" {path}>
-		<div class="{TW_LIMITER} w-full">
+		<div class="mx-auto max-w-7xl w-full">
 			<div
 				class={[
 					padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
 					padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
 				]}
 			>
-				<div class="max-w-4xl {TW_PAGE_PADDING_X} bg-(--background) text-(--foreground)">
+				<div class="max-w-4xl px-5 sm:px-7 bg-(--background) text-(--foreground)">
 					<NodeArrayProperty class="flex flex-col" path={[...path, 'items']} />
 				</div>
 			</div>
@@ -31,14 +30,14 @@
 
 {#snippet narrow_center()}
 	<Node class="ew-descriptive-listing" {path}>
-		<div class="{TW_LIMITER} w-full">
+		<div class="mx-auto max-w-7xl w-full">
 			<div
 				class={[
 					padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
 					padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
 				]}
 			>
-				<div class="mx-auto max-w-4xl {TW_PAGE_PADDING_X} bg-(--background) text-(--foreground)">
+				<div class="mx-auto max-w-4xl px-5 sm:px-7 bg-(--background) text-(--foreground)">
 					<NodeArrayProperty class="flex flex-col" path={[...path, 'items']} />
 				</div>
 			</div>
@@ -48,14 +47,14 @@
 
 {#snippet narrow_right()}
 	<Node class="ew-descriptive-listing" {path}>
-		<div class="{TW_LIMITER} w-full">
+		<div class="mx-auto max-w-7xl w-full">
 			<div
 				class={[
 					padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
 					padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
 				]}
 			>
-				<div class="ml-auto max-w-4xl {TW_PAGE_PADDING_X} bg-(--background) text-(--foreground)">
+				<div class="ml-auto max-w-4xl px-5 sm:px-7 bg-(--background) text-(--foreground)">
 					<NodeArrayProperty class="flex flex-col" path={[...path, 'items']} />
 				</div>
 			</div>
@@ -65,10 +64,10 @@
 
 {#snippet full_width()}
 	<Node class="ew-descriptive-listing" {path}>
-		<div class="{TW_LIMITER} w-full">
+		<div class="mx-auto max-w-7xl w-full">
 			<div
 				class={[
-					TW_PAGE_PADDING_X,
+					'px-5 sm:px-7',
 					padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
 					padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
 				]}
@@ -83,10 +82,10 @@
 
 {#snippet two_columns()}
 	<Node class="ew-descriptive-listing" {path}>
-		<div class="{TW_LIMITER} w-full">
+		<div class="mx-auto max-w-7xl w-full">
 			<div
 				class={[
-					TW_PAGE_PADDING_X,
+					'px-5 sm:px-7',
 					padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
 					padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
 				]}

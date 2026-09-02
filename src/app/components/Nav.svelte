@@ -4,7 +4,6 @@
 	import { get_svedit_context } from '#app/svedit_context.js';
 	import { NodeArrayProperty, Node } from 'svedit';
 	import { slide } from 'svelte/transition';
-	import { TW_LIMITER } from '#app/tailwind_theme.js';
 	import NavMedia from './NavMedia.svelte';
 	import NavButton from './NavButton.svelte';
 
@@ -81,7 +80,7 @@
 <Node {path}>
 	<!-- Desktop nav (visible also during mobile editing) -->
 	<div
-		class="{TW_LIMITER} relative overflow-x-auto overflow-y-hidden"
+		class="mx-auto max-w-7xl relative overflow-x-auto overflow-y-hidden"
 		class:max-lg:hidden={!svedit.editable}
 	>
 		<div class="flex items-center gap-16 px-5 py-5 text-sm sm:px-7">
@@ -104,7 +103,7 @@
 	</div>
 
 	<!-- Mobile nav (visible also during mobile editing) -->
-	<div class="{TW_LIMITER} lg:hidden" class:hidden={svedit.editable}>
+	<div class="mx-auto max-w-7xl lg:hidden" class:hidden={svedit.editable}>
 		<div class="flex items-center gap-16 px-5 py-2 text-sm sm:px-7">
 			{#if mobile_nav_media_path}
 				<NavMedia path={mobile_nav_media_path} />

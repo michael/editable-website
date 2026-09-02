@@ -634,7 +634,7 @@ Create `src/app/components/Hero.svelte`. It reads the node at `path`, renders ea
 	import type { Nodes } from '#app/document_schema.js';
 	import { get_svedit_context } from '#app/svedit_context.js';
 	import MediaProperty from './MediaProperty.svelte';
-	import { TW_LIMITER, TW_PAGE_PADDING_X } from '#app/tailwind_theme.js';
+
 
 	const svedit = get_svedit_context();
 	let { path }: { path: DocumentPath } = $props();
@@ -662,14 +662,14 @@ Create `src/app/components/Hero.svelte`. It reads the node at `path`, renders ea
 {/snippet}
 
 <Node class="ew-hero bg-(--background) text-(--foreground)" {path}>
-	<div class={TW_LIMITER}>
+	<div class="mx-auto max-w-7xl">
 		{#if layout === 'side-by-side'}
-			<div class="{TW_PAGE_PADDING_X} grid items-center gap-10 py-16 md:grid-cols-2">
+			<div class="px-5 sm:px-7 grid items-center gap-10 py-16 md:grid-cols-2">
 				<div>{@render text()}</div>
 				{@render media()}
 			</div>
 		{:else}
-			<div class="{TW_PAGE_PADDING_X} flex flex-col gap-10 py-16 text-center">
+			<div class="px-5 sm:px-7 flex flex-col gap-10 py-16 text-center">
 				<div class="mx-auto max-w-2xl">{@render text()}</div>
 				{@render media()}
 			</div>

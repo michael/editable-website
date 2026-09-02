@@ -2,7 +2,6 @@
 	import type { Nodes } from '#app/document_schema.js';
 	import { get_svedit_context } from '#app/svedit_context.js';
 	import { Node, TextProperty } from 'svedit';
-	import { TW_PAGE_PADDING_X } from '#app/tailwind_theme.js';
 	import { split_code_comments } from '#lib/code_comments.js';
 
 	// De-emphasize // and /* */ comments in code blocks (view mode only).
@@ -23,7 +22,7 @@
 	<div class="mx-auto w-full max-w-7xl">
 		<div
 			class={[
-				`${TW_PAGE_PADDING_X} px-4 sm:px-5 md:px-6`,
+				`px-5 sm:px-7 px-4 sm:px-5 md:px-6`,
 				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
 				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
 			]}

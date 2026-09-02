@@ -2,7 +2,6 @@
 	import type { Nodes } from '#app/document_schema.js';
 	import { get_svedit_context } from '#app/svedit_context.js';
 	import { Node } from 'svedit';
-	import { TW_LIMITER, TW_PAGE_PADDING_X } from '#app/tailwind_theme.js';
 	import MediaProperty from './MediaProperty.svelte';
 
 	const svedit = get_svedit_context();
@@ -32,10 +31,10 @@
 {/snippet}
 
 {#snippet wide()}
-	<div class={TW_LIMITER}>
+	<div class="mx-auto max-w-7xl">
 		<div
 			class={[
-				`figure ${TW_PAGE_PADDING_X}`,
+				`figure px-5 sm:px-7`,
 				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
 				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
 			]}
@@ -46,7 +45,7 @@
 {/snippet}
 
 {#snippet narrow_left()}
-	<div class={TW_LIMITER}>
+	<div class="mx-auto max-w-7xl">
 		<div
 			class={[
 				'figure',
@@ -54,7 +53,7 @@
 				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
 			]}
 		>
-			<div class="{TW_PAGE_PADDING_X} max-w-4xl">
+			<div class="px-5 sm:px-7 max-w-4xl">
 				{@render media_frame()}
 			</div>
 		</div>
@@ -62,7 +61,7 @@
 {/snippet}
 
 {#snippet narrow_center()}
-	<div class={TW_LIMITER}>
+	<div class="mx-auto max-w-7xl">
 		<div
 			class={[
 				'figure',
@@ -70,7 +69,7 @@
 				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
 			]}
 		>
-			<div class="{TW_PAGE_PADDING_X} mx-auto max-w-4xl">
+			<div class="px-5 sm:px-7 mx-auto max-w-4xl">
 				{@render media_frame()}
 			</div>
 		</div>
@@ -78,7 +77,7 @@
 {/snippet}
 
 {#snippet narrow_right()}
-	<div class={TW_LIMITER}>
+	<div class="mx-auto max-w-7xl">
 		<div
 			class={[
 				'figure',
@@ -86,7 +85,7 @@
 				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
 			]}
 		>
-			<div class="{TW_PAGE_PADDING_X} ml-auto max-w-4xl">
+			<div class="px-5 sm:px-7 ml-auto max-w-4xl">
 				{@render media_frame()}
 			</div>
 		</div>
@@ -94,8 +93,8 @@
 {/snippet}
 
 {#snippet flush()}
-	<div class={TW_LIMITER}>
-		<div class="figure {TW_PAGE_PADDING_X} py-0">
+	<div class="mx-auto max-w-7xl">
+		<div class="figure px-5 sm:px-7 py-0">
 			{@render media_frame()}
 		</div>
 	</div>

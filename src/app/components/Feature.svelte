@@ -3,7 +3,6 @@
 	import { get_svedit_context } from '#app/svedit_context.js';
 	import { Node, NodeArrayProperty } from 'svedit';
 	import MediaProperty from './MediaProperty.svelte';
-	import { TW_PAGE_PADDING_X, TW_LIMITER } from '#app/tailwind_theme.js';
 	import { reveal } from '#app/reveal.js';
 
 	const svedit = get_svedit_context();
@@ -43,10 +42,10 @@
 {/snippet}
 
 {#snippet image_right()}
-	<div class={TW_LIMITER}>
+	<div class="mx-auto max-w-7xl">
 		<div
 			class={[
-				`grid grid-cols-1 md:grid-cols-2 ${TW_PAGE_PADDING_X} gap-x-10 gap-y-5 sm:gap-y-7 lg:gap-x-14`,
+				`grid grid-cols-1 md:grid-cols-2 px-5 sm:px-7 gap-x-10 gap-y-5 sm:gap-y-7 lg:gap-x-14`,
 				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
 				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
 			]}
@@ -62,10 +61,10 @@
 {/snippet}
 
 {#snippet image_left()}
-	<div class={TW_LIMITER}>
+	<div class="mx-auto max-w-7xl">
 		<div
 			class={[
-				`grid grid-cols-1 md:grid-cols-2 ${TW_PAGE_PADDING_X} gap-x-10 gap-y-5 sm:gap-y-7 lg:gap-x-14`,
+				`grid grid-cols-1 md:grid-cols-2 px-5 sm:px-7 gap-x-10 gap-y-5 sm:gap-y-7 lg:gap-x-14`,
 				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
 				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
 			]}
