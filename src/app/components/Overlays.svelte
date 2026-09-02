@@ -280,5 +280,6 @@
 		bottom: anchor(bottom);
 		right: anchor(right);
 		pointer-events: auto;
+		z-index: 20;
 	}
 </style>
