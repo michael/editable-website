@@ -14,6 +14,7 @@
 	const app = get_app_context();
 	let { path }: { path: DocumentPath } = $props();
 	let nav_wrapper_ref: HTMLDivElement | undefined = $state();
+	let scroll_y = $state(0);
 	let head_metadata = $derived(extract_page_metadata(svedit.session.doc));
 	let page_title = $derived(head_metadata.title || 'Untitled page');
 	let page_image: Nodes['image'] = $derived(svedit.session.get([...path, 'image']));
@@ -29,22 +30,43 @@
 	let social_image_url = $derived(social_image ? `${app.origin || ''}${social_image.url}` : null);
 
 	// In view mode the nav is sticky, so offset anchor scrolls (e.g. /manual#quickstart)
-	// by the nav height to prevent content from being covered.
+	// by twice the nav height to prevent content from being covered and leave some space.
 	$effect(() => {
 		const el = nav_wrapper_ref;
 		if (svedit.editable || !el) return;
 
-		const observer = new ResizeObserver(() => {
-			document.documentElement.style.scrollPaddingTop = `${el.offsetHeight}px`;
+		const update_scroll_padding_top = () => {
+			document.documentElement.style.scrollPaddingTop = `${2 * el.offsetHeight}px`;
+		};
+		const align_hash_target = () => {
+			const target_id = window.location.hash.slice(1);
+			if (!target_id) return;
+
+			const target = document.getElementById(decodeURIComponent(target_id));
+			if (!target) return;
+
+			const offset = target.getBoundingClientRect().top - 2 * el.offsetHeight;
+			if (Math.abs(offset) > 1) window.scrollBy(0, offset);
+		};
+
+		update_scroll_padding_top();
+		const frame_id = requestAnimationFrame(() => {
+			update_scroll_padding_top();
+			align_hash_target();
 		});
+
+		const observer = new ResizeObserver(update_scroll_padding_top);
 		observer.observe(el);
 
 		return () => {
+			cancelAnimationFrame(frame_id);
 			observer.disconnect();
 			document.documentElement.style.scrollPaddingTop = '';
 		};
 	});
 </script>
+
+<svelte:window bind:scrollY={scroll_y} />
 
 <svelte:head>
 	<title>{page_title}</title>
@@ -75,24 +97,35 @@
 </svelte:head>
 
 <Node {path}>
-	<div class="page flex min-h-screen flex-col [--row:0]">
+	<div class="page flex min-h-screen flex-col bg-(--muted) [--row:0]">
 		<div
 			bind:this={nav_wrapper_ref}
 			class="bg-(--background) text-(--foreground)"
 			class:sticky={!svedit.editable}
 			class:top-0={!svedit.editable}
 			class:z-40={!svedit.editable}
+			class:shadow-sm={!svedit.editable && scroll_y > 0}
 		>
 			<Nav path={[...path, 'nav']} />
 		</div>
-		<div class="grow" style="anchor-name: --page-body; --node-caret-boundary: --page-body;">
+		<div
+			class={[
+				'relative z-10 grow bg-(--background)',
+				!svedit.editable && 'shadow-(--page-reveal-shadow)'
+			]}
+			style="anchor-name: --page-body; --node-caret-boundary: --page-body;"
+		>
 			<NodeArrayProperty class="body-node-array" path={[...path, 'body']} />
 		</div>
-		<div class="bg-(--background) text-(--foreground)">
+		<div
+			class="relative z-0 bg-(--background) text-(--foreground)"
+			class:sticky={!svedit.editable}
+			class:bottom-0={!svedit.editable}
+		>
 			<Footer path={[...path, 'footer']} />
 		</div>
 		{#if svedit.editable}
-			<div class="border-t border-(--stroke) bg-(--muted) text-(--foreground)">
+			<div class="relative z-10 border-t border-(--stroke) bg-(--muted) text-(--foreground)">
 				<div class="mx-auto max-w-xl">
 					<div class="{TW_PAGE_PADDING_X} py-24">
 						<div class="grid w-full max-w-xl grid-cols-[6rem_minmax(0,1fr)] items-center gap-4">
