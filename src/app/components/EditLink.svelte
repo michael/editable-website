@@ -36,14 +36,13 @@
 	let open_in_new_tab = $state(false);
 	let href_input_ref = $state<HTMLInputElement>();
 	let dialog_ref = $state<HTMLDialogElement>();
-	let is_internal_page_href = $derived(is_internal_page_link(href_input_value));
 
 	function is_internal_page_link(href: string) {
 		return href.startsWith('/') && !href.startsWith('//');
 	}
 
 	function get_link_target() {
-		return is_internal_page_href ? '_self' : open_in_new_tab ? '_blank' : '_self';
+		return open_in_new_tab ? '_blank' : '_self';
 	}
 
 	async function get_page_preview(
@@ -154,8 +153,7 @@
 		if (is_open && dialog_ref) {
 			const initial_href = is_creating ? 'https://' : target_node?.href || '';
 			href_input_value = initial_href;
-			open_in_new_tab =
-				!is_creating && !is_internal_page_link(initial_href) && target_node?.target === '_blank';
+			open_in_new_tab = !is_creating && target_node?.target === '_blank';
 
 			if (!dialog_ref.open) {
 				dialog_ref.showModal();
@@ -189,9 +187,6 @@
 					bind:value={href_input_value}
 					placeholder="https://example.com"
 					class="edit-link-input w-72 min-w-0 flex-1 border-0 bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:shadow-none focus:ring-0 focus:outline-none"
-					oninput={(event) => {
-						if (is_internal_page_link(event.currentTarget.value)) open_in_new_tab = false;
-					}}
 					onkeydown={handle_keydown}
 				/>
 				{#if app.has_backend}
@@ -229,7 +224,6 @@
 				<input
 					type="checkbox"
 					bind:checked={open_in_new_tab}
-					disabled={is_internal_page_href}
 					class="h-4 w-4 cursor-pointer rounded-full border-(--stroke)! bg-(--muted)! text-(--editing) ring-0 checked:border-transparent! checked:bg-(--editing)! focus:shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
 				/>
 				<span class="text-sm text-(--foreground)">Open in new tab</span>
