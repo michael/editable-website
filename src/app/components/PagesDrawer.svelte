@@ -3,7 +3,6 @@
 	import { page } from '$app/state';
 
 	import { get_page_browser_data } from '#app/api.remote.js';
-	import type { PageTreeNode } from '#app/api.remote.js';
 	import Media from './Media.svelte';
 	import { get_page_browser } from '#app/page_browser_context.svelte.js';
 	import { get_page_url_dialog } from '#app/page_url_dialog_context.svelte.js';
@@ -625,10 +624,7 @@ Updated: ${updated_at_label}`;
 			const selected_result = visible_results[selected_result_index];
 			if (!selected_result) return;
 
-			page_browser.handle_page_selected({
-				document_id: selected_result.document_id,
-				page_href: selected_result.page_href
-			} as PageTreeNode);
+			page_browser.handle_page_selected(selected_result);
 		}
 	}
 
@@ -727,11 +723,7 @@ Updated: ${updated_at_label}`;
 								data-page-browser-row={node.document_id}
 								title={get_page_title_tooltip(node)}
 								href={get_resolved_page_href(node.page_href)}
-								onclick={(event) =>
-									handle_page_click(event, {
-										document_id: node.document_id,
-										page_href: node.page_href
-									})}
+								onclick={(event) => handle_page_click(event, node)}
 							>
 								<div class="page-illustration tree-illustration" aria-hidden="true">
 									{#if node.preview_media_node?.src}
