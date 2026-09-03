@@ -100,6 +100,7 @@ export type InternalLinkPreview = {
 export type PageTreeNode = {
 	document_id: string;
 	title: string;
+	description: string | null;
 	preview_media_node: PreviewMediaNode | null;
 	page_href: string;
 	slug: string;
@@ -494,6 +495,7 @@ function build_tree_children(
 		children.push({
 			document_id: summary.document_id,
 			title: summary.title,
+			description: summary.description,
 			preview_media_node: summary.preview_media_node,
 			page_href: summary.page_href,
 			slug: summary.slug,
@@ -528,6 +530,7 @@ function build_page_tree_node(
 	return {
 		document_id: summary.document_id,
 		title: summary.title,
+		description: summary.description,
 		preview_media_node: summary.preview_media_node,
 		page_href: summary.page_href,
 		slug: summary.slug,

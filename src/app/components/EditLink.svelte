@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { get_svedit_context } from '#app/svedit_context.js';
 	import { get_app_context } from '#app/app_context.js';
-	import type { DocumentPath } from 'svedit';
+	import { MEDIA_DEFAULTS } from '#app/document_schema.js';
+	import type { InternalLinkPreview } from '#app/api.remote.js';
+	import type { DocumentNode, DocumentPath, Transaction } from 'svedit';
 	import { serialize_path } from 'svedit';
 	import { get_page_browser } from '#app/page_browser_context.svelte.js';
 
@@ -34,21 +36,87 @@
 	let open_in_new_tab = $state(false);
 	let href_input_ref = $state<HTMLInputElement>();
 	let dialog_ref = $state<HTMLDialogElement>();
+	let is_internal_page_href = $derived(is_internal_page_link(href_input_value));
 
-	function save() {
+	function is_internal_page_link(href: string) {
+		return href.startsWith('/') && !href.startsWith('//');
+	}
+
+	function get_link_target() {
+		return is_internal_page_href ? '_self' : open_in_new_tab ? '_blank' : '_self';
+	}
+
+	async function get_page_preview(
+		selected_page?: InternalLinkPreview
+	): Promise<InternalLinkPreview | null> {
+		if (selected_page) return selected_page;
+		if (!app.has_backend || !is_internal_page_link(href_input_value)) return null;
+
+		try {
+			const api_module = await import('#app/api.remote.js');
+			return await api_module.get_internal_link_preview(href_input_value);
+		} catch {
+			return null;
+		}
+	}
+
+	function fill_empty_preview_properties(
+		tr: Transaction,
+		node: DocumentNode,
+		page_preview: InternalLinkPreview
+	) {
+		const text_values = [
+			['title', page_preview.title],
+			['description', page_preview.description]
+		] as const;
+
+		for (const [property_name, content] of text_values) {
+			if (tr.schema[node.type]?.properties[property_name]?.type !== 'text') continue;
+			if (typeof content !== 'string' || !content.trim()) continue;
+			if (tr.get([node.id, property_name])?.content?.trim()) continue;
+
+			tr.set([node.id, property_name], { content, marks: [], annotations: [] });
+		}
+
+		const media_property = tr.schema[node.type]?.properties.media;
+		const preview_media = page_preview.preview_media_node;
+		if (media_property?.type !== 'node' || !preview_media) return;
+		if (tr.get([node.id, 'media'])?.src) return;
+
+		const media_node = {
+			...MEDIA_DEFAULTS,
+			...preview_media,
+			id: tr.generate_id(),
+			type: media_property.node_types?.includes(preview_media.type) ? preview_media.type : 'image',
+			mime_type: preview_media.mime_type ?? '',
+			object_fit: 'cover'
+		};
+		tr.create(media_node);
+		tr.set([node.id, 'media'], media_node.id);
+	}
+
+	async function save(selected_page?: InternalLinkPreview) {
+		const node_to_update =
+			!is_creating && target_node && 'href' in target_node ? target_node : null;
+		const page_preview =
+			node_to_update && node_to_update.href !== href_input_value
+				? await get_page_preview(selected_page)
+				: null;
+
 		if (is_creating) {
 			if (href_input_value) {
 				svedit.session.apply(
 					svedit.session.tr.toggle_mark('link', {
 						href: href_input_value,
-						target: open_in_new_tab ? '_blank' : '_self'
+						target: get_link_target()
 					})
 				);
 			}
-		} else if (target_node && 'href' in target_node) {
+		} else if (node_to_update) {
 			const tr = svedit.session.tr;
-			tr.set([target_node.id, 'href'], href_input_value);
-			tr.set([target_node.id, 'target'], open_in_new_tab ? '_blank' : '_self');
+			tr.set([node_to_update.id, 'href'], href_input_value);
+			tr.set([node_to_update.id, 'target'], get_link_target());
+			if (page_preview) fill_empty_preview_properties(tr, node_to_update, page_preview);
 			svedit.session.apply(tr);
 		}
 		close();
@@ -84,8 +152,10 @@
 
 	$effect(() => {
 		if (is_open && dialog_ref) {
-			href_input_value = is_creating ? 'https://' : target_node?.href || '';
-			open_in_new_tab = is_creating ? false : target_node?.target === '_blank';
+			const initial_href = is_creating ? 'https://' : target_node?.href || '';
+			href_input_value = initial_href;
+			open_in_new_tab =
+				!is_creating && !is_internal_page_link(initial_href) && target_node?.target === '_blank';
 
 			if (!dialog_ref.open) {
 				dialog_ref.showModal();
@@ -119,19 +189,22 @@
 					bind:value={href_input_value}
 					placeholder="https://example.com"
 					class="edit-link-input w-72 min-w-0 flex-1 border-0 bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:shadow-none focus:ring-0 focus:outline-none"
+					oninput={(event) => {
+						if (is_internal_page_link(event.currentTarget.value)) open_in_new_tab = false;
+					}}
 					onkeydown={handle_keydown}
 				/>
 				{#if app.has_backend}
 					<button
 						type="button"
-						class="mr-0.5 flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--foreground) outline-none transition-all duration-150 hover:bg-(--muted) focus-visible:shadow-[inset_0_0_0_1px_var(--editing)] active:translate-y-px active:scale-95 active:bg-(--muted)"
+						class="mr-0.5 flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--foreground) transition-all duration-150 outline-none hover:bg-(--muted) focus-visible:shadow-[inset_0_0_0_1px_var(--editing)] active:translate-y-px active:scale-95 active:bg-(--muted)"
 						title="Select page"
 						aria-label="Select page"
 						onclick={() => {
 							page_browser.open_select((page) => {
 								href_input_value = page.page_href || '/';
 								open_in_new_tab = false;
-								save();
+								void save(page);
 							});
 						}}
 					>
@@ -156,14 +229,15 @@
 				<input
 					type="checkbox"
 					bind:checked={open_in_new_tab}
-					class="h-4 w-4 cursor-pointer rounded-full border-(--stroke)! bg-(--muted)! text-(--editing) ring-0 checked:border-transparent! checked:bg-(--editing)! focus:ring-0 focus:ring-offset-0 focus:shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
+					disabled={is_internal_page_href}
+					class="h-4 w-4 cursor-pointer rounded-full border-(--stroke)! bg-(--muted)! text-(--editing) ring-0 checked:border-transparent! checked:bg-(--editing)! focus:shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
 				/>
 				<span class="text-sm text-(--foreground)">Open in new tab</span>
 			</label>
 			<button
 				type="button"
 				class="inline-flex h-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent px-3 text-sm font-medium text-(--editing) outline-1 outline-transparent hover:bg-(--editing-muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
-				onclick={save}
+				onclick={() => void save()}
 			>
 				{is_new_link ? 'Create' : 'Update'}
 			</button>
