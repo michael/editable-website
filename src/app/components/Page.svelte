@@ -123,7 +123,7 @@
 </svelte:head>
 
 <Node {path}>
-	<div class="page flex min-h-screen flex-col bg-(--muted) [--row:0]">
+	<div class="page flex min-h-screen flex-col [--row:0]">
 		<div
 			bind:this={nav_wrapper_ref}
 			class="bg-(--background) text-(--foreground)"
@@ -141,25 +141,14 @@
 				{nav_height}
 			/>
 		{/if}
-		<div
-			class={[
-				'relative z-10 grow bg-(--background)',
-				!svedit.editable && 'lg:shadow-(--page-reveal-shadow)'
-			]}
-			style="anchor-name: --page-body; --node-caret-boundary: --page-body;"
-		>
+		<div class="grow" style="anchor-name: --page-body; --node-caret-boundary: --page-body;">
 			<NodeArrayProperty class="body-node-array" path={[...path, 'body']} />
 		</div>
-		<div
-			class={[
-				'relative z-0 bg-(--background) text-(--foreground)',
-				!svedit.editable && 'lg:sticky lg:bottom-0'
-			]}
-		>
+		<div class="bg-(--background) text-(--foreground)">
 			<Footer path={[...path, 'footer']} />
 		</div>
 		{#if svedit.editable}
-			<div class="relative z-10 border-t border-(--stroke) bg-(--muted) text-(--foreground)">
+			<div class="border-t border-(--stroke) bg-(--muted) text-(--foreground)">
 				<div class="mx-auto max-w-xl">
 					<div class="px-5 sm:px-7 py-24">
 						<div class="grid w-full max-w-xl grid-cols-[6rem_minmax(0,1fr)] items-center gap-4">
