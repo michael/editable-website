@@ -333,9 +333,16 @@ Updated: ${updated_at_label}`;
 		close_shadowed_info();
 	}
 
-	function handle_page_click(event, item) {
+	function select_page(document_id) {
+		const selected_page = flatten_page_forest_results(page_forest).find(
+			(page_node) => page_node.document_id === document_id
+		);
+		if (selected_page) page_browser.handle_page_selected(selected_page);
+	}
+
+	function handle_page_click(event, document_id) {
 		event.preventDefault();
-		page_browser.handle_page_selected(item);
+		select_page(document_id);
 	}
 
 	function get_menu_anchor_name(document_id) {
@@ -569,11 +576,7 @@ Updated: ${updated_at_label}`;
 		const results = [];
 
 		for (const node of nodes ?? []) {
-			results.push({
-				document_id: node.document_id,
-				page_href: node.page_href,
-				title: node.title
-			});
+			results.push(node);
 
 			for (const child of node.children ?? []) {
 				results.push(...flatten_page_forest_results([child]));
@@ -624,7 +627,7 @@ Updated: ${updated_at_label}`;
 			const selected_result = visible_results[selected_result_index];
 			if (!selected_result) return;
 
-			page_browser.handle_page_selected(selected_result);
+			select_page(selected_result.document_id);
 		}
 	}
 
@@ -723,7 +726,7 @@ Updated: ${updated_at_label}`;
 								data-page-browser-row={node.document_id}
 								title={get_page_title_tooltip(node)}
 								href={get_resolved_page_href(node.page_href)}
-								onclick={(event) => handle_page_click(event, node)}
+								onclick={(event) => handle_page_click(event, node.document_id)}
 							>
 								<div class="page-illustration tree-illustration" aria-hidden="true">
 									{#if node.preview_media_node?.src}
