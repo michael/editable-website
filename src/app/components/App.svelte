@@ -314,9 +314,7 @@
 			}
 
 			const saved_doc_json =
-				has_backend &&
-				!is_admin &&
-				edit_for_fun_saved_doc?.document_id === loaded_document_id
+				has_backend && !is_admin && edit_for_fun_saved_doc?.document_id === loaded_document_id
 					? edit_for_fun_saved_doc.doc_json
 					: initial_doc_json;
 			session = create_session(JSON.parse(saved_doc_json));
@@ -400,7 +398,6 @@
 					replace_blob_urls(doc_json.nodes, mapping);
 				}
 
-
 				const result: { ok: boolean; document_id?: string; slug?: string; created?: boolean } =
 					await save_document({
 						...doc_json,
@@ -427,17 +424,20 @@
 				}
 
 				session.selection = null;
-				this.context.editable = false;
-
-				invalidate_page_browser_data();
-				await invalidate('app:site_metadata');
 
 				// When a new document has been created, return and redirect to the new url
 				if (result?.created && result.document_id && result.slug) {
 					current_is_new = false;
-					await goto(resolve('/[page_id]', { page_id: result.slug }), { replaceState: true });
+					await goto(resolve('/[page_id]', { page_id: result.slug }), {
+						replaceState: true,
+						invalidate: ['app:site_metadata']
+					});
 					return;
 				}
+
+				this.context.editable = false;
+				invalidate_page_browser_data();
+				await invalidate('app:site_metadata');
 
 				// Display "saved" message only if saving took longer than 3 seconds
 				if (Date.now() - save_start > 3000) {
