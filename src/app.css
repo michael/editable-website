@@ -1,6 +1,13 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 
+/* Resolve relative radius units where assigned, so nested controls inherit the same length. */
+@property --button-border-radius {
+	syntax: '<length>';
+	inherits: true;
+	initial-value: 0px;
+}
+
 @font-face {
 	font-family: 'Inter';
 	src: url('/fonts/InterVariable.woff2') format('woff2');
@@ -57,7 +64,7 @@
 	--editing-foreground: var(--background);
 
 	/* Rounded corners for controls; reference pills and popovers derive their shape from this. */
-	--button-border-radius: 3rem;
+	--button-border-radius: 0rem;
 	/* Rounded corners for images. */
 	--image-border-radius: 2.2rem;
 }

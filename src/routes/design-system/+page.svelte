@@ -291,7 +291,8 @@
 			</div>
 			<!--
 Shared pill shell: solid background, stroke border, token-based rounding, 4px padding and 4px gaps.
-Shell radius uses --button-border-radius; inner radius subtracts padding plus border, clamped at zero.
+The registered --button-border-radius resolves to one inherited length, including em values.
+Shell radius uses that length; inner radius subtracts padding plus border, clamped at zero.
 No shadows, transparency, blur, or movement. The shell is a surface, not a clickable control.
 Controls are 36px tall, or 44px for coarse pointers. Labels use 14px medium text.
 Reuse the editor's existing SVG paths. Icons use currentColor and retain their native stroke weight.
@@ -527,14 +528,14 @@ and menu keyboard behavior belong to the application; do not add menu roles with
 					<h3 class="text-sm text-(--muted-foreground)">Table of contents</h3>
 					<!--
 Use navigation links rather than menu actions. Labels wrap instead of truncating.
-The bounded scroller includes focus clearance in its padding; its shell retains the outer shape.
+The shell itself scrolls, with padding for focus clearance; do not add another rounded clipping layer.
 These destinations are real sections on this reference page. Application contents use page headings.
 -->
 					<nav
 						aria-label="Design system contents"
-						class="w-96 max-w-full rounded-[min(1rem,var(--button-border-radius))] border border-(--stroke) bg-(--background)"
+						class="max-h-80 w-96 max-w-full overflow-y-auto overscroll-contain rounded-[min(1rem,var(--button-border-radius))] border border-(--stroke) bg-(--background) p-1"
 					>
-						<ul class="max-h-80 list-none overflow-y-auto overscroll-contain rounded-[inherit] p-1">
+						<ul class="list-none">
 							<li>
 								<a
 									href="#typography"
