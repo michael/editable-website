@@ -14,8 +14,8 @@
 		media_node.width && media_node.height ? `${media_node.width} / ${media_node.height}` : undefined
 	);
 	let feature_layout = $derived(node.layout === 'image-left' ? 'image-left' : 'image-right');
-	let padding_top_wide = $derived(!section || section?.is_start);
-	let padding_bottom_wide = $derived(!section || section?.is_end);
+	let padding_top_generous = $derived(!section || section.is_start);
+	let padding_bottom_generous = $derived(!section || section.is_end);
 </script>
 
 <!-- Primitives -->
@@ -45,9 +45,9 @@
 	<div class="mx-auto max-w-7xl">
 		<div
 			class={[
-				`grid grid-cols-1 md:grid-cols-2 px-5 sm:px-7 gap-x-10 gap-y-5 sm:gap-y-7 lg:gap-x-14`,
-				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
-				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+				`grid grid-cols-1 gap-x-10 gap-y-5 px-5 sm:gap-y-7 sm:px-7 md:grid-cols-2 lg:gap-x-14`,
+				padding_top_generous ? 'pt-block-generous' : 'pt-block-compact',
+				padding_bottom_generous ? 'pb-block-generous' : 'pb-block-compact'
 			]}
 		>
 			<div class="flex flex-col justify-center pb-0" use:reveal>
@@ -64,9 +64,9 @@
 	<div class="mx-auto max-w-7xl">
 		<div
 			class={[
-				`grid grid-cols-1 md:grid-cols-2 px-5 sm:px-7 gap-x-10 gap-y-5 sm:gap-y-7 lg:gap-x-14`,
-				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
-				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+				`grid grid-cols-1 gap-x-10 gap-y-5 px-5 sm:gap-y-7 sm:px-7 md:grid-cols-2 lg:gap-x-14`,
+				padding_top_generous ? 'pt-block-generous' : 'pt-block-compact',
+				padding_bottom_generous ? 'pb-block-generous' : 'pb-block-compact'
 			]}
 		>
 			<div class="max-md:order-2" use:reveal={{ delay: 200 }}>

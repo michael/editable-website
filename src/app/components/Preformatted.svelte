@@ -11,8 +11,8 @@
 	const svedit = get_svedit_context();
 	let { path, mark: section = null } = $props();
 	let node: Nodes['preformatted'] = $derived(svedit.session.get(path));
-	let padding_top_wide = $derived(!section || section?.is_start);
-	let padding_bottom_wide = $derived(!section || section?.is_end);
+	let padding_top_generous = $derived(!section || section.is_start);
+	let padding_bottom_generous = $derived(!section || section.is_end);
 	let comment_segments = $derived(
 		dim_code_comments && !svedit.editable ? split_code_comments(node.content?.content ?? '') : null
 	);
@@ -22,9 +22,9 @@
 	<div class="mx-auto w-full max-w-7xl">
 		<div
 			class={[
-				`px-5 sm:px-7 px-4 sm:px-5 md:px-6`,
-				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
-				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+				`px-4 px-5 sm:px-5 sm:px-7 md:px-6`,
+				padding_top_generous ? 'pt-block-generous' : 'pt-block-compact',
+				padding_bottom_generous ? 'pb-block-generous' : 'pb-block-compact'
 			]}
 		>
 			<div

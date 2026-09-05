@@ -10,8 +10,8 @@
 	let media_node = $derived(svedit.session.get([...path, 'media']));
 	let render_as_link = $derived(!svedit.editable && node.href);
 	let figure_layout = $derived(node.layout || 'wide');
-	let padding_top_wide = $derived(!section || section?.is_start);
-	let padding_bottom_wide = $derived(!section || section?.is_end);
+	let padding_top_generous = $derived(!section || section.is_start);
+	let padding_bottom_generous = $derived(!section || section.is_end);
 	let media_aspect_ratio = $derived(
 		media_node?.width && media_node?.height ? `${media_node.width} / ${media_node.height}` : '2/1'
 	);
@@ -35,8 +35,8 @@
 		<div
 			class={[
 				`figure px-5 sm:px-7`,
-				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
-				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+				padding_top_generous ? 'pt-block-generous' : 'pt-block-compact',
+				padding_bottom_generous ? 'pb-block-generous' : 'pb-block-compact'
 			]}
 		>
 			{@render media_frame()}
@@ -49,11 +49,11 @@
 		<div
 			class={[
 				'figure',
-				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
-				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+				padding_top_generous ? 'pt-block-generous' : 'pt-block-compact',
+				padding_bottom_generous ? 'pb-block-generous' : 'pb-block-compact'
 			]}
 		>
-			<div class="px-5 sm:px-7 max-w-4xl">
+			<div class="max-w-4xl px-5 sm:px-7">
 				{@render media_frame()}
 			</div>
 		</div>
@@ -65,11 +65,11 @@
 		<div
 			class={[
 				'figure',
-				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
-				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+				padding_top_generous ? 'pt-block-generous' : 'pt-block-compact',
+				padding_bottom_generous ? 'pb-block-generous' : 'pb-block-compact'
 			]}
 		>
-			<div class="px-5 sm:px-7 mx-auto max-w-4xl">
+			<div class="mx-auto max-w-4xl px-5 sm:px-7">
 				{@render media_frame()}
 			</div>
 		</div>
@@ -81,11 +81,11 @@
 		<div
 			class={[
 				'figure',
-				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
-				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+				padding_top_generous ? 'pt-block-generous' : 'pt-block-compact',
+				padding_bottom_generous ? 'pb-block-generous' : 'pb-block-compact'
 			]}
 		>
-			<div class="px-5 sm:px-7 ml-auto max-w-4xl">
+			<div class="ml-auto max-w-4xl px-5 sm:px-7">
 				{@render media_frame()}
 			</div>
 		</div>
@@ -94,7 +94,7 @@
 
 {#snippet flush()}
 	<div class="mx-auto max-w-7xl">
-		<div class="figure px-5 sm:px-7 py-0">
+		<div class="figure px-5 py-0 sm:px-7">
 			{@render media_frame()}
 		</div>
 	</div>
