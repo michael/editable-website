@@ -8,7 +8,9 @@
 	Keep examples explicit; adapt semantics and behavior in the consuming code.
 	Colors, fonts, and corner radius come from app.css.
 -->
-<main class="min-h-screen bg-(--background) px-6 py-16 font-sans text-(--foreground) sm:px-10">
+<main
+	class="min-h-screen bg-(--background) px-6 py-16 font-sans text-(--foreground) antialiased sm:px-10"
+>
 	<div class="mx-auto max-w-4xl space-y-16">
 		<header class="space-y-3">
 			<h1 class="text-3xl font-medium tracking-tight">Design system</h1>
@@ -149,11 +151,12 @@
 					<h3 class="text-sm text-(--muted-foreground)">Code · code</h3>
 					<!--
 						Scale code relative to its surrounding text, with a foreground-derived surface.
+						Use the shared button radius for the inline code surface.
 						Clone the background and padding across wrapped lines. Long identifiers may break.
 					-->
 					<p class="max-w-prose body-base">
 						Use <code
-							class="rounded bg-(--foreground)/8 box-decoration-clone px-1 py-0.5 font-mono text-[0.9em] font-normal wrap-anywhere"
+							class="rounded-(--button-border-radius) bg-(--foreground)/8 box-decoration-clone px-1 py-0.5 font-mono text-[0.9em] font-normal wrap-anywhere"
 							>font-medium</code
 						>
 						for button labels.
@@ -282,6 +285,99 @@
 				</div>
 			</div>
 		</section>
+
+		<section id="navigation" aria-labelledby="navigation-heading" class="space-y-8">
+			<div class="space-y-2">
+				<h2 id="navigation-heading" class="text-xl font-medium">Navigation</h2>
+				<p class="text-sm leading-relaxed text-(--muted-foreground)">
+					A placeholder logo, main links, and small primary and secondary buttons.
+				</p>
+			</div>
+
+			<!--
+				Equal outer columns keep the main links centered on wide screens.
+				On smaller screens, the links wrap onto their own row beneath the brand and actions.
+				Example links point to local specimens; consuming pages provide their own destinations.
+				Action buttons reuse the small button recipes and do not execute application commands.
+			-->
+			<nav
+				aria-label="Example main navigation"
+				class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-6 gap-y-4 py-4 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
+			>
+				<a
+					href="#navigation"
+					class="inline-flex min-h-9 min-w-0 flex-wrap items-center gap-2 justify-self-start text-xl font-medium tracking-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) pointer-coarse:min-h-11"
+				>
+					<svg class="size-8 shrink-0" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+						<circle cx="16" cy="16" r="16" class="fill-(--foreground)" />
+						<path
+							d="M11 10H21M11 16H19M11 22H21"
+							class="stroke-(--background)"
+							stroke-width="3"
+							stroke-linecap="round"
+						/>
+					</svg>
+					Editable
+				</a>
+				<ul
+					class="col-span-2 row-start-2 flex flex-wrap items-center gap-x-6 gap-y-1 md:col-span-1 md:col-start-2 md:row-start-1"
+				>
+					<li>
+						<a
+							href="#typography"
+							class="inline-flex min-h-9 items-center py-1.5 text-sm leading-5 text-(--foreground) underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:underline pointer-coarse:min-h-11"
+							>Product</a
+						>
+					</li>
+					<li>
+						<a
+							href="#buttons-small"
+							class="inline-flex min-h-9 items-center py-1.5 text-sm leading-5 text-(--foreground) underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:underline pointer-coarse:min-h-11"
+							>Quickstart</a
+						>
+					</li>
+					<li>
+						<a
+							href="#formatting"
+							class="inline-flex min-h-9 items-center py-1.5 text-sm leading-5 text-(--foreground) underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:underline pointer-coarse:min-h-11"
+							>Manual</a
+						>
+					</li>
+					<li>
+						<a
+							href="#pills"
+							class="inline-flex min-h-9 items-center py-1.5 text-sm leading-5 text-(--foreground) underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:underline pointer-coarse:min-h-11"
+							>Contact</a
+						>
+					</li>
+				</ul>
+				<div
+					class="col-start-2 row-start-1 flex flex-wrap items-center justify-end gap-2 md:col-start-3"
+				>
+					<button
+						type="button"
+						class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-transparent bg-(--accent) px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--accent-foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_20%)] enabled:active:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_30%)] disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
+						>Try</button
+					>
+					<button
+						type="button"
+						class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center gap-1.5 rounded-(--button-border-radius) border border-(--stroke) bg-transparent px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--foreground)/5 enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
+					>
+						Install
+						<svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+							<path
+								d="M12 3V16M7 11L12 16L17 11M5 21H19"
+								stroke="currentColor"
+								stroke-width="1.5"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+						</svg>
+					</button>
+				</div>
+			</nav>
+		</section>
+
 		<section id="pills" aria-labelledby="pills-heading" class="space-y-10">
 			<div class="space-y-2">
 				<h2 id="pills-heading" class="text-xl font-medium">Editor pills</h2>
