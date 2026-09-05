@@ -134,17 +134,30 @@
 					<!--
 						Prose links have no padding, minimum size, or flex display.
 						Inherit the surrounding text color and retain a visible underline.
-						Use underline thickness for hover feedback and the shared editing outline for focus.
+						Scale underline thickness and offset with the font size using em units.
+						At 16px, thickness is 1px normally and 2px on hover or press.
+						Use the shared editing outline for keyboard focus.
 					-->
 					<p class="max-w-prose body-base">
 						Explore the
 						<a
 							href="#typography"
-							class="underline decoration-1 underline-offset-2 hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:decoration-2"
+							class="underline decoration-[0.0625em] underline-offset-[0.125em] hover:decoration-[0.125em] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:decoration-[0.125em]"
 							>typography styles</a
 						>
 						to see how the scale works.
 					</p>
+				</div>
+
+				<div id="format-link-display" class="space-y-3">
+					<p class="text-sm text-(--muted-foreground)">Link · display-1</p>
+					<h3 class="display-1">
+						Make room for <a
+							href="#typography"
+							class="underline decoration-[0.0625em] underline-offset-[0.125em] hover:decoration-[0.125em] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:decoration-[0.125em]"
+							>what matters</a
+						>.
+					</h3>
 				</div>
 
 				<div id="format-code" class="space-y-3">
@@ -535,7 +548,7 @@ The local href is a specimen destination. Production links retain their own dest
 					>
 						<a
 							href="#pills"
-							class="inline-flex min-h-9 max-w-70 min-w-0 items-center gap-2 rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] pr-3 text-sm leading-5 font-medium hover:bg-(--muted) hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
+							class="inline-flex min-h-9 max-w-70 min-w-0 items-center gap-2 rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] pr-3 text-sm leading-5 font-medium hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
 							><span
 								aria-hidden="true"
 								class="inline-flex size-9 shrink-0 items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] bg-(--muted) text-xs font-medium text-(--muted-foreground)"
