@@ -139,6 +139,18 @@ The exact markup and classes live in `src/routes/design-system/+page.svelte`. Th
 
 The reference examples establish the proposed pill styling; the existing application pills have not yet been migrated. The user performs visual verification, including checking the shadow-free surfaces over images. Agents use code checks unless browser verification is explicitly requested.
 
+### List popovers and rounding
+
+The `/design-system#popovers` section includes `popover-context-menu` (page actions and disabled items) and `popover-table-of-contents` (a bounded list of real section links). These are static visual references, not functioning popup components.
+
+- Pill shells use `--button-border-radius` directly.
+- List shells use `min(1rem, var(--button-border-radius))`. The cap preserves space for aligned first and last rows; it is a design choice, not an accessibility requirement.
+- Inner controls subtract the shell's padding and border from its radius, clamped at zero: `max(0px, calc(outer_radius - 0.25rem - 1px))`. The exact Tailwind expressions live in the reference page; `outer_radius` here is explanatory notation, not a new token.
+- Rows share one shape, regular text, wrapping labels, and a 40px minimum height (44px for coarse pointers). The shell uses a solid background, a stroke border, and no shadow.
+- Preserve focus clearance inside scrolling lists. Keep popup behavior and its associated semantics in consuming components.
+
+Setting `--button-border-radius: 0em` makes the reference buttons, pill shells, inner pill controls, and list surfaces square. This does not yet apply throughout the live application: existing toolbar and popover components still contain hardcoded rounding. Content image rounding remains a separate concern.
+
 ### Original rollout plan
 
 1. Review this proposal, particularly the variant set, baseline proportions, and corner shape.
