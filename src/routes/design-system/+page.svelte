@@ -95,6 +95,87 @@
 			</div>
 		</section>
 
+		<section id="formatting" aria-labelledby="formatting-heading" class="space-y-8">
+			<div class="space-y-2">
+				<h2 id="formatting-heading" class="text-xl font-medium">Inline formatting</h2>
+				<p class="text-sm leading-relaxed text-(--muted-foreground)">
+					Emphasis and detail within the flow of a sentence.
+				</p>
+			</div>
+
+			<!--
+				Based on Emphasis, Strong, Link, Code, and Highlight in src/app/components.
+				Formatting inherits the surrounding size and color unless its meaning calls for a change.
+				Inline formatting styles are mutually exclusive: never nest or combine them on the same text.
+				Use semantic HTML and keep marks inline so sentences can wrap naturally.
+				Application components still own document references and editor behavior.
+			-->
+			<div class="space-y-8">
+				<div id="format-emphasis" class="space-y-3">
+					<h3 class="text-sm text-(--muted-foreground)">Emphasis · em</h3>
+					<!-- Italic adds emphasis without introducing another weight or color. -->
+					<p class="max-w-prose body-base">
+						Start with what people <em class="italic">actually need</em>.
+					</p>
+				</div>
+
+				<div id="format-strong" class="space-y-3">
+					<h3 class="text-sm text-(--muted-foreground)">Bold · strong</h3>
+					<!-- Semibold distinguishes important text within regular body copy. -->
+					<p class="max-w-prose body-base">
+						Keep the <strong class="font-semibold">most important information</strong> easy to find.
+					</p>
+				</div>
+
+				<div id="format-link" class="space-y-3">
+					<h3 class="text-sm text-(--muted-foreground)">Link · a</h3>
+					<!--
+						Prose links have no padding, minimum size, or flex display.
+						Inherit the surrounding text color and retain a visible underline.
+						Use underline thickness for hover feedback and the shared editing outline for focus.
+					-->
+					<p class="max-w-prose body-base">
+						Explore the
+						<a
+							href="#typography"
+							class="underline decoration-1 underline-offset-2 hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:decoration-2"
+							>typography styles</a
+						>
+						to see how the scale works.
+					</p>
+				</div>
+
+				<div id="format-code" class="space-y-3">
+					<h3 class="text-sm text-(--muted-foreground)">Code · code</h3>
+					<!--
+						Scale code relative to its surrounding text, with a foreground-derived surface.
+						Clone the background and padding across wrapped lines. Long identifiers may break.
+					-->
+					<p class="max-w-prose body-base">
+						Use <code
+							class="rounded bg-(--foreground)/8 box-decoration-clone px-1 py-0.5 font-mono text-[0.9em] font-normal wrap-anywhere"
+							>font-medium</code
+						>
+						for button labels.
+					</p>
+				</div>
+
+				<div id="format-highlight" class="space-y-3">
+					<h3 class="text-sm text-(--muted-foreground)">Highlight · mark</h3>
+					<!--
+						Use the existing accent pair rather than fixed yellow or the editor selection color.
+						A small inline inset gives letters breathing room. Highlight is a standalone formatting style.
+					-->
+					<p class="max-w-prose body-base">
+						Highlight <mark
+							class="bg-(--accent) box-decoration-clone px-0.5 text-(--accent-foreground)"
+							>the part worth remembering</mark
+						>, not the whole paragraph.
+					</p>
+				</div>
+			</div>
+		</section>
+
 		<section id="buttons" aria-labelledby="buttons-heading" class="space-y-8">
 			<div class="space-y-2">
 				<h2 id="buttons-heading" class="text-xl font-medium">Buttons</h2>

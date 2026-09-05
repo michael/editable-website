@@ -23,6 +23,8 @@ Repository-specific guidance for coding agents working on Svedit.
 
 ## Design system
 
+- Inline formatting styles (emphasis, strong, link, code, and highlight) are mutually exclusive. Never nest them or apply multiple styles to the same text.
+
 - Consult `src/routes/design-system/+page.svelte` before styling UI. It is the visual reference for typography, buttons, and editor pills; shared tokens and typography utilities live in `src/app.css`.
 - Keep reference examples as explicit HTML, SVG, and Tailwind classes. Repetition is intentional; application components own behavior and may adapt the recipes when their interaction requires it.
 - Document new visual patterns in the reference page so future changes have a concrete example to follow.
