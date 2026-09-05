@@ -142,7 +142,11 @@
 			/>
 		{/if}
 		<div class="grow" style="anchor-name: --page-body; --node-caret-boundary: --page-body;">
-			<NodeArrayProperty class="body-node-array" path={[...path, 'body']} />
+			{#if !svedit.editable && app.page_content}
+				{@render app.page_content()}
+			{:else}
+				<NodeArrayProperty class="body-node-array" path={[...path, 'body']} />
+			{/if}
 		</div>
 		<div class="bg-(--background) text-(--foreground)">
 			<Footer path={[...path, 'footer']} />
@@ -150,7 +154,7 @@
 		{#if svedit.editable}
 			<div class="border-t border-(--stroke) bg-(--muted) text-(--foreground)">
 				<div class="mx-auto max-w-xl">
-					<div class="px-5 sm:px-7 py-24">
+					<div class="px-5 py-24 sm:px-7">
 						<div class="grid w-full max-w-xl grid-cols-[6rem_minmax(0,1fr)] items-center gap-4">
 							<div class="aspect-square w-24">
 								<MediaProperty path={[...path, 'image']} />
@@ -173,7 +177,8 @@
 									role="alert"
 									class="col-span-2 self-start body-sm text-(--editing)"
 								>
-									This SVG won’t work as a page preview on Google, WhatsApp, and other services. Use a PNG, JPEG, or WebP instead.
+									This SVG won’t work as a page preview on Google, WhatsApp, and other services. Use
+									a PNG, JPEG, or WebP instead.
 								</p>
 							{/if}
 						</div>
