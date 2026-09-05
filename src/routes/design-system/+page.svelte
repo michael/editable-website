@@ -290,7 +290,8 @@
 				</p>
 			</div>
 			<!--
-Shared pill shell: solid background, stroke border, full rounding, 4px padding and 4px gaps.
+Shared pill shell: solid background, stroke border, token-based rounding, 4px padding and 4px gaps.
+Shell radius uses --button-border-radius; inner radius subtracts padding plus border, clamped at zero.
 No shadows, transparency, blur, or movement. The shell is a surface, not a clickable control.
 Controls are 36px tall, or 44px for coarse pointers. Labels use 14px medium text.
 Reuse the editor's existing SVG paths. Icons use currentColor and retain their native stroke weight.
@@ -304,13 +305,13 @@ Use a group here; production toolbar keyboard behavior belongs to the consuming 
 					<div
 						role="group"
 						aria-label="Page tools"
-						class="inline-flex max-w-full items-center gap-1 rounded-full border border-(--stroke) bg-(--background) p-1 text-(--foreground)"
+						class="inline-flex max-w-full items-center gap-1 rounded-(--button-border-radius) border border-(--stroke) bg-(--background) p-1 text-(--foreground)"
 					>
 						<button
 							type="button"
 							aria-label="New page"
 							title="New page"
-							class="inline-flex size-9 shrink-0 items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+							class="inline-flex size-9 shrink-0 items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
 							><svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"
 								><path d="M12 5V19M5 12H19" stroke="currentColor" /></svg
 							></button
@@ -318,7 +319,7 @@ Use a group here; production toolbar keyboard behavior belongs to the consuming 
 							type="button"
 							aria-label="Browse pages"
 							title="Browse pages"
-							class="inline-flex size-9 shrink-0 items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+							class="inline-flex size-9 shrink-0 items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
 							><svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"
 								><rect x="4.5" y="4.5" width="6" height="6" rx="1" stroke="currentColor" /><rect
 									x="13.5"
@@ -340,7 +341,7 @@ Use a group here; production toolbar keyboard behavior belongs to the consuming 
 							type="button"
 							aria-label="Edit page"
 							title="Edit page"
-							class="inline-flex size-9 shrink-0 items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+							class="inline-flex size-9 shrink-0 items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
 							><svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"
 								><path
 									d="M4.5 19.5L5.25 15.25L15.75 4.75C16.7165 3.7835 18.2835 3.7835 19.25 4.75C20.2165 5.7165 20.2165 7.2835 19.25 8.25L8.75 18.75L4.5 19.5ZM14 6.5L17.5 10"
@@ -353,7 +354,7 @@ Use a group here; production toolbar keyboard behavior belongs to the consuming 
 							type="button"
 							aria-label="More page actions"
 							title="More page actions"
-							class="inline-flex size-9 shrink-0 items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+							class="inline-flex size-9 shrink-0 items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
 							><svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"
 								><circle cx="6" cy="12" r="1" fill="currentColor" /><circle
 									cx="12"
@@ -369,11 +370,11 @@ Use a group here; production toolbar keyboard behavior belongs to the consuming 
 					<h3 class="text-sm text-(--muted-foreground)">Inline call to action</h3>
 					<!-- A single editing action gets wider label padding, while retaining the shared shell and height. -->
 					<div
-						class="inline-flex max-w-full items-center gap-1 rounded-full border border-(--stroke) bg-(--background) p-1 text-(--foreground)"
+						class="inline-flex max-w-full items-center gap-1 rounded-(--button-border-radius) border border-(--stroke) bg-(--background) p-1 text-(--foreground)"
 					>
 						<button
 							type="button"
-							class="inline-flex min-h-9 max-w-full min-w-0 items-center justify-center rounded-full border-0 bg-transparent px-8 py-2 text-sm leading-5 font-medium wrap-anywhere text-(--editing) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--editing-muted) enabled:active:bg-(--editing)/15 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11"
+							class="inline-flex min-h-9 max-w-full min-w-0 items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent px-8 py-2 text-sm leading-5 font-medium wrap-anywhere text-(--editing) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--editing-muted) enabled:active:bg-(--editing)/15 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11"
 							>Create link</button
 						>
 					</div>
@@ -384,13 +385,13 @@ Use a group here; production toolbar keyboard behavior belongs to the consuming 
 					<div
 						role="group"
 						aria-label="Selection tools"
-						class="inline-flex max-w-full items-center gap-1 rounded-full border border-(--stroke) bg-(--background) p-1 text-(--foreground)"
+						class="inline-flex max-w-full items-center gap-1 rounded-(--button-border-radius) border border-(--stroke) bg-(--background) p-1 text-(--foreground)"
 					>
 						<button
 							type="button"
 							aria-label="Select parent"
 							title="Select parent"
-							class="inline-flex size-9 shrink-0 items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+							class="inline-flex size-9 shrink-0 items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
 							><svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"
 								><path
 									d="M6.5 12.5C6.5 15.8137 9.18629 18.5 12.5 18.5C15.8137 18.5 18.5 15.8137 18.5 12.5C18.5 9.18629 15.8137 6.5 12.5 6.5M4.48278 4.48206L13 12.9993M9.44657 4.48173L4.48278 4.48206V9.44727"
@@ -402,7 +403,7 @@ Use a group here; production toolbar keyboard behavior belongs to the consuming 
 						><span aria-hidden="true" class="mx-1 h-5 w-px shrink-0 bg-(--stroke)"></span><button
 							type="button"
 							aria-label="Choose gallery variant, mixed selection"
-							class="inline-flex min-h-9 min-w-0 items-center justify-center gap-2 rounded-full border-0 bg-transparent px-3 py-2 text-sm leading-5 font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11"
+							class="inline-flex min-h-9 min-w-0 items-center justify-center gap-2 rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent px-3 py-2 text-sm leading-5 font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11"
 							><span class="min-w-0 truncate">Gallery</span><span
 								class="shrink-0 font-mono text-xs font-normal text-(--muted-foreground)"
 								>(mixed)</span
@@ -426,28 +427,28 @@ Use a group here; production toolbar keyboard behavior belongs to the consuming 
 					<h3 class="text-sm text-(--muted-foreground)">Link preview</h3>
 					<!--
 The preview link and its actions are siblings, never nested interactive elements.
-The thumbnail slot shows an initials fallback; an actual thumbnail uses size-9 rounded-full object-cover.
+The thumbnail slot shows an initials fallback; an actual thumbnail uses size-9 rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] object-cover.
 Only the preview title truncates. Keep edit and remove controls visible at narrow widths.
 The local href is a specimen destination. Production links retain their own destination and target.
 -->
 					<div
 						role="group"
 						aria-label="Link preview"
-						class="inline-flex max-w-full items-center gap-1 rounded-full border border-(--stroke) bg-(--background) p-1 text-(--foreground)"
+						class="inline-flex max-w-full items-center gap-1 rounded-(--button-border-radius) border border-(--stroke) bg-(--background) p-1 text-(--foreground)"
 					>
 						<a
 							href="#pills"
-							class="inline-flex min-h-9 max-w-70 min-w-0 items-center gap-2 rounded-full pr-3 text-sm leading-5 font-medium hover:bg-(--muted) hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
+							class="inline-flex min-h-9 max-w-70 min-w-0 items-center gap-2 rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] pr-3 text-sm leading-5 font-medium hover:bg-(--muted) hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
 							><span
 								aria-hidden="true"
-								class="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-(--muted) text-xs font-medium text-(--muted-foreground)"
+								class="inline-flex size-9 shrink-0 items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] bg-(--muted) text-xs font-medium text-(--muted-foreground)"
 								>EW</span
 							><span class="min-w-0 truncate">Why Editable?</span></a
 						><button
 							type="button"
 							aria-label="Edit link"
 							title="Edit link"
-							class="inline-flex size-9 shrink-0 items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+							class="inline-flex size-9 shrink-0 items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
 							><svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"
 								><path
 									d="M4.5 19.5L5.25 15.25L15.75 4.75C16.7165 3.7835 18.2835 3.7835 19.25 4.75C20.2165 5.7165 20.2165 7.2835 19.25 8.25L8.75 18.75L4.5 19.5ZM14 6.5L17.5 10"
@@ -460,7 +461,7 @@ The local href is a specimen destination. Production links retain their own dest
 							type="button"
 							aria-label="Remove link"
 							title="Remove link"
-							class="inline-flex size-9 shrink-0 items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+							class="inline-flex size-9 shrink-0 items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
 							><svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"
 								><path
 									d="M5.5 7.5H18.5M9.5 4.5H14.5L15.5 7.5M7 7.5L7.75 19.5H16.25L17 7.5M10 10.5V16M14 10.5V16"
@@ -471,6 +472,113 @@ The local href is a specimen destination. Production links retain their own dest
 							></button
 						>
 					</div>
+				</div>
+			</div>
+		</section>
+		<section id="popovers" aria-labelledby="popovers-heading" class="space-y-8">
+			<div class="space-y-2">
+				<h2 id="popovers-heading" class="text-xl font-medium">List popovers</h2>
+				<p class="text-sm leading-relaxed text-(--muted-foreground)">
+					Compact lists with a shared surface and aligned rows.
+				</p>
+			</div>
+			<!--
+List surfaces cap --button-border-radius at 1rem to leave room for the first and last rows.
+Item radius = outer radius minus 4px padding and 1px border, clamped at zero.
+Use the same shape for every row. A zero button radius makes the surface and all rows square.
+Keep 4px padding around the list for the 2px focus outline plus 2px offset.
+Use opaque background, stroke border, and no shadow. Rows use regular text and 40px minimum height.
+These are permanently visible style references. Opening, dismissal, positioning, collision handling,
+and menu keyboard behavior belong to the application; do not add menu roles without that behavior.
+-->
+			<div class="grid items-start gap-10 md:grid-cols-2">
+				<div id="popover-context-menu" class="min-w-0 space-y-4">
+					<h3 class="text-sm text-(--muted-foreground)">Context menu</h3>
+					<!-- Disabled actions remain legible and suppress pointer, hover, and active treatments. -->
+					<div
+						role="group"
+						aria-label="Page actions"
+						class="w-56 max-w-full rounded-[min(1rem,var(--button-border-radius))] border border-(--stroke) bg-(--background) p-1"
+					>
+						<button
+							type="button"
+							class="flex min-h-10 w-full items-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2.5 text-start text-sm leading-5 font-normal wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:text-(--muted-foreground) pointer-coarse:min-h-11"
+							>Duplicate page</button
+						><button
+							type="button"
+							disabled
+							class="flex min-h-10 w-full items-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2.5 text-start text-sm leading-5 font-normal wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:text-(--muted-foreground) pointer-coarse:min-h-11"
+							>Edit URL</button
+						><button
+							type="button"
+							disabled
+							class="flex min-h-10 w-full items-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2.5 text-start text-sm leading-5 font-normal wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:text-(--muted-foreground) pointer-coarse:min-h-11"
+							>Delete page</button
+						>
+						<hr class="my-1 border-0 border-t border-(--stroke)" />
+						<button
+							type="button"
+							class="flex min-h-10 w-full items-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2.5 text-start text-sm leading-5 font-normal wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:text-(--muted-foreground) pointer-coarse:min-h-11"
+							>Logout</button
+						>
+					</div>
+				</div>
+				<div id="popover-table-of-contents" class="min-w-0 space-y-4">
+					<h3 class="text-sm text-(--muted-foreground)">Table of contents</h3>
+					<!--
+Use navigation links rather than menu actions. Labels wrap instead of truncating.
+The bounded scroller includes focus clearance in its padding; its shell retains the outer shape.
+These destinations are real sections on this reference page. Application contents use page headings.
+-->
+					<nav
+						aria-label="Design system contents"
+						class="w-96 max-w-full rounded-[min(1rem,var(--button-border-radius))] border border-(--stroke) bg-(--background)"
+					>
+						<ul class="max-h-80 list-none overflow-y-auto overscroll-contain rounded-[inherit] p-1">
+							<li>
+								<a
+									href="#typography"
+									class="flex min-h-10 w-full items-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2.5 text-start text-sm leading-5 font-normal wrap-anywhere text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
+									>Typography</a
+								>
+							</li>
+							<li>
+								<a
+									href="#formatting"
+									class="flex min-h-10 w-full items-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2.5 text-start text-sm leading-5 font-normal wrap-anywhere text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
+									>Inline formatting</a
+								>
+							</li>
+							<li>
+								<a
+									href="#buttons"
+									class="flex min-h-10 w-full items-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2.5 text-start text-sm leading-5 font-normal wrap-anywhere text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
+									>Standard buttons</a
+								>
+							</li>
+							<li>
+								<a
+									href="#buttons-small"
+									class="flex min-h-10 w-full items-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2.5 text-start text-sm leading-5 font-normal wrap-anywhere text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
+									>Small buttons</a
+								>
+							</li>
+							<li>
+								<a
+									href="#pills"
+									class="flex min-h-10 w-full items-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2.5 text-start text-sm leading-5 font-normal wrap-anywhere text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
+									>Editor pills</a
+								>
+							</li>
+							<li>
+								<a
+									href="#popovers"
+									class="flex min-h-10 w-full items-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2.5 text-start text-sm leading-5 font-normal wrap-anywhere text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
+									>List popovers</a
+								>
+							</li>
+						</ul>
+					</nav>
 				</div>
 			</div>
 		</section>

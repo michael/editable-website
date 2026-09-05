@@ -56,7 +56,7 @@
 	/* Foreground color for content displayed on the editing accent. */
 	--editing-foreground: var(--background);
 
-	/* Rounded corners for buttons and navigation items. */
+	/* Rounded corners for controls; reference pills and popovers derive their shape from this. */
 	--button-border-radius: 3rem;
 	/* Rounded corners for images. */
 	--image-border-radius: 2.2rem;
