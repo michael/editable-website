@@ -8,16 +8,58 @@
 	Keep examples explicit; adapt semantics and behavior in the consuming code.
 	Colors, fonts, and corner radius come from app.css.
 -->
-<main
-	class="min-h-screen bg-(--background) px-6 py-16 font-sans text-(--foreground) antialiased sm:px-10"
->
-	<div class="mx-auto max-w-4xl space-y-16">
+<main class="min-h-screen bg-(--background) py-16 font-sans text-(--foreground) antialiased">
+	<div class="mx-auto max-w-7xl space-y-16 px-5 sm:px-7">
 		<header class="space-y-3">
 			<h1 class="text-3xl font-medium tracking-tight">Design system</h1>
 			<p class="max-w-xl text-base leading-relaxed text-(--muted-foreground)">
 				A shared starting point for Editable. Simple styles, ready to use and adapt.
 			</p>
 		</header>
+
+		<section id="page-limiter" aria-labelledby="page-limiter-heading" class="space-y-8">
+			<div class="space-y-2">
+				<h2 id="page-limiter-heading" class="text-xl font-medium">Page limiter</h2>
+				<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
+					Center each block with <code class="font-mono">mx-auto max-w-7xl</code>, then add
+					<code class="font-mono">px-5 sm:px-7</code> inside it. The width limit is 80rem (1280px), including
+					side padding: 1.25rem (20px) on small screens and 1.75rem (28px) from the 40rem (640px) breakpoint,
+					at the default root font size.
+				</p>
+			</div>
+
+			<!--
+				Cancel the reference page padding so this specimen shows the actual page limiter.
+				The muted surface exposes the side padding; the inner surface marks the content area.
+				Full-width block backgrounds belong outside the limiter. Vertical spacing belongs to each block.
+				The reference page combines width and padding on one wrapper for the same geometry.
+			-->
+			<div class="-mx-5 sm:-mx-7">
+				<div class="mx-auto max-w-7xl bg-(--muted)">
+					<div class="px-5 sm:px-7">
+						<div class="border-x border-dashed border-(--stroke) bg-(--background) py-8">
+							<p class="body-base">Page content aligns here.</p>
+							<p class="mt-2 body-sm text-(--muted-foreground)">
+								The shaded edges show the shared page padding. Resize the window to compare.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<pre class="overflow-x-auto border border-(--stroke) bg-(--muted) p-4 text-sm leading-6"><code
+					>&lt;div class="mx-auto max-w-7xl"&gt;
+  &lt;div class="px-5 sm:px-7"&gt;
+    Page content
+  &lt;/div&gt;
+&lt;/div&gt;</code
+				></pre>
+			<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
+				Keep full-width backgrounds outside the limiter and choose vertical spacing per block.
+				Narrower reading columns can sit inside this shared page width. Apply the side padding once
+				so adjacent blocks line up.
+			</p>
+		</section>
 
 		<section id="typography" aria-labelledby="typography-heading" class="space-y-10">
 			<div class="space-y-2">
