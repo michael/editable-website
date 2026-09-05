@@ -11,6 +11,6 @@
 <span
 	id={node.id}
 	data-node-id={node.id}
-	class="bg-(--accent) text-(--accent-foreground) no-underline"
+	class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--accent) box-decoration-clone px-[0.25em] py-[0.125em] text-(--accent-foreground) no-underline"
 	style="anchor-name: --{serialize_path(path)};">{content}</span
 >
