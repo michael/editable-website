@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>Design system · Editable</title>
+	<title>The Editable Design System</title>
 	<meta name="description" content="Editable's visual reference, in plain HTML and Tailwind." />
 </svelte:head>
 
@@ -11,7 +11,7 @@
 <main class="min-h-screen bg-(--background) py-16 font-sans text-(--foreground) antialiased">
 	<div class="mx-auto max-w-7xl space-y-16 px-5 sm:px-7">
 		<header class="space-y-3">
-			<h1 class="text-3xl font-medium tracking-tight">Design system</h1>
+			<h1 class="text-3xl font-medium tracking-tight">The Editable Design System</h1>
 			<p class="max-w-xl text-base leading-relaxed text-(--muted-foreground)">
 				A shared starting point for Editable. Simple styles, ready to use and adapt.
 			</p>
