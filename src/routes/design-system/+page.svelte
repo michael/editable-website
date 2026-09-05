@@ -61,6 +61,217 @@
 			</p>
 		</section>
 
+		<section id="block-spacing" aria-labelledby="block-spacing-heading" class="space-y-8">
+			<div class="space-y-2">
+				<h2 id="block-spacing-heading" class="text-xl font-medium">Vertical block spacing</h2>
+				<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
+					Generous spacing separates sections. Compact spacing pulls related blocks together. Each
+					block has its own top and bottom padding, chosen independently.
+				</p>
+			</div>
+
+			<ul class="max-w-prose list-disc space-y-2 pl-5 body-sm">
+				<li>A standalone block has generous padding above and below.</li>
+				<li>In a section, the first block has generous top padding and compact bottom padding.</li>
+				<li>Middle blocks have compact padding above and below.</li>
+				<li>The last block has compact top padding and generous bottom padding.</li>
+				<li>A section containing just one block has generous padding above and below.</li>
+			</ul>
+
+			<div class="space-y-3">
+				<h3 class="text-sm font-medium">Padding per edge</h3>
+				<div class="overflow-x-auto">
+					<table class="w-full max-w-3xl text-sm leading-6">
+						<caption class="sr-only">Responsive generous and compact padding values</caption>
+						<thead
+							><tr
+								><th scope="col" class="pr-6 pb-3 text-left font-medium">Viewport width</th><th
+									scope="col"
+									class="pr-6 pb-3 text-left font-medium">Generous</th
+								><th scope="col" class="pb-3 text-left font-medium">Compact</th></tr
+							></thead
+						>
+						<tbody
+							><tr class="border-t border-(--stroke)"
+								><th scope="row" class="py-3 pr-6 text-left font-normal">Below 640px</th><td
+									class="py-3 pr-6">2.5rem · 40px</td
+								><td class="py-3">1rem · 16px</td></tr
+							>
+							<tr class="border-t border-(--stroke)"
+								><th scope="row" class="py-3 pr-6 text-left font-normal">640–767px</th><td
+									class="py-3 pr-6">3.5rem · 56px</td
+								><td class="py-3">1rem · 16px</td></tr
+							>
+							<tr class="border-t border-(--stroke)"
+								><th scope="row" class="py-3 pr-6 text-left font-normal">768–1023px</th><td
+									class="py-3 pr-6">4rem · 64px</td
+								><td class="py-3">1rem · 16px</td></tr
+							>
+							<tr class="border-t border-(--stroke)"
+								><th scope="row" class="py-3 pr-6 text-left font-normal">1024px and above</th><td
+									class="py-3 pr-6">7rem · 112px</td
+								><td class="py-3">1.75rem · 28px</td></tr
+							></tbody
+						>
+					</table>
+				</div>
+				<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
+					Pixel equivalents assume the default 16px root font size. Adjacent padding adds up: two
+					compact edges create a 32px gap, or 56px from 1024px. Two generous edges create an 80px,
+					112px, 128px, or 224px gap across the same viewport ranges.
+				</p>
+			</div>
+
+			<!--
+				Reference values mirror Prose.svelte's section boundary rules and the current spacing scale.
+				Explicit height bands visualize padding at its actual responsive size without extra gaps.
+				The specimen content has its own inset to make the block boundaries visible.
+			-->
+			<div class="grid items-start gap-10 md:grid-cols-2">
+				<div class="space-y-4">
+					<h3 class="text-sm font-medium">Standalone block</h3>
+					<div class="border border-(--stroke)">
+						<div>
+							<div
+								class="flex h-10 items-center justify-center bg-(--muted) text-xs leading-4 text-(--muted-foreground) sm:h-14 md:h-16 lg:h-28"
+							>
+								Generous
+							</div>
+							<div class="border-y border-dashed border-(--stroke) px-5 py-4 sm:px-7">
+								<p class="body-base">Independent content</p>
+							</div>
+							<div
+								class="flex h-10 items-center justify-center bg-(--muted) text-xs leading-4 text-(--muted-foreground) sm:h-14 md:h-16 lg:h-28"
+							>
+								Generous
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="space-y-4">
+					<h3 class="text-sm font-medium">Three blocks in one section</h3>
+					<div class="divide-y divide-(--stroke) border border-(--stroke)">
+						<div>
+							<div
+								class="flex h-10 items-center justify-center bg-(--muted) text-xs leading-4 text-(--muted-foreground) sm:h-14 md:h-16 lg:h-28"
+							>
+								Generous
+							</div>
+							<div class="border-y border-dashed border-(--stroke) px-5 py-4 sm:px-7">
+								<p class="body-base">First block</p>
+							</div>
+							<div
+								class="flex h-4 items-center justify-center bg-(--muted) text-xs leading-4 text-(--muted-foreground) lg:h-7"
+							>
+								Compact
+							</div>
+						</div>
+						<div>
+							<div
+								class="flex h-4 items-center justify-center bg-(--muted) text-xs leading-4 text-(--muted-foreground) lg:h-7"
+							>
+								Compact
+							</div>
+							<div class="border-y border-dashed border-(--stroke) px-5 py-4 sm:px-7">
+								<p class="body-base">Middle block</p>
+							</div>
+							<div
+								class="flex h-4 items-center justify-center bg-(--muted) text-xs leading-4 text-(--muted-foreground) lg:h-7"
+							>
+								Compact
+							</div>
+						</div>
+						<div>
+							<div
+								class="flex h-4 items-center justify-center bg-(--muted) text-xs leading-4 text-(--muted-foreground) lg:h-7"
+							>
+								Compact
+							</div>
+							<div class="border-y border-dashed border-(--stroke) px-5 py-4 sm:px-7">
+								<p class="body-base">Last block</p>
+							</div>
+							<div
+								class="flex h-10 items-center justify-center bg-(--muted) text-xs leading-4 text-(--muted-foreground) sm:h-14 md:h-16 lg:h-28"
+							>
+								Generous
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
+				Shaded bands show the padding at its actual size. Resize the window to compare the scale.
+				Spacing within a block, such as the gap between a heading and a paragraph, is a separate
+				choice.
+			</p>
+			<div id="block-spacing-api" class="space-y-6">
+				<div class="space-y-2">
+					<h3 class="text-sm font-medium">Sample block implementation</h3>
+					<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
+						A top-level block receives its section context through <code class="font-mono"
+							>mark</code
+						>, aliased to <code class="font-mono">section</code>. As in Prose.svelte, the block
+						derives its top and bottom padding from that context. No extra padding props are needed.
+					</p>
+				</div>
+				<div class="space-y-3">
+					<h4 class="text-sm text-(--muted-foreground)">Sample prose block · proposal</h4>
+					<pre
+						class="overflow-x-auto border border-(--stroke) bg-(--muted) p-4 text-sm leading-6"><code
+							>&lt;script lang="ts"&gt;
+  import &#123; Node, NodeArrayProperty &#125; from 'svedit';
+  import type &#123; DocumentPath, NodeArrayAttachmentContext &#125; from 'svedit';
+
+  let &#123;
+    path,
+    mark: section = null
+  &#125;: &#123;
+    path: DocumentPath;
+    mark?: NodeArrayAttachmentContext | null;
+  &#125; = $props();
+
+  let padding_top_generous = $derived(!section || section.is_start);
+  let padding_bottom_generous = $derived(!section || section.is_end);
+&lt;/script&gt;
+
+&lt;Node &#123;path&#125; class="bg-(--background) text-(--foreground)"&gt;
+  &lt;div class="mx-auto max-w-7xl"&gt;
+    &lt;div class=&#123;[
+      'px-5 sm:px-7',
+      padding_top_generous
+        ? 'pt-10 sm:pt-14 md:pt-16 lg:pt-28'
+        : 'pt-4 lg:pt-7',
+      padding_bottom_generous
+        ? 'pb-10 sm:pb-14 md:pb-16 lg:pb-28'
+        : 'pb-4 lg:pb-7'
+    ]&#125;&gt;
+      &lt;NodeArrayProperty
+        path=&#123;[...path, 'body']&#125;
+        class="flex flex-col gap-5 sm:gap-7"
+      /&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/Node&gt;</code
+						></pre>
+				</div>
+				<ul class="max-w-prose list-disc space-y-2 pl-5 body-sm">
+					<li>No section mark: both edges are generous.</li>
+					<li><code class="font-mono">section.is_start</code>: the top edge is generous.</li>
+					<li><code class="font-mono">section.is_end</code>: the bottom edge is generous.</li>
+					<li>
+						<code class="font-mono">section.is_middle</code>: both edges are compact; the two
+						boundary checks already cover this case.
+					</li>
+					<li>A one-block section is both the start and the end, so both edges are generous.</li>
+				</ul>
+				<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
+					This sample is for discussion; the app implementation is unchanged. Responsive classes are
+					explicit here so the values are visible. Shared spacing utilities can replace those class
+					strings while keeping the same section-based decisions.
+				</p>
+			</div>
+		</section>
+
 		<section id="typography" aria-labelledby="typography-heading" class="space-y-10">
 			<div class="space-y-2">
 				<h2 id="typography-heading" class="text-xl font-medium">Typography</h2>
