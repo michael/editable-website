@@ -124,6 +124,23 @@ Use static labeled specimens for inspecting states and real native elements for 
 
 ## Implementation sequence
 
+### Editor pill references
+
+The `/design-system#pills` section now contains four concrete, static references:
+
+| Reference anchor        | Example                                             | Intended use                                    |
+| ----------------------- | --------------------------------------------------- | ----------------------------------------------- |
+| `pill-toolbar`          | New page, browse, edit, and more actions            | Grouped page tools.                             |
+| `pill-inline-action`    | Create link                                         | A single contextual editing action.             |
+| `pill-variant-selector` | Select parent, divider, Gallery, and mixed status   | Two related selection controls in one surface.  |
+| `pill-link-preview`     | Thumbnail fallback, Why Editable?, edit, and remove | A navigable preview with separate link actions. |
+
+The exact markup and classes live in `src/routes/design-system/+page.svelte`. These references use flat, opaque surfaces and functional borders instead of shadows. Individual controls receive focus; the surrounding pill does not. The preview includes an initials fallback for its thumbnail slot. Positioning, menus, editor commands, and keyboard behavior remain responsibilities of consuming components.
+
+The reference examples establish the proposed pill styling; the existing application pills have not yet been migrated. The user performs visual verification, including checking the shadow-free surfaces over images. Agents use code checks unless browser verification is explicitly requested.
+
+### Original rollout plan
+
 1. Review this proposal, particularly the variant set, baseline proportions, and corner shape.
 2. Build `/design-system` with the button comparison specimens in plain Tailwind. Keep candidate recipes clearly marked until selected.
 3. Review in-browser across the theme, font, content, and accessibility cases above. Choose one baseline and remove rejected candidates from the canonical recipe section.

@@ -21,6 +21,12 @@ Repository-specific guidance for coding agents working on Svedit.
 - The user manually verifies UI changes. Do not use a browser, screenshots, or computer-use tools to verify the UI unless the user explicitly asks.
 - Use appropriate code checks, such as formatting, linting, and Svelte diagnostics, without starting a browser-based verification workflow.
 
+## Design system
+
+- Consult `src/routes/design-system/+page.svelte` before styling UI. It is the visual reference for typography, buttons, and editor pills; shared tokens and typography utilities live in `src/app.css`.
+- Keep reference examples as explicit HTML, SVG, and Tailwind classes. Repetition is intentional; application components own behavior and may adapt the recipes when their interaction requires it.
+- Document new visual patterns in the reference page so future changes have a concrete example to follow.
+
 ## Architecture
 
 Svedit is a Svelte 5 rich content editor built around a graph-based document model.
