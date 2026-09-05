@@ -73,6 +73,10 @@ From here on, `git push` saves your work to your own repo. To bring in Editable 
 
 ### Styling
 
+With the development server running, open the [design system](http://localhost:5173/design-system) in your browser to explore typography, spacing, buttons, and editor pills. Inspect its [source code](src/routes/design-system/+page.svelte) for the corresponding markup and styles.
+
+When customizing your Editable site, ideally update the design system first, then apply those changes to the actual site components. This gives you a concrete visual reference to work from and helps keep the site consistent, whether you build it with an agent or edit the code manually.
+
 Adjust the colors and fonts directly in `src/app.css`:
 
 ```css
@@ -635,7 +639,6 @@ Create `src/app/components/Hero.svelte`. It reads the node at `path`, renders ea
 	import { get_svedit_context } from '#app/svedit_context.js';
 	import MediaProperty from './MediaProperty.svelte';
 
-
 	const svedit = get_svedit_context();
 	let { path }: { path: DocumentPath } = $props();
 	let node: Nodes['hero'] = $derived(svedit.session.get(path));
@@ -664,12 +667,12 @@ Create `src/app/components/Hero.svelte`. It reads the node at `path`, renders ea
 <Node class="ew-hero bg-(--background) text-(--foreground)" {path}>
 	<div class="mx-auto max-w-7xl">
 		{#if layout === 'side-by-side'}
-			<div class="px-5 sm:px-7 grid items-center gap-10 py-16 md:grid-cols-2">
+			<div class="grid items-center gap-10 px-5 py-16 sm:px-7 md:grid-cols-2">
 				<div>{@render text()}</div>
 				{@render media()}
 			</div>
 		{:else}
-			<div class="px-5 sm:px-7 flex flex-col gap-10 py-16 text-center">
+			<div class="flex flex-col gap-10 px-5 py-16 text-center sm:px-7">
 				<div class="mx-auto max-w-2xl">{@render text()}</div>
 				{@render media()}
 			</div>

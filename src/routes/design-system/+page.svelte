@@ -49,9 +49,9 @@
 
 			<pre class="overflow-x-auto border border-(--stroke) bg-(--muted) p-4 text-sm leading-6"><code
 					>&lt;div class="mx-auto max-w-7xl"&gt;
-  &lt;div class="px-5 sm:px-7"&gt;
-    Page content
-  &lt;/div&gt;
+	&lt;div class="px-5 sm:px-7"&gt;
+		Page content
+	&lt;/div&gt;
 &lt;/div&gt;</code
 				></pre>
 			<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
@@ -219,38 +219,38 @@
 					<pre
 						class="overflow-x-auto border border-(--stroke) bg-(--muted) p-4 text-sm leading-6"><code
 							>&lt;script lang="ts"&gt;
-  import &#123; Node, NodeArrayProperty &#125; from 'svedit';
-  import type &#123; DocumentPath, NodeArrayAttachmentContext &#125; from 'svedit';
+	import &#123; Node, NodeArrayProperty &#125; from 'svedit';
+	import type &#123; DocumentPath, NodeArrayAttachmentContext &#125; from 'svedit';
 
-  let &#123;
-    path,
-    mark: section = null
-  &#125;: &#123;
-    path: DocumentPath;
-    mark?: NodeArrayAttachmentContext | null;
-  &#125; = $props();
+	let &#123;
+		path,
+		mark: section = null
+	&#125;: &#123;
+		path: DocumentPath;
+		mark?: NodeArrayAttachmentContext | null;
+	&#125; = $props();
 
-  let padding_top_generous = $derived(!section || section.is_start);
-  let padding_bottom_generous = $derived(!section || section.is_end);
+	let padding_top_generous = $derived(!section || section.is_start);
+	let padding_bottom_generous = $derived(!section || section.is_end);
 &lt;/script&gt;
 
 &lt;Node &#123;path&#125; class="bg-(--background) text-(--foreground)"&gt;
-  &lt;div class="mx-auto max-w-7xl"&gt;
-    &lt;div class=&#123;[
-      'px-5 sm:px-7',
-      padding_top_generous
-        ? 'pt-10 sm:pt-14 md:pt-16 lg:pt-28'
-        : 'pt-4 lg:pt-7',
-      padding_bottom_generous
-        ? 'pb-10 sm:pb-14 md:pb-16 lg:pb-28'
-        : 'pb-4 lg:pb-7'
-    ]&#125;&gt;
-      &lt;NodeArrayProperty
-        path=&#123;[...path, 'body']&#125;
-        class="flex flex-col gap-5 sm:gap-7"
-      /&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
+	&lt;div class="mx-auto max-w-7xl"&gt;
+		&lt;div class=&#123;[
+			'px-5 sm:px-7',
+			padding_top_generous
+				? 'pt-10 sm:pt-14 md:pt-16 lg:pt-28'
+				: 'pt-4 lg:pt-7',
+			padding_bottom_generous
+				? 'pb-10 sm:pb-14 md:pb-16 lg:pb-28'
+				: 'pb-4 lg:pb-7'
+		]&#125;&gt;
+			&lt;NodeArrayProperty
+				path=&#123;[...path, 'body']&#125;
+				class="flex flex-col gap-5 sm:gap-7"
+			/&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
 &lt;/Node&gt;</code
 						></pre>
 				</div>
