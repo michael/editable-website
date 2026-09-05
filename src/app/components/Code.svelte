@@ -10,6 +10,6 @@
 <code
 	id={node.id}
 	data-node-id={node.id}
-	class="rounded bg-(--foreground)/8 px-1 py-0.5 font-mono text-sm text-[0.9em] subpixel-antialiased"
+	class="rounded-(--button-border-radius) bg-(--foreground)/8 px-1 py-0.5 font-mono text-sm text-[0.9em] subpixel-antialiased"
 	>{content}</code
 >
