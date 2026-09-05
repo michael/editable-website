@@ -201,5 +201,197 @@
 				</div>
 			</div>
 		</section>
+		<section id="pills" aria-labelledby="pills-heading" class="space-y-10">
+			<div class="space-y-2">
+				<h2 id="pills-heading" class="text-xl font-medium">Editor pills</h2>
+				<p class="text-sm leading-relaxed text-(--muted-foreground)">
+					Compact surfaces for tools, actions, and previews.
+				</p>
+			</div>
+			<!--
+Shared pill shell: solid background, stroke border, full rounding, 4px padding and 4px gaps.
+No shadows, transparency, blur, or movement. The shell is a surface, not a clickable control.
+Controls are 36px tall, or 44px for coarse pointers. Labels use 14px medium text.
+Reuse the editor's existing SVG paths. Icons use currentColor and retain their native stroke weight.
+Focus belongs to each control: 2px editing outline, 2px offset. Keep shell overflow visible.
+These are visual specimens with native focus and pointer states; they do not execute editor commands.
+Use a group here; production toolbar keyboard behavior belongs to the consuming component.
+-->
+			<div class="space-y-12">
+				<div id="pill-toolbar" class="space-y-4">
+					<h3 class="text-sm text-(--muted-foreground)">Toolbar</h3>
+					<div
+						role="group"
+						aria-label="Page tools"
+						class="inline-flex max-w-full items-center gap-1 rounded-full border border-(--stroke) bg-(--background) p-1 text-(--foreground)"
+					>
+						<button
+							type="button"
+							aria-label="New page"
+							title="New page"
+							class="inline-flex size-9 shrink-0 items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+							><svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+								><path d="M12 5V19M5 12H19" stroke="currentColor" /></svg
+							></button
+						><button
+							type="button"
+							aria-label="Browse pages"
+							title="Browse pages"
+							class="inline-flex size-9 shrink-0 items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+							><svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+								><rect x="4.5" y="4.5" width="6" height="6" rx="1" stroke="currentColor" /><rect
+									x="13.5"
+									y="4.5"
+									width="6"
+									height="6"
+									rx="1"
+									stroke="currentColor"
+								/><rect x="4.5" y="13.5" width="6" height="6" rx="1" stroke="currentColor" /><rect
+									x="13.5"
+									y="13.5"
+									width="6"
+									height="6"
+									rx="1"
+									stroke="currentColor"
+								/></svg
+							></button
+						><button
+							type="button"
+							aria-label="Edit page"
+							title="Edit page"
+							class="inline-flex size-9 shrink-0 items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+							><svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+								><path
+									d="M4.5 19.5L5.25 15.25L15.75 4.75C16.7165 3.7835 18.2835 3.7835 19.25 4.75C20.2165 5.7165 20.2165 7.2835 19.25 8.25L8.75 18.75L4.5 19.5ZM14 6.5L17.5 10"
+									stroke="currentColor"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								/></svg
+							></button
+						><button
+							type="button"
+							aria-label="More page actions"
+							title="More page actions"
+							class="inline-flex size-9 shrink-0 items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+							><svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+								><circle cx="6" cy="12" r="1" fill="currentColor" /><circle
+									cx="12"
+									cy="12"
+									r="1"
+									fill="currentColor"
+								/><circle cx="18" cy="12" r="1" fill="currentColor" /></svg
+							></button
+						>
+					</div>
+				</div>
+				<div id="pill-inline-action" class="space-y-4">
+					<h3 class="text-sm text-(--muted-foreground)">Inline call to action</h3>
+					<!-- A single editing action gets wider label padding, while retaining the shared shell and height. -->
+					<div
+						class="inline-flex max-w-full items-center gap-1 rounded-full border border-(--stroke) bg-(--background) p-1 text-(--foreground)"
+					>
+						<button
+							type="button"
+							class="inline-flex min-h-9 max-w-full min-w-0 items-center justify-center rounded-full border-0 bg-transparent px-8 py-2 text-sm leading-5 font-medium wrap-anywhere text-(--editing) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--editing-muted) enabled:active:bg-(--editing)/15 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11"
+							>Create link</button
+						>
+					</div>
+				</div>
+				<div id="pill-variant-selector" class="space-y-4">
+					<h3 class="text-sm text-(--muted-foreground)">Variant selector and select parent</h3>
+					<!-- The divider separates two actions. Only the selector shrinks; its status remains secondary text. -->
+					<div
+						role="group"
+						aria-label="Selection tools"
+						class="inline-flex max-w-full items-center gap-1 rounded-full border border-(--stroke) bg-(--background) p-1 text-(--foreground)"
+					>
+						<button
+							type="button"
+							aria-label="Select parent"
+							title="Select parent"
+							class="inline-flex size-9 shrink-0 items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+							><svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+								><path
+									d="M6.5 12.5C6.5 15.8137 9.18629 18.5 12.5 18.5C15.8137 18.5 18.5 15.8137 18.5 12.5C18.5 9.18629 15.8137 6.5 12.5 6.5M4.48278 4.48206L13 12.9993M9.44657 4.48173L4.48278 4.48206V9.44727"
+									stroke="currentColor"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								/></svg
+							></button
+						><span aria-hidden="true" class="mx-1 h-5 w-px shrink-0 bg-(--stroke)"></span><button
+							type="button"
+							aria-label="Choose gallery variant, mixed selection"
+							class="inline-flex min-h-9 min-w-0 items-center justify-center gap-2 rounded-full border-0 bg-transparent px-3 py-2 text-sm leading-5 font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11"
+							><span class="min-w-0 truncate">Gallery</span><span
+								class="shrink-0 font-mono text-xs font-normal text-(--muted-foreground)"
+								>(mixed)</span
+							><svg
+								class="size-4 shrink-0 text-(--muted-foreground)"
+								viewBox="0 0 24 24"
+								fill="none"
+								aria-hidden="true"
+								><path
+									d="M7 10L12 15L17 10"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								/></svg
+							></button
+						>
+					</div>
+				</div>
+				<div id="pill-link-preview" class="space-y-4">
+					<h3 class="text-sm text-(--muted-foreground)">Link preview</h3>
+					<!--
+The preview link and its actions are siblings, never nested interactive elements.
+The thumbnail slot shows an initials fallback; an actual thumbnail uses size-9 rounded-full object-cover.
+Only the preview title truncates. Keep edit and remove controls visible at narrow widths.
+The local href is a specimen destination. Production links retain their own destination and target.
+-->
+					<div
+						role="group"
+						aria-label="Link preview"
+						class="inline-flex max-w-full items-center gap-1 rounded-full border border-(--stroke) bg-(--background) p-1 text-(--foreground)"
+					>
+						<a
+							href="#pills"
+							class="inline-flex min-h-9 max-w-70 min-w-0 items-center gap-2 rounded-full pr-3 text-sm leading-5 font-medium hover:bg-(--muted) hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
+							><span
+								aria-hidden="true"
+								class="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-(--muted) text-xs font-medium text-(--muted-foreground)"
+								>EW</span
+							><span class="min-w-0 truncate">Why Editable?</span></a
+						><button
+							type="button"
+							aria-label="Edit link"
+							title="Edit link"
+							class="inline-flex size-9 shrink-0 items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+							><svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+								><path
+									d="M4.5 19.5L5.25 15.25L15.75 4.75C16.7165 3.7835 18.2835 3.7835 19.25 4.75C20.2165 5.7165 20.2165 7.2835 19.25 8.25L8.75 18.75L4.5 19.5ZM14 6.5L17.5 10"
+									stroke="currentColor"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								/></svg
+							></button
+						><button
+							type="button"
+							aria-label="Remove link"
+							title="Remove link"
+							class="inline-flex size-9 shrink-0 items-center justify-center rounded-full border-0 bg-transparent p-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+							><svg class="size-6 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+								><path
+									d="M5.5 7.5H18.5M9.5 4.5H14.5L15.5 7.5M7 7.5L7.75 19.5H16.25L17 7.5M10 10.5V16M14 10.5V16"
+									stroke="currentColor"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								/></svg
+							></button
+						>
+					</div>
+				</div>
+			</div>
+		</section>
 	</div>
 </main>
