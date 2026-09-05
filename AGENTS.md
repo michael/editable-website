@@ -16,6 +16,11 @@ Repository-specific guidance for coding agents working on Svedit.
 - Use `snake_case` for project-defined JavaScript and TypeScript identifiers. Keep web platform and Svelte APIs in their native `camelCase` form.
 - Prefer Tailwind classes and minimize custom CSS. For CSS custom properties, use Tailwind's arbitrary-value utilities, such as `text-(--editing)` and `border-(--editing)`, where applicable.
 
+## UI verification
+
+- The user manually verifies UI changes. Do not use a browser, screenshots, or computer-use tools to verify the UI unless the user explicitly asks.
+- Use appropriate code checks, such as formatting, linting, and Svelte diagnostics, without starting a browser-based verification workflow.
+
 ## Architecture
 
 Svedit is a Svelte 5 rich content editor built around a graph-based document model.
