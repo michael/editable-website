@@ -13,6 +13,7 @@ Repository-specific guidance for coding agents working on Svedit.
 
 ## Code style
 
+- Use tabs for indentation throughout the project, including code snippets in documentation and design system examples. Preserve spaces only where the file format requires them.
 - Use `snake_case` for project-defined JavaScript and TypeScript identifiers. Keep web platform and Svelte APIs in their native `camelCase` form.
 - Prefer Tailwind classes and minimize custom CSS. For CSS custom properties, use Tailwind's arbitrary-value utilities, such as `text-(--editing)` and `border-(--editing)`, where applicable.
 
@@ -25,7 +26,8 @@ Repository-specific guidance for coding agents working on Svedit.
 
 - Inline formatting styles (emphasis, strong, link, code, and highlight) are mutually exclusive. Never nest them or apply multiple styles to the same text.
 
-- Consult `src/routes/design-system/+page.svelte` before styling UI. It is the visual reference for typography, buttons, and editor pills; shared tokens and typography utilities live in `src/app.css`.
+- Consult the [design system source](src/routes/design-system/+page.svelte) before styling UI. With the development server running, the user can open [the design system in a browser](http://localhost:5173/design-system) to inspect typography, spacing, buttons, and editor pills, and inspect the source for their recipes. Shared tokens and typography utilities live in `src/app.css`. Follow the UI verification rules above for agent browser use.
+- When customizing an Editable site, prefer updating the design system first, then adopting those changes in the actual site components. This gives agents and people working manually a concrete reference to implement consistently.
 - Keep reference examples as explicit HTML, SVG, and Tailwind classes. Repetition is intentional; application components own behavior and may adapt the recipes when their interaction requires it.
 - Document new visual patterns in the reference page so future changes have a concrete example to follow.
 
