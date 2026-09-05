@@ -164,12 +164,13 @@
 					<h3 class="text-sm text-(--muted-foreground)">Code · code</h3>
 					<!--
 						Scale code relative to its surrounding text, with a foreground-derived surface.
-						Use the shared button radius for the inline code surface.
+						Code and highlight share 0.25em horizontal and 0.125em vertical padding.
+						Follow the button radius, capped at 0.25em to keep inline corners subtle.
 						Clone the background and padding across wrapped lines. Long identifiers may break.
 					-->
 					<p class="max-w-prose body-base">
 						Use <code
-							class="rounded-(--button-border-radius) bg-(--foreground)/8 box-decoration-clone px-1 py-0.5 font-mono text-[0.9em] font-normal wrap-anywhere"
+							class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
 							>font-medium</code
 						>
 						for button labels.
@@ -180,11 +181,12 @@
 					<h3 class="text-sm text-(--muted-foreground)">Highlight · mark</h3>
 					<!--
 						Use the existing accent pair rather than fixed yellow or the editor selection color.
-						A small inline inset gives letters breathing room. Highlight is a standalone formatting style.
+						Match code padding and the button radius capped at 0.25em, including on wrapped lines.
+						Highlight is a standalone formatting style.
 					-->
 					<p class="max-w-prose body-base">
 						Highlight <mark
-							class="bg-(--accent) box-decoration-clone px-0.5 text-(--accent-foreground)"
+							class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--accent) box-decoration-clone px-[0.25em] py-[0.125em] text-(--accent-foreground)"
 							>the part worth remembering</mark
 						>, not the whole paragraph.
 					</p>
