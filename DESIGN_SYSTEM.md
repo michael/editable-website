@@ -144,10 +144,14 @@ The reference examples establish the proposed pill styling; the existing applica
 The `/design-system#popovers` section includes `popover-context-menu` (page actions and disabled items) and `popover-table-of-contents` (a bounded list of real section links). These are static visual references, not functioning popup components.
 
 - Pill shells use `--button-border-radius` directly.
+- The existing token is registered as an inherited `<length>` in `app.css`. Assign a single nonnegative length such as `0em`, `0.5em`, or `3rem`; relative units resolve where the token is assigned, so smaller child text does not change the radius. No additional radius token is needed.
 - List shells use `min(1rem, var(--button-border-radius))`. The cap preserves space for aligned first and last rows; it is a design choice, not an accessibility requirement.
 - Inner controls subtract the shell's padding and border from its radius, clamped at zero: `max(0px, calc(outer_radius - 0.25rem - 1px))`. The exact Tailwind expressions live in the reference page; `outer_radius` here is explanatory notation, not a new token.
 - Rows share one shape, regular text, wrapping labels, and a 40px minimum height (44px for coarse pointers). The shell uses a solid background, a stroke border, and no shadow.
 - Preserve focus clearance inside scrolling lists. Keep popup behavior and its associated semantics in consuming components.
+- Let the list shell itself scroll instead of adding a second rounded clipping wrapper. Adjust `--button-border-radius` directly to manually review the existing examples at different radii.
+
+The nested radius calculation keeps the corner centers aligned while the outer radius exceeds the inset. Below that inset, the inner radius becomes zero; retaining a rounded inner corner would produce a different curve. These rules target the documented padding, borders, and control sizes. Changing those dimensions requires updating the corresponding inset calculation.
 
 Setting `--button-border-radius: 0em` makes the reference buttons, pill shells, inner pill controls, and list surfaces square. This does not yet apply throughout the live application: existing toolbar and popover components still contain hardcoded rounding. Content image rounding remains a separate concern.
 
