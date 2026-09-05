@@ -78,14 +78,16 @@
 						href={get_preview_href(internal_page_href)}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="group flex h-9 max-w-70 min-w-0 flex-1 items-center rounded-full text-(--foreground) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
+						class="flex h-9 max-w-70 min-w-0 flex-1 items-center rounded-full text-(--foreground) outline-1 outline-transparent hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing) active:bg-(--foreground)/10"
 					>
 						{#if resolved_page_preview.preview_media_node?.src}
 							<div class="size-9 shrink-0 overflow-hidden rounded-full">
-								<Media node={{ ...resolved_page_preview.preview_media_node, object_fit: 'cover' }} />
+								<Media
+									node={{ ...resolved_page_preview.preview_media_node, object_fit: 'cover' }}
+								/>
 							</div>
 						{/if}
-						<span class="min-w-0 truncate px-2 text-sm group-hover:underline">
+						<span class="min-w-0 truncate px-2 text-sm">
 							{resolved_page_preview.title}
 						</span>
 					</a>
@@ -94,7 +96,7 @@
 						href={get_preview_href(internal_page_href)}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="flex h-9 max-w-70 min-w-0 flex-1 items-center px-2 text-sm text-(--foreground) outline-1 outline-transparent hover:underline focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
+						class="flex h-9 max-w-70 min-w-0 flex-1 items-center rounded-full px-2 text-sm text-(--foreground) outline-1 outline-transparent hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing) active:bg-(--foreground)/10"
 					>
 						{error_message || internal_page_href}
 					</a>
@@ -104,7 +106,7 @@
 					href={get_preview_href(node.href)}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="max-w-70 min-w-0 flex-1 truncate px-2 text-sm text-(--foreground) outline-1 outline-transparent hover:underline focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
+					class="h-9 max-w-70 min-w-0 flex-1 content-center truncate rounded-full px-2 text-sm text-(--foreground) outline-1 outline-transparent hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing) active:bg-(--foreground)/10"
 				>
 					{get_preview_label(node.href)}
 				</a>
