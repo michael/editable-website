@@ -76,49 +76,51 @@
 /* Typography system */
 /******************************************************************/
 
-/* E.g. Heading1XL */
+/* Large display headings use medium weight; smaller headings use semibold. */
+/* Heading1XL */
 @utility display-1 {
-	@apply font-sans text-6xl leading-tight tracking-tight text-balance lg:text-7xl;
+	@apply font-sans text-6xl leading-tight font-medium tracking-tight text-balance lg:text-7xl;
 }
 
-/* E.g. Heading1 */
+/* Heading1 */
 @utility display-2 {
-	@apply font-sans text-5xl leading-tight tracking-tight text-balance lg:text-6xl;
+	@apply font-sans text-5xl leading-tight font-medium tracking-tight text-balance lg:text-6xl;
 }
 
-/* E.g. Heading2 */
+/* Heading2 */
 @utility display-3 {
-	@apply font-sans text-4xl leading-tight tracking-tight text-balance lg:text-5xl;
+	@apply font-sans text-4xl leading-tight font-medium tracking-tight text-balance lg:text-5xl;
 }
 
-/* E.g. Heading3 */
+/* Heading3 */
 @utility display-4 {
-	@apply font-sans text-3xl leading-tight tracking-tight text-balance lg:text-4xl;
+	@apply font-sans text-3xl leading-tight font-semibold tracking-tight text-balance lg:text-4xl;
 }
 
-/* E.g. Heading4, TitleGallery.title, ... */
+/* Heading4 and gallery titles */
 @utility display-5 {
-	@apply font-sans text-2xl leading-tight tracking-tight text-balance lg:text-3xl;
+	@apply font-sans text-2xl leading-tight font-semibold tracking-tight text-balance lg:text-3xl;
 }
 
-/* ParagraphSM, ListingItem.description, ... */
+/* Body text uses regular weight and a consistent 1.5 line height. */
+/* Small paragraphs and listing descriptions */
 @utility body-sm {
-	@apply font-sans text-sm;
+	@apply font-sans text-sm leading-normal font-normal;
 }
 
-/* Paragraph, ... */
+/* Standard paragraphs */
 @utility body-base {
-	@apply font-sans text-base;
+	@apply font-sans text-base leading-normal font-normal;
 }
 
-/* ParagraphLG, ... */
+/* Large paragraphs */
 @utility body-lg {
-	@apply font-sans text-lg;
+	@apply font-sans text-lg leading-normal font-normal;
 }
 
-/* ParagraphXL, ... */
+/* Introductory paragraphs */
 @utility body-xl {
-	@apply font-sans text-xl lg:text-2xl;
+	@apply font-sans text-xl leading-normal font-normal lg:text-2xl;
 }
 
 /* EW-specific utils */
