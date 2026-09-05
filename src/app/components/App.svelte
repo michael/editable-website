@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { setContext } from 'svelte';
+	import { setContext, type Snippet } from 'svelte';
 	import { dev } from '$app/env';
 	import { goto, invalidate, refreshAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
@@ -29,7 +29,8 @@
 		is_new = false,
 		is_admin: server_is_admin = false,
 		can_edit = true,
-		origin = null
+		origin = null,
+		children
 	}: {
 		document?: any;
 		slug?: string | null;
@@ -38,6 +39,7 @@
 		is_admin?: boolean;
 		can_edit?: boolean;
 		origin?: string | null;
+		children?: Snippet;
 	} = $props();
 
 	// Backend availability and document editability are independent: read-only
@@ -69,6 +71,9 @@
 	let mobile_touch_started_at_page_end = $state(false);
 
 	const app = {
+		get page_content() {
+			return can_edit ? undefined : children;
+		},
 		get has_backend() {
 			return has_backend;
 		},
