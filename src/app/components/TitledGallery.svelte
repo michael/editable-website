@@ -7,17 +7,17 @@
 	const svedit = get_svedit_context();
 	let node: Nodes['titled_gallery'] = $derived(svedit.session.get(path));
 	let layout = $derived(node.layout || 'cards');
-	let padding_top_wide = $derived(!section || section?.is_start);
-	let padding_bottom_wide = $derived(!section || section?.is_end);
+	let padding_top_generous = $derived(!section || section.is_start);
+	let padding_bottom_generous = $derived(!section || section.is_end);
 </script>
 
 <Node class="ew-titled-gallery" {path}>
-	<div class="mx-auto max-w-7xl w-full">
+	<div class="mx-auto w-full max-w-7xl">
 		<div
 			class={[
 				'px-5 sm:px-7',
-				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
-				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+				padding_top_generous ? 'pt-block-generous' : 'pt-block-compact',
+				padding_bottom_generous ? 'pb-block-generous' : 'pb-block-compact'
 			]}
 		>
 			<NodeArrayProperty

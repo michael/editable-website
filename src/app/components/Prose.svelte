@@ -12,8 +12,8 @@
 	}: { path: DocumentPath; mark?: NodeArrayAttachmentContext | null } = $props();
 	let node: Nodes['prose'] = $derived(svedit.session.get(path));
 	let layout = $derived(node.layout || 'narrow-left');
-	let padding_top_wide = $derived(!section || section?.is_start);
-	let padding_bottom_wide = $derived(!section || section?.is_end);
+	let padding_top_generous = $derived(!section || section.is_start);
+	let padding_bottom_generous = $derived(!section || section.is_end);
 
 	setContext('prose', {
 		get is_centered() {
@@ -40,11 +40,11 @@
 	<div class="mx-auto max-w-7xl">
 		<div
 			class={[
-				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
-				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+				padding_top_generous ? 'pt-block-generous' : 'pt-block-compact',
+				padding_bottom_generous ? 'pb-block-generous' : 'pb-block-compact'
 			]}
 		>
-			<div class="px-5 sm:px-7 max-w-4xl">
+			<div class="max-w-4xl px-5 sm:px-7">
 				{@render body()}
 			</div>
 		</div>
@@ -55,11 +55,11 @@
 	<div class="mx-auto max-w-7xl">
 		<div
 			class={[
-				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
-				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+				padding_top_generous ? 'pt-block-generous' : 'pt-block-compact',
+				padding_bottom_generous ? 'pb-block-generous' : 'pb-block-compact'
 			]}
 		>
-			<div class="px-5 sm:px-7 mx-auto max-w-4xl">
+			<div class="mx-auto max-w-4xl px-5 sm:px-7">
 				{@render body()}
 			</div>
 		</div>
@@ -70,11 +70,11 @@
 	<div class="mx-auto max-w-7xl">
 		<div
 			class={[
-				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
-				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+				padding_top_generous ? 'pt-block-generous' : 'pt-block-compact',
+				padding_bottom_generous ? 'pb-block-generous' : 'pb-block-compact'
 			]}
 		>
-			<div class="px-5 sm:px-7 ml-auto max-w-4xl">
+			<div class="ml-auto max-w-4xl px-5 sm:px-7">
 				{@render body()}
 			</div>
 		</div>
@@ -85,11 +85,11 @@
 	<div class="mx-auto max-w-7xl">
 		<div
 			class={[
-				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
-				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+				padding_top_generous ? 'pt-block-generous' : 'pt-block-compact',
+				padding_bottom_generous ? 'pb-block-generous' : 'pb-block-compact'
 			]}
 		>
-			<div class="px-5 sm:px-7 mx-auto max-w-4xl text-center text-balance">
+			<div class="mx-auto max-w-4xl px-5 text-center text-balance sm:px-7">
 				{@render body()}
 			</div>
 		</div>
@@ -100,8 +100,8 @@
 	<div class="mx-auto max-w-7xl">
 		<div
 			class={[
-				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
-				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+				padding_top_generous ? 'pt-block-generous' : 'pt-block-compact',
+				padding_bottom_generous ? 'pb-block-generous' : 'pb-block-compact'
 			]}
 		>
 			<div class="px-5 sm:px-7">
@@ -115,11 +115,11 @@
 	<div class="mx-auto max-w-7xl">
 		<div
 			class={[
-				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
-				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+				padding_top_generous ? 'pt-block-generous' : 'pt-block-compact',
+				padding_bottom_generous ? 'pb-block-generous' : 'pb-block-compact'
 			]}
 		>
-			<div class="px-5 sm:px-7 text-center text-balance">
+			<div class="px-5 text-center text-balance sm:px-7">
 				{@render body()}
 			</div>
 		</div>

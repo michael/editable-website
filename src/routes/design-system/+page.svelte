@@ -215,7 +215,7 @@
 					</p>
 				</div>
 				<div class="space-y-3">
-					<h4 class="text-sm text-(--muted-foreground)">Sample prose block · proposal</h4>
+					<h4 class="text-sm text-(--muted-foreground)">Sample prose block</h4>
 					<pre
 						class="overflow-x-auto border border-(--stroke) bg-(--muted) p-4 text-sm leading-6"><code
 							>&lt;script lang="ts"&gt;
@@ -238,12 +238,8 @@
 	&lt;div class="mx-auto max-w-7xl"&gt;
 		&lt;div class=&#123;[
 			'px-5 sm:px-7',
-			padding_top_generous
-				? 'pt-10 sm:pt-14 md:pt-16 lg:pt-28'
-				: 'pt-4 lg:pt-7',
-			padding_bottom_generous
-				? 'pb-10 sm:pb-14 md:pb-16 lg:pb-28'
-				: 'pb-4 lg:pb-7'
+			padding_top_generous ? 'pt-block-generous' : 'pt-block-compact',
+			padding_bottom_generous ? 'pb-block-generous' : 'pb-block-compact'
 		]&#125;&gt;
 			&lt;NodeArrayProperty
 				path=&#123;[...path, 'body']&#125;
@@ -265,9 +261,17 @@
 					<li>A one-block section is both the start and the end, so both edges are generous.</li>
 				</ul>
 				<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
-					This sample is for discussion; the app implementation is unchanged. Responsive classes are
-					explicit here so the values are visible. Shared spacing utilities can replace those class
-					strings while keeping the same section-based decisions.
+					The app uses shared utilities in <code class="font-mono">src/app.css</code> for the
+					default rhythm: <code class="font-mono">pt-block-generous</code>,
+					<code class="font-mono">pt-block-compact</code>, and their
+					<code class="font-mono">pb-</code> equivalents. They apply the values above to existing elements
+					without adding a wrapper component.
+				</p>
+				<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
+					For a custom rhythm, replace the default utility on that edge with explicit responsive
+					classes, such as <code class="font-mono">pt-8 lg:pt-16</code>. Avoid combining a default
+					utility with overrides on the same edge. Keep deliberate exceptions local: flush and
+					full-bleed figures have no vertical padding.
 				</p>
 			</div>
 		</section>

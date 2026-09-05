@@ -7,8 +7,8 @@
 	let { path, mark: section = null } = $props();
 	let node: Nodes['prose_grid'] = $derived(svedit.session.get(path));
 	let item_count = $derived(node.items?.nodes.length || 0);
-	let padding_top_wide = $derived(!section || section?.is_start);
-	let padding_bottom_wide = $derived(!section || section?.is_end);
+	let padding_top_generous = $derived(!section || section.is_start);
+	let padding_bottom_generous = $derived(!section || section.is_end);
 	let grid_cols_class = $derived(
 		item_count <= 1 ? 'lg:grid-cols-1' : item_count === 2 ? 'lg:grid-cols-2' : 'lg:grid-cols-3'
 	);
@@ -19,8 +19,8 @@
 		<div
 			class={[
 				'px-5 sm:px-7',
-				padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
-				padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+				padding_top_generous ? 'pt-block-generous' : 'pt-block-compact',
+				padding_bottom_generous ? 'pb-block-generous' : 'pb-block-compact'
 			]}
 		>
 			<NodeArrayProperty

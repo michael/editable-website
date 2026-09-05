@@ -7,20 +7,20 @@
 	let { path, mark: section = null } = $props();
 	let node: Nodes['listing'] = $derived(svedit.session.get(path));
 	let listing_layout = $derived(node.layout || 'narrow-left');
-	let padding_top_wide = $derived(!section || section?.is_start);
-	let padding_bottom_wide = $derived(!section || section?.is_end);
+	let padding_top_generous = $derived(!section || section.is_start);
+	let padding_bottom_generous = $derived(!section || section.is_end);
 </script>
 
 {#snippet narrow_left()}
 	<Node class="ew-listing" {path}>
-		<div class="mx-auto max-w-7xl w-full">
+		<div class="mx-auto w-full max-w-7xl">
 			<div
 				class={[
-					padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
-					padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+					padding_top_generous ? 'pt-block-generous' : 'pt-block-compact',
+					padding_bottom_generous ? 'pb-block-generous' : 'pb-block-compact'
 				]}
 			>
-				<div class="max-w-4xl px-5 sm:px-7 bg-(--background) text-(--foreground)">
+				<div class="max-w-4xl bg-(--background) px-5 text-(--foreground) sm:px-7">
 					<NodeArrayProperty class="flex flex-col" path={[...path, 'items']} />
 				</div>
 			</div>
@@ -30,14 +30,14 @@
 
 {#snippet narrow_center()}
 	<Node class="ew-listing" {path}>
-		<div class="mx-auto max-w-7xl w-full">
+		<div class="mx-auto w-full max-w-7xl">
 			<div
 				class={[
-					padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
-					padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+					padding_top_generous ? 'pt-block-generous' : 'pt-block-compact',
+					padding_bottom_generous ? 'pb-block-generous' : 'pb-block-compact'
 				]}
 			>
-				<div class="mx-auto max-w-4xl px-5 sm:px-7 bg-(--background) text-(--foreground)">
+				<div class="mx-auto max-w-4xl bg-(--background) px-5 text-(--foreground) sm:px-7">
 					<NodeArrayProperty class="flex flex-col" path={[...path, 'items']} />
 				</div>
 			</div>
@@ -47,14 +47,14 @@
 
 {#snippet narrow_right()}
 	<Node class="ew-listing" {path}>
-		<div class="mx-auto max-w-7xl w-full">
+		<div class="mx-auto w-full max-w-7xl">
 			<div
 				class={[
-					padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
-					padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+					padding_top_generous ? 'pt-block-generous' : 'pt-block-compact',
+					padding_bottom_generous ? 'pb-block-generous' : 'pb-block-compact'
 				]}
 			>
-				<div class="ml-auto max-w-4xl px-5 sm:px-7 bg-(--background) text-(--foreground)">
+				<div class="ml-auto max-w-4xl bg-(--background) px-5 text-(--foreground) sm:px-7">
 					<NodeArrayProperty class="flex flex-col" path={[...path, 'items']} />
 				</div>
 			</div>
@@ -64,12 +64,12 @@
 
 {#snippet full_width()}
 	<Node class="ew-listing" {path}>
-		<div class="mx-auto max-w-7xl w-full">
+		<div class="mx-auto w-full max-w-7xl">
 			<div
 				class={[
 					'px-5 sm:px-7',
-					padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
-					padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+					padding_top_generous ? 'pt-block-generous' : 'pt-block-compact',
+					padding_bottom_generous ? 'pb-block-generous' : 'pb-block-compact'
 				]}
 			>
 				<div class="bg-(--background) text-(--foreground)">
@@ -82,12 +82,12 @@
 
 {#snippet two_columns()}
 	<Node class="ew-listing" {path}>
-		<div class="mx-auto max-w-7xl w-full">
+		<div class="mx-auto w-full max-w-7xl">
 			<div
 				class={[
 					'px-5 sm:px-7',
-					padding_top_wide ? 'pt-section-wide' : 'pt-section-narrow',
-					padding_bottom_wide ? 'pb-section-wide' : 'pb-section-narrow'
+					padding_top_generous ? 'pt-block-generous' : 'pt-block-compact',
+					padding_bottom_generous ? 'pb-block-generous' : 'pb-block-compact'
 				]}
 			>
 				<div class="bg-(--background) text-(--foreground)">
