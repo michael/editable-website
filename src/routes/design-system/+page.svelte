@@ -11,11 +11,170 @@
 <main class="min-h-screen bg-(--background) py-16 font-sans text-(--foreground) antialiased">
 	<div class="mx-auto max-w-7xl space-y-16 px-5 sm:px-7">
 		<header class="space-y-3">
-			<h1 class="text-3xl font-medium tracking-tight">The Editable Design System</h1>
+			<h1 class="display-2">The Editable Design System</h1>
 			<p class="max-w-xl text-base leading-relaxed text-(--muted-foreground)">
 				A shared starting point for Editable. Simple styles, ready to use and adapt.
 			</p>
 		</header>
+
+		<section id="foundations" aria-labelledby="foundations-heading" class="space-y-8">
+			<div class="space-y-2">
+				<h2 id="foundations-heading" class="text-xl font-medium">Foundations</h2>
+				<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
+					Colors, fonts, and corner radii come from the shared tokens in
+					<code class="font-mono">src/app.css</code>. These specimens follow the current token
+					values.
+				</p>
+			</div>
+
+			<div class="space-y-4">
+				<h3 class="text-sm font-medium">Colors and surfaces</h3>
+				<p class="max-w-prose body-sm text-(--muted-foreground)">
+					Keep each surface with its foreground color. Neutral controls use the muted surface on
+					hover and a 10% foreground tint on press. Primary actions and editing actions use their
+					respective accent treatments.
+				</p>
+				<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+					<div class="space-y-2">
+						<div
+							class="flex min-h-28 items-center border border-(--stroke) bg-(--background) p-5 body-base text-(--foreground)"
+						>
+							Page content
+						</div>
+						<p class="body-sm">
+							<code class="font-mono">--background</code> /
+							<code class="font-mono">--foreground</code>
+						</p>
+					</div>
+					<div class="space-y-2">
+						<div
+							class="flex min-h-28 flex-col justify-center gap-1 border border-(--stroke) bg-(--muted) p-5 body-base text-(--foreground)"
+						>
+							<p>Secondary surface</p>
+							<p class="body-sm text-(--muted-foreground)">Supporting text</p>
+						</div>
+						<p class="body-sm">
+							<code class="font-mono">--muted</code> /
+							<code class="font-mono">--muted-foreground</code>
+						</p>
+					</div>
+					<div class="space-y-2">
+						<div
+							class="flex min-h-28 items-center border border-transparent bg-(--accent) p-5 body-base text-(--accent-foreground)"
+						>
+							Primary action or highlight
+						</div>
+						<p class="body-sm">
+							<code class="font-mono">--accent</code> /
+							<code class="font-mono">--accent-foreground</code>
+						</p>
+					</div>
+					<div class="space-y-2">
+						<div
+							class="flex min-h-28 items-center border border-transparent bg-(--editing) p-5 body-base text-(--editing-foreground)"
+						>
+							Active editing
+						</div>
+						<p class="body-sm">
+							<code class="font-mono">--editing</code> /
+							<code class="font-mono">--editing-foreground</code>
+						</p>
+					</div>
+					<div class="space-y-2">
+						<div
+							class="flex min-h-28 items-center border border-(--stroke) bg-(--editing-muted) p-5 body-base text-(--editing)"
+						>
+							Passive editing highlight
+						</div>
+						<p class="body-sm">
+							<code class="font-mono">--editing-muted</code> /
+							<code class="font-mono">--editing</code>
+						</p>
+					</div>
+					<div class="space-y-2">
+						<div
+							class="flex min-h-28 flex-col justify-center gap-3 border border-(--stroke) bg-(--background) p-5 body-base"
+						>
+							<p>Borders and dividers</p>
+							<hr class="border-0 border-t border-(--stroke)" />
+						</div>
+						<p class="body-sm"><code class="font-mono">--stroke</code></p>
+					</div>
+				</div>
+			</div>
+
+			<div class="space-y-4">
+				<h3 class="text-sm font-medium">Font families</h3>
+				<div class="grid gap-6 sm:grid-cols-3">
+					<div class="space-y-2">
+						<p class="font-sans text-2xl">Clear words.</p>
+						<p class="body-sm"><code class="font-mono">font-sans</code> · Inter</p>
+					</div>
+					<div class="space-y-2">
+						<p class="font-serif text-2xl">Clear words.</p>
+						<p class="body-sm">
+							<code class="font-mono">font-serif</code> · Libertinos Serif Display
+						</p>
+					</div>
+					<div class="space-y-2">
+						<p class="font-mono text-2xl">Clear words.</p>
+						<p class="body-sm"><code class="font-mono">font-mono</code> · IBM Plex Mono</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="space-y-4">
+				<h3 class="text-sm font-medium">Corner radii</h3>
+				<p class="max-w-prose body-sm text-(--muted-foreground)">
+					Buttons and pill shells use the button radius. Popovers cap it at 1rem; their inner rows
+					and pill controls subtract 4px padding and a 1px border, clamped at zero. Images use their
+					own radius. Set either token to zero for square corners.
+				</p>
+				<!-- Static shape specimens; interactive recipes appear in the sections below. -->
+				<div class="grid items-start gap-6 sm:grid-cols-2 lg:grid-cols-4">
+					<div class="space-y-3">
+						<div
+							class="inline-flex min-h-11 items-center rounded-(--button-border-radius) border border-(--stroke) px-5 py-2 text-base leading-6 font-medium"
+						>
+							Button
+						</div>
+						<p class="body-sm"><code class="font-mono">--button-border-radius</code></p>
+					</div>
+					<div class="space-y-3">
+						<div
+							class="inline-flex rounded-(--button-border-radius) border border-(--stroke) bg-(--background) p-1"
+						>
+							<div
+								class="flex min-h-9 items-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] bg-(--muted) px-3 py-2 text-sm leading-5 font-medium"
+							>
+								Pill interior
+							</div>
+						</div>
+						<p class="body-sm">Button radius with an inset interior.</p>
+					</div>
+					<div class="space-y-3">
+						<div
+							class="rounded-[min(1rem,var(--button-border-radius))] border border-(--stroke) bg-(--background) p-1"
+						>
+							<div
+								class="min-h-10 rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] bg-(--muted) px-3 py-2.5 text-sm leading-5"
+							>
+								Popover row
+							</div>
+						</div>
+						<p class="body-sm">Button radius capped at 1rem, with an inset row.</p>
+					</div>
+					<div class="space-y-3">
+						<div
+							class="flex aspect-video items-center justify-center rounded-(--image-border-radius) border border-(--stroke) bg-(--muted) p-5 body-sm"
+						>
+							Image corners
+						</div>
+						<p class="body-sm"><code class="font-mono">--image-border-radius</code></p>
+					</div>
+				</div>
+			</div>
+		</section>
 
 		<section id="page-limiter" aria-labelledby="page-limiter-heading" class="space-y-8">
 			<div class="space-y-2">
@@ -479,10 +638,10 @@
 
 				<div id="button-secondary" class="min-w-0 space-y-4">
 					<h3 class="text-sm text-(--muted-foreground)">Secondary</h3>
-					<!-- Supporting action. Use the shared stroke token for the border and foreground tints for states. -->
+					<!-- Supporting action. Use the shared stroke border, muted hover surface, and foreground tint on press. -->
 					<button
 						type="button"
-						class="inline-flex min-h-11 max-w-full min-w-11 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-transparent px-5 py-2 text-center text-base leading-6 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--foreground)/5 enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
+						class="inline-flex min-h-11 max-w-full min-w-11 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-transparent px-5 py-2 text-center text-base leading-6 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
 					>
 						Continue
 					</button>
@@ -492,7 +651,8 @@
 					<h3 class="text-sm text-(--muted-foreground)">Link</h3>
 					<!--
 						Standalone navigation: no horizontal padding or border, so text aligns with its surroundings.
-						Keep the 44px minimum height and a 24px minimum width; short labels stay start-aligned.
+						Keep the 44px minimum height and a 24px minimum width, increased to 44px for coarse pointers.
+						Short labels stay start-aligned.
 						Inline links within prose need a separate recipe without this vertical sizing.
 						Target guidance: https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum
 					This local destination keeps the specimen usable without adding application behavior.
@@ -500,7 +660,7 @@
 					-->
 					<a
 						href="#buttons"
-						class="inline-flex min-h-11 max-w-full min-w-6 items-center justify-start py-2.5 text-start text-base leading-6 font-medium wrap-anywhere text-(--foreground) underline decoration-1 underline-offset-4 hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:decoration-2"
+						class="inline-flex min-h-11 max-w-full min-w-6 items-center justify-start py-2.5 text-start text-base leading-6 font-medium wrap-anywhere text-(--foreground) underline decoration-1 underline-offset-4 hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:decoration-2 pointer-coarse:min-w-11"
 					>
 						Continue
 					</a>
@@ -536,10 +696,10 @@
 
 				<div id="button-secondary-small" class="min-w-0 space-y-4">
 					<h3 class="text-sm text-(--muted-foreground)">Secondary</h3>
-					<!-- Supporting action. Use the shared stroke token for the border and foreground tints for states. -->
+					<!-- Supporting action. Use the shared stroke border, muted hover surface, and foreground tint on press. -->
 					<button
 						type="button"
-						class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-transparent px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--foreground)/5 enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
+						class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-transparent px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
 					>
 						Continue
 					</button>
@@ -554,6 +714,69 @@
 					>
 						Continue
 					</a>
+				</div>
+			</div>
+		</section>
+
+		<section id="buttons-disabled" aria-labelledby="buttons-disabled-heading" class="space-y-8">
+			<div class="space-y-2">
+				<h2 id="buttons-disabled-heading" class="text-xl font-medium">Disabled buttons</h2>
+				<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
+					Buttons and pill controls use 40% opacity with the default cursor. Native disabled buttons
+					skip keyboard focus and suppress hover and press feedback. Menu rows instead use muted
+					text to keep unavailable actions legible.
+				</p>
+			</div>
+			<!-- Copy the enabled recipe unchanged and add the native disabled attribute. -->
+			<div class="grid items-start gap-6 sm:grid-cols-2 lg:grid-cols-4">
+				<div class="min-w-0 space-y-4">
+					<h3 class="text-sm text-(--muted-foreground)">Primary</h3>
+					<button
+						type="button"
+						disabled
+						class="inline-flex min-h-11 max-w-full min-w-11 items-center justify-center rounded-(--button-border-radius) border border-transparent bg-(--accent) px-5 py-2 text-center text-base leading-6 font-medium wrap-anywhere text-(--accent-foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_20%)] enabled:active:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_30%)] disabled:cursor-default disabled:opacity-40"
+						>Continue</button
+					>
+				</div>
+				<div class="min-w-0 space-y-4">
+					<h3 class="text-sm text-(--muted-foreground)">Secondary</h3>
+					<button
+						type="button"
+						disabled
+						class="inline-flex min-h-11 max-w-full min-w-11 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-transparent px-5 py-2 text-center text-base leading-6 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
+						>Continue</button
+					>
+				</div>
+				<div class="min-w-0 space-y-4">
+					<h3 class="text-sm text-(--muted-foreground)">Small primary</h3>
+					<button
+						type="button"
+						disabled
+						class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-transparent bg-(--accent) px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--accent-foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_20%)] enabled:active:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_30%)] disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
+						>Continue</button
+					>
+				</div>
+				<div class="min-w-0 space-y-4">
+					<h3 class="text-sm text-(--muted-foreground)">Small secondary</h3>
+					<button
+						type="button"
+						disabled
+						class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-transparent px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
+						>Continue</button
+					>
+				</div>
+			</div>
+			<div class="space-y-4">
+				<h3 class="text-sm text-(--muted-foreground)">Editing pill</h3>
+				<div
+					class="inline-flex max-w-full items-center gap-1 rounded-(--button-border-radius) border border-(--stroke) bg-(--background) p-1 text-(--foreground)"
+				>
+					<button
+						type="button"
+						disabled
+						class="inline-flex min-h-9 max-w-full min-w-0 items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent px-8 py-2 text-sm leading-5 font-medium wrap-anywhere text-(--editing) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--editing-muted) enabled:active:bg-(--editing)/15 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11"
+						>Create link</button
+					>
 				</div>
 			</div>
 		</section>
@@ -633,7 +856,7 @@
 					>
 					<button
 						type="button"
-						class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center gap-1.5 rounded-(--button-border-radius) border border-(--stroke) bg-transparent px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--foreground)/5 enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
+						class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center gap-1.5 rounded-(--button-border-radius) border border-(--stroke) bg-transparent px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
 					>
 						Install
 						<svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -906,6 +1129,13 @@ These destinations are real sections on this reference page. Application content
 						<ul class="list-none">
 							<li>
 								<a
+									href="#foundations"
+									class="flex min-h-10 w-full items-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2.5 text-start text-sm leading-5 font-normal wrap-anywhere text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
+									>Foundations</a
+								>
+							</li>
+							<li>
+								<a
 									href="#typography"
 									class="flex min-h-10 w-full items-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2.5 text-start text-sm leading-5 font-normal wrap-anywhere text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
 									>Typography</a
@@ -930,6 +1160,13 @@ These destinations are real sections on this reference page. Application content
 									href="#buttons-small"
 									class="flex min-h-10 w-full items-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2.5 text-start text-sm leading-5 font-normal wrap-anywhere text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
 									>Small buttons</a
+								>
+							</li>
+							<li>
+								<a
+									href="#buttons-disabled"
+									class="flex min-h-10 w-full items-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2.5 text-start text-sm leading-5 font-normal wrap-anywhere text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
+									>Disabled buttons</a
 								>
 							</li>
 							<li>
