@@ -69,25 +69,30 @@
 
 {#snippet render_link_preview(resolved_page_preview = null, error_message = '')}
 	<div
-		class="overflow-hidden rounded-full border border-(--stroke) bg-(--background) text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
+		class="max-w-full rounded-(--button-border-radius) border border-(--stroke) bg-(--background) text-(--foreground)"
 	>
-		<div class="flex items-center gap-1 p-1">
+		<div class="flex min-w-0 items-center gap-1 p-1">
 			{#if internal_page_href}
 				{#if resolved_page_preview}
 					<a
 						href={get_preview_href(internal_page_href)}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="flex h-9 max-w-70 min-w-0 flex-1 items-center rounded-full text-(--foreground) outline-1 outline-transparent hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing) active:bg-(--foreground)/10"
+						class="inline-flex min-h-9 max-w-70 min-w-0 flex-1 items-center gap-2 rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] text-sm leading-5 font-medium text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
 					>
 						{#if resolved_page_preview.preview_media_node?.src}
-							<div class="size-9 shrink-0 overflow-hidden rounded-full">
+							<div
+								class="size-9 shrink-0 overflow-hidden rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))]"
+							>
 								<Media
 									node={{ ...resolved_page_preview.preview_media_node, object_fit: 'cover' }}
 								/>
 							</div>
 						{/if}
-						<span class="min-w-0 truncate px-2 text-sm">
+						<span
+							class="min-w-0 truncate pr-3"
+							class:pl-3={!resolved_page_preview.preview_media_node?.src}
+						>
 							{resolved_page_preview.title}
 						</span>
 					</a>
@@ -96,9 +101,9 @@
 						href={get_preview_href(internal_page_href)}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="flex h-9 max-w-70 min-w-0 flex-1 items-center rounded-full px-2 text-sm text-(--foreground) outline-1 outline-transparent hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing) active:bg-(--foreground)/10"
+						class="inline-flex min-h-9 max-w-70 min-w-0 flex-1 items-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] px-3 text-sm leading-5 font-medium text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
 					>
-						{error_message || internal_page_href}
+						<span class="min-w-0 truncate">{error_message || internal_page_href}</span>
 					</a>
 				{/if}
 			{:else}
@@ -106,14 +111,14 @@
 					href={get_preview_href(node.href)}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="h-9 max-w-70 min-w-0 flex-1 content-center truncate rounded-full px-2 text-sm text-(--foreground) outline-1 outline-transparent hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing) active:bg-(--foreground)/10"
+					class="inline-flex min-h-9 max-w-70 min-w-0 flex-1 items-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] px-3 text-sm leading-5 font-medium text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
 				>
-					{get_preview_label(node.href)}
+					<span class="min-w-0 truncate">{get_preview_label(node.href)}</span>
 				</a>
 			{/if}
 			<button
 				type="button"
-				class="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--foreground) outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing) active:translate-y-px active:scale-95 active:bg-(--muted)"
+				class="inline-flex size-9 shrink-0 items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
 				onclick={handle_edit}
 				title="Edit link"
 				aria-label="Edit link"
@@ -135,7 +140,7 @@
 			</button>
 			<button
 				type="button"
-				class="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--foreground) outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing) active:translate-y-px active:scale-95 active:bg-(--muted)"
+				class="inline-flex size-9 shrink-0 items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
 				onclick={handle_remove}
 				title="Remove link"
 				aria-label="Remove link"
@@ -160,7 +165,7 @@
 {/snippet}
 
 <div
-	class="link-preview pointer-events-auto absolute z-30 mt-3"
+	class="link-preview pointer-events-auto absolute z-30 mt-3 max-w-[calc(100vw-2.5rem)]"
 	style="position-anchor: --{serialize_path(
 		path
 	)}; position-area: block-end span-all; justify-self: anchor-center;"
@@ -182,14 +187,14 @@
 		{/if}
 	{:else}
 		<div
-			class="rounded-full border border-(--stroke) bg-(--background) p-1 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
+			class="inline-flex max-w-full rounded-(--button-border-radius) border border-(--stroke) bg-(--background) p-1 text-(--foreground)"
 		>
 			<button
 				type="button"
-				class="flex h-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent px-12 text-sm font-medium text-(--editing) outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing) active:translate-y-px active:scale-[0.97] active:bg-(--muted)"
+				class="inline-flex min-h-9 max-w-full min-w-0 items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent px-8 py-2 text-sm leading-5 font-medium wrap-anywhere text-(--editing) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--editing-muted) enabled:active:bg-(--editing)/15 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11"
 				onclick={handle_edit}
 			>
-				Create Link
+				Create link
 			</button>
 		</div>
 	{/if}

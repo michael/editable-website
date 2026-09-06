@@ -80,14 +80,14 @@
 	>
 		<details
 			bind:this={toc_menu_ref}
-			class="group relative flex h-11.5 max-w-[calc(100vw-2.5rem)] min-w-0 rounded-full border border-(--stroke) bg-(--background) p-1 text-sm leading-5 whitespace-nowrap text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
+			class="group relative max-w-[calc(100vw-2.5rem)] min-w-0 rounded-(--button-border-radius) border border-(--stroke) bg-(--background) p-1 text-sm leading-5 text-(--foreground)"
 		>
 			<summary
-				class="relative flex h-9 min-w-0 cursor-pointer list-none items-center gap-3 rounded-full px-5 whitespace-nowrap hover:bg-(--muted) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
+				class="relative flex min-h-9 min-w-0 cursor-pointer list-none items-center gap-2 rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] px-3 py-2 font-medium whitespace-nowrap hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
 			>
-				<span class="truncate">{entries[active_entry_index]?.title}</span>
+				<span class="min-w-0 truncate">{entries[active_entry_index]?.title}</span>
 				<svg
-					class="size-3 shrink-0 text-(--muted-foreground) transition-transform group-open:rotate-180"
+					class="size-4 shrink-0 text-(--muted-foreground) group-open:rotate-180"
 					viewBox="0 0 12 12"
 					fill="none"
 					aria-hidden="true"
@@ -96,13 +96,13 @@
 				</svg>
 			</summary>
 			<nav
-				class="absolute top-full left-1/2 mt-2 flex max-h-[min(24rem,calc(100vh-6rem))] w-[min(24rem,calc(100vw-2.5rem))] -translate-x-1/2 flex-col overflow-y-auto rounded-2xl border border-(--stroke) bg-(--background) p-1.5 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
+				class="absolute top-full left-1/2 mt-2 flex max-h-[min(24rem,calc(100vh-6rem))] w-[min(24rem,calc(100vw-2.5rem))] -translate-x-1/2 flex-col overflow-y-auto overscroll-contain rounded-[min(1rem,var(--button-border-radius))] border border-(--stroke) bg-(--background) p-1 text-(--foreground)"
 				aria-label="Table of contents"
 			>
 				{#each entries as entry, index (entry.href)}
 					<a
 						href={entry.href}
-						class="block w-full cursor-pointer rounded-xl bg-transparent px-3 py-2.5 text-left text-sm text-(--foreground) outline-none hover:bg-(--muted) focus-visible:bg-(--muted)"
+						class="flex min-h-10 w-full items-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2.5 text-start text-sm leading-5 font-normal wrap-anywhere whitespace-normal text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
 						aria-current={index === active_entry_index ? 'location' : undefined}
 						onclick={close_toc_menu}
 					>

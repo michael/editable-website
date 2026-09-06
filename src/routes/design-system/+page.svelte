@@ -1210,6 +1210,42 @@ The local href is a specimen destination. Production links retain their own dest
 					</div>
 				</div>
 			</section>
+			<section id="editor-forms" aria-labelledby="editor-forms-heading" class="space-y-8">
+				<div class="space-y-2">
+					<h2 id="editor-forms-heading" class="text-xl font-medium">Editor forms</h2>
+					<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
+						Link and media prompts use an opaque surface with 4px padding, no shadow, and the button
+						radius capped at 1rem. Fields and actions subtract the padding and border from that
+						radius. Text inputs and textareas use 16px text; keyboard focus uses the shared outline.
+					</p>
+				</div>
+				<!-- A static form surface; submission and dialog behavior belong to the application. -->
+				<div
+					class="flex w-80 max-w-full flex-col gap-1 rounded-[min(1rem,var(--button-border-radius))] border border-(--stroke) bg-(--background) p-1 text-(--foreground)"
+				>
+					<input
+						type="url"
+						aria-label="Example link URL"
+						value="https://example.com"
+						class="min-h-9 w-full min-w-0 rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border border-(--stroke) bg-(--background) px-3 py-1 text-base leading-6 text-(--foreground) focus:border-(--stroke) focus:ring-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) pointer-coarse:min-h-11"
+					/>
+					<div class="flex flex-wrap items-center justify-between gap-2 pl-3">
+						<label class="flex min-h-9 cursor-pointer items-center gap-2 pointer-coarse:min-h-11">
+							<input
+								type="checkbox"
+								class="size-4 shrink-0 cursor-pointer rounded-[min(0.25rem,var(--button-border-radius))] border-(--stroke)! bg-(--muted)! text-(--editing) ring-0 checked:border-transparent! checked:bg-(--editing)! focus:ring-0 focus:ring-offset-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing)"
+							/>
+							<span class="text-sm text-(--foreground)">Open in new tab</span>
+						</label>
+						<button
+							type="button"
+							class="inline-flex min-h-9 shrink-0 items-center justify-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2 text-sm leading-5 font-medium text-(--editing) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--editing-muted) enabled:active:bg-(--editing)/15 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11"
+							>Update</button
+						>
+					</div>
+				</div>
+			</section>
+
 			<section id="popovers" aria-labelledby="popovers-heading" class="space-y-8">
 				<div class="space-y-2">
 					<h2 id="popovers-heading" class="text-xl font-medium">List popovers</h2>
