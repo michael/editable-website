@@ -45,7 +45,7 @@
 
 {#snippet card()}
 	<div
-		class="h-full border border-(--stroke) bg-(--muted) px-8 py-10"
+		class="h-full border border-(--stroke) bg-(--muted) px-8 py-10 [--secondary-button-background:var(--background)]"
 		style:border-radius="var(--image-border-radius)"
 	>
 		<div class={[centered && 'text-center text-balance']}>

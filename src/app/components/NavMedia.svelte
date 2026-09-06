@@ -16,13 +16,17 @@
 <Node class="nav-media flex min-w-10 shrink-0 items-center" {path}>
 	<svelte:element
 		this={render_as_link ? 'a' : 'div'}
-		class="block h-7 min-w-0 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
-		style:aspect-ratio={media_node.width && media_node.height
-			? `${media_node.width} / ${media_node.height}`
-			: '1 / 1'}
+		class="inline-flex min-h-9 min-w-9 items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) pointer-coarse:min-h-11 pointer-coarse:min-w-11"
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link && node.target !== '_self' ? node.target : undefined}
 	>
-		<MediaProperty path={[...path, 'media']} />
+		<div
+			class="h-8"
+			style:aspect-ratio={media_node.width && media_node.height
+				? `${media_node.width} / ${media_node.height}`
+				: '1 / 1'}
+		>
+			<MediaProperty path={[...path, 'media']} />
+		</div>
 	</svelte:element>
 </Node>
