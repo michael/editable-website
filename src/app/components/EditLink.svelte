@@ -171,28 +171,26 @@
 
 <dialog
 	bind:this={dialog_ref}
-	class="edit-link-dialog absolute z-40 m-0 mt-3 max-h-90 overflow-hidden rounded-[23px] border border-(--stroke) bg-(--background) p-0 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
+	class="edit-link-dialog absolute z-40 m-0 mt-3 max-h-90 max-w-[calc(100vw-2.5rem)] overflow-y-auto rounded-[min(1rem,var(--button-border-radius))] border border-(--stroke) bg-(--background) p-1 text-(--foreground)"
 	style="position-anchor: {anchor_name}; position-area: block-end span-all; justify-self: anchor-center;"
 	onclick={handle_backdrop_click}
 >
-	<div class="flex flex-col">
-		<div class="px-1 pt-1">
-			<div
-				class="flex items-center overflow-hidden rounded-full border border-(--stroke) focus-within:border-(--editing)"
-			>
+	<div class="flex flex-col gap-1">
+		<div class="min-w-0">
+			<div class="flex min-w-0 items-center gap-1">
 				<input
 					id="edit-link-url-input"
 					bind:this={href_input_ref}
 					type="url"
 					bind:value={href_input_value}
 					placeholder="https://example.com"
-					class="edit-link-input w-72 min-w-0 flex-1 border-0 bg-(--background) px-3 py-2 text-sm text-(--foreground) focus:shadow-none focus:ring-0 focus:outline-none"
+					class="edit-link-input min-h-9 w-72 min-w-0 flex-1 rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border border-(--stroke) bg-(--background) px-3 py-1 text-base leading-6 text-(--foreground) focus:border-(--stroke) focus:ring-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) pointer-coarse:min-h-11"
 					onkeydown={handle_keydown}
 				/>
 				{#if app.has_backend}
 					<button
 						type="button"
-						class="mr-0.5 flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--foreground) transition-all duration-150 outline-none hover:bg-(--muted) focus-visible:shadow-[inset_0_0_0_1px_var(--editing)] active:translate-y-px active:scale-95 active:bg-(--muted)"
+						class="inline-flex size-9 shrink-0 items-center justify-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
 						title="Select page"
 						aria-label="Select page"
 						onclick={() => {
@@ -219,18 +217,18 @@
 				{/if}
 			</div>
 		</div>
-		<div class="flex items-center justify-between p-1 pl-4">
-			<label class="flex cursor-pointer items-center gap-2">
+		<div class="flex flex-wrap items-center justify-between gap-2 pl-3">
+			<label class="flex min-h-9 cursor-pointer items-center gap-2 pointer-coarse:min-h-11">
 				<input
 					type="checkbox"
 					bind:checked={open_in_new_tab}
-					class="h-4 w-4 cursor-pointer rounded-full border-(--stroke)! bg-(--muted)! text-(--editing) ring-0 checked:border-transparent! checked:bg-(--editing)! focus:shadow-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
+					class="size-4 shrink-0 cursor-pointer rounded-[min(0.25rem,var(--button-border-radius))] border-(--stroke)! bg-(--muted)! text-(--editing) ring-0 checked:border-transparent! checked:bg-(--editing)! focus:ring-0 focus:ring-offset-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing)"
 				/>
 				<span class="text-sm text-(--foreground)">Open in new tab</span>
 			</label>
 			<button
 				type="button"
-				class="inline-flex h-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent px-3 text-sm font-medium text-(--editing) outline-1 outline-transparent hover:bg-(--editing-muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
+				class="inline-flex min-h-9 shrink-0 items-center justify-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2 text-sm leading-5 font-medium text-(--editing) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--editing-muted) enabled:active:bg-(--editing)/15 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11"
 				onclick={() => void save()}
 			>
 				{is_new_link ? 'Create' : 'Update'}
@@ -240,10 +238,6 @@
 </dialog>
 
 <style>
-	.edit-link-input {
-		font-size: 16px !important;
-	}
-
 	.edit-link-dialog::backdrop {
 		background: color-mix(in oklch, var(--foreground) 10%, transparent);
 	}
