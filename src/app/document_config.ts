@@ -742,12 +742,13 @@ export const document_config = {
 		button: function (
 			tr,
 			_content = { content: '', marks: [], annotations: [] },
-			_layout = 'primary'
+			layout = 'primary'
 		) {
 			const new_button_id = tr.build('new_button', {
 				new_button: {
 					id: 'new_button',
-					type: 'button'
+					type: 'button',
+					layout
 				}
 			});
 

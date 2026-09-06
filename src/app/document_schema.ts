@@ -200,7 +200,11 @@ export const document_schema = define_document_schema({
 	button: {
 		kind: 'block',
 		properties: {
-			layout: { type: 'string', values: ['primary', 'secondary', 'link'], default: 'primary' },
+			layout: {
+				type: 'string',
+				values: ['primary', 'secondary', 'link', 'primary-small', 'secondary-small', 'link-small'],
+				default: 'primary'
+			},
 			href: { type: 'string' },
 			target: { type: 'string', default: '_self' },
 			label: {
