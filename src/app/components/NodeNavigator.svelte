@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { serialize_path } from 'svedit';
-	import { get_selection_node_ancestors, is_node_subtree_empty } from '#app/app_utils.js';
+	import { get_selection_node_ancestors } from '#app/app_utils.js';
 
 	let { session, focus_canvas } = $props();
 
@@ -14,14 +14,6 @@
 	let variant_item = $derived.by(() => {
 		const items = ancestors.map((ancestor) => build_item(ancestor));
 		return items.filter((item) => item.option_count > 1).at(-1) ?? items.at(-1) ?? null;
-	});
-	let should_pulse_variant = $derived.by(() => {
-		if (!variant_item?.is_type_target || type_state?.node !== variant_item.node) return false;
-		const node_types = session.inspect(type_state.node_array_path)?.node_types ?? [];
-		return (
-			type_state.available_types.length === node_types.length - 1 &&
-			is_node_subtree_empty(session, type_state.node)
-		);
 	});
 
 	function get_state_path_key(state) {
@@ -135,14 +127,13 @@
 
 {#if variant_item}
 	<div
-		class="variant-pill flex h-9 min-w-0 items-center rounded-full border border-(--stroke) bg-(--background) text-sm leading-5 whitespace-nowrap text-(--foreground) shadow-sm"
-		class:variant-pulse={should_pulse_variant}
+		class="variant-pill flex min-h-9 min-w-0 items-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] text-sm leading-5 whitespace-nowrap text-(--foreground) pointer-coarse:min-h-11"
 		aria-label="Current node variant"
 	>
 		<div
-			class="relative flex h-full min-w-0 items-center rounded-full px-3 whitespace-nowrap {variant_item.option_count >
+			class="relative flex min-h-9 min-w-0 items-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] px-3 py-2 whitespace-nowrap pointer-coarse:min-h-11 {variant_item.option_count >
 			1
-				? 'cursor-pointer hover:bg-(--muted)'
+				? 'cursor-pointer hover:bg-(--muted) active:bg-(--foreground)/10'
 				: ''}"
 			title={variant_item.option_count > 1
 				? 'Choose variant · Type ⌃⇧↑/↓ · Layout ⌃⇧←/→'
@@ -156,14 +147,14 @@
 							: 'font-normal text-(--muted-foreground)'}>{variant_item.type_label}</span
 					>
 					{#if variant_item.layout_label}
-						<span class="ml-1 font-mono text-[11px] text-(--muted-foreground)"
+						<span class="ml-1 font-mono text-xs font-normal text-(--muted-foreground)"
 							>({variant_item.layout_label})</span
 						>
 					{/if}
 				</span>
 				{#if variant_item.option_count > 1}
 					<svg
-						class="ml-2 size-3 shrink-0 stroke-(--muted-foreground)"
+						class="ml-2 size-4 shrink-0 stroke-(--muted-foreground)"
 						viewBox="0 0 12 12"
 						fill="none"
 					>
@@ -197,35 +188,6 @@
 {/if}
 
 <style>
-	.variant-pulse {
-		position: relative;
-	}
-
-	.variant-pulse::after {
-		animation: variant-pulse 2.4s ease-out infinite;
-		border: 2px solid var(--editing);
-		border-radius: 9999px;
-		content: '';
-		filter: blur(1px);
-		inset: -2px;
-		opacity: 0.62;
-		pointer-events: none;
-		position: absolute;
-	}
-
-	@keyframes variant-pulse {
-		0% {
-			inset: -2px;
-			opacity: 0.58;
-		}
-
-		70%,
-		100% {
-			inset: -7px;
-			opacity: 0;
-		}
-	}
-
 	.variant-select,
 	.variant-select:focus,
 	.variant-select:focus-visible {
@@ -239,14 +201,7 @@
 
 	/* The real control is a transparent <select>, so the pill renders its ring. */
 	.variant-pill:has(.variant-select:focus-visible) {
-		outline: 1px solid var(--editing);
-		outline-offset: 1px;
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.variant-pulse::after {
-			animation: none;
-			opacity: 0.5;
-		}
+		outline: 2px solid var(--editing);
+		outline-offset: 2px;
 	}
 </style>

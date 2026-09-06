@@ -28,7 +28,11 @@
 		(!app.has_backend || app.is_admin) && !app_commands.edit_document.disabled
 	);
 	let can_show_read_toolbar = $derived(
-		can_create_pages || can_browse_pages || can_edit_document || can_manage_current_page || can_logout
+		can_create_pages ||
+			can_browse_pages ||
+			can_edit_document ||
+			can_manage_current_page ||
+			can_logout
 	);
 
 	// Home is served from `/` and has no editable slug.
@@ -174,16 +178,17 @@
 		e.target.value = '';
 	}
 
-	const TW_TOOLBAR_POSITION =
+	const tw_toolbar_position =
 		'bottom-[max(1rem,env(safe-area-inset-bottom,0px))] left-5 right-5 sm:left-7 sm:right-7 md:left-10 md:right-10 lg:left-14 lg:right-14';
-	const TW_TOOLBAR_SURFACE =
-		'pointer-events-auto min-w-0 rounded-full border border-(--stroke) bg-(--background) p-1 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]';
+	const tw_toolbar_surface =
+		'pointer-events-auto min-w-0 rounded-(--button-border-radius) border border-(--stroke) bg-(--background) p-1 text-(--foreground)';
 
-	const TW_TOOLBAR_BTN =
-		'flex size-9 flex-none items-center justify-center rounded-full border-0 bg-transparent p-0 text-(--foreground) shadow-none cursor-pointer pointer-events-auto transition-all duration-150 active:scale-95 active:translate-y-px outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-(--editing) focus-visible:outline-offset-1';
-	const TW_TOOLBAR_BTN_DISABLED = 'text-(--muted-foreground) opacity-40 !cursor-not-allowed';
-	const TW_TOOLBAR_BTN_HOVER =
-		'hover:bg-(--muted) active:bg-(--muted) active:scale-95 active:translate-y-px';
+	const tw_toolbar_btn =
+		'pointer-events-auto inline-flex size-9 flex-none items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) pointer-coarse:size-11';
+	const tw_toolbar_btn_disabled = 'cursor-default opacity-40';
+	const tw_toolbar_btn_hover = 'cursor-pointer hover:bg-(--muted) active:bg-(--foreground)/10';
+	const tw_page_actions_item =
+		'flex min-h-10 w-full items-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2.5 text-start text-sm leading-5 font-normal wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:text-(--muted-foreground) pointer-coarse:min-h-11';
 
 	// preventDefault keeps focus and selection in the canvas; the command runs on
 	// click, which fires for both mouse and keyboard.
@@ -218,9 +223,9 @@
 
 {#snippet selection_leading_contents()}
 	<button
-		class="{TW_TOOLBAR_BTN} {session.commands.select_parent?.disabled
-			? TW_TOOLBAR_BTN_DISABLED
-			: TW_TOOLBAR_BTN_HOVER}"
+		class="{tw_toolbar_btn} {session.commands.select_parent?.disabled
+			? tw_toolbar_btn_disabled
+			: tw_toolbar_btn_hover}"
 		onmousedown={handle_btn_mousedown}
 		onclick={(e) => handle_btn_click(e, session.commands.select_parent)}
 		title="Select parent (Esc)"
@@ -256,7 +261,7 @@
 	<span class="mx-1 h-5 w-px shrink-0 bg-(--stroke)" aria-hidden="true"></span>
 	{#if cancel_command && !cancel_command.disabled}
 		<button
-			class="pointer-events-auto inline-flex size-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-sm font-medium text-(--foreground) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing) active:translate-y-px active:scale-[0.97] active:bg-(--muted) sm:w-auto sm:px-4"
+			class="pointer-events-auto inline-flex min-h-9 w-9 min-w-9 shrink-0 cursor-pointer items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 text-sm leading-5 font-medium text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 sm:w-auto sm:px-3 sm:py-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
 			onclick={() => cancel_command.execute()}
 			title="Cancel (⌃ ⎋)"
 			aria-label={cancel_button_label}
@@ -271,7 +276,7 @@
 
 	{#if !app_commands.save_document.disabled}
 		<button
-			class="pointer-events-auto inline-flex size-9 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0 text-sm font-medium text-(--editing) shadow-none outline-1 outline-transparent transition-all duration-150 hover:bg-(--editing-muted) focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing) active:translate-y-px active:scale-[0.97] active:bg-(--editing-muted) sm:w-auto sm:px-4"
+			class="pointer-events-auto inline-flex min-h-9 w-9 min-w-9 shrink-0 cursor-pointer items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 text-sm leading-5 font-medium text-(--editing) hover:bg-(--editing-muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--editing)/15 sm:w-auto sm:px-3 sm:py-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
 			onclick={() => app_commands.save_document.execute()}
 			title="Save (⌘ S)"
 			aria-label="Save"
@@ -287,7 +292,7 @@
 
 {#if editable || can_show_read_toolbar}
 	<div
-		class="toolbar-layout pointer-events-none fixed {TW_TOOLBAR_POSITION} z-50 flex min-w-0 items-center gap-3"
+		class="toolbar-layout pointer-events-none fixed {tw_toolbar_position} z-50 flex min-w-0 items-center gap-3"
 		style:--keyboard-inset="{keyboard_inset}px"
 	>
 		{#if editable && can_select_parent}
@@ -298,9 +303,11 @@
 
 		<div class="toolbar-middle min-w-0">
 			{#if editable && can_show_selection_tool_group}
-				<div class="editor-toolbar selection-toolbar flex shrink items-center {TW_TOOLBAR_SURFACE}">
+				<div
+					class="editor-toolbar selection-toolbar flex shrink items-center gap-1 {tw_toolbar_surface}"
+				>
 					{#if can_select_parent}
-						<div class="desktop-selection-leading flex shrink-0 items-center">
+						<div class="desktop-selection-leading flex shrink-0 items-center gap-1">
 							{@render selection_leading_contents()}
 						</div>
 					{/if}
@@ -313,19 +320,17 @@
 
 			<div class="toolbar-spacer min-w-0 flex-1"></div>
 
-			<div class="editor-toolbar action-toolbar flex shrink items-center {TW_TOOLBAR_SURFACE}">
-				<!-- p-0.5/-m-0.5: overflow clips at the padding box, so the padding keeps
-				focus rings from being cut off; the margin keeps the layout unchanged. -->
-				<div
-					class="tools-scroller -m-0.5 min-w-0 flex-1 scrollbar-none overflow-x-auto rounded-full p-0.5"
-				>
-					<div class="flex min-w-max items-center gap-0">
+			<div class="editor-toolbar action-toolbar flex shrink items-center {tw_toolbar_surface}">
+				<!-- Four pixels of scroll padding clear the 2px outline and 2px offset.
+				The negative margin preserves the pill inset; keep the scrollport square. -->
+				<div class="tools-scroller -m-1 min-w-0 flex-1 scrollbar-none overflow-x-auto p-1">
+					<div class="flex min-w-max items-center gap-1">
 						{#if !editable}
 							<!-- Read mode: New page + Edit + Pages buttons -->
-							<div class="flex items-center">
+							<div class="flex items-center gap-1">
 								{#if can_create_pages}
 									<a
-										class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
+										class="{tw_toolbar_btn} {tw_toolbar_btn_hover}"
 										href={resolve('/new')}
 										title="New page"
 										aria-label="New page"
@@ -344,7 +349,7 @@
 
 								{#if can_browse_pages}
 									<button
-										class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
+										class="{tw_toolbar_btn} {tw_toolbar_btn_hover}"
 										onclick={() => page_browser?.open_navigate()}
 										title="Browse (⌘ P)"
 										aria-label="Browse"
@@ -366,7 +371,7 @@
 
 								{#if can_edit_document}
 									<button
-										class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
+										class="{tw_toolbar_btn} {tw_toolbar_btn_hover}"
 										onclick={() => app_commands.edit_document.execute()}
 										title="Edit (⌘ E)"
 										aria-label="Edit"
@@ -390,7 +395,7 @@
 
 								{#if can_logout}
 									<button
-										class="page-actions-trigger {TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
+										class="page-actions-trigger {tw_toolbar_btn} {tw_toolbar_btn_hover}"
 										popovertarget="toolbar-page-actions-menu"
 										title="Page actions"
 										aria-label="Page actions"
@@ -409,7 +414,7 @@
 									</button>
 									<div
 										id="toolbar-page-actions-menu"
-										class="page-actions-menu min-w-44 rounded-2xl border border-(--stroke) bg-(--background) p-1.5 text-(--foreground) shadow-[0_1px_2px_rgb(0_0_0/0.12),0_4px_16px_rgb(0_0_0/0.08)]"
+										class="page-actions-menu min-w-44 rounded-[min(1rem,var(--button-border-radius))] border border-(--stroke) bg-(--background) p-1 text-(--foreground)"
 										popover="auto"
 										role="menu"
 										aria-label="Page actions"
@@ -417,7 +422,7 @@
 										{#if can_manage_current_page}
 											<button
 												type="button"
-												class="page-actions-item"
+												class={tw_page_actions_item}
 												popovertarget="toolbar-page-actions-menu"
 												popovertargetaction="hide"
 												onclick={duplicate_page}
@@ -426,7 +431,7 @@
 											>
 											<button
 												type="button"
-												class="page-actions-item"
+												class={tw_page_actions_item}
 												popovertarget="toolbar-page-actions-menu"
 												popovertargetaction="hide"
 												onclick={open_page_url_dialog}
@@ -435,7 +440,7 @@
 											>
 											<button
 												type="button"
-												class="page-actions-item"
+												class={tw_page_actions_item}
 												popovertarget="toolbar-page-actions-menu"
 												popovertargetaction="hide"
 												onclick={open_page_delete_dialog}
@@ -446,7 +451,7 @@
 										{/if}
 										<button
 											type="button"
-											class="page-actions-item"
+											class={tw_page_actions_item}
 											popovertarget="toolbar-page-actions-menu"
 											popovertargetaction="hide"
 											onclick={() => app_commands.logout_admin.execute()}
@@ -459,12 +464,12 @@
 							<!-- Edit mode -->
 							<!-- Text formatting group (visible during text selection) -->
 							{#if session.selection?.type === 'text'}
-								<div class="flex items-center">
+								<div class="flex items-center gap-1">
 									<!-- Bold -->
 									<button
-										class="{TW_TOOLBAR_BTN} {session.commands.toggle_strong?.disabled
-											? TW_TOOLBAR_BTN_DISABLED
-											: TW_TOOLBAR_BTN_HOVER}"
+										class="{tw_toolbar_btn} {session.commands.toggle_strong?.disabled
+											? tw_toolbar_btn_disabled
+											: tw_toolbar_btn_hover}"
 										class:!text-(--editing)={session.commands.toggle_strong?.active}
 										class:!bg-(--editing-muted)={session.commands.toggle_strong?.active}
 										onmousedown={handle_btn_mousedown}
@@ -488,9 +493,9 @@
 
 									<!-- Italic -->
 									<button
-										class="{TW_TOOLBAR_BTN} {session.commands.toggle_emphasis?.disabled
-											? TW_TOOLBAR_BTN_DISABLED
-											: TW_TOOLBAR_BTN_HOVER}"
+										class="{tw_toolbar_btn} {session.commands.toggle_emphasis?.disabled
+											? tw_toolbar_btn_disabled
+											: tw_toolbar_btn_hover}"
 										class:!text-(--editing)={session.commands.toggle_emphasis?.active}
 										class:!bg-(--editing-muted)={session.commands.toggle_emphasis?.active}
 										onmousedown={handle_btn_mousedown}
@@ -513,9 +518,9 @@
 
 									<!-- Code -->
 									<button
-										class="{TW_TOOLBAR_BTN} {session.commands.toggle_code?.disabled
-											? TW_TOOLBAR_BTN_DISABLED
-											: TW_TOOLBAR_BTN_HOVER}"
+										class="{tw_toolbar_btn} {session.commands.toggle_code?.disabled
+											? tw_toolbar_btn_disabled
+											: tw_toolbar_btn_hover}"
 										class:!text-(--editing)={session.commands.toggle_code?.active}
 										class:!bg-(--editing-muted)={session.commands.toggle_code?.active}
 										onmousedown={handle_btn_mousedown}
@@ -547,11 +552,10 @@
 
 									<!-- Highlight -->
 									<button
-										class="{TW_TOOLBAR_BTN} {session.commands.toggle_highlight?.disabled
-											? TW_TOOLBAR_BTN_DISABLED
-											: TW_TOOLBAR_BTN_HOVER}"
-										class:!text-(--editing)={session.commands.toggle_highlight
-											?.active}
+										class="{tw_toolbar_btn} {session.commands.toggle_highlight?.disabled
+											? tw_toolbar_btn_disabled
+											: tw_toolbar_btn_hover}"
+										class:!text-(--editing)={session.commands.toggle_highlight?.active}
 										class:!bg-(--editing-muted)={session.commands.toggle_highlight?.active}
 										onmousedown={handle_btn_mousedown}
 										onclick={(e) => handle_btn_click(e, session.commands.toggle_highlight)}
@@ -577,9 +581,9 @@
 
 									<!-- Link -->
 									<button
-										class="{TW_TOOLBAR_BTN} {session.commands.toggle_link?.disabled
-											? TW_TOOLBAR_BTN_DISABLED
-											: TW_TOOLBAR_BTN_HOVER}"
+										class="{tw_toolbar_btn} {session.commands.toggle_link?.disabled
+											? tw_toolbar_btn_disabled
+											: tw_toolbar_btn_hover}"
 										class:!text-(--editing)={session.commands.toggle_link?.active}
 										class:!bg-(--editing-muted)={session.commands.toggle_link?.active}
 										onmousedown={handle_btn_mousedown}
@@ -609,11 +613,11 @@
 
 							<!-- Media actions (visible when media is selected) -->
 							{#if is_media_selected}
-								<div class="flex items-center">
+								<div class="flex items-center gap-1">
 									<button
-										class="{TW_TOOLBAR_BTN} {session.commands.edit_image?.disabled
-											? TW_TOOLBAR_BTN_DISABLED
-											: TW_TOOLBAR_BTN_HOVER}"
+										class="{tw_toolbar_btn} {session.commands.edit_image?.disabled
+											? tw_toolbar_btn_disabled
+											: tw_toolbar_btn_hover}"
 										onmousedown={handle_btn_mousedown}
 										onclick={handle_edit_image_click}
 										title="Alt text"
@@ -627,7 +631,7 @@
 
 									<button
 										id="replace-media-btn"
-										class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
+										class="{tw_toolbar_btn} {tw_toolbar_btn_hover}"
 										onmousedown={handle_btn_mousedown}
 										onclick={handle_replace_image_click}
 										title="Replace image (⏎)"
@@ -653,10 +657,10 @@
 							{/if}
 
 							{#if session.selection?.type === 'node' || is_media_selected}
-								<div class="flex items-center">
+								<div class="flex items-center gap-1">
 									{#if is_node_caret && !session.commands.insert_default_node?.disabled}
 										<button
-											class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
+											class="{tw_toolbar_btn} {tw_toolbar_btn_hover}"
 											onmousedown={handle_btn_mousedown}
 											onclick={handle_insert_default_node_click}
 											title="Insert (↵)"
@@ -679,9 +683,8 @@
 									{/if}
 									{#if session.selection?.type === 'node' && !is_node_caret && !session.commands.toggle_section?.disabled}
 										<button
-											class="{TW_TOOLBAR_BTN} {TW_TOOLBAR_BTN_HOVER}"
-											class:!text-(--editing)={session.commands.toggle_section
-												?.active}
+											class="{tw_toolbar_btn} {tw_toolbar_btn_hover}"
+											class:!text-(--editing)={session.commands.toggle_section?.active}
 											class:!bg-(--editing-muted)={session.commands.toggle_section?.active}
 											onmousedown={handle_btn_mousedown}
 											onclick={(e) => handle_btn_click(e, session.commands.toggle_section)}
@@ -711,7 +714,7 @@
 										</button>
 									{/if}
 									<button
-										class="{TW_TOOLBAR_BTN} aspect-square {TW_TOOLBAR_BTN_HOVER}"
+										class="{tw_toolbar_btn} aspect-square {tw_toolbar_btn_hover}"
 										onmousedown={handle_btn_mousedown}
 										onclick={handle_delete_selection_click}
 										title="Delete backwards (⌫)"
@@ -750,11 +753,11 @@
 							/>
 
 							<!-- Stable right group: Undo / Redo -->
-							<div class="flex items-center">
+							<div class="flex items-center gap-1">
 								<button
-									class="{TW_TOOLBAR_BTN} {session.commands.undo?.disabled
-										? TW_TOOLBAR_BTN_DISABLED
-										: TW_TOOLBAR_BTN_HOVER}"
+									class="{tw_toolbar_btn} {session.commands.undo?.disabled
+										? tw_toolbar_btn_disabled
+										: tw_toolbar_btn_hover}"
 									onmousedown={handle_btn_mousedown}
 									onclick={(e) => handle_btn_click(e, session.commands.undo)}
 									title="Undo (⌘ Z)"
@@ -774,9 +777,9 @@
 									</svg>
 								</button>
 								<button
-									class="{TW_TOOLBAR_BTN} {session.commands.redo?.disabled
-										? TW_TOOLBAR_BTN_DISABLED
-										: TW_TOOLBAR_BTN_HOVER}"
+									class="{tw_toolbar_btn} {session.commands.redo?.disabled
+										? tw_toolbar_btn_disabled
+										: tw_toolbar_btn_hover}"
 									onmousedown={handle_btn_mousedown}
 									onclick={(e) => handle_btn_click(e, session.commands.redo)}
 									title="Redo (⌘ ⇧ Z)"
@@ -801,7 +804,7 @@
 				</div>
 
 				{#if editable}
-					<div class="desktop-save-group flex shrink-0 items-center">
+					<div class="desktop-save-group flex shrink-0 items-center gap-1">
 						{@render save_group_contents()}
 					</div>
 				{/if}
@@ -817,20 +820,6 @@
 {/if}
 
 <style>
-	/* NodeNavigator owns its standalone surface in other contexts. Inside the
-	   toolbar it becomes one flat item in the shared pill. */
-	:global(.editor-toolbar [aria-label='Current node variant']) {
-		border-color: transparent;
-		background: transparent;
-		box-shadow: none;
-	}
-
-	/* The toolbar no longer calls attention to tools with looping motion. */
-	:global(.editor-toolbar [aria-label='Current node variant']::after) {
-		content: none;
-		display: none;
-	}
-
 	.page-actions-trigger {
 		anchor-name: --toolbar-page-actions;
 	}
@@ -842,35 +831,6 @@
 		justify-self: anchor-center;
 		inset: auto;
 		margin: 0 12px 8px;
-	}
-
-	.page-actions-item {
-		display: block;
-		width: 100%;
-		cursor: pointer;
-		border: 0;
-		border-radius: 0.75rem;
-		background: transparent;
-		padding: 0.625rem 0.75rem;
-		color: var(--foreground);
-		font-size: 0.875rem;
-		line-height: 1.25rem;
-		text-align: left;
-	}
-
-	.page-actions-item:hover,
-	.page-actions-item:focus-visible {
-		background: var(--muted);
-		outline: none;
-	}
-
-	.page-actions-item:disabled {
-		color: var(--muted-foreground);
-		cursor: not-allowed;
-	}
-
-	.page-actions-item:disabled:hover {
-		background: transparent;
 	}
 
 	.selection-leading-divider {
@@ -902,18 +862,14 @@
 			width: max-content;
 			max-width: calc(100vw - 2.5rem);
 			transform: translateX(-50%) translateY(calc(-1 * var(--keyboard-inset, 0px)));
-			overflow: hidden;
-			gap: 0;
-			/* Symmetric so a single-button toolbar is a circle. The horizontal inset
-			   lives here so it applies when the leading/save groups are absent. */
+			overflow: visible;
+			gap: 4px;
+			/* Keep the same inset when the leading and save groups are absent. */
 			padding: 4px;
 			color: var(--foreground);
 			background: var(--background);
 			border: 1px solid var(--stroke);
-			border-radius: 9999px;
-			box-shadow:
-				0 1px 2px rgb(0 0 0 / 0.12),
-				0 4px 16px rgb(0 0 0 / 0.08);
+			border-radius: var(--button-border-radius);
 			pointer-events: auto;
 		}
 
@@ -929,11 +885,10 @@
 			overflow-x: auto;
 			overscroll-behavior-x: contain;
 			scrollbar-width: none;
-			/* The scrollport on mobile. Overflow clips at the padding box, so this
-			   gives focus rings room. Vertical only — horizontal room comes from the
-			   pill's padding, so the circle above is not widened. */
-			padding: 2px 0;
-			margin: -2px 0;
+			/* Clear the 2px outline and 2px offset on every edge of the scrollport. */
+			padding: 4px;
+			margin: -4px;
+			gap: 4px;
 		}
 
 		.toolbar-middle > .editor-toolbar {
@@ -964,14 +919,14 @@
 			display: flex;
 			flex: none;
 			align-self: stretch;
-			background: var(--background);
+			gap: 4px;
 		}
 
 		.mobile-save-group {
 			display: flex;
 			flex: none;
 			align-self: stretch;
-			background: var(--background);
+			gap: 4px;
 		}
 	}
 </style>
