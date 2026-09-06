@@ -12,7 +12,9 @@
 
 	let toc_visible = $state(false);
 	let active_entry_index = $state(0);
-	let toc_menu_ref: HTMLDetailsElement | undefined = $state();
+	const toc_id = $props.id();
+	let toc_menu_ref: HTMLElement | undefined = $state();
+	let toc_open = $state(false);
 
 	function get_target_element(href: string) {
 		const target_url = new URL(href, window.location.href);
@@ -32,6 +34,7 @@
 		if (!source_element) return;
 
 		toc_visible = source_element.getBoundingClientRect().bottom <= nav_height;
+		if (!toc_visible) toc_open = false;
 
 		const page_height = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
 		if (window.scrollY + window.innerHeight >= page_height - 5) {
@@ -51,7 +54,7 @@
 	}
 
 	function close_toc_menu() {
-		if (toc_menu_ref) toc_menu_ref.open = false;
+		if (toc_menu_ref?.matches(':popover-open')) toc_menu_ref.hidePopover();
 	}
 
 	$effect(() => {
@@ -78,25 +81,34 @@
 		style={`top: ${nav_height}px;`}
 		aria-label="Table of contents"
 	>
-		<details
-			bind:this={toc_menu_ref}
+		<div
+			style:anchor-name={`--toc-${toc_id}`}
 			class="group relative max-w-[calc(100vw-2.5rem)] min-w-0 rounded-(--button-border-radius) border border-(--stroke) bg-(--background) p-1 text-sm leading-5 text-(--foreground)"
 		>
-			<summary
-				class="relative flex min-h-9 min-w-0 cursor-pointer list-none items-center gap-2 rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] px-3 py-2 font-medium whitespace-nowrap hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
+			<button
+				type="button"
+				popovertarget={toc_id}
+				aria-expanded={toc_open}
+				class="relative flex min-h-9 min-w-0 cursor-pointer items-center gap-2 rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] px-3 py-2 font-medium whitespace-nowrap hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
 			>
 				<span class="min-w-0 truncate">{entries[active_entry_index]?.title}</span>
 				<svg
-					class="size-4 shrink-0 text-(--muted-foreground) group-open:rotate-180"
+					class="size-4 shrink-0 text-(--muted-foreground)"
+					class:rotate-180={toc_open}
 					viewBox="0 0 12 12"
 					fill="none"
 					aria-hidden="true"
 				>
 					<path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.25" />
 				</svg>
-			</summary>
+			</button>
 			<nav
-				class="absolute top-full left-1/2 mt-2 flex max-h-[min(24rem,calc(100vh-6rem))] w-[min(24rem,calc(100vw-2.5rem))] -translate-x-1/2 flex-col overflow-y-auto overscroll-contain rounded-[min(1rem,var(--button-border-radius))] border border-(--stroke) bg-(--background) p-1 text-(--foreground)"
+				id={toc_id}
+				bind:this={toc_menu_ref}
+				popover="auto"
+				style:position-anchor={`--toc-${toc_id}`}
+				ontoggle={(event) => (toc_open = event.newState === 'open')}
+				class="toc-menu max-h-[min(24rem,calc(100vh-6rem))] w-[min(24rem,calc(100vw-2.5rem))] flex-col overflow-y-auto overscroll-contain rounded-[min(1rem,var(--button-border-radius))] border border-(--stroke) bg-(--background) p-1 text-(--foreground) [&:popover-open]:flex"
 				aria-label="Table of contents"
 			>
 				{#each entries as entry, index (entry.href)}
@@ -110,6 +122,17 @@
 					</a>
 				{/each}
 			</nav>
-		</details>
+		</div>
 	</div>
 {/if}
+
+<style>
+	.toc-menu {
+		position: fixed;
+		position-area: block-end span-all;
+		position-try-fallbacks: flip-block;
+		justify-self: anchor-center;
+		inset: auto;
+		margin: 8px 0 0;
+	}
+</style>
