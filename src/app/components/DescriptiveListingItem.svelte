@@ -17,13 +17,17 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="block py-4 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing) sm:py-2 md:py-3"
+		class="group/listing-link block py-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) sm:py-2 md:py-3"
 		use:reveal
 	>
 		<div class="flex items-center justify-between gap-6">
 			<div class="min-w-2/3 flex-1">
 				<TextProperty
-					class="body-base {node.href ? 'underline underline-offset-2' : ''}"
+					class="body-base {node.href
+						? 'underline decoration-[0.0625em] underline-offset-[0.125em]'
+						: ''} {render_as_link
+						? 'group-hover/listing-link:decoration-[0.125em] group-active/listing-link:decoration-[0.125em]'
+						: ''}"
 					path={[...path, 'title']}
 					placeholder="Title"
 				/>

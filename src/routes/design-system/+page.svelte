@@ -648,7 +648,7 @@
 						<!-- Supporting action. Use the shared stroke border, muted hover surface, and foreground tint on press. -->
 						<button
 							type="button"
-							class="inline-flex min-h-11 max-w-full min-w-11 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-transparent px-5 py-2 text-center text-base leading-6 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
+							class="inline-flex min-h-11 max-w-full min-w-11 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-[var(--secondary-button-background,transparent)] px-5 py-2 text-center text-base leading-6 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
 						>
 							Continue
 						</button>
@@ -706,7 +706,7 @@
 						<!-- Supporting action. Use the shared stroke border, muted hover surface, and foreground tint on press. -->
 						<button
 							type="button"
-							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-transparent px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
+							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-[var(--secondary-button-background,transparent)] px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
 						>
 							Continue
 						</button>
@@ -750,7 +750,7 @@
 						<button
 							type="button"
 							disabled
-							class="inline-flex min-h-11 max-w-full min-w-11 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-transparent px-5 py-2 text-center text-base leading-6 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
+							class="inline-flex min-h-11 max-w-full min-w-11 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-[var(--secondary-button-background,transparent)] px-5 py-2 text-center text-base leading-6 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
 							>Continue</button
 						>
 					</div>
@@ -768,7 +768,7 @@
 						<button
 							type="button"
 							disabled
-							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-transparent px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
+							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-[var(--secondary-button-background,transparent)] px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
 							>Continue</button
 						>
 					</div>
@@ -783,6 +783,90 @@
 							disabled
 							class="inline-flex min-h-9 max-w-full min-w-0 items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent px-8 py-2 text-sm leading-5 font-medium wrap-anywhere text-(--editing) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--editing-muted) enabled:active:bg-(--editing)/15 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11"
 							>Create link</button
+						>
+					</div>
+				</div>
+			</section>
+
+			<section
+				id="descriptive-listing"
+				aria-labelledby="descriptive-listing-heading"
+				class="space-y-8"
+			>
+				<div class="space-y-2">
+					<h2 id="descriptive-listing-heading" class="text-xl font-medium">Descriptive listing</h2>
+					<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
+						A linked row with a title, description, and optional metadata. Hover or press anywhere
+						on the row to strengthen the title underline; keyboard focus outlines the whole row. A
+						plain listing uses the same recipe with the description omitted.
+					</p>
+				</div>
+				<!-- Keep the row as one link. Description and metadata have no underline of their own. -->
+				<div class="max-w-4xl">
+					<div class="border-b border-(--stroke)">
+						<a
+							href="#typography"
+							class="group/listing-link block py-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) sm:py-2 md:py-3"
+						>
+							<div class="flex items-center justify-between gap-6">
+								<div class="min-w-2/3 flex-1">
+									<p
+										class="body-base underline decoration-[0.0625em] underline-offset-[0.125em] group-hover/listing-link:decoration-[0.125em] group-active/listing-link:decoration-[0.125em]"
+									>
+										Typography
+									</p>
+									<p class="pt-1 body-base text-balance text-(--muted-foreground)">
+										A shared scale for headings and body text.
+									</p>
+								</div>
+								<div class="min-w-0 self-center text-right">
+									<p class="pt-1 body-base text-(--muted-foreground)">9 styles</p>
+								</div>
+							</div>
+						</a>
+					</div>
+					<div class="border-b border-(--stroke)">
+						<a
+							href="#buttons"
+							class="group/listing-link block py-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) sm:py-2 md:py-3"
+						>
+							<div class="flex items-center justify-between gap-6">
+								<div class="min-w-2/3 flex-1">
+									<p
+										class="body-base underline decoration-[0.0625em] underline-offset-[0.125em] group-hover/listing-link:decoration-[0.125em] group-active/listing-link:decoration-[0.125em]"
+									>
+										Buttons
+									</p>
+									<p class="pt-1 body-base text-balance text-(--muted-foreground)">
+										Primary, secondary, and link treatments for common actions.
+									</p>
+								</div>
+							</div>
+						</a>
+					</div>
+				</div>
+			</section>
+
+			<section id="boxed-prose" aria-labelledby="boxed-prose-heading" class="space-y-8">
+				<div class="space-y-2">
+					<h2 id="boxed-prose-heading" class="text-xl font-medium">Boxed prose</h2>
+					<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
+						Boxed items use a muted surface and pass
+						<code class="font-mono">--secondary-button-background: var(--background)</code>
+						to their children. Secondary buttons use that surface at rest and the muted surface on hover.
+						Outside a box, the button surface defaults to transparent.
+					</p>
+				</div>
+				<div
+					class="max-w-sm rounded-(--image-border-radius) border border-(--stroke) bg-(--muted) px-8 py-10 [--secondary-button-background:var(--background)]"
+				>
+					<div class="flex flex-col items-center gap-5 text-center text-balance sm:gap-7">
+						<h3 class="display-5">Make it your own</h3>
+						<p class="body-base">Start with the shared styles and adapt them to your site.</p>
+						<a
+							href="#buttons"
+							class="inline-flex min-h-11 max-w-full min-w-11 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-[var(--secondary-button-background,transparent)] px-5 py-2 text-center text-base leading-6 font-medium wrap-anywhere text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10"
+							>Explore buttons</a
 						>
 					</div>
 				</div>
@@ -863,7 +947,7 @@
 						>
 						<button
 							type="button"
-							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center gap-1.5 rounded-(--button-border-radius) border border-(--stroke) bg-transparent px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
+							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center gap-1.5 rounded-(--button-border-radius) border border-(--stroke) bg-[var(--secondary-button-background,transparent)] px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
 						>
 							Install
 							<svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -878,6 +962,58 @@
 						</button>
 					</div>
 				</nav>
+				<div id="navigation-mobile" class="space-y-4">
+					<h3 class="text-sm font-medium">Mobile navigation controls</h3>
+					<p class="max-w-prose body-sm text-(--muted-foreground)">
+						The application switches to a menu on small screens. Use an opaque page background,
+						these icon buttons, and larger navigation links. Controls share the 2px focus outline
+						and offset, with 44px touch targets. Opening and dismissal belong to the application.
+					</p>
+					<div class="flex items-center gap-2">
+						<button
+							type="button"
+							aria-label="Open menu"
+							class="inline-flex size-9 shrink-0 items-center justify-center rounded-(--button-border-radius) border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+						>
+							<svg class="size-6" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+								><path
+									d="M4 8h16M4 16h16"
+									stroke="currentColor"
+									stroke-width="1.5"
+									stroke-linecap="square"
+									stroke-linejoin="miter"
+								/></svg
+							>
+						</button>
+						<button
+							type="button"
+							aria-label="Close menu"
+							class="inline-flex size-9 shrink-0 items-center justify-center rounded-(--button-border-radius) border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+						>
+							<svg class="size-6" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+								><path
+									d="M6 18L18 6M6 6l12 12"
+									stroke="currentColor"
+									stroke-width="1.5"
+									stroke-linecap="square"
+									stroke-linejoin="miter"
+								/></svg
+							>
+						</button>
+					</div>
+					<nav aria-label="Example mobile navigation" class="flex flex-col gap-1">
+						<a
+							href="#typography"
+							class="flex min-h-11 items-center py-2 text-3xl leading-tight font-normal wrap-anywhere text-(--foreground) underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:underline"
+							>Product</a
+						>
+						<a
+							href="#buttons-small"
+							class="flex min-h-11 items-center py-2 text-3xl leading-tight font-normal wrap-anywhere text-(--foreground) underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:underline"
+							>Quickstart</a
+						>
+					</nav>
+				</div>
 			</section>
 
 			<section id="pills" aria-labelledby="pills-heading" class="space-y-10">
@@ -1174,6 +1310,13 @@ These destinations are real sections on this reference page. Application content
 										href="#buttons-disabled"
 										class="flex min-h-10 w-full items-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2.5 text-start text-sm leading-5 font-normal wrap-anywhere text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
 										>Disabled buttons</a
+									>
+								</li>
+								<li>
+									<a
+										href="#descriptive-listing"
+										class="flex min-h-10 w-full items-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2.5 text-start text-sm leading-5 font-normal wrap-anywhere text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
+										>Descriptive listing</a
 									>
 								</li>
 								<li>

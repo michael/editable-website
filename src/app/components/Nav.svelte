@@ -80,23 +80,25 @@
 <Node {path}>
 	<!-- Desktop nav (visible also during mobile editing) -->
 	<div
-		class="mx-auto max-w-7xl relative overflow-x-auto overflow-y-hidden"
+		class="relative mx-auto max-w-7xl overflow-x-auto overflow-y-hidden"
 		class:max-lg:hidden={!svedit.editable}
 	>
-		<div class="flex items-center gap-16 px-5 py-5 text-sm sm:px-7">
+		<div
+			class="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-6 px-5 py-4 text-sm sm:px-7"
+		>
 			<NodeArrayProperty
 				tag="div"
-				class="flex flex-1 items-center gap-3 [--row:1] *:min-w-max"
+				class="flex flex-wrap items-center gap-2 [--row:1] *:min-w-max"
 				path={[...path, 'start_items']}
 			/>
 			<NodeArrayProperty
 				tag="nav"
-				class="flex w-max items-center gap-7 [--row:1] *:min-w-max"
+				class="flex w-max flex-wrap items-center gap-x-6 gap-y-1 [--row:1] *:min-w-max"
 				path={[...path, 'middle_items']}
 			/>
 			<NodeArrayProperty
 				tag="div"
-				class="flex flex-1 items-center justify-end gap-3 [--row:1] *:min-w-max"
+				class="flex flex-wrap items-center justify-end gap-2 [--row:1] *:min-w-max"
 				path={[...path, 'end_items']}
 			/>
 		</div>
@@ -104,17 +106,17 @@
 
 	<!-- Mobile nav (visible also during mobile editing) -->
 	<div class="mx-auto max-w-7xl lg:hidden" class:hidden={svedit.editable}>
-		<div class="flex items-center gap-16 px-5 py-2 text-sm sm:px-7">
+		<div class="flex items-center gap-6 px-5 py-4 text-sm sm:px-7">
 			{#if mobile_nav_media_path}
 				<NavMedia path={mobile_nav_media_path} />
 			{/if}
 			<div class="flex-1"></div>
-			<div class="flex items-center gap-3">
+			<div class="flex items-center gap-2">
 				{#if mobile_nav_cta_path}
 					<NavButton path={mobile_nav_cta_path} />
 				{/if}
 				<button
-					class="flex cursor-pointer items-center justify-center py-3"
+					class="inline-flex size-9 shrink-0 items-center justify-center rounded-(--button-border-radius) border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
 					onclick={() => (mobile_nav_open = !mobile_nav_open)}
 					aria-label="Toggle menu"
 					aria-expanded={mobile_nav_open}
@@ -127,26 +129,26 @@
 
 	{#if mobile_nav_open}
 		<div
-			class="fixed inset-0 z-50 bg-(--background)/80 backdrop-blur-sm lg:hidden"
+			class="fixed inset-0 z-50 bg-(--background) text-(--foreground) lg:hidden"
 			contenteditable="false"
 			transition:slide={{ duration: 200 }}
 		>
 			<button
-				class="absolute top-0 right-0 cursor-pointer px-5 py-5 sm:px-7"
+				class="absolute top-4 right-5 inline-flex size-9 shrink-0 items-center justify-center rounded-(--button-border-radius) border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 sm:right-7 pointer-coarse:size-11"
 				onclick={() => (mobile_nav_open = false)}
 				aria-label="Close menu"
 			>
 				{@render menu_icon(true)}
 			</button>
 
-			<nav class="flex flex-col px-3 pt-16 pb-5">
+			<nav class="flex flex-col gap-1 px-5 pt-20 pb-5 sm:px-7">
 				{#each middle_item_ids as _node_id, index (index)}
 					{@const item = svedit.session.get([...path, 'middle_items', index])}
 					{#if item.type === 'nav_link'}
 						<a
 							href={item.href || '#'}
 							target={item.target !== '_self' ? item.target : undefined}
-							class="px-3 py-2 text-3xl text-(--foreground) sm:px-5"
+							class="flex min-h-11 items-center py-2 text-3xl leading-tight font-normal wrap-anywhere text-(--foreground) underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:underline"
 							onclick={() => (mobile_nav_open = false)}
 						>
 							{item.label?.content || ''}
