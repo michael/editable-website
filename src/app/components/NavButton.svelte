@@ -16,10 +16,11 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link && node.target !== '_self' ? node.target : undefined}
-		class="block rounded-(--button-border-radius) bg-(--accent) py-1 text-(--accent-foreground) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
-		class:hover:opacity-80={render_as_link}
+		class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-transparent bg-(--accent) px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--accent-foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) pointer-coarse:min-h-11 pointer-coarse:min-w-11 {render_as_link
+			? 'cursor-pointer hover:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_20%)] active:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_30%)]'
+			: ''}"
 	>
-		<TextProperty class="px-2.5" path={[...path, 'label']} placeholder="Button" />
+		<TextProperty path={[...path, 'label']} placeholder="Button" />
 	</svelte:element>
 {/snippet}
 
@@ -28,11 +29,11 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link && node.target !== '_self' ? node.target : undefined}
-		class="block rounded-(--button-border-radius) py-1 text-(--foreground) outline-1 outline-(--foreground)/15 focus-visible:outline-(--editing) {render_as_link
-			? 'hover:bg-(--foreground)/5'
+		class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-transparent px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) pointer-coarse:min-h-11 pointer-coarse:min-w-11 {render_as_link
+			? 'cursor-pointer hover:bg-(--muted) active:bg-(--foreground)/10'
 			: ''}"
 	>
-		<TextProperty class="px-2.5" path={[...path, 'label']} placeholder="Button" />
+		<TextProperty path={[...path, 'label']} placeholder="Button" />
 	</svelte:element>
 {/snippet}
 

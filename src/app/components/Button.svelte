@@ -16,8 +16,9 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="ew-button flex min-w-[calc(1lh+24px)] items-center justify-center rounded-(--button-border-radius) bg-(--accent) px-6 py-3 text-sm text-(--accent-foreground) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
-		class:hover:opacity-80={render_as_link}
+		class="ew-button inline-flex min-h-11 max-w-full min-w-11 items-center justify-center rounded-(--button-border-radius) border border-transparent bg-(--accent) px-5 py-2 text-center text-base leading-6 font-medium wrap-anywhere text-(--accent-foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) {render_as_link
+			? 'cursor-pointer hover:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_20%)] active:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_30%)]'
+			: ''}"
 	>
 		<TextProperty path={[...path, 'label']} placeholder="Button" />
 	</svelte:element>
@@ -28,8 +29,8 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="ew-button flex items-center justify-center rounded-(--button-border-radius) bg-(--background) px-4 py-3 text-sm text-(--foreground) outline-1 outline-(--foreground)/15 focus-visible:outline-(--editing) {render_as_link
-			? 'hover:bg-(--foreground)/5'
+		class="ew-button inline-flex min-h-11 max-w-full min-w-11 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-transparent px-5 py-2 text-center text-base leading-6 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) {render_as_link
+			? 'cursor-pointer hover:bg-(--muted) active:bg-(--foreground)/10'
 			: ''}"
 	>
 		<TextProperty path={[...path, 'label']} placeholder="Button" />
@@ -41,8 +42,9 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="ew-button flex items-center justify-center border-b border-(--foreground) py-3 text-sm text-(--foreground) outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
-		class:hover:opacity-70={render_as_link}
+		class="ew-button inline-flex min-h-11 max-w-full min-w-6 items-center justify-start py-2.5 text-start text-base leading-6 font-medium wrap-anywhere text-(--foreground) underline decoration-1 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) pointer-coarse:min-w-11 {render_as_link
+			? 'hover:decoration-2 active:decoration-2'
+			: ''}"
 	>
 		<TextProperty path={[...path, 'label']} placeholder="Button" />
 	</svelte:element>
