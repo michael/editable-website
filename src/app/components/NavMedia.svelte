@@ -16,7 +16,7 @@
 <Node class="nav-media flex min-w-10 shrink-0 items-center" {path}>
 	<svelte:element
 		this={render_as_link ? 'a' : 'div'}
-		class="inline-flex min-h-9 min-w-9 items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) pointer-coarse:min-h-11 pointer-coarse:min-w-11"
+		class="inline-flex min-h-9 min-w-9 items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing)"
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link && node.target !== '_self' ? node.target : undefined}
 	>

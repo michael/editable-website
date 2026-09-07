@@ -13,12 +13,12 @@
 	let is_small = $derived(layout.endsWith('-small'));
 	let button_size = $derived(
 		is_small
-			? 'min-h-9 min-w-9 px-3 py-1.5 text-sm leading-5 pointer-coarse:min-h-11 pointer-coarse:min-w-11'
+			? 'min-h-9 min-w-9 px-3 py-1.5 text-sm leading-5'
 			: 'min-h-11 min-w-11 px-5 py-2 text-base leading-6'
 	);
 	let link_size = $derived(
 		is_small
-			? 'min-h-9 min-w-6 py-2 text-sm leading-5 pointer-coarse:min-h-11 pointer-coarse:min-w-11'
+			? 'min-h-9 min-w-6 py-2 text-sm leading-5'
 			: 'min-h-11 min-w-6 py-2.5 text-base leading-6 pointer-coarse:min-w-11'
 	);
 </script>

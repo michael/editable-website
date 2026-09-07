@@ -84,29 +84,29 @@
 		class:max-lg:hidden={!svedit.editable}
 	>
 		<div
-			class="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-6 px-5 py-4 text-sm sm:px-7"
+			class="grid min-h-17 grid-cols-[max-content_max-content_max-content] items-center gap-x-12 px-5 py-4 text-sm sm:px-7 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-x-6"
 		>
 			<NodeArrayProperty
 				tag="div"
-				class="flex flex-wrap items-center gap-2 [--row:1] *:min-w-max"
+				class="flex flex-wrap items-center gap-2 [--row:1] *:min-w-max max-lg:flex-nowrap [&>.empty-node-placeholder]:min-h-9"
 				path={[...path, 'start_items']}
 			/>
 			<NodeArrayProperty
 				tag="nav"
-				class="flex w-max flex-wrap items-center gap-x-6 gap-y-1 [--row:1] *:min-w-max"
+				class="flex w-max flex-wrap items-center gap-x-6 gap-y-1 [--row:1] *:min-w-max max-lg:flex-nowrap [&>.empty-node-placeholder]:min-h-9"
 				path={[...path, 'middle_items']}
 			/>
 			<NodeArrayProperty
 				tag="div"
-				class="flex flex-wrap items-center justify-end gap-2 [--row:1] *:min-w-max"
+				class="flex flex-wrap items-center justify-end gap-2 [--row:1] *:min-w-max max-lg:flex-nowrap [&>.empty-node-placeholder]:min-h-9"
 				path={[...path, 'end_items']}
 			/>
 		</div>
 	</div>
 
-	<!-- Mobile nav (visible also during mobile editing) -->
+	<!-- Mobile nav in read mode -->
 	<div class="mx-auto max-w-7xl lg:hidden" class:hidden={svedit.editable}>
-		<div class="flex items-center gap-6 px-5 py-4 text-sm sm:px-7">
+		<div class="flex min-h-17 items-center gap-6 px-5 py-4 text-sm sm:px-7">
 			{#if mobile_nav_media_path}
 				<NavMedia path={mobile_nav_media_path} />
 			{/if}
@@ -116,7 +116,7 @@
 					<NavButton path={mobile_nav_cta_path} />
 				{/if}
 				<button
-					class="inline-flex size-9 shrink-0 items-center justify-center rounded-(--button-border-radius) border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+					class="inline-flex size-9 shrink-0 items-center justify-center rounded-(--button-border-radius) border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
 					onclick={() => (mobile_nav_open = !mobile_nav_open)}
 					aria-label="Toggle menu"
 					aria-expanded={mobile_nav_open}
@@ -134,7 +134,7 @@
 			transition:slide={{ duration: 200 }}
 		>
 			<button
-				class="absolute top-4 right-5 inline-flex size-9 shrink-0 items-center justify-center rounded-(--button-border-radius) border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 sm:right-7 pointer-coarse:size-11"
+				class="absolute top-4 right-5 inline-flex size-9 shrink-0 items-center justify-center rounded-(--button-border-radius) border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 sm:right-7"
 				onclick={() => (mobile_nav_open = false)}
 				aria-label="Close menu"
 			>
