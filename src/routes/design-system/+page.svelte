@@ -804,17 +804,6 @@
 						</p>
 					</div>
 
-					<div id="format-link-display" class="space-y-3">
-						<p class="text-sm text-(--muted-foreground)">Link · display-1</p>
-						<h3 class="display-1">
-							Make room for <a
-								href="#typography"
-								class="underline decoration-[0.0625em] underline-offset-[0.125em] hover:decoration-[0.125em] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:decoration-[0.125em]"
-								>what matters</a
-							>.
-						</h3>
-					</div>
-
 					<div id="format-code" class="space-y-3">
 						<h3 class="text-sm text-(--muted-foreground)">Code · code</h3>
 						<!--
