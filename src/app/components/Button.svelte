@@ -41,7 +41,7 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="ew-button inline-flex max-w-full items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-[var(--secondary-button-background,transparent)] text-center font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) {button_size} {render_as_link
+		class="ew-button ew-button-secondary inline-flex max-w-full items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-transparent text-center font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) {button_size} {render_as_link
 			? 'cursor-pointer hover:bg-(--muted) active:bg-(--foreground)/10'
 			: ''}"
 	>
