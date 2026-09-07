@@ -78,7 +78,7 @@
 						href={get_preview_href(internal_page_href)}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="inline-flex min-h-9 max-w-70 min-w-0 flex-1 items-center gap-2 rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] text-sm leading-5 font-medium text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
+						class="inline-flex min-h-9 max-w-70 min-w-0 flex-1 items-center gap-2 rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] text-sm leading-5 font-medium text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10"
 					>
 						{#if resolved_page_preview.preview_media_node?.src}
 							<div
@@ -101,7 +101,7 @@
 						href={get_preview_href(internal_page_href)}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="inline-flex min-h-9 max-w-70 min-w-0 flex-1 items-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] px-3 text-sm leading-5 font-medium text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
+						class="inline-flex min-h-9 max-w-70 min-w-0 flex-1 items-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] px-3 text-sm leading-5 font-medium text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10"
 					>
 						<span class="min-w-0 truncate">{error_message || internal_page_href}</span>
 					</a>
@@ -111,14 +111,14 @@
 					href={get_preview_href(node.href)}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="inline-flex min-h-9 max-w-70 min-w-0 flex-1 items-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] px-3 text-sm leading-5 font-medium text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 pointer-coarse:min-h-11"
+					class="inline-flex min-h-9 max-w-70 min-w-0 flex-1 items-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] px-3 text-sm leading-5 font-medium text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10"
 				>
 					<span class="min-w-0 truncate">{get_preview_label(node.href)}</span>
 				</a>
 			{/if}
 			<button
 				type="button"
-				class="inline-flex size-9 shrink-0 items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+				class="inline-flex size-9 shrink-0 items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
 				onclick={handle_edit}
 				title="Edit link"
 				aria-label="Edit link"
@@ -140,7 +140,7 @@
 			</button>
 			<button
 				type="button"
-				class="inline-flex size-9 shrink-0 items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+				class="inline-flex size-9 shrink-0 items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
 				onclick={handle_remove}
 				title="Remove link"
 				aria-label="Remove link"
@@ -191,7 +191,7 @@
 		>
 			<button
 				type="button"
-				class="inline-flex min-h-9 max-w-full min-w-0 items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent px-8 py-2 text-sm leading-5 font-medium wrap-anywhere text-(--editing) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--editing-muted) enabled:active:bg-(--editing)/15 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11"
+				class="inline-flex min-h-9 max-w-full min-w-0 items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent px-8 py-2 text-sm leading-5 font-medium wrap-anywhere text-(--editing) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--editing-muted) enabled:active:bg-(--editing)/15 disabled:cursor-default disabled:opacity-40"
 				onclick={handle_edit}
 			>
 				Create link

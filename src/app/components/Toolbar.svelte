@@ -184,7 +184,7 @@
 		'pointer-events-auto min-w-0 rounded-(--button-border-radius) border border-(--stroke) bg-(--background) p-1 text-(--foreground)';
 
 	const tw_toolbar_btn =
-		'pointer-events-auto inline-flex size-9 flex-none items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) pointer-coarse:size-11';
+		'pointer-events-auto inline-flex size-9 flex-none items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing)';
 	const tw_toolbar_btn_disabled = 'cursor-default opacity-40';
 	const tw_toolbar_btn_hover = 'cursor-pointer hover:bg-(--muted) active:bg-(--foreground)/10';
 	const tw_page_actions_item =
@@ -261,7 +261,7 @@
 	<span class="mx-1 h-5 w-px shrink-0 bg-(--stroke)" aria-hidden="true"></span>
 	{#if cancel_command && !cancel_command.disabled}
 		<button
-			class="pointer-events-auto inline-flex min-h-9 w-9 min-w-9 shrink-0 cursor-pointer items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 text-sm leading-5 font-medium text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 sm:w-auto sm:px-3 sm:py-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
+			class="pointer-events-auto inline-flex min-h-9 w-9 min-w-9 shrink-0 cursor-pointer items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 text-sm leading-5 font-medium text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10 sm:w-auto sm:px-3 sm:py-2"
 			onclick={() => cancel_command.execute()}
 			title="Cancel (⌃ ⎋)"
 			aria-label={cancel_button_label}
@@ -276,7 +276,7 @@
 
 	{#if !app_commands.save_document.disabled}
 		<button
-			class="pointer-events-auto inline-flex min-h-9 w-9 min-w-9 shrink-0 cursor-pointer items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 text-sm leading-5 font-medium text-(--editing) hover:bg-(--editing-muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--editing)/15 sm:w-auto sm:px-3 sm:py-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
+			class="pointer-events-auto inline-flex min-h-9 w-9 min-w-9 shrink-0 cursor-pointer items-center justify-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent p-0 text-sm leading-5 font-medium text-(--editing) hover:bg-(--editing-muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--editing)/15 sm:w-auto sm:px-3 sm:py-2"
 			onclick={() => app_commands.save_document.execute()}
 			title="Save (⌘ S)"
 			aria-label="Save"
