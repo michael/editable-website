@@ -129,10 +129,9 @@
 <style>
 	.toc-menu {
 		position: fixed;
-		position-area: block-end span-all;
-		position-try-fallbacks: flip-block;
-		justify-self: anchor-center;
-		inset: auto;
-		margin: 8px 0 0;
+		/* Center against the viewport, independently of the pill’s translated anchor. */
+		inset: auto 0;
+		top: anchor(bottom);
+		margin: 8px auto 0;
 	}
 </style>
