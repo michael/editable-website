@@ -97,7 +97,7 @@
 				<input
 					type="text"
 					bind:value={page_url_value}
-					class="page-url-input min-h-9 min-w-0 flex-1 rounded-[min(0.75rem,var(--button-border-radius))] border border-(--stroke) bg-(--background) px-3 py-1 text-base leading-6 text-(--foreground) focus:border-(--stroke) focus:ring-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing)"
+					class="page-url-input min-h-9 min-w-0 flex-1 rounded-[min(0.75rem,var(--button-border-radius))] border border-(--stroke) bg-(--background) px-3 py-1 text-base leading-6 text-(--foreground) outline-none focus:border-(--editing) focus:ring-0"
 					aria-label="Page URL"
 					placeholder="your-page-url"
 				/>

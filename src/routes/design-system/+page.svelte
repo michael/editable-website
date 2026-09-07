@@ -1327,7 +1327,7 @@ The local href is a specimen destination. Production links retain their own dest
 					<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
 						Link and media prompts use an opaque surface with 4px padding, no shadow, and the button
 						radius capped at 1rem. Fields and actions subtract the padding and border from that
-						radius. Text inputs and textareas use 16px text; keyboard focus uses the shared outline.
+						radius. Text inputs and textareas use 16px text and an editing-color border on focus.
 					</p>
 				</div>
 				<!-- A static form surface; submission and dialog behavior belong to the application. -->
@@ -1338,7 +1338,7 @@ The local href is a specimen destination. Production links retain their own dest
 						type="url"
 						aria-label="Example link URL"
 						value="https://example.com"
-						class="min-h-9 w-full min-w-0 rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border border-(--stroke) bg-(--background) px-3 py-1 text-base leading-6 text-(--foreground) focus:border-(--stroke) focus:ring-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing)"
+						class="min-h-9 w-full min-w-0 rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border border-(--stroke) bg-(--background) px-3 py-1 text-base leading-6 text-(--foreground) outline-none focus:border-(--editing) focus:ring-0"
 					/>
 					<div class="flex flex-wrap items-center justify-between gap-2 pl-3">
 						<label class="flex min-h-9 cursor-pointer items-center gap-2">
@@ -1363,12 +1363,12 @@ The local href is a specimen destination. Production links retain their own dest
 					<p class="max-w-prose body-sm text-(--muted-foreground)">
 						A muted editing fill marks the result Enter will open. Only keyboard-focused rows get a
 						ring, drawn inside the row to keep tree guides and adjacent rows clear. Search focus
-						uses a quiet border change. Action menus reuse the list popover recipe.
+						uses a thin editing-color border. Action menus reuse the list popover recipe.
 					</p>
 				</div>
 				<div class="max-w-xl space-y-4 p-1">
 					<label
-						class="flex min-h-11 items-center gap-2 rounded-(--button-border-radius) border border-(--stroke) bg-(--background) px-3 focus-within:border-(--muted-foreground)"
+						class="flex min-h-11 items-center gap-2 rounded-(--button-border-radius) border border-(--stroke) bg-(--background) px-3 focus-within:border-(--editing)"
 					>
 						<svg
 							class="size-5 shrink-0 text-(--muted-foreground)"
@@ -1402,7 +1402,7 @@ The local href is a specimen destination. Production links retain their own dest
 						<button
 							type="button"
 							aria-label="Example page actions"
-							class="inline-flex size-9 shrink-0 items-center justify-center rounded-(--button-border-radius) border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
+							class="inline-flex size-9 shrink-0 items-center justify-center rounded-(--button-border-radius) border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--background) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
 						>
 							<svg class="size-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
 								<circle cx="6" cy="12" r="1" /><circle cx="12" cy="12" r="1" /><circle

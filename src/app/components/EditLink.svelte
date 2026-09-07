@@ -184,7 +184,7 @@
 					type="url"
 					bind:value={href_input_value}
 					placeholder="https://example.com"
-					class="edit-link-input min-h-9 w-72 min-w-0 flex-1 rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border border-(--stroke) bg-(--background) px-3 py-1 text-base leading-6 text-(--foreground) focus:border-(--stroke) focus:ring-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing)"
+					class="edit-link-input min-h-9 w-72 min-w-0 flex-1 rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border border-(--stroke) bg-(--background) px-3 py-1 text-base leading-6 text-(--foreground) outline-none focus:border-(--editing) focus:ring-0"
 					onkeydown={handle_keydown}
 				/>
 				{#if app.has_backend}
