@@ -82,7 +82,7 @@
 				bind:value={alt_input_value}
 				rows="3"
 				placeholder="Describe the media for people using screen readers."
-				class="edit-media-textarea block w-72 max-w-full min-w-0 resize-none rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border border-(--stroke) bg-(--background) px-3 py-2 text-base leading-6 text-(--foreground) focus:border-(--stroke) focus:ring-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing)"
+				class="edit-media-textarea block w-72 max-w-full min-w-0 resize-none rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border border-(--stroke) bg-(--background) px-3 py-2 text-base leading-6 text-(--foreground) outline-none focus:border-(--editing) focus:ring-0"
 				onkeydown={handle_keydown}
 			></textarea>
 		</div>

@@ -995,7 +995,7 @@ Updated: ${updated_at_label}`;
 
 	/* Keep search focus quiet while the result highlight identifies the Enter target. */
 	.search-input-shell:focus-within {
-		border-color: var(--muted-foreground);
+		border-color: var(--editing);
 	}
 
 	.search-input-icon {
@@ -1411,7 +1411,10 @@ Updated: ${updated_at_label}`;
 
 	@media (hover: hover) and (pointer: fine) {
 		.item-actions-btn:hover,
-		.item-actions-btn:focus-visible,
+		.item-actions-btn:focus-visible {
+			background: var(--background);
+		}
+
 		.unlisted-badge:hover,
 		.unlisted-badge:focus-visible {
 			background: var(--muted);
