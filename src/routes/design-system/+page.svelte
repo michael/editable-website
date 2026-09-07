@@ -1249,9 +1249,10 @@ Use a group here; production toolbar keyboard behavior belongs to the consuming 
 								type="button"
 								aria-label="Choose gallery variant, mixed selection"
 								class="inline-flex min-h-9 min-w-0 items-center justify-center gap-2 rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] border-0 bg-transparent px-3 py-2 text-sm leading-5 font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11"
-								><span class="min-w-0 truncate">Gallery</span><span
-									class="shrink-0 font-mono text-xs font-normal text-(--muted-foreground)"
-									>(mixed)</span
+								><span class="min-w-0 truncate max-sm:min-w-24"
+									>Gallery <span class="font-mono text-xs font-normal text-(--muted-foreground)"
+										>(mixed)</span
+									></span
 								><svg
 									class="size-4 shrink-0 text-(--muted-foreground)"
 									viewBox="0 0 24 24"
