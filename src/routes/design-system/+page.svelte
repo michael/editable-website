@@ -880,7 +880,7 @@
 						<!-- Supporting action. Use the shared stroke border, muted hover surface, and foreground tint on press. -->
 						<button
 							type="button"
-							class="inline-flex min-h-11 max-w-full min-w-11 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-[var(--secondary-button-background,transparent)] px-5 py-2 text-center text-base leading-6 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
+							class="inline-flex min-h-11 max-w-full min-w-11 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-transparent px-5 py-2 text-center text-base leading-6 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
 						>
 							Continue
 						</button>
@@ -939,7 +939,7 @@
 						<!-- Supporting action. Use the shared stroke border, muted hover surface, and foreground tint on press. -->
 						<button
 							type="button"
-							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-[var(--secondary-button-background,transparent)] px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
+							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-transparent px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
 						>
 							Continue
 						</button>
@@ -983,7 +983,7 @@
 						<button
 							type="button"
 							disabled
-							class="inline-flex min-h-11 max-w-full min-w-11 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-[var(--secondary-button-background,transparent)] px-5 py-2 text-center text-base leading-6 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
+							class="inline-flex min-h-11 max-w-full min-w-11 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-transparent px-5 py-2 text-center text-base leading-6 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
 							>Continue</button
 						>
 					</div>
@@ -1001,7 +1001,7 @@
 						<button
 							type="button"
 							disabled
-							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-[var(--secondary-button-background,transparent)] px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
+							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-transparent px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
 							>Continue</button
 						>
 					</div>
@@ -1082,26 +1082,22 @@
 
 			<section id="boxed-prose" aria-labelledby="boxed-prose-heading" class="space-y-8">
 				<div class="space-y-2">
-					<h2 id="boxed-prose-heading" class="text-xl font-medium">Boxed prose</h2>
+					<h2 id="boxed-prose-heading" class="text-xl font-medium">Boxed items</h2>
 					<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
-						Boxed items use a muted surface and pass
-						<code
-							class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
-							>--secondary-button-background: var(--background)</code
-						>
-						to their children. Secondary buttons use that surface at rest and the muted surface on hover.
-						Outside a box, the button surface defaults to transparent.
+						Boxed items use a muted surface. Their secondary buttons use the background color at
+						rest and the muted color on hover. This styling applies only to secondary buttons inside
+						the box.
 					</p>
 				</div>
 				<div
-					class="max-w-sm rounded-(--image-border-radius) border border-(--stroke) bg-(--muted) px-8 py-10 [--secondary-button-background:var(--background)]"
+					class="max-w-sm rounded-(--image-border-radius) border border-(--stroke) bg-(--muted) px-8 py-10"
 				>
 					<div class="flex flex-col items-center gap-5 text-center text-balance sm:gap-7">
 						<h3 class="display-5">Make it your own</h3>
 						<p class="body-base">Start with the shared styles and adapt them to your site.</p>
 						<a
 							href="#buttons"
-							class="inline-flex min-h-11 max-w-full min-w-11 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-[var(--secondary-button-background,transparent)] px-5 py-2 text-center text-base leading-6 font-medium wrap-anywhere text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10"
+							class="inline-flex min-h-11 max-w-full min-w-11 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-(--background) px-5 py-2 text-center text-base leading-6 font-medium wrap-anywhere text-(--foreground) hover:bg-(--muted) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:bg-(--foreground)/10"
 							>Explore buttons</a
 						>
 					</div>
@@ -1183,7 +1179,7 @@
 						>
 						<button
 							type="button"
-							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center gap-1.5 rounded-(--button-border-radius) border border-(--stroke) bg-[var(--secondary-button-background,transparent)] px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
+							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center gap-1.5 rounded-(--button-border-radius) border border-(--stroke) bg-transparent px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
 						>
 							Install
 							<svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true">

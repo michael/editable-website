@@ -45,7 +45,7 @@
 
 {#snippet card()}
 	<div
-		class="h-full border border-(--stroke) bg-(--muted) px-8 py-10 [--secondary-button-background:var(--background)]"
+		class="ew-boxed-prose h-full border border-(--stroke) bg-(--muted) px-8 py-10"
 		style:border-radius="var(--image-border-radius)"
 	>
 		<div class={[centered && 'text-center text-balance']}>
@@ -61,3 +61,17 @@
 		{@render plain()}
 	{/if}
 </Node>
+
+<style>
+	.ew-boxed-prose :global(.ew-button-secondary) {
+		background: var(--background);
+	}
+
+	.ew-boxed-prose :global(a.ew-button-secondary:hover) {
+		background: var(--muted);
+	}
+
+	.ew-boxed-prose :global(a.ew-button-secondary:active) {
+		background: color-mix(in srgb, var(--foreground) 10%, transparent);
+	}
+</style>
