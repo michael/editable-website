@@ -127,7 +127,7 @@
 
 {#if variant_item}
 	<div
-		class="variant-pill flex min-h-9 min-w-0 items-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] text-sm leading-5 whitespace-nowrap text-(--foreground) pointer-coarse:min-h-11"
+		class="variant-pill flex min-h-9 min-w-0 items-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] text-sm leading-5 whitespace-nowrap text-(--foreground) max-sm:min-w-36 pointer-coarse:min-h-11"
 		aria-label="Current node variant"
 	>
 		<div
@@ -140,7 +140,7 @@
 				: undefined}
 		>
 			<span class="flex min-w-0 items-center whitespace-nowrap" aria-hidden="true">
-				<span class="truncate whitespace-nowrap">
+				<span class="truncate whitespace-nowrap max-sm:min-w-24">
 					<span
 						class={variant_item.option_count > 1
 							? 'font-medium'
