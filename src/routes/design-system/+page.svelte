@@ -25,8 +25,10 @@
 					<h2 id="foundations-heading" class="text-xl font-medium">Foundations</h2>
 					<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
 						Colors, fonts, and corner radii come from the shared tokens in
-						<code class="font-mono">src/app.css</code>. These specimens follow the current token
-						values.
+						<code
+							class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+							>src/app.css</code
+						>. These specimens follow the current token values.
 					</p>
 				</div>
 
@@ -45,8 +47,15 @@
 								Page content
 							</div>
 							<p class="body-sm">
-								<code class="font-mono">--background</code> /
-								<code class="font-mono">--foreground</code>
+								<code
+									class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+									>--background</code
+								>
+								/
+								<code
+									class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+									>--foreground</code
+								>
 							</p>
 						</div>
 						<div class="space-y-2">
@@ -57,8 +66,15 @@
 								<p class="body-sm text-(--muted-foreground)">Supporting text</p>
 							</div>
 							<p class="body-sm">
-								<code class="font-mono">--muted</code> /
-								<code class="font-mono">--muted-foreground</code>
+								<code
+									class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+									>--muted</code
+								>
+								/
+								<code
+									class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+									>--muted-foreground</code
+								>
 							</p>
 						</div>
 						<div class="space-y-2">
@@ -68,8 +84,15 @@
 								Primary action or highlight
 							</div>
 							<p class="body-sm">
-								<code class="font-mono">--accent</code> /
-								<code class="font-mono">--accent-foreground</code>
+								<code
+									class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+									>--accent</code
+								>
+								/
+								<code
+									class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+									>--accent-foreground</code
+								>
 							</p>
 						</div>
 						<div class="space-y-2">
@@ -79,8 +102,15 @@
 								Active editing
 							</div>
 							<p class="body-sm">
-								<code class="font-mono">--editing</code> /
-								<code class="font-mono">--editing-foreground</code>
+								<code
+									class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+									>--editing</code
+								>
+								/
+								<code
+									class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+									>--editing-foreground</code
+								>
 							</p>
 						</div>
 						<div class="space-y-2">
@@ -90,8 +120,15 @@
 								Passive editing highlight
 							</div>
 							<p class="body-sm">
-								<code class="font-mono">--editing-muted</code> /
-								<code class="font-mono">--editing</code>
+								<code
+									class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+									>--editing-muted</code
+								>
+								/
+								<code
+									class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+									>--editing</code
+								>
 							</p>
 						</div>
 						<div class="space-y-2">
@@ -101,7 +138,12 @@
 								<p>Borders and dividers</p>
 								<hr class="border-0 border-t border-(--stroke)" />
 							</div>
-							<p class="body-sm"><code class="font-mono">--stroke</code></p>
+							<p class="body-sm">
+								<code
+									class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+									>--stroke</code
+								>
+							</p>
 						</div>
 					</div>
 				</div>
@@ -111,17 +153,30 @@
 					<div class="grid gap-6 sm:grid-cols-3">
 						<div class="space-y-2">
 							<p class="font-sans text-2xl">Clear words.</p>
-							<p class="body-sm"><code class="font-mono">font-sans</code> · Inter</p>
+							<p class="body-sm">
+								<code
+									class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+									>font-sans</code
+								> · Inter
+							</p>
 						</div>
 						<div class="space-y-2">
 							<p class="font-serif text-2xl">Clear words.</p>
 							<p class="body-sm">
-								<code class="font-mono">font-serif</code> · Libertinos Serif Display
+								<code
+									class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+									>font-serif</code
+								> · Libertinos Serif Display
 							</p>
 						</div>
 						<div class="space-y-2">
 							<p class="font-mono text-2xl">Clear words.</p>
-							<p class="body-sm"><code class="font-mono">font-mono</code> · IBM Plex Mono</p>
+							<p class="body-sm">
+								<code
+									class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+									>font-mono</code
+								> · IBM Plex Mono
+							</p>
 						</div>
 					</div>
 				</div>
@@ -141,7 +196,12 @@
 							>
 								Button
 							</div>
-							<p class="body-sm"><code class="font-mono">--button-border-radius</code></p>
+							<p class="body-sm">
+								<code
+									class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+									>--button-border-radius</code
+								>
+							</p>
 						</div>
 						<div class="space-y-3">
 							<div
@@ -173,7 +233,12 @@
 							>
 								Image corners
 							</div>
-							<p class="body-sm"><code class="font-mono">--image-border-radius</code></p>
+							<p class="body-sm">
+								<code
+									class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+									>--image-border-radius</code
+								>
+							</p>
 						</div>
 					</div>
 				</div>
@@ -183,10 +248,16 @@
 				<div class="space-y-2">
 					<h2 id="page-limiter-heading" class="text-xl font-medium">Page limiter</h2>
 					<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
-						Center each block with <code class="font-mono">mx-auto max-w-7xl</code>, then add
-						<code class="font-mono">px-5 sm:px-7</code> inside it. The width limit is 80rem (1280px),
-						including side padding: 1.25rem (20px) on small screens and 1.75rem (28px) from the 40rem
-						(640px) breakpoint, at the default root font size.
+						Center each block with <code
+							class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+							>mx-auto max-w-7xl</code
+						>, then add
+						<code
+							class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+							>px-5 sm:px-7</code
+						> inside it. The width limit is 80rem (1280px), including side padding: 1.25rem (20px) on
+						small screens and 1.75rem (28px) from the 40rem (640px) breakpoint, at the default root font
+						size.
 					</p>
 				</div>
 
@@ -233,9 +304,16 @@
 						layout. Alternating their positions adds variation while keeping shared alignment edges.
 					</p>
 					<p class="max-w-prose body-sm text-(--muted-foreground)">
-						Narrow tracks use <code class="font-mono">max-w-4xl</code> (56rem / 896px) inside the
-						<code class="font-mono">max-w-7xl</code> page limiter (80rem / 1280px). These are maximum
-						widths, not fixed proportions. Both include the shared side padding.
+						Narrow tracks use <code
+							class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+							>max-w-4xl</code
+						>
+						(56rem / 896px) inside the
+						<code
+							class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+							>max-w-7xl</code
+						> page limiter (80rem / 1280px). These are maximum widths, not fixed proportions. Both include
+						the shared side padding.
 					</p>
 				</div>
 
@@ -243,7 +321,10 @@
 				<div class="space-y-6">
 					<figure class="space-y-2">
 						<figcaption class="body-sm">
-							Narrow left · <code class="font-mono">max-w-4xl</code>
+							Narrow left · <code
+								class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+								>max-w-4xl</code
+							>
 						</figcaption>
 						<div class="-mx-5 sm:-mx-7">
 							<div class="mx-auto max-w-7xl bg-(--muted)">
@@ -260,7 +341,10 @@
 
 					<figure class="space-y-2">
 						<figcaption class="body-sm">
-							Narrow center · <code class="font-mono">mx-auto max-w-4xl</code>
+							Narrow center · <code
+								class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+								>mx-auto max-w-4xl</code
+							>
 						</figcaption>
 						<div class="-mx-5 sm:-mx-7">
 							<div class="mx-auto max-w-7xl bg-(--muted)">
@@ -277,7 +361,10 @@
 
 					<figure class="space-y-2">
 						<figcaption class="body-sm">
-							Narrow right · <code class="font-mono">ml-auto max-w-4xl</code>
+							Narrow right · <code
+								class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+								>ml-auto max-w-4xl</code
+							>
 						</figcaption>
 						<div class="-mx-5 sm:-mx-7">
 							<div class="mx-auto max-w-7xl bg-(--muted)">
@@ -482,11 +569,15 @@
 					<div class="space-y-2">
 						<h3 class="text-sm font-medium">Sample block implementation</h3>
 						<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
-							A top-level block receives its section context through <code class="font-mono"
+							A top-level block receives its section context through <code
+								class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
 								>mark</code
-							>, aliased to <code class="font-mono">section</code>. As in Prose.svelte, the block
-							derives its top and bottom padding from that context. No extra padding props are
-							needed.
+							>, aliased to
+							<code
+								class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+								>section</code
+							>. As in Prose.svelte, the block derives its top and bottom padding from that context.
+							No extra padding props are needed.
 						</p>
 					</div>
 					<div class="space-y-3">
@@ -527,26 +618,52 @@
 					</div>
 					<ul class="max-w-prose list-disc space-y-2 pl-5 body-sm">
 						<li>No section mark: both edges are generous.</li>
-						<li><code class="font-mono">section.is_start</code>: the top edge is generous.</li>
-						<li><code class="font-mono">section.is_end</code>: the bottom edge is generous.</li>
 						<li>
-							<code class="font-mono">section.is_middle</code>: both edges are compact; the two
-							boundary checks already cover this case.
+							<code
+								class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+								>section.is_start</code
+							>: the top edge is generous.
+						</li>
+						<li>
+							<code
+								class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+								>section.is_end</code
+							>: the bottom edge is generous.
+						</li>
+						<li>
+							<code
+								class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+								>section.is_middle</code
+							>: both edges are compact; the two boundary checks already cover this case.
 						</li>
 						<li>A one-block section is both the start and the end, so both edges are generous.</li>
 					</ul>
 					<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
-						The app uses shared utilities in <code class="font-mono">src/app.css</code> for the
-						default rhythm: <code class="font-mono">pt-block-generous</code>,
-						<code class="font-mono">pt-block-compact</code>, and their
-						<code class="font-mono">pb-</code> equivalents. They apply the values above to existing elements
-						without adding a wrapper component.
+						The app uses shared utilities in <code
+							class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+							>src/app.css</code
+						>
+						for the default rhythm:
+						<code
+							class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+							>pt-block-generous</code
+						>,
+						<code
+							class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+							>pt-block-compact</code
+						>, and their
+						<code
+							class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+							>pb-</code
+						> equivalents. They apply the values above to existing elements without adding a wrapper component.
 					</p>
 					<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
 						For a custom rhythm, replace the default utility on that edge with explicit responsive
-						classes, such as <code class="font-mono">pt-8 lg:pt-16</code>. Avoid combining a default
-						utility with overrides on the same edge. Keep deliberate exceptions local: flush and
-						full-bleed figures have no vertical padding.
+						classes, such as <code
+							class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+							>pt-8 lg:pt-16</code
+						>. Avoid combining a default utility with overrides on the same edge. Keep deliberate
+						exceptions local: flush and full-bleed figures have no vertical padding.
 					</p>
 				</div>
 			</section>
@@ -962,7 +1079,10 @@
 					<h2 id="boxed-prose-heading" class="text-xl font-medium">Boxed prose</h2>
 					<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
 						Boxed items use a muted surface and pass
-						<code class="font-mono">--secondary-button-background: var(--background)</code>
+						<code
+							class="rounded-[min(var(--button-border-radius),0.25em)] bg-(--foreground)/8 box-decoration-clone px-[0.25em] py-[0.125em] font-mono text-[0.9em] font-normal wrap-anywhere"
+							>--secondary-button-background: var(--background)</code
+						>
 						to their children. Secondary buttons use that surface at rest and the muted surface on hover.
 						Outside a box, the button surface defaults to transparent.
 					</p>
