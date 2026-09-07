@@ -224,6 +224,104 @@
 				</p>
 			</section>
 
+			<section id="content-tracks" aria-labelledby="content-tracks-heading" class="space-y-8">
+				<div class="space-y-2">
+					<h2 id="content-tracks-heading" class="text-xl font-medium">Content tracks</h2>
+					<p class="max-w-prose body-sm text-(--muted-foreground)">
+						A track controls how much of the page limiter a block occupies and where it sits.
+						Prose and descriptive listings share narrow left, center, and right tracks, plus a wide
+						layout. Alternating their positions adds variation while keeping shared alignment edges.
+					</p>
+					<p class="max-w-prose body-sm text-(--muted-foreground)">
+						Narrow tracks use <code class="font-mono">max-w-4xl</code> (56rem / 896px) inside the
+						<code class="font-mono">max-w-7xl</code> page limiter (80rem / 1280px). These are maximum
+						widths, not fixed proportions. Both include the shared side padding.
+					</p>
+				</div>
+
+				<!-- Use actual track widths and padding so these diagrams respond like application blocks. -->
+				<div class="space-y-6">
+					<figure class="space-y-2">
+						<figcaption class="body-sm">
+							Narrow left · <code class="font-mono">max-w-4xl</code>
+						</figcaption>
+						<div class="-mx-5 sm:-mx-7">
+							<div class="mx-auto max-w-7xl bg-(--muted)">
+								<div class="max-w-4xl px-5 sm:px-7">
+									<div class="border-x border-dashed border-(--stroke) bg-(--background) py-5 body-sm">
+										Content starts at the left page edge.
+									</div>
+								</div>
+							</div>
+						</div>
+					</figure>
+
+					<figure class="space-y-2">
+						<figcaption class="body-sm">
+							Narrow center · <code class="font-mono">mx-auto max-w-4xl</code>
+						</figcaption>
+						<div class="-mx-5 sm:-mx-7">
+							<div class="mx-auto max-w-7xl bg-(--muted)">
+								<div class="mx-auto max-w-4xl px-5 sm:px-7">
+									<div class="border-x border-dashed border-(--stroke) bg-(--background) py-5 body-sm">
+										Content sits in the center of the page.
+									</div>
+								</div>
+							</div>
+						</div>
+					</figure>
+
+					<figure class="space-y-2">
+						<figcaption class="body-sm">
+							Narrow right · <code class="font-mono">ml-auto max-w-4xl</code>
+						</figcaption>
+						<div class="-mx-5 sm:-mx-7">
+							<div class="mx-auto max-w-7xl bg-(--muted)">
+								<div class="ml-auto max-w-4xl px-5 sm:px-7">
+									<div class="border-x border-dashed border-(--stroke) bg-(--background) py-5 body-sm">
+										Content ends at the right page edge.
+									</div>
+								</div>
+							</div>
+						</div>
+					</figure>
+
+					<figure class="space-y-2">
+						<figcaption class="body-sm">Wide · use the full available content width</figcaption>
+						<div class="-mx-5 sm:-mx-7">
+							<div class="mx-auto max-w-7xl bg-(--muted)">
+								<div class="px-5 sm:px-7">
+									<div class="border-x border-dashed border-(--stroke) bg-(--background) py-5 body-sm">
+										Content spans the limiter, inside the shared side padding.
+									</div>
+								</div>
+							</div>
+						</div>
+					</figure>
+
+					<figure class="space-y-2">
+						<figcaption class="body-sm">
+							Two columns · descriptive listings · 50:50 after the gap
+						</figcaption>
+						<div class="-mx-5 sm:-mx-7">
+							<div class="mx-auto max-w-7xl bg-(--muted)">
+								<div class="px-5 sm:px-7">
+									<div class="grid grid-cols-1 gap-x-10 gap-y-0 lg:grid-cols-2 lg:gap-x-14">
+										<div class="border-x border-dashed border-(--stroke) bg-(--background) py-5 body-sm">
+											First column
+										</div>
+										<div class="border-x border-dashed border-(--stroke) bg-(--background) py-5 body-sm">
+											Second column
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</figure>
+				</div>
+
+			</section>
+
 			<section id="block-spacing" aria-labelledby="block-spacing-heading" class="space-y-8">
 				<div class="space-y-2">
 					<h2 id="block-spacing-heading" class="text-xl font-medium">Vertical block spacing</h2>
