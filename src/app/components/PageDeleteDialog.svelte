@@ -103,13 +103,18 @@
 				<p class="confirm-error" role="alert">{delete_error}</p>
 			{/if}
 			<div class="confirm-actions">
-				<button type="button" class="confirm-btn" onclick={close} disabled={deleting}>
+				<button
+					type="button"
+					class="confirm-btn inline-flex min-h-9 items-center justify-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2 text-sm leading-5 font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
+					onclick={close}
+					disabled={deleting}
+				>
 					Cancel
 				</button>
 				<button
 					bind:this={confirm_button_ref}
 					type="submit"
-					class="confirm-btn confirm-btn-danger"
+					class="confirm-btn confirm-btn-danger inline-flex min-h-9 items-center justify-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2 text-sm leading-5 font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
 					disabled={deleting}
 				>
 					{deleting ? 'Deleting…' : 'Delete'}
@@ -140,30 +145,30 @@
 		position: fixed;
 		inset: 50% auto auto 50%;
 		transform: translate(-50%, -50%);
-		width: min(28rem, calc(100vw - 2rem));
+		width: min(28rem, calc(100vw - 2.5rem));
+		max-height: calc(100dvh - 2.5rem);
+		overflow-y: auto;
 		padding: 1rem;
 		display: flex;
 		flex-direction: column;
-		gap: 0.9rem;
+		gap: 1rem;
 		border: 1px solid var(--stroke);
-		border-radius: 23px;
+		border-radius: min(1rem, var(--button-border-radius));
 		background: var(--background);
 		color: var(--foreground);
-		box-shadow:
-			0 1px 2px rgb(0 0 0 / 0.12),
-			0 4px 16px rgb(0 0 0 / 0.08);
+		box-shadow: none;
 	}
 
 	.confirm-title {
 		margin: 0;
 		font-size: 1rem;
-		font-weight: 700;
+		font-weight: 500;
 	}
 
 	.confirm-message {
 		margin: 0;
-		font-size: 0.92rem;
-		line-height: 1.45;
+		font-size: 0.875rem;
+		line-height: 1.5rem;
 		color: var(--muted-foreground);
 	}
 
@@ -179,35 +184,8 @@
 		gap: 0.75rem;
 	}
 
-	.confirm-btn {
-		border: 0;
-		border-radius: 9999px;
-		background: transparent;
-		color: inherit;
-		padding: 0.55rem 0.9rem;
-		cursor: pointer;
-		font-size: 0.9rem;
-		font-weight: 600;
-		outline: 1px solid transparent;
-		outline-offset: 1px;
-	}
-
-	.confirm-btn:hover {
-		background: var(--muted);
-	}
-
-	.confirm-btn:focus-visible {
-		background: var(--muted);
-		outline-color: var(--editing);
-	}
-
 	.confirm-btn-danger {
 		color: color-mix(in oklch, red 65%, var(--foreground));
 		border-color: color-mix(in oklch, red 35%, var(--foreground) 12%, transparent);
-	}
-
-	.confirm-btn:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
 	}
 </style>

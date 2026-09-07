@@ -1357,6 +1357,65 @@ The local href is a specimen destination. Production links retain their own dest
 				</div>
 			</section>
 
+			<section id="page-browser" aria-labelledby="page-browser-heading" class="space-y-8">
+				<div class="space-y-2">
+					<h2 id="page-browser-heading" class="text-xl font-medium">Page browser</h2>
+					<p class="max-w-prose body-sm text-(--muted-foreground)">
+						A muted editing fill marks the result Enter will open. Only keyboard-focused rows get a
+						ring, drawn inside the row to keep tree guides and adjacent rows clear. Search focus
+						uses a quiet border change. Action menus reuse the list popover recipe.
+					</p>
+				</div>
+				<div class="max-w-xl space-y-4 p-1">
+					<label
+						class="flex min-h-11 items-center gap-2 rounded-(--button-border-radius) border border-(--stroke) bg-(--background) px-3 focus-within:border-(--muted-foreground)"
+					>
+						<svg
+							class="size-5 shrink-0 text-(--muted-foreground)"
+							viewBox="0 0 24 24"
+							fill="none"
+							aria-hidden="true"
+						>
+							<circle cx="10" cy="10" r="6" stroke="currentColor" />
+							<path d="M15 15L21 21" stroke="currentColor" />
+						</svg>
+						<input
+							type="search"
+							aria-label="Example page search"
+							placeholder="Search pages"
+							class="min-w-0 flex-1 border-0 bg-transparent p-0 text-base leading-6 text-(--foreground) outline-none placeholder:text-(--muted-foreground) focus:ring-0"
+						/>
+					</label>
+					<div
+						class="flex min-h-11 items-center gap-2 rounded-(--button-border-radius) bg-(--editing-muted) px-1"
+					>
+						<a
+							href="#page-browser"
+							class="flex min-h-11 min-w-0 flex-1 items-center gap-3 rounded-(--button-border-radius) text-sm leading-5 font-medium focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-(--editing)"
+						>
+							<span
+								aria-hidden="true"
+								class="size-9 shrink-0 rounded-(--button-border-radius) bg-(--muted)"
+							></span>
+							<span class="truncate">Why Editable?</span>
+						</a>
+						<button
+							type="button"
+							aria-label="Example page actions"
+							class="inline-flex size-9 shrink-0 items-center justify-center rounded-(--button-border-radius) border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
+						>
+							<svg class="size-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+								<circle cx="6" cy="12" r="1" /><circle cx="12" cy="12" r="1" /><circle
+									cx="18"
+									cy="12"
+									r="1"
+								/>
+							</svg>
+						</button>
+					</div>
+				</div>
+			</section>
+
 			<section id="popovers" aria-labelledby="popovers-heading" class="space-y-8">
 				<div class="space-y-2">
 					<h2 id="popovers-heading" class="text-xl font-medium">List popovers</h2>

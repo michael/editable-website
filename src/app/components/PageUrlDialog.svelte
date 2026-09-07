@@ -97,7 +97,8 @@
 				<input
 					type="text"
 					bind:value={page_url_value}
-					class="page-url-input"
+					class="page-url-input min-h-9 min-w-0 flex-1 rounded-[min(0.75rem,var(--button-border-radius))] border border-(--stroke) bg-(--background) px-3 py-1 text-base leading-6 text-(--foreground) focus:border-(--stroke) focus:ring-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing)"
+					aria-label="Page URL"
 					placeholder="your-page-url"
 				/>
 			</div>
@@ -105,10 +106,19 @@
 				<p class="confirm-error" role="alert">{page_url_error}</p>
 			{/if}
 			<div class="confirm-actions">
-				<button type="button" class="confirm-btn" onclick={close} disabled={saving}>
+				<button
+					type="button"
+					class="confirm-btn inline-flex min-h-9 items-center justify-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2 text-sm leading-5 font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
+					onclick={close}
+					disabled={saving}
+				>
 					Cancel
 				</button>
-				<button type="submit" class="confirm-btn" disabled={saving}>
+				<button
+					type="submit"
+					class="confirm-btn inline-flex min-h-9 items-center justify-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2 text-sm leading-5 font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
+					disabled={saving}
+				>
 					{saving ? 'Saving…' : 'Save'}
 				</button>
 			</div>
@@ -137,24 +147,24 @@
 		position: fixed;
 		inset: 50% auto auto 50%;
 		transform: translate(-50%, -50%);
-		width: min(28rem, calc(100vw - 2rem));
+		width: min(28rem, calc(100vw - 2.5rem));
+		max-height: calc(100dvh - 2.5rem);
+		overflow-y: auto;
 		padding: 1rem;
 		display: flex;
 		flex-direction: column;
-		gap: 0.9rem;
+		gap: 1rem;
 		border: 1px solid var(--stroke);
-		border-radius: 23px;
+		border-radius: min(1rem, var(--button-border-radius));
 		background: var(--background);
 		color: var(--foreground);
-		box-shadow:
-			0 1px 2px rgb(0 0 0 / 0.12),
-			0 4px 16px rgb(0 0 0 / 0.08);
+		box-shadow: none;
 	}
 
 	.confirm-title {
 		margin: 0;
 		font-size: 1rem;
-		font-weight: 700;
+		font-weight: 500;
 	}
 
 	.confirm-error {
@@ -172,58 +182,13 @@
 	.page-url-field {
 		display: flex;
 		align-items: center;
-		gap: 0.25rem;
-		padding: 0.75rem 0;
+		flex-wrap: wrap;
+		gap: 0.5rem;
 	}
 
 	.page-url-prefix {
-		font-size: 0.95rem;
+		font-size: 0.875rem;
 		color: var(--muted-foreground);
-		white-space: nowrap;
-	}
-
-	.page-url-input {
-		flex: 1;
-		min-width: 0;
-		border: 1px solid var(--stroke);
-		border-radius: 9999px;
-		background: var(--background);
-		color: var(--foreground);
-		padding: 0.5rem 0.65rem;
-		font-size: 0.95rem;
-		outline: none;
-		box-shadow: none;
-	}
-
-	.page-url-input:focus {
-		border-color: var(--editing);
-		box-shadow: none;
-	}
-
-	.confirm-btn {
-		border: 0;
-		border-radius: 9999px;
-		background: transparent;
-		color: inherit;
-		padding: 0.55rem 0.9rem;
-		cursor: pointer;
-		font-size: 0.9rem;
-		font-weight: 600;
-		outline: 1px solid transparent;
-		outline-offset: 1px;
-	}
-
-	.confirm-btn:hover {
-		background: var(--muted);
-	}
-
-	.confirm-btn:focus-visible {
-		background: var(--muted);
-		outline-color: var(--editing);
-	}
-
-	.confirm-btn:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
+		overflow-wrap: anywhere;
 	}
 </style>
