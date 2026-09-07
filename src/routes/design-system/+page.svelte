@@ -20,7 +20,11 @@
 				</p>
 			</header>
 
-			<section id="foundations" aria-labelledby="foundations-heading" class="space-y-8">
+			<section
+				id="foundations"
+				aria-labelledby="foundations-heading"
+				class="space-y-12 lg:space-y-16"
+			>
 				<div class="space-y-2">
 					<h2 id="foundations-heading" class="text-xl font-medium">Foundations</h2>
 					<p class="max-w-prose text-sm leading-relaxed text-(--muted-foreground)">
@@ -32,17 +36,17 @@
 					</p>
 				</div>
 
-				<div class="space-y-4">
+				<div class="space-y-5 sm:space-y-7">
 					<h3 class="text-sm font-medium">Colors and surfaces</h3>
 					<p class="max-w-prose body-sm text-(--muted-foreground)">
 						Keep each surface with its foreground color. Neutral controls use the muted surface on
 						hover and a 10% foreground tint on press. Primary actions and editing actions use their
 						respective accent treatments.
 					</p>
-					<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-						<div class="space-y-2">
+					<div class="grid grid-cols-1 gap-x-5 gap-y-8 sm:gap-x-7 lg:grid-cols-3 lg:gap-y-7">
+						<div class="space-y-3">
 							<div
-								class="flex min-h-28 items-center border border-(--stroke) bg-(--background) p-5 body-base text-(--foreground)"
+								class="flex min-h-28 items-center rounded-(--image-border-radius) border border-(--stroke) bg-(--background) p-5 body-base text-(--foreground)"
 							>
 								Page content
 							</div>
@@ -58,9 +62,9 @@
 								>
 							</p>
 						</div>
-						<div class="space-y-2">
+						<div class="space-y-3">
 							<div
-								class="flex min-h-28 flex-col justify-center gap-1 border border-(--stroke) bg-(--muted) p-5 body-base text-(--foreground)"
+								class="flex min-h-28 flex-col justify-center gap-1 rounded-(--image-border-radius) border border-(--stroke) bg-(--muted) p-5 body-base text-(--foreground)"
 							>
 								<p>Secondary surface</p>
 								<p class="body-sm text-(--muted-foreground)">Supporting text</p>
@@ -77,9 +81,9 @@
 								>
 							</p>
 						</div>
-						<div class="space-y-2">
+						<div class="space-y-3">
 							<div
-								class="flex min-h-28 items-center border border-transparent bg-(--accent) p-5 body-base text-(--accent-foreground)"
+								class="flex min-h-28 items-center rounded-(--image-border-radius) border border-transparent bg-(--accent) p-5 body-base text-(--accent-foreground)"
 							>
 								Primary action or highlight
 							</div>
@@ -95,9 +99,9 @@
 								>
 							</p>
 						</div>
-						<div class="space-y-2">
+						<div class="space-y-3">
 							<div
-								class="flex min-h-28 items-center border border-transparent bg-(--editing) p-5 body-base text-(--editing-foreground)"
+								class="flex min-h-28 items-center rounded-(--image-border-radius) border border-transparent bg-(--editing) p-5 body-base text-(--editing-foreground)"
 							>
 								Active editing
 							</div>
@@ -113,9 +117,9 @@
 								>
 							</p>
 						</div>
-						<div class="space-y-2">
+						<div class="space-y-3">
 							<div
-								class="flex min-h-28 items-center border border-(--stroke) bg-(--editing-muted) p-5 body-base text-(--editing)"
+								class="flex min-h-28 items-center rounded-(--image-border-radius) border border-(--stroke) bg-(--editing-muted) p-5 body-base text-(--editing)"
 							>
 								Passive editing highlight
 							</div>
@@ -131,9 +135,9 @@
 								>
 							</p>
 						</div>
-						<div class="space-y-2">
+						<div class="space-y-3">
 							<div
-								class="flex min-h-28 flex-col justify-center gap-3 border border-(--stroke) bg-(--background) p-5 body-base"
+								class="flex min-h-28 flex-col justify-center gap-3 rounded-(--image-border-radius) border border-(--stroke) bg-(--background) p-5 body-base"
 							>
 								<p>Borders and dividers</p>
 								<hr class="border-0 border-t border-(--stroke)" />
@@ -148,10 +152,10 @@
 					</div>
 				</div>
 
-				<div class="space-y-4">
+				<div class="space-y-5 sm:space-y-7">
 					<h3 class="text-sm font-medium">Font families</h3>
-					<div class="grid gap-6 sm:grid-cols-3">
-						<div class="space-y-2">
+					<div class="grid grid-cols-1 gap-x-5 gap-y-8 sm:gap-x-7 lg:grid-cols-3 lg:gap-y-7">
+						<div class="space-y-3">
 							<p class="font-sans text-2xl">Clear words.</p>
 							<p class="body-sm">
 								<code
@@ -160,7 +164,7 @@
 								> · Inter
 							</p>
 						</div>
-						<div class="space-y-2">
+						<div class="space-y-3">
 							<p class="font-serif text-2xl">Clear words.</p>
 							<p class="body-sm">
 								<code
@@ -169,7 +173,7 @@
 								> · Libertinos Serif Display
 							</p>
 						</div>
-						<div class="space-y-2">
+						<div class="space-y-3">
 							<p class="font-mono text-2xl">Clear words.</p>
 							<p class="body-sm">
 								<code
@@ -181,7 +185,7 @@
 					</div>
 				</div>
 
-				<div class="space-y-4">
+				<div class="space-y-5 sm:space-y-7">
 					<h3 class="text-sm font-medium">Corner radii</h3>
 					<p class="max-w-prose body-sm text-(--muted-foreground)">
 						Buttons and pill shells use the button radius. Popovers cap it at 1rem; their inner rows
@@ -189,7 +193,9 @@
 						their own radius. Set either token to zero for square corners.
 					</p>
 					<!-- Static shape specimens; interactive recipes appear in the sections below. -->
-					<div class="grid items-start gap-6 sm:grid-cols-2 lg:grid-cols-4">
+					<div
+						class="grid grid-cols-1 items-start gap-x-5 gap-y-8 sm:grid-cols-2 sm:gap-x-7 lg:grid-cols-4 lg:gap-y-7"
+					>
 						<div class="space-y-3">
 							<div
 								class="inline-flex min-h-11 items-center rounded-(--button-border-radius) border border-(--stroke) px-5 py-2 text-base leading-6 font-medium"
@@ -281,7 +287,7 @@
 				</div>
 
 				<pre
-					class="overflow-x-auto border border-(--stroke) bg-(--muted) p-4 text-sm leading-6"><code
+					class="overflow-x-auto rounded-(--image-border-radius) border border-(--stroke) bg-(--muted) p-4 text-sm leading-6"><code
 						>&lt;div class="mx-auto max-w-7xl"&gt;
 	&lt;div class="px-5 sm:px-7"&gt;
 		Page content
@@ -583,7 +589,7 @@
 					<div class="space-y-3">
 						<h4 class="text-sm text-(--muted-foreground)">Sample prose block</h4>
 						<pre
-							class="overflow-x-auto border border-(--stroke) bg-(--muted) p-4 text-sm leading-6"><code
+							class="overflow-x-auto rounded-(--image-border-radius) border border-(--stroke) bg-(--muted) p-4 text-sm leading-6"><code
 								>&lt;script lang="ts"&gt;
 	import &#123; Node, NodeArrayProperty &#125; from 'svedit';
 	import type &#123; DocumentPath, NodeArrayAttachmentContext &#125; from 'svedit';
