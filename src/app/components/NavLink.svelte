@@ -10,12 +10,12 @@
 	let render_as_link = $derived(!svedit.editable && node.href);
 </script>
 
-<Node {path}>
+<Node class="flex items-center" {path}>
 	<svelte:element
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link && node.target !== '_self' ? node.target : undefined}
-		class="nav-link inline-flex min-h-9 items-center py-1.5 text-sm leading-5 text-(--foreground) underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:underline pointer-coarse:min-h-11"
+		class="nav-link inline-flex min-h-9 items-center py-1.5 text-sm leading-5 text-(--foreground) underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:underline"
 	>
 		<TextProperty path={[...path, 'label']} placeholder="Link" />
 	</svelte:element>

@@ -228,8 +228,8 @@
 				<div class="space-y-2">
 					<h2 id="content-tracks-heading" class="text-xl font-medium">Content tracks</h2>
 					<p class="max-w-prose body-sm text-(--muted-foreground)">
-						A track controls how much of the page limiter a block occupies and where it sits.
-						Prose and descriptive listings share narrow left, center, and right tracks, plus a wide
+						A track controls how much of the page limiter a block occupies and where it sits. Prose
+						and descriptive listings share narrow left, center, and right tracks, plus a wide
 						layout. Alternating their positions adds variation while keeping shared alignment edges.
 					</p>
 					<p class="max-w-prose body-sm text-(--muted-foreground)">
@@ -248,7 +248,9 @@
 						<div class="-mx-5 sm:-mx-7">
 							<div class="mx-auto max-w-7xl bg-(--muted)">
 								<div class="max-w-4xl px-5 sm:px-7">
-									<div class="border-x border-dashed border-(--stroke) bg-(--background) py-5 body-sm">
+									<div
+										class="border-x border-dashed border-(--stroke) bg-(--background) py-5 body-sm"
+									>
 										Content starts at the left page edge.
 									</div>
 								</div>
@@ -263,7 +265,9 @@
 						<div class="-mx-5 sm:-mx-7">
 							<div class="mx-auto max-w-7xl bg-(--muted)">
 								<div class="mx-auto max-w-4xl px-5 sm:px-7">
-									<div class="border-x border-dashed border-(--stroke) bg-(--background) py-5 body-sm">
+									<div
+										class="border-x border-dashed border-(--stroke) bg-(--background) py-5 body-sm"
+									>
 										Content sits in the center of the page.
 									</div>
 								</div>
@@ -278,7 +282,9 @@
 						<div class="-mx-5 sm:-mx-7">
 							<div class="mx-auto max-w-7xl bg-(--muted)">
 								<div class="ml-auto max-w-4xl px-5 sm:px-7">
-									<div class="border-x border-dashed border-(--stroke) bg-(--background) py-5 body-sm">
+									<div
+										class="border-x border-dashed border-(--stroke) bg-(--background) py-5 body-sm"
+									>
 										Content ends at the right page edge.
 									</div>
 								</div>
@@ -291,7 +297,9 @@
 						<div class="-mx-5 sm:-mx-7">
 							<div class="mx-auto max-w-7xl bg-(--muted)">
 								<div class="px-5 sm:px-7">
-									<div class="border-x border-dashed border-(--stroke) bg-(--background) py-5 body-sm">
+									<div
+										class="border-x border-dashed border-(--stroke) bg-(--background) py-5 body-sm"
+									>
 										Content spans the limiter, inside the shared side padding.
 									</div>
 								</div>
@@ -307,10 +315,14 @@
 							<div class="mx-auto max-w-7xl bg-(--muted)">
 								<div class="px-5 sm:px-7">
 									<div class="grid grid-cols-1 gap-x-10 gap-y-0 lg:grid-cols-2 lg:gap-x-14">
-										<div class="border-x border-dashed border-(--stroke) bg-(--background) py-5 body-sm">
+										<div
+											class="border-x border-dashed border-(--stroke) bg-(--background) py-5 body-sm"
+										>
 											First column
 										</div>
-										<div class="border-x border-dashed border-(--stroke) bg-(--background) py-5 body-sm">
+										<div
+											class="border-x border-dashed border-(--stroke) bg-(--background) py-5 body-sm"
+										>
 											Second column
 										</div>
 									</div>
@@ -319,7 +331,6 @@
 						</div>
 					</figure>
 				</div>
-
 			</section>
 
 			<section id="block-spacing" aria-labelledby="block-spacing-heading" class="space-y-8">
@@ -777,14 +788,15 @@
 				<div class="space-y-2">
 					<h2 id="buttons-small-heading" class="text-xl font-medium">Small buttons</h2>
 					<p class="text-sm leading-relaxed text-(--muted-foreground)">
-						For navigation and compact layouts.
+						For navigation and compact layouts. Small buttons keep a 36px minimum height on all
+						devices.
 					</p>
 				</div>
 
 				<!--
 				Compact geometry: 0.875rem text, 1.25rem line height, and a 2.25rem minimum height.
 				Keep medium weight at both sizes; emphasis comes from the variant, not heavier text.
-				Touch inputs get a 2.75rem minimum target. Let content wrap and increase the height.
+				Keep the same dimensions for mouse and touch. Let content wrap and increase the height.
 				These are explicit recipes, with the same colors and states as the standard size.
 			-->
 				<div class="grid gap-10 sm:grid-cols-3 sm:gap-8">
@@ -793,7 +805,7 @@
 						<!-- Main action. Mix in sRGB for visible feedback even with black accents; keep text opaque. -->
 						<button
 							type="button"
-							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-transparent bg-(--accent) px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--accent-foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_20%)] enabled:active:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_30%)] disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
+							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-transparent bg-(--accent) px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--accent-foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_20%)] enabled:active:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_30%)] disabled:cursor-default disabled:opacity-40"
 						>
 							Continue
 						</button>
@@ -804,7 +816,7 @@
 						<!-- Supporting action. Use the shared stroke border, muted hover surface, and foreground tint on press. -->
 						<button
 							type="button"
-							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-[var(--secondary-button-background,transparent)] px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
+							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-[var(--secondary-button-background,transparent)] px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
 						>
 							Continue
 						</button>
@@ -815,7 +827,7 @@
 						<!-- Standalone link: preserve start alignment and omit horizontal padding at both sizes. -->
 						<a
 							href="#buttons"
-							class="inline-flex min-h-9 max-w-full min-w-6 items-center justify-start py-2 text-start text-sm leading-5 font-medium wrap-anywhere text-(--foreground) underline decoration-1 underline-offset-4 hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:decoration-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
+							class="inline-flex min-h-9 max-w-full min-w-6 items-center justify-start py-2 text-start text-sm leading-5 font-medium wrap-anywhere text-(--foreground) underline decoration-1 underline-offset-4 hover:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:decoration-2"
 						>
 							Continue
 						</a>
@@ -857,7 +869,7 @@
 						<button
 							type="button"
 							disabled
-							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-transparent bg-(--accent) px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--accent-foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_20%)] enabled:active:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_30%)] disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
+							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-transparent bg-(--accent) px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--accent-foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_20%)] enabled:active:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_30%)] disabled:cursor-default disabled:opacity-40"
 							>Continue</button
 						>
 					</div>
@@ -866,7 +878,7 @@
 						<button
 							type="button"
 							disabled
-							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-[var(--secondary-button-background,transparent)] px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
+							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-(--stroke) bg-[var(--secondary-button-background,transparent)] px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
 							>Continue</button
 						>
 					</div>
@@ -990,7 +1002,7 @@
 				>
 					<a
 						href="#navigation"
-						class="inline-flex min-h-9 min-w-0 flex-wrap items-center gap-2 justify-self-start text-xl font-medium tracking-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) pointer-coarse:min-h-11"
+						class="inline-flex min-h-9 min-w-0 flex-wrap items-center gap-2 justify-self-start text-xl font-medium tracking-tight focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing)"
 					>
 						<svg class="size-8 shrink-0" viewBox="0 0 32 32" fill="none" aria-hidden="true">
 							<circle cx="16" cy="16" r="16" class="fill-(--foreground)" />
@@ -1009,28 +1021,28 @@
 						<li>
 							<a
 								href="#typography"
-								class="inline-flex min-h-9 items-center py-1.5 text-sm leading-5 text-(--foreground) underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:underline pointer-coarse:min-h-11"
+								class="inline-flex min-h-9 items-center py-1.5 text-sm leading-5 text-(--foreground) underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:underline"
 								>Product</a
 							>
 						</li>
 						<li>
 							<a
 								href="#buttons-small"
-								class="inline-flex min-h-9 items-center py-1.5 text-sm leading-5 text-(--foreground) underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:underline pointer-coarse:min-h-11"
+								class="inline-flex min-h-9 items-center py-1.5 text-sm leading-5 text-(--foreground) underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:underline"
 								>Quickstart</a
 							>
 						</li>
 						<li>
 							<a
 								href="#formatting"
-								class="inline-flex min-h-9 items-center py-1.5 text-sm leading-5 text-(--foreground) underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:underline pointer-coarse:min-h-11"
+								class="inline-flex min-h-9 items-center py-1.5 text-sm leading-5 text-(--foreground) underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:underline"
 								>Manual</a
 							>
 						</li>
 						<li>
 							<a
 								href="#pills"
-								class="inline-flex min-h-9 items-center py-1.5 text-sm leading-5 text-(--foreground) underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:underline pointer-coarse:min-h-11"
+								class="inline-flex min-h-9 items-center py-1.5 text-sm leading-5 text-(--foreground) underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) active:underline"
 								>Contact</a
 							>
 						</li>
@@ -1040,12 +1052,12 @@
 					>
 						<button
 							type="button"
-							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-transparent bg-(--accent) px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--accent-foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_20%)] enabled:active:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_30%)] disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
+							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center rounded-(--button-border-radius) border border-transparent bg-(--accent) px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--accent-foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_20%)] enabled:active:bg-[color-mix(in_srgb,var(--accent),var(--accent-foreground)_30%)] disabled:cursor-default disabled:opacity-40"
 							>Try</button
 						>
 						<button
 							type="button"
-							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center gap-1.5 rounded-(--button-border-radius) border border-(--stroke) bg-[var(--secondary-button-background,transparent)] px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
+							class="inline-flex min-h-9 max-w-full min-w-9 items-center justify-center gap-1.5 rounded-(--button-border-radius) border border-(--stroke) bg-[var(--secondary-button-background,transparent)] px-3 py-1.5 text-center text-sm leading-5 font-medium wrap-anywhere text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
 						>
 							Install
 							<svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -1071,7 +1083,7 @@
 						<button
 							type="button"
 							aria-label="Open menu"
-							class="inline-flex size-9 shrink-0 items-center justify-center rounded-(--button-border-radius) border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+							class="inline-flex size-9 shrink-0 items-center justify-center rounded-(--button-border-radius) border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
 						>
 							<svg class="size-6" viewBox="0 0 24 24" fill="none" aria-hidden="true"
 								><path
@@ -1086,7 +1098,7 @@
 						<button
 							type="button"
 							aria-label="Close menu"
-							class="inline-flex size-9 shrink-0 items-center justify-center rounded-(--button-border-radius) border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+							class="inline-flex size-9 shrink-0 items-center justify-center rounded-(--button-border-radius) border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
 						>
 							<svg class="size-6" viewBox="0 0 24 24" fill="none" aria-hidden="true"
 								><path
