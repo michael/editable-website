@@ -127,11 +127,11 @@
 
 {#if variant_item}
 	<div
-		class="variant-pill flex min-h-9 min-w-0 items-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] text-sm leading-5 whitespace-nowrap text-(--foreground) max-sm:min-w-36 pointer-coarse:min-h-11"
+		class="variant-pill flex min-h-9 min-w-0 items-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] text-sm leading-5 whitespace-nowrap text-(--foreground) max-sm:min-w-36"
 		aria-label="Current node variant"
 	>
 		<div
-			class="relative flex min-h-9 min-w-0 items-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] px-3 py-2 whitespace-nowrap pointer-coarse:min-h-11 {variant_item.option_count >
+			class="relative flex min-h-9 min-w-0 items-center rounded-[max(0px,calc(var(--button-border-radius)-0.25rem-1px))] px-3 py-2 whitespace-nowrap {variant_item.option_count >
 			1
 				? 'cursor-pointer hover:bg-(--muted) active:bg-(--foreground)/10'
 				: ''}"

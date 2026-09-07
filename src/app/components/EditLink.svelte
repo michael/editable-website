@@ -184,13 +184,13 @@
 					type="url"
 					bind:value={href_input_value}
 					placeholder="https://example.com"
-					class="edit-link-input min-h-9 w-72 min-w-0 flex-1 rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border border-(--stroke) bg-(--background) px-3 py-1 text-base leading-6 text-(--foreground) focus:border-(--stroke) focus:ring-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) pointer-coarse:min-h-11"
+					class="edit-link-input min-h-9 w-72 min-w-0 flex-1 rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border border-(--stroke) bg-(--background) px-3 py-1 text-base leading-6 text-(--foreground) focus:border-(--stroke) focus:ring-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing)"
 					onkeydown={handle_keydown}
 				/>
 				{#if app.has_backend}
 					<button
 						type="button"
-						class="inline-flex size-9 shrink-0 items-center justify-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40 pointer-coarse:size-11"
+						class="inline-flex size-9 shrink-0 items-center justify-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent p-0 text-(--foreground) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
 						title="Select page"
 						aria-label="Select page"
 						onclick={() => {
@@ -218,7 +218,7 @@
 			</div>
 		</div>
 		<div class="flex flex-wrap items-center justify-between gap-2 pl-3">
-			<label class="flex min-h-9 cursor-pointer items-center gap-2 pointer-coarse:min-h-11">
+			<label class="flex min-h-9 cursor-pointer items-center gap-2">
 				<input
 					type="checkbox"
 					bind:checked={open_in_new_tab}
@@ -228,7 +228,7 @@
 			</label>
 			<button
 				type="button"
-				class="inline-flex min-h-9 shrink-0 items-center justify-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2 text-sm leading-5 font-medium text-(--editing) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--editing-muted) enabled:active:bg-(--editing)/15 disabled:cursor-default disabled:opacity-40 pointer-coarse:min-h-11"
+				class="inline-flex min-h-9 shrink-0 items-center justify-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2 text-sm leading-5 font-medium text-(--editing) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--editing-muted) enabled:active:bg-(--editing)/15 disabled:cursor-default disabled:opacity-40"
 				onclick={() => void save()}
 			>
 				{is_new_link ? 'Create' : 'Update'}
