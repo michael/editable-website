@@ -857,7 +857,7 @@ Updated: ${updated_at_label}`;
 			<button
 				bind:this={menu_item_refs[0]}
 				type="button"
-				class="menu-item"
+				class="menu-item flex min-h-10 w-full items-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2.5 text-start text-sm leading-5 font-normal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:text-(--muted-foreground) pointer-coarse:min-h-11"
 				onclick={open_in_new_tab}
 				onfocus={() => {
 					menu_selected_index = 0;
@@ -868,7 +868,9 @@ Updated: ${updated_at_label}`;
 			<button
 				bind:this={menu_item_refs[1]}
 				type="button"
-				class="menu-item {menu_item.is_home_page ? 'menu-item-disabled' : ''}"
+				class="menu-item flex min-h-10 w-full items-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2.5 text-start text-sm leading-5 font-normal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:text-(--muted-foreground) pointer-coarse:min-h-11 {menu_item.is_home_page
+					? 'menu-item-disabled'
+					: ''}"
 				onclick={open_page_url_dialog}
 				onfocus={() => {
 					menu_selected_index = 1;
@@ -880,7 +882,9 @@ Updated: ${updated_at_label}`;
 			<button
 				bind:this={menu_item_refs[2]}
 				type="button"
-				class="menu-item {menu_item.is_home_page ? 'menu-item-disabled' : 'menu-item-danger'}"
+				class="menu-item flex min-h-10 w-full items-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2.5 text-start text-sm leading-5 font-normal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:text-(--muted-foreground) pointer-coarse:min-h-11 {menu_item.is_home_page
+					? 'menu-item-disabled'
+					: 'menu-item-danger'}"
 				onclick={open_confirm}
 				onfocus={() => {
 					menu_selected_index = 2;
@@ -907,7 +911,13 @@ Updated: ${updated_at_label}`;
 				by anyone who has the link.
 			</p>
 			<div class="confirm-actions">
-				<button type="button" class="confirm-btn" onclick={close_unlisted_info}> Got it </button>
+				<button
+					type="button"
+					class="confirm-btn inline-flex min-h-9 items-center justify-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2 text-sm leading-5 font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
+					onclick={close_unlisted_info}
+				>
+					Got it
+				</button>
 			</div>
 		</div>
 	{/if}
@@ -928,7 +938,13 @@ Updated: ${updated_at_label}`;
 				a developer to remove that markdown page.
 			</p>
 			<div class="confirm-actions">
-				<button type="button" class="confirm-btn" onclick={close_shadowed_info}> Got it </button>
+				<button
+					type="button"
+					class="confirm-btn inline-flex min-h-9 items-center justify-center rounded-[max(0px,calc(min(1rem,var(--button-border-radius))-0.25rem-1px))] border-0 bg-transparent px-3 py-2 text-sm leading-5 font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--editing) enabled:cursor-pointer enabled:hover:bg-(--muted) enabled:active:bg-(--foreground)/10 disabled:cursor-default disabled:opacity-40"
+					onclick={close_shadowed_info}
+				>
+					Got it
+				</button>
 			</div>
 		</div>
 	{/if}
@@ -958,7 +974,7 @@ Updated: ${updated_at_label}`;
 		top: 0;
 		z-index: 1;
 		margin-inline: -0.4rem;
-		padding: 1rem 0 0.35rem;
+		padding: 1rem 0 0.5rem;
 		background: var(--background);
 	}
 
@@ -970,16 +986,16 @@ Updated: ${updated_at_label}`;
 		height: 2.75rem;
 		padding: 0 0.78rem;
 		border: 1px solid var(--stroke);
-		border-radius: 9999px;
+		border-radius: var(--button-border-radius);
 		background: var(--background);
 		box-shadow: none;
 		cursor: text;
 		transition: border-color 150ms ease;
 	}
 
+	/* Keep search focus quiet while the result highlight identifies the Enter target. */
 	.search-input-shell:focus-within {
-		border-color: var(--editing);
-		box-shadow: none;
+		border-color: var(--muted-foreground);
 	}
 
 	.search-input-icon {
@@ -996,7 +1012,8 @@ Updated: ${updated_at_label}`;
 		background: transparent;
 		color: var(--foreground);
 		padding: 0;
-		font-size: 16px !important;
+		font-size: 1rem;
+		line-height: 1.5rem;
 		outline: none;
 		box-shadow: none;
 		appearance: none;
@@ -1044,8 +1061,9 @@ Updated: ${updated_at_label}`;
 	.tree-row-shell::before {
 		content: '';
 		position: absolute;
-		inset: 0 -0.4rem;
-		border-radius: 9999px;
+		inset: 0 -0.4rem 0
+			max(-0.4rem, calc(var(--tree-guide-columns, 0) * var(--tree-indent-width, 1.3rem) - 0.4rem));
+		border-radius: var(--button-border-radius);
 		background: transparent;
 		pointer-events: none;
 		z-index: 0;
@@ -1085,12 +1103,13 @@ Updated: ${updated_at_label}`;
 	.tree-row::after {
 		content: '';
 		position: absolute;
-		inset: 0 -0.4rem;
-		border-radius: 9999px;
+		inset: 0 -0.4rem 0
+			max(-0.4rem, calc(var(--tree-guide-columns, 0) * var(--tree-indent-width, 1.3rem) - 0.4rem));
+		border-radius: var(--button-border-radius);
 		pointer-events: none;
 		background: transparent;
-		outline: 1px solid transparent;
-		outline-offset: -1px;
+		outline: 2px solid transparent;
+		outline-offset: -2px;
 		z-index: 3;
 	}
 
@@ -1100,10 +1119,6 @@ Updated: ${updated_at_label}`;
 
 	.tree-row-shell:hover .tree-row-keyboard-selected::before {
 		background: var(--editing-muted);
-	}
-
-	.tree-row-shell:hover .tree-row-keyboard-selected::after {
-		outline-color: var(--editing);
 	}
 
 	.tree-row:focus-visible::after,
@@ -1120,17 +1135,12 @@ Updated: ${updated_at_label}`;
 	.tree-row-keyboard-selected::before {
 		content: '';
 		position: absolute;
-		inset: 0 -0.4rem;
-		border-radius: 9999px;
+		inset: 0 -0.4rem 0
+			max(-0.4rem, calc(var(--tree-guide-columns, 0) * var(--tree-indent-width, 1.3rem) - 0.4rem));
+		border-radius: var(--button-border-radius);
 		pointer-events: none;
 		background: var(--editing-muted);
 		z-index: -1;
-	}
-
-	.tree-row-keyboard-selected::after,
-	.tree-row-keyboard-selected:focus-visible::after,
-	.tree-row-shell:focus-within .tree-row-keyboard-selected:focus-visible::after {
-		outline-color: var(--editing);
 	}
 
 	.item-actions-btn {
@@ -1145,13 +1155,13 @@ Updated: ${updated_at_label}`;
 		height: 2.25rem;
 		transform: translateY(-50%);
 		border: 0;
-		border-radius: 9999px;
+		border-radius: var(--button-border-radius);
 		padding: 0;
 		background: transparent;
 		color: var(--foreground);
 		cursor: pointer;
-		outline: 1px solid transparent;
-		outline-offset: 1px;
+		outline: 2px solid transparent;
+		outline-offset: 2px;
 		pointer-events: auto;
 		transition:
 			background-color 150ms ease,
@@ -1170,7 +1180,7 @@ Updated: ${updated_at_label}`;
 	}
 
 	.item-actions-btn:active {
-		transform: translateY(-50%) scale(0.95);
+		background: color-mix(in srgb, var(--foreground) 10%, transparent);
 	}
 
 	.page-illustration {
@@ -1199,7 +1209,7 @@ Updated: ${updated_at_label}`;
 		flex: 0 0 auto;
 		margin: 0.25rem 0.35rem 0.25rem -0.15rem;
 		background: var(--muted);
-		border-radius: 9999px;
+		border-radius: var(--button-border-radius);
 		overflow: hidden;
 	}
 
@@ -1346,9 +1356,9 @@ Updated: ${updated_at_label}`;
 		flex-direction: column;
 		justify-content: center;
 		gap: 0;
-		font-size: 0.9rem;
-		font-weight: 600;
-		line-height: 1.15;
+		font-size: 0.875rem;
+		font-weight: 500;
+		line-height: 1.25rem;
 		color: inherit;
 		padding-left: 0.75rem;
 	}
@@ -1377,7 +1387,7 @@ Updated: ${updated_at_label}`;
 		align-items: center;
 		justify-content: center;
 		border: 1px solid currentColor;
-		border-radius: 3px;
+		border-radius: min(0.25rem, var(--button-border-radius));
 		background: transparent;
 		color: var(--foreground);
 		padding: 0 0.25rem;
@@ -1386,8 +1396,8 @@ Updated: ${updated_at_label}`;
 		line-height: 1;
 		letter-spacing: 0.04em;
 		cursor: pointer;
-		outline: 1px solid transparent;
-		outline-offset: 1px;
+		outline: 2px solid transparent;
+		outline-offset: 2px;
 	}
 
 	/* Red because a shadowed page is broken, not merely undiscoverable. */
@@ -1404,7 +1414,7 @@ Updated: ${updated_at_label}`;
 		.item-actions-btn:focus-visible,
 		.unlisted-badge:hover,
 		.unlisted-badge:focus-visible {
-			background: var(--background);
+			background: var(--muted);
 		}
 	}
 
@@ -1442,75 +1452,53 @@ Updated: ${updated_at_label}`;
 		flex-direction: column;
 		min-width: 11rem;
 		margin: 0.5rem 0 0;
-		padding: 0.375rem;
+		padding: 0.25rem;
+		max-width: calc(100vw - 2.5rem);
+		max-height: calc(100dvh - 2.5rem);
+		overflow-y: auto;
 		border: 1px solid var(--stroke);
-		border-radius: 1rem;
+		border-radius: min(1rem, var(--button-border-radius));
 		background: var(--background);
 		color: var(--foreground);
-		box-shadow:
-			0 1px 2px rgb(0 0 0 / 0.12),
-			0 4px 16px rgb(0 0 0 / 0.08);
-	}
-
-	.menu-item {
-		border: 0;
-		border-radius: 0.75rem;
-		background: transparent;
-		color: inherit;
-		text-align: left;
-		padding: 0.625rem 0.75rem;
-		cursor: pointer;
-		font-size: 0.875rem;
-		line-height: 1.25rem;
-	}
-
-	.menu-item:hover,
-	.menu-item:focus-visible {
-		background: var(--muted);
-		outline: none;
+		box-shadow: none;
 	}
 
 	.menu-item-danger {
 		color: color-mix(in oklch, red 65%, var(--foreground));
 	}
 
-	.menu-item-disabled {
-		color: var(--muted-foreground);
-		cursor: not-allowed;
-	}
-
 	.confirm-panel {
 		position: fixed;
 		inset: 50% auto auto 50%;
 		transform: translate(-50%, -50%);
-		width: min(28rem, calc(100vw - 2rem));
+		width: min(28rem, calc(100vw - 2.5rem));
+		max-height: calc(100dvh - 2.5rem);
+		overflow-y: auto;
 		padding: 1rem;
 		display: flex;
 		flex-direction: column;
-		gap: 0.9rem;
+		gap: 1rem;
 		border: 1px solid var(--stroke);
-		border-radius: 23px;
+		border-radius: min(1rem, var(--button-border-radius));
 		background: var(--background);
 		color: var(--foreground);
-		box-shadow:
-			0 1px 2px rgb(0 0 0 / 0.12),
-			0 4px 16px rgb(0 0 0 / 0.08);
+		box-shadow: none;
 	}
 
 	.unlisted-info-panel {
-		width: min(24rem, calc(100vw - 2rem));
+		width: min(24rem, calc(100vw - 2.5rem));
 	}
 
 	.confirm-title {
 		margin: 0;
 		font-size: 1rem;
-		font-weight: 700;
+		font-weight: 500;
 	}
 
 	.confirm-message {
 		margin: 0;
-		font-size: 0.92rem;
-		line-height: 1.45;
+		font-size: 0.875rem;
+		line-height: 1.5rem;
 		color: var(--muted-foreground);
 	}
 
@@ -1518,33 +1506,6 @@ Updated: ${updated_at_label}`;
 		display: flex;
 		justify-content: flex-end;
 		gap: 0.75rem;
-	}
-
-	.confirm-btn {
-		border: 0;
-		border-radius: 9999px;
-		background: transparent;
-		color: inherit;
-		padding: 0.55rem 0.9rem;
-		cursor: pointer;
-		font-size: 0.9rem;
-		font-weight: 600;
-		outline: 1px solid transparent;
-		outline-offset: 1px;
-	}
-
-	.confirm-btn:hover {
-		background: var(--muted);
-	}
-
-	.confirm-btn:focus-visible {
-		background: var(--muted);
-		outline-color: var(--editing);
-	}
-
-	.confirm-btn:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
 	}
 
 	@media (max-width: 640px) {
@@ -1562,20 +1523,12 @@ Updated: ${updated_at_label}`;
 			height: 1.05rem;
 		}
 
-		.search-input {
-			font-size: 0.84rem;
-		}
-
 		.tree-row-shell:hover::before {
 			background: transparent;
 		}
 
 		.tree-row-shell:hover .tree-row-keyboard-selected::before {
 			background: var(--editing-muted);
-		}
-
-		.tree-row-shell:hover .tree-row-keyboard-selected::after {
-			outline-color: var(--editing);
 		}
 
 		.tree-row-meta {

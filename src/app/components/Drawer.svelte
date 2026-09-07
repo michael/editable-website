@@ -351,8 +351,8 @@
 		width: 2.5rem;
 		height: 0.32rem;
 		background: var(--background);
-		border-radius: 9999px;
-		box-shadow: var(--shadow-sm);
+		border-radius: var(--button-border-radius);
+		border: 1px solid var(--stroke);
 	}
 
 	.drawer {
@@ -392,8 +392,7 @@
 		height: var(--drawer-height);
 		max-height: 95dvh;
 		background: var(--background);
-		box-shadow: var(--shadow-xl);
-		border-top: 0.5px solid color-mix(in oklch, var(--foreground) 18%, transparent);
+		border-top: 1px solid var(--stroke);
 		color: var(--foreground);
 		padding-bottom: env(safe-area-inset-bottom);
 		overflow: auto;
