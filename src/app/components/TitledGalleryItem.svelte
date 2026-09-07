@@ -19,7 +19,7 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="block outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
+		class="group/gallery-link block outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing)"
 		use:reveal
 	>
 		<div
@@ -31,7 +31,11 @@
 		</div>
 		<div class="pt-4">
 			<TextProperty
-				class="body-base {node.href ? 'underline underline-offset-2' : ''}"
+				class="body-base {node.href
+					? 'underline decoration-[0.0625em] underline-offset-[0.125em]'
+					: ''} {render_as_link
+					? 'group-hover/gallery-link:decoration-[0.125em] group-active/gallery-link:decoration-[0.125em]'
+					: ''}"
 				path={[...path, 'title']}
 				placeholder="Title"
 			/>
@@ -44,7 +48,7 @@
 		this={render_as_link ? 'a' : 'div'}
 		href={render_as_link ? node.href : undefined}
 		target={render_as_link ? node.target : undefined}
-		class="flex items-center gap-5 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing) sm:gap-7"
+		class="group/gallery-link flex items-center gap-5 outline-1 outline-transparent focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--editing) sm:gap-7"
 		use:reveal
 	>
 		<div
@@ -55,7 +59,11 @@
 		</div>
 		<div class="min-w-0">
 			<TextProperty
-				class="body-base {node.href ? 'underline underline-offset-2' : ''}"
+				class="body-base {node.href
+					? 'underline decoration-[0.0625em] underline-offset-[0.125em]'
+					: ''} {render_as_link
+					? 'group-hover/gallery-link:decoration-[0.125em] group-active/gallery-link:decoration-[0.125em]'
+					: ''}"
 				path={[...path, 'title']}
 				placeholder="Title"
 			/>
